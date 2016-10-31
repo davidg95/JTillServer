@@ -5,6 +5,8 @@
  */
 package io.github.davidg95.tillserver;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author David
@@ -19,6 +21,7 @@ public class GUI extends javax.swing.JFrame {
     public GUI(Data data) {
         this.data = data;
         initComponents();
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
     /**
@@ -31,8 +34,8 @@ public class GUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jToolBar1 = new javax.swing.JToolBar();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnManageStock = new javax.swing.JButton();
+        btnManageCustomers = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         itemLogin = new javax.swing.JMenuItem();
@@ -46,20 +49,26 @@ public class GUI extends javax.swing.JFrame {
         itemCustomers = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Till Server");
 
         jToolBar1.setRollover(true);
 
-        jButton1.setText("Manage Stock");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton1);
+        btnManageStock.setText("Manage Stock");
+        btnManageStock.setFocusable(false);
+        btnManageStock.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnManageStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnManageStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnManageStockActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnManageStock);
 
-        jButton2.setText("Manage Customers");
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton2);
+        btnManageCustomers.setText("Manage Customers");
+        btnManageCustomers.setFocusable(false);
+        btnManageCustomers.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnManageCustomers.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(btnManageCustomers);
 
         menuFile.setText("File");
 
@@ -67,6 +76,11 @@ public class GUI extends javax.swing.JFrame {
         menuFile.add(itemLogin);
 
         itemExit.setText("Exit");
+        itemExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemExitActionPerformed(evt);
+            }
+        });
         menuFile.add(itemExit);
 
         jMenuBar1.add(menuFile);
@@ -74,6 +88,11 @@ public class GUI extends javax.swing.JFrame {
         menuStock.setText("Stock");
 
         itemStock.setText("Manage Stock");
+        itemStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemStockActionPerformed(evt);
+            }
+        });
         menuStock.add(itemStock);
 
         itemPromotions.setText("Manage Promotions");
@@ -113,14 +132,26 @@ public class GUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnManageStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStockActionPerformed
+        ProductsWindow.showProductsListWindow(data);
+    }//GEN-LAST:event_btnManageStockActionPerformed
+
+    private void itemStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStockActionPerformed
+        ProductsWindow.showProductsListWindow(data);
+    }//GEN-LAST:event_itemStockActionPerformed
+
+    private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_itemExitActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnManageCustomers;
+    private javax.swing.JButton btnManageStock;
     private javax.swing.JMenuItem itemCustomers;
     private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenuItem itemLogin;
     private javax.swing.JMenuItem itemPromotions;
     private javax.swing.JMenuItem itemStock;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JToolBar jToolBar1;

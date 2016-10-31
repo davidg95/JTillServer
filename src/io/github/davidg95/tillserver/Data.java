@@ -25,8 +25,8 @@ public class Data {
     private List<Customer> customers;
     private List<Sale> sales;
     
-    private int productCounter;
-    private int CustomerCounter;
+    private static int productCounter;
+    private static int CustomerCounter;
 
     /**
      * Blank constructor which initialises the product and customers data
@@ -71,6 +71,7 @@ public class Data {
      */
     public void addProduct(Product p) {
         products.add(p);
+        p.setProductCode(generateProductCode());
     }
 
     /**
@@ -177,7 +178,7 @@ public class Data {
         return products.size();
     }
 
-    private String generateProductCode() {
+    public static String generateProductCode() {
         String no = "";
         String zeros = "";
         no = Integer.toString(productCounter);

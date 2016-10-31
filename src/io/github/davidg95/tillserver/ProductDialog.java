@@ -18,26 +18,44 @@ import javax.swing.JDialog;
  *
  * @author David
  */
-public class NewProductDialog extends javax.swing.JDialog {
+public class ProductDialog extends javax.swing.JDialog {
 
     private static JDialog dialog;
     private static Product product;
 
-    private List<Product> products;
+    private Data data;
+
+    private boolean editMode;
 
     /**
      * Creates new form NewProduct
      */
-    public NewProductDialog(Window parent) {
+    public ProductDialog(Window parent) {
         super(parent);
         initComponents();
+        this.editMode = false;
         this.setLocationRelativeTo(parent);
         this.setModal(true);
     }
 
-    public NewProductDialog(Window parent, List<Product> products) {
+    public ProductDialog(Window parent, Data data) {
         this(parent);
-        this.products = products;
+        this.data = data;
+    }
+
+    public ProductDialog(Window parent, Product p) {
+        super(parent);
+        initComponents();
+        this.editMode = true;
+        this.setLocationRelativeTo(parent);
+        this.setModal(true);
+        txtName.setText(p.getName());
+        txtBarcode.setText(p.getBarcode());
+        txtPrice.setText(p.getPrice() + "");
+        txtStock.setText(p.getStock() + "");
+        txtComments.setText(p.getComments());
+        btnAddProduct.setText("Save Changes");
+        this.setTitle("Edit Product " + p.getName());
     }
 
     /**
@@ -52,7 +70,7 @@ public class NewProductDialog extends javax.swing.JDialog {
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new NewProductDialog(window);
+        dialog = new ProductDialog(window);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         product = null;
         dialog.setVisible(true);
@@ -64,17 +82,29 @@ public class NewProductDialog extends javax.swing.JDialog {
      * Product List and adds the new product to that list.
      *
      * @param parent the parent component.
-     * @param products the list to add the product to.
+     * @param data the list to add the product to.
      * @return the new product object.
      */
-    public static Product showNewProductDialog(Component parent, List<Product> products) {
+    public static Product showNewProductDialog(Component parent, Data data) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new NewProductDialog(window, products);
+        dialog = new ProductDialog(window, data);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         product = null;
+        dialog.setVisible(true);
+        return product;
+    }
+
+    public static Product showEditProductDialog(Component parent, Product p) {
+        Window window = null;
+        if (parent instanceof Dialog || parent instanceof Frame) {
+            window = (Window) parent;
+        }
+        dialog = new ProductDialog(window, p);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        product = p;
         dialog.setVisible(true);
         return product;
     }
@@ -103,6 +133,8 @@ public class NewProductDialog extends javax.swing.JDialog {
         btnClose = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("New Product");
+        setResizable(false);
 
         jLabel1.setText("Product Name:");
 
@@ -126,6 +158,11 @@ public class NewProductDialog extends javax.swing.JDialog {
         });
 
         btnClose.setText("Close");
+        btnClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCloseActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -190,17 +227,35 @@ public class NewProductDialog extends javax.swing.JDialog {
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         String name = txtName.getText();
-        String barcode = txtBarcode.getText();
-        double price = Double.parseDouble(txtPrice.getText());
-        int stock = Integer.parseInt(txtStock.getText());
         String comments = txtComments.getText();
+        if (txtBarcode.getText().equals("") || txtPrice.getText().equals("") || txtStock.getText().equals("")) {
+            product = new Product(name, comments);
+            data.addProduct(product);
+        } else {
+            String barcode = txtBarcode.getText();
+            double price = Double.parseDouble(txtPrice.getText());
+            int stock = Integer.parseInt(txtStock.getText());
 
-        product = new Product(name, price, stock, barcode, comments);
+            if (!editMode) {
+                product = new Product(name, comments, price, stock, barcode);
 
-        if (products != null) {
-            products.add(product);
+                if (data != null) {
+                    data.addProduct(product);
+                }
+            } else {
+                product.setName(name);
+                product.setBarcode(barcode);
+                product.setPrice(price);
+                product.setStock(stock);
+                product.setComments(comments);
+            }
         }
+        this.setVisible(false);
     }//GEN-LAST:event_btnAddProductActionPerformed
+
+    private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
+        this.setVisible(false);
+    }//GEN-LAST:event_btnCloseActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProduct;
