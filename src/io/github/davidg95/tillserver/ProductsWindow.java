@@ -6,9 +6,11 @@
 package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.Product;
+import io.github.davidg95.Till.till.ProductNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -21,7 +23,7 @@ public class ProductsWindow extends javax.swing.JFrame {
 
     private final Data data;
 
-    private DefaultTableModel model;
+    private final DefaultTableModel model;
     private List<Product> currentTableContents;
 
     /**
@@ -32,6 +34,7 @@ public class ProductsWindow extends javax.swing.JFrame {
     public ProductsWindow(Data data) {
         this.data = data;
         initComponents();
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) tableProducts.getModel();
         showAllProducts();
@@ -136,7 +139,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             }
         });
 
-        btnEditProduct.setText("Edit Products");
+        btnEditProduct.setText("Edit Product");
         btnEditProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditProductActionPerformed(evt);
@@ -144,8 +147,18 @@ public class ProductsWindow extends javax.swing.JFrame {
         });
 
         btnRemoveProduct.setText("Remove Product");
+        btnRemoveProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveProductActionPerformed(evt);
+            }
+        });
 
         btnSearch.setText("Search");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
 
         btnShowAll.setText("Show All Products");
         btnShowAll.addActionListener(new java.awt.event.ActionListener() {
@@ -172,7 +185,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                         .addComponent(btnSearch)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnShowAll)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 284, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 288, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
         );
@@ -217,6 +230,25 @@ public class ProductsWindow extends javax.swing.JFrame {
             editProduct();
         }
     }//GEN-LAST:event_tableProductsMouseClicked
+
+    private void btnRemoveProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveProductActionPerformed
+        int index = tableProducts.getSelectedRow();
+        if (index != -1) {
+            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following product?\n" + currentTableContents.get(index), "Remove Product", JOptionPane.YES_NO_OPTION);
+            if (opt == JOptionPane.YES_OPTION) {
+                try {
+                    data.removeProduct(currentTableContents.get(index).getProductCode());
+                } catch (ProductNotFoundException ex) {
+                    
+                }
+                this.updateTable();
+            }
+        }
+    }//GEN-LAST:event_btnRemoveProductActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSearchActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProduct;

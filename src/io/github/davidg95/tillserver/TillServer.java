@@ -5,6 +5,7 @@
  */
 package io.github.davidg95.tillserver;
 
+import io.github.davidg95.Till.till.DBConnect;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.concurrent.Semaphore;
@@ -14,6 +15,10 @@ import java.util.concurrent.Semaphore;
  * @author 1301480
  */
 public class TillServer {
+    
+    private String database_address = "jdbc:derby://localhost:1527/TillTest";
+    private String username = "davidg95";
+    private String password = "adventures";
     
     public static final int PORT = 600;
     public static final int MAX_CONNECTIONS = 10;
@@ -27,6 +32,8 @@ public class TillServer {
     private Data data;
     private GUI g;
     private ConnectionAcceptThread connThread;
+    
+    private DBConnect dbConnection;
 
     /**
      * @param args the command line arguments
@@ -36,8 +43,7 @@ public class TillServer {
     }
     
     public TillServer(){
-        data = new Data();
-        g = new GUI(data);
+        g = new GUI(data, dbConnection);
         productsSem = new Semaphore(1);
         customersSem = new Semaphore(1);
         salesSem = new Semaphore(1);

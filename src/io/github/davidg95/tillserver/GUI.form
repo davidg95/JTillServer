@@ -14,6 +14,22 @@
                 <Property name="text" type="java.lang.String" value="Log in"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="itemDatabaseConnect">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Disconnect Database"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemDatabaseConnectActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="itemUpdate">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Update Database"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemUpdateActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemExit">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Exit"/>
@@ -65,6 +81,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Manage Customers"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemCustomersActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -133,6 +152,9 @@
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnManageCustomersActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

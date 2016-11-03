@@ -5,21 +5,46 @@
  */
 package io.github.davidg95.tillserver;
 
+import io.github.davidg95.Till.till.DBConnect;
+import java.sql.SQLException;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author David
  */
 public class GUI extends javax.swing.JFrame {
-    
+
+    private String database_address = "jdbc:derby://localhost:1527/TillTest";
+    private String username = "davidg95";
+    private String password = "adventures";
+
     private Data data;
+    private DBConnect dbConnection;
 
     /**
      * Creates new form GUI
      */
-    public GUI(Data data) {
+    public GUI(Data data, DBConnect dbConnection) {
+        this.dbConnection = dbConnection;
         this.data = data;
+        this.dbConnection = new DBConnect();
+        try {
+            //DatabaseConnectionDialog.showConnectionDialog(this, this.dbConnection);
+            this.dbConnection.connect(database_address, username, password);
+        } catch (SQLException ex) {
+            this.itemDatabaseConnect.setEnabled(true);
+            this.itemDatabaseConnect.setText("Connect To Database");
+            this.itemUpdate.setEnabled(false);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Connection Error", JOptionPane.ERROR_MESSAGE);
+        }
+        try {
+            this.dbConnection.initDatabase();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Initialisation Error", JOptionPane.ERROR_MESSAGE);
+        }
+        this.data = new Data(this.dbConnection);
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
@@ -39,6 +64,8 @@ public class GUI extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         itemLogin = new javax.swing.JMenuItem();
+        itemDatabaseConnect = new javax.swing.JMenuItem();
+        itemUpdate = new javax.swing.JMenuItem();
         itemExit = new javax.swing.JMenuItem();
         menuStock = new javax.swing.JMenu();
         itemStock = new javax.swing.JMenuItem();
@@ -68,12 +95,33 @@ public class GUI extends javax.swing.JFrame {
         btnManageCustomers.setFocusable(false);
         btnManageCustomers.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnManageCustomers.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnManageCustomers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnManageCustomersActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnManageCustomers);
 
         menuFile.setText("File");
 
         itemLogin.setText("Log in");
         menuFile.add(itemLogin);
+
+        itemDatabaseConnect.setText("Disconnect Database");
+        itemDatabaseConnect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemDatabaseConnectActionPerformed(evt);
+            }
+        });
+        menuFile.add(itemDatabaseConnect);
+
+        itemUpdate.setText("Update Database");
+        itemUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemUpdateActionPerformed(evt);
+            }
+        });
+        menuFile.add(itemUpdate);
 
         itemExit.setText("Exit");
         itemExit.addActionListener(new java.awt.event.ActionListener() {
@@ -110,6 +158,11 @@ public class GUI extends javax.swing.JFrame {
         menuCustomers.setText("Customers");
 
         itemCustomers.setText("Manage Customers");
+        itemCustomers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemCustomersActionPerformed(evt);
+            }
+        });
         menuCustomers.add(itemCustomers);
 
         jMenuBar1.add(menuCustomers);
@@ -141,17 +194,50 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_itemStockActionPerformed
 
     private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
-        this.dispose();
+        System.exit(0);
     }//GEN-LAST:event_itemExitActionPerformed
+
+    private void itemUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemUpdateActionPerformed
+        try {
+            data.updateDatabase();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_itemUpdateActionPerformed
+
+    private void itemCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCustomersActionPerformed
+        CustomersWindow.showCustomersListWindow(data);
+    }//GEN-LAST:event_itemCustomersActionPerformed
+
+    private void btnManageCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageCustomersActionPerformed
+        CustomersWindow.showCustomersListWindow(data);
+    }//GEN-LAST:event_btnManageCustomersActionPerformed
+
+    private void itemDatabaseConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDatabaseConnectActionPerformed
+        if (dbConnection.isConnected()) {
+            if (JOptionPane.showConfirmDialog(this, "Are you sure you want to disconnect from the database?", "Disconnect Database", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                dbConnection.close();
+                this.itemDatabaseConnect.setText("Connect To Database");
+                this.itemUpdate.setEnabled(false);
+            }
+        } else {
+            if (DatabaseConnectionDialog.showConnectionDialog(this, dbConnection)) {
+                this.itemDatabaseConnect.setText("Disconnect Database");
+                this.itemUpdate.setEnabled(true);
+            }
+        }
+    }//GEN-LAST:event_itemDatabaseConnectActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnManageCustomers;
     private javax.swing.JButton btnManageStock;
     private javax.swing.JMenuItem itemCustomers;
+    private javax.swing.JMenuItem itemDatabaseConnect;
     private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenuItem itemLogin;
     private javax.swing.JMenuItem itemPromotions;
     private javax.swing.JMenuItem itemStock;
+    private javax.swing.JMenuItem itemUpdate;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JToolBar jToolBar1;

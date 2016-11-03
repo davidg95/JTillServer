@@ -7,12 +7,22 @@ package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.Customer;
 import io.github.davidg95.Till.till.CustomerNotFoundException;
+import io.github.davidg95.Till.till.DBConnect;
+import io.github.davidg95.Till.till.LoginException;
 import io.github.davidg95.Till.till.OutOfStockException;
 import io.github.davidg95.Till.till.Product;
 import io.github.davidg95.Till.till.ProductNotFoundException;
 import io.github.davidg95.Till.till.Sale;
+import io.github.davidg95.Till.till.Staff;
+import io.github.davidg95.Till.till.StaffNotFoundException;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 /**
  * Data class which stores all system data.
@@ -23,19 +33,46 @@ public class Data {
 
     private List<Product> products;
     private List<Customer> customers;
+    private List<Staff> staff;
     private List<Sale> sales;
-    
+
     private static int productCounter;
-    private static int CustomerCounter;
+    private static int customerCounter;
+    private static int staffCounter;
+
+    private DBConnect dbConnection;
 
     /**
      * Blank constructor which initialises the product and customers data
      * structures. ArrayList data structures are used.
      */
-    public Data() {
-        products = new ArrayList<>();
-        customers = new ArrayList<>();
+    public Data(DBConnect db) {
+        this.dbConnection = db;
+        this.openFile();
+        try {
+            products = db.getAllProducts();
+            customers = db.getAllCustomers();
+            staff = db.getAllStaff();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
+            products = new ArrayList<>();
+            customers = new ArrayList<>();
+            staff = new ArrayList<>();
+        }
         sales = new ArrayList<>();
+
+    }
+
+    public void updateDatabase() throws SQLException {
+        dbConnection.updateWholeProducts(products);
+        dbConnection.updateWholeCustomers(customers);
+        dbConnection.updateWholeStaff(staff);
+        this.saveToFile();
+    }
+
+    public void close() throws SQLException {
+        updateDatabase();
+        dbConnection.close();
     }
 
     //Getters and setters
@@ -45,6 +82,10 @@ public class Data {
 
     public List<Customer> getCustomersList() {
         return this.customers;
+    }
+
+    public List<Staff> getStaffList() {
+        return this.staff;
     }
 
     public List<Sale> getSalesList() {
@@ -59,6 +100,10 @@ public class Data {
         this.customers = customers;
     }
 
+    public void setStaffList(List<Staff> staff) {
+        this.staff = staff;
+    }
+
     public void setSalesList(List<Sale> sales) {
         this.sales = sales;
     }
@@ -70,8 +115,8 @@ public class Data {
      * @param p the new Product object to add.
      */
     public void addProduct(Product p) {
-        products.add(p);
         p.setProductCode(generateProductCode());
+        products.add(p);
     }
 
     /**
@@ -170,6 +215,22 @@ public class Data {
     }
 
     /**
+     * Method to get a product by the barcode.
+     *
+     * @param barcode the barcode to search.
+     * @return Product object that matches the barcode.
+     * @throws ProductNotFoundException if the barcode was not found.
+     */
+    public Product getProductByBarcode(String barcode) throws ProductNotFoundException {
+        for (Product p : products) {
+            if (p.getBarcode().equalsIgnoreCase(barcode)) {
+                return p;
+            }
+        }
+        throw new ProductNotFoundException(barcode);
+    }
+
+    /**
      * Method to get the total number of different products;
      *
      * @return the size of the product list as an int.
@@ -183,12 +244,12 @@ public class Data {
         String zeros = "";
         no = Integer.toString(productCounter);
         zeros = "";
-        for (int i = no.length(); i < 6; i++) {
+        for (int i = no.length(); i < 5; i++) {
             zeros += "0";
         }
         productCounter++;
 
-        return zeros + no;
+        return "P" + zeros + no;
     }
 
     //Customer Methods
@@ -199,6 +260,7 @@ public class Data {
      */
     public void addCustomer(Customer c) {
         customers.add(c);
+        c.setId(generateCustomerCode());
     }
 
     /**
@@ -252,6 +314,133 @@ public class Data {
         return customers.size();
     }
 
+    public static String generateCustomerCode() {
+        String no = "";
+        String zeros = "";
+        no = Integer.toString(customerCounter);
+        zeros = "";
+        for (int i = no.length(); i < 5; i++) {
+            zeros += "0";
+        }
+        customerCounter++;
+
+        return "C" + zeros + no;
+    }
+
+    //Staff Methods
+    /**
+     * Method to add a new member of staff tot he system.
+     *
+     * @param s the new member of staff to add.
+     */
+    public void addStaff(Staff s) {
+        s.setId(generateStaffID());
+        staff.add(s);
+    }
+
+    /**
+     * Method to remove a member of staff from the system.
+     *
+     * @param s the member of staff to remove.
+     */
+    public void removeStaff(Staff s) {
+        staff.remove(s);
+    }
+
+    /**
+     * Method to remove a member of staff from the system by passing in their
+     * id.
+     *
+     * @param id the id of the staff to remove.
+     * @throws StaffNotFoundException if the id could not be found.
+     */
+    public void removeStaff(String id) throws StaffNotFoundException {
+        for (int i = 0; i < staff.size(); i++) {
+            if (staff.get(i).getId().equalsIgnoreCase(id)) {
+                staff.remove(i);
+                return;
+            }
+        }
+        throw new StaffNotFoundException(id);
+    }
+
+    /**
+     * Method to get a member of staff by passing in their id.
+     *
+     * @param id the id of the staff to get.
+     * @return Staff object that matches the id.
+     * @throws StaffNotFoundException if the id could not be found.
+     */
+    public Staff getStaff(String id) throws StaffNotFoundException {
+        for (Staff s : staff) {
+            if (s.getId().equalsIgnoreCase(id)) {
+                return s;
+            }
+        }
+        throw new StaffNotFoundException(id);
+    }
+
+    /**
+     * Method to log a member of staff in using a username and password. This
+     * will be used for logging in to the server interface.
+     *
+     * @param username the username as a String.
+     * @param password the password as a String.
+     * @throws LoginException if there was an error logging in.
+     */
+    public void login(String username, String password) throws LoginException {
+        for (Staff s : staff) {
+            if (s.getUsername().equals(username)) {
+                s.login(password);
+                return;
+            }
+        }
+        throw new LoginException("Bad Login");
+    }
+
+    /**
+     * Method to log in using an id. This will be used for logging in to a till.
+     *
+     * @param id the id to log in.
+     * @throws LoginException if they are already logged in on a till.
+     * @throws StaffNotFoundException if the id was not found.
+     */
+    public void login(String id) throws LoginException, StaffNotFoundException {
+        for (Staff s : staff) {
+            if (s.getId().equals(id)) {
+                s.login();
+            }
+        }
+        throw new StaffNotFoundException(id);
+    }
+
+    /**
+     * Method to get the total number of staff on the system.
+     *
+     * @return int value representing how many staff are on the system.
+     */
+    public int staffCount() {
+        return staff.size();
+    }
+
+    /**
+     * Method to generate a new 6-digit staff id.
+     *
+     * @return String value of new 6-digit staff id.
+     */
+    public static String generateStaffID() {
+        String no = "";
+        String zeros = "";
+        no = Integer.toString(staffCounter);
+        zeros = "";
+        for (int i = no.length(); i < 6; i++) {
+            zeros += "0";
+        }
+        staffCounter++;
+
+        return zeros + no;
+    }
+
     //Sale Methods
     /**
      * Method to add a sale.
@@ -260,5 +449,38 @@ public class Data {
      */
     public void addSale(Sale s) {
         sales.add(s);
+    }
+
+    /**
+     * Method to save the configs.
+     */
+    public void saveToFile() {
+        try (PrintWriter writer = new PrintWriter("config.txt", "UTF-8")) {
+            writer.println(productCounter);
+            writer.println(customerCounter);
+            writer.println(staffCounter);
+        } catch (IOException ex) {
+
+        }
+    }
+
+    /**
+     * Method to load the configs.
+     */
+    public final void openFile() {
+        try {
+            Scanner fileReader = new Scanner(new File("config.txt"));
+
+            if (fileReader.hasNext()) {
+                productCounter = Integer.parseInt(fileReader.nextLine());
+                customerCounter = Integer.parseInt(fileReader.nextLine());
+                staffCounter = Integer.parseInt(fileReader.nextLine());
+            }
+        } catch (IOException e) {
+            try {
+                boolean createNewFile = new File("config.txt").createNewFile();
+            } catch (IOException ex) {
+            }
+        }
     }
 }
