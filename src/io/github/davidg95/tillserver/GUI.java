@@ -6,7 +6,15 @@
 package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.DBConnect;
+import io.github.davidg95.Till.till.Staff;
+import io.github.davidg95.Till.till.StaffNotFoundException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Properties;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -16,12 +24,17 @@ import javax.swing.JOptionPane;
  */
 public class GUI extends javax.swing.JFrame {
 
-    private String database_address = "jdbc:derby://localhost:1527/TillTest";
+    private String database_address = "jdbc:derby://localhost:1527/Till";
     private String username = "davidg95";
     private String password = "adventures";
 
+    private Properties connectionProperties;
+    private File connectionFile = new File("connectionProperties");
+
     private Data data;
     private DBConnect dbConnection;
+
+    private Staff staff;
 
     /**
      * Creates new form GUI
@@ -29,24 +42,76 @@ public class GUI extends javax.swing.JFrame {
     public GUI(Data data, DBConnect dbConnection) {
         this.dbConnection = dbConnection;
         this.data = data;
+        initComponents();
         this.dbConnection = new DBConnect();
+        this.data = new Data(this.dbConnection);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    }
+
+    public void databaseLogin() {
+        loadProperties();
         try {
             //DatabaseConnectionDialog.showConnectionDialog(this, this.dbConnection);
-            this.dbConnection.connect(database_address, username, password);
+            dbConnection.connect(database_address, username, password);
+            try {
+                dbConnection.initDatabase();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Initialisation Error", JOptionPane.ERROR_MESSAGE);
+            }
         } catch (SQLException ex) {
-            this.itemDatabaseConnect.setEnabled(true);
-            this.itemDatabaseConnect.setText("Connect To Database");
-            this.itemUpdate.setEnabled(false);
+            itemDatabaseConnect.setEnabled(true);
+            itemDatabaseConnect.setText("Connect To Database");
+            itemUpdate.setEnabled(false);
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Connection Error", JOptionPane.ERROR_MESSAGE);
         }
-        try {
-            this.dbConnection.initDatabase();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Initialisation Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void login() {
+        staff = LoginDialog.showLoginDialog(this, data);
+        if (staff != null) {
+            itemLogin.setText("Log Out");
         }
-        this.data = new Data(this.dbConnection);
-        initComponents();
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    }
+
+    private void logout() {
+        try {
+            data.logout(staff.getId());
+        } catch (StaffNotFoundException ex) {
+        }
+        staff = null;
+        itemLogin.setText("Log In");
+    }
+
+    private void loadProperties() {
+        try {
+            FileInputStream fIn = new FileInputStream(connectionFile);
+
+            connectionProperties.load(fIn);
+
+            fIn.close();
+
+            database_address = connectionProperties.getProperty("address");
+            username = connectionProperties.getProperty("username");
+            password = connectionProperties.getProperty("password");
+        } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {
+        }
+    }
+
+    private void saveProperties() {
+        try {
+            connectionFile.createNewFile();
+            FileOutputStream fOut = new FileOutputStream("connectionProperties");
+
+            connectionProperties.setProperty("address", database_address);
+            connectionProperties.setProperty("username", username);
+            connectionProperties.setProperty("password", password);
+
+            connectionProperties.store(fOut, "Connection Properties");
+        } catch (FileNotFoundException ex) {
+
+        } catch (IOException ex) {
+        }
     }
 
     /**
@@ -61,6 +126,7 @@ public class GUI extends javax.swing.JFrame {
         jToolBar1 = new javax.swing.JToolBar();
         btnManageStock = new javax.swing.JButton();
         btnManageCustomers = new javax.swing.JButton();
+        btnManageStaff = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         itemLogin = new javax.swing.JMenuItem();
@@ -71,7 +137,7 @@ public class GUI extends javax.swing.JFrame {
         itemStock = new javax.swing.JMenuItem();
         itemPromotions = new javax.swing.JMenuItem();
         menuStaff = new javax.swing.JMenu();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        itemStaff = new javax.swing.JMenuItem();
         menuCustomers = new javax.swing.JMenu();
         itemCustomers = new javax.swing.JMenuItem();
 
@@ -102,9 +168,25 @@ public class GUI extends javax.swing.JFrame {
         });
         jToolBar1.add(btnManageCustomers);
 
+        btnManageStaff.setText("Manage Staff");
+        btnManageStaff.setFocusable(false);
+        btnManageStaff.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnManageStaff.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnManageStaff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnManageStaffActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnManageStaff);
+
         menuFile.setText("File");
 
         itemLogin.setText("Log in");
+        itemLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemLoginActionPerformed(evt);
+            }
+        });
         menuFile.add(itemLogin);
 
         itemDatabaseConnect.setText("Disconnect Database");
@@ -150,8 +232,13 @@ public class GUI extends javax.swing.JFrame {
 
         menuStaff.setText("Staff");
 
-        jMenuItem4.setText("Manage Staff");
-        menuStaff.add(jMenuItem4);
+        itemStaff.setText("Manage Staff");
+        itemStaff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemStaffActionPerformed(evt);
+            }
+        });
+        menuStaff.add(itemStaff);
 
         jMenuBar1.add(menuStaff);
 
@@ -179,7 +266,7 @@ public class GUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 514, Short.MAX_VALUE))
+                .addGap(0, 532, Short.MAX_VALUE))
         );
 
         pack();
@@ -220,26 +307,41 @@ public class GUI extends javax.swing.JFrame {
                 this.itemDatabaseConnect.setText("Connect To Database");
                 this.itemUpdate.setEnabled(false);
             }
-        } else {
-            if (DatabaseConnectionDialog.showConnectionDialog(this, dbConnection)) {
-                this.itemDatabaseConnect.setText("Disconnect Database");
-                this.itemUpdate.setEnabled(true);
-            }
+        } else if (DatabaseConnectionDialog.showConnectionDialog(this, dbConnection)) {
+            this.itemDatabaseConnect.setText("Disconnect Database");
+            this.itemUpdate.setEnabled(true);
         }
     }//GEN-LAST:event_itemDatabaseConnectActionPerformed
 
+    private void itemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLoginActionPerformed
+        if (staff != null) {
+            logout();
+        } else {
+            login();
+        }
+    }//GEN-LAST:event_itemLoginActionPerformed
+
+    private void itemStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffActionPerformed
+        StaffWindow.showStaffListWindow(data);
+    }//GEN-LAST:event_itemStaffActionPerformed
+
+    private void btnManageStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStaffActionPerformed
+        StaffWindow.showStaffListWindow(data);
+    }//GEN-LAST:event_btnManageStaffActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnManageCustomers;
+    private javax.swing.JButton btnManageStaff;
     private javax.swing.JButton btnManageStock;
     private javax.swing.JMenuItem itemCustomers;
     private javax.swing.JMenuItem itemDatabaseConnect;
     private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenuItem itemLogin;
     private javax.swing.JMenuItem itemPromotions;
+    private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStock;
     private javax.swing.JMenuItem itemUpdate;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JMenu menuCustomers;
     private javax.swing.JMenu menuFile;

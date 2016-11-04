@@ -25,13 +25,15 @@ public class ConnectionAcceptThread extends Thread {
     private final Semaphore productsSem;
     private final Semaphore customersSem;
     private final Semaphore salesSem;
+    private final Semaphore staffSem;
     private final Data data;
 
-    public ConnectionAcceptThread(ServerSocket s, Semaphore productsSem, Semaphore customersSem, Semaphore salesSem, Data data) {
+    public ConnectionAcceptThread(ServerSocket s, Semaphore productsSem, Semaphore customersSem, Semaphore salesSem, Semaphore staffSem, Data data) {
         this.socket = s;
         this.productsSem = productsSem;
         this.customersSem = customersSem;
         this.salesSem = salesSem;
+        this.staffSem = staffSem;
         this.data = data;
     }
     
@@ -43,7 +45,7 @@ public class ConnectionAcceptThread extends Thread {
         for(;;){
             try{
                 Socket incoming = socket.accept();
-                pool.submit(new ConnectionThread(incoming, productsSem, customersSem, salesSem, data));
+                pool.submit(new ConnectionThread(incoming, productsSem, customersSem, salesSem, staffSem, data));
             } catch (IOException ex) {
                 Logger.getLogger(ConnectionAcceptThread.class.getName()).log(Level.SEVERE, null, ex);
             }

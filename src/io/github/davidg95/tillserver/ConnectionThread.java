@@ -15,8 +15,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Thread for handling incoming connections.
@@ -30,6 +28,7 @@ public class ConnectionThread extends Thread {
     private final Semaphore productsSem;
     private final Semaphore customersSem;
     private final Semaphore salesSem;
+    private final Semaphore staffSem;
 
     private BufferedReader in;
     private PrintWriter out;
@@ -49,13 +48,15 @@ public class ConnectionThread extends Thread {
      * @param productsSem the semaphore for the products list.
      * @param customersSem the semaphore for the customers list.
      * @param salesSem the semaphore for the sales list.
+     * @param staffSem the semaphore for the staff list.
      * @param data the data object.
      */
-    public ConnectionThread(Socket s, Semaphore productsSem, Semaphore customersSem, Semaphore salesSem, Data data) {
+    public ConnectionThread(Socket s, Semaphore productsSem, Semaphore customersSem, Semaphore salesSem, Semaphore staffSem, Data data) {
         this.socket = s;
         this.productsSem = productsSem;
         this.customersSem = customersSem;
         this.salesSem = salesSem;
+        this.staffSem = staffSem;
         this.data = data;
     }
 
@@ -197,7 +198,7 @@ public class ConnectionThread extends Thread {
                     case "GETCUSTOMERCOUNT": //Get customer count
                         try {
                             customersSem.acquire();
-                            out.write(data.customerCount());
+                            out.println(data.customerCount());
                         } catch (InterruptedException ex) {
                         }
                         out.flush();
@@ -222,6 +223,110 @@ public class ConnectionThread extends Thread {
                         } catch (ClassNotFoundException | InterruptedException ex) {
                         }
                         salesSem.release();
+                        break;
+                    case "ADDSTAFF": //Add a member of staff
+                        try {
+                            Object o = obIn.readObject();
+                            Staff s = (Staff) o;
+                            staffSem.acquire();
+                            data.addStaff(s);
+                        } catch (ClassNotFoundException | InterruptedException ex) {
+                        }
+                        staffSem.release();
+                        break;
+                    case "REMOVESTAFF": //Remove a member of staff
+                        try {
+                            String id = inp[1];
+                            staffSem.acquire();
+                            data.removeStaff(id);
+                            out.println("SUCC");
+                        } catch (InterruptedException ex) {
+                        } catch (StaffNotFoundException ex) {
+                            out.println("FAIL");
+                        }
+                        staffSem.release();
+                        break;
+                    case "GETSTAFF": //Get a member of staff
+                        try {
+                            String id = inp[1];
+                            staffSem.acquire();
+                            Staff s = data.getStaff(id);
+                            obOut.writeObject(s);
+                        } catch (InterruptedException ex) {
+                        } catch (StaffNotFoundException ex) {
+                            obOut.writeObject(ex);
+                        }
+                        obOut.flush();
+                        staffSem.release();
+                        break;
+                    case "GETSTAFFCOUNT": //Get the total number of staff
+                        try {
+                            staffSem.acquire();
+                            out.println(data.staffCount());
+                        } catch (InterruptedException ex) {
+                        }
+                        staffSem.release();
+                        break;
+                    case "GETALLSTAFF": //Get all the staff
+                        try {
+                            staffSem.acquire();
+                            List<Staff> staff = data.getStaffList();
+                            obOut.writeObject(staff);
+                        } catch (InterruptedException ex) {
+                        }
+                        obOut.flush();
+                        staffSem.release();
+                        break;
+                    case "LOGIN": //Standard staff login
+                        try {
+                            String username = inp[1];
+                            String password = inp[2];
+                            staffSem.acquire();
+                            Staff s = data.login(username, password);
+                            obOut.writeObject(s);
+                        } catch (InterruptedException ex) {
+                        } catch (LoginException ex) {
+                            obOut.writeObject(ex);
+                        }
+                        obOut.flush();
+                        staffSem.release();
+                        break;
+                    case "TILLLOGIN": //Till login
+                        try {
+                            String id = inp[1];
+                            staffSem.acquire();
+                            Staff s = data.login(id);
+                            obOut.writeObject(s);
+                        } catch (InterruptedException ex) {
+                        } catch (LoginException | StaffNotFoundException ex) {
+                            obOut.writeObject(ex);
+                        }
+                        obOut.flush();
+                        staffSem.release();
+                        break;
+                    case "LOGOUT": //Logout
+                        try {
+                            String id = inp[1];
+                            staffSem.acquire();
+                            data.logout(id);
+                            out.println("SUCC");
+                        } catch (InterruptedException ex) {
+                        } catch (StaffNotFoundException ex) {
+                            out.println("FAIL");
+                        }
+                        staffSem.release();
+                        break;
+                    case "TILLLOGOUT": //Till logout
+                        try {
+                            String id = inp[1];
+                            staffSem.acquire();
+                            data.tillLogout(id);
+                            out.println("SUCC");
+                        } catch (InterruptedException ex) {
+                        } catch (StaffNotFoundException ex) {
+                            out.println("FAIL");
+                        }
+                        staffSem.release();
                         break;
                     case "CONNTERM": //Terminate the connection
                         conn_term = true;

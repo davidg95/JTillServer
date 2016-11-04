@@ -16,10 +16,6 @@ import java.util.concurrent.Semaphore;
  */
 public class TillServer {
     
-    private String database_address = "jdbc:derby://localhost:1527/TillTest";
-    private String username = "davidg95";
-    private String password = "adventures";
-    
     public static final int PORT = 600;
     public static final int MAX_CONNECTIONS = 10;
     public static final int MAX_QUEUE = 10;
@@ -27,6 +23,7 @@ public class TillServer {
     private Semaphore productsSem;
     private Semaphore customersSem;
     private Semaphore salesSem;
+    private Semaphore staffSem;
 
     private ServerSocket s;
     private Data data;
@@ -47,9 +44,10 @@ public class TillServer {
         productsSem = new Semaphore(1);
         customersSem = new Semaphore(1);
         salesSem = new Semaphore(1);
+        staffSem = new Semaphore(1);
         try{
             s = new ServerSocket(PORT);
-            connThread = new ConnectionAcceptThread(s, productsSem, customersSem, salesSem, data);
+            connThread = new ConnectionAcceptThread(s, productsSem, customersSem, salesSem, staffSem, data);
         } catch (IOException ex) {
         }
     }
@@ -57,6 +55,8 @@ public class TillServer {
     public void start(){
         connThread.start();
         g.setVisible(true);
+        g.login();
+        g.databaseLogin();
     }
     
 }

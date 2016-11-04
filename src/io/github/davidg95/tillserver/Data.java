@@ -5,16 +5,7 @@
  */
 package io.github.davidg95.tillserver;
 
-import io.github.davidg95.Till.till.Customer;
-import io.github.davidg95.Till.till.CustomerNotFoundException;
-import io.github.davidg95.Till.till.DBConnect;
-import io.github.davidg95.Till.till.LoginException;
-import io.github.davidg95.Till.till.OutOfStockException;
-import io.github.davidg95.Till.till.Product;
-import io.github.davidg95.Till.till.ProductNotFoundException;
-import io.github.davidg95.Till.till.Sale;
-import io.github.davidg95.Till.till.Staff;
-import io.github.davidg95.Till.till.StaffNotFoundException;
+import io.github.davidg95.Till.till.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -45,21 +36,29 @@ public class Data {
     /**
      * Blank constructor which initialises the product and customers data
      * structures. ArrayList data structures are used.
+     *
+     * @param db DBConnect class.
      */
     public Data(DBConnect db) {
         this.dbConnection = db;
         this.openFile();
-        try {
-            products = db.getAllProducts();
-            customers = db.getAllCustomers();
-            staff = db.getAllStaff();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
+        if (this.dbConnection.isConnected()) {
+            try {
+                products = db.getAllProducts();
+                customers = db.getAllCustomers();
+                staff = db.getAllStaff();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
+                products = new ArrayList<>();
+                customers = new ArrayList<>();
+                staff = new ArrayList<>();
+            }
+        } else {
             products = new ArrayList<>();
             customers = new ArrayList<>();
             staff = new ArrayList<>();
+            sales = new ArrayList<>();
         }
-        sales = new ArrayList<>();
 
     }
 
@@ -240,8 +239,8 @@ public class Data {
     }
 
     public static String generateProductCode() {
-        String no = "";
-        String zeros = "";
+        String no;
+        String zeros;
         no = Integer.toString(productCounter);
         zeros = "";
         for (int i = no.length(); i < 5; i++) {
@@ -315,8 +314,8 @@ public class Data {
     }
 
     public static String generateCustomerCode() {
-        String no = "";
-        String zeros = "";
+        String no;
+        String zeros;
         no = Integer.toString(customerCounter);
         zeros = "";
         for (int i = no.length(); i < 5; i++) {
@@ -386,29 +385,64 @@ public class Data {
      *
      * @param username the username as a String.
      * @param password the password as a String.
+     * @return the member of staff who has logged in.
      * @throws LoginException if there was an error logging in.
      */
-    public void login(String username, String password) throws LoginException {
+    public Staff login(String username, String password) throws LoginException {
         for (Staff s : staff) {
             if (s.getUsername().equals(username)) {
                 s.login(password);
-                return;
+                return s;
             }
         }
-        throw new LoginException("Bad Login");
+        throw new LoginException("Your credentials were not recognised");
     }
 
     /**
      * Method to log in using an id. This will be used for logging in to a till.
      *
      * @param id the id to log in.
+     * @return the member of staff who has logged in.
      * @throws LoginException if they are already logged in on a till.
      * @throws StaffNotFoundException if the id was not found.
      */
-    public void login(String id) throws LoginException, StaffNotFoundException {
+    public Staff login(String id) throws LoginException, StaffNotFoundException {
         for (Staff s : staff) {
             if (s.getId().equals(id)) {
                 s.login();
+                return s;
+            }
+        }
+        throw new StaffNotFoundException(id);
+    }
+
+    /**
+     * Method to log a member of staff out.
+     *
+     * @param id the id of the staff to log out.
+     * @throws StaffNotFoundException if the staff member was not found.
+     */
+    public void logout(String id) throws StaffNotFoundException {
+        for (Staff s : staff) {
+            if (s.getId().equals(id)) {
+                s.logout();
+                return;
+            }
+        }
+        throw new StaffNotFoundException(id);
+    }
+
+    /**
+     * Method to log a member of staff out the till.
+     *
+     * @param id the id of the staff to log out.
+     * @throws StaffNotFoundException if the staff member was not found.
+     */
+    public void tillLogout(String id) throws StaffNotFoundException {
+        for (Staff s : staff) {
+            if (s.getId().equals(id)) {
+                s.tillLogout();
+                return;
             }
         }
         throw new StaffNotFoundException(id);
@@ -429,8 +463,8 @@ public class Data {
      * @return String value of new 6-digit staff id.
      */
     public static String generateStaffID() {
-        String no = "";
-        String zeros = "";
+        String no;
+        String zeros;
         no = Integer.toString(staffCounter);
         zeros = "";
         for (int i = no.length(); i < 6; i++) {
