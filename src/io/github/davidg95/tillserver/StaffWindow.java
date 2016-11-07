@@ -6,9 +6,11 @@
 package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.Staff;
+import io.github.davidg95.Till.till.StaffNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -16,11 +18,11 @@ import javax.swing.table.DefaultTableModel;
  * @author 1301480
  */
 public class StaffWindow extends javax.swing.JFrame {
-    
+
     private static JFrame frame;
-    
+
     private final Data data;
-    
+
     private final DefaultTableModel model;
     private List<Staff> currentTableContents;
 
@@ -35,27 +37,36 @@ public class StaffWindow extends javax.swing.JFrame {
         model = (DefaultTableModel) tableStaff.getModel();
         showAllStaff();
     }
-    
-    public static void showStaffListWindow(Data data){
+
+    public static void showStaffListWindow(Data data) {
         frame = new StaffWindow(data);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }
-    
-    private void updateTable(){
+
+    private void updateTable() {
         model.setRowCount(0);
-        
-        for(Staff s: currentTableContents){
+
+        for (Staff s : currentTableContents) {
             Object[] str = new Object[]{s.getId(), s.getName(), s.getPosition(), s.getUsername()};
             model.addRow(str);
         }
-        
+
         tableStaff.setModel(model);
     }
-    
-    private void showAllStaff(){
+
+    private void showAllStaff() {
         currentTableContents = data.getStaffList();
         updateTable();
+    }
+
+    private void editStaff() {
+        int selectedRow = tableStaff.getSelectedRow();
+        if (selectedRow != -1) {
+            Staff s = currentTableContents.get(selectedRow);
+            StaffDialog.showEditStaffDialog(this, s);
+            updateTable();
+        }
     }
 
     /**
@@ -73,6 +84,8 @@ public class StaffWindow extends javax.swing.JFrame {
         btnRemoveStaff = new javax.swing.JButton();
         btnEditStaff = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
+        btnSearch = new javax.swing.JButton();
+        btnShowAll = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Manage Staff");
@@ -101,6 +114,11 @@ public class StaffWindow extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tableStaff.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableStaffMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tableStaff);
@@ -133,6 +151,15 @@ public class StaffWindow extends javax.swing.JFrame {
             }
         });
 
+        btnSearch.setText("Search Staff");
+
+        btnShowAll.setText("Show All Staff");
+        btnShowAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnShowAllActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -147,6 +174,10 @@ public class StaffWindow extends javax.swing.JFrame {
                         .addComponent(btnEditStaff)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRemoveStaff)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnShowAll)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
@@ -161,7 +192,9 @@ public class StaffWindow extends javax.swing.JFrame {
                     .addComponent(btnAddStaff)
                     .addComponent(btnRemoveStaff)
                     .addComponent(btnEditStaff)
-                    .addComponent(btnClose))
+                    .addComponent(btnClose)
+                    .addComponent(btnSearch)
+                    .addComponent(btnShowAll))
                 .addContainerGap())
         );
 
@@ -174,22 +207,45 @@ public class StaffWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddStaffActionPerformed
 
     private void btnEditStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditStaffActionPerformed
-        
+        editStaff();
     }//GEN-LAST:event_btnEditStaffActionPerformed
 
     private void btnRemoveStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveStaffActionPerformed
-        // TODO add your handling code here:
+        int index = tableStaff.getSelectedRow();
+        if (index != -1) {
+            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following staff?\n" + currentTableContents.get(index), "Remove Product", JOptionPane.YES_NO_OPTION);
+            if (opt == JOptionPane.YES_OPTION) {
+                try {
+                    data.removeStaff(currentTableContents.get(index).getId());
+                } catch (StaffNotFoundException ex) {
+
+                }
+                this.updateTable();
+            }
+        }
     }//GEN-LAST:event_btnRemoveStaffActionPerformed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 
+    private void btnShowAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowAllActionPerformed
+        showAllStaff();
+    }//GEN-LAST:event_btnShowAllActionPerformed
+
+    private void tableStaffMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStaffMouseClicked
+        if (evt.getClickCount() == 1) {
+            editStaff();
+        }
+    }//GEN-LAST:event_tableStaffMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnEditStaff;
     private javax.swing.JButton btnRemoveStaff;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnShowAll;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tableStaff;
     // End of variables declaration//GEN-END:variables

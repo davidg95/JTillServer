@@ -27,26 +27,35 @@ public class Data {
     private List<Staff> staff;
     private List<Sale> sales;
 
+    private final List<String> connections;
+
     private static int productCounter;
     private static int customerCounter;
     private static int staffCounter;
 
-    private DBConnect dbConnection;
+    private final DBConnect dbConnection;
+    private final GUI g;
 
     /**
      * Blank constructor which initialises the product and customers data
      * structures. ArrayList data structures are used.
      *
      * @param db DBConnect class.
+     * @param g GUI class.
      */
-    public Data(DBConnect db) {
+    public Data(DBConnect db, GUI g) {
         this.dbConnection = db;
+        this.g = g;
+        this.connections = new ArrayList<>();
+    }
+
+    public void loadDatabase() {
         this.openFile();
-        if (this.dbConnection.isConnected()) {
+        if (dbConnection.isConnected()) {
             try {
-                products = db.getAllProducts();
-                customers = db.getAllCustomers();
-                staff = db.getAllStaff();
+                products = dbConnection.getAllProducts();
+                customers = dbConnection.getAllCustomers();
+                staff = dbConnection.getAllStaff();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
                 products = new ArrayList<>();
@@ -59,7 +68,6 @@ public class Data {
             staff = new ArrayList<>();
             sales = new ArrayList<>();
         }
-
     }
 
     public void updateDatabase() throws SQLException {
@@ -72,6 +80,20 @@ public class Data {
     public void close() throws SQLException {
         updateDatabase();
         dbConnection.close();
+    }
+
+    public void addConnection(String s) {
+        connections.add(s);
+        g.setClientLabel("Clients: " + connections.size());
+    }
+
+    public void removeConnection(String s) {
+        connections.remove(s);
+        g.setClientLabel("Clients: " + connections.size());
+    }
+
+    public List<String> getConnections() {
+        return this.connections;
     }
 
     //Getters and setters

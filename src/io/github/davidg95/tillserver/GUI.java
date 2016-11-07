@@ -9,12 +9,11 @@ import io.github.davidg95.Till.till.DBConnect;
 import io.github.davidg95.Till.till.Staff;
 import io.github.davidg95.Till.till.StaffNotFoundException;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.Scanner;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -24,37 +23,51 @@ import javax.swing.JOptionPane;
  */
 public class GUI extends javax.swing.JFrame {
 
-    private String database_address = "jdbc:derby://localhost:1527/Till";
-    private String username = "davidg95";
-    private String password = "adventures";
+//    private String database_address = "jdbc:derby://localhost:1527/TillTest";
+//    private String username = "davidg95";
+//    private String password = "adventures";
+    private String database_address;
+    private String username;
+    private String password;
 
     private Properties connectionProperties;
-    private File connectionFile = new File("connectionProperties");
 
-    private Data data;
-    private DBConnect dbConnection;
+    private final Data data;
+    private final DBConnect dbConnection;
 
     private Staff staff;
 
     /**
      * Creates new form GUI
+     *
+     * @param data
+     * @param dbConnection
      */
     public GUI(Data data, DBConnect dbConnection) {
         this.dbConnection = dbConnection;
         this.data = data;
         initComponents();
-        this.dbConnection = new DBConnect();
-        this.data = new Data(this.dbConnection);
+        setClientLabel("Clients: " + data.getConnections().size());
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
     public void databaseLogin() {
-        loadProperties();
+        openFile();
         try {
-            //DatabaseConnectionDialog.showConnectionDialog(this, this.dbConnection);
-            dbConnection.connect(database_address, username, password);
+            if (database_address == null || database_address.equals("null")) {
+                InitialSetupWindow.showInitWindow(this, data, dbConnection);
+                this.database_address = dbConnection.getAddress();
+                this.username = dbConnection.getUsername();
+                this.password = dbConnection.getPassword();
+            } else {
+                //DatabaseConnectionDialog.showConnectionDialog(this, this.dbConnection);
+                dbConnection.connect(database_address, username, password);
+            }
             try {
                 dbConnection.initDatabase();
+                data.loadDatabase();
+                lblDatabase.setText("Connected to database");
+                saveToFile();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Initialisation Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -66,51 +79,65 @@ public class GUI extends javax.swing.JFrame {
         }
     }
 
+    public void setUpdateLabel(String text) {
+        lblUpdate.setText(text);
+    }
+    
+    public void setClientLabel(String text){
+        lblClients.setText(text);
+    }
+
     public void login() {
         staff = LoginDialog.showLoginDialog(this, data);
         if (staff != null) {
+            lblUser.setText(staff.getName());
             itemLogin.setText("Log Out");
+        } else {
+            System.exit(0);
         }
     }
 
     private void logout() {
         try {
+            lblUser.setText("Not Logged On");
             data.logout(staff.getId());
         } catch (StaffNotFoundException ex) {
         }
         staff = null;
         itemLogin.setText("Log In");
+        login();
     }
 
-    private void loadProperties() {
-        try {
-            FileInputStream fIn = new FileInputStream(connectionFile);
-
-            connectionProperties.load(fIn);
-
-            fIn.close();
-
-            database_address = connectionProperties.getProperty("address");
-            username = connectionProperties.getProperty("username");
-            password = connectionProperties.getProperty("password");
-        } catch (FileNotFoundException ex) {
+    /**
+     * Method to save the configs.
+     */
+    private void saveToFile() {
+        try (PrintWriter writer = new PrintWriter("database.txt", "UTF-8")) {
+            writer.println(database_address);
+            writer.println(username);
+            writer.println(password);
         } catch (IOException ex) {
+
         }
     }
 
-    private void saveProperties() {
+    /**
+     * Method to load the configs.
+     */
+    private final void openFile() {
         try {
-            connectionFile.createNewFile();
-            FileOutputStream fOut = new FileOutputStream("connectionProperties");
+            Scanner fileReader = new Scanner(new File("database.txt"));
 
-            connectionProperties.setProperty("address", database_address);
-            connectionProperties.setProperty("username", username);
-            connectionProperties.setProperty("password", password);
-
-            connectionProperties.store(fOut, "Connection Properties");
-        } catch (FileNotFoundException ex) {
-
-        } catch (IOException ex) {
+            if (fileReader.hasNext()) {
+                database_address = fileReader.nextLine();
+                username = fileReader.nextLine();
+                password = fileReader.nextLine();
+            }
+        } catch (IOException e) {
+            try {
+                boolean createNewFile = new File("database.txt").createNewFile();
+            } catch (IOException ex) {
+            }
         }
     }
 
@@ -127,6 +154,12 @@ public class GUI extends javax.swing.JFrame {
         btnManageStock = new javax.swing.JButton();
         btnManageCustomers = new javax.swing.JButton();
         btnManageStaff = new javax.swing.JButton();
+        statusBar = new javax.swing.JPanel();
+        lblDatabase = new javax.swing.JLabel();
+        lblUser = new javax.swing.JLabel();
+        lblUpdate = new javax.swing.JLabel();
+        lblClients = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         itemLogin = new javax.swing.JMenuItem();
@@ -178,6 +211,41 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(btnManageStaff);
+
+        lblDatabase.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        lblUser.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        lblUpdate.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        lblClients.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout statusBarLayout = new javax.swing.GroupLayout(statusBar);
+        statusBar.setLayout(statusBarLayout);
+        statusBarLayout.setHorizontalGroup(
+            statusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(statusBarLayout.createSequentialGroup()
+                .addComponent(lblDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(lblUser, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(lblUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(lblClients, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        statusBarLayout.setVerticalGroup(
+            statusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, 18, Short.MAX_VALUE)
+            .addComponent(lblDatabase, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lblUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lblClients, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
 
         menuFile.setText("File");
 
@@ -260,13 +328,15 @@ public class GUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 963, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 935, Short.MAX_VALUE)
+            .addComponent(statusBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 532, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 459, Short.MAX_VALUE)
+                .addComponent(statusBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -306,10 +376,15 @@ public class GUI extends javax.swing.JFrame {
                 dbConnection.close();
                 this.itemDatabaseConnect.setText("Connect To Database");
                 this.itemUpdate.setEnabled(false);
+                lblDatabase.setText("Not Connected To Database");
             }
-        } else if (DatabaseConnectionDialog.showConnectionDialog(this, dbConnection)) {
-            this.itemDatabaseConnect.setText("Disconnect Database");
-            this.itemUpdate.setEnabled(true);
+        } else {
+            if (DatabaseConnectionDialog.showConnectionDialog(this, dbConnection)) {
+                JOptionPane.showMessageDialog(this, "Connected to database " + dbConnection, "Connect to database", JOptionPane.PLAIN_MESSAGE);
+                this.itemDatabaseConnect.setText("Disconnect Database");
+                this.itemUpdate.setEnabled(true);
+                lblDatabase.setText("Connected To Database");
+            }
         }
     }//GEN-LAST:event_itemDatabaseConnectActionPerformed
 
@@ -341,11 +416,17 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStock;
     private javax.swing.JMenuItem itemUpdate;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JLabel lblClients;
+    private javax.swing.JLabel lblDatabase;
+    private javax.swing.JLabel lblUpdate;
+    private javax.swing.JLabel lblUser;
     private javax.swing.JMenu menuCustomers;
     private javax.swing.JMenu menuFile;
     private javax.swing.JMenu menuStaff;
     private javax.swing.JMenu menuStock;
+    private javax.swing.JPanel statusBar;
     // End of variables declaration//GEN-END:variables
 }

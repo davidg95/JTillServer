@@ -40,6 +40,7 @@ public class ConnectionThread extends Thread {
     private boolean conn_term = false;
 
     private String site;
+    private Staff staff;
 
     /**
      * Constructor for Connection thread.
@@ -70,6 +71,8 @@ public class ConnectionThread extends Thread {
             obOut.flush();
 
             site = in.readLine();
+            
+            //data.addConnection(site);
 
             while (!conn_term) {
                 String input = in.readLine();
@@ -270,8 +273,8 @@ public class ConnectionThread extends Thread {
                     case "GETALLSTAFF": //Get all the staff
                         try {
                             staffSem.acquire();
-                            List<Staff> staff = data.getStaffList();
-                            obOut.writeObject(staff);
+                            List<Staff> staffList = data.getStaffList();
+                            obOut.writeObject(staffList);
                         } catch (InterruptedException ex) {
                         }
                         obOut.flush();
@@ -283,6 +286,7 @@ public class ConnectionThread extends Thread {
                             String password = inp[2];
                             staffSem.acquire();
                             Staff s = data.login(username, password);
+                            this.staff = s;
                             obOut.writeObject(s);
                         } catch (InterruptedException ex) {
                         } catch (LoginException ex) {
@@ -296,6 +300,7 @@ public class ConnectionThread extends Thread {
                             String id = inp[1];
                             staffSem.acquire();
                             Staff s = data.login(id);
+                            this.staff = s;
                             obOut.writeObject(s);
                         } catch (InterruptedException ex) {
                         } catch (LoginException | StaffNotFoundException ex) {
@@ -309,6 +314,7 @@ public class ConnectionThread extends Thread {
                             String id = inp[1];
                             staffSem.acquire();
                             data.logout(id);
+                            this.staff = null;
                             out.println("SUCC");
                         } catch (InterruptedException ex) {
                         } catch (StaffNotFoundException ex) {
@@ -321,6 +327,7 @@ public class ConnectionThread extends Thread {
                             String id = inp[1];
                             staffSem.acquire();
                             data.tillLogout(id);
+                            this.staff = null;
                             out.println("SUCC");
                         } catch (InterruptedException ex) {
                         } catch (StaffNotFoundException ex) {
@@ -330,9 +337,17 @@ public class ConnectionThread extends Thread {
                         break;
                     case "CONNTERM": //Terminate the connection
                         conn_term = true;
+                        if (staff != null) {
+                            try {
+                                data.logout(staff.getId());
+                                data.tillLogout(staff.getId());
+                            } catch (StaffNotFoundException ex) {
+                            }
+                        }
                         break;
                 }
             }
+            data.removeConnection(site);
             socket.close();
         } catch (IOException e) {
 
