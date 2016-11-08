@@ -27,8 +27,6 @@ public class Data {
     private List<Staff> staff;
     private List<Sale> sales;
 
-    private final List<String> connections;
-
     private static int productCounter;
     private static int customerCounter;
     private static int staffCounter;
@@ -46,7 +44,6 @@ public class Data {
     public Data(DBConnect db, GUI g) {
         this.dbConnection = db;
         this.g = g;
-        this.connections = new ArrayList<>();
     }
 
     public void loadDatabase() {
@@ -80,20 +77,6 @@ public class Data {
     public void close() throws SQLException {
         updateDatabase();
         dbConnection.close();
-    }
-
-    public void addConnection(String s) {
-        connections.add(s);
-        g.setClientLabel("Clients: " + connections.size());
-    }
-
-    public void removeConnection(String s) {
-        connections.remove(s);
-        g.setClientLabel("Clients: " + connections.size());
-    }
-
-    public List<String> getConnections() {
-        return this.connections;
     }
 
     //Getters and setters
@@ -138,6 +121,21 @@ public class Data {
     public void addProduct(Product p) {
         p.setProductCode(generateProductCode());
         products.add(p);
+    }
+
+    /**
+     * Method to check if a barcode is already in use.
+     *
+     * @param barcode the barcode to check.
+     * @return true if the barcode is already in use, false otherwise.
+     */
+    public boolean checkBarcode(String barcode) {
+        for (Product p : products) {
+            if (p.getBarcode().equals(barcode)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

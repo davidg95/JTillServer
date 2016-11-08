@@ -73,6 +73,7 @@ public class ConnectionThread extends Thread {
             site = in.readLine();
             
             //data.addConnection(site);
+            TillServer.g.increaceClientCount(site);
 
             while (!conn_term) {
                 String input = in.readLine();
@@ -347,7 +348,8 @@ public class ConnectionThread extends Thread {
                         break;
                 }
             }
-            data.removeConnection(site);
+//            data.removeConnection(site);
+            TillServer.g.decreaseClientCount(site);
             socket.close();
         } catch (IOException e) {
 

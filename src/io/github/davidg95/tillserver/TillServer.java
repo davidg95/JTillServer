@@ -33,13 +33,14 @@ public class TillServer {
 
     private ServerSocket s;
     private Data data;
-    private GUI g;
+    public static GUI g;
     private ConnectionAcceptThread connThread;
 
     private DBConnect dbConnection;
 
-    private Timer updateTimer;
-    private DatabaseUpdate updateTask;
+    private static Timer updateTimer;
+    public static DatabaseUpdate updateTask;
+    public static long updateInterval = 60000L;
 
     /**
      * @param args the command line arguments
@@ -67,10 +68,15 @@ public class TillServer {
 
     public void start() {
         connThread.start();
-        updateTimer.schedule(updateTask, 10000L, 60000L);
+        updateTimer.schedule(updateTask, 10000L, updateInterval);
         g.setVisible(true);
         g.databaseLogin();
         g.login();
+    }
+    
+    public static void resetUpdateTimer(){
+        updateTimer.cancel();
+        updateTimer.schedule(updateTask, 10000L, updateInterval);
     }
 
     /**

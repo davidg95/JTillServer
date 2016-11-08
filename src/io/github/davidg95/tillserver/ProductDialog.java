@@ -11,6 +11,7 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 /**
  * NewProductDialog class.
@@ -230,26 +231,31 @@ public class ProductDialog extends javax.swing.JDialog {
         if (txtBarcode.getText().equals("") || txtPrice.getText().equals("") || txtStock.getText().equals("")) {
             product = new Product(name, comments);
             data.addProduct(product);
+            this.setVisible(false);
         } else {
             String barcode = txtBarcode.getText();
-            double price = Double.parseDouble(txtPrice.getText());
-            int stock = Integer.parseInt(txtStock.getText());
+            if (!data.checkBarcode(barcode)) {
+                double price = Double.parseDouble(txtPrice.getText());
+                int stock = Integer.parseInt(txtStock.getText());
 
-            if (!editMode) {
-                product = new Product(name, comments, price, stock, barcode);
+                if (!editMode) {
+                    product = new Product(name, comments, price, stock, barcode);
 
-                if (data != null) {
-                    data.addProduct(product);
+                    if (data != null) {
+                        data.addProduct(product);
+                    }
+                } else {
+                    product.setName(name);
+                    product.setBarcode(barcode);
+                    product.setPrice(price);
+                    product.setStock(stock);
+                    product.setComments(comments);
                 }
+                this.setVisible(false);
             } else {
-                product.setName(name);
-                product.setBarcode(barcode);
-                product.setPrice(price);
-                product.setStock(stock);
-                product.setComments(comments);
+                JOptionPane.showMessageDialog(this, "Barcode already in use", "New Product", JOptionPane.ERROR_MESSAGE);
             }
         }
-        this.setVisible(false);
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed

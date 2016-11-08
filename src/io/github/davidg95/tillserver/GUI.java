@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Scanner;
 import javax.swing.JFrame;
@@ -37,6 +38,9 @@ public class GUI extends javax.swing.JFrame {
 
     private Staff staff;
 
+    private int clientCounter = 0;
+    private ArrayList<String> connections;
+
     /**
      * Creates new form GUI
      *
@@ -47,7 +51,8 @@ public class GUI extends javax.swing.JFrame {
         this.dbConnection = dbConnection;
         this.data = data;
         initComponents();
-        setClientLabel("Clients: " + data.getConnections().size());
+        setClientLabel("Connections: 0");
+        connections = new ArrayList<>();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
@@ -82,8 +87,20 @@ public class GUI extends javax.swing.JFrame {
     public void setUpdateLabel(String text) {
         lblUpdate.setText(text);
     }
-    
-    public void setClientLabel(String text){
+
+    public void increaceClientCount(String site) {
+        connections.add(site);
+        clientCounter++;
+        lblClients.setText("Connections: " + clientCounter);
+    }
+
+    public void decreaseClientCount(String site) {
+        connections.remove(site);
+        clientCounter--;
+        lblClients.setText("Connections: " + clientCounter);
+    }
+
+    public void setClientLabel(String text) {
         lblClients.setText(text);
     }
 
@@ -116,6 +133,7 @@ public class GUI extends javax.swing.JFrame {
             writer.println(database_address);
             writer.println(username);
             writer.println(password);
+            writer.println(TillServer.updateInterval);
         } catch (IOException ex) {
 
         }
@@ -132,6 +150,7 @@ public class GUI extends javax.swing.JFrame {
                 database_address = fileReader.nextLine();
                 username = fileReader.nextLine();
                 password = fileReader.nextLine();
+                TillServer.updateInterval = Long.parseLong(fileReader.nextLine());
             }
         } catch (IOException e) {
             try {
@@ -165,6 +184,7 @@ public class GUI extends javax.swing.JFrame {
         itemLogin = new javax.swing.JMenuItem();
         itemDatabaseConnect = new javax.swing.JMenuItem();
         itemUpdate = new javax.swing.JMenuItem();
+        itemInterval = new javax.swing.JMenuItem();
         itemExit = new javax.swing.JMenuItem();
         menuStock = new javax.swing.JMenu();
         itemStock = new javax.swing.JMenuItem();
@@ -213,12 +233,27 @@ public class GUI extends javax.swing.JFrame {
         jToolBar1.add(btnManageStaff);
 
         lblDatabase.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        lblDatabase.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblDatabaseMouseClicked(evt);
+            }
+        });
 
         lblUser.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        lblUser.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblUserMouseClicked(evt);
+            }
+        });
 
         lblUpdate.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         lblClients.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        lblClients.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblClientsMouseClicked(evt);
+            }
+        });
 
         jLabel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -272,6 +307,14 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         menuFile.add(itemUpdate);
+
+        itemInterval.setText("Update Interval");
+        itemInterval.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemIntervalActionPerformed(evt);
+            }
+        });
+        menuFile.add(itemInterval);
 
         itemExit.setText("Exit");
         itemExit.addActionListener(new java.awt.event.ActionListener() {
@@ -355,11 +398,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_itemExitActionPerformed
 
     private void itemUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemUpdateActionPerformed
-        try {
-            data.updateDatabase();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-        }
+        TillServer.updateTask.run();
     }//GEN-LAST:event_itemUpdateActionPerformed
 
     private void itemCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCustomersActionPerformed
@@ -404,6 +443,29 @@ public class GUI extends javax.swing.JFrame {
         StaffWindow.showStaffListWindow(data);
     }//GEN-LAST:event_btnManageStaffActionPerformed
 
+    private void lblClientsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblClientsMouseClicked
+        if (evt.getClickCount() == 2) {
+            ConnectionsDialog.showConnectionsDialog(this, connections);
+        }
+    }//GEN-LAST:event_lblClientsMouseClicked
+
+    private void lblUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblUserMouseClicked
+        if (evt.getClickCount() == 2) {
+            JOptionPane.showMessageDialog(this, staff, staff.getName(), JOptionPane.PLAIN_MESSAGE);
+        }
+    }//GEN-LAST:event_lblUserMouseClicked
+
+    private void lblDatabaseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDatabaseMouseClicked
+        if (evt.getClickCount() == 2) {
+            JOptionPane.showMessageDialog(this, dbConnection, "Database Connection", JOptionPane.PLAIN_MESSAGE);
+        }
+    }//GEN-LAST:event_lblDatabaseMouseClicked
+
+    private void itemIntervalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemIntervalActionPerformed
+        TillServer.updateInterval = Long.parseLong((String) JOptionPane.showInputDialog(this, "Enter value for update interval in seconds", "Database Update Interval", JOptionPane.PLAIN_MESSAGE, null, null, TillServer.updateInterval/1000)) * 1000;
+        TillServer.resetUpdateTimer();
+    }//GEN-LAST:event_itemIntervalActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnManageCustomers;
     private javax.swing.JButton btnManageStaff;
@@ -411,6 +473,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemCustomers;
     private javax.swing.JMenuItem itemDatabaseConnect;
     private javax.swing.JMenuItem itemExit;
+    private javax.swing.JMenuItem itemInterval;
     private javax.swing.JMenuItem itemLogin;
     private javax.swing.JMenuItem itemPromotions;
     private javax.swing.JMenuItem itemStaff;

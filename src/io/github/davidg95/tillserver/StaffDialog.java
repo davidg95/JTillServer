@@ -61,6 +61,7 @@ public class StaffDialog extends javax.swing.JDialog {
         txtName.setText(s.getName());
         txtUsername.setText(s.getUsername());
         btnAdd.setText("Save Changes");
+        cmbPosition.setSelectedItem(staff.getPosition());
         this.setTitle("Staff Member " + staff.getName());
     }
 

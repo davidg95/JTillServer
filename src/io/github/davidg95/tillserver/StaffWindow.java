@@ -152,6 +152,11 @@ public class StaffWindow extends javax.swing.JFrame {
         });
 
         btnSearch.setText("Search Staff");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
 
         btnShowAll.setText("Show All Staff");
         btnShowAll.addActionListener(new java.awt.event.ActionListener() {
@@ -238,6 +243,11 @@ public class StaffWindow extends javax.swing.JFrame {
             editStaff();
         }
     }//GEN-LAST:event_tableStaffMouseClicked
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        currentTableContents = StaffSearchDialog.showSearchDialog(this, currentTableContents);
+        updateTable();
+    }//GEN-LAST:event_btnSearchActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;

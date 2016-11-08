@@ -247,7 +247,8 @@ public class ProductsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRemoveProductActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        // TODO add your handling code here:
+        currentTableContents = ProductSearchDialog.showSearchDialog(this, currentTableContents);
+        updateTable();
     }//GEN-LAST:event_btnSearchActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
