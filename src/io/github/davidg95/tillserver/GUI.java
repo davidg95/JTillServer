@@ -342,6 +342,11 @@ public class GUI extends javax.swing.JFrame {
         menuStock.add(itemStock);
 
         itemPromotions.setText("Manage Promotions");
+        itemPromotions.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemPromotionsActionPerformed(evt);
+            }
+        });
         menuStock.add(itemPromotions);
 
         jMenuBar1.add(menuStock);
@@ -470,6 +475,10 @@ public class GUI extends javax.swing.JFrame {
         TillServer.updateInterval = Long.parseLong((String) JOptionPane.showInputDialog(this, "Enter value for update interval in seconds", "Database Update Interval", JOptionPane.PLAIN_MESSAGE, null, null, TillServer.updateInterval/1000)) * 1000;
         TillServer.resetUpdateTimer();
     }//GEN-LAST:event_itemIntervalActionPerformed
+
+    private void itemPromotionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPromotionsActionPerformed
+        DiscountsWindow.showDiscountListWindow(data);
+    }//GEN-LAST:event_itemPromotionsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnManageCustomers;

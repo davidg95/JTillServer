@@ -71,7 +71,7 @@ public class ConnectionThread extends Thread {
             obOut.flush();
 
             site = in.readLine();
-            
+
             //data.addConnection(site);
             TillServer.g.increaceClientCount(site);
 

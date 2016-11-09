@@ -25,11 +25,13 @@ public class Data {
     private List<Product> products;
     private List<Customer> customers;
     private List<Staff> staff;
+    private List<Discount> discounts;
     private List<Sale> sales;
 
     private static int productCounter;
     private static int customerCounter;
     private static int staffCounter;
+    private static int discountCounter;
 
     private final DBConnect dbConnection;
     private final GUI g;
@@ -53,16 +55,19 @@ public class Data {
                 products = dbConnection.getAllProducts();
                 customers = dbConnection.getAllCustomers();
                 staff = dbConnection.getAllStaff();
+                discounts = dbConnection.getAllDiscounts();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
                 products = new ArrayList<>();
                 customers = new ArrayList<>();
                 staff = new ArrayList<>();
+                discounts = new ArrayList<>();
             }
         } else {
             products = new ArrayList<>();
             customers = new ArrayList<>();
             staff = new ArrayList<>();
+            discounts = new ArrayList<>();
             sales = new ArrayList<>();
         }
     }
@@ -71,6 +76,7 @@ public class Data {
         dbConnection.updateWholeProducts(products);
         dbConnection.updateWholeCustomers(customers);
         dbConnection.updateWholeStaff(staff);
+        dbConnection.updateWholeDiscounts(discounts);
         this.saveToFile();
     }
 
@@ -92,6 +98,10 @@ public class Data {
         return this.staff;
     }
 
+    public List<Discount> getDiscountList() {
+        return this.discounts;
+    }
+
     public List<Sale> getSalesList() {
         return this.sales;
     }
@@ -106,6 +116,10 @@ public class Data {
 
     public void setStaffList(List<Staff> staff) {
         this.staff = staff;
+    }
+
+    public void setDiscountList(List<Discount> discounts) {
+        this.discounts = discounts;
     }
 
     public void setSalesList(List<Sale> sales) {
@@ -495,6 +509,85 @@ public class Data {
         return zeros + no;
     }
 
+    //Discount Methods
+    /**
+     * Method to add a new discount.
+     *
+     * @param d the discount to add.
+     */
+    public void addDiscount(Discount d) {
+        d.setId(generateDiscountID());
+        discounts.add(d);
+    }
+
+    /**
+     * Method to remove a discount.
+     *
+     * @param d the discount to remove.
+     */
+    public void removeDiscount(Discount d) {
+        discounts.remove(d);
+    }
+
+    /**
+     * Method to remove a discount by id.
+     *
+     * @param id the id of the discount to remove.
+     * @throws DiscountNotFoundException if the id was not found.
+     */
+    public void removeDiscount(String id) throws DiscountNotFoundException {
+        for (int i = 0; i < discounts.size(); i++) {
+            if (discounts.get(i).getId().equalsIgnoreCase(id)) {
+                discounts.remove(i);
+                return;
+            }
+        }
+        throw new DiscountNotFoundException(id);
+    }
+
+    /**
+     * Method to get a discount by id.
+     *
+     * @param id the id to find.
+     * @return Discount that matches the id.
+     * @throws DiscountNotFoundException if the id was not found.
+     */
+    public Discount getDiscount(String id) throws DiscountNotFoundException {
+        for (Discount d : discounts) {
+            if (d.getId().equalsIgnoreCase(id)) {
+                return d;
+            }
+        }
+        throw new DiscountNotFoundException(id);
+    }
+
+    /**
+     * Method to get the amount of discounts.
+     *
+     * @return int value representing the amount of discounts.
+     */
+    public int discountCount() {
+        return discounts.size();
+    }
+
+    /**
+     * Method to generate a new discount id.
+     *
+     * @return new discount id.
+     */
+    public static String generateDiscountID() {
+        String no;
+        String zeros;
+        no = Integer.toString(discountCounter);
+        zeros = "";
+        for (int i = no.length(); i < 5; i++) {
+            zeros += "0";
+        }
+        discountCounter++;
+
+        return "D" + zeros + no;
+    }
+
     //Sale Methods
     /**
      * Method to add a sale.
@@ -513,6 +606,7 @@ public class Data {
             writer.println(productCounter);
             writer.println(customerCounter);
             writer.println(staffCounter);
+            writer.println(discountCounter);
         } catch (IOException ex) {
 
         }
@@ -529,6 +623,7 @@ public class Data {
                 productCounter = Integer.parseInt(fileReader.nextLine());
                 customerCounter = Integer.parseInt(fileReader.nextLine());
                 staffCounter = Integer.parseInt(fileReader.nextLine());
+                discountCounter = Integer.parseInt(fileReader.nextLine());
             }
         } catch (IOException e) {
             try {
