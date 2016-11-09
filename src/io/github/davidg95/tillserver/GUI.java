@@ -39,7 +39,7 @@ public class GUI extends javax.swing.JFrame {
     private Staff staff;
 
     private int clientCounter = 0;
-    private ArrayList<String> connections;
+    private final ArrayList<String> connections;
 
     /**
      * Creates new form GUI
@@ -81,7 +81,12 @@ public class GUI extends javax.swing.JFrame {
             itemDatabaseConnect.setText("Connect To Database");
             itemUpdate.setEnabled(false);
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Connection Error", JOptionPane.ERROR_MESSAGE);
+            newDatabaseLogin();
         }
+    }
+    
+    public void newDatabaseLogin(){
+        DatabaseConnectionDialog.showConnectionDialog(this, dbConnection);
     }
 
     public void setUpdateLabel(String text) {
