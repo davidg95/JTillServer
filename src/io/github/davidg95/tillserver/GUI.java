@@ -54,11 +54,27 @@ public class GUI extends javax.swing.JFrame {
     }
 
     private void initialSetup() {
-        InitialSetupWindow.showInitWindow(this, data, dbConnection);
-        this.database_address = dbConnection.getAddress();
-        this.username = dbConnection.getUsername();
-        this.password = dbConnection.getPassword();
-        saveToFile();
+        JOptionPane.showMessageDialog(this, "No configureation file found, proceeding with initial setup", "Initial Setup", JOptionPane.PLAIN_MESSAGE);
+        DatabaseConnectionDialog.showConnectionDialog(this, dbConnection);
+        if (dbConnection.isConnected()) {
+            try {
+                dbConnection.initDatabase();
+                data.loadDatabase();
+                lblDatabase.setText("Connected to database");
+                TillServer.updateInterval = Long.parseLong(JOptionPane.showInputDialog(this, "Enter value for database update interval in seconds", "Initial Seup", JOptionPane.PLAIN_MESSAGE)) * 1000;
+                this.database_address = dbConnection.getAddress();
+                this.username = dbConnection.getUsername();
+                this.password = dbConnection.getPassword();
+                if (data.getStaffList().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "You need to create a member of staff first", "Initial Setup", JOptionPane.ERROR_MESSAGE);
+                    Staff s = StaffDialog.showNewStaffDialog(this);
+                    data.addStaff(s);
+                }
+                saveToFile();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     public void databaseLogin() {
@@ -68,15 +84,15 @@ public class GUI extends javax.swing.JFrame {
                 initialSetup();
             } else {
                 dbConnection.connect(database_address, username, password);
-            }
-            try {
-                dbConnection.initDatabase();
-                data.loadDatabase();
-                lblDatabase.setText("Connected to database");
-                saveToFile();
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Initialisation Error", JOptionPane.ERROR_MESSAGE);
-                newDatabaseLogin();
+                try {
+                    dbConnection.initDatabase();
+                    data.loadDatabase();
+                    lblDatabase.setText("Connected to database");
+                    saveToFile();
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Initialisation Error", JOptionPane.ERROR_MESSAGE);
+                    newDatabaseLogin();
+                }
             }
         } catch (SQLException ex) {
             itemDatabaseConnect.setEnabled(true);
@@ -88,11 +104,11 @@ public class GUI extends javax.swing.JFrame {
     }
 
     public void newDatabaseLogin() {
-        if(!DatabaseConnectionDialog.showConnectionDialog(this, dbConnection)){
+        if (!DatabaseConnectionDialog.showConnectionDialog(this, dbConnection)) {
             int option = JOptionPane.showOptionDialog(this, "Error connection, try again?", "Database Connect", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, null, null);
-            if(option == JOptionPane.YES_OPTION){
+            if (option == JOptionPane.YES_OPTION) {
                 newDatabaseLogin();
-            } else{
+            } else {
                 System.exit(2);
             }
         }
@@ -165,7 +181,7 @@ public class GUI extends javax.swing.JFrame {
                 username = fileReader.nextLine();
                 password = fileReader.nextLine();
                 TillServer.updateInterval = Long.parseLong(fileReader.nextLine());
-            } else{
+            } else {
             }
         } catch (IOException e) {
             try {
@@ -438,13 +454,11 @@ public class GUI extends javax.swing.JFrame {
                 this.itemUpdate.setEnabled(false);
                 lblDatabase.setText("Not Connected To Database");
             }
-        } else {
-            if (DatabaseConnectionDialog.showConnectionDialog(this, dbConnection)) {
-                JOptionPane.showMessageDialog(this, "Connected to database " + dbConnection, "Connect to database", JOptionPane.PLAIN_MESSAGE);
-                this.itemDatabaseConnect.setText("Disconnect Database");
-                this.itemUpdate.setEnabled(true);
-                lblDatabase.setText("Connected To Database");
-            }
+        } else if (DatabaseConnectionDialog.showConnectionDialog(this, dbConnection)) {
+            JOptionPane.showMessageDialog(this, "Connected to database " + dbConnection, "Connect to database", JOptionPane.PLAIN_MESSAGE);
+            this.itemDatabaseConnect.setText("Disconnect Database");
+            this.itemUpdate.setEnabled(true);
+            lblDatabase.setText("Connected To Database");
         }
     }//GEN-LAST:event_itemDatabaseConnectActionPerformed
 
