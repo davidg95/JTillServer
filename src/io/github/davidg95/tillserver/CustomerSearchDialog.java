@@ -76,10 +76,17 @@ public class CustomerSearchDialog extends javax.swing.JDialog {
 
         jLabel1.setText("Search Terms:");
 
+        txtSearchTerms.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearchTermsActionPerformed(evt);
+            }
+        });
+
         buttonGroup1.add(radID);
         radID.setText("ID");
 
         buttonGroup1.add(radName);
+        radName.setSelected(true);
         radName.setText("Name");
 
         btnSearch.setText("Search");
@@ -102,12 +109,12 @@ public class CustomerSearchDialog extends javax.swing.JDialog {
                         .addComponent(txtSearchTerms, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(46, 46, 46)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnSearch)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(radID)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(radName)))))
+                        .addComponent(btnSearch))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(radName)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radID)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -160,6 +167,10 @@ public class CustomerSearchDialog extends javax.swing.JDialog {
         
         this.setVisible(false);
     }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void txtSearchTermsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchTermsActionPerformed
+        btnSearch.doClick();
+    }//GEN-LAST:event_txtSearchTermsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSearch;

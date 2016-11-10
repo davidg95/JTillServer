@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Properties;
 import java.util.Scanner;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -30,8 +29,6 @@ public class GUI extends javax.swing.JFrame {
     private String database_address;
     private String username;
     private String password;
-
-    private Properties connectionProperties;
 
     private final Data data;
     private final DBConnect dbConnection;
@@ -56,16 +53,20 @@ public class GUI extends javax.swing.JFrame {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
+    private void initialSetup() {
+        InitialSetupWindow.showInitWindow(this, data, dbConnection);
+        this.database_address = dbConnection.getAddress();
+        this.username = dbConnection.getUsername();
+        this.password = dbConnection.getPassword();
+        saveToFile();
+    }
+
     public void databaseLogin() {
         openFile();
         try {
             if (database_address == null || database_address.equals("null")) {
-                InitialSetupWindow.showInitWindow(this, data, dbConnection);
-                this.database_address = dbConnection.getAddress();
-                this.username = dbConnection.getUsername();
-                this.password = dbConnection.getPassword();
+                initialSetup();
             } else {
-                //DatabaseConnectionDialog.showConnectionDialog(this, this.dbConnection);
                 dbConnection.connect(database_address, username, password);
             }
             try {
@@ -75,6 +76,7 @@ public class GUI extends javax.swing.JFrame {
                 saveToFile();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Initialisation Error", JOptionPane.ERROR_MESSAGE);
+                newDatabaseLogin();
             }
         } catch (SQLException ex) {
             itemDatabaseConnect.setEnabled(true);
@@ -84,9 +86,16 @@ public class GUI extends javax.swing.JFrame {
             newDatabaseLogin();
         }
     }
-    
-    public void newDatabaseLogin(){
-        DatabaseConnectionDialog.showConnectionDialog(this, dbConnection);
+
+    public void newDatabaseLogin() {
+        if(!DatabaseConnectionDialog.showConnectionDialog(this, dbConnection)){
+            int option = JOptionPane.showOptionDialog(this, "Error connection, try again?", "Database Connect", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, null, null);
+            if(option == JOptionPane.YES_OPTION){
+                newDatabaseLogin();
+            } else{
+                System.exit(2);
+            }
+        }
     }
 
     public void setUpdateLabel(String text) {
@@ -147,7 +156,7 @@ public class GUI extends javax.swing.JFrame {
     /**
      * Method to load the configs.
      */
-    private final void openFile() {
+    private void openFile() {
         try {
             Scanner fileReader = new Scanner(new File("database.txt"));
 
@@ -156,6 +165,7 @@ public class GUI extends javax.swing.JFrame {
                 username = fileReader.nextLine();
                 password = fileReader.nextLine();
                 TillServer.updateInterval = Long.parseLong(fileReader.nextLine());
+            } else{
             }
         } catch (IOException e) {
             try {
@@ -342,6 +352,7 @@ public class GUI extends javax.swing.JFrame {
         menuStock.add(itemStock);
 
         itemPromotions.setText("Manage Promotions");
+        itemPromotions.setEnabled(false);
         itemPromotions.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemPromotionsActionPerformed(evt);
@@ -388,7 +399,7 @@ public class GUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 459, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 474, Short.MAX_VALUE)
                 .addComponent(statusBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -472,8 +483,9 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_lblDatabaseMouseClicked
 
     private void itemIntervalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemIntervalActionPerformed
-        TillServer.updateInterval = Long.parseLong((String) JOptionPane.showInputDialog(this, "Enter value for update interval in seconds", "Database Update Interval", JOptionPane.PLAIN_MESSAGE, null, null, TillServer.updateInterval/1000)) * 1000;
-        TillServer.resetUpdateTimer();
+        TillServer.updateInterval = Long.parseLong((String) JOptionPane.showInputDialog(this, "Enter value for update interval in seconds", "Database Update Interval", JOptionPane.PLAIN_MESSAGE, null, null, TillServer.updateInterval / 1000)) * 1000;
+        saveToFile();
+        JOptionPane.showMessageDialog(this, "Changes will take effect next time server restarts", "Update Interval", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_itemIntervalActionPerformed
 
     private void itemPromotionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPromotionsActionPerformed

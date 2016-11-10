@@ -76,10 +76,17 @@ public class StaffSearchDialog extends javax.swing.JDialog {
 
         jLabel1.setText("Search Terms");
 
+        txtSearchTerms.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearchTermsActionPerformed(evt);
+            }
+        });
+
         buttonGroup1.add(radID);
         radID.setText("ID");
 
         buttonGroup1.add(radName);
+        radName.setSelected(true);
         radName.setText("Name");
 
         btnSearch.setText("Search");
@@ -95,19 +102,21 @@ public class StaffSearchDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtSearchTerms, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSearch)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(radID)
+                        .addGap(38, 38, 38)
+                        .addComponent(radName)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(radName)))
-                .addGap(52, 52, 52))
+                        .addComponent(radID))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtSearchTerms, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(59, 59, 59)
+                .addComponent(btnSearch)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,6 +168,10 @@ public class StaffSearchDialog extends javax.swing.JDialog {
         
         this.setVisible(false);
     }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void txtSearchTermsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchTermsActionPerformed
+        btnSearch.doClick();
+    }//GEN-LAST:event_txtSearchTermsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSearch;

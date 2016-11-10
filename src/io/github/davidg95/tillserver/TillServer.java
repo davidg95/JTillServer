@@ -68,14 +68,13 @@ public class TillServer {
 
     public void start() {
         connThread.start();
-        updateTimer.schedule(updateTask, 10000L, updateInterval);
         g.setVisible(true);
         g.databaseLogin();
+        updateTimer.schedule(updateTask, 10000L, updateInterval);
         g.login();
     }
     
     public static void resetUpdateTimer(){
-        updateTimer.cancel();
         updateTimer.schedule(updateTask, 10000L, updateInterval);
     }
 

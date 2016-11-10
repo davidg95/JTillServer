@@ -67,6 +67,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="itemPromotions">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Manage Promotions"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemPromotionsActionPerformed"/>
@@ -139,7 +140,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <Component id="jToolBar1" min="-2" pref="25" max="-2" attributes="0"/>
-              <EmptySpace pref="459" max="32767" attributes="0"/>
+              <EmptySpace pref="474" max="32767" attributes="0"/>
               <Component id="statusBar" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
