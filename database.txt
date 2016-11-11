@@ -2,3 +2,4 @@ jdbc:derby://localhost:1527/Till
 davidg95
 adventures
 60000
+600

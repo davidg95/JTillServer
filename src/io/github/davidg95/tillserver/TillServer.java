@@ -22,9 +22,9 @@ import javax.swing.SwingUtilities;
  */
 public class TillServer {
 
-    public static final int PORT = 600;
-    public static final int MAX_CONNECTIONS = 10;
-    public static final int MAX_QUEUE = 10;
+    public static int PORT = 600;
+    public static int MAX_CONNECTIONS = 10;
+    public static int MAX_QUEUE = 10;
 
     private Semaphore productsSem;
     private Semaphore customersSem;
@@ -32,13 +32,13 @@ public class TillServer {
     private Semaphore staffSem;
 
     private ServerSocket s;
-    private Data data;
+    public static Data data;
     public static GUI g;
     private ConnectionAcceptThread connThread;
 
-    private DBConnect dbConnection;
+    public static DBConnect dbConnection;
 
-    private static Timer updateTimer;
+    public static Timer updateTimer;
     public static DatabaseUpdate updateTask;
     public static long updateInterval = 60000L;
 
@@ -53,7 +53,6 @@ public class TillServer {
         dbConnection = new DBConnect();
         data = new Data(dbConnection, g);
         g = new GUI(data, dbConnection);
-        updateTimer = new Timer();
         updateTask = new DatabaseUpdate();
         productsSem = new Semaphore(1);
         customersSem = new Semaphore(1);
@@ -70,12 +69,20 @@ public class TillServer {
         connThread.start();
         g.setVisible(true);
         g.databaseLogin();
-        updateTimer.schedule(updateTask, 10000L, updateInterval);
+        setUpdateTimer();
         g.login();
     }
     
-    public static void resetUpdateTimer(){
+    public static void setUpdateTimer(){
+        updateTimer = new Timer();
         updateTimer.schedule(updateTask, 10000L, updateInterval);
+    }
+    
+    public static void resetUpdateTimer(){
+        updateTask.cancel();
+        updateTimer.cancel();
+        updateTimer.purge();
+        setUpdateTimer();
     }
 
     /**
@@ -88,6 +95,7 @@ public class TillServer {
             try {
                 if (dbConnection.isConnected()) {
                     g.setUpdateLabel("Updating Database");//Set the label
+                    g.log("Updating database");
                     data.updateDatabase();
                     new Timer().schedule(new TimerTask() {
                         @Override

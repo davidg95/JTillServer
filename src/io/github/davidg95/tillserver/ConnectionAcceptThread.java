@@ -42,6 +42,7 @@ public class ConnectionAcceptThread extends Thread {
         ThreadPoolExecutor pool = new ThreadPoolExecutor(TillServer.MAX_CONNECTIONS, TillServer.MAX_QUEUE, 50000L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(TillServer.MAX_QUEUE));
         pool.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         
+        TillServer.g.log("Ready to accept connections");
         for(;;){
             try{
                 Socket incoming = socket.accept();

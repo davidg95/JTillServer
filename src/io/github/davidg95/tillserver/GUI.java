@@ -133,12 +133,17 @@ public class GUI extends javax.swing.JFrame {
     public void setClientLabel(String text) {
         lblClients.setText(text);
     }
+    
+    public void log(Object o){
+        txtLog.append(o.toString() + "\n");
+    }
 
     public void login() {
         staff = LoginDialog.showLoginDialog(this, data);
         if (staff != null) {
             lblUser.setText(staff.getName());
             itemLogin.setText("Log Out");
+            log(staff.getName() + " has logged in");
         } else {
             System.exit(0);
         }
@@ -148,6 +153,7 @@ public class GUI extends javax.swing.JFrame {
         try {
             lblUser.setText("Not Logged On");
             data.logout(staff.getId());
+            log(staff.getName() + " has logged out");
         } catch (StaffNotFoundException ex) {
         }
         staff = null;
@@ -164,6 +170,7 @@ public class GUI extends javax.swing.JFrame {
             writer.println(username);
             writer.println(password);
             writer.println(TillServer.updateInterval);
+            writer.println(TillServer.PORT);
         } catch (IOException ex) {
 
         }
@@ -181,6 +188,7 @@ public class GUI extends javax.swing.JFrame {
                 username = fileReader.nextLine();
                 password = fileReader.nextLine();
                 TillServer.updateInterval = Long.parseLong(fileReader.nextLine());
+                TillServer.PORT = Integer.parseInt(fileReader.nextLine());
             } else {
             }
         } catch (IOException e) {
@@ -210,6 +218,9 @@ public class GUI extends javax.swing.JFrame {
         lblUpdate = new javax.swing.JLabel();
         lblClients = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtLog = new javax.swing.JTextArea();
+        jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         itemLogin = new javax.swing.JMenuItem();
@@ -313,6 +324,13 @@ public class GUI extends javax.swing.JFrame {
             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        txtLog.setEditable(false);
+        txtLog.setColumns(20);
+        txtLog.setRows(5);
+        jScrollPane1.setViewportView(txtLog);
+
+        jLabel2.setText("Event Log");
+
         menuFile.setText("File");
 
         itemLogin.setText("Log in");
@@ -410,12 +428,24 @@ public class GUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 935, Short.MAX_VALUE)
             .addComponent(statusBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 474, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 347, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(statusBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -520,7 +550,9 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemStock;
     private javax.swing.JMenuItem itemUpdate;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblClients;
     private javax.swing.JLabel lblDatabase;
@@ -531,5 +563,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenu menuStaff;
     private javax.swing.JMenu menuStock;
     private javax.swing.JPanel statusBar;
+    private javax.swing.JTextArea txtLog;
     // End of variables declaration//GEN-END:variables
 }

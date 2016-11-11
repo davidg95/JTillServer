@@ -74,9 +74,12 @@ public class ConnectionThread extends Thread {
 
             //data.addConnection(site);
             TillServer.g.increaceClientCount(site);
+            TillServer.g.log(site + " has connected");
 
             while (!conn_term) {
                 String input = in.readLine();
+                
+                TillServer.g.log("Contact from " + site);
 
                 String inp[] = input.split(",");
 
@@ -288,6 +291,7 @@ public class ConnectionThread extends Thread {
                             staffSem.acquire();
                             Staff s = data.login(username, password);
                             this.staff = s;
+                            TillServer.g.log(staff.getName() + " has logged in");
                             obOut.writeObject(s);
                         } catch (InterruptedException ex) {
                         } catch (LoginException ex) {
@@ -302,6 +306,7 @@ public class ConnectionThread extends Thread {
                             staffSem.acquire();
                             Staff s = data.login(id);
                             this.staff = s;
+                            TillServer.g.log(staff.getName() + " has logged in");
                             obOut.writeObject(s);
                         } catch (InterruptedException ex) {
                         } catch (LoginException | StaffNotFoundException ex) {
@@ -315,6 +320,7 @@ public class ConnectionThread extends Thread {
                             String id = inp[1];
                             staffSem.acquire();
                             data.logout(id);
+                            TillServer.g.log(staff.getName() + " has logged out");
                             this.staff = null;
                             out.println("SUCC");
                         } catch (InterruptedException ex) {
@@ -328,6 +334,7 @@ public class ConnectionThread extends Thread {
                             String id = inp[1];
                             staffSem.acquire();
                             data.tillLogout(id);
+                            TillServer.g.log(staff.getName() + " has logged out");
                             this.staff = null;
                             out.println("SUCC");
                         } catch (InterruptedException ex) {
@@ -350,6 +357,7 @@ public class ConnectionThread extends Thread {
             }
 //            data.removeConnection(site);
             TillServer.g.decreaseClientCount(site);
+            TillServer.g.log(site + " hsa disconnected");
             socket.close();
         } catch (IOException e) {
 
