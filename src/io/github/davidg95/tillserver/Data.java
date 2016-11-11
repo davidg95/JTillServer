@@ -6,13 +6,10 @@
 package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 import javax.swing.JOptionPane;
 
 /**
@@ -49,13 +46,13 @@ public class Data {
     }
 
     public void loadDatabase() {
-        this.openFile();
         if (dbConnection.isConnected()) {
             try {
                 products = dbConnection.getAllProducts();
                 customers = dbConnection.getAllCustomers();
                 staff = dbConnection.getAllStaff();
                 discounts = dbConnection.getAllDiscounts();
+                this.openFile();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
                 products = new ArrayList<>();
@@ -602,13 +599,16 @@ public class Data {
      * Method to save the configs.
      */
     public void saveToFile() {
-        try (PrintWriter writer = new PrintWriter("config.txt", "UTF-8")) {
-            writer.println(productCounter);
-            writer.println(customerCounter);
-            writer.println(staffCounter);
-            writer.println(discountCounter);
-        } catch (IOException ex) {
-
+        HashMap<String, String> configs = new HashMap<>();
+        
+        configs.put("products", "" + productCounter);
+        configs.put("customers", "" + customerCounter);
+        configs.put("staff", "" + staffCounter);
+        configs.put("discounts", "" + discountCounter);
+        
+        try {
+            dbConnection.updateWholeConfigs(configs);
+        } catch (SQLException ex) {
         }
     }
 
@@ -617,19 +617,13 @@ public class Data {
      */
     public final void openFile() {
         try {
-            Scanner fileReader = new Scanner(new File("config.txt"));
+            HashMap<String, String> configs = dbConnection.getAllConfigs();
 
-            if (fileReader.hasNext()) {
-                productCounter = Integer.parseInt(fileReader.nextLine());
-                customerCounter = Integer.parseInt(fileReader.nextLine());
-                staffCounter = Integer.parseInt(fileReader.nextLine());
-                discountCounter = Integer.parseInt(fileReader.nextLine());
-            }
-        } catch (IOException e) {
-            try {
-                boolean createNewFile = new File("config.txt").createNewFile();
-            } catch (IOException ex) {
-            }
+            productCounter = Integer.parseInt(configs.get("products"));
+            customerCounter = Integer.parseInt(configs.get("customers"));
+            staffCounter = Integer.parseInt(configs.get("staff"));
+            discountCounter = Integer.parseInt(configs.get("discounts"));
+        } catch (SQLException ex) {
         }
     }
 }
