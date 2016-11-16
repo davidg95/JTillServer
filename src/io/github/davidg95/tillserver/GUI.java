@@ -108,9 +108,12 @@ public class GUI extends javax.swing.JFrame {
             int option = JOptionPane.showOptionDialog(this, "Error connection, try again?", "Database Connect", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, null, null);
             if (option == JOptionPane.YES_OPTION) {
                 newDatabaseLogin();
+                data.loadDatabase();
             } else {
                 System.exit(2);
             }
+        } else{
+            data.loadDatabase();
         }
     }
 

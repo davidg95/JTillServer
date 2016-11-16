@@ -1,4 +1,4 @@
-jdbc:derby://localhost:1527/Till
+jdbc:derby://localhost:1527/TillTest
 davidg95
 adventures
 60000

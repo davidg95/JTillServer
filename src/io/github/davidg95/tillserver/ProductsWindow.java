@@ -249,6 +249,9 @@ public class ProductsWindow extends javax.swing.JFrame {
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         currentTableContents = ProductSearchDialog.showSearchDialog(this, currentTableContents);
         updateTable();
+        if(currentTableContents.size() == 1){
+            ProductDialog.showEditProductDialog(this, currentTableContents.get(0));
+        }
     }//GEN-LAST:event_btnSearchActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

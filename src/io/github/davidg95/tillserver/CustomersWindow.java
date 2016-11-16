@@ -250,6 +250,9 @@ public class CustomersWindow extends javax.swing.JFrame {
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         currentTableContents = CustomerSearchDialog.showSearchDialog(this, currentTableContents);
         updateTable();
+        if(currentTableContents.size() == 1){
+            CustomerDialog.showEditProductDialog(this, currentTableContents.get(0));
+        }
     }//GEN-LAST:event_btnSearchActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
