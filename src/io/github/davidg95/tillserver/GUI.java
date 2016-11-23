@@ -58,7 +58,11 @@ public class GUI extends javax.swing.JFrame {
         DatabaseConnectionDialog.showConnectionDialog(this, dbConnection);
         if (dbConnection.isConnected()) {
             try {
+                try{
                 dbConnection.initDatabase();
+                } catch(SQLException ex){
+                    dbConnection.createTables();
+                }
                 data.loadDatabase();
                 lblDatabase.setText("Connected to database");
                 TillServer.updateInterval = Long.parseLong(JOptionPane.showInputDialog(this, "Enter value for database update interval in seconds", "Initial Seup", JOptionPane.PLAIN_MESSAGE)) * 1000;
@@ -91,6 +95,7 @@ public class GUI extends javax.swing.JFrame {
                     saveToFile();
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Initialisation Error", JOptionPane.ERROR_MESSAGE);
+                    dbConnection.createTables();
                     newDatabaseLogin();
                 }
             }

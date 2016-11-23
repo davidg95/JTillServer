@@ -66,7 +66,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         int selectedRow = tableProducts.getSelectedRow();
         if (selectedRow != -1) {
             Product p = currentTableContents.get(selectedRow);
-            ProductDialog.showEditProductDialog(this, p);
+            ProductDialog.showEditProductDialog(this, data, p);
             updateTable();
         }
     }
@@ -250,7 +250,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         currentTableContents = ProductSearchDialog.showSearchDialog(this, currentTableContents);
         updateTable();
         if(currentTableContents.size() == 1){
-            ProductDialog.showEditProductDialog(this, currentTableContents.get(0));
+            ProductDialog.showEditProductDialog(this, data, currentTableContents.get(0));
         }
     }//GEN-LAST:event_btnSearchActionPerformed
 

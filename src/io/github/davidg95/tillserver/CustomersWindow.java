@@ -48,7 +48,7 @@ public class CustomersWindow extends javax.swing.JFrame {
         model.setRowCount(0);
 
         for (Customer c : currentTableContents) {
-            Object[] s = new Object[]{c.getId(), c.getName(), c.getAddress(), c.getPhone()};
+            Object[] s = new Object[]{c.getId(), c.getName(), c.getTown(), c.getPhone()};
             model.addRow(s);
         }
 

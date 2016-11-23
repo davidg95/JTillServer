@@ -140,11 +140,6 @@ public class DatabaseConnectionDialog extends javax.swing.JDialog {
 
         try {
             db.connect(address, username, password);
-            try {
-                db.initDatabase();
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Initialisation Error", JOptionPane.ERROR_MESSAGE);
-            }
             success = true;
             this.setVisible(false);
         } catch (SQLException ex) {

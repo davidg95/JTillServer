@@ -24,11 +24,13 @@ public class Data {
     private List<Staff> staff;
     private List<Discount> discounts;
     private List<Sale> sales;
+    private List<Tax> tax;
 
     private static int productCounter;
     private static int customerCounter;
     private static int staffCounter;
     private static int discountCounter;
+    private static int taxCounter;
 
     private final DBConnect dbConnection;
     private final GUI g;
@@ -52,6 +54,7 @@ public class Data {
                 customers = dbConnection.getAllCustomers();
                 staff = dbConnection.getAllStaff();
                 discounts = dbConnection.getAllDiscounts();
+                tax = dbConnection.getAllTax();
                 this.openFile();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
@@ -59,6 +62,7 @@ public class Data {
                 customers = new ArrayList<>();
                 staff = new ArrayList<>();
                 discounts = new ArrayList<>();
+                tax = new ArrayList<>();
             }
         } else {
             products = new ArrayList<>();
@@ -66,6 +70,7 @@ public class Data {
             staff = new ArrayList<>();
             discounts = new ArrayList<>();
             sales = new ArrayList<>();
+            tax = new ArrayList<>();
         }
     }
 
@@ -74,6 +79,7 @@ public class Data {
         dbConnection.updateWholeCustomers(customers);
         dbConnection.updateWholeStaff(staff);
         dbConnection.updateWholeDiscounts(discounts);
+        dbConnection.updateWholeTax(tax);
         this.saveToFile();
     }
 
@@ -585,6 +591,95 @@ public class Data {
         return "D" + zeros + no;
     }
 
+    //Tax Methods
+    /**
+     * Method to add a new tax class.
+     *
+     * @param t the new tax class.
+     */
+    public void addTax(Tax t) {
+        tax.add(t);
+    }
+
+    /**
+     * Method to remove a tax class.
+     *
+     * @param t the taax class to remove.
+     */
+    public void removeTax(Tax t) {
+        tax.remove(t);
+    }
+
+    /**
+     * Method to remove a tax class by ID.
+     *
+     * @param id the ID to remove.
+     * @throws TaxNotFoundException if the ID could not be found.
+     */
+    public void removeTax(String id) throws TaxNotFoundException {
+        for (int i = 0; i < tax.size(); i++) {
+            if (tax.get(i).getId().equalsIgnoreCase(id)) {
+                tax.remove(i);
+                return;
+            }
+        }
+        throw new TaxNotFoundException(id);
+    }
+
+    /**
+     * Method to get a tax class by ID.
+     *
+     * @param id the tax class to get.
+     * @return the Tax class that matches the ID.
+     * @throws TaxNotFoundException if the ID was not found.
+     */
+    public Tax getTax(String id) throws TaxNotFoundException {
+        for (Tax t : tax) {
+            if (t.getId().equalsIgnoreCase(id)) {
+                return t;
+            }
+        }
+        throw new TaxNotFoundException(id);
+    }
+
+    /**
+     * Method to get a tax class by name.
+     *
+     * @param name the name to search.
+     * @return the Tax class.
+     * @throws TaxNotFoundException if the name was not found.
+     */
+    public Tax getTaxByName(String name) throws TaxNotFoundException {
+        for (Tax t : tax) {
+            if (t.getName().equalsIgnoreCase(name)) {
+                return t;
+            }
+        }
+        throw new TaxNotFoundException(name);
+    }
+
+    /**
+     * Method to get the Tax count
+     *
+     * @return the Tax count as an int.
+     */
+    public int taxCount() {
+        return tax.size();
+    }
+
+    public static String generateTaxID() {
+        String no;
+        String zeros;
+        no = Integer.toString(taxCounter);
+        zeros = "";
+        for (int i = no.length(); i < 5; i++) {
+            zeros += "0";
+        }
+        taxCounter++;
+
+        return "T" + zeros + no;
+    }
+
     //Sale Methods
     /**
      * Method to add a sale.
@@ -600,12 +695,12 @@ public class Data {
      */
     public void saveToFile() {
         HashMap<String, String> configs = new HashMap<>();
-        
+
         configs.put("products", "" + productCounter);
         configs.put("customers", "" + customerCounter);
         configs.put("staff", "" + staffCounter);
         configs.put("discounts", "" + discountCounter);
-        
+
         try {
             dbConnection.updateWholeConfigs(configs);
         } catch (SQLException ex) {
