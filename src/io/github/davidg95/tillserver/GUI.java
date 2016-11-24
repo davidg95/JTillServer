@@ -54,7 +54,7 @@ public class GUI extends javax.swing.JFrame {
     }
 
     private void initialSetup() {
-        JOptionPane.showMessageDialog(this, "No configureation file found, proceeding with initial setup", "Initial Setup", JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(this, "No configuration file found, proceeding with initial setup", "Initial Setup", JOptionPane.PLAIN_MESSAGE);
         DatabaseConnectionDialog.showConnectionDialog(this, dbConnection);
         if (dbConnection.isConnected()) {
             try {
