@@ -271,7 +271,9 @@ public class InitialSetupWindow extends javax.swing.JDialog {
         TillServer.updateInterval = (long) (Integer.parseInt(updateInterval) * 1000);
 
         try {
-            dbConnect.connect(database_address, database_username, database_password);
+            //dbConnect.connect(database_address, database_username, database_password);
+            dbConnect.create(database_username, database_password);
+            dbConnect.connect(dbConnect.getAddress(), database_username, database_password);
             lblConnection.setText("Connection successful");
         } catch (SQLException ex) {
             lblConnection.setText("Connection error");

@@ -85,7 +85,8 @@ public class GUI extends javax.swing.JFrame {
         openFile();
         try {
             if (database_address == null || database_address.equals("null")) {
-                initialSetup();
+                //initialSetup();
+                InitialSetupWindow.showInitWindow(this, data, dbConnection);
             } else {
                 dbConnection.connect(database_address, username, password);
                 try {
