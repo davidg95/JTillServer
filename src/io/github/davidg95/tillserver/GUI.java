@@ -60,6 +60,7 @@ public class GUI extends javax.swing.JFrame {
     private void initialSetup() {
         try {
             dbConnection.create("APP", "App");
+            dbConnection.initDatabase();
             data.addStaff(StaffDialog.showNewStaffDialog(this));
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
@@ -68,18 +69,14 @@ public class GUI extends javax.swing.JFrame {
 
     public void databaseLogin() {
         try {
-            dbConnection.connect("jdbc:derby:TillEmbedded;create=true", "APP", "App");
-            try {
-                dbConnection.initDatabase();
-            } catch (SQLException e) {
-                initialSetup();
-            }
+            dbConnection.connect("jdbc:derby:TillEmbedded;create=false", "APP", "App");
+            dbConnection.initDatabase();
             data.loadDatabase();
-            if(data.staffCount() == 0){
+            if (data.staffCount() == 0) {
                 data.addStaff(StaffDialog.showNewStaffDialog(this));
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+            initialSetup();
         }
         if (!dbConnection.isConnected()) {
             initialSetup();
