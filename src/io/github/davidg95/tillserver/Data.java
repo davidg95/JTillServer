@@ -25,12 +25,14 @@ public class Data {
     private List<Discount> discounts;
     private List<Sale> sales;
     private List<Tax> tax;
+    private List<Category> categorys;
 
     private static int productCounter;
     private static int customerCounter;
     private static int staffCounter;
     private static int discountCounter;
     private static int taxCounter;
+    private static int categoryCounter;
 
     private final DBConnect dbConnection;
     private final GUI g;
@@ -45,6 +47,13 @@ public class Data {
     public Data(DBConnect db, GUI g) {
         this.dbConnection = db;
         this.g = g;
+        products = new ArrayList<>();
+        customers = new ArrayList<>();
+        staff = new ArrayList<>();
+        discounts = new ArrayList<>();
+        tax = new ArrayList<>();
+        categorys = new ArrayList<>();
+
     }
 
     public void loadDatabase() {
@@ -55,6 +64,7 @@ public class Data {
                 staff = dbConnection.getAllStaff();
                 discounts = dbConnection.getAllDiscounts();
                 tax = dbConnection.getAllTax();
+                categorys = dbConnection.getAllCategorys();
                 this.openFile();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
@@ -63,6 +73,7 @@ public class Data {
                 staff = new ArrayList<>();
                 discounts = new ArrayList<>();
                 tax = new ArrayList<>();
+                categorys = new ArrayList<>();
             }
         } else {
             products = new ArrayList<>();
@@ -71,6 +82,7 @@ public class Data {
             discounts = new ArrayList<>();
             sales = new ArrayList<>();
             tax = new ArrayList<>();
+            categorys = new ArrayList<>();
         }
     }
 
@@ -80,6 +92,7 @@ public class Data {
         dbConnection.updateWholeStaff(staff);
         dbConnection.updateWholeDiscounts(discounts);
         dbConnection.updateWholeTax(tax);
+        dbConnection.updateWholeCategorys(categorys);
         this.saveToFile();
     }
 
@@ -109,6 +122,14 @@ public class Data {
         return this.sales;
     }
 
+    public List<Tax> getTaxList() {
+        return this.tax;
+    }
+
+    public List<Category> getCategorysList() {
+        return this.categorys;
+    }
+
     public void setProductsList(List<Product> products) {
         this.products = products;
     }
@@ -127,6 +148,14 @@ public class Data {
 
     public void setSalesList(List<Sale> sales) {
         this.sales = sales;
+    }
+
+    public void setTaxList(List<Tax> tax) {
+        this.tax = tax;
+    }
+
+    public void setCategorysList(List<Category> categorys) {
+        this.categorys = categorys;
     }
 
     //Product Methods
@@ -266,6 +295,15 @@ public class Data {
         throw new ProductNotFoundException(barcode);
     }
 
+    public Discount getProductsDiscount(Product p) throws DiscountNotFoundException {
+        for (Discount d : discounts) {
+            if (d.getId().equalsIgnoreCase(p.getDiscountID())) {
+                return d;
+            }
+        }
+        throw new DiscountNotFoundException(p.getDiscountID());
+    }
+
     /**
      * Method to get the total number of different products;
      *
@@ -339,6 +377,16 @@ public class Data {
             }
         }
         throw new CustomerNotFoundException(id);
+    }
+
+    public Discount getCustomersDiscount(Customer c) throws DiscountNotFoundException {
+        String discountid = c.getDiscountID();
+        for (Discount d : discounts) {
+            if (d.getId().equalsIgnoreCase(discountid)) {
+                return d;
+            }
+        }
+        throw new DiscountNotFoundException(c.getDiscountID());
     }
 
     /**
@@ -680,6 +728,79 @@ public class Data {
         return "T" + zeros + no;
     }
 
+    //Category Methods
+    /**
+     * Method to add a category.
+     *
+     * @param c the category to add.
+     */
+    public void addCategory(Category c) {
+        categorys.add(c);
+    }
+
+    /**
+     * Method to remove a category.
+     *
+     * @param c the category to remove.
+     */
+    public void removeCategory(Category c) {
+        categorys.remove(c);
+    }
+
+    /**
+     * Method to remove a category based on its id.
+     *
+     * @param id the id of the category to remove.
+     * @throws CategoryNotFoundException if the id was not found.
+     */
+    public void removeCategory(String id) throws CategoryNotFoundException {
+        for (int i = 0; i < categorys.size(); i++) {
+            if (categorys.get(i).getID().equalsIgnoreCase(id)) {
+                categorys.remove(i);
+            }
+        }
+        throw new CategoryNotFoundException("Category " + id + " could not be found");
+    }
+
+    /**
+     * Method to get a category based on its id.
+     *
+     * @param id the id of the category to get.
+     * @return the category matching the id if any exists.
+     * @throws CategoryNotFoundException if the category could not be found
+     * matching the id.
+     */
+    public Category getCategory(String id) throws CategoryNotFoundException {
+        for (Category c : categorys) {
+            if (c.getID().equalsIgnoreCase(id)) {
+                return c;
+            }
+        }
+        throw new CategoryNotFoundException("Category " + id + " could not be found");
+    }
+
+    /**
+     * Get the amount of categorys.
+     *
+     * @return int value representing the amount of categorys.
+     */
+    public int categoryCount() {
+        return categorys.size();
+    }
+
+    public static String generateCategoryID() {
+        String no;
+        String zeros;
+        no = Integer.toString(categoryCounter);
+        zeros = "";
+        for (int i = no.length(); i < 5; i++) {
+            zeros += "0";
+        }
+        categoryCounter++;
+
+        return "C" + zeros + no;
+    }
+
     //Sale Methods
     /**
      * Method to add a sale.
@@ -700,6 +821,8 @@ public class Data {
         configs.put("customers", "" + customerCounter);
         configs.put("staff", "" + staffCounter);
         configs.put("discounts", "" + discountCounter);
+        configs.put("tax", "" + taxCounter);
+        configs.put("categorys", "" + categoryCounter);
 
         try {
             dbConnection.updateWholeConfigs(configs);
@@ -718,6 +841,8 @@ public class Data {
             customerCounter = Integer.parseInt(configs.get("customers"));
             staffCounter = Integer.parseInt(configs.get("staff"));
             discountCounter = Integer.parseInt(configs.get("discounts"));
+            taxCounter = Integer.parseInt(configs.get("tax"));
+            categoryCounter = Integer.parseInt(configs.get("categorys"));
         } catch (SQLException ex) {
         }
     }

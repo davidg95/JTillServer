@@ -64,7 +64,7 @@ public class CustomersWindow extends javax.swing.JFrame {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
             Customer c = currentTableContents.get(selectedRow);
-            CustomerDialog.showEditProductDialog(this, c);
+            CustomerDialog.showEditCusomerDialog(this, data, c);
             updateTable();
         }
     }
@@ -251,7 +251,7 @@ public class CustomersWindow extends javax.swing.JFrame {
         currentTableContents = CustomerSearchDialog.showSearchDialog(this, currentTableContents);
         updateTable();
         if(currentTableContents.size() == 1){
-            CustomerDialog.showEditProductDialog(this, currentTableContents.get(0));
+            CustomerDialog.showEditCusomerDialog(this, data,  currentTableContents.get(0));
         }
     }//GEN-LAST:event_btnSearchActionPerformed
 

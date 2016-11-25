@@ -10,13 +10,6 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
-import java.util.Properties;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.swing.JDialog;
 
 /**
@@ -48,8 +41,9 @@ public class CustomerDialog extends javax.swing.JDialog {
         this.data = data;
     }
 
-    public CustomerDialog(Window parent, Customer c) {
+    public CustomerDialog(Window parent, Data d, Customer c) {
         super(parent);
+        this.data = d;
         initComponents();
         editMode = true;
         this.setLocationRelativeTo(parent);
@@ -59,7 +53,7 @@ public class CustomerDialog extends javax.swing.JDialog {
         txtMobile.setText(c.getMobile());
         txtEmail.setText(c.getEmail());
         txtNotes.setText(c.getNotes());
-        txtDiscount.setText(c.getDiscount() + "");
+        cmbDiscount.setSelectedItem(c.getDiscountID());
         txtLoyalty.setText(c.getLoyaltyPoints() + "");
 
         txtAddress1.setText(c.getAddressLine1());
@@ -96,12 +90,12 @@ public class CustomerDialog extends javax.swing.JDialog {
         return customer;
     }
 
-    public static Customer showEditProductDialog(Component parent, Customer c) {
+    public static Customer showEditCusomerDialog(Component parent, Data d, Customer c) {
         Window window = null;
         if (parent instanceof Frame || parent instanceof Dialog) {
             window = (Window) parent;
         }
-        dialog = new CustomerDialog(window, c);
+        dialog = new CustomerDialog(window, d, c);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         customer = c;
         dialog.setVisible(true);
@@ -130,12 +124,12 @@ public class CustomerDialog extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        txtDiscount = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         txtLoyalty = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtNotes = new javax.swing.JTextArea();
+        cmbDiscount = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         txtAddress1 = new javax.swing.JTextField();
         txtAddress2 = new javax.swing.JTextField();
@@ -186,6 +180,8 @@ public class CustomerDialog extends javax.swing.JDialog {
         txtNotes.setRows(5);
         jScrollPane1.setViewportView(txtNotes);
 
+        cmbDiscount.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -210,8 +206,8 @@ public class CustomerDialog extends javax.swing.JDialog {
                     .addComponent(txtMobile)
                     .addComponent(txtPhone)
                     .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
-                    .addComponent(txtDiscount)
-                    .addComponent(jScrollPane1))
+                    .addComponent(jScrollPane1)
+                    .addComponent(cmbDiscount, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(44, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -235,8 +231,8 @@ public class CustomerDialog extends javax.swing.JDialog {
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel12))
+                    .addComponent(jLabel12)
+                    .addComponent(cmbDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtLoyalty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -356,7 +352,7 @@ public class CustomerDialog extends javax.swing.JDialog {
         String mobile = txtMobile.getText();
         String email = txtEmail.getText();
         String notes = txtNotes.getText();
-        double discount = Double.parseDouble(txtDiscount.getText());
+        String discount = cmbDiscount.getItemAt(cmbDiscount.getSelectedIndex());
         int loyalty = Integer.parseInt(txtLoyalty.getText());
 
         String address1 = txtAddress1.getText();
@@ -372,7 +368,7 @@ public class CustomerDialog extends javax.swing.JDialog {
             customer.setMobile(mobile);
             customer.setEmail(email);
             customer.setNotes(notes);
-            customer.setDiscount(discount);
+            customer.setDiscountID(discount);
             customer.setLoyaltyPoints(loyalty);
 
             customer.setAddressLine1(address1);
@@ -397,6 +393,7 @@ public class CustomerDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClose;
+    private javax.swing.JComboBox<String> cmbDiscount;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -418,7 +415,6 @@ public class CustomerDialog extends javax.swing.JDialog {
     private javax.swing.JTextField txtAddress2;
     private javax.swing.JTextField txtCountry;
     private javax.swing.JTextField txtCounty;
-    private javax.swing.JTextField txtDiscount;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtLoyalty;
     private javax.swing.JTextField txtMobile;

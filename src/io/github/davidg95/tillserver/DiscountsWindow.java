@@ -48,7 +48,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
         model.setRowCount(0);
 
         for (Discount d : currentTableContents) {
-            Object[] s = new Object[]{d.getId(), d.getType().toString(), d.getPercentage()};
+            Object[] s = new Object[]{d.getId(), d.getName(), d.getPercentage()};
             model.addRow(s);
         }
 
@@ -74,7 +74,6 @@ public class DiscountsWindow extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtID = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        cmbType = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         txtPercentage = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -86,6 +85,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
         btnShowAll = new javax.swing.JButton();
         btnSearch = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
+        txtName = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -122,8 +122,6 @@ public class DiscountsWindow extends javax.swing.JFrame {
         txtID.setEditable(false);
 
         jLabel2.setText("Type:");
-
-        cmbType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Percentage Off","BOGOF","Mix and Match" }));
 
         jLabel3.setText("Percentage:");
 
@@ -175,8 +173,8 @@ public class DiscountsWindow extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2)
                             .addComponent(txtPercentage)
-                            .addComponent(cmbType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtID)))
+                            .addComponent(txtID)
+                            .addComponent(txtName)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnNew, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
@@ -212,7 +210,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(cmbType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
@@ -253,7 +251,6 @@ public class DiscountsWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnShowAll;
-    private javax.swing.JComboBox<String> cmbType;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -262,6 +259,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable table;
     private javax.swing.JTextField txtID;
+    private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPercentage;
     // End of variables declaration//GEN-END:variables
 }

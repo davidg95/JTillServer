@@ -239,7 +239,7 @@ public class StaffWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnShowAllActionPerformed
 
     private void tableStaffMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStaffMouseClicked
-        if (evt.getClickCount() == 1) {
+        if (evt.getClickCount() == 2) {
             editStaff();
         }
     }//GEN-LAST:event_tableStaffMouseClicked

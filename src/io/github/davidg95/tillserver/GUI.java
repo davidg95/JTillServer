@@ -6,6 +6,8 @@
 package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.DBConnect;
+import io.github.davidg95.Till.till.Product;
+import io.github.davidg95.Till.till.ProductNotFoundException;
 import io.github.davidg95.Till.till.Staff;
 import io.github.davidg95.Till.till.StaffNotFoundException;
 import java.io.File;
@@ -14,6 +16,8 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -54,58 +58,31 @@ public class GUI extends javax.swing.JFrame {
     }
 
     private void initialSetup() {
-        JOptionPane.showMessageDialog(this, "No configuration file found, proceeding with initial setup", "Initial Setup", JOptionPane.PLAIN_MESSAGE);
-        DatabaseConnectionDialog.showConnectionDialog(this, dbConnection);
-        if (dbConnection.isConnected()) {
-            try {
-                try{
-                dbConnection.initDatabase();
-                } catch(SQLException ex){
-                    dbConnection.createTables();
-                }
-                data.loadDatabase();
-                lblDatabase.setText("Connected to database");
-                TillServer.updateInterval = Long.parseLong(JOptionPane.showInputDialog(this, "Enter value for database update interval in seconds", "Initial Seup", JOptionPane.PLAIN_MESSAGE)) * 1000;
-                this.database_address = dbConnection.getAddress();
-                this.username = dbConnection.getUsername();
-                this.password = dbConnection.getPassword();
-                if (data.getStaffList().isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "You need to create a member of staff first", "Initial Setup", JOptionPane.ERROR_MESSAGE);
-                    Staff s = StaffDialog.showNewStaffDialog(this);
-                    data.addStaff(s);
-                }
-                saveToFile();
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
-            }
+        try {
+            dbConnection.create("APP", "App");
+            data.addStaff(StaffDialog.showNewStaffDialog(this));
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     public void databaseLogin() {
-        openFile();
         try {
-            if (database_address == null || database_address.equals("null")) {
-                //initialSetup();
-                InitialSetupWindow.showInitWindow(this, data, dbConnection);
-            } else {
-                dbConnection.connect(database_address, username, password);
-                try {
-                    dbConnection.initDatabase();
-                    data.loadDatabase();
-                    lblDatabase.setText("Connected to database");
-                    saveToFile();
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Initialisation Error", JOptionPane.ERROR_MESSAGE);
-                    dbConnection.createTables();
-                    newDatabaseLogin();
-                }
+            dbConnection.connect("jdbc:derby:TillEmbedded;create=true", "APP", "App");
+            try {
+                dbConnection.initDatabase();
+            } catch (SQLException e) {
+                initialSetup();
+            }
+            data.loadDatabase();
+            if(data.staffCount() == 0){
+                data.addStaff(StaffDialog.showNewStaffDialog(this));
             }
         } catch (SQLException ex) {
-            itemDatabaseConnect.setEnabled(true);
-            itemDatabaseConnect.setText("Connect To Database");
-            itemUpdate.setEnabled(false);
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Database Connection Error", JOptionPane.ERROR_MESSAGE);
-            newDatabaseLogin();
+            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+        if (!dbConnection.isConnected()) {
+            initialSetup();
         }
     }
 
@@ -118,7 +95,7 @@ public class GUI extends javax.swing.JFrame {
             } else {
                 System.exit(2);
             }
-        } else{
+        } else {
             data.loadDatabase();
         }
     }
@@ -142,8 +119,8 @@ public class GUI extends javax.swing.JFrame {
     public void setClientLabel(String text) {
         lblClients.setText(text);
     }
-    
-    public void log(Object o){
+
+    public void log(Object o) {
         txtLog.append(o.toString() + "\n");
     }
 
@@ -233,7 +210,6 @@ public class GUI extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         itemLogin = new javax.swing.JMenuItem();
-        itemDatabaseConnect = new javax.swing.JMenuItem();
         itemUpdate = new javax.swing.JMenuItem();
         itemInterval = new javax.swing.JMenuItem();
         itemExit = new javax.swing.JMenuItem();
@@ -350,14 +326,6 @@ public class GUI extends javax.swing.JFrame {
         });
         menuFile.add(itemLogin);
 
-        itemDatabaseConnect.setText("Disconnect Database");
-        itemDatabaseConnect.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemDatabaseConnectActionPerformed(evt);
-            }
-        });
-        menuFile.add(itemDatabaseConnect);
-
         itemUpdate.setText("Update Database");
         itemUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -450,7 +418,7 @@ public class GUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 347, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 338, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -484,22 +452,6 @@ public class GUI extends javax.swing.JFrame {
     private void btnManageCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageCustomersActionPerformed
         CustomersWindow.showCustomersListWindow(data);
     }//GEN-LAST:event_btnManageCustomersActionPerformed
-
-    private void itemDatabaseConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDatabaseConnectActionPerformed
-        if (dbConnection.isConnected()) {
-            if (JOptionPane.showConfirmDialog(this, "Are you sure you want to disconnect from the database?", "Disconnect Database", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                dbConnection.close();
-                this.itemDatabaseConnect.setText("Connect To Database");
-                this.itemUpdate.setEnabled(false);
-                lblDatabase.setText("Not Connected To Database");
-            }
-        } else if (DatabaseConnectionDialog.showConnectionDialog(this, dbConnection)) {
-            JOptionPane.showMessageDialog(this, "Connected to database " + dbConnection, "Connect to database", JOptionPane.PLAIN_MESSAGE);
-            this.itemDatabaseConnect.setText("Disconnect Database");
-            this.itemUpdate.setEnabled(true);
-            lblDatabase.setText("Connected To Database");
-        }
-    }//GEN-LAST:event_itemDatabaseConnectActionPerformed
 
     private void itemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLoginActionPerformed
         if (staff != null) {
@@ -550,7 +502,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton btnManageStaff;
     private javax.swing.JButton btnManageStock;
     private javax.swing.JMenuItem itemCustomers;
-    private javax.swing.JMenuItem itemDatabaseConnect;
     private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenuItem itemInterval;
     private javax.swing.JMenuItem itemLogin;
