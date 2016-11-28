@@ -6,11 +6,16 @@
 package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.Customer;
+import io.github.davidg95.Till.till.DBConnect;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -22,6 +27,7 @@ public class CustomerDialog extends javax.swing.JDialog {
     private static Customer customer;
 
     private Data data;
+    private DBConnect dbConn;
 
     private boolean editMode;
 
@@ -31,6 +37,7 @@ public class CustomerDialog extends javax.swing.JDialog {
     public CustomerDialog(Window parent) {
         super(parent);
         initComponents();
+        this.dbConn = TillServer.getDBConnection();
         editMode = false;
         this.setLocationRelativeTo(parent);
         this.setModal(true);
@@ -380,7 +387,11 @@ public class CustomerDialog extends javax.swing.JDialog {
         } else {
             customer = new Customer(name, phone, mobile, email, discount, address1, address2, town, county, country, postcode, notes, loyalty);
             if (data != null) {
-                data.addCustomer(customer);
+                try {
+                    dbConn.addCustomer(customer);
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
         this.setVisible(false);

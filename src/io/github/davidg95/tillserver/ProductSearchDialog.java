@@ -155,7 +155,7 @@ public class ProductSearchDialog extends javax.swing.JDialog {
         switch (option) {
             case PRODUCT_CODE:
                 for (Product p : products) {
-                    if (p.getProductCode().toLowerCase().equals(terms.toLowerCase())) {
+                    if ((p.getProductCode() + "").equals(terms)) {
                         newList.add(p);
                     }
                 }

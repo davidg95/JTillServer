@@ -13,6 +13,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -24,6 +26,7 @@ import java.util.concurrent.Semaphore;
 public class ConnectionThread extends Thread {
 
     private final Data data;
+    private final DBConnect dbConn;
 
     private final Semaphore productsSem;
     private final Semaphore customersSem;
@@ -59,6 +62,7 @@ public class ConnectionThread extends Thread {
         this.salesSem = salesSem;
         this.staffSem = staffSem;
         this.data = data;
+        this.dbConn = TillServer.getDBConnection();
     }
 
     @Override
@@ -78,7 +82,7 @@ public class ConnectionThread extends Thread {
 
             while (!conn_term) {
                 String input = in.readLine();
-                
+
                 TillServer.g.log("Contact from " + site);
 
                 String inp[] = input.split(",");
@@ -89,32 +93,32 @@ public class ConnectionThread extends Thread {
                             Object o = obIn.readObject();
                             Product p = (Product) o;
                             productsSem.acquire();
-                            data.addProduct(p);
-                        } catch (ClassNotFoundException | InterruptedException ex) {
+                            dbConn.addProduct(p);
+                        } catch (ClassNotFoundException | InterruptedException | SQLException ex) {
                         }
                         productsSem.release();
                         break;
                     case "REMOVEPRODUCT": //Remove a product
                         try {
-                            String code = inp[1];
+                            int code = Integer.parseInt(inp[1]);
                             productsSem.acquire();
-                            data.removeProduct(code);
+                            dbConn.removeProduct(code);
                             out.println("SUCC");
                         } catch (InterruptedException e) {
 
-                        } catch (ProductNotFoundException ex) {
+                        } catch (SQLException ex) {
                             out.println("FAIL");
                         }
                         productsSem.release();
                         break;
                     case "PURCHASE": //Purchase a product
                         try {
-                            String code = inp[1];
+                            int code = Integer.parseInt(inp[1]);
                             productsSem.acquire();
-                            data.purchaseProduct(code);
+                            dbConn.purchaseProduct(code);
                             out.println("SUCC");
                         } catch (InterruptedException e) {
-                        } catch (ProductNotFoundException ex) {
+                        } catch (ProductNotFoundException | SQLException ex) {
                             out.println("NOTFOUND");
                         } catch (OutOfStockException ex) {
                             out.println("STOCK");
@@ -125,11 +129,13 @@ public class ConnectionThread extends Thread {
                         try {
                             String code = inp[1];
                             productsSem.acquire();
-                            Product p = data.getProduct(code);
+                            Product p = dbConn.getProduct(code);
                             obOut.writeObject(p);
                         } catch (InterruptedException ex) {
                         } catch (ProductNotFoundException ex) {
                             obOut.writeObject(ex);
+                        } catch (SQLException ex) {
+                            obOut.writeObject(new ProductNotFoundException(inp[1]));
                         }
                         obOut.flush();
                         productsSem.release();
@@ -138,12 +144,14 @@ public class ConnectionThread extends Thread {
                         try {
                             String barcode = inp[1];
                             productsSem.acquire();
-                            Product p = data.getProductByBarcode(barcode);
+                            Product p = dbConn.getProductByBarcode(barcode);
                             obOut.writeObject(p);
                         } catch (InterruptedException ex) {
 
                         } catch (ProductNotFoundException ex) {
                             obOut.writeObject(ex);
+                        } catch (SQLException ex) {
+                            obOut.writeObject(new ProductNotFoundException(inp[1]));
                         }
                         obOut.flush();
                         productsSem.release();
@@ -151,8 +159,10 @@ public class ConnectionThread extends Thread {
                     case "GETPRODUCTCOUNT": //Get product count
                         try {
                             productsSem.acquire();
-                            out.write(data.productCount());
+                            out.write(dbConn.getProductCount());
                         } catch (InterruptedException ex) {
+                        } catch (SQLException ex) {
+                            out.println(-1);
                         }
                         out.flush();
                         productsSem.release();
@@ -160,9 +170,11 @@ public class ConnectionThread extends Thread {
                     case "GETALLPRODUCTS": //Get all products
                         try {
                             productsSem.acquire();
-                            List<Product> products = data.getProductsList();
+                            List<Product> products = dbConn.getAllProducts();
                             obOut.writeObject(products);
                         } catch (InterruptedException ex) {
+                        } catch (SQLException ex) {
+                            obOut.writeObject(new ArrayList<>());
                         }
                         obOut.flush();
                         productsSem.release();
@@ -172,32 +184,34 @@ public class ConnectionThread extends Thread {
                             Object o = obIn.readObject();
                             Customer c = (Customer) o;
                             customersSem.acquire();
-                            data.addCustomer(c);
-                        } catch (InterruptedException | ClassNotFoundException e) {
+                            dbConn.addCustomer(c);
+                        } catch (InterruptedException | ClassNotFoundException | SQLException e) {
                         }
                         customersSem.release();
                         break;
                     case "REMOVECUSTOMER": //Remove a customer
                         try {
-                            String id = inp[1];
+                            int id = Integer.parseInt(inp[1]);
                             customersSem.acquire();
-                            data.removeCustomer(id);
+                            dbConn.removeCustomer(id);
                             out.println("SUCC");
                         } catch (InterruptedException ex) {
-                        } catch (CustomerNotFoundException ex) {
+                        } catch (SQLException ex) {
                             out.println("FAIL");
                         }
                         customersSem.release();
                         break;
                     case "GETCUSTOMER": //Get a customer
                         try {
-                            String id = inp[1];
+                            int id = Integer.parseInt(inp[1]);
                             customersSem.acquire();
-                            Customer c = data.getCustomer(id);
+                            Customer c = dbConn.getCustomer(id);
                             obOut.writeObject(c);
                         } catch (InterruptedException ex) {
                         } catch (CustomerNotFoundException ex) {
                             obOut.writeObject(ex);
+                        } catch (SQLException ex) {
+                            obOut.writeObject(new CustomerNotFoundException(inp[1]));
                         }
                         obOut.flush();
                         customersSem.release();
@@ -205,8 +219,10 @@ public class ConnectionThread extends Thread {
                     case "GETCUSTOMERCOUNT": //Get customer count
                         try {
                             customersSem.acquire();
-                            out.println(data.customerCount());
+                            out.println(dbConn.getCustomerCount());
                         } catch (InterruptedException ex) {
+                        } catch (SQLException ex) {
+                            out.println(-1);
                         }
                         out.flush();
                         customersSem.release();
@@ -214,23 +230,25 @@ public class ConnectionThread extends Thread {
                     case "GETALLCUSTOMERS": //Get all customers
                         try {
                             customersSem.acquire();
-                            List<Customer> customers = data.getCustomersList();
+                            List<Customer> customers = dbConn.getAllCustomers();
                             obOut.writeObject(customers);
                         } catch (InterruptedException ex) {
+                        } catch (SQLException ex) {
+                            obOut.writeObject(new ArrayList<>());
                         }
                         obOut.flush();
                         customersSem.release();
                         break;
-                    case "ADDSALE": //Add a sale
-                        try {
-                            Object o = obIn.readObject();
-                            Sale s = (Sale) o;
-                            salesSem.acquire();
-                            data.addSale(s);
-                        } catch (ClassNotFoundException | InterruptedException ex) {
-                        }
-                        salesSem.release();
-                        break;
+//                    case "ADDSALE": //Add a sale
+//                        try {
+//                            Object o = obIn.readObject();
+//                            Sale s = (Sale) o;
+//                            salesSem.acquire();
+//                            data.addSale(s);
+//                        } catch (ClassNotFoundException | InterruptedException ex) {
+//                        }
+//                        salesSem.release();
+//                        break;
                     case "ADDSTAFF": //Add a member of staff
                         try {
                             Object o = obIn.readObject();
@@ -243,7 +261,7 @@ public class ConnectionThread extends Thread {
                         break;
                     case "REMOVESTAFF": //Remove a member of staff
                         try {
-                            String id = inp[1];
+                            int id = Integer.parseInt(inp[1]);
                             staffSem.acquire();
                             data.removeStaff(id);
                             out.println("SUCC");
@@ -255,7 +273,7 @@ public class ConnectionThread extends Thread {
                         break;
                     case "GETSTAFF": //Get a member of staff
                         try {
-                            String id = inp[1];
+                            int id = Integer.parseInt(inp[1]);
                             staffSem.acquire();
                             Staff s = data.getStaff(id);
                             obOut.writeObject(s);
@@ -302,7 +320,7 @@ public class ConnectionThread extends Thread {
                         break;
                     case "TILLLOGIN": //Till login
                         try {
-                            String id = inp[1];
+                            int id = Integer.parseInt(inp[1]);
                             staffSem.acquire();
                             Staff s = data.login(id);
                             this.staff = s;
@@ -317,7 +335,7 @@ public class ConnectionThread extends Thread {
                         break;
                     case "LOGOUT": //Logout
                         try {
-                            String id = inp[1];
+                            int id = Integer.parseInt(inp[1]);
                             staffSem.acquire();
                             data.logout(id);
                             TillServer.g.log(staff.getName() + " has logged out");
@@ -331,7 +349,7 @@ public class ConnectionThread extends Thread {
                         break;
                     case "TILLLOGOUT": //Till logout
                         try {
-                            String id = inp[1];
+                            int id = Integer.parseInt(inp[1]);
                             staffSem.acquire();
                             data.tillLogout(id);
                             TillServer.g.log(staff.getName() + " has logged out");

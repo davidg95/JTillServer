@@ -5,7 +5,6 @@
  */
 package io.github.davidg95.tillserver;
 
-import io.github.davidg95.Till.till.Customer;
 import io.github.davidg95.Till.till.Staff;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -25,7 +24,7 @@ public class StaffSearchDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static List<Staff> newList;
     
-    private List<Staff> staff;
+    private final List<Staff> staff;
 
     /**
      * Creates new form StaffSearchDialog
@@ -149,7 +148,7 @@ public class StaffSearchDialog extends javax.swing.JDialog {
         
         if(option == Selection.ID){
             for(Staff s: staff){
-                if(s.getId().equalsIgnoreCase(terms)){
+                if((s.getId() + "").equals(terms)){
                     newList.add(s);
                 }
             }

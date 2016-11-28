@@ -23,6 +23,8 @@ public class StaffWindow extends javax.swing.JFrame {
 
     private final Data data;
 
+    private Staff staff;
+
     private final DefaultTableModel model;
     private List<Staff> currentTableContents;
 
@@ -69,6 +71,22 @@ public class StaffWindow extends javax.swing.JFrame {
         }
     }
 
+    private void setCurrentStaff(Staff s) {
+        if (s == null) {
+            txtName.setText("");
+            txtUsername.setText("");
+            txtPassword.setText("");
+            txtPasswordConfirm.setText("");
+            staff = null;
+        } else {
+            this.staff = s;
+            txtName.setText(s.getName());
+            txtUsername.setText(s.getUsername());
+            txtPassword.setText(s.getPassword());
+            txtPasswordConfirm.setText(s.getPassword());
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -82,10 +100,22 @@ public class StaffWindow extends javax.swing.JFrame {
         tableStaff = new javax.swing.JTable();
         btnAddStaff = new javax.swing.JButton();
         btnRemoveStaff = new javax.swing.JButton();
-        btnEditStaff = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
         btnSearch = new javax.swing.JButton();
         btnShowAll = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        txtName = new javax.swing.JTextField();
+        cmbPosition = new javax.swing.JComboBox<>();
+        txtUsername = new javax.swing.JTextField();
+        chkLoggedIn = new javax.swing.JCheckBox();
+        txtPassword = new javax.swing.JPasswordField();
+        chkLoggedInTill = new javax.swing.JCheckBox();
+        txtPasswordConfirm = new javax.swing.JPasswordField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Manage Staff");
@@ -137,10 +167,10 @@ public class StaffWindow extends javax.swing.JFrame {
             }
         });
 
-        btnEditStaff.setText("Edit Staff");
-        btnEditStaff.addActionListener(new java.awt.event.ActionListener() {
+        btnSave.setText("Save Changes");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditStaffActionPerformed(evt);
+                btnSaveActionPerformed(evt);
             }
         });
 
@@ -165,41 +195,105 @@ public class StaffWindow extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setText("Username:");
+
+        jLabel4.setText("Password:");
+
+        jLabel5.setText("Confirm Password:");
+
+        cmbPosition.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Assisstant", "Supervisor", "Manager", "Area Manager"}));
+
+        chkLoggedIn.setText("Logged in");
+
+        chkLoggedInTill.setText("Logged in to till");
+
+        jLabel1.setText("Name:");
+
+        jLabel2.setText("Position:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 836, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAddStaff)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel5))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(chkLoggedIn)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtName)
+                                        .addComponent(cmbPosition, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(txtUsername)
+                                        .addComponent(txtPassword)
+                                        .addComponent(txtPasswordConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(chkLoggedInTill)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnAddStaff)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnSave))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnRemoveStaff)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnSearch))
+                            .addComponent(btnShowAll))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEditStaff)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRemoveStaff)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnShowAll)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnClose)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 597, Short.MAX_VALUE))
+                    .addComponent(btnClose))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cmbPosition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtPasswordConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkLoggedIn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkLoggedInTill)
+                        .addGap(15, 15, 15)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAddStaff)
+                            .addComponent(btnSave))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnRemoveStaff)
+                            .addComponent(btnSearch))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnShowAll)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAddStaff)
-                    .addComponent(btnRemoveStaff)
-                    .addComponent(btnEditStaff)
-                    .addComponent(btnClose)
-                    .addComponent(btnSearch)
-                    .addComponent(btnShowAll))
+                .addComponent(btnClose)
                 .addContainerGap())
         );
 
@@ -207,18 +301,42 @@ public class StaffWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStaffActionPerformed
-        StaffDialog.showNewStaffDialog(this, data);
-        updateTable();
+        if (staff == null) {
+            Staff s;
+            String name = txtName.getText();
+            String username = txtUsername.getText();
+            String password = new String(txtPassword.getPassword());
+            Staff.Position position = Staff.Position.values()[cmbPosition.getSelectedIndex()];
+            if (name.equals("") || username.equals("")) {
+                JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Staff", JOptionPane.ERROR_MESSAGE);
+            } else {
+                s = new Staff(name, position, username, password);
+                data.addStaff(s);
+            }
+            updateTable();
+        }
+
+        setCurrentStaff(null);
     }//GEN-LAST:event_btnAddStaffActionPerformed
 
-    private void btnEditStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditStaffActionPerformed
-        editStaff();
-    }//GEN-LAST:event_btnEditStaffActionPerformed
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        String name = txtName.getText();
+        String username = txtUsername.getText();
+        String password = new String(txtPassword.getPassword());
+        Staff.Position position = Staff.Position.values()[cmbPosition.getSelectedIndex()];
+
+        staff.setName(name);
+        staff.setUsername(username);
+        staff.setPassword(password);
+        staff.setPosition(position);
+
+        updateTable();
+    }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnRemoveStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveStaffActionPerformed
         int index = tableStaff.getSelectedRow();
         if (index != -1) {
-            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following staff?\n" + currentTableContents.get(index), "Remove Product", JOptionPane.YES_NO_OPTION);
+            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following staff member?\n" + currentTableContents.get(index), "Remove Staff", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     data.removeStaff(currentTableContents.get(index).getId());
@@ -226,6 +344,7 @@ public class StaffWindow extends javax.swing.JFrame {
 
                 }
                 this.updateTable();
+                setCurrentStaff(null);
             }
         }
     }//GEN-LAST:event_btnRemoveStaffActionPerformed
@@ -241,25 +360,39 @@ public class StaffWindow extends javax.swing.JFrame {
     private void tableStaffMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStaffMouseClicked
         if (evt.getClickCount() == 2) {
             editStaff();
+        } else if(evt.getClickCount() == 1){
+            setCurrentStaff(currentTableContents.get(tableStaff.getSelectedRow()));
         }
     }//GEN-LAST:event_tableStaffMouseClicked
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         currentTableContents = StaffSearchDialog.showSearchDialog(this, currentTableContents);
         updateTable();
-        if(currentTableContents.size() == 1){
-            StaffDialog.showEditStaffDialog(this, currentTableContents.get(0));
+        if (currentTableContents.size() == 1) {
+            setCurrentStaff(currentTableContents.get(0));
         }
     }//GEN-LAST:event_btnSearchActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
     private javax.swing.JButton btnClose;
-    private javax.swing.JButton btnEditStaff;
     private javax.swing.JButton btnRemoveStaff;
+    private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnShowAll;
+    private javax.swing.JCheckBox chkLoggedIn;
+    private javax.swing.JCheckBox chkLoggedInTill;
+    private javax.swing.JComboBox<String> cmbPosition;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tableStaff;
+    private javax.swing.JTextField txtName;
+    private javax.swing.JPasswordField txtPassword;
+    private javax.swing.JPasswordField txtPasswordConfirm;
+    private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 }

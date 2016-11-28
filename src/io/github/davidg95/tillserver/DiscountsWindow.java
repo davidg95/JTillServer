@@ -5,11 +5,15 @@
  */
 package io.github.davidg95.tillserver;
 
+import io.github.davidg95.Till.till.DBConnect;
 import io.github.davidg95.Till.till.Discount;
-import io.github.davidg95.Till.till.Product;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -21,6 +25,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
     private static JFrame frame;
 
     private final Data data;
+    private final DBConnect dbConn;
 
     private DefaultTableModel model;
     private List<Discount> currentTableContents;
@@ -30,6 +35,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
      */
     public DiscountsWindow(Data data) {
         this.data = data;
+        this.dbConn = TillServer.getDBConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -56,8 +62,12 @@ public class DiscountsWindow extends javax.swing.JFrame {
     }
 
     private void showAllDiscounts() {
-        currentTableContents = data.getDiscountList();
-        updateTable();
+        try {
+            currentTableContents = dbConn.getAllDiscounts();
+            updateTable();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**

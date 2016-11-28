@@ -5,11 +5,18 @@
  */
 package io.github.davidg95.tillserver;
 
+import io.github.davidg95.Till.till.Category;
+import io.github.davidg95.Till.till.DBConnect;
+import io.github.davidg95.Till.till.Discount;
 import io.github.davidg95.Till.till.Product;
+import io.github.davidg95.Till.till.Tax;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.sql.SQLException;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -24,18 +31,25 @@ public class ProductDialog extends javax.swing.JDialog {
     private static Product product;
 
     private Data data;
+    private final DBConnect dbConn;
 
     private boolean editMode;
+    
+    private List<Discount> discounts;
+    private List<Tax> taxes;
+    private List<Category> categorys;
 
     /**
      * Creates new form NewProduct
      */
     public ProductDialog(Window parent) {
         super(parent);
+        this.dbConn = TillServer.getDBConnection();
         initComponents();
         this.editMode = false;
         this.setLocationRelativeTo(parent);
         this.setModal(true);
+        init();
     }
 
     public ProductDialog(Window parent, Data data) {
@@ -45,6 +59,7 @@ public class ProductDialog extends javax.swing.JDialog {
 
     public ProductDialog(Window parent, Data data, Product p) {
         super(parent);
+        this.dbConn = TillServer.getDBConnection();
         this.data = data;
         initComponents();
         this.editMode = true;
@@ -61,6 +76,20 @@ public class ProductDialog extends javax.swing.JDialog {
         txtComments.setText(p.getComments());
         btnAddProduct.setText("Save Changes");
         this.setTitle("Edit Product " + p.getName());
+        init();
+    }
+    
+    private void init() {
+        try {
+            discounts = dbConn.getAllDiscounts();
+            taxes = dbConn.getAllTax();
+            categorys = dbConn.getAllCategorys();
+            cmbDiscount.setModel(new DefaultComboBoxModel(discounts.toArray()));
+            cmbTax.setModel(new DefaultComboBoxModel(taxes.toArray()));
+            cmbCategory.setModel(new DefaultComboBoxModel(categorys.toArray()));
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -325,42 +354,59 @@ public class ProductDialog extends javax.swing.JDialog {
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         String name = txtName.getText();
         String shortName = txtShortName.getText();
-        String category = cmbCategory.getItemAt(cmbCategory.getSelectedIndex());
-        String tax = cmbTax.getItemAt(cmbTax.getSelectedIndex());
+        int category = 1;
+        if (!categorys.isEmpty()) {
+            category = categorys.get(cmbCategory.getSelectedIndex()).getID();
+        }
+        int tax = 1;
+        if (!taxes.isEmpty()) {
+            tax = taxes.get(cmbTax.getSelectedIndex()).getId();
+        }
         String comments = txtComments.getText();
-        String discount = cmbDiscount.getItemAt(cmbDiscount.getSelectedIndex());
-        if (txtBarcode.getText().equals("") || txtPrice.getText().equals("") || txtStock.getText().equals("")) {
-            product = new Product(name, shortName, category, comments, tax, discount);
-            data.addProduct(product);
-            this.setVisible(false);
-        } else {
-            String barcode = txtBarcode.getText();
-            if (!data.checkBarcode(barcode)) {
-                double price = Double.parseDouble(txtPrice.getText());
-                double costPrice = Double.parseDouble(txtCostPrice.getText());
-                int stock = Integer.parseInt(txtStock.getText());
-                int minStock = Integer.parseInt(txtMinStock.getText());
-                int maxStock = Integer.parseInt(txtMaxStock.getText());
-
-                if (!editMode) {
-                    product = new Product(name, shortName, category, comments, tax, discount, price, costPrice, stock, minStock, maxStock, barcode);
-
-                    if (data != null) {
-                        data.addProduct(product);
-                    }
-                } else {
-                    product.setName(name);
-                    product.setName(shortName);
-                    product.setCategoryID(category);
-                    product.setBarcode(barcode);
-                    product.setPrice(price);
-                    product.setStock(stock);
-                    product.setComments(comments);
+        int discount = 1;
+        if (!discounts.isEmpty()) {
+            discount = discounts.get(cmbDiscount.getSelectedIndex()).getId();
+        }
+        try {
+            if (txtBarcode.getText().equals("") || txtPrice.getText().equals("") || txtStock.getText().equals("")) {
+                try {
+                    product = new Product(name, shortName, category, comments, tax, discount);
+                    dbConn.addProduct(product);
+                    this.setVisible(false);
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
                 }
-                this.setVisible(false);
             } else {
-                JOptionPane.showMessageDialog(this, "Barcode already in use", "New Product", JOptionPane.ERROR_MESSAGE);
+                String barcode = txtBarcode.getText();
+                if (!dbConn.checkBarcode(barcode)) {
+                    double price = Double.parseDouble(txtPrice.getText());
+                    double costPrice = Double.parseDouble(txtCostPrice.getText());
+                    int stock = Integer.parseInt(txtStock.getText());
+                    int minStock = Integer.parseInt(txtMinStock.getText());
+                    int maxStock = Integer.parseInt(txtMaxStock.getText());
+
+                    if (!editMode) {
+                        product = new Product(name, shortName, category, comments, tax, discount, price, costPrice, stock, minStock, maxStock, barcode);
+
+                        if (data != null) {
+                            dbConn.addProduct(product);
+                        }
+                    } else {
+                        product.setName(name);
+                        product.setName(shortName);
+                        product.setCategoryID(category);
+                        product.setBarcode(barcode);
+                        product.setPrice(price);
+                        product.setStock(stock);
+                        product.setComments(comments);
+                    }
+                    this.setVisible(false);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Barcode already in use", "New Product", JOptionPane.ERROR_MESSAGE);
+                }
             }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddProductActionPerformed
 

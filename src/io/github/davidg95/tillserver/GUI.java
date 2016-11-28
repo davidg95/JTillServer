@@ -70,7 +70,6 @@ public class GUI extends javax.swing.JFrame {
     public void databaseLogin() {
         try {
             dbConnection.connect("jdbc:derby:TillEmbedded;create=false", "APP", "App");
-            dbConnection.initDatabase();
             data.loadDatabase();
             if (data.staffCount() == 0) {
                 data.addStaff(StaffDialog.showNewStaffDialog(this));

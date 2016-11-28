@@ -148,7 +148,7 @@ public class CustomerSearchDialog extends javax.swing.JDialog {
         
         if(option == Selection.ID){
             for(Customer c: customers){
-                if(c.getId().equalsIgnoreCase(terms)){
+                if((c.getId() + "").equals(terms)){
                     newList.add(c);
                 }
             }
