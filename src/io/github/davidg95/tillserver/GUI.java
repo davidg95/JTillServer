@@ -206,6 +206,7 @@ public class GUI extends javax.swing.JFrame {
         itemStock = new javax.swing.JMenuItem();
         itemDiscounts = new javax.swing.JMenuItem();
         btnCategorys = new javax.swing.JMenuItem();
+        btnTaxes = new javax.swing.JMenuItem();
         menuStaff = new javax.swing.JMenu();
         itemStaff = new javax.swing.JMenuItem();
         menuCustomers = new javax.swing.JMenu();
@@ -368,6 +369,14 @@ public class GUI extends javax.swing.JFrame {
         });
         menuStock.add(btnCategorys);
 
+        btnTaxes.setText("Manage Taxes");
+        btnTaxes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTaxesActionPerformed(evt);
+            }
+        });
+        menuStock.add(btnTaxes);
+
         jMenuBar1.add(menuStock);
 
         menuStaff.setText("Staff");
@@ -459,11 +468,11 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_itemLoginActionPerformed
 
     private void itemStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffActionPerformed
-        StaffWindow.showStaffListWindow(data);
+        StaffWindow.showStaffListWindow();
     }//GEN-LAST:event_itemStaffActionPerformed
 
     private void btnManageStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStaffActionPerformed
-        StaffWindow.showStaffListWindow(data);
+        StaffWindow.showStaffListWindow();
     }//GEN-LAST:event_btnManageStaffActionPerformed
 
     private void lblClientsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblClientsMouseClicked
@@ -498,11 +507,16 @@ public class GUI extends javax.swing.JFrame {
         CategorysWindow.showCategoryWindow();
     }//GEN-LAST:event_btnCategorysActionPerformed
 
+    private void btnTaxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaxesActionPerformed
+        TaxWindow.showTaxWindow();
+    }//GEN-LAST:event_btnTaxesActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem btnCategorys;
     private javax.swing.JButton btnManageCustomers;
     private javax.swing.JButton btnManageStaff;
     private javax.swing.JButton btnManageStock;
+    private javax.swing.JMenuItem btnTaxes;
     private javax.swing.JMenuItem itemCustomers;
     private javax.swing.JMenuItem itemDiscounts;
     private javax.swing.JMenuItem itemExit;

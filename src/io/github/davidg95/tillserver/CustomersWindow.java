@@ -7,9 +7,12 @@ package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.Customer;
 import io.github.davidg95.Till.till.DBConnect;
+import io.github.davidg95.Till.till.Discount;
+import io.github.davidg95.Till.till.DiscountNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -29,6 +32,8 @@ public class CustomersWindow extends javax.swing.JFrame {
 
     private final DefaultTableModel model;
     private List<Customer> currentTableContents;
+    private DefaultComboBoxModel discountsModel;
+    private List<Discount> discounts;
 
     /**
      * Creates new form CustomersWindow
@@ -40,13 +45,24 @@ public class CustomersWindow extends javax.swing.JFrame {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
-        showAllProducts();
+        showAllCustomers();
+        init();
     }
 
     public static void showCustomersListWindow(Data data) {
         frame = new CustomersWindow(data);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
+    }
+
+    private void init() {
+        try {
+            discounts = dbConn.getAllDiscounts();
+            discountsModel = new DefaultComboBoxModel(discounts.toArray());
+            cmbDiscount.setModel(discountsModel);
+        } catch (SQLException ex) {
+            showDatabaseError(ex);
+        }
     }
 
     private void updateTable() {
@@ -60,7 +76,7 @@ public class CustomersWindow extends javax.swing.JFrame {
         table.setModel(model);
     }
 
-    private void showAllProducts() {
+    private void showAllCustomers() {
         try {
             currentTableContents = dbConn.getAllCustomers();
             updateTable();
@@ -92,22 +108,40 @@ public class CustomersWindow extends javax.swing.JFrame {
             txtCounty.setText("");
             txtCountry.setText("");
             txtPostcode.setText("");
+            cmbDiscount.setSelectedIndex(0);
             customer = null;
         } else {
-            this.customer = c;
-            txtName.setText(c.getName());
-            txtPhone.setText(c.getPhone());
-            txtMobile.setText(c.getMobile());
-            txtEmail.setText(c.getEmail());
-            txtLoyalty.setText(c.getLoyaltyPoints() + "");
-            txtNotes.setText(c.getNotes());
-            txtAddress1.setText(c.getAddressLine1());
-            txtAddress2.setText(c.getAddressLine2());
-            txtTown.setText(c.getTown());
-            txtCounty.setText(c.getCounty());
-            txtCountry.setText(c.getCountry());
-            txtPostcode.setText(c.getPostcode());
+            try {
+                this.customer = c;
+                txtName.setText(c.getName());
+                txtPhone.setText(c.getPhone());
+                txtMobile.setText(c.getMobile());
+                txtEmail.setText(c.getEmail());
+                txtLoyalty.setText(c.getLoyaltyPoints() + "");
+                txtNotes.setText(c.getNotes());
+                txtAddress1.setText(c.getAddressLine1());
+                txtAddress2.setText(c.getAddressLine2());
+                txtTown.setText(c.getTown());
+                txtCounty.setText(c.getCounty());
+                txtCountry.setText(c.getCountry());
+                txtPostcode.setText(c.getPostcode());
+                Discount d = dbConn.getDiscount(c.getDiscountID());
+                int index = 0;
+                for (int i = 0; i < discounts.size(); i++) {
+                    if (discounts.get(i).getId() == d.getId()) {
+                        index = i;
+                        break;
+                    }
+                }
+                cmbDiscount.setSelectedIndex(index);
+            } catch (SQLException | DiscountNotFoundException ex) {
+                showDatabaseError(ex);
+            }
         }
+    }
+
+    private void showDatabaseError(Exception e) {
+        JOptionPane.showMessageDialog(this, e, "Database Error", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -188,8 +222,8 @@ public class CustomersWindow extends javax.swing.JFrame {
             }
         });
         table.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableMouseClicked(evt);
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tableMousePressed(evt);
             }
         });
         jScrollPane1.setViewportView(table);
@@ -452,7 +486,10 @@ public class CustomersWindow extends javax.swing.JFrame {
                 String mobile = txtMobile.getText();
                 String email = txtEmail.getText();
                 String notes = txtNotes.getText();
-                String discount = cmbDiscount.getItemAt(cmbDiscount.getSelectedIndex());
+                int discount = 1;
+                if (!discounts.isEmpty()) {
+                    discount = discounts.get(cmbDiscount.getSelectedIndex()).getId();
+                }
                 int loyalty = Integer.parseInt(txtLoyalty.getText());
 
                 String address1 = txtAddress1.getText();
@@ -461,12 +498,16 @@ public class CustomersWindow extends javax.swing.JFrame {
                 String county = txtCounty.getText();
                 String country = txtCountry.getText();
                 String postcode = txtPostcode.getText();
-                if (name.equals("") || phone.equals("") || mobile.equals("") || email.equals("") || notes.equals("") || discount.equals("") || address1.equals("")) {
+                if (name.equals("") || phone.equals("") || mobile.equals("") || email.equals("") || address1.equals("")) {
                     JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
                 } else {
                     c = new Customer(name, phone, mobile, email, discount, address1, address2, town, county, country, postcode, notes, loyalty);
                     try {
                         dbConn.addCustomer(c);
+                        showAllCustomers();
+                        setCurrentCustomer(null);
+                        jTabbedPane1.setSelectedIndex(0);
+                        txtName.requestFocus();
                     } catch (SQLException ex) {
                         JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -474,12 +515,9 @@ public class CustomersWindow extends javax.swing.JFrame {
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Customer", JOptionPane.ERROR_MESSAGE);
             }
+        } else {
+            setCurrentCustomer(null);
         }
-        updateTable();
-
-        jTabbedPane1.setSelectedIndex(0);
-
-        setCurrentCustomer(null);
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
@@ -488,7 +526,10 @@ public class CustomersWindow extends javax.swing.JFrame {
         String mobile = txtMobile.getText();
         String email = txtEmail.getText();
         String notes = txtNotes.getText();
-        String discount = cmbDiscount.getItemAt(cmbDiscount.getSelectedIndex());
+        int discount = 1;
+        if (!discounts.isEmpty()) {
+            discount = discounts.get(cmbDiscount.getSelectedIndex()).getId();
+        }
         int loyalty = Integer.parseInt(txtLoyalty.getText());
 
         String address1 = txtAddress1.getText();
@@ -513,17 +554,8 @@ public class CustomersWindow extends javax.swing.JFrame {
         customer.setCountry(country);
         customer.setPostcode(postcode);
 
-        updateTable();
+        showAllCustomers();
     }//GEN-LAST:event_btnSaveActionPerformed
-
-    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
-        if (evt.getClickCount() == 2) {
-            editCustomer();
-        } else if (evt.getClickCount() == 1) {
-            Customer c = currentTableContents.get(table.getSelectedRow());
-            setCurrentCustomer(c);
-        }
-    }//GEN-LAST:event_tableMouseClicked
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         int index = table.getSelectedRow();
@@ -535,7 +567,7 @@ public class CustomersWindow extends javax.swing.JFrame {
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
                 }
-                this.updateTable();
+                showAllCustomers();
                 setCurrentCustomer(null);
             }
         }
@@ -546,7 +578,7 @@ public class CustomersWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnShowAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowAllActionPerformed
-        showAllProducts();
+        showAllCustomers();
     }//GEN-LAST:event_btnShowAllActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
@@ -556,6 +588,15 @@ public class CustomersWindow extends javax.swing.JFrame {
             setCurrentCustomer(currentTableContents.get(0));
         }
     }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
+        if (evt.getClickCount() == 2) {
+            editCustomer();
+        } else if (evt.getClickCount() == 1) {
+            Customer c = currentTableContents.get(table.getSelectedRow());
+            setCurrentCustomer(c);
+        }
+    }//GEN-LAST:event_tableMousePressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;

@@ -5,8 +5,8 @@
  */
 package io.github.davidg95.tillserver;
 
-import io.github.davidg95.Till.till.Category;
 import io.github.davidg95.Till.till.DBConnect;
+import io.github.davidg95.Till.till.Tax;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,61 +18,63 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class CategorysWindow extends javax.swing.JFrame {
-
+public class TaxWindow extends javax.swing.JFrame {
+    
     private static JFrame frame;
-
+    
     private final DBConnect dbConn;
-    private Category category;
-
+    private Tax tax;
+    
     private final DefaultTableModel model;
-    private List<Category> currentTableContents;
+    private List<Tax> currentTableContents;
 
     /**
-     * Creates new form CategoryWindow
+     * Creates new form TaxWindow
      */
-    public CategorysWindow() {
+    public TaxWindow() {
         dbConn = TillServer.getDBConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
-        showAllCategorys();
+        showAllTaxes();
     }
-
-    public static void showCategoryWindow() {
-        frame = new CategorysWindow();
+    
+    public static void showTaxWindow(){
+        frame = new TaxWindow();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }
-
+    
     private void updateTable() {
         model.setRowCount(0);
 
-        for (Category c : currentTableContents) {
-            Object[] s = new Object[]{c.getID(), c.getName()};
+        for (Tax t : currentTableContents) {
+            Object[] s = new Object[]{t.getId(), t.getName()};
             model.addRow(s);
         }
 
         table.setModel(model);
     }
 
-    private void showAllCategorys() {
+    private void showAllTaxes() {
         try {
-            currentTableContents = dbConn.getAllCategorys();
+            currentTableContents = dbConn.getAllTax();
             updateTable();
         } catch (SQLException ex) {
             showDatabaseError(ex);
         }
     }
 
-    private void setCurrentCategory(Category c) {
-        if (c == null) {
+    private void setCurrentTax(Tax t) {
+        if (t == null) {
             txtName.setText("");
-            category = null;
+            txtValue.setText("");
+            tax = null;
         } else {
-            category = c;
-            txtName.setText(c.getName());
+            tax = t;
+            txtName.setText(t.getName());
+            txtValue.setText(t.getValue() + "");
         }
     }
 
@@ -91,32 +93,34 @@ public class CategorysWindow extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
-        btnClose = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
+        txtValue = new javax.swing.JTextField();
         btnAdd = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
+        btnClose = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Categorys");
+        setTitle("Tax");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "ID", "Name"
+                "ID", "Name", "Value"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -136,16 +140,12 @@ public class CategorysWindow extends javax.swing.JFrame {
         if (table.getColumnModel().getColumnCount() > 0) {
             table.getColumnModel().getColumn(0).setResizable(false);
             table.getColumnModel().getColumn(1).setResizable(false);
+            table.getColumnModel().getColumn(2).setResizable(false);
         }
 
-        btnClose.setText("Close");
-        btnClose.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCloseActionPerformed(evt);
-            }
-        });
-
         jLabel1.setText("Name:");
+
+        jLabel2.setText("Value:");
 
         btnAdd.setText("Add");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -168,74 +168,96 @@ public class CategorysWindow extends javax.swing.JFrame {
             }
         });
 
+        btnClose.setText("Close");
+        btnClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCloseActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnClose))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
-                            .addComponent(btnAdd))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel2))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtName)
+                                    .addComponent(txtValue)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(1, 1, 1)
+                                .addComponent(btnAdd)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnSave)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnRemove))
-                            .addComponent(txtName))
+                                .addComponent(btnRemove)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 826, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnClose)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(txtValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAdd)
+                            .addComponent(btnSave)
+                            .addComponent(btnRemove))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnClose)
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(44, 44, 44)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAdd)
-                    .addComponent(btnSave)
-                    .addComponent(btnRemove))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
+        this.setVisible(false);
+    }//GEN-LAST:event_btnCloseActionPerformed
+
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        if (category == null) {
-            Category c;
+        if (tax == null) {
+            Tax t;
             try {
                 String name = txtName.getText();
+                double value = Double.parseDouble(txtValue.getText());
                 if (name.equals("")) {
-                    JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Category", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Tax", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    c = new Category(name);
+                    t = new Tax(name, value);
                     try {
-                        dbConn.addCategory(c);
-                        showAllCategorys();
-                        setCurrentCategory(null);
+                        dbConn.addTax(t);
+                        showAllTaxes();
+                        setCurrentTax(null);
                     } catch (SQLException ex) {
                         showDatabaseError(ex);
                     }
                 }
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Category", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Tax", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnAddActionPerformed
@@ -243,40 +265,37 @@ public class CategorysWindow extends javax.swing.JFrame {
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         try {
             String name = txtName.getText();
+            double value = Double.parseDouble(txtValue.getText());
             if (name == null) {
-                JOptionPane.showMessageDialog(this, "Fill out all required fields", "Category", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Fill out all required fields", "Tax", JOptionPane.ERROR_MESSAGE);
             } else {
-                category.setName(name);
+                tax.setName(name);
                 updateTable();
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Fill out all required fields", "Category", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Fill out all required fields", "Tax", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         int index = table.getSelectedRow();
         if (index != -1) {
-            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following category?\n" + currentTableContents.get(index), "Remove Category", JOptionPane.YES_NO_OPTION);
+            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following tax?\n" + currentTableContents.get(index), "Remove Tax", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
-                    dbConn.removeCategory(currentTableContents.get(index).getID());
+                    dbConn.removeTax(currentTableContents.get(index).getId());
                 } catch (SQLException ex) {
                     showDatabaseError(ex);
                 }
-                showAllCategorys();
-                setCurrentCategory(null);
+                showAllTaxes();
+                setCurrentTax(null);
             }
         }
     }//GEN-LAST:event_btnRemoveActionPerformed
 
-    private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        this.setVisible(false);
-    }//GEN-LAST:event_btnCloseActionPerformed
-
     private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
         if (evt.getClickCount() == 1) {
-            setCurrentCategory(currentTableContents.get(table.getSelectedRow()));
+            setCurrentTax(currentTableContents.get(table.getSelectedRow()));
         }
     }//GEN-LAST:event_tableMousePressed
 
@@ -286,8 +305,10 @@ public class CategorysWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnSave;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
     private javax.swing.JTextField txtName;
+    private javax.swing.JTextField txtValue;
     // End of variables declaration//GEN-END:variables
 }

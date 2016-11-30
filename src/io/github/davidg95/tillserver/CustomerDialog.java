@@ -7,11 +7,14 @@ package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.Customer;
 import io.github.davidg95.Till.till.DBConnect;
+import io.github.davidg95.Till.till.Discount;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
 import java.sql.SQLException;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -28,6 +31,9 @@ public class CustomerDialog extends javax.swing.JDialog {
     private DBConnect dbConn;
 
     private boolean editMode;
+    
+    private DefaultComboBoxModel discountsModel;
+    private List<Discount> discounts;
 
     /**
      * Creates new form CustomerDialog
@@ -105,6 +111,20 @@ public class CustomerDialog extends javax.swing.JDialog {
         customer = c;
         dialog.setVisible(true);
         return customer;
+    }
+    
+    private void init() {
+        try {
+            discounts = dbConn.getAllDiscounts();
+            discountsModel = new DefaultComboBoxModel(discounts.toArray());
+            cmbDiscount.setModel(discountsModel);
+        } catch (SQLException ex) {
+            showDatabaseError(ex);
+        }
+    }
+    
+    private void showDatabaseError(Exception e) {
+        JOptionPane.showMessageDialog(this, e, "Database Error", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -357,7 +377,10 @@ public class CustomerDialog extends javax.swing.JDialog {
         String mobile = txtMobile.getText();
         String email = txtEmail.getText();
         String notes = txtNotes.getText();
-        String discount = cmbDiscount.getItemAt(cmbDiscount.getSelectedIndex());
+        int discount = 1;
+        if (!discounts.isEmpty()) {
+            discount = discounts.get(cmbDiscount.getSelectedIndex()).getId();
+        }
         int loyalty = Integer.parseInt(txtLoyalty.getText());
 
         String address1 = txtAddress1.getText();

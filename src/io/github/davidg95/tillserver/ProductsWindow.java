@@ -6,11 +6,13 @@
 package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.Category;
+import io.github.davidg95.Till.till.CategoryNotFoundException;
 import io.github.davidg95.Till.till.DBConnect;
 import io.github.davidg95.Till.till.Discount;
 import io.github.davidg95.Till.till.DiscountNotFoundException;
 import io.github.davidg95.Till.till.Product;
 import io.github.davidg95.Till.till.Tax;
+import io.github.davidg95.Till.till.TaxNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,10 @@ public class ProductsWindow extends javax.swing.JFrame {
     private List<Tax> taxes;
     private List<Category> categorys;
 
+    private DefaultComboBoxModel discountsModel;
+    private DefaultComboBoxModel taxesModel;
+    private DefaultComboBoxModel categorysModel;
+
     /**
      * Creates new form ProductsWindow
      *
@@ -66,9 +72,12 @@ public class ProductsWindow extends javax.swing.JFrame {
             discounts = dbConn.getAllDiscounts();
             taxes = dbConn.getAllTax();
             categorys = dbConn.getAllCategorys();
-            cmbDiscount.setModel(new DefaultComboBoxModel(discounts.toArray()));
-            cmbTax.setModel(new DefaultComboBoxModel(taxes.toArray()));
-            cmbCategory.setModel(new DefaultComboBoxModel(categorys.toArray()));
+            discountsModel = new DefaultComboBoxModel(discounts.toArray());
+            taxesModel = new DefaultComboBoxModel(taxes.toArray());
+            categorysModel = new DefaultComboBoxModel(categorys.toArray());
+            cmbDiscount.setModel(discountsModel);
+            cmbTax.setModel(taxesModel);
+            cmbCategory.setModel(categorysModel);
         } catch (SQLException ex) {
             showDatabaseError(ex);
         }
@@ -115,6 +124,9 @@ public class ProductsWindow extends javax.swing.JFrame {
             txtMaxStock.setText("");
             txtComments.setText("");
             chkOpen.setSelected(false);
+            cmbDiscount.setSelectedIndex(0);
+            cmbTax.setSelectedIndex(0);
+            cmbCategory.setSelectedIndex(0);
             product = null;
         } else {
             try {
@@ -129,8 +141,34 @@ public class ProductsWindow extends javax.swing.JFrame {
                 txtMaxStock.setText(p.getMaxStockLevel() + "");
                 txtComments.setText(p.getComments());
                 Discount d = dbConn.getDiscount(p.getDiscountID());
-
-            } catch (SQLException | DiscountNotFoundException ex) {
+                int index = 0;
+                for(int i = 0; i < discounts.size(); i++){
+                    if(discounts.get(i).getId() == d.getId()){
+                        index = i;
+                        break;
+                    }
+                }
+                cmbDiscount.setSelectedIndex(index);
+                Category c = dbConn.getCategory(p.getCategoryID());
+                index = 0;
+                for(int i = 0; i < categorys.size(); i++){
+                    if(categorys.get(i).getID() == c.getID()){
+                        index = i;
+                        break;
+                    }
+                }
+                cmbCategory.setSelectedIndex(index);
+                Tax t = dbConn.getTax(p.getTaxID());
+                index = 0;
+                for(int i = 0; i < taxes.size(); i++){
+                    if(taxes.get(i).getId()== t.getId()){
+                        index = i;
+                        break;
+                    }
+                }
+                cmbTax.setSelectedIndex(index);
+            } catch (SQLException | DiscountNotFoundException | CategoryNotFoundException | TaxNotFoundException ex) {
+                showDatabaseError(ex);
             }
         }
     }
@@ -213,8 +251,8 @@ public class ProductsWindow extends javax.swing.JFrame {
             }
         });
         tableProducts.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableProductsMouseClicked(evt);
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tableProductsMousePressed(evt);
             }
         });
         jScrollPane1.setViewportView(tableProducts);
@@ -446,15 +484,6 @@ public class ProductsWindow extends javax.swing.JFrame {
         showAllProducts();
     }//GEN-LAST:event_btnShowAllActionPerformed
 
-    private void tableProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProductsMouseClicked
-        if (evt.getClickCount() == 2) {
-            editProduct();
-        } else if (evt.getClickCount() == 1) {
-            Product p = currentTableContents.get(tableProducts.getSelectedRow());
-            setCurrentProduct(p);
-        }
-    }//GEN-LAST:event_tableProductsMouseClicked
-
     private void btnRemoveProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveProductActionPerformed
         int index = tableProducts.getSelectedRow();
         if (index != -1) {
@@ -593,6 +622,15 @@ public class ProductsWindow extends javax.swing.JFrame {
             setCurrentProduct(null);
         }
     }//GEN-LAST:event_btnNewProductActionPerformed
+
+    private void tableProductsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProductsMousePressed
+        if (evt.getClickCount() == 2) {
+            editProduct();
+        } else if (evt.getClickCount() == 1) {
+            Product p = currentTableContents.get(tableProducts.getSelectedRow());
+            setCurrentProduct(p);
+        }
+    }//GEN-LAST:event_tableProductsMousePressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;

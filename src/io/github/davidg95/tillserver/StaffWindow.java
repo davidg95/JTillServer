@@ -5,6 +5,7 @@
  */
 package io.github.davidg95.tillserver;
 
+import io.github.davidg95.Till.till.Discount;
 import io.github.davidg95.Till.till.Staff;
 import io.github.davidg95.Till.till.StaffNotFoundException;
 import java.util.ArrayList;
@@ -31,8 +32,8 @@ public class StaffWindow extends javax.swing.JFrame {
     /**
      * Creates new form StaffWindow
      */
-    public StaffWindow(Data data) {
-        this.data = data;
+    public StaffWindow() {
+        this.data = TillServer.getData();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -40,8 +41,8 @@ public class StaffWindow extends javax.swing.JFrame {
         showAllStaff();
     }
 
-    public static void showStaffListWindow(Data data) {
-        frame = new StaffWindow(data);
+    public static void showStaffListWindow() {
+        frame = new StaffWindow();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }
@@ -77,6 +78,7 @@ public class StaffWindow extends javax.swing.JFrame {
             txtUsername.setText("");
             txtPassword.setText("");
             txtPasswordConfirm.setText("");
+            cmbPosition.setSelectedIndex(0);
             staff = null;
         } else {
             this.staff = s;
@@ -84,6 +86,15 @@ public class StaffWindow extends javax.swing.JFrame {
             txtUsername.setText(s.getUsername());
             txtPassword.setText(s.getPassword());
             txtPasswordConfirm.setText(s.getPassword());
+            Staff.Position p = s.getPosition();
+            int index = 0;
+            for (int i = 0; i < Staff.Position.values().length; i++) {
+                if (Staff.Position.values()[i] == p) {
+                    index = i;
+                    break;
+                }
+            }
+            cmbPosition.setSelectedIndex(index);
         }
     }
 
@@ -145,8 +156,8 @@ public class StaffWindow extends javax.swing.JFrame {
             }
         });
         tableStaff.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableStaffMouseClicked(evt);
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tableStaffMousePressed(evt);
             }
         });
         jScrollPane1.setViewportView(tableStaff);
@@ -348,14 +359,6 @@ public class StaffWindow extends javax.swing.JFrame {
         showAllStaff();
     }//GEN-LAST:event_btnShowAllActionPerformed
 
-    private void tableStaffMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStaffMouseClicked
-        if (evt.getClickCount() == 2) {
-            editStaff();
-        } else if (evt.getClickCount() == 1) {
-            setCurrentStaff(currentTableContents.get(tableStaff.getSelectedRow()));
-        }
-    }//GEN-LAST:event_tableStaffMouseClicked
-
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         currentTableContents = StaffSearchDialog.showSearchDialog(this, currentTableContents);
         updateTable();
@@ -363,6 +366,14 @@ public class StaffWindow extends javax.swing.JFrame {
             setCurrentStaff(currentTableContents.get(0));
         }
     }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void tableStaffMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStaffMousePressed
+        if (evt.getClickCount() == 2) {
+            editStaff();
+        } else if (evt.getClickCount() == 1) {
+            setCurrentStaff(currentTableContents.get(tableStaff.getSelectedRow()));
+        }
+    }//GEN-LAST:event_tableStaffMousePressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;

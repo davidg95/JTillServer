@@ -72,21 +72,21 @@ public class TillServer {
         setUpdateTimer();
         g.login();
     }
-    
-    public static DBConnect getDBConnection(){
+
+    public static DBConnect getDBConnection() {
         return dbConnection;
     }
-    
-    public static Data getData(){
+
+    public static Data getData() {
         return data;
     }
-    
-    public static void setUpdateTimer(){
+
+    public static void setUpdateTimer() {
         updateTimer = new Timer();
         updateTimer.schedule(updateTask, 10000L, updateInterval);
     }
-    
-    public static void resetUpdateTimer(){
+
+    public static void resetUpdateTimer() {
         updateTask.cancel();
         updateTimer.cancel();
         updateTimer.purge();
