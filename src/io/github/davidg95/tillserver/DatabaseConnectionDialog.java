@@ -23,7 +23,7 @@ public class DatabaseConnectionDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static boolean success;
 
-    private DBConnect db;
+    private final DBConnect db;
 
     /**
      * Creates new form DatabaseConnectionDialog

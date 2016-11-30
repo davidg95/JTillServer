@@ -38,16 +38,12 @@
                                   <Component id="jLabel5" alignment="1" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="chkLoggedIn" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="txtName" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="cmbPosition" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="txtUsername" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="txtPassword" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="txtPasswordConfirm" alignment="0" min="-2" pref="139" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Component id="chkLoggedInTill" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="txtName" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="cmbPosition" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txtUsername" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txtPassword" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txtPasswordConfirm" alignment="0" min="-2" pref="139" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
@@ -102,11 +98,7 @@
                           <Component id="txtPasswordConfirm" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="chkLoggedIn" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="chkLoggedInTill" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="btnAddStaff" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnSave" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -244,6 +236,11 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtName">
+      <Properties>
+        <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="cmbPosition"/>
+        </Property>
+      </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="cmbPosition">
       <Properties>
@@ -257,17 +254,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtUsername">
     </Component>
-    <Component class="javax.swing.JCheckBox" name="chkLoggedIn">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Logged in"/>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JPasswordField" name="txtPassword">
-    </Component>
-    <Component class="javax.swing.JCheckBox" name="chkLoggedInTill">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Logged in to till"/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JPasswordField" name="txtPasswordConfirm">
     </Component>

@@ -10,7 +10,6 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 
 /**

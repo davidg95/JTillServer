@@ -8,9 +8,8 @@ package io.github.davidg95.tillserver;
 import io.github.davidg95.Till.till.Category;
 import io.github.davidg95.Till.till.DBConnect;
 import io.github.davidg95.Till.till.Discount;
-import io.github.davidg95.Till.till.OutOfStockException;
+import io.github.davidg95.Till.till.DiscountNotFoundException;
 import io.github.davidg95.Till.till.Product;
-import io.github.davidg95.Till.till.ProductNotFoundException;
 import io.github.davidg95.Till.till.Tax;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class ProductsWindow extends javax.swing.JFrame {
 
     private final DefaultTableModel model;
     private List<Product> currentTableContents;
-    
+
     private List<Discount> discounts;
     private List<Tax> taxes;
     private List<Category> categorys;
@@ -118,16 +117,21 @@ public class ProductsWindow extends javax.swing.JFrame {
             chkOpen.setSelected(false);
             product = null;
         } else {
-            this.product = p;
-            txtName.setText(p.getName());
-            txtShortName.setText(p.getShortName());
-            txtBarcode.setText(p.getBarcode());
-            txtPrice.setText(p.getPrice() + "");
-            txtCostPrice.setText(p.getCostPrice() + "");
-            txtStock.setText(p.getStock() + "");
-            txtMinStock.setText(p.getMinStockLevel() + "");
-            txtMaxStock.setText(p.getMaxStockLevel() + "");
-            txtComments.setText(p.getComments());
+            try {
+                this.product = p;
+                txtName.setText(p.getName());
+                txtShortName.setText(p.getShortName());
+                txtBarcode.setText(p.getBarcode());
+                txtPrice.setText(p.getPrice() + "");
+                txtCostPrice.setText(p.getCostPrice() + "");
+                txtStock.setText(p.getStock() + "");
+                txtMinStock.setText(p.getMinStockLevel() + "");
+                txtMaxStock.setText(p.getMaxStockLevel() + "");
+                txtComments.setText(p.getComments());
+                Discount d = dbConn.getDiscount(p.getDiscountID());
+
+            } catch (SQLException | DiscountNotFoundException ex) {
+            }
         }
     }
 
@@ -178,12 +182,6 @@ public class ProductsWindow extends javax.swing.JFrame {
         btnSaveChanges = new javax.swing.JButton();
         chkOpen = new javax.swing.JCheckBox();
         btnNewProduct = new javax.swing.JButton();
-        btnPurchase = new javax.swing.JButton();
-        btnTestAdd = new javax.swing.JButton();
-        btnBarcodeCheck = new javax.swing.JButton();
-        btnTestRemove = new javax.swing.JButton();
-        btnTestGet = new javax.swing.JButton();
-        btnDiscountTest = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Stock Managment");
@@ -271,6 +269,8 @@ public class ProductsWindow extends javax.swing.JFrame {
 
         jLabel10.setText("Min Stock Level:");
 
+        txtName.setNextFocusableComponent(txtShortName);
+
         jLabel11.setText("Max Stock Level:");
 
         jLabel2.setText("Barcode:");
@@ -301,48 +301,6 @@ public class ProductsWindow extends javax.swing.JFrame {
         btnNewProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNewProductActionPerformed(evt);
-            }
-        });
-
-        btnPurchase.setText("Test Purchase");
-        btnPurchase.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPurchaseActionPerformed(evt);
-            }
-        });
-
-        btnTestAdd.setText("Test Add");
-        btnTestAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTestAddActionPerformed(evt);
-            }
-        });
-
-        btnBarcodeCheck.setText("Test Barcode Check");
-        btnBarcodeCheck.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBarcodeCheckActionPerformed(evt);
-            }
-        });
-
-        btnTestRemove.setText("Test Remove Product");
-        btnTestRemove.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTestRemoveActionPerformed(evt);
-            }
-        });
-
-        btnTestGet.setText("Test Get Product");
-        btnTestGet.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTestGetActionPerformed(evt);
-            }
-        });
-
-        btnDiscountTest.setText("Discount Test");
-        btnDiscountTest.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDiscountTestActionPerformed(evt);
             }
         });
 
@@ -396,24 +354,12 @@ public class ProductsWindow extends javax.swing.JFrame {
                                 .addComponent(btnSearch)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnShowAll))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(btnPurchase)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnTestAdd)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnBarcodeCheck))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(btnRemoveProduct)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnNewProduct)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(btnSaveChanges))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(btnTestRemove)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnTestGet))
-                                .addComponent(btnDiscountTest)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnNewProduct)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnRemoveProduct)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnSaveChanges)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 816, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
@@ -475,23 +421,12 @@ public class ProductsWindow extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnSaveChanges)
-                            .addComponent(btnNewProduct)
-                            .addComponent(btnRemoveProduct))
+                            .addComponent(btnRemoveProduct)
+                            .addComponent(btnNewProduct))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnShowAll)
                             .addComponent(btnSearch))
-                        .addGap(8, 8, 8)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnPurchase)
-                            .addComponent(btnTestAdd)
-                            .addComponent(btnBarcodeCheck))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnTestRemove)
-                            .addComponent(btnTestGet))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDiscountTest)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 618, Short.MAX_VALUE)
@@ -540,7 +475,6 @@ public class ProductsWindow extends javax.swing.JFrame {
         currentTableContents = ProductSearchDialog.showSearchDialog(this, currentTableContents);
         updateTable();
         if (currentTableContents.size() == 1) {
-            //ProductDialog.showEditProductDialog(this, data, currentTableContents.get(0));
             setCurrentProduct(currentTableContents.get(0));
         }
     }//GEN-LAST:event_btnSearchActionPerformed
@@ -638,12 +572,15 @@ public class ProductsWindow extends javax.swing.JFrame {
                     int stock = Integer.parseInt(txtStock.getText());
                     int minStock = Integer.parseInt(txtMinStock.getText());
                     int maxStock = Integer.parseInt(txtMaxStock.getText());
-                    if (name.equals("") || shortName.equals("") || comments.equals("") || barcode.equals("")) {
+                    if (name.equals("") || shortName.equals("") || barcode.equals("")) {
                         JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
                     } else {
                         p = new Product(name, shortName, category, comments, tax, discount, price, costPrice, stock, minStock, maxStock, barcode);
                         try {
                             dbConn.addProduct(p);
+                            showAllProducts();
+                            setCurrentProduct(null);
+                            txtName.requestFocus();
                         } catch (SQLException ex) {
                             showDatabaseError(ex);
                         }
@@ -652,95 +589,18 @@ public class ProductsWindow extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
                 }
             }
-            showAllProducts();
+        } else {
+            setCurrentProduct(null);
         }
-        setCurrentProduct(null);
     }//GEN-LAST:event_btnNewProductActionPerformed
 
-    private void btnPurchaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPurchaseActionPerformed
-        DBConnect dbCon = TillServer.getDBConnection();
-        int code = currentTableContents.get(tableProducts.getSelectedRow()).getProductCode();
-
-        try {
-            dbCon.purchaseProduct(code);
-        } catch (SQLException | OutOfStockException | ProductNotFoundException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error :D", JOptionPane.ERROR_MESSAGE);
-        }
-        updateTable();
-    }//GEN-LAST:event_btnPurchaseActionPerformed
-
-    private void btnTestAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTestAddActionPerformed
-        Product p = ProductDialog.showNewProductDialog(this, data);
-        DBConnect dbCon = TillServer.getDBConnection();
-
-        try {
-            dbCon.addProduct(p);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_btnTestAddActionPerformed
-
-    private void btnBarcodeCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBarcodeCheckActionPerformed
-        String barcode = JOptionPane.showInputDialog(this, "Enter a barcode to check", "Test Barcode Check", JOptionPane.PLAIN_MESSAGE);
-
-        DBConnect dbCon = TillServer.getDBConnection();
-
-        try {
-            if (dbCon.checkBarcode(barcode) == true) {
-                JOptionPane.showMessageDialog(this, "Barcode is in use", "Test Barcode Check", JOptionPane.ERROR_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "Barcode is not in use", "Test Barcode Check", JOptionPane.PLAIN_MESSAGE);
-            }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_btnBarcodeCheckActionPerformed
-
-    private void btnTestRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTestRemoveActionPerformed
-        Product p = currentTableContents.get(tableProducts.getSelectedRow());
-        DBConnect dbCon = TillServer.getDBConnection();
-
-        try {
-            dbCon.removeProduct(p);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_btnTestRemoveActionPerformed
-
-    private void btnTestGetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTestGetActionPerformed
-        String code = JOptionPane.showInputDialog(this, "Enter code to get", "Test Get Product", JOptionPane.PLAIN_MESSAGE);
-        DBConnect dbCon = TillServer.getDBConnection();
-
-        try {
-            Product p = dbCon.getProduct(code);
-            JOptionPane.showMessageDialog(this, p, "Test Get Product", JOptionPane.PLAIN_MESSAGE);
-        } catch (SQLException | ProductNotFoundException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Test Get Product", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_btnTestGetActionPerformed
-
-    private void btnDiscountTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiscountTestActionPerformed
-        DBConnect dbCon = TillServer.getDBConnection();
-        try {
-            dbCon.getProductsDiscount(currentTableContents.get(tableProducts.getSelectedRow()));
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Test Get Discount", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_btnDiscountTestActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBarcodeCheck;
     private javax.swing.JButton btnClose;
-    private javax.swing.JButton btnDiscountTest;
     private javax.swing.JButton btnNewProduct;
-    private javax.swing.JButton btnPurchase;
     private javax.swing.JButton btnRemoveProduct;
     private javax.swing.JButton btnSaveChanges;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnShowAll;
-    private javax.swing.JButton btnTestAdd;
-    private javax.swing.JButton btnTestGet;
-    private javax.swing.JButton btnTestRemove;
     private javax.swing.JCheckBox chkOpen;
     private javax.swing.JComboBox<String> cmbCategory;
     private javax.swing.JComboBox<String> cmbDiscount;

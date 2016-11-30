@@ -12,8 +12,6 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 

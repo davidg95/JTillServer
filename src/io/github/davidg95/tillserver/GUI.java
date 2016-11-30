@@ -6,8 +6,6 @@
 package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.DBConnect;
-import io.github.davidg95.Till.till.Product;
-import io.github.davidg95.Till.till.ProductNotFoundException;
 import io.github.davidg95.Till.till.Staff;
 import io.github.davidg95.Till.till.StaffNotFoundException;
 import java.io.File;
@@ -16,8 +14,6 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -26,10 +22,7 @@ import javax.swing.JOptionPane;
  * @author David
  */
 public class GUI extends javax.swing.JFrame {
-
-//    private String database_address = "jdbc:derby://localhost:1527/TillTest";
-//    private String username = "davidg95";
-//    private String password = "adventures";
+    
     private String database_address;
     private String username;
     private String password;
@@ -211,7 +204,8 @@ public class GUI extends javax.swing.JFrame {
         itemExit = new javax.swing.JMenuItem();
         menuStock = new javax.swing.JMenu();
         itemStock = new javax.swing.JMenuItem();
-        itemPromotions = new javax.swing.JMenuItem();
+        itemDiscounts = new javax.swing.JMenuItem();
+        btnCategorys = new javax.swing.JMenuItem();
         menuStaff = new javax.swing.JMenu();
         itemStaff = new javax.swing.JMenuItem();
         menuCustomers = new javax.swing.JMenu();
@@ -358,14 +352,21 @@ public class GUI extends javax.swing.JFrame {
         });
         menuStock.add(itemStock);
 
-        itemPromotions.setText("Manage Promotions");
-        itemPromotions.setEnabled(false);
-        itemPromotions.addActionListener(new java.awt.event.ActionListener() {
+        itemDiscounts.setText("Manage Discounts");
+        itemDiscounts.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemPromotionsActionPerformed(evt);
+                itemDiscountsActionPerformed(evt);
             }
         });
-        menuStock.add(itemPromotions);
+        menuStock.add(itemDiscounts);
+
+        btnCategorys.setText("Manage Categorys");
+        btnCategorys.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCategorysActionPerformed(evt);
+            }
+        });
+        menuStock.add(btnCategorys);
 
         jMenuBar1.add(menuStock);
 
@@ -489,19 +490,24 @@ public class GUI extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Changes will take effect next time server restarts", "Update Interval", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_itemIntervalActionPerformed
 
-    private void itemPromotionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPromotionsActionPerformed
-        DiscountsWindow.showDiscountListWindow(data);
-    }//GEN-LAST:event_itemPromotionsActionPerformed
+    private void itemDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDiscountsActionPerformed
+        DiscountsWindow.showDiscountListWindow();
+    }//GEN-LAST:event_itemDiscountsActionPerformed
+
+    private void btnCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategorysActionPerformed
+        CategorysWindow.showCategoryWindow();
+    }//GEN-LAST:event_btnCategorysActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem btnCategorys;
     private javax.swing.JButton btnManageCustomers;
     private javax.swing.JButton btnManageStaff;
     private javax.swing.JButton btnManageStock;
     private javax.swing.JMenuItem itemCustomers;
+    private javax.swing.JMenuItem itemDiscounts;
     private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenuItem itemInterval;
     private javax.swing.JMenuItem itemLogin;
-    private javax.swing.JMenuItem itemPromotions;
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStock;
     private javax.swing.JMenuItem itemUpdate;

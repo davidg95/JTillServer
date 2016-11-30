@@ -24,7 +24,7 @@ public class CustomerSearchDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static List<Customer> newList;
     
-    private List<Customer> customers;
+    private final List<Customer> customers;
     
 
     /**

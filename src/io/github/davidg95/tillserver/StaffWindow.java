@@ -110,9 +110,7 @@ public class StaffWindow extends javax.swing.JFrame {
         txtName = new javax.swing.JTextField();
         cmbPosition = new javax.swing.JComboBox<>();
         txtUsername = new javax.swing.JTextField();
-        chkLoggedIn = new javax.swing.JCheckBox();
         txtPassword = new javax.swing.JPasswordField();
-        chkLoggedInTill = new javax.swing.JCheckBox();
         txtPasswordConfirm = new javax.swing.JPasswordField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -201,11 +199,9 @@ public class StaffWindow extends javax.swing.JFrame {
 
         jLabel5.setText("Confirm Password:");
 
+        txtName.setNextFocusableComponent(cmbPosition);
+
         cmbPosition.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Assisstant", "Supervisor", "Manager", "Area Manager"}));
-
-        chkLoggedIn.setText("Logged in");
-
-        chkLoggedInTill.setText("Logged in to till");
 
         jLabel1.setText("Name:");
 
@@ -228,15 +224,12 @@ public class StaffWindow extends javax.swing.JFrame {
                                     .addComponent(jLabel4)
                                     .addComponent(jLabel5))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(chkLoggedIn)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtName)
-                                        .addComponent(cmbPosition, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtUsername)
-                                        .addComponent(txtPassword)
-                                        .addComponent(txtPasswordConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(chkLoggedInTill)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtName)
+                                    .addComponent(cmbPosition, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtUsername)
+                                    .addComponent(txtPassword)
+                                    .addComponent(txtPasswordConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnAddStaff)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -277,11 +270,7 @@ public class StaffWindow extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtPasswordConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(chkLoggedIn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(chkLoggedInTill)
-                        .addGap(15, 15, 15)
+                        .addGap(63, 63, 63)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAddStaff)
                             .addComponent(btnSave))
@@ -312,11 +301,13 @@ public class StaffWindow extends javax.swing.JFrame {
             } else {
                 s = new Staff(name, position, username, password);
                 data.addStaff(s);
+                setCurrentStaff(null);
+                updateTable();
+                txtName.requestFocus();
             }
-            updateTable();
+        } else {
+            setCurrentStaff(null);
         }
-
-        setCurrentStaff(null);
     }//GEN-LAST:event_btnAddStaffActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
@@ -360,7 +351,7 @@ public class StaffWindow extends javax.swing.JFrame {
     private void tableStaffMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStaffMouseClicked
         if (evt.getClickCount() == 2) {
             editStaff();
-        } else if(evt.getClickCount() == 1){
+        } else if (evt.getClickCount() == 1) {
             setCurrentStaff(currentTableContents.get(tableStaff.getSelectedRow()));
         }
     }//GEN-LAST:event_tableStaffMouseClicked
@@ -380,8 +371,6 @@ public class StaffWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnShowAll;
-    private javax.swing.JCheckBox chkLoggedIn;
-    private javax.swing.JCheckBox chkLoggedInTill;
     private javax.swing.JComboBox<String> cmbPosition;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

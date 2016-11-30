@@ -1,54 +1,6 @@
-Mon Nov 28 17:37:53 GMT 2016 Thread[main,5,main] Cleanup action starting
-java.sql.SQLException: Database 'TillEmbedded' not found.
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection.newSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection.handleDBNotFound(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection.<init>(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection40.<init>(Unknown Source)
-	at org.apache.derby.jdbc.Driver40.getNewEmbedConnection(Unknown Source)
-	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
-	at org.apache.derby.jdbc.Driver20.connect(Unknown Source)
-	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
-	at java.sql.DriverManager.getConnection(DriverManager.java:664)
-	at java.sql.DriverManager.getConnection(DriverManager.java:247)
-	at io.github.davidg95.Till.till.DBConnect.connect(DBConnect.java:83)
-	at io.github.davidg95.tillserver.GUI.databaseLogin(GUI.java:72)
-	at io.github.davidg95.tillserver.TillServer.start(TillServer.java:71)
-	at io.github.davidg95.tillserver.TillServer.main(TillServer.java:49)
-Caused by: java.sql.SQLException: Database 'TillEmbedded' not found.
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.wrapArgsForTransportAcrossDRDA(Unknown Source)
-	... 18 more
-============= begin nested exception, level (1) ===========
-java.sql.SQLException: Database 'TillEmbedded' not found.
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.wrapArgsForTransportAcrossDRDA(Unknown Source)
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection.newSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection.handleDBNotFound(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection.<init>(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection40.<init>(Unknown Source)
-	at org.apache.derby.jdbc.Driver40.getNewEmbedConnection(Unknown Source)
-	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
-	at org.apache.derby.jdbc.Driver20.connect(Unknown Source)
-	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
-	at java.sql.DriverManager.getConnection(DriverManager.java:664)
-	at java.sql.DriverManager.getConnection(DriverManager.java:247)
-	at io.github.davidg95.Till.till.DBConnect.connect(DBConnect.java:83)
-	at io.github.davidg95.tillserver.GUI.databaseLogin(GUI.java:72)
-	at io.github.davidg95.tillserver.TillServer.start(TillServer.java:71)
-	at io.github.davidg95.tillserver.TillServer.main(TillServer.java:49)
-============= end nested exception, level (1) ===========
-Cleanup action completed
 ----------------------------------------------------------------
-Mon Nov 28 17:37:53 GMT 2016:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.3 - (1557168): instance a816c00e-0158-ac03-b4b8-000006a0c0f8 
+Wed Nov 30 14:08:25 GMT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.3 - (1557168): instance a816c00e-0158-b590-a5bf-000006990b98 
 on database directory C:\Users\David\Honors Project\Till\TillServer\TillEmbedded with class loader sun.misc.Launcher$AppClassLoader@4aa298b7 
 Loaded from file:/C:/Users/David/Honors%20Project/Till/TillServer/derby/derby.jar
 java.vendor=Oracle Corporation

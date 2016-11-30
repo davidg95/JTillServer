@@ -24,8 +24,8 @@ public class InitialSetupWindow extends javax.swing.JDialog {
 
     private static JDialog frame;
 
-    private Data data;
-    private DBConnect dbConnect;
+    private final Data data;
+    private final DBConnect dbConnect;
 
     /**
      * Creates new form InitialSetupWindow
