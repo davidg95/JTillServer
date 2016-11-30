@@ -217,7 +217,7 @@ public class GUI extends javax.swing.JFrame {
 
         jToolBar1.setRollover(true);
 
-        btnManageStock.setText("Manage Stock");
+        btnManageStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/resources/product.png"))); // NOI18N
         btnManageStock.setFocusable(false);
         btnManageStock.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnManageStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -228,7 +228,7 @@ public class GUI extends javax.swing.JFrame {
         });
         jToolBar1.add(btnManageStock);
 
-        btnManageCustomers.setText("Manage Customers");
+        btnManageCustomers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/resources/customer.png"))); // NOI18N
         btnManageCustomers.setFocusable(false);
         btnManageCustomers.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnManageCustomers.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -239,7 +239,7 @@ public class GUI extends javax.swing.JFrame {
         });
         jToolBar1.add(btnManageCustomers);
 
-        btnManageStaff.setText("Manage Staff");
+        btnManageStaff.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/resources/staff.png"))); // NOI18N
         btnManageStaff.setFocusable(false);
         btnManageStaff.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnManageStaff.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -423,8 +423,8 @@ public class GUI extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 338, Short.MAX_VALUE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 322, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
