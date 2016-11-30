@@ -218,6 +218,7 @@ public class GUI extends javax.swing.JFrame {
         jToolBar1.setRollover(true);
 
         btnManageStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/resources/product.png"))); // NOI18N
+        btnManageStock.setToolTipText("Manage Products");
         btnManageStock.setFocusable(false);
         btnManageStock.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnManageStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -229,6 +230,7 @@ public class GUI extends javax.swing.JFrame {
         jToolBar1.add(btnManageStock);
 
         btnManageCustomers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/resources/customer.png"))); // NOI18N
+        btnManageCustomers.setToolTipText("Manage Customers");
         btnManageCustomers.setFocusable(false);
         btnManageCustomers.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnManageCustomers.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -240,6 +242,7 @@ public class GUI extends javax.swing.JFrame {
         jToolBar1.add(btnManageCustomers);
 
         btnManageStaff.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/resources/staff.png"))); // NOI18N
+        btnManageStaff.setToolTipText("Manage Staff");
         btnManageStaff.setFocusable(false);
         btnManageStaff.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnManageStaff.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
