@@ -22,7 +22,7 @@ import javax.swing.JOptionPane;
  * @author David
  */
 public class GUI extends javax.swing.JFrame {
-    
+
     private String database_address;
     private String username;
     private String password;
@@ -52,11 +52,16 @@ public class GUI extends javax.swing.JFrame {
 
     private void initialSetup() {
         try {
-            TillSplashScreen.setLabel("Creating database");
+            TillSplashScreen.setLabel("Creating database...");
             dbConnection.create("APP", "App");
-            TillSplashScreen.setLabel("Creating tables");
+            TillSplashScreen.setLabel("Creating tables...");
             dbConnection.initDatabase();
-            data.addStaff(StaffDialog.showNewStaffDialog(this));
+            Staff s = StaffDialog.showNewStaffDialog(this);
+            if (s != null) {
+                data.addStaff(s);
+            } else {
+                System.exit(0);
+            }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -68,7 +73,12 @@ public class GUI extends javax.swing.JFrame {
             TillSplashScreen.setLabel("Connected to database...");
             data.loadDatabase();
             if (data.staffCount() == 0) {
-                data.addStaff(StaffDialog.showNewStaffDialog(this));
+                Staff s = StaffDialog.showNewStaffDialog(this);
+                if (s != null) {
+                    data.addStaff(s);
+                } else {
+                    System.exit(0);
+                }
             }
         } catch (SQLException ex) {
             initialSetup();
