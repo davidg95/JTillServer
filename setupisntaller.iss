@@ -5,22 +5,19 @@
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{BBD93EA3-F05A-499E-B907-353A93133B33}
+AppId={{C53DFF99-CB5D-4E5A-94CB-824C8B71C753}
 AppName=TillServer
 AppVersion=1.0
 ;AppVerName=TillServer 1.0
 AppPublisher=David Grant
-AppPublisherURL=davidscode.ddns.net
-AppSupportURL=davidscode.ddns.net
-AppUpdatesURL=davidscode.ddns.net
-DefaultDirName={pf}\TillServer
+AppPublisherURL=http://davidscode.ddns.net
+AppSupportURL=http://davidscode.ddns.net
+AppUpdatesURL=http://davidscode.ddns.net
+DefaultDirName=C:\TillServer
 DefaultGroupName=TillServer
-DisableProgramGroupPage=yes
-LicenseFile=C:\Users\David\Honors Project\Till\TillServer\dist\README.TXT
-InfoBeforeFile=C:\Users\David\Honors Project\Till\TillServer\dist\beforeinstall.txt
-InfoAfterFile=C:\Users\David\Honors Project\Till\TillServer\dist\adterinstall.txt
 OutputDir=C:\Users\David\Honors Project\Till\TillServer\Compiler
-OutputBaseFilename=tillserver
+OutputBaseFilename=tillserverinstaller
+SetupIconFile=C:\Users\David\Honors Project\Till\TillServer\favicon.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -31,15 +28,15 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\David\Honors Project\Till\TillServer\dist\start.bat"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\David\Honors Project\Till\TillServer\dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\David\Honors Project\Till\TillServer\installer\start.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Honors Project\Till\TillServer\installer\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{group}\TillServer"; Filename: "{app}\start.bat"
-Name: "{group}\{cm:ProgramOnTheWeb,TillServer}"; Filename: "davidscode.ddns.net"
+Name: "{group}\{cm:ProgramOnTheWeb,TillServer}"; Filename: "http://davidscode.ddns.net"
 Name: "{group}\{cm:UninstallProgram,TillServer}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\TillServer"; Filename: "{app}\start.bat"; Tasks: desktopicon
+Name: "{commondesktop}\TillServer"; Filename: "{app}\start.bat"; IconFilename: "{app}\favicon.ico"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\start.bat"; Description: "{cm:LaunchProgram,TillServer}"; Flags: shellexec postinstall skipifsilent

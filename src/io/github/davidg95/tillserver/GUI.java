@@ -226,7 +226,7 @@ public class GUI extends javax.swing.JFrame {
         itemCustomers = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Till Server");
+        setTitle("JTill Server");
         setIconImage(TillServer.getIcon());
 
         jToolBar1.setRollover(true);
