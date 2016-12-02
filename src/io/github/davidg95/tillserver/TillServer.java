@@ -6,6 +6,7 @@
 package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.DBConnect;
+import java.awt.Image;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.sql.SQLException;
@@ -37,6 +38,8 @@ public class TillServer {
     private ConnectionAcceptThread connThread;
 
     public static DBConnect dbConnection;
+    
+    public static Image icon;
 
     public static Timer updateTimer;
     public static DatabaseUpdate updateTask;
@@ -50,6 +53,7 @@ public class TillServer {
     }
 
     public TillServer() {
+        icon = new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/resources/tillIcon.png")).getImage();
         dbConnection = new DBConnect();
         data = new Data(dbConnection, g);
         g = new GUI(data, dbConnection);
@@ -66,10 +70,12 @@ public class TillServer {
     }
 
     public void start() {
+        TillSplashScreen.showSplashScreen();
         connThread.start();
-        g.setVisible(true);
         g.databaseLogin();
         setUpdateTimer();
+        TillSplashScreen.hideSplashScreen();
+        g.setVisible(true);
         g.login();
     }
 
@@ -79,6 +85,10 @@ public class TillServer {
 
     public static Data getData() {
         return data;
+    }
+    
+    public static Image getIcon(){
+        return icon;
     }
 
     public static void setUpdateTimer() {

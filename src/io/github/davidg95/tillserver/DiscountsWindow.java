@@ -107,6 +107,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Discounts");
+        setIconImage(TillServer.getIcon());
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

@@ -223,6 +223,7 @@ public class ProductsWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Stock Managment");
+        setIconImage(TillServer.getIcon());
 
         tableProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

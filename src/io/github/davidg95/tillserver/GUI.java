@@ -52,7 +52,9 @@ public class GUI extends javax.swing.JFrame {
 
     private void initialSetup() {
         try {
+            TillSplashScreen.setLabel("Creating database");
             dbConnection.create("APP", "App");
+            TillSplashScreen.setLabel("Creating tables");
             dbConnection.initDatabase();
             data.addStaff(StaffDialog.showNewStaffDialog(this));
         } catch (SQLException ex) {
@@ -63,6 +65,7 @@ public class GUI extends javax.swing.JFrame {
     public void databaseLogin() {
         try {
             dbConnection.connect("jdbc:derby:TillEmbedded;create=false", "APP", "App");
+            TillSplashScreen.setLabel("Connected to database...");
             data.loadDatabase();
             if (data.staffCount() == 0) {
                 data.addStaff(StaffDialog.showNewStaffDialog(this));
@@ -214,6 +217,7 @@ public class GUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Till Server");
+        setIconImage(TillServer.getIcon());
 
         jToolBar1.setRollover(true);
 
