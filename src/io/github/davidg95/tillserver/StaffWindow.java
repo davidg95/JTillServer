@@ -5,9 +5,9 @@
  */
 package io.github.davidg95.tillserver;
 
-import io.github.davidg95.Till.till.Discount;
+import io.github.davidg95.Till.till.DBConnect;
 import io.github.davidg95.Till.till.Staff;
-import io.github.davidg95.Till.till.StaffNotFoundException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
@@ -24,6 +24,8 @@ public class StaffWindow extends javax.swing.JFrame {
 
     private final Data data;
 
+    private final DBConnect dbConn;
+
     private Staff staff;
 
     private final DefaultTableModel model;
@@ -34,6 +36,7 @@ public class StaffWindow extends javax.swing.JFrame {
      */
     public StaffWindow() {
         this.data = TillServer.getData();
+        this.dbConn = TillServer.getDBConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -59,7 +62,11 @@ public class StaffWindow extends javax.swing.JFrame {
     }
 
     private void showAllStaff() {
-        currentTableContents = data.getStaffList();
+        try {
+            currentTableContents = dbConn.getAllStaff();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
         updateTable();
     }
 
@@ -311,11 +318,15 @@ public class StaffWindow extends javax.swing.JFrame {
             if (name.equals("") || username.equals("")) {
                 JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Staff", JOptionPane.ERROR_MESSAGE);
             } else {
-                s = new Staff(name, position, username, password);
-                data.addStaff(s);
-                setCurrentStaff(null);
-                updateTable();
-                txtName.requestFocus();
+                try {
+                    s = new Staff(name, position, username, password);
+                    dbConn.addStaff(s);
+                    setCurrentStaff(null);
+                    updateTable();
+                    txtName.requestFocus();
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         } else {
             setCurrentStaff(null);
@@ -342,9 +353,9 @@ public class StaffWindow extends javax.swing.JFrame {
             int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following staff member?\n" + currentTableContents.get(index), "Remove Staff", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
-                    data.removeStaff(currentTableContents.get(index).getId());
-                } catch (StaffNotFoundException ex) {
-
+                    dbConn.removeStaff(currentTableContents.get(index).getId());
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
                 }
                 this.updateTable();
                 setCurrentStaff(null);

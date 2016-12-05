@@ -42,7 +42,7 @@ public class TillServer {
     public static Image icon;
 
     public static Timer updateTimer;
-    public static DatabaseUpdate updateTask;
+//    public static DatabaseUpdate updateTask;
     public static long updateInterval = 60000L;
 
     /**
@@ -57,7 +57,7 @@ public class TillServer {
         dbConnection = new DBConnect();
         data = new Data(dbConnection, g);
         g = new GUI(data, dbConnection);
-        updateTask = new DatabaseUpdate();
+//        updateTask = new DatabaseUpdate();
         productsSem = new Semaphore(1);
         customersSem = new Semaphore(1);
         salesSem = new Semaphore(1);
@@ -73,7 +73,7 @@ public class TillServer {
         TillSplashScreen.showSplashScreen();
         connThread.start();
         g.databaseLogin();
-        setUpdateTimer();
+//        setUpdateTimer();
         TillSplashScreen.hideSplashScreen();
         g.setVisible(true);
         g.login();
@@ -91,45 +91,45 @@ public class TillServer {
         return icon;
     }
 
-    public static void setUpdateTimer() {
-        updateTimer = new Timer();
-        updateTimer.schedule(updateTask, 10000L, updateInterval);
-    }
+//    public static void setUpdateTimer() {
+//        updateTimer = new Timer();
+//        updateTimer.schedule(updateTask, 10000L, updateInterval);
+//    }
+//
+//    public static void resetUpdateTimer() {
+//        updateTask.cancel();
+//        updateTimer.cancel();
+//        updateTimer.purge();
+//        setUpdateTimer();
+//    }
 
-    public static void resetUpdateTimer() {
-        updateTask.cancel();
-        updateTimer.cancel();
-        updateTimer.purge();
-        setUpdateTimer();
-    }
-
-    /**
-     * Timer class for updating the database.
-     */
-    public class DatabaseUpdate extends TimerTask {
-
-        @Override
-        public void run() {
-            try {
-                if (dbConnection.isConnected()) {
-                    g.setUpdateLabel("Updating Database");//Set the label
-                    g.log("Updating database");
-                    data.updateDatabase();
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            SwingUtilities.invokeLater(() -> {
-                                g.setUpdateLabel("");
-                            });
-                        }
-
-                    }, 5000L); //Clear the label after 5 seconds
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(TillServer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-    }
+//    /**
+//     * Timer class for updating the database.
+//     */
+//    public class DatabaseUpdate extends TimerTask {
+//
+//        @Override
+//        public void run() {
+//            try {
+//                if (dbConnection.isConnected()) {
+//                    g.setUpdateLabel("Updating Database");//Set the label
+//                    g.log("Updating database");
+//                    data.updateDatabase();
+//                    new Timer().schedule(new TimerTask() {
+//                        @Override
+//                        public void run() {
+//                            SwingUtilities.invokeLater(() -> {
+//                                g.setUpdateLabel("");
+//                            });
+//                        }
+//
+//                    }, 5000L); //Clear the label after 5 seconds
+//                }
+//            } catch (SQLException ex) {
+//                Logger.getLogger(TillServer.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//
+//    }
 
 }

@@ -17,6 +17,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Thread for handling incoming connections.
@@ -254,8 +256,10 @@ public class ConnectionThread extends Thread {
                             Object o = obIn.readObject();
                             Staff s = (Staff) o;
                             staffSem.acquire();
-                            data.addStaff(s);
+                            dbConn.addStaff(s);
                         } catch (ClassNotFoundException | InterruptedException ex) {
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
                         }
                         staffSem.release();
                         break;
@@ -263,10 +267,10 @@ public class ConnectionThread extends Thread {
                         try {
                             int id = Integer.parseInt(inp[1]);
                             staffSem.acquire();
-                            data.removeStaff(id);
+                            dbConn.removeStaff(id);
                             out.println("SUCC");
                         } catch (InterruptedException ex) {
-                        } catch (StaffNotFoundException ex) {
+                        } catch (SQLException ex) {
                             out.println("FAIL");
                         }
                         staffSem.release();
@@ -275,29 +279,25 @@ public class ConnectionThread extends Thread {
                         try {
                             int id = Integer.parseInt(inp[1]);
                             staffSem.acquire();
-                            Staff s = data.getStaff(id);
+                            Staff s = dbConn.getStaff(id);
                             obOut.writeObject(s);
                         } catch (InterruptedException ex) {
                         } catch (StaffNotFoundException ex) {
                             obOut.writeObject(ex);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
                         }
                         obOut.flush();
-                        staffSem.release();
-                        break;
-                    case "GETSTAFFCOUNT": //Get the total number of staff
-                        try {
-                            staffSem.acquire();
-                            out.println(data.staffCount());
-                        } catch (InterruptedException ex) {
-                        }
                         staffSem.release();
                         break;
                     case "GETALLSTAFF": //Get all the staff
                         try {
                             staffSem.acquire();
-                            List<Staff> staffList = data.getStaffList();
+                            List<Staff> staffList = dbConn.getAllStaff();
                             obOut.writeObject(staffList);
                         } catch (InterruptedException ex) {
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
                         }
                         obOut.flush();
                         staffSem.release();
@@ -311,7 +311,7 @@ public class ConnectionThread extends Thread {
                             this.staff = s;
                             TillServer.g.log(staff.getName() + " has logged in");
                             obOut.writeObject(s);
-                        } catch (InterruptedException ex) {
+                        } catch (InterruptedException | SQLException ex) {
                         } catch (LoginException ex) {
                             obOut.writeObject(ex);
                         }
@@ -326,8 +326,8 @@ public class ConnectionThread extends Thread {
                             this.staff = s;
                             TillServer.g.log(staff.getName() + " has logged in");
                             obOut.writeObject(s);
-                        } catch (InterruptedException ex) {
-                        } catch (LoginException | StaffNotFoundException ex) {
+                        } catch (InterruptedException | SQLException ex) {
+                        } catch (LoginException ex) {
                             obOut.writeObject(ex);
                         }
                         obOut.flush();

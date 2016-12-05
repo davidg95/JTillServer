@@ -28,7 +28,7 @@ public class GUI extends javax.swing.JFrame {
     private String password;
 
     private final Data data;
-    private final DBConnect dbConnection;
+    private final DBConnect dbConn;
 
     private Staff staff;
 
@@ -42,7 +42,7 @@ public class GUI extends javax.swing.JFrame {
      * @param dbConnection
      */
     public GUI(Data data, DBConnect dbConnection) {
-        this.dbConnection = dbConnection;
+        this.dbConn = dbConnection;
         this.data = data;
         initComponents();
         setClientLabel("Connections: 0");
@@ -53,13 +53,11 @@ public class GUI extends javax.swing.JFrame {
     private void initialSetup() {
         try {
             TillSplashScreen.setLabel("Creating database...");
-            dbConnection.create("APP", "App");
+            dbConn.create("APP", "App");
             TillSplashScreen.setLabel("Creating tables...");
-            dbConnection.initDatabase();
+            dbConn.initDatabase();
             Staff s = StaffDialog.showNewStaffDialog(this);
-            if (s != null) {
-                data.addStaff(s);
-            } else {
+            if (s == null) {
                 System.exit(0);
             }
         } catch (SQLException ex) {
@@ -69,36 +67,19 @@ public class GUI extends javax.swing.JFrame {
 
     public void databaseLogin() {
         try {
-            dbConnection.connect("jdbc:derby:TillEmbedded;create=false", "APP", "App");
+            dbConn.connect("jdbc:derby:TillEmbedded;create=false", "APP", "App");
             TillSplashScreen.setLabel("Connected to database...");
-            data.loadDatabase();
-            if (data.staffCount() == 0) {
+            if (dbConn.staffCount() == 0) {
                 Staff s = StaffDialog.showNewStaffDialog(this);
-                if (s != null) {
-                    data.addStaff(s);
-                } else {
+                if (s == null) {
                     System.exit(0);
                 }
             }
         } catch (SQLException ex) {
             initialSetup();
         }
-        if (!dbConnection.isConnected()) {
+        if (!dbConn.isConnected()) {
             initialSetup();
-        }
-    }
-
-    public void newDatabaseLogin() {
-        if (!DatabaseConnectionDialog.showConnectionDialog(this, dbConnection)) {
-            int option = JOptionPane.showOptionDialog(this, "Error connection, try again?", "Database Connect", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, null, null);
-            if (option == JOptionPane.YES_OPTION) {
-                newDatabaseLogin();
-                data.loadDatabase();
-            } else {
-                System.exit(2);
-            }
-        } else {
-            data.loadDatabase();
         }
     }
 
@@ -335,6 +316,7 @@ public class GUI extends javax.swing.JFrame {
         menuFile.add(itemLogin);
 
         itemUpdate.setText("Update Database");
+        itemUpdate.setEnabled(false);
         itemUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemUpdateActionPerformed(evt);
@@ -343,6 +325,7 @@ public class GUI extends javax.swing.JFrame {
         menuFile.add(itemUpdate);
 
         itemInterval.setText("Update Interval");
+        itemInterval.setEnabled(false);
         itemInterval.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemIntervalActionPerformed(evt);
@@ -465,7 +448,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_itemExitActionPerformed
 
     private void itemUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemUpdateActionPerformed
-        TillServer.updateTask.run();
+
     }//GEN-LAST:event_itemUpdateActionPerformed
 
     private void itemCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCustomersActionPerformed
@@ -506,7 +489,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void lblDatabaseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDatabaseMouseClicked
         if (evt.getClickCount() == 2) {
-            JOptionPane.showMessageDialog(this, dbConnection, "Database Connection", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(this, dbConn, "Database Connection", JOptionPane.PLAIN_MESSAGE);
         }
     }//GEN-LAST:event_lblDatabaseMouseClicked
 

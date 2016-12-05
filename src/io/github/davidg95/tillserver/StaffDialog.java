@@ -5,12 +5,15 @@
  */
 package io.github.davidg95.tillserver;
 
+import io.github.davidg95.Till.till.DBConnect;
 import io.github.davidg95.Till.till.Staff;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.sql.SQLException;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -22,15 +25,19 @@ public class StaffDialog extends javax.swing.JDialog {
     private static Staff staff;
 
     private Data data;
+    private DBConnect dbConn;
     private Staff s;
     private boolean editMode;
 
     /**
      * Creates new form StaffDialog
+     *
+     * @param parent the parent window.
      */
     public StaffDialog(Window parent) {
         super(parent);
         editMode = false;
+        this.dbConn = TillServer.getDBConnection();
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setModal(true);
@@ -38,6 +45,9 @@ public class StaffDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form StaffDialog
+     *
+     * @param parent the parent window.
+     * @param data data for handling staff members.
      */
     public StaffDialog(Window parent, Data data) {
         this(parent);
@@ -46,6 +56,9 @@ public class StaffDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form StaffDialog
+     *
+     * @param parent parent window.
+     * @param staff staff getting edited.
      */
     public StaffDialog(Window parent, Staff staff) {
         super(parent);
@@ -56,6 +69,7 @@ public class StaffDialog extends javax.swing.JDialog {
         chkLoggedInTill.setSelected(staff.isTillLoggedIn());
         editMode = true;
         this.s = staff;
+        this.dbConn = TillServer.getDBConnection();
         this.setLocationRelativeTo(parent);
         this.setModal(true);
         txtName.setText(s.getName());
@@ -236,22 +250,26 @@ public class StaffDialog extends javax.swing.JDialog {
         Staff.Position position = Staff.Position.values()[cmbPosition.getSelectedIndex()];
         if (!editMode) {
             //if (txtPassword.getPassword() == txtPasswordConfirm.getPassword()) {
-                String password = new String(txtPassword.getPassword());
-                staff = new Staff(name, position, username, password);
-                if(data != null){
-                    data.addStaff(staff);
+            String password = new String(txtPassword.getPassword());
+            staff = new Staff(name, position, username, password);
+            if (dbConn != null) {
+                try {
+                    dbConn.addStaff(staff);
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
                 }
-                this.setVisible(false);
+            }
+            this.setVisible(false);
             //} else{
-                //lblError.setText("Passwords do not match");
+            //lblError.setText("Passwords do not match");
             //}
-        } else{
+        } else {
             staff.setName(name);
             staff.setUsername(username);
-            if(!chkLoggedIn.isSelected()){
+            if (!chkLoggedIn.isSelected()) {
                 staff.logout();
             }
-            if(!chkLoggedInTill.isSelected()){
+            if (!chkLoggedInTill.isSelected()) {
                 staff.tillLogout();
             }
             this.setVisible(false);

@@ -288,7 +288,7 @@ public class InitialSetupWindow extends javax.swing.JDialog {
         String password = new String(txtPassword.getPassword());
         Staff staff = new Staff(name, position, username, password);
         if (data != null) {
-            data.addStaff(staff);
+            //data.addStaff(staff);
         }
     }//GEN-LAST:event_btnCreateUserActionPerformed
 

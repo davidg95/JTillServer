@@ -6,17 +6,17 @@
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{C53DFF99-CB5D-4E5A-94CB-824C8B71C753}
-AppName=TillServer
+AppName=JTill Server
 AppVersion=1.0
-;AppVerName=TillServer 1.0
+;AppVerName=JTillServer 1.0
 AppPublisher=David Grant
 AppPublisherURL=http://davidscode.ddns.net
 AppSupportURL=http://davidscode.ddns.net
 AppUpdatesURL=http://davidscode.ddns.net
-DefaultDirName=C:\TillServer
-DefaultGroupName=TillServer
+DefaultDirName=C:\JTillServer
+DefaultGroupName=JTillServer
 OutputDir=C:\Users\David\Honors Project\Till\TillServer\Compiler
-OutputBaseFilename=tillserverinstaller
+OutputBaseFilename=jtillserverinstaller
 SetupIconFile=C:\Users\David\Honors Project\Till\TillServer\favicon.ico
 Compression=lzma
 SolidCompression=yes
@@ -36,7 +36,7 @@ Source: "C:\Users\David\Honors Project\Till\TillServer\installer\*"; DestDir: "{
 Name: "{group}\TillServer"; Filename: "{app}\start.bat"
 Name: "{group}\{cm:ProgramOnTheWeb,TillServer}"; Filename: "http://davidscode.ddns.net"
 Name: "{group}\{cm:UninstallProgram,TillServer}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\TillServer"; Filename: "{app}\start.bat"; IconFilename: "{app}\favicon.ico"; Tasks: desktopicon
+Name: "{commondesktop}\JTill Server"; Filename: "{app}\start.bat"; IconFilename: "{app}\favicon.ico"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\start.bat"; Description: "{cm:LaunchProgram,TillServer}"; Flags: shellexec postinstall skipifsilent

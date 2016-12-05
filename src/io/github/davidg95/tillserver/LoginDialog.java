@@ -11,7 +11,9 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.sql.SQLException;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -150,13 +152,15 @@ public class LoginDialog extends javax.swing.JDialog {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         String username = txtUsername.getText();
-        String pasword = new String(txtPassword.getPassword());
+        String password = new String(txtPassword.getPassword());
 
         try {
-            staff = data.login(username, pasword);
+            staff = data.login(username, password);
             this.setVisible(false);
         } catch (LoginException ex) {
             lblLogin.setText(ex.getMessage());
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
