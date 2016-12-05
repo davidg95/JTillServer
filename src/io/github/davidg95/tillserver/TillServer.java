@@ -7,15 +7,17 @@ package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.DBConnect;
 import java.awt.Image;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.sql.SQLException;
+import java.net.UnknownHostException;
+import java.util.Properties;
 import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Semaphore;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -27,23 +29,22 @@ public class TillServer {
     public static int MAX_CONNECTIONS = 10;
     public static int MAX_QUEUE = 10;
 
-    private Semaphore productsSem;
-    private Semaphore customersSem;
-    private Semaphore salesSem;
-    private Semaphore staffSem;
-
     private ServerSocket s;
     public static Data data;
     public static GUI g;
     private ConnectionAcceptThread connThread;
 
     public static DBConnect dbConnection;
-    
+
     public static Image icon;
 
     public static Timer updateTimer;
 //    public static DatabaseUpdate updateTask;
     public static long updateInterval = 60000L;
+
+    private Properties properties;
+
+    private static String hostName;
 
     /**
      * @param args the command line arguments
@@ -54,17 +55,14 @@ public class TillServer {
 
     public TillServer() {
         icon = new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/resources/tillIcon.png")).getImage();
+        loadProperties();
         dbConnection = new DBConnect();
         data = new Data(dbConnection, g);
         g = new GUI(data, dbConnection);
 //        updateTask = new DatabaseUpdate();
-        productsSem = new Semaphore(1);
-        customersSem = new Semaphore(1);
-        salesSem = new Semaphore(1);
-        staffSem = new Semaphore(1);
         try {
             s = new ServerSocket(PORT);
-            connThread = new ConnectionAcceptThread(s, productsSem, customersSem, salesSem, staffSem, data);
+            connThread = new ConnectionAcceptThread(s, data);
         } catch (IOException ex) {
         }
     }
@@ -79,6 +77,42 @@ public class TillServer {
         g.login();
     }
 
+    private void loadProperties() {
+        properties = new Properties();
+        InputStream in;
+
+        try {
+            in = new FileInputStream("server.properties");
+            
+            properties.load(in);
+
+            hostName = properties.getProperty("host");
+
+            in.close();
+        } catch (FileNotFoundException | UnknownHostException ex) {
+            saveProperties();
+        } catch (IOException ex) {
+        }
+    }
+
+    private void saveProperties() {
+        properties = new Properties();
+        OutputStream out;
+
+        try {
+            out = new FileOutputStream("server.properties");
+
+            hostName = InetAddress.getLocalHost().getHostName();
+
+            properties.setProperty("host", hostName);
+
+            properties.store(out, null);
+            out.close();
+        } catch (FileNotFoundException | UnknownHostException ex) {
+        } catch (IOException ex) {
+        }
+    }
+
     public static DBConnect getDBConnection() {
         return dbConnection;
     }
@@ -86,9 +120,13 @@ public class TillServer {
     public static Data getData() {
         return data;
     }
-    
-    public static Image getIcon(){
+
+    public static Image getIcon() {
         return icon;
+    }
+    
+    public static String getHostName(){
+        return hostName;
     }
 
 //    public static void setUpdateTimer() {
@@ -102,7 +140,6 @@ public class TillServer {
 //        updateTimer.purge();
 //        setUpdateTimer();
 //    }
-
 //    /**
 //     * Timer class for updating the database.
 //     */
@@ -131,5 +168,4 @@ public class TillServer {
 //        }
 //
 //    }
-
 }

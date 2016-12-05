@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Mon Dec 05 14:57:38 GMT 2016:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.3 - (1557168): instance a816c00e-0158-cf7d-7f6b-000006767190 
+Mon Dec 05 16:34:03 GMT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.3 - (1557168): instance a816c00e-0158-cfd5-c581-000006759b80 
 on database directory C:\Users\David\Honors Project\Till\TillServer\TillEmbedded with class loader sun.misc.Launcher$AppClassLoader@7d4991ad 
 Loaded from file:/C:/Users/David/Honors%20Project/Till/TillServer/derby/derby.jar
 java.vendor=Oracle Corporation

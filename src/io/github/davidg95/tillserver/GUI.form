@@ -66,20 +66,20 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemDiscountsActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="btnCategorys">
+            <MenuItem class="javax.swing.JMenuItem" name="itemCategorys">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Manage Categorys"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCategorysActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemCategorysActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="btnTaxes">
+            <MenuItem class="javax.swing.JMenuItem" name="itemTaxes">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Manage Taxes"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTaxesActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemTaxesActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
@@ -176,7 +176,9 @@
   <SubComponents>
     <Container class="javax.swing.JToolBar" name="jToolBar1">
       <Properties>
+        <Property name="floatable" type="boolean" value="false"/>
         <Property name="rollover" type="boolean" value="true"/>
+        <Property name="doubleBuffered" type="boolean" value="true"/>
       </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
@@ -223,6 +225,34 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnManageStaffActionPerformed"/>
           </Events>
         </Component>
+        <Component class="javax.swing.JButton" name="btnDiscounts">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/io/github/davidg95/resources/discount.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Manage Discounts"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="verticalTextPosition" type="int" value="3"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDiscountsActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnCategorys">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/io/github/davidg95/resources/category.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Manage Categorys"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="verticalTextPosition" type="int" value="3"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCategorysActionPerformed"/>
+          </Events>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="statusBar">
@@ -246,7 +276,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="lblUpdate" alignment="0" pref="18" max="32767" attributes="0"/>
+              <Component id="lblUpdate" alignment="0" max="32767" attributes="0"/>
               <Component id="lblDatabase" alignment="0" max="32767" attributes="0"/>
               <Component id="lblUser" alignment="0" max="32767" attributes="0"/>
               <Component id="lblClients" alignment="0" max="32767" attributes="0"/>
@@ -257,6 +287,7 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="lblDatabase">
           <Properties>
+            <Property name="text" type="java.lang.String" value="Not connected to database"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
                 <EtchetBorder/>
@@ -269,6 +300,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="lblUser">
           <Properties>
+            <Property name="text" type="java.lang.String" value="Not Logged In"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
                 <EtchetBorder/>
@@ -290,6 +322,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="lblClients">
           <Properties>
+            <Property name="text" type="java.lang.String" value="Connections: 0"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
                 <EtchetBorder/>

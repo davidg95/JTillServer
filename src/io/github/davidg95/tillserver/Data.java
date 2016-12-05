@@ -9,6 +9,9 @@ import io.github.davidg95.Till.till.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Data class which stores all system data.
@@ -22,6 +25,9 @@ public class Data {
 
     private final List<Staff> loggedIn;
     private final List<Staff> loggedInTill;
+    
+    private final Semaphore logSem;
+    private final Semaphore tillLogSem;
 
     /**
      * Blank constructor which initialises the product and customers data
@@ -35,7 +41,8 @@ public class Data {
         this.g = g;
         loggedIn = new ArrayList<>();
         loggedInTill = new ArrayList<>();
-
+        logSem = new Semaphore(1);
+        tillLogSem = new Semaphore(1);
     }
 
     /**
@@ -50,10 +57,16 @@ public class Data {
      */
     public Staff login(String username, String password) throws LoginException, SQLException {
         Staff s = dbConnection.login(username, password);
+        try {
+            logSem.acquire();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (loggedIn.contains(s)) {
             throw new LoginException("You are already logged in elsewhere");
         }
         loggedIn.add(s);
+        logSem.release();
         return s;
     }
 
@@ -69,6 +82,11 @@ public class Data {
         Staff s;
         try {
             s = dbConnection.getStaff(id);
+            try {
+                tillLogSem.acquire();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+            }
             if (loggedInTill.contains(s)) {
                 throw new LoginException("You are already logged in elsewhere");
             }
@@ -76,6 +94,7 @@ public class Data {
         } catch (StaffNotFoundException ex) {
             throw new LoginException(id + " could not be found");
         }
+        tillLogSem.release();
         return s;
     }
 
@@ -86,9 +105,15 @@ public class Data {
      * @throws StaffNotFoundException if the staff member was not found.
      */
     public void logout(int id) throws StaffNotFoundException {
+        try {
+            tillLogSem.acquire();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+        }
         for (Staff s : loggedIn) {
             if (s.getId() == id) {
                 loggedIn.remove(s);
+                tillLogSem.release();
                 return;
             }
         }

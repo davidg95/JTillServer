@@ -50,7 +50,7 @@ public class TaxWindow extends javax.swing.JFrame {
         model.setRowCount(0);
 
         for (Tax t : currentTableContents) {
-            Object[] s = new Object[]{t.getId(), t.getName()};
+            Object[] s = new Object[]{t.getId(), t.getName(), t.getValue()};
             model.addRow(s);
         }
 

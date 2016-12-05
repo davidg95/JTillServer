@@ -45,7 +45,6 @@ public class GUI extends javax.swing.JFrame {
         this.dbConn = dbConnection;
         this.data = data;
         initComponents();
-        setClientLabel("Connections: 0");
         connections = new ArrayList<>();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
@@ -68,7 +67,8 @@ public class GUI extends javax.swing.JFrame {
     public void databaseLogin() {
         try {
             dbConn.connect("jdbc:derby:TillEmbedded;create=false", "APP", "App");
-            TillSplashScreen.setLabel("Connected to database...");
+            TillSplashScreen.setLabel("Connected to database");
+            lblDatabase.setText("Connected to database");
             if (dbConn.staffCount() == 0) {
                 Staff s = StaffDialog.showNewStaffDialog(this);
                 if (s == null) {
@@ -120,7 +120,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void logout() {
         try {
-            lblUser.setText("Not Logged On");
+            lblUser.setText("Not Logged In");
             data.logout(staff.getId());
             log(staff.getName() + " has logged out");
         } catch (StaffNotFoundException ex) {
@@ -181,6 +181,8 @@ public class GUI extends javax.swing.JFrame {
         btnManageStock = new javax.swing.JButton();
         btnManageCustomers = new javax.swing.JButton();
         btnManageStaff = new javax.swing.JButton();
+        btnDiscounts = new javax.swing.JButton();
+        btnCategorys = new javax.swing.JButton();
         statusBar = new javax.swing.JPanel();
         lblDatabase = new javax.swing.JLabel();
         lblUser = new javax.swing.JLabel();
@@ -199,8 +201,8 @@ public class GUI extends javax.swing.JFrame {
         menuStock = new javax.swing.JMenu();
         itemStock = new javax.swing.JMenuItem();
         itemDiscounts = new javax.swing.JMenuItem();
-        btnCategorys = new javax.swing.JMenuItem();
-        btnTaxes = new javax.swing.JMenuItem();
+        itemCategorys = new javax.swing.JMenuItem();
+        itemTaxes = new javax.swing.JMenuItem();
         menuStaff = new javax.swing.JMenu();
         itemStaff = new javax.swing.JMenuItem();
         menuCustomers = new javax.swing.JMenu();
@@ -210,7 +212,9 @@ public class GUI extends javax.swing.JFrame {
         setTitle("JTill Server");
         setIconImage(TillServer.getIcon());
 
+        jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
+        jToolBar1.setDoubleBuffered(true);
 
         btnManageStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/resources/product.png"))); // NOI18N
         btnManageStock.setToolTipText("Manage Products");
@@ -248,6 +252,31 @@ public class GUI extends javax.swing.JFrame {
         });
         jToolBar1.add(btnManageStaff);
 
+        btnDiscounts.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/resources/discount.png"))); // NOI18N
+        btnDiscounts.setToolTipText("Manage Discounts");
+        btnDiscounts.setFocusable(false);
+        btnDiscounts.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnDiscounts.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDiscounts.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDiscountsActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnDiscounts);
+
+        btnCategorys.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/resources/category.png"))); // NOI18N
+        btnCategorys.setToolTipText("Manage Categorys");
+        btnCategorys.setFocusable(false);
+        btnCategorys.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnCategorys.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCategorys.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCategorysActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnCategorys);
+
+        lblDatabase.setText("Not connected to database");
         lblDatabase.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         lblDatabase.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -255,6 +284,7 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        lblUser.setText("Not Logged In");
         lblUser.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         lblUser.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -264,6 +294,7 @@ public class GUI extends javax.swing.JFrame {
 
         lblUpdate.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        lblClients.setText("Connections: 0");
         lblClients.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         lblClients.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -291,7 +322,7 @@ public class GUI extends javax.swing.JFrame {
         );
         statusBarLayout.setVerticalGroup(
             statusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, 18, Short.MAX_VALUE)
+            .addComponent(lblUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblDatabase, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblClients, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -361,21 +392,21 @@ public class GUI extends javax.swing.JFrame {
         });
         menuStock.add(itemDiscounts);
 
-        btnCategorys.setText("Manage Categorys");
-        btnCategorys.addActionListener(new java.awt.event.ActionListener() {
+        itemCategorys.setText("Manage Categorys");
+        itemCategorys.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCategorysActionPerformed(evt);
+                itemCategorysActionPerformed(evt);
             }
         });
-        menuStock.add(btnCategorys);
+        menuStock.add(itemCategorys);
 
-        btnTaxes.setText("Manage Taxes");
-        btnTaxes.addActionListener(new java.awt.event.ActionListener() {
+        itemTaxes.setText("Manage Taxes");
+        itemTaxes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTaxesActionPerformed(evt);
+                itemTaxesActionPerformed(evt);
             }
         });
-        menuStock.add(btnTaxes);
+        menuStock.add(itemTaxes);
 
         jMenuBar1.add(menuStock);
 
@@ -503,20 +534,29 @@ public class GUI extends javax.swing.JFrame {
         DiscountsWindow.showDiscountListWindow();
     }//GEN-LAST:event_itemDiscountsActionPerformed
 
+    private void itemCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCategorysActionPerformed
+        CategorysWindow.showCategoryWindow();
+    }//GEN-LAST:event_itemCategorysActionPerformed
+
+    private void itemTaxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTaxesActionPerformed
+        TaxWindow.showTaxWindow();
+    }//GEN-LAST:event_itemTaxesActionPerformed
+
+    private void btnDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiscountsActionPerformed
+        DiscountsWindow.showDiscountListWindow();
+    }//GEN-LAST:event_btnDiscountsActionPerformed
+
     private void btnCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategorysActionPerformed
         CategorysWindow.showCategoryWindow();
     }//GEN-LAST:event_btnCategorysActionPerformed
 
-    private void btnTaxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaxesActionPerformed
-        TaxWindow.showTaxWindow();
-    }//GEN-LAST:event_btnTaxesActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem btnCategorys;
+    private javax.swing.JButton btnCategorys;
+    private javax.swing.JButton btnDiscounts;
     private javax.swing.JButton btnManageCustomers;
     private javax.swing.JButton btnManageStaff;
     private javax.swing.JButton btnManageStock;
-    private javax.swing.JMenuItem btnTaxes;
+    private javax.swing.JMenuItem itemCategorys;
     private javax.swing.JMenuItem itemCustomers;
     private javax.swing.JMenuItem itemDiscounts;
     private javax.swing.JMenuItem itemExit;
@@ -524,6 +564,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemLogin;
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStock;
+    private javax.swing.JMenuItem itemTaxes;
     private javax.swing.JMenuItem itemUpdate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

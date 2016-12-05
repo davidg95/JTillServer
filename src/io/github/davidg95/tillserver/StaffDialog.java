@@ -63,10 +63,6 @@ public class StaffDialog extends javax.swing.JDialog {
     public StaffDialog(Window parent, Staff staff) {
         super(parent);
         initComponents();
-        chkLoggedIn.setEnabled(staff.isLoggedIn());
-        chkLoggedIn.setSelected(staff.isLoggedIn());
-        chkLoggedInTill.setEnabled(staff.isTillLoggedIn());
-        chkLoggedInTill.setSelected(staff.isTillLoggedIn());
         editMode = true;
         this.s = staff;
         this.dbConn = TillServer.getDBConnection();
@@ -137,8 +133,6 @@ public class StaffDialog extends javax.swing.JDialog {
         btnAdd = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
         lblError = new javax.swing.JLabel();
-        chkLoggedIn = new javax.swing.JCheckBox();
-        chkLoggedInTill = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("New Staff");
@@ -170,10 +164,6 @@ public class StaffDialog extends javax.swing.JDialog {
             }
         });
 
-        chkLoggedIn.setText("Logged in");
-
-        chkLoggedInTill.setText("Logged in to till");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -194,15 +184,12 @@ public class StaffDialog extends javax.swing.JDialog {
                             .addComponent(jLabel4)
                             .addComponent(jLabel5))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chkLoggedIn)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtName)
-                                .addComponent(cmbPosition, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtUsername)
-                                .addComponent(txtPassword)
-                                .addComponent(txtPasswordConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(chkLoggedInTill))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtName)
+                            .addComponent(cmbPosition, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtUsername)
+                            .addComponent(txtPassword)
+                            .addComponent(txtPasswordConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -228,11 +215,7 @@ public class StaffDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtPasswordConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkLoggedIn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkLoggedInTill)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblError, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -266,12 +249,6 @@ public class StaffDialog extends javax.swing.JDialog {
         } else {
             staff.setName(name);
             staff.setUsername(username);
-            if (!chkLoggedIn.isSelected()) {
-                staff.logout();
-            }
-            if (!chkLoggedInTill.isSelected()) {
-                staff.tillLogout();
-            }
             this.setVisible(false);
         }
     }//GEN-LAST:event_btnAddActionPerformed
@@ -283,8 +260,6 @@ public class StaffDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClose;
-    private javax.swing.JCheckBox chkLoggedIn;
-    private javax.swing.JCheckBox chkLoggedInTill;
     private javax.swing.JComboBox<String> cmbPosition;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

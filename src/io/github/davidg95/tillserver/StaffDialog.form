@@ -43,16 +43,12 @@
                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="chkLoggedIn" min="-2" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="txtName" max="32767" attributes="0"/>
-                              <Component id="cmbPosition" max="32767" attributes="0"/>
-                              <Component id="txtUsername" max="32767" attributes="0"/>
-                              <Component id="txtPassword" max="32767" attributes="0"/>
-                              <Component id="txtPasswordConfirm" min="-2" pref="139" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="chkLoggedInTill" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="txtName" max="32767" attributes="0"/>
+                          <Component id="cmbPosition" max="32767" attributes="0"/>
+                          <Component id="txtUsername" max="32767" attributes="0"/>
+                          <Component id="txtPassword" max="32767" attributes="0"/>
+                          <Component id="txtPasswordConfirm" min="-2" pref="139" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -88,11 +84,7 @@
                   <Component id="txtPasswordConfirm" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="chkLoggedIn" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="chkLoggedInTill" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="35" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Component id="lblError" min="-2" pref="19" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -165,16 +157,6 @@
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblError">
-    </Component>
-    <Component class="javax.swing.JCheckBox" name="chkLoggedIn">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Logged in"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JCheckBox" name="chkLoggedInTill">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Logged in to till"/>
-      </Properties>
     </Component>
   </SubComponents>
 </Form>
