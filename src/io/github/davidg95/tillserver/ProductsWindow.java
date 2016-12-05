@@ -16,6 +16,8 @@ import io.github.davidg95.Till.till.TaxNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -551,6 +553,11 @@ public class ProductsWindow extends javax.swing.JFrame {
             product.setMinStockLevel(minStock);
             product.setMaxStockLevel(maxStock);
             product.setComments(comments);
+        }
+        try {
+            dbConn.updateProduct(product);
+        } catch (SQLException ex) {
+            showDatabaseError(ex);
         }
         updateTable();
     }//GEN-LAST:event_btnSaveChangesActionPerformed

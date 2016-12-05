@@ -6,10 +6,13 @@
 package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.Category;
+import io.github.davidg95.Till.till.CategoryNotFoundException;
 import io.github.davidg95.Till.till.DBConnect;
 import io.github.davidg95.Till.till.Discount;
+import io.github.davidg95.Till.till.DiscountNotFoundException;
 import io.github.davidg95.Till.till.Product;
 import io.github.davidg95.Till.till.Tax;
+import io.github.davidg95.Till.till.TaxNotFoundException;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -34,10 +37,14 @@ public class ProductDialog extends javax.swing.JDialog {
     private final DBConnect dbConn;
 
     private boolean editMode;
-    
+
     private List<Discount> discounts;
     private List<Tax> taxes;
     private List<Category> categorys;
+
+    private DefaultComboBoxModel discountsModel;
+    private DefaultComboBoxModel taxesModel;
+    private DefaultComboBoxModel categorysModel;
 
     /**
      * Creates new form NewProduct
@@ -62,6 +69,7 @@ public class ProductDialog extends javax.swing.JDialog {
         this.dbConn = TillServer.getDBConnection();
         this.data = data;
         initComponents();
+        init();
         this.editMode = true;
         this.setLocationRelativeTo(parent);
         this.setModal(true);
@@ -74,19 +82,54 @@ public class ProductDialog extends javax.swing.JDialog {
         txtMinStock.setText(p.getMinStockLevel() + "");
         txtMaxStock.setText(p.getMaxStockLevel() + "");
         txtComments.setText(p.getComments());
+        try {
+            Discount d = dbConn.getDiscount(p.getDiscountID());
+            int index = 0;
+            for (int i = 0; i < discounts.size(); i++) {
+                if (discounts.get(i).getId() == d.getId()) {
+                    index = i;
+                    break;
+                }
+            }
+            cmbDiscount.setSelectedIndex(index);
+            Category c = dbConn.getCategory(p.getCategoryID());
+            index = 0;
+            for (int i = 0; i < categorys.size(); i++) {
+                if (categorys.get(i).getID() == c.getID()) {
+                    index = i;
+                    break;
+                }
+            }
+            cmbCategory.setSelectedIndex(index);
+            Tax t = dbConn.getTax(p.getTaxID());
+            index = 0;
+            for (int i = 0; i < taxes.size(); i++) {
+                if (taxes.get(i).getId() == t.getId()) {
+                    index = i;
+                    break;
+                }
+            }
+            cmbTax.setSelectedIndex(index);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+        } catch (TaxNotFoundException | CategoryNotFoundException | DiscountNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Product", JOptionPane.ERROR_MESSAGE);
+        }
         btnAddProduct.setText("Save Changes");
         this.setTitle("Edit Product " + p.getName());
-        init();
     }
-    
+
     private void init() {
         try {
             discounts = dbConn.getAllDiscounts();
             taxes = dbConn.getAllTax();
             categorys = dbConn.getAllCategorys();
-            cmbDiscount.setModel(new DefaultComboBoxModel(discounts.toArray()));
-            cmbTax.setModel(new DefaultComboBoxModel(taxes.toArray()));
-            cmbCategory.setModel(new DefaultComboBoxModel(categorys.toArray()));
+            discountsModel = new DefaultComboBoxModel(discounts.toArray());
+            taxesModel = new DefaultComboBoxModel(taxes.toArray());
+            categorysModel = new DefaultComboBoxModel(categorys.toArray());
+            cmbDiscount.setModel(discountsModel);
+            cmbTax.setModel(taxesModel);
+            cmbCategory.setModel(categorysModel);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
         }

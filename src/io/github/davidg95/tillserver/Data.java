@@ -25,7 +25,7 @@ public class Data {
 
     private final List<Staff> loggedIn;
     private final List<Staff> loggedInTill;
-    
+
     private final Semaphore logSem;
     private final Semaphore tillLogSem;
 
