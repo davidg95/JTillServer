@@ -76,6 +76,7 @@ public class ServerOptionsDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Server Options");
+        setResizable(false);
 
         jLabel1.setText("Port Number:");
 
