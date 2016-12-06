@@ -7,15 +7,12 @@ package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.DBConnect;
 import java.awt.AWTException;
-import java.awt.CheckboxMenuItem;
 import java.awt.Image;
-import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -52,7 +49,7 @@ public class TillServer {
 //    public static DatabaseUpdate updateTask;
     public static long updateInterval = 60000L;
 
-    private Properties properties;
+    private static Properties properties;
 
     private static String hostName;
 
@@ -88,7 +85,7 @@ public class TillServer {
         g.login();
     }
 
-    private void loadProperties() {
+    public static void loadProperties() {
         properties = new Properties();
         InputStream in;
 
@@ -98,6 +95,9 @@ public class TillServer {
             properties.load(in);
 
             hostName = properties.getProperty("host");
+            PORT = Integer.parseInt(properties.getProperty("port", Integer.toString(PORT)));
+            MAX_CONNECTIONS = Integer.parseInt(properties.getProperty("max_conn", Integer.toString(MAX_CONNECTIONS)));
+            MAX_QUEUE = Integer.parseInt(properties.getProperty("max_queue", Integer.toString(MAX_QUEUE)));
 
             in.close();
         } catch (FileNotFoundException | UnknownHostException ex) {
@@ -106,7 +106,7 @@ public class TillServer {
         }
     }
 
-    private void saveProperties() {
+    public static void saveProperties() {
         properties = new Properties();
         OutputStream out;
 
@@ -116,6 +116,9 @@ public class TillServer {
             hostName = InetAddress.getLocalHost().getHostName();
 
             properties.setProperty("host", hostName);
+            properties.setProperty("port", Integer.toString(PORT));
+            properties.setProperty("max_conn", Integer.toString(MAX_CONNECTIONS));
+            properties.setProperty("max_queue", Integer.toString(MAX_QUEUE));
 
             properties.store(out, null);
             out.close();
@@ -138,14 +141,11 @@ public class TillServer {
         // Create a pop-up menu components
         MenuItem aboutItem = new MenuItem("About");
 
-        aboutItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "JTill Server is running on port number "
-                        + PORT + " with " + g.clientCounter + " connections.\n"
-                        + dbConnection.toString(), "JTill Server",
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
+        aboutItem.addActionListener((ActionEvent e) -> {
+            JOptionPane.showMessageDialog(null, "JTill Server is running on port number "
+                    + PORT + " with " + g.clientCounter + " connections.\n"
+                    + dbConnection.toString(), "JTill Server",
+                    JOptionPane.INFORMATION_MESSAGE);
         });
 
         //Add components to pop-up menu

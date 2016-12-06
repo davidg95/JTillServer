@@ -116,6 +116,7 @@ public class GUI extends javax.swing.JFrame {
             itemLogin.setText("Log Out");
             log(staff.getName() + " has logged in");
         } else {
+            TillServer.saveProperties();
             System.exit(0);
         }
     }
@@ -199,6 +200,8 @@ public class GUI extends javax.swing.JFrame {
         itemLogin = new javax.swing.JMenuItem();
         itemUpdate = new javax.swing.JMenuItem();
         itemInterval = new javax.swing.JMenuItem();
+        itemServerOptions = new javax.swing.JMenuItem();
+        itemAbout = new javax.swing.JMenuItem();
         itemExit = new javax.swing.JMenuItem();
         menuStock = new javax.swing.JMenu();
         itemStock = new javax.swing.JMenuItem();
@@ -366,6 +369,22 @@ public class GUI extends javax.swing.JFrame {
         });
         menuFile.add(itemInterval);
 
+        itemServerOptions.setText("Server Options");
+        itemServerOptions.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemServerOptionsActionPerformed(evt);
+            }
+        });
+        menuFile.add(itemServerOptions);
+
+        itemAbout.setText("About");
+        itemAbout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemAboutActionPerformed(evt);
+            }
+        });
+        menuFile.add(itemAbout);
+
         itemExit.setText("Exit");
         itemExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -477,6 +496,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_itemStockActionPerformed
 
     private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
+        TillServer.saveProperties();
         System.exit(0);
     }//GEN-LAST:event_itemExitActionPerformed
 
@@ -552,18 +572,34 @@ public class GUI extends javax.swing.JFrame {
         CategorysWindow.showCategoryWindow();
     }//GEN-LAST:event_btnCategorysActionPerformed
 
+    private void itemServerOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemServerOptionsActionPerformed
+        int result = ServerOptionsDialog.showDialog(this);
+        if (result == 1) {
+            JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
+        }
+    }//GEN-LAST:event_itemServerOptionsActionPerformed
+
+    private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
+        JOptionPane.showMessageDialog(null, "JTill Server is running on port number "
+                + TillServer.PORT + " with " + clientCounter + " connections.\n"
+                + dbConn.toString(), "JTill Server",
+                JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_itemAboutActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
     private javax.swing.JButton btnManageCustomers;
     private javax.swing.JButton btnManageStaff;
     private javax.swing.JButton btnManageStock;
+    private javax.swing.JMenuItem itemAbout;
     private javax.swing.JMenuItem itemCategorys;
     private javax.swing.JMenuItem itemCustomers;
     private javax.swing.JMenuItem itemDiscounts;
     private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenuItem itemInterval;
     private javax.swing.JMenuItem itemLogin;
+    private javax.swing.JMenuItem itemServerOptions;
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStock;
     private javax.swing.JMenuItem itemTaxes;
