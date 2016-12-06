@@ -6,6 +6,7 @@
 package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.Category;
+import io.github.davidg95.Till.till.CategoryNotFoundException;
 import io.github.davidg95.Till.till.DBConnect;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -65,7 +66,7 @@ public class CategorysWindow extends javax.swing.JFrame {
             currentTableContents = dbConn.getAllCategorys();
             updateTable();
         } catch (SQLException ex) {
-            showDatabaseError(ex);
+            showError(ex);
         }
     }
 
@@ -106,8 +107,8 @@ public class CategorysWindow extends javax.swing.JFrame {
         }
     }
 
-    private void showDatabaseError(Exception e) {
-        JOptionPane.showMessageDialog(this, e, "Database error", JOptionPane.ERROR_MESSAGE);
+    private void showError(Exception e) {
+        JOptionPane.showMessageDialog(this, e, "Categorys", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -326,7 +327,7 @@ public class CategorysWindow extends javax.swing.JFrame {
                         showAllCategorys();
                         setCurrentCategory(null);
                     } catch (SQLException ex) {
-                        showDatabaseError(ex);
+                        showError(ex);
                     }
                 }
             } catch (NumberFormatException e) {
@@ -363,8 +364,8 @@ public class CategorysWindow extends javax.swing.JFrame {
 
                 try {
                     dbConn.updateCategory(category);
-                } catch (SQLException ex) {
-                    showDatabaseError(ex);
+                } catch (SQLException | CategoryNotFoundException ex) {
+                    showError(ex);
                 }
 
                 showAllCategorys();
@@ -383,8 +384,8 @@ public class CategorysWindow extends javax.swing.JFrame {
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dbConn.removeCategory(currentTableContents.get(index).getID());
-                } catch (SQLException ex) {
-                    showDatabaseError(ex);
+                } catch (SQLException | CategoryNotFoundException ex) {
+                    showError(ex);
                 }
                 showAllCategorys();
                 setCurrentCategory(null);

@@ -11,13 +11,12 @@ import io.github.davidg95.Till.till.DBConnect;
 import io.github.davidg95.Till.till.Discount;
 import io.github.davidg95.Till.till.DiscountNotFoundException;
 import io.github.davidg95.Till.till.Product;
+import io.github.davidg95.Till.till.ProductNotFoundException;
 import io.github.davidg95.Till.till.Tax;
 import io.github.davidg95.Till.till.TaxNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -81,7 +80,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             cmbTax.setModel(taxesModel);
             cmbCategory.setModel(categorysModel);
         } catch (SQLException ex) {
-            showDatabaseError(ex);
+            showError(ex);
         }
     }
 
@@ -100,7 +99,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         try {
             currentTableContents = dbConn.getAllProducts();
         } catch (SQLException ex) {
-            showDatabaseError(ex);
+            showError(ex);
         }
         updateTable();
     }
@@ -144,8 +143,8 @@ public class ProductsWindow extends javax.swing.JFrame {
                 txtComments.setText(p.getComments());
                 Discount d = dbConn.getDiscount(p.getDiscountID());
                 int index = 0;
-                for(int i = 0; i < discounts.size(); i++){
-                    if(discounts.get(i).getId() == d.getId()){
+                for (int i = 0; i < discounts.size(); i++) {
+                    if (discounts.get(i).getId() == d.getId()) {
                         index = i;
                         break;
                     }
@@ -153,8 +152,8 @@ public class ProductsWindow extends javax.swing.JFrame {
                 cmbDiscount.setSelectedIndex(index);
                 Category c = dbConn.getCategory(p.getCategoryID());
                 index = 0;
-                for(int i = 0; i < categorys.size(); i++){
-                    if(categorys.get(i).getID() == c.getID()){
+                for (int i = 0; i < categorys.size(); i++) {
+                    if (categorys.get(i).getID() == c.getID()) {
                         index = i;
                         break;
                     }
@@ -162,21 +161,21 @@ public class ProductsWindow extends javax.swing.JFrame {
                 cmbCategory.setSelectedIndex(index);
                 Tax t = dbConn.getTax(p.getTaxID());
                 index = 0;
-                for(int i = 0; i < taxes.size(); i++){
-                    if(taxes.get(i).getId()== t.getId()){
+                for (int i = 0; i < taxes.size(); i++) {
+                    if (taxes.get(i).getId() == t.getId()) {
                         index = i;
                         break;
                     }
                 }
                 cmbTax.setSelectedIndex(index);
             } catch (SQLException | DiscountNotFoundException | CategoryNotFoundException | TaxNotFoundException ex) {
-                showDatabaseError(ex);
+                showError(ex);
             }
         }
     }
 
-    private void showDatabaseError(Exception e) {
-        JOptionPane.showMessageDialog(this, e, "Database Error", JOptionPane.ERROR_MESSAGE);
+    private void showError(Exception e) {
+        JOptionPane.showMessageDialog(this, e, "Products", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -494,8 +493,8 @@ public class ProductsWindow extends javax.swing.JFrame {
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dbConn.removeProduct(currentTableContents.get(index).getProductCode());
-                } catch (SQLException ex) {
-                    showDatabaseError(ex);
+                } catch (SQLException | ProductNotFoundException ex) {
+                    showError(ex);
                 }
                 this.updateTable();
                 setCurrentProduct(null);
@@ -556,8 +555,8 @@ public class ProductsWindow extends javax.swing.JFrame {
         }
         try {
             dbConn.updateProduct(product);
-        } catch (SQLException ex) {
-            showDatabaseError(ex);
+        } catch (SQLException | ProductNotFoundException ex) {
+            showError(ex);
         }
         updateTable();
     }//GEN-LAST:event_btnSaveChangesActionPerformed
@@ -598,7 +597,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                     try {
                         dbConn.addProduct(p);
                     } catch (SQLException ex) {
-                        showDatabaseError(ex);
+                        showError(ex);
                     }
                 }
             } else {
@@ -619,7 +618,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                             setCurrentProduct(null);
                             txtName.requestFocus();
                         } catch (SQLException ex) {
-                            showDatabaseError(ex);
+                            showError(ex);
                         }
                     }
                 } catch (NumberFormatException e) {

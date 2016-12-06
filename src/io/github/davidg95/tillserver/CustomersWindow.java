@@ -6,14 +6,13 @@
 package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.Customer;
+import io.github.davidg95.Till.till.CustomerNotFoundException;
 import io.github.davidg95.Till.till.DBConnect;
 import io.github.davidg95.Till.till.Discount;
 import io.github.davidg95.Till.till.DiscountNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -63,7 +62,7 @@ public class CustomersWindow extends javax.swing.JFrame {
             discountsModel = new DefaultComboBoxModel(discounts.toArray());
             cmbDiscount.setModel(discountsModel);
         } catch (SQLException ex) {
-            showDatabaseError(ex);
+            showError(ex);
         }
     }
 
@@ -137,13 +136,13 @@ public class CustomersWindow extends javax.swing.JFrame {
                 }
                 cmbDiscount.setSelectedIndex(index);
             } catch (SQLException | DiscountNotFoundException ex) {
-                showDatabaseError(ex);
+                showError(ex);
             }
         }
     }
 
-    private void showDatabaseError(Exception e) {
-        JOptionPane.showMessageDialog(this, e, "Database Error", JOptionPane.ERROR_MESSAGE);
+    private void showError(Exception e) {
+        JOptionPane.showMessageDialog(this, e, "Customers", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -559,8 +558,8 @@ public class CustomersWindow extends javax.swing.JFrame {
 
         try {
             dbConn.updateCustomer(customer);
-        } catch (SQLException ex) {
-            showDatabaseError(ex);
+        } catch (SQLException | CustomerNotFoundException ex) {
+            showError(ex);
         }
 
         showAllCustomers();
@@ -573,8 +572,8 @@ public class CustomersWindow extends javax.swing.JFrame {
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dbConn.removeCustomer(currentTableContents.get(index).getId());
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+                } catch (SQLException | CustomerNotFoundException ex) {
+                    showError(ex);
                 }
                 showAllCustomers();
                 setCurrentCustomer(null);

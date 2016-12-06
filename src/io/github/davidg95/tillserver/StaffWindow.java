@@ -7,11 +7,10 @@ package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.DBConnect;
 import io.github.davidg95.Till.till.Staff;
+import io.github.davidg95.Till.till.StaffNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -67,7 +66,7 @@ public class StaffWindow extends javax.swing.JFrame {
         try {
             currentTableContents = dbConn.getAllStaff();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+            showError(ex);
         }
         updateTable();
     }
@@ -107,8 +106,8 @@ public class StaffWindow extends javax.swing.JFrame {
         }
     }
 
-    private void showDatabaseError(Exception e) {
-        JOptionPane.showMessageDialog(this, e, "Database Error", JOptionPane.ERROR_MESSAGE);
+    private void showError(Exception e) {
+        JOptionPane.showMessageDialog(this, e, "Staff", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -352,8 +351,8 @@ public class StaffWindow extends javax.swing.JFrame {
 
         try {
             dbConn.updateStaff(staff);
-        } catch (SQLException ex) {
-            showDatabaseError(ex);
+        } catch (SQLException | StaffNotFoundException ex) {
+            showError(ex);
         }
 
         updateTable();
@@ -366,8 +365,8 @@ public class StaffWindow extends javax.swing.JFrame {
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dbConn.removeStaff(currentTableContents.get(index).getId());
-                } catch (SQLException ex) {
-                    showDatabaseError(ex);
+                } catch (SQLException | StaffNotFoundException ex) {
+                    showError(ex);
                 }
                 this.updateTable();
                 setCurrentStaff(null);

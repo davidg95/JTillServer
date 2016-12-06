@@ -7,6 +7,7 @@ package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.DBConnect;
 import io.github.davidg95.Till.till.Tax;
+import io.github.davidg95.Till.till.TaxNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +20,12 @@ import javax.swing.table.DefaultTableModel;
  * @author David
  */
 public class TaxWindow extends javax.swing.JFrame {
-    
+
     private static JFrame frame;
-    
+
     private final DBConnect dbConn;
     private Tax tax;
-    
+
     private final DefaultTableModel model;
     private List<Tax> currentTableContents;
 
@@ -39,13 +40,13 @@ public class TaxWindow extends javax.swing.JFrame {
         model = (DefaultTableModel) table.getModel();
         showAllTaxes();
     }
-    
-    public static void showTaxWindow(){
+
+    public static void showTaxWindow() {
         frame = new TaxWindow();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }
-    
+
     private void updateTable() {
         model.setRowCount(0);
 
@@ -62,7 +63,7 @@ public class TaxWindow extends javax.swing.JFrame {
             currentTableContents = dbConn.getAllTax();
             updateTable();
         } catch (SQLException ex) {
-            showDatabaseError(ex);
+            showError(ex);
         }
     }
 
@@ -78,8 +79,8 @@ public class TaxWindow extends javax.swing.JFrame {
         }
     }
 
-    private void showDatabaseError(Exception e) {
-        JOptionPane.showMessageDialog(this, e, "Database error", JOptionPane.ERROR_MESSAGE);
+    private void showError(Exception e) {
+        JOptionPane.showMessageDialog(this, e, "Tax", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -254,7 +255,7 @@ public class TaxWindow extends javax.swing.JFrame {
                         showAllTaxes();
                         setCurrentTax(null);
                     } catch (SQLException ex) {
-                        showDatabaseError(ex);
+                        showError(ex);
                     }
                 }
             } catch (NumberFormatException e) {
@@ -286,7 +287,9 @@ public class TaxWindow extends javax.swing.JFrame {
                 try {
                     dbConn.removeTax(currentTableContents.get(index).getId());
                 } catch (SQLException ex) {
-                    showDatabaseError(ex);
+                    showError(ex);
+                } catch (TaxNotFoundException ex) {
+                    showError(ex);
                 }
                 showAllTaxes();
                 setCurrentTax(null);

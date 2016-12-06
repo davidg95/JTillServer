@@ -7,11 +7,10 @@ package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.DBConnect;
 import io.github.davidg95.Till.till.Discount;
+import io.github.davidg95.Till.till.DiscountNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -81,7 +80,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
         }
     }
 
-    private void showDatabaseError(Exception e) {
+    private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Database error", JOptionPane.ERROR_MESSAGE);
     }
 
@@ -283,7 +282,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
                             showAllDiscounts();
                             setCurrentDiscount(null);
                         } catch (SQLException ex) {
-                            showDatabaseError(ex);
+                            showError(ex);
                         }
                     }
                 }
@@ -316,7 +315,9 @@ public class DiscountsWindow extends javax.swing.JFrame {
                 try {
                     dbConn.updateDiscount(discount);
                 } catch (SQLException ex) {
-                    showDatabaseError(ex);
+                    showError(ex);
+                } catch (DiscountNotFoundException ex) {
+                    showError(ex);
                 }
 
                 showAllDiscounts();
@@ -334,7 +335,9 @@ public class DiscountsWindow extends javax.swing.JFrame {
                 try {
                     dbConn.removeDiscount(currentTableContents.get(index).getId());
                 } catch (SQLException ex) {
-                    showDatabaseError(ex);
+                    showError(ex);
+                } catch (DiscountNotFoundException ex) {
+                    showError(ex);
                 }
                 showAllDiscounts();
                 setCurrentDiscount(null);
