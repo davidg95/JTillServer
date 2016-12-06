@@ -12,6 +12,8 @@ import io.github.davidg95.Till.till.DiscountNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -554,6 +556,12 @@ public class CustomersWindow extends javax.swing.JFrame {
         customer.setCounty(county);
         customer.setCountry(country);
         customer.setPostcode(postcode);
+
+        try {
+            dbConn.updateCustomer(customer);
+        } catch (SQLException ex) {
+            showDatabaseError(ex);
+        }
 
         showAllCustomers();
     }//GEN-LAST:event_btnSaveActionPerformed

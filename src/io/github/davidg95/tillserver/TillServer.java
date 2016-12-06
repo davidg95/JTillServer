@@ -59,7 +59,6 @@ public class TillServer {
         dbConnection = new DBConnect();
         data = new Data(dbConnection, g);
         g = new GUI(data, dbConnection);
-//        updateTask = new DatabaseUpdate();
         try {
             s = new ServerSocket(PORT);
             connThread = new ConnectionAcceptThread(s, data);
@@ -69,9 +68,10 @@ public class TillServer {
 
     public void start() {
         TillSplashScreen.showSplashScreen();
-        connThread.start();
         g.databaseLogin();
-//        setUpdateTimer();
+        if (connThread != null) {
+            connThread.start();
+        }
         TillSplashScreen.hideSplashScreen();
         g.setVisible(true);
         g.login();
@@ -83,7 +83,7 @@ public class TillServer {
 
         try {
             in = new FileInputStream("server.properties");
-            
+
             properties.load(in);
 
             hostName = properties.getProperty("host");
@@ -124,8 +124,8 @@ public class TillServer {
     public static Image getIcon() {
         return icon;
     }
-    
-    public static String getHostName(){
+
+    public static String getHostName() {
         return hostName;
     }
 

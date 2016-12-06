@@ -360,7 +360,14 @@ public class CategorysWindow extends javax.swing.JFrame {
                 category.setEndSell(endSell);
                 category.setTimeRestrict(time);
                 category.setMinAge(minAge);
-                updateTable();
+
+                try {
+                    dbConn.updateCategory(category);
+                } catch (SQLException ex) {
+                    showDatabaseError(ex);
+                }
+
+                showAllCategorys();
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Fill out all required fields", "Category", JOptionPane.ERROR_MESSAGE);

@@ -10,6 +10,8 @@ import io.github.davidg95.Till.till.Discount;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -310,7 +312,14 @@ public class DiscountsWindow extends javax.swing.JFrame {
             } else {
                 discount.setType(name);
                 discount.setPercentage(percentage);
-                updateTable();
+
+                try {
+                    dbConn.updateDiscount(discount);
+                } catch (SQLException ex) {
+                    showDatabaseError(ex);
+                }
+
+                showAllDiscounts();
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Fill out all required fields", "Discount", JOptionPane.ERROR_MESSAGE);
