@@ -6,7 +6,16 @@
 package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.DBConnect;
+import java.awt.AWTException;
+import java.awt.CheckboxMenuItem;
 import java.awt.Image;
+import java.awt.Menu;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -18,6 +27,7 @@ import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.Properties;
 import java.util.Timer;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -59,6 +69,7 @@ public class TillServer {
         dbConnection = new DBConnect();
         data = new Data(dbConnection, g);
         g = new GUI(data, dbConnection);
+        setSystemTray();
         try {
             s = new ServerSocket(PORT);
             connThread = new ConnectionAcceptThread(s, data);
@@ -110,6 +121,43 @@ public class TillServer {
             out.close();
         } catch (FileNotFoundException | UnknownHostException ex) {
         } catch (IOException ex) {
+        }
+    }
+
+    private void setSystemTray() {
+        //Check the SystemTray is supported
+        if (!SystemTray.isSupported()) {
+            System.out.println("SystemTray is not supported");
+            return;
+        }
+        final PopupMenu popup = new PopupMenu();
+        final TrayIcon trayIcon
+                = new TrayIcon(icon);
+        final SystemTray tray = SystemTray.getSystemTray();
+
+        // Create a pop-up menu components
+        MenuItem aboutItem = new MenuItem("About");
+
+        aboutItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "JTill Server is running on port number "
+                        + PORT + " with " + g.clientCounter + " connections.\n"
+                        + dbConnection.toString(), "JTill Server",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+        //Add components to pop-up menu
+        popup.add(aboutItem);
+
+        trayIcon.setPopupMenu(popup);
+        trayIcon.setToolTip("JTill Server is running");
+
+        try {
+            tray.add(trayIcon);
+        } catch (AWTException e) {
+            System.out.println("TrayIcon could not be added.");
         }
     }
 

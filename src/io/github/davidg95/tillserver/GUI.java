@@ -32,7 +32,7 @@ public class GUI extends javax.swing.JFrame {
 
     private Staff staff;
 
-    private int clientCounter = 0;
+    public int clientCounter = 0;
     private final ArrayList<String> connections;
 
     /**
@@ -60,7 +60,12 @@ public class GUI extends javax.swing.JFrame {
                 System.exit(0);
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+            if (ex.getErrorCode() == 40000) {
+                JOptionPane.showMessageDialog(this, "The database is already in use by another application. Program will now terminate.\nError Code " + ex.getErrorCode(), "Database in use", JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            } else {
+                JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -76,9 +81,6 @@ public class GUI extends javax.swing.JFrame {
                 }
             }
         } catch (SQLException ex) {
-            initialSetup();
-        }
-        if (!dbConn.isConnected()) {
             initialSetup();
         }
     }
