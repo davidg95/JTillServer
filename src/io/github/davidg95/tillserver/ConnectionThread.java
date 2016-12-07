@@ -234,6 +234,7 @@ public class ConnectionThread extends Thread {
                         } catch (ClassNotFoundException ex) {
 
                         }
+                        break;
                     case "LOGIN": //Standard staff login
                         try {
                             String username = inp[1];
