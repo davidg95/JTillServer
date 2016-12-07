@@ -25,6 +25,8 @@ public class Data {
 
     private final List<Staff> loggedIn;
     private final List<Staff> loggedInTill;
+    private double takings;
+    private int sales;
 
     private final Semaphore logSem;
     private final Semaphore tillLogSem;
@@ -87,8 +89,10 @@ public class Data {
             } catch (InterruptedException ex) {
                 Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
             }
-            if (loggedInTill.contains(s)) {
-                throw new LoginException("You are already logged in elsewhere");
+            for (Staff st : loggedInTill) {
+                if (st.getId() == s.getId()) {
+                    throw new LoginException("You are already logged in else where");
+                }
             }
             loggedInTill.add(s);
         } catch (StaffNotFoundException ex) {
@@ -134,5 +138,26 @@ public class Data {
             }
         }
         throw new StaffNotFoundException(id + "");
+    }
+
+    public void addTakings(double val) {
+        takings += val;
+    }
+
+    public void addSale() {
+        sales++;
+    }
+
+    public double getTakings() {
+        return takings;
+    }
+
+    public int getSales() {
+        return sales;
+    }
+
+    public void reset() {
+        takings = 0;
+        sales = 0;
     }
 }

@@ -14,10 +14,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Thread for handling incoming connections.
@@ -101,6 +98,7 @@ public class ConnectionThread extends Thread {
                             dbConn.purchaseProduct(code);
                             out.println("SUCC");
                         } catch (ProductNotFoundException | SQLException | OutOfStockException ex) {
+                            TillServer.g.log(ex);
                             out.println("FAIL");
                             obOut.writeObject(ex);
                         }
@@ -227,6 +225,15 @@ public class ConnectionThread extends Thread {
                         }
                         obOut.flush();
                         break;
+                    case "ADDSALE":
+                        try {
+                            Object o = obIn.readObject();
+                            Sale s = (Sale) o;
+                            data.addSale();
+                            data.addTakings(s.getTotal());
+                        } catch (ClassNotFoundException ex) {
+
+                        }
                     case "LOGIN": //Standard staff login
                         try {
                             String username = inp[1];
@@ -245,7 +252,7 @@ public class ConnectionThread extends Thread {
                             int id = Integer.parseInt(inp[1]);
                             Staff s = data.login(id);
                             this.staff = s;
-                            TillServer.g.log(staff.getName() + " has logged in");
+                            TillServer.g.log(staff.getName() + " has logged in from " + site);
                             obOut.writeObject(s);
                         } catch (SQLException | LoginException ex) {
                             obOut.writeObject(ex);
@@ -288,7 +295,7 @@ public class ConnectionThread extends Thread {
             }
 //            data.removeConnection(site);
             TillServer.g.decreaseClientCount(site);
-            TillServer.g.log(site + " hsa disconnected");
+            TillServer.g.log(site + " has disconnected");
             socket.close();
         } catch (IOException e) {
 

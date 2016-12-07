@@ -224,6 +224,9 @@ public class GUI extends javax.swing.JFrame {
         itemStaff = new javax.swing.JMenuItem();
         menuCustomers = new javax.swing.JMenu();
         itemCustomers = new javax.swing.JMenuItem();
+        menuItemReports = new javax.swing.JMenu();
+        itemSales = new javax.swing.JMenuItem();
+        itemResetSales = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JTill Server");
@@ -467,6 +470,26 @@ public class GUI extends javax.swing.JFrame {
 
         jMenuBar1.add(menuCustomers);
 
+        menuItemReports.setText("Reports");
+
+        itemSales.setText("View Sales Data");
+        itemSales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemSalesActionPerformed(evt);
+            }
+        });
+        menuItemReports.add(itemSales);
+
+        itemResetSales.setText("Reset Sales Data");
+        itemResetSales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemResetSalesActionPerformed(evt);
+            }
+        });
+        menuItemReports.add(itemResetSales);
+
+        jMenuBar1.add(menuItemReports);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -598,6 +621,15 @@ public class GUI extends javax.swing.JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_itemAboutActionPerformed
 
+    private void itemSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSalesActionPerformed
+        JOptionPane.showMessageDialog(this, "Takings: £" + data.getTakings() + "\nSales: " + data.getSales(), "Sales Data", JOptionPane.PLAIN_MESSAGE);
+    }//GEN-LAST:event_itemSalesActionPerformed
+
+    private void itemResetSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemResetSalesActionPerformed
+        data.reset();
+        JOptionPane.showMessageDialog(this, "Sales data reset", "Sales Data", JOptionPane.PLAIN_MESSAGE);
+    }//GEN-LAST:event_itemResetSalesActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -611,6 +643,8 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenuItem itemInterval;
     private javax.swing.JMenuItem itemLogin;
+    private javax.swing.JMenuItem itemResetSales;
+    private javax.swing.JMenuItem itemSales;
     private javax.swing.JMenuItem itemServerOptions;
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStock;
@@ -627,6 +661,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JLabel lblUser;
     private javax.swing.JMenu menuCustomers;
     private javax.swing.JMenu menuFile;
+    private javax.swing.JMenu menuItemReports;
     private javax.swing.JMenu menuStaff;
     private javax.swing.JMenu menuStock;
     private javax.swing.JPanel statusBar;
