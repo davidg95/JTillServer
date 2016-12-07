@@ -8,6 +8,8 @@ package io.github.davidg95.tillserver;
 import io.github.davidg95.Till.till.DBConnect;
 import io.github.davidg95.Till.till.Staff;
 import io.github.davidg95.Till.till.StaffNotFoundException;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -29,6 +31,7 @@ public class GUI extends javax.swing.JFrame {
 
     private final Data data;
     private final DBConnect dbConn;
+    private boolean isLoggedOn;
 
     private Staff staff;
 
@@ -115,9 +118,13 @@ public class GUI extends javax.swing.JFrame {
             lblUser.setText(staff.getName());
             itemLogin.setText("Log Out");
             log(staff.getName() + " has logged in");
+            isLoggedOn = true;
         } else {
             TillServer.saveProperties();
-            System.exit(0);
+            if (SystemTray.isSupported()) {
+                this.setVisible(false);
+                TillServer.trayIcon.displayMessage("JTill Server is still running", "JTill Server is still running in the background, click this icon to bring it back up.", TrayIcon.MessageType.INFO);
+            }
         }
     }
 
@@ -128,9 +135,14 @@ public class GUI extends javax.swing.JFrame {
             log(staff.getName() + " has logged out");
         } catch (StaffNotFoundException ex) {
         }
+        isLoggedOn = false;
         staff = null;
         itemLogin.setText("Log In");
         login();
+    }
+
+    public boolean isLoggedOn() {
+        return isLoggedOn;
     }
 
     /**

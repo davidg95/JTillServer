@@ -161,6 +161,7 @@ public class ServerOptionsDialog extends javax.swing.JDialog {
                 TillServer.MAX_CONNECTIONS = max;
                 TillServer.MAX_QUEUE = queue;
                 result = 1;
+                TillServer.saveProperties();
                 this.setVisible(false);
             }
         } catch (NumberFormatException ex) {
