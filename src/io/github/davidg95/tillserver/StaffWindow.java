@@ -327,7 +327,7 @@ public class StaffWindow extends javax.swing.JFrame {
                     s = new Staff(name, position, username, password);
                     dbConn.addStaff(s);
                     setCurrentStaff(null);
-                    updateTable();
+                    showAllStaff();
                     txtName.requestFocus();
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);

@@ -36,14 +36,12 @@ public class TillServer {
     public static int MAX_CONNECTIONS = 10;
     public static int MAX_QUEUE = 10;
 
-    private ServerSocket s;
     public static Data data;
-    public static GUI g;
-    private ConnectionAcceptThread connThread;
-
     public static DBConnect dbConnection;
+    public static GUI g;
 
-    public static Image icon;
+    private ServerSocket s;
+    private ConnectionAcceptThread connThread;
 
     public static Timer updateTimer;
 //    public static DatabaseUpdate updateTask;
@@ -53,6 +51,7 @@ public class TillServer {
 
     private static String hostName;
 
+    public static Image icon;
     public static TrayIcon trayIcon;
 
     /**
