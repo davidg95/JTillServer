@@ -154,13 +154,17 @@ public class LoginDialog extends javax.swing.JDialog {
         String username = txtUsername.getText();
         String password = new String(txtPassword.getPassword());
 
-        try {
-            staff = data.login(username, password);
-            this.setVisible(false);
-        } catch (LoginException ex) {
-            lblLogin.setText(ex.getMessage());
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+        if (username.equals("") || password.equals("")) {
+            lblLogin.setText("Please enter both username and password");
+        } else {
+            try {
+                staff = data.login(username, password);
+                this.setVisible(false);
+            } catch (LoginException ex) {
+                lblLogin.setText(ex.getMessage());
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
