@@ -28,7 +28,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ProductsWindow extends javax.swing.JFrame {
 
-    private static JFrame frame;
+    public static ProductsWindow frame;
 
     private final Data data;
     private final DBConnect dbConn;
@@ -48,11 +48,9 @@ public class ProductsWindow extends javax.swing.JFrame {
 
     /**
      * Creates new form ProductsWindow
-     *
-     * @param data the List of the products.
      */
-    public ProductsWindow(Data data) {
-        this.data = data;
+    public ProductsWindow() {
+        this.data = TillServer.getData();
         this.dbConn = TillServer.getDBConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -62,10 +60,21 @@ public class ProductsWindow extends javax.swing.JFrame {
         init();
     }
 
-    public static void showProductsListWindow(Data data) {
-        frame = new ProductsWindow(data);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    public static void showProductsListWindow() {
+        if (frame == null) {
+            frame = new ProductsWindow();
+        }
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.showAllProducts();
+        frame.init();
         frame.setVisible(true);
+    }
+
+    public static void update() {
+        if (frame != null) {
+            frame.showAllProducts();
+            frame.init();
+        }
     }
 
     private void init() {
@@ -225,7 +234,6 @@ public class ProductsWindow extends javax.swing.JFrame {
         btnShowTax = new javax.swing.JButton();
         btnShowDiscounts = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Stock Managment");
         setIconImage(TillServer.getIcon());
 

@@ -21,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class StaffWindow extends javax.swing.JFrame {
 
-    private static JFrame frame;
+    public static StaffWindow frame;
 
     private final Data data;
 
@@ -46,9 +46,18 @@ public class StaffWindow extends javax.swing.JFrame {
     }
 
     public static void showStaffListWindow() {
-        frame = new StaffWindow();
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        if (frame == null) {
+            frame = new StaffWindow();
+        }
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.showAllStaff();
         frame.setVisible(true);
+    }
+    
+    public static void update(){
+        if(frame != null){
+            frame.showAllStaff();
+        }
     }
 
     private void updateTable() {
@@ -138,7 +147,6 @@ public class StaffWindow extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Manage Staff");
         setIconImage(TillServer.getIcon());
 

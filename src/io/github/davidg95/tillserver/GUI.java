@@ -523,11 +523,11 @@ public class GUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnManageStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStockActionPerformed
-        ProductsWindow.showProductsListWindow(data);
+        ProductsWindow.showProductsListWindow();
     }//GEN-LAST:event_btnManageStockActionPerformed
 
     private void itemStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStockActionPerformed
-        ProductsWindow.showProductsListWindow(data);
+        ProductsWindow.showProductsListWindow();
     }//GEN-LAST:event_itemStockActionPerformed
 
     private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
@@ -540,11 +540,11 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_itemUpdateActionPerformed
 
     private void itemCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCustomersActionPerformed
-        CustomersWindow.showCustomersListWindow(data);
+        CustomersWindow.showCustomersListWindow();
     }//GEN-LAST:event_itemCustomersActionPerformed
 
     private void btnManageCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageCustomersActionPerformed
-        CustomersWindow.showCustomersListWindow(data);
+        CustomersWindow.showCustomersListWindow();
     }//GEN-LAST:event_btnManageCustomersActionPerformed
 
     private void itemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLoginActionPerformed

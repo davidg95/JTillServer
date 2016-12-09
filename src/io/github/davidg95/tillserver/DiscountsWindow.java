@@ -21,7 +21,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class DiscountsWindow extends javax.swing.JFrame {
 
-    private static JFrame frame;
+    public static DiscountsWindow frame;
+    
     private final DBConnect dbConn;
 
     private Discount discount;
@@ -43,9 +44,18 @@ public class DiscountsWindow extends javax.swing.JFrame {
     }
 
     public static void showDiscountListWindow() {
-        frame = new DiscountsWindow();
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        if (frame == null) {
+            frame = new DiscountsWindow();
+        }
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.showAllDiscounts();
         frame.setVisible(true);
+    }
+    
+    public static void update(){
+        if(frame != null){
+            frame.showAllDiscounts();
+        }
     }
 
     private void updateTable() {
@@ -57,6 +67,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
         }
 
         table.setModel(model);
+        ProductsWindow.update();
     }
 
     private void showAllDiscounts() {
@@ -106,7 +117,6 @@ public class DiscountsWindow extends javax.swing.JFrame {
         btnClose = new javax.swing.JButton();
         txtName = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Discounts");
         setIconImage(TillServer.getIcon());
 
@@ -272,18 +282,16 @@ public class DiscountsWindow extends javax.swing.JFrame {
                 double percentage = Double.parseDouble(txtPercentage.getText());
                 if (name.equals("")) {
                     JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
+                } else if (percentage > 100 || percentage < 0) {
+                    JOptionPane.showMessageDialog(this, "Please enter a value between 0 and 100", "Discount", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    if (percentage > 100 || percentage < 0) {
-                        JOptionPane.showMessageDialog(this, "Please enter a value between 0 and 100", "Discount", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        d = new Discount(name, percentage);
-                        try {
-                            dbConn.addDiscount(d);
-                            showAllDiscounts();
-                            setCurrentDiscount(null);
-                        } catch (SQLException ex) {
-                            showError(ex);
-                        }
+                    d = new Discount(name, percentage);
+                    try {
+                        dbConn.addDiscount(d);
+                        showAllDiscounts();
+                        setCurrentDiscount(null);
+                    } catch (SQLException ex) {
+                        showError(ex);
                     }
                 }
             } catch (NumberFormatException e) {

@@ -24,7 +24,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class CustomersWindow extends javax.swing.JFrame {
 
-    private static JFrame frame;
+    public static CustomersWindow frame;
 
     private final Data data;
     private final DBConnect dbConn;
@@ -39,8 +39,8 @@ public class CustomersWindow extends javax.swing.JFrame {
     /**
      * Creates new form CustomersWindow
      */
-    public CustomersWindow(Data data) {
-        this.data = data;
+    public CustomersWindow() {
+        this.data = TillServer.getData();
         this.dbConn = TillServer.getDBConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -50,10 +50,21 @@ public class CustomersWindow extends javax.swing.JFrame {
         init();
     }
 
-    public static void showCustomersListWindow(Data data) {
-        frame = new CustomersWindow(data);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    public static void showCustomersListWindow() {
+        if (frame == null) {
+            frame = new CustomersWindow();
+        }
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.showAllCustomers();
+        frame.init();
         frame.setVisible(true);
+    }
+
+    public static void update() {
+        if (frame != null) {
+            frame.showAllCustomers();
+            frame.init();
+        }
     }
 
     private void init() {
@@ -193,7 +204,6 @@ public class CustomersWindow extends javax.swing.JFrame {
         txtPostcode = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Manage Customers");
         setIconImage(TillServer.getIcon());
 

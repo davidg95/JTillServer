@@ -21,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TaxWindow extends javax.swing.JFrame {
 
-    private static JFrame frame;
+    public static TaxWindow frame;
 
     private final DBConnect dbConn;
     private Tax tax;
@@ -42,9 +42,18 @@ public class TaxWindow extends javax.swing.JFrame {
     }
 
     public static void showTaxWindow() {
-        frame = new TaxWindow();
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        if (frame == null) {
+            frame = new TaxWindow();
+        }
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.showAllTaxes();
         frame.setVisible(true);
+    }
+    
+    public static void update(){
+        if(frame != null){
+            frame.showAllTaxes();
+        }
     }
 
     private void updateTable() {
@@ -56,6 +65,7 @@ public class TaxWindow extends javax.swing.JFrame {
         }
 
         table.setModel(model);
+        ProductsWindow.update();
     }
 
     private void showAllTaxes() {
@@ -103,7 +113,6 @@ public class TaxWindow extends javax.swing.JFrame {
         btnRemove = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Tax");
         setIconImage(TillServer.getIcon());
 

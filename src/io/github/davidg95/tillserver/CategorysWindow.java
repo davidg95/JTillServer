@@ -24,7 +24,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class CategorysWindow extends javax.swing.JFrame {
 
-    private static JFrame frame;
+    public static CategorysWindow frame;
 
     private final DBConnect dbConn;
     private Category category;
@@ -45,9 +45,18 @@ public class CategorysWindow extends javax.swing.JFrame {
     }
 
     public static void showCategoryWindow() {
-        frame = new CategorysWindow();
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        if (frame == null) {
+            frame = new CategorysWindow();
+        }
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.showAllCategorys();
         frame.setVisible(true);
+    }
+    
+    public static void update(){
+        if(frame != null){
+            frame.showAllCategorys();
+        }
     }
 
     private void updateTable() {
@@ -59,6 +68,7 @@ public class CategorysWindow extends javax.swing.JFrame {
         }
 
         table.setModel(model);
+        ProductsWindow.update();
     }
 
     private void showAllCategorys() {
@@ -136,7 +146,6 @@ public class CategorysWindow extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         spinAge = new javax.swing.JSpinner();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Categorys");
         setIconImage(TillServer.getIcon());
 
