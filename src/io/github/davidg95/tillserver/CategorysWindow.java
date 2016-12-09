@@ -14,6 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -91,6 +92,9 @@ public class CategorysWindow extends javax.swing.JFrame {
             txtStartTime.setText("");
             txtEndTime.setText("");
             spinAge.setValue(0);
+            chkButton.setSelected(false);
+            btnColor.setBackground(null);
+            btnColor.setEnabled(false);
             category = null;
         } else {
             category = c;
@@ -114,6 +118,14 @@ public class CategorysWindow extends javax.swing.JFrame {
                 txtEndTime.setText("");
             }
             spinAge.setValue(c.getMinAge());
+            chkButton.setSelected(category.isButton());
+            if(category.isButton()){
+                btnColor.setEnabled(true);
+                btnColor.setBackground(category.getColor());
+            } else{
+                btnColor.setEnabled(false);
+                btnColor.setBackground(null);
+            }
         }
     }
 
@@ -145,6 +157,8 @@ public class CategorysWindow extends javax.swing.JFrame {
         lblTimeDash = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         spinAge = new javax.swing.JSpinner();
+        chkButton = new javax.swing.JCheckBox();
+        btnColor = new javax.swing.JButton();
 
         setTitle("Categorys");
         setIconImage(TillServer.getIcon());
@@ -235,6 +249,21 @@ public class CategorysWindow extends javax.swing.JFrame {
 
         jLabel2.setText("Minimum Age:");
 
+        chkButton.setText("Button");
+        chkButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkButtonActionPerformed(evt);
+            }
+        });
+
+        btnColor.setText("Set Button Color");
+        btnColor.setEnabled(false);
+        btnColor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnColorActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -262,17 +291,23 @@ public class CategorysWindow extends javax.swing.JFrame {
                                 .addComponent(btnRemove))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(lblTime))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtStartTime)
-                                    .addComponent(spinAge, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblTimeDash)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtEndTime, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(lblTime)
+                                            .addComponent(jLabel2))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtStartTime)
+                                            .addComponent(spinAge, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(lblTimeDash)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtEndTime, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(chkButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnColor)))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -302,7 +337,11 @@ public class CategorysWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(spinAge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(65, 65, 65)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkButton)
+                    .addComponent(btnColor))
+                .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAdd)
                     .addComponent(btnSave)
@@ -327,10 +366,12 @@ public class CategorysWindow extends javax.swing.JFrame {
                     endSell = new Time(sdf.parse(txtEndTime.getText()).getTime());
                 }
                 int minAge = (int) spinAge.getValue();
+                boolean button = chkButton.isSelected();
+                int color = btnColor.getBackground().getRGB();
                 if (name.equals("")) {
                     JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Category", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    c = new Category(name, startSell, endSell, time, minAge);
+                    c = new Category(name, startSell, endSell, time, minAge, button, color);
                     try {
                         dbConn.addCategory(c);
                         showAllCategorys();
@@ -362,6 +403,8 @@ public class CategorysWindow extends javax.swing.JFrame {
                 endSell = new Time(sdf.parse(txtEndTime.getText()).getTime());
             }
             int minAge = (int) spinAge.getValue();
+            boolean button = chkButton.isSelected();
+            int color = btnColor.getBackground().getRGB();
             if (name.equals("")) {
                 JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Category", JOptionPane.ERROR_MESSAGE);
             } else {
@@ -370,6 +413,8 @@ public class CategorysWindow extends javax.swing.JFrame {
                 category.setEndSell(endSell);
                 category.setTimeRestrict(time);
                 category.setMinAge(minAge);
+                category.setButton(button);
+                category.setColorValue(color);
 
                 try {
                     dbConn.updateCategory(category);
@@ -419,11 +464,21 @@ public class CategorysWindow extends javax.swing.JFrame {
         txtEndTime.setEnabled(chkTime.isSelected());
     }//GEN-LAST:event_chkTimeActionPerformed
 
+    private void btnColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColorActionPerformed
+        btnColor.setBackground(JColorChooser.showDialog(this, "Select button color", btnColor.getBackground()));
+    }//GEN-LAST:event_btnColorActionPerformed
+
+    private void chkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkButtonActionPerformed
+        btnColor.setEnabled(chkButton.isSelected());
+    }//GEN-LAST:event_chkButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnColor;
     private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnSave;
+    private javax.swing.JCheckBox chkButton;
     private javax.swing.JCheckBox chkTime;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
