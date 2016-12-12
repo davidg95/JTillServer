@@ -44,8 +44,8 @@ public class CategorysWindow extends javax.swing.JFrame {
         model = (DefaultTableModel) table.getModel();
         showAllCategorys();
     }
-    
-    static{
+
+    static {
         frame = new CategorysWindow();
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
@@ -55,9 +55,9 @@ public class CategorysWindow extends javax.swing.JFrame {
         frame.setCurrentCategory(null);
         frame.setVisible(true);
     }
-    
-    public static void update(){
-        if(frame != null){
+
+    public static void update() {
+        if (frame != null) {
             frame.showAllCategorys();
         }
     }
@@ -121,10 +121,10 @@ public class CategorysWindow extends javax.swing.JFrame {
             }
             spinAge.setValue(c.getMinAge());
             chkButton.setSelected(category.isButton());
-            if(category.isButton()){
+            if (category.isButton()) {
                 btnColor.setEnabled(true);
                 btnColor.setBackground(category.getColor());
-            } else{
+            } else {
                 btnColor.setEnabled(false);
                 btnColor.setBackground(null);
             }
@@ -161,6 +161,9 @@ public class CategorysWindow extends javax.swing.JFrame {
         spinAge = new javax.swing.JSpinner();
         chkButton = new javax.swing.JCheckBox();
         btnColor = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        txtSearch = new javax.swing.JTextField();
+        btnSearch = new javax.swing.JButton();
 
         setTitle("Categorys");
         setIconImage(TillServer.getIcon());
@@ -266,52 +269,71 @@ public class CategorysWindow extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setText("Search:");
+
+        txtSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearchActionPerformed(evt);
+            }
+        });
+
+        btnSearch.setText("Search");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnClose))
+                        .addGap(80, 80, 80)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(chkTime)))
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnAdd)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSave)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRemove))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(80, 80, 80)
-                                .addComponent(jLabel1)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lblTime)
+                                    .addComponent(jLabel2))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(chkTime)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtStartTime)
+                                    .addComponent(spinAge, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblTimeDash)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtEndTime, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(btnAdd)
+                                .addComponent(chkButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnSave)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnRemove))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(lblTime)
-                                            .addComponent(jLabel2))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(txtStartTime)
-                                            .addComponent(spinAge, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(lblTimeDash)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtEndTime, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(chkButton)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnColor)))))
+                                .addComponent(btnColor)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE)))
+                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnClose))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -320,7 +342,11 @@ public class CategorysWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnClose)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClose)
+                    .addComponent(jLabel3)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSearch))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(44, 44, 44)
@@ -474,16 +500,49 @@ public class CategorysWindow extends javax.swing.JFrame {
         btnColor.setEnabled(chkButton.isSelected());
     }//GEN-LAST:event_chkButtonActionPerformed
 
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        String terms = txtSearch.getText();
+
+        if (terms.isEmpty()) {
+            showAllCategorys();
+            return;
+        }
+
+        List<Category> newList = new ArrayList<>();
+
+        for (Category c : currentTableContents) {
+            if (c.getName().toLowerCase().contains(terms.toLowerCase())) {
+                newList.add(c);
+            }
+        }
+
+        if (newList.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.PLAIN_MESSAGE);
+        } else {
+            currentTableContents = newList;
+            if (newList.size() == 1) {
+                setCurrentCategory(newList.get(0));
+            }
+        }
+        updateTable();
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+        btnSearch.doClick();
+    }//GEN-LAST:event_txtSearchActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnColor;
     private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnSave;
+    private javax.swing.JButton btnSearch;
     private javax.swing.JCheckBox chkButton;
     private javax.swing.JCheckBox chkTime;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblTime;
     private javax.swing.JLabel lblTimeDash;
@@ -491,6 +550,7 @@ public class CategorysWindow extends javax.swing.JFrame {
     private javax.swing.JTable table;
     private javax.swing.JTextField txtEndTime;
     private javax.swing.JTextField txtName;
+    private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtStartTime;
     // End of variables declaration//GEN-END:variables
 }

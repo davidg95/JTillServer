@@ -644,6 +644,11 @@ public class CustomersWindow extends javax.swing.JFrame {
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         int option;
         String terms = txtSearch.getText();
+        
+        if(terms.isEmpty()){
+            showAllCustomers();
+            return;
+        }
 
         if (radID.isSelected()) {
             option = 1;

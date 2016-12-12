@@ -801,6 +801,11 @@ public class ProductsWindow extends javax.swing.JFrame {
         int option;
         String terms = txtSearch.getText();
 
+        if (terms.isEmpty()) {
+            showAllProducts();
+            return;
+        }
+
         if (radCode.isSelected()) {
             option = 1;
         } else if (radBarcode.isSelected()) {
