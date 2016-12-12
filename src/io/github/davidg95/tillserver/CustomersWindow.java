@@ -24,7 +24,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class CustomersWindow extends javax.swing.JFrame {
 
-    public static CustomersWindow frame;
+    public static final CustomersWindow frame;
 
     private final Data data;
     private final DBConnect dbConn;
@@ -52,12 +52,12 @@ public class CustomersWindow extends javax.swing.JFrame {
 
     static {
         frame = new CustomersWindow();
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
     public static void showCustomersListWindow() {
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        frame.showAllCustomers();
-        frame.init();
+        update();
+        frame.setCurrentCustomer(null);
         frame.setVisible(true);
     }
 
@@ -166,12 +166,12 @@ public class CustomersWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         btnAdd = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
-        btnSearch = new javax.swing.JButton();
         btnShowAll = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -204,6 +204,11 @@ public class CustomersWindow extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         txtPostcode = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        txtSearch = new javax.swing.JTextField();
+        radName = new javax.swing.JRadioButton();
+        radID = new javax.swing.JRadioButton();
+        btnSearch = new javax.swing.JButton();
 
         setTitle("Manage Customers");
         setIconImage(TillServer.getIcon());
@@ -262,13 +267,6 @@ public class CustomersWindow extends javax.swing.JFrame {
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemoveActionPerformed(evt);
-            }
-        });
-
-        btnSearch.setText("Search Customer");
-        btnSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearchActionPerformed(evt);
             }
         });
 
@@ -439,29 +437,59 @@ public class CustomersWindow extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Address", jPanel2);
 
+        jLabel14.setText("Search:");
+
+        txtSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearchActionPerformed(evt);
+            }
+        });
+
+        buttonGroup1.add(radName);
+        radName.setSelected(true);
+        radName.setText("Name");
+
+        buttonGroup1.add(radID);
+        radID.setText("ID");
+
+        btnSearch.setText("Search");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(btnShowAll)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(btnAdd)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnSave)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnRemove))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnAdd)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnSave)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnRemove))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnSearch)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnShowAll)))
+                        .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 641, Short.MAX_VALUE))
-                    .addComponent(btnClose))
+                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(radName)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radID)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnClose))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 641, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -478,12 +506,16 @@ public class CustomersWindow extends javax.swing.JFrame {
                             .addComponent(btnSave)
                             .addComponent(btnRemove))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnSearch)
-                            .addComponent(btnShowAll))
+                        .addComponent(btnShowAll)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnClose)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClose)
+                    .addComponent(jLabel14)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(radName)
+                    .addComponent(radID)
+                    .addComponent(btnSearch))
                 .addContainerGap())
         );
 
@@ -600,14 +632,6 @@ public class CustomersWindow extends javax.swing.JFrame {
         showAllCustomers();
     }//GEN-LAST:event_btnShowAllActionPerformed
 
-    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        currentTableContents = CustomerSearchDialog.showSearchDialog(this, currentTableContents);
-        updateTable();
-        if (currentTableContents.size() == 1) {
-            setCurrentCustomer(currentTableContents.get(0));
-        }
-    }//GEN-LAST:event_btnSearchActionPerformed
-
     private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
         if (evt.getClickCount() == 2) {
             editCustomer();
@@ -617,6 +641,46 @@ public class CustomersWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tableMousePressed
 
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        int option;
+        String terms = txtSearch.getText();
+
+        if (radID.isSelected()) {
+            option = 1;
+        } else {
+            option = 2;
+        }
+        List<Customer> newList = new ArrayList<>();
+
+        if (option == 1) {
+            for (Customer c : currentTableContents) {
+                if ((c.getId() + "").equals(terms)) {
+                    newList.add(c);
+                }
+            }
+        } else {
+            for (Customer c : currentTableContents) {
+                if (c.getName().toLowerCase().contains(terms.toLowerCase())) {
+                    newList.add(c);
+                }
+            }
+        }
+
+        if (newList.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.PLAIN_MESSAGE);
+        } else {
+            currentTableContents = newList;
+            if (newList.size() == 1) {
+                setCurrentCustomer(newList.get(0));
+            }
+        }
+        updateTable();
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+        btnSearch.doClick();
+    }//GEN-LAST:event_txtSearchActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClose;
@@ -624,12 +688,14 @@ public class CustomersWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnShowAll;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cmbDiscount;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -643,6 +709,8 @@ public class CustomersWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JRadioButton radID;
+    private javax.swing.JRadioButton radName;
     private javax.swing.JTable table;
     private javax.swing.JTextField txtAddress1;
     private javax.swing.JTextField txtAddress2;
@@ -655,6 +723,7 @@ public class CustomersWindow extends javax.swing.JFrame {
     private javax.swing.JTextArea txtNotes;
     private javax.swing.JTextField txtPhone;
     private javax.swing.JTextField txtPostcode;
+    private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtTown;
     // End of variables declaration//GEN-END:variables
 }

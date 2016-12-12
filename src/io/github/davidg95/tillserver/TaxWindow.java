@@ -21,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TaxWindow extends javax.swing.JFrame {
 
-    public static TaxWindow frame;
+    public static final TaxWindow frame;
 
     private final DBConnect dbConn;
     private Tax tax;
@@ -43,11 +43,12 @@ public class TaxWindow extends javax.swing.JFrame {
     
     static{
         frame = new TaxWindow();
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
     public static void showTaxWindow() {
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        frame.showAllTaxes();
+        update();
+        frame.setCurrentTax(null);
         frame.setVisible(true);
     }
     

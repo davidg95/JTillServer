@@ -21,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class DiscountsWindow extends javax.swing.JFrame {
 
-    public static DiscountsWindow frame;
+    public static final DiscountsWindow frame;
     
     private final DBConnect dbConn;
 
@@ -45,11 +45,12 @@ public class DiscountsWindow extends javax.swing.JFrame {
     
     static{
         frame = new DiscountsWindow();
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
     public static void showDiscountListWindow() {
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        frame.showAllDiscounts();
+        update();
+        frame.setCurrentDiscount(null);
         frame.setVisible(true);
     }
     

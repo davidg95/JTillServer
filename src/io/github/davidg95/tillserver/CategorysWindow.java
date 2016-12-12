@@ -25,7 +25,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class CategorysWindow extends javax.swing.JFrame {
 
-    public static CategorysWindow frame;
+    public static final CategorysWindow frame;
 
     private final DBConnect dbConn;
     private Category category;
@@ -47,11 +47,12 @@ public class CategorysWindow extends javax.swing.JFrame {
     
     static{
         frame = new CategorysWindow();
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
     public static void showCategoryWindow() {
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        frame.showAllCategorys();
+        update();
+        frame.setCurrentCategory(null);
         frame.setVisible(true);
     }
     
