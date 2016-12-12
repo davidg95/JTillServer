@@ -44,11 +44,12 @@ public class StaffWindow extends javax.swing.JFrame {
         model = (DefaultTableModel) tableStaff.getModel();
         showAllStaff();
     }
+    
+    static{
+        frame = new StaffWindow();
+    }
 
     public static void showStaffListWindow() {
-        if (frame == null) {
-            frame = new StaffWindow();
-        }
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.showAllStaff();
         frame.setVisible(true);

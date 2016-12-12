@@ -44,11 +44,12 @@ public class CategorysWindow extends javax.swing.JFrame {
         model = (DefaultTableModel) table.getModel();
         showAllCategorys();
     }
+    
+    static{
+        frame = new CategorysWindow();
+    }
 
     public static void showCategoryWindow() {
-        if (frame == null) {
-            frame = new CategorysWindow();
-        }
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.showAllCategorys();
         frame.setVisible(true);

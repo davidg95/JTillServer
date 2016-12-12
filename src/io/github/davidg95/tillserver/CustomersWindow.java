@@ -50,10 +50,11 @@ public class CustomersWindow extends javax.swing.JFrame {
         init();
     }
 
+    static {
+        frame = new CustomersWindow();
+    }
+
     public static void showCustomersListWindow() {
-        if (frame == null) {
-            frame = new CustomersWindow();
-        }
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.showAllCustomers();
         frame.init();

@@ -42,11 +42,12 @@ public class DiscountsWindow extends javax.swing.JFrame {
         showAllDiscounts();
 
     }
+    
+    static{
+        frame = new DiscountsWindow();
+    }
 
     public static void showDiscountListWindow() {
-        if (frame == null) {
-            frame = new DiscountsWindow();
-        }
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.showAllDiscounts();
         frame.setVisible(true);

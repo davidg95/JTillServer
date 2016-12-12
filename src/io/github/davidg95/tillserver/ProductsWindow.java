@@ -60,11 +60,12 @@ public class ProductsWindow extends javax.swing.JFrame {
         showAllProducts();
         init();
     }
+    
+    static{
+        frame = new ProductsWindow();
+    }
 
     public static void showProductsListWindow() {
-        if (frame == null) {
-            frame = new ProductsWindow();
-        }
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.showAllProducts();
         frame.init();

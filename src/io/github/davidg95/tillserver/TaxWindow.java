@@ -40,11 +40,12 @@ public class TaxWindow extends javax.swing.JFrame {
         model = (DefaultTableModel) table.getModel();
         showAllTaxes();
     }
+    
+    static{
+        frame = new TaxWindow();
+    }
 
     public static void showTaxWindow() {
-        if (frame == null) {
-            frame = new TaxWindow();
-        }
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.showAllTaxes();
         frame.setVisible(true);
