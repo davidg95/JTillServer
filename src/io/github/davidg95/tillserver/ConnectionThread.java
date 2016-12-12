@@ -15,6 +15,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Thread for handling incoming connections.
@@ -280,6 +282,50 @@ public class ConnectionThread extends Thread {
                             out.println("SUCC");
                         } catch (StaffNotFoundException ex) {
                             out.println("FAIL");
+                        }
+                        break;
+                    case "GETINIT": //Load till configuration
+                        try {
+                            List<Category> categorys = dbConn.getAllCategorys();
+                            for (int i = 0; i < categorys.size(); i++) {
+                                if (!categorys.get(i).isButton()) {
+                                    categorys.remove(i);
+                                }
+                            }
+                            out.print(categorys.size());
+                            for (Category c : categorys) {
+                                List<Product> products = dbConn.getProductsInCategory(c.getID());
+                                obOut.writeObject(products);
+                            }
+                        } catch (SQLException ex) {
+                            obOut.writeObject(ex);
+                        }
+                        break;
+                    case "GETCATBUTTONS": //Load category buttons
+                        try {
+                            List<Category> categorys = dbConn.getAllCategorys();
+                            for (int i = 0; i < categorys.size(); i++) {
+                                if (!categorys.get(i).isButton()) {
+                                    categorys.remove(i);
+                                }
+                            }
+                            obOut.writeObject(categorys);
+                        } catch (SQLException ex) {
+                            obOut.writeObject(ex);
+                        }
+                        break;
+                    case "GETPRODUCTBUTTONS": //Load product buttons
+                        try {
+                            int id = Integer.parseInt(inp[1]);
+                            List<Product> products = dbConn.getProductsInCategory(id);
+                            for (int i = 0; i < products.size(); i++) {
+                                if (!products.get(i).isButton()) {
+                                    products.remove(i);
+                                }
+                            }
+                            obOut.writeObject(products);
+                        } catch (SQLException ex) {
+                            obOut.writeObject(ex);
                         }
                         break;
                     case "CONNTERM": //Terminate the connection
