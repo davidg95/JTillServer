@@ -6,7 +6,10 @@
 package io.github.davidg95.tillserver;
 
 import io.github.davidg95.Till.till.DBConnect;
+import io.github.davidg95.Till.till.LoginException;
+import io.github.davidg95.Till.till.Staff;
 import java.awt.AWTException;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -22,7 +25,9 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
+import java.sql.SQLException;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.Timer;
 import javax.swing.JOptionPane;
 
@@ -58,6 +63,10 @@ public class TillServer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        if (GraphicsEnvironment.isHeadless()) {
+            System.out.println("Headless operation not currently supported");
+            System.exit(0);
+        }
         new TillServer().start();
     }
 
@@ -66,8 +75,10 @@ public class TillServer {
         loadProperties();
         dbConnection = new DBConnect();
         data = new Data(dbConnection, g);
-        g = new GUI(data, dbConnection);
-        setSystemTray();
+        if (!GraphicsEnvironment.isHeadless()) {
+            g = new GUI(data, dbConnection);
+            setSystemTray();
+        }
         try {
             s = new ServerSocket(PORT);
             connThread = new ConnectionAcceptThread(s, data);
@@ -76,14 +87,47 @@ public class TillServer {
     }
 
     public void start() {
-        TillSplashScreen.showSplashScreen();
-        g.databaseLogin();
+        if (!GraphicsEnvironment.isHeadless()) {
+            TillSplashScreen.showSplashScreen();
+            g.databaseLogin();
+        } else {
+            headlessDatabaseLogin();
+        }
         if (connThread != null) {
             connThread.start();
         }
-        TillSplashScreen.hideSplashScreen();
-        g.setVisible(true);
-        g.login();
+        if (!GraphicsEnvironment.isHeadless()) {
+            TillSplashScreen.hideSplashScreen();
+            g.setVisible(true);
+            g.login();
+        } else {
+            headlessLogin();
+        }
+    }
+
+    public void headlessDatabaseLogin() {
+        try {
+            dbConnection.connect("jdbc:derby:TillEmbedded;create=false", "APP", "App");
+        } catch (SQLException ex) {
+        }
+    }
+
+    public void headlessLogin() {
+        Staff staff;
+        System.out.println("Enter Username");
+        String username = new Scanner(System.in).nextLine();
+        System.out.println("Enter password");
+        String password = new Scanner(System.in).nextLine();
+
+        if (username.equals("") || password.equals("")) {
+            headlessLogin();
+        }
+        try {
+            staff = data.login(username, password);
+            System.out.println("You are logged in");
+        } catch (LoginException | SQLException ex) {
+            System.out.println(ex);
+        }
     }
 
     public static void loadProperties() {
