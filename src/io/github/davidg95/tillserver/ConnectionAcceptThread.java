@@ -27,15 +27,15 @@ public class ConnectionAcceptThread extends Thread {
         this.socket = s;
         this.data = data;
     }
-    
+
     @Override
-    public void run(){
+    public void run() {
         ThreadPoolExecutor pool = new ThreadPoolExecutor(TillServer.MAX_CONNECTIONS, TillServer.MAX_QUEUE, 50000L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(TillServer.MAX_QUEUE));
         pool.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-        
+
         TillServer.g.log("Ready to accept connections");
-        for(;;){
-            try{
+        for (;;) {
+            try {
                 Socket incoming = socket.accept();
                 pool.submit(new ConnectionThread(incoming, data));
             } catch (IOException ex) {
