@@ -140,6 +140,12 @@ public class Data {
         throw new StaffNotFoundException(id + "");
     }
 
+    public void logAllTillsOut(){
+        for(int i = 0; i < this.loggedInTill.size(); i++){
+            this.loggedInTill.remove(i);
+        }
+    }
+
     public void addTakings(double val) {
         takings += val;
     }

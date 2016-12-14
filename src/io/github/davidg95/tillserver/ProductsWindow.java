@@ -18,8 +18,6 @@ import java.awt.Color;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
@@ -118,11 +116,6 @@ public class ProductsWindow extends javax.swing.JFrame {
         updateTable();
     }
 
-    private void showProducts(List<Product> products) {
-        currentTableContents = products;
-        updateTable();
-    }
-
     private void editProduct() {
         int selectedRow = tableProducts.getSelectedRow();
         if (selectedRow != -1) {
@@ -139,6 +132,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             txtBarcode.setText("");
             txtPrice.setText("");
             txtCostPrice.setText("");
+            chkOpen.setSelected(false);
             txtStock.setText("");
             txtMinStock.setText("");
             txtMaxStock.setText("");
@@ -158,12 +152,47 @@ public class ProductsWindow extends javax.swing.JFrame {
                 this.product = p;
                 txtName.setText(p.getName());
                 txtShortName.setText(p.getShortName());
-                txtBarcode.setText(p.getBarcode());
-                txtPrice.setText(p.getPrice() + "");
-                txtCostPrice.setText(p.getCostPrice() + "");
-                txtStock.setText(p.getStock() + "");
-                txtMinStock.setText(p.getMinStockLevel() + "");
-                txtMaxStock.setText(p.getMaxStockLevel() + "");
+                if (p.isOpen()) {
+                    txtPrice.setEnabled(false);
+                    txtCostPrice.setEnabled(false);
+                    txtBarcode.setEnabled(false);
+                    txtStock.setEnabled(false);
+                    txtMinStock.setEnabled(false);
+                    txtMaxStock.setEnabled(false);
+                    jLabel3.setEnabled(false);
+                    jLabel9.setEnabled(false);
+                    jLabel2.setEnabled(false);
+                    jLabel4.setEnabled(false);
+                    jLabel10.setEnabled(false);
+                    jLabel11.setEnabled(false);
+                    txtBarcode.setText("");
+                    txtPrice.setText("");
+                    txtCostPrice.setText("");
+                    chkOpen.setSelected(true);
+                    txtStock.setText("");
+                    txtMinStock.setText("");
+                    txtMaxStock.setText("");
+                } else {
+                    txtPrice.setEnabled(true);
+                    txtCostPrice.setEnabled(true);
+                    txtBarcode.setEnabled(true);
+                    txtStock.setEnabled(true);
+                    txtMinStock.setEnabled(true);
+                    txtMaxStock.setEnabled(true);
+                    jLabel3.setEnabled(true);
+                    jLabel9.setEnabled(true);
+                    jLabel2.setEnabled(true);
+                    jLabel4.setEnabled(true);
+                    jLabel10.setEnabled(true);
+                    jLabel11.setEnabled(true);
+                    txtBarcode.setText(p.getBarcode());
+                    txtPrice.setText(p.getPrice() + "");
+                    txtCostPrice.setText(p.getCostPrice() + "");
+                    chkOpen.setSelected(false);
+                    txtStock.setText(p.getStock() + "");
+                    txtMinStock.setText(p.getMinStockLevel() + "");
+                    txtMaxStock.setText(p.getMaxStockLevel() + "");
+                }
                 txtComments.setText(p.getComments());
                 Discount d = dbConn.getDiscount(p.getDiscountID());
                 int index = 0;
@@ -653,8 +682,9 @@ public class ProductsWindow extends javax.swing.JFrame {
                 } catch (SQLException | ProductNotFoundException ex) {
                     showError(ex);
                 }
-                this.updateTable();
+                showAllProducts();
                 setCurrentProduct(null);
+                txtName.requestFocus();
             }
         }
     }//GEN-LAST:event_btnRemoveProductActionPerformed
@@ -691,6 +721,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             product.setComments(comments);
             product.setButton(button);
             product.setColorValue(color);
+            product.setOpen(true);
         } else {
             String barcode = txtBarcode.getText();
             double price = Double.parseDouble(txtPrice.getText());
@@ -712,6 +743,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             product.setComments(comments);
             product.setButton(button);
             product.setColorValue(color);
+            product.setOpen(false);
         }
         try {
             dbConn.updateProduct(product);
@@ -722,13 +754,18 @@ public class ProductsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSaveChangesActionPerformed
 
     private void chkOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkOpenActionPerformed
-        if (chkOpen.isSelected()) {
-            txtPrice.setEnabled(false);
-            txtCostPrice.setEnabled(false);
-        } else {
-            txtPrice.setEnabled(true);
-            txtCostPrice.setEnabled(true);
-        }
+        txtPrice.setEnabled(!chkOpen.isSelected());
+        txtCostPrice.setEnabled(!chkOpen.isSelected());
+        txtBarcode.setEnabled(!chkOpen.isSelected());
+        txtStock.setEnabled(!chkOpen.isSelected());
+        txtMinStock.setEnabled(!chkOpen.isSelected());
+        txtMaxStock.setEnabled(!chkOpen.isSelected());
+        jLabel3.setEnabled(!chkOpen.isSelected());
+        jLabel9.setEnabled(!chkOpen.isSelected());
+        jLabel2.setEnabled(!chkOpen.isSelected());
+        jLabel4.setEnabled(!chkOpen.isSelected());
+        jLabel10.setEnabled(!chkOpen.isSelected());
+        jLabel11.setEnabled(!chkOpen.isSelected());
     }//GEN-LAST:event_chkOpenActionPerformed
 
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
@@ -760,9 +797,12 @@ public class ProductsWindow extends javax.swing.JFrame {
                 if (name == null || shortName == null || comments == null) {
                     JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    p = new Product(name, shortName, category, comments, tax, discount, button, color);
+                    p = new Product(name, shortName, category, comments, tax, discount, button, color, true);
                     try {
                         dbConn.addProduct(p);
+                        showAllProducts();
+                        setCurrentProduct(null);
+                        txtName.requestFocus();
                     } catch (SQLException ex) {
                         showError(ex);
                     }
@@ -778,7 +818,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                     if (name.equals("") || shortName.equals("") || barcode.equals("")) {
                         JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        p = new Product(name, shortName, category, comments, tax, discount, button, color, price, costPrice, stock, minStock, maxStock, barcode);
+                        p = new Product(name, shortName, category, comments, tax, discount, button, color, false, price, costPrice, stock, minStock, maxStock, barcode);
                         try {
                             dbConn.addProduct(p);
                             showAllProducts();

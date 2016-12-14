@@ -222,6 +222,7 @@ public class GUI extends javax.swing.JFrame {
         itemTaxes = new javax.swing.JMenuItem();
         menuStaff = new javax.swing.JMenu();
         itemStaff = new javax.swing.JMenuItem();
+        itemLogOutTill = new javax.swing.JMenuItem();
         menuCustomers = new javax.swing.JMenu();
         itemCustomers = new javax.swing.JMenuItem();
         menuItemReports = new javax.swing.JMenu();
@@ -456,6 +457,14 @@ public class GUI extends javax.swing.JFrame {
         });
         menuStaff.add(itemStaff);
 
+        itemLogOutTill.setText("Log All Tills Out");
+        itemLogOutTill.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemLogOutTillActionPerformed(evt);
+            }
+        });
+        menuStaff.add(itemLogOutTill);
+
         jMenuBar1.add(menuStaff);
 
         menuCustomers.setText("Customers");
@@ -630,6 +639,10 @@ public class GUI extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Sales data reset", "Sales Data", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_itemResetSalesActionPerformed
 
+    private void itemLogOutTillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLogOutTillActionPerformed
+        data.logAllTillsOut();
+    }//GEN-LAST:event_itemLogOutTillActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -642,6 +655,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemDiscounts;
     private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenuItem itemInterval;
+    private javax.swing.JMenuItem itemLogOutTill;
     private javax.swing.JMenuItem itemLogin;
     private javax.swing.JMenuItem itemResetSales;
     private javax.swing.JMenuItem itemSales;
