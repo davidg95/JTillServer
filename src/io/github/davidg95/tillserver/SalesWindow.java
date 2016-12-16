@@ -9,7 +9,10 @@ import io.github.davidg95.Till.till.DBConnect;
 import io.github.davidg95.Till.till.Sale;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.text.DecimalFormat;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -19,12 +22,12 @@ import javax.swing.table.DefaultTableModel;
  * @author 1301480
  */
 public class SalesWindow extends javax.swing.JFrame {
-    
+
     private static final SalesWindow frame;
-    
+
     private final Data data;
     private final DBConnect dbConn;
-    
+
     private Sale sale;
 
     private final DefaultTableModel model;
@@ -40,21 +43,22 @@ public class SalesWindow extends javax.swing.JFrame {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         model = (DefaultTableModel) tableSales.getModel();
     }
-    
-    static{
+
+    static {
         frame = new SalesWindow();
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
-    
-    public static void showSalesWindow(){
+
+    public static void showSalesWindow() {
         frame.setCurrentSale(null);
         update();
         frame.setVisible(true);
     }
-    
+
     public static void update() {
         if (frame != null) {
             frame.showAllSales();
+            frame.setTakings();
         }
     }
 
@@ -69,6 +73,28 @@ public class SalesWindow extends javax.swing.JFrame {
         tableSales.setModel(model);
     }
 
+    private void setTakings() {
+        try {
+            List<Sale> sales = dbConn.getAllSales();
+            double val = 0;
+            int count = sales.size();
+            for (Sale s : sales) {
+                val += s.getTotal();
+            }
+            if (val > 1) {
+                DecimalFormat df = new DecimalFormat("#.00"); // Set your desired format here.
+                lblCurrentTakings.setText("Current Takings: £" + df.format(val));
+            } else {
+                DecimalFormat df = new DecimalFormat("0.00"); // Set your desired format here.
+                lblCurrentTakings.setText("Current Takings: £" + df.format(val));
+            }
+            lblSaleCount.setText("Current Sale Count: " + count);
+        } catch (SQLException ex) {
+            showError(ex);
+        }
+
+    }
+
     private void showAllSales() {
         try {
             currentTableContents = dbConn.getAllSales();
@@ -77,11 +103,11 @@ public class SalesWindow extends javax.swing.JFrame {
         }
         updateTable();
     }
-    
-    private void setCurrentSale(Sale s){
-        
+
+    private void setCurrentSale(Sale s) {
+
     }
-    
+
     private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Products", JOptionPane.ERROR_MESSAGE);
     }
@@ -98,6 +124,8 @@ public class SalesWindow extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableSales = new javax.swing.JTable();
         btnClose = new javax.swing.JButton();
+        lblCurrentTakings = new javax.swing.JLabel();
+        lblSaleCount = new javax.swing.JLabel();
 
         setTitle("Sales");
 
@@ -135,25 +163,44 @@ public class SalesWindow extends javax.swing.JFrame {
             }
         });
 
+        lblCurrentTakings.setText("Current Takings: £0.00");
+
+        lblSaleCount.setText("Current Sale Count: 0");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(448, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnClose, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnClose))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(115, 115, 115)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblCurrentTakings)
+                            .addComponent(lblSaleCount))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 222, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 432, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addComponent(lblCurrentTakings)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblSaleCount)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -166,6 +213,8 @@ public class SalesWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblCurrentTakings;
+    private javax.swing.JLabel lblSaleCount;
     private javax.swing.JTable tableSales;
     // End of variables declaration//GEN-END:variables
 }

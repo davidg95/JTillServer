@@ -1,61 +1,13 @@
-Fri Dec 16 14:03:28 GMT 2016 Thread[main,5,main] Cleanup action starting
-java.sql.SQLException: Database 'TillEmbedded' not found.
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection.newSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection.handleDBNotFound(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection.<init>(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection40.<init>(Unknown Source)
-	at org.apache.derby.jdbc.Driver40.getNewEmbedConnection(Unknown Source)
-	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
-	at org.apache.derby.jdbc.Driver20.connect(Unknown Source)
-	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
-	at java.sql.DriverManager.getConnection(DriverManager.java:664)
-	at java.sql.DriverManager.getConnection(DriverManager.java:247)
-	at io.github.davidg95.Till.till.DBConnect.connect(DBConnect.java:67)
-	at io.github.davidg95.tillserver.GUI.databaseLogin(GUI.java:77)
-	at io.github.davidg95.tillserver.TillServer.start(TillServer.java:92)
-	at io.github.davidg95.tillserver.TillServer.main(TillServer.java:70)
-Caused by: java.sql.SQLException: Database 'TillEmbedded' not found.
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.wrapArgsForTransportAcrossDRDA(Unknown Source)
-	... 18 more
-============= begin nested exception, level (1) ===========
-java.sql.SQLException: Database 'TillEmbedded' not found.
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.wrapArgsForTransportAcrossDRDA(Unknown Source)
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection.newSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection.handleDBNotFound(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection.<init>(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection40.<init>(Unknown Source)
-	at org.apache.derby.jdbc.Driver40.getNewEmbedConnection(Unknown Source)
-	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
-	at org.apache.derby.jdbc.Driver20.connect(Unknown Source)
-	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
-	at java.sql.DriverManager.getConnection(DriverManager.java:664)
-	at java.sql.DriverManager.getConnection(DriverManager.java:247)
-	at io.github.davidg95.Till.till.DBConnect.connect(DBConnect.java:67)
-	at io.github.davidg95.tillserver.GUI.databaseLogin(GUI.java:77)
-	at io.github.davidg95.tillserver.TillServer.start(TillServer.java:92)
-	at io.github.davidg95.tillserver.TillServer.main(TillServer.java:70)
-============= end nested exception, level (1) ===========
-Cleanup action completed
 ----------------------------------------------------------------
-Fri Dec 16 14:03:28 GMT 2016:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.3 - (1557168): instance a816c00e-0159-07f1-dc3e-000006ac2470 
-on database directory H:\Honors Project\TillServer\TillEmbedded with class loader sun.misc.Launcher$AppClassLoader@7d4991ad 
-Loaded from file:/H:/Honors%20Project/TillServer/derby/derby.jar
+Fri Dec 16 17:20:51 GMT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.3 - (1557168): instance a816c00e-0159-08a6-9447-0000067fdce8 
+on database directory C:\Users\David\Honors Project\Till\TillServer\TillEmbedded with class loader sun.misc.Launcher$AppClassLoader@7d4991ad 
+Loaded from file:/C:/Users/David/Honors%20Project/Till/TillServer/derby/derby.jar
 java.vendor=Oracle Corporation
-java.runtime.version=1.8.0_92-b14
-user.dir=H:\Honors Project\TillServer
-os.name=Windows 10
+java.runtime.version=1.8.0_31-b13
+user.dir=C:\Users\David\Honors Project\Till\TillServer
+os.name=Windows 8.1
 os.arch=amd64
-os.version=10.0
+os.version=6.3
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''
