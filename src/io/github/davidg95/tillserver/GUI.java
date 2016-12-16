@@ -631,7 +631,8 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_itemAboutActionPerformed
 
     private void itemSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSalesActionPerformed
-        JOptionPane.showMessageDialog(this, "Takings: £" + data.getTakings() + "\nSales: " + data.getSales(), "Sales Data", JOptionPane.PLAIN_MESSAGE);
+//        JOptionPane.showMessageDialog(this, "Takings: £" + data.getTakings() + "\nSales: " + data.getSales(), "Sales Data", JOptionPane.PLAIN_MESSAGE);
+        SalesWindow.showSalesWindow();
     }//GEN-LAST:event_itemSalesActionPerformed
 
     private void itemResetSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemResetSalesActionPerformed

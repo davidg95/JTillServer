@@ -232,17 +232,21 @@ public class StaffDialog extends javax.swing.JDialog {
         String username = txtUsername.getText();
         Staff.Position position = Staff.Position.values()[cmbPosition.getSelectedIndex()];
         if (!editMode) {
-            //if (txtPassword.getPassword() == txtPasswordConfirm.getPassword()) {
-            String password = new String(txtPassword.getPassword());
-            staff = new Staff(name, position, username, password);
-            if (dbConn != null) {
-                try {
-                    dbConn.addStaff(staff);
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+            if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
+                //if (txtPassword.getPassword() == txtPasswordConfirm.getPassword()) {
+                String password = new String(txtPassword.getPassword());
+                staff = new Staff(name, position, username, password);
+                if (dbConn != null) {
+                    try {
+                        dbConn.addStaff(staff);
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
+                this.setVisible(false);
+            } else {
+                JOptionPane.showMessageDialog(this, "Passwords do not match", "New Staff", JOptionPane.ERROR_MESSAGE);
             }
-            this.setVisible(false);
             //} else{
             //lblError.setText("Passwords do not match");
             //}

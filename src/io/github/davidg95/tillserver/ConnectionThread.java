@@ -15,6 +15,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Thread for handling incoming connections.
  *
@@ -228,10 +231,11 @@ public class ConnectionThread extends Thread {
                         try {
                             Object o = obIn.readObject();
                             Sale s = (Sale) o;
-                            data.addSale();
-                            data.addTakings(s.getTotal());
+                            data.addSale(s);
                         } catch (ClassNotFoundException ex) {
 
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
                         }
                         break;
                     case "LOGIN": //Standard staff login

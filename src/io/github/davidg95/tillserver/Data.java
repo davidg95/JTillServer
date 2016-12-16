@@ -150,8 +150,10 @@ public class Data {
         takings += val;
     }
 
-    public void addSale() {
+    public void addSale(Sale s) throws SQLException {
         sales++;
+        addTakings(s.getTotal());
+        dbConnection.addSale(s);
     }
 
     public double getTakings() {

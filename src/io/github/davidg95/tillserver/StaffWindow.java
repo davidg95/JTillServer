@@ -359,7 +359,7 @@ public class StaffWindow extends javax.swing.JFrame {
             Staff.Position position = Staff.Position.values()[cmbPosition.getSelectedIndex()];
             if (name.equals("") || username.equals("")) {
                 JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Staff", JOptionPane.ERROR_MESSAGE);
-            } else {
+            } else if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
                 try {
                     s = new Staff(name, position, username, password);
                     dbConn.addStaff(s);
@@ -369,6 +369,8 @@ public class StaffWindow extends javax.swing.JFrame {
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
                 }
+            } else {
+                JOptionPane.showMessageDialog(rootPane, btnSave, name, HEIGHT);
             }
         } else {
             setCurrentStaff(null);
@@ -380,16 +382,18 @@ public class StaffWindow extends javax.swing.JFrame {
         String username = txtUsername.getText();
         String password = new String(txtPassword.getPassword());
         Staff.Position position = Staff.Position.values()[cmbPosition.getSelectedIndex()];
-
-        staff.setName(name);
-        staff.setUsername(username);
-        staff.setPassword(password);
-        staff.setPosition(position);
-
-        try {
-            dbConn.updateStaff(staff);
-        } catch (SQLException | StaffNotFoundException ex) {
-            showError(ex);
+        if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
+            staff.setName(name);
+            staff.setUsername(username);
+            staff.setPassword(password);
+            staff.setPosition(position);
+            try {
+                dbConn.updateStaff(staff);
+            } catch (SQLException | StaffNotFoundException ex) {
+                showError(ex);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Passwords do not match", "Staff", JOptionPane.ERROR_MESSAGE);
         }
 
         updateTable();
