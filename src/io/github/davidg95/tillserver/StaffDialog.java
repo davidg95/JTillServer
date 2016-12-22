@@ -140,6 +140,12 @@ public class StaffDialog extends javax.swing.JDialog {
 
         cmbPosition.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Assisstant", "Supervisor", "Manager", "Area Manager"}));
 
+        txtPasswordConfirm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPasswordConfirmActionPerformed(evt);
+            }
+        });
+
         jLabel1.setText("Name:");
 
         jLabel2.setText("Position:");
@@ -260,6 +266,10 @@ public class StaffDialog extends javax.swing.JDialog {
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
+
+    private void txtPasswordConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordConfirmActionPerformed
+        btnAdd.doClick();
+    }//GEN-LAST:event_txtPasswordConfirmActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;

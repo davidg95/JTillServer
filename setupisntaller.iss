@@ -28,7 +28,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\David\Honors Project\Till\TillServer\installer\start.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Honors Project\Till\TillServer\installer\JTill Server.bat"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\David\Honors Project\Till\TillServer\installer\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
@@ -36,7 +36,7 @@ Source: "C:\Users\David\Honors Project\Till\TillServer\installer\*"; DestDir: "{
 Name: "{group}\TillServer"; Filename: "{app}\start.bat"
 Name: "{group}\{cm:ProgramOnTheWeb,TillServer}"; Filename: "http://davidscode.ddns.net"
 Name: "{group}\{cm:UninstallProgram,TillServer}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\JTill Server"; Filename: "{app}\start.bat"; IconFilename: "{app}\favicon.ico"; Tasks: desktopicon
+Name: "{commondesktop}\JTill Server"; Filename: "{app}\JTill Server.bat"; IconFilename: "{app}\favicon.ico"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\start.bat"; Description: "{cm:LaunchProgram,TillServer}"; Flags: shellexec postinstall skipifsilent

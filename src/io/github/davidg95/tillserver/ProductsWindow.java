@@ -829,7 +829,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                         }
                     }
                 } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, e, "New Product", JOptionPane.ERROR_MESSAGE);
                 }
             }
         } else {
