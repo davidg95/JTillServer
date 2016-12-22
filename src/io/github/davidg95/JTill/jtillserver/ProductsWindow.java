@@ -137,6 +137,18 @@ public class ProductsWindow extends javax.swing.JFrame {
             txtMinStock.setText("");
             txtMaxStock.setText("");
             txtComments.setText("");
+            txtPrice.setEnabled(true);
+            txtCostPrice.setEnabled(true);
+            txtBarcode.setEnabled(true);
+            txtStock.setEnabled(true);
+            txtMinStock.setEnabled(true);
+            txtMaxStock.setEnabled(true);
+            jLabel3.setEnabled(true);
+            jLabel9.setEnabled(true);
+            jLabel2.setEnabled(true);
+            jLabel4.setEnabled(true);
+            jLabel10.setEnabled(true);
+            jLabel11.setEnabled(true);
             chkOpen.setSelected(false);
             cmbDiscount.setSelectedIndex(0);
             cmbTax.setSelectedIndex(0);
