@@ -15,9 +15,9 @@ AppSupportURL=http://davidscode.ddns.net
 AppUpdatesURL=http://davidscode.ddns.net
 DefaultDirName=C:\JTill Server
 DefaultGroupName=JTill Server
-OutputDir=C:\Users\David\Honors Project\Till\TillServer\Compiler
+OutputDir=C:\Users\David\Honors Project\Till\JTillServer\Compiler
 OutputBaseFilename=jtillserverinstaller
-SetupIconFile=C:\Users\David\Honors Project\Till\TillServer\favicon.ico
+SetupIconFile=C:\Users\David\Honors Project\Till\JTillServer\favicon.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -28,16 +28,16 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\David\Honors Project\Till\TillServer\installer\JTill Server.bat"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\David\Honors Project\Till\TillServer\installer\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\David\Honors Project\Till\JTillServer\installer\JTill Server.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Honors Project\Till\JTillServer\installer\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\TillServer"; Filename: "{app}\start.bat"
+Name: "{group}\JTillServer"; Filename: "{app}\JTill Server.bat"
 Name: "{group}\{cm:ProgramOnTheWeb,TillServer}"; Filename: "http://davidscode.ddns.net"
 Name: "{group}\{cm:UninstallProgram,TillServer}"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\JTill Server"; Filename: "{app}\JTill Server.bat"; IconFilename: "{app}\favicon.ico"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\start.bat"; Description: "{cm:LaunchProgram,TillServer}"; Flags: shellexec postinstall skipifsilent
+Filename: "{app}\JTill Server.bat"; Description: "{cm:LaunchProgram,TillServer}"; Flags: shellexec postinstall skipifsilent
 
