@@ -100,7 +100,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         model.setRowCount(0);
 
         for (Product p : currentTableContents) {
-            Object[] s = new Object[]{p.getProductCode(), p.getBarcode(), p.getName(), p.getPrice(), p.getStock()};
+            Object[] s = new Object[]{p.getProductCode(), (p.isOpen() ? "N/A" : p.getBarcode()), p.getName(), (p.isOpen() ? "Open Price" : p.getPrice()), (p.isOpen() ? "N/A" : p.getStock())};
             model.addRow(s);
         }
 
@@ -332,7 +332,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Integer.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, false
