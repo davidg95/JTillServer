@@ -230,7 +230,6 @@ public class GUI extends javax.swing.JFrame {
         itemSales = new javax.swing.JMenuItem();
         itemResetSales = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JTill Server");
         setIconImage(TillServer.getIcon());
 
