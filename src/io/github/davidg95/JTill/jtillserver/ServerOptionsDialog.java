@@ -32,9 +32,9 @@ public class ServerOptionsDialog extends javax.swing.JDialog {
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setModal(true);
-        txtPort.setText(TillServer.PORT + "");
-        txtMaxConn.setText(TillServer.MAX_CONNECTIONS + "");
-        txtMaxQueued.setText(TillServer.MAX_QUEUE + "");
+        txtPort.setText(SettingsWindow.PORT + "");
+        txtMaxConn.setText(SettingsWindow.MAX_CONNECTIONS + "");
+        txtMaxQueued.setText(SettingsWindow.MAX_QUEUE + "");
     }
 
     /**
@@ -157,11 +157,11 @@ public class ServerOptionsDialog extends javax.swing.JDialog {
             } else if (max < 0 || queue < 0) {
                 JOptionPane.showMessageDialog(this, "Please enter a value greater than 0", "Server Options", JOptionPane.PLAIN_MESSAGE);
             } else {
-                TillServer.PORT = port;
-                TillServer.MAX_CONNECTIONS = max;
-                TillServer.MAX_QUEUE = queue;
+                SettingsWindow.PORT = port;
+                SettingsWindow.MAX_CONNECTIONS = max;
+                SettingsWindow.MAX_QUEUE = queue;
                 result = 1;
-                TillServer.saveProperties();
+                SettingsWindow.saveProperties();
                 this.setVisible(false);
             }
         } catch (NumberFormatException ex) {

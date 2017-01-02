@@ -120,7 +120,7 @@ public class GUI extends javax.swing.JFrame {
             log(staff.getName() + " has logged in");
             isLoggedOn = true;
         } else {
-            TillServer.saveProperties();
+            SettingsWindow.saveProperties();
             if (SystemTray.isSupported()) {
                 this.setVisible(false);
                 TillServer.trayIcon.displayMessage("JTill Server is still running", "JTill Server is still running in the background, click this icon to bring it back up.", TrayIcon.MessageType.INFO);
@@ -154,7 +154,7 @@ public class GUI extends javax.swing.JFrame {
             writer.println(username);
             writer.println(password);
             writer.println(TillServer.updateInterval);
-            writer.println(TillServer.PORT);
+            writer.println(SettingsWindow.PORT);
         } catch (IOException ex) {
 
         }
@@ -172,7 +172,7 @@ public class GUI extends javax.swing.JFrame {
                 username = fileReader.nextLine();
                 password = fileReader.nextLine();
                 TillServer.updateInterval = Long.parseLong(fileReader.nextLine());
-                TillServer.PORT = Integer.parseInt(fileReader.nextLine());
+                SettingsWindow.PORT = Integer.parseInt(fileReader.nextLine());
             } else {
             }
         } catch (IOException e) {
@@ -200,6 +200,7 @@ public class GUI extends javax.swing.JFrame {
         btnCategorys = new javax.swing.JButton();
         btnReports = new javax.swing.JButton();
         btnScreens = new javax.swing.JButton();
+        btnSettings = new javax.swing.JButton();
         statusBar = new javax.swing.JPanel();
         lblDatabase = new javax.swing.JLabel();
         lblUser = new javax.swing.JLabel();
@@ -299,6 +300,7 @@ public class GUI extends javax.swing.JFrame {
         jToolBar1.add(btnCategorys);
 
         btnReports.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/reports.png"))); // NOI18N
+        btnReports.setToolTipText("Reports");
         btnReports.setFocusable(false);
         btnReports.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnReports.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -310,11 +312,29 @@ public class GUI extends javax.swing.JFrame {
         jToolBar1.add(btnReports);
 
         btnScreens.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/screens.png"))); // NOI18N
+        btnScreens.setToolTipText("Edit Screens");
         btnScreens.setEnabled(false);
         btnScreens.setFocusable(false);
         btnScreens.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnScreens.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnScreens.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnScreensActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnScreens);
+
+        btnSettings.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/settings.png"))); // NOI18N
+        btnSettings.setToolTipText("Settings");
+        btnSettings.setFocusable(false);
+        btnSettings.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSettings.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSettings.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSettingsActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnSettings);
 
         lblDatabase.setText("Not connected to database");
         lblDatabase.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -559,7 +579,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_itemStockActionPerformed
 
     private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
-        TillServer.saveProperties();
+        SettingsWindow.saveProperties();
         System.exit(0);
     }//GEN-LAST:event_itemExitActionPerformed
 
@@ -644,7 +664,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
         JOptionPane.showMessageDialog(null, "JTill Server is running on port number "
-                + TillServer.PORT + " with " + clientCounter + " connections.\n"
+                + SettingsWindow.PORT + " with " + clientCounter + " connections.\n"
                 + dbConn.toString(), "JTill Server",
                 JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_itemAboutActionPerformed
@@ -667,6 +687,14 @@ public class GUI extends javax.swing.JFrame {
         SalesWindow.showSalesWindow();
     }//GEN-LAST:event_btnReportsActionPerformed
 
+    private void btnSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsActionPerformed
+        SettingsWindow.showSettingsWindow();
+    }//GEN-LAST:event_btnSettingsActionPerformed
+
+    private void btnScreensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScreensActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnScreensActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -675,6 +703,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton btnManageStock;
     private javax.swing.JButton btnReports;
     private javax.swing.JButton btnScreens;
+    private javax.swing.JButton btnSettings;
     private javax.swing.JMenuItem itemAbout;
     private javax.swing.JMenuItem itemCategorys;
     private javax.swing.JMenuItem itemCustomers;
