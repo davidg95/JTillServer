@@ -199,6 +199,7 @@ public class GUI extends javax.swing.JFrame {
         btnDiscounts = new javax.swing.JButton();
         btnCategorys = new javax.swing.JButton();
         btnReports = new javax.swing.JButton();
+        btnScreens = new javax.swing.JButton();
         statusBar = new javax.swing.JPanel();
         lblDatabase = new javax.swing.JLabel();
         lblUser = new javax.swing.JLabel();
@@ -307,6 +308,13 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(btnReports);
+
+        btnScreens.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/screens.png"))); // NOI18N
+        btnScreens.setEnabled(false);
+        btnScreens.setFocusable(false);
+        btnScreens.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnScreens.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(btnScreens);
 
         lblDatabase.setText("Not connected to database");
         lblDatabase.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -666,6 +674,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton btnManageStaff;
     private javax.swing.JButton btnManageStock;
     private javax.swing.JButton btnReports;
+    private javax.swing.JButton btnScreens;
     private javax.swing.JMenuItem itemAbout;
     private javax.swing.JMenuItem itemCategorys;
     private javax.swing.JMenuItem itemCustomers;
