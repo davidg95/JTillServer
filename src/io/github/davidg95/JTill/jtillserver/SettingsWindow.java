@@ -5,6 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.DBConnect;
 import java.awt.Component;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,36 +24,41 @@ import javax.swing.JOptionPane;
  * @author David
  */
 public class SettingsWindow extends javax.swing.JFrame {
-    
+
     public static final SettingsWindow frame;
     private static Properties properties;
-    
+
     public static int PORT = 600;
     public static int MAX_CONNECTIONS = 10;
     public static int MAX_QUEUE = 10;
     public static String hostName;
     
-    private boolean edit = false;
+    private final DBConnect dbConn;
+
+    private boolean editNetwork = false;
+
+    private boolean editDatabase = false;
 
     /**
      * Creates new form Settings
      */
     public SettingsWindow() {
+        this.dbConn = TillServer.getDBConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         init();
     }
-    
-    static{
+
+    static {
         frame = new SettingsWindow();
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
-    
-    public static void showSettingsWindow(){
+
+    public static void showSettingsWindow() {
         update();
         frame.setVisible(true);
     }
-    
+
     public static void loadProperties() {
         properties = new Properties();
         InputStream in;
@@ -94,12 +100,12 @@ public class SettingsWindow extends javax.swing.JFrame {
         } catch (IOException ex) {
         }
     }
-    
-    public static void update(){
+
+    public static void update() {
         frame.init();
     }
-    
-    private void init(){
+
+    private void init() {
         txtPort.setText(PORT + "");
         txtMaxConn.setText(MAX_CONNECTIONS + "");
         txtMaxQueued.setText(MAX_QUEUE + "");
@@ -122,8 +128,16 @@ public class SettingsWindow extends javax.swing.JFrame {
         txtMaxQueued = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        btnEdit = new javax.swing.JButton();
+        btnEditNetwork = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
+        panelDatabase = new javax.swing.JPanel();
+        txtAddress = new javax.swing.JTextField();
+        txtUsername = new javax.swing.JTextField();
+        txtPassword = new javax.swing.JPasswordField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        btnEditDatabase = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JTill Settings");
@@ -179,10 +193,10 @@ public class SettingsWindow extends javax.swing.JFrame {
                     .addComponent(jLabel3)))
         );
 
-        btnEdit.setText("Edit Network Options");
-        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+        btnEditNetwork.setText("Edit Network Options");
+        btnEditNetwork.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditActionPerformed(evt);
+                btnEditNetworkActionPerformed(evt);
             }
         });
 
@@ -190,6 +204,58 @@ public class SettingsWindow extends javax.swing.JFrame {
         btnClose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCloseActionPerformed(evt);
+            }
+        });
+
+        panelDatabase.setBorder(javax.swing.BorderFactory.createTitledBorder("Database Options"));
+
+        txtPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPasswordActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Address:");
+
+        jLabel5.setText("Username:");
+
+        jLabel6.setText("Password:");
+
+        javax.swing.GroupLayout panelDatabaseLayout = new javax.swing.GroupLayout(panelDatabase);
+        panelDatabase.setLayout(panelDatabaseLayout);
+        panelDatabaseLayout.setHorizontalGroup(
+            panelDatabaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelDatabaseLayout.createSequentialGroup()
+                .addGroup(panelDatabaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelDatabaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtAddress)
+                    .addComponent(txtUsername)
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+        panelDatabaseLayout.setVerticalGroup(
+            panelDatabaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelDatabaseLayout.createSequentialGroup()
+                .addGroup(panelDatabaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelDatabaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelDatabaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)))
+        );
+
+        btnEditDatabase.setText("Edit Database Options");
+        btnEditDatabase.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditDatabaseActionPerformed(evt);
             }
         });
 
@@ -202,12 +268,16 @@ public class SettingsWindow extends javax.swing.JFrame {
                 .addComponent(chkLogOut)
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnEdit)
-                    .addComponent(panelNetwork, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnClose)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnEditDatabase)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnClose))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnEditNetwork)
+                            .addComponent(panelNetwork, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panelDatabase, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -218,17 +288,25 @@ public class SettingsWindow extends javax.swing.JFrame {
                     .addComponent(chkLogOut)
                     .addComponent(panelNetwork, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnEdit)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 157, Short.MAX_VALUE)
-                .addComponent(btnClose)
-                .addContainerGap())
+                .addComponent(btnEditNetwork)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                        .addComponent(btnClose)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnEditDatabase)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        if(edit){
+    private void btnEditNetworkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditNetworkActionPerformed
+        if (editNetwork) {
             int port = Integer.parseInt(txtPort.getText());
             int max = Integer.parseInt(txtMaxConn.getText());
             int queue = Integer.parseInt(txtMaxQueued.getText());
@@ -242,35 +320,71 @@ public class SettingsWindow extends javax.swing.JFrame {
                 SettingsWindow.MAX_QUEUE = queue;
                 SettingsWindow.saveProperties();
             }
-            for(Component c: panelNetwork.getComponents()){
+            for (Component c : panelNetwork.getComponents()) {
                 c.setEnabled(false);
             }
-            btnEdit.setText("Edit Network Options");
-            edit = false;
+            btnEditNetwork.setText("Edit Network Options");
+            editNetwork = false;
             JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
-        } else{
-            for(Component c: panelNetwork.getComponents()){
+        } else {
+            for (Component c : panelNetwork.getComponents()) {
                 c.setEnabled(true);
             }
-            btnEdit.setText("Save");
-            edit = true;
+            btnEditNetwork.setText("Save");
+            editNetwork = true;
         }
-    }//GEN-LAST:event_btnEditActionPerformed
+    }//GEN-LAST:event_btnEditNetworkActionPerformed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 
+    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
+
+    }//GEN-LAST:event_txtPasswordActionPerformed
+
+    private void btnEditDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditDatabaseActionPerformed
+        if (editDatabase) {
+            String address = txtPort.getText();
+            String username = txtMaxConn.getText();
+            String password = txtMaxQueued.getText();
+            dbConn.address = address;
+            dbConn.username = username;
+            dbConn.password = password;
+            SettingsWindow.saveProperties();
+            for (Component c : panelDatabase.getComponents()) {
+                c.setEnabled(false);
+            }
+            btnEditDatabase.setText("Edit Database Options");
+            editDatabase = false;
+            JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
+        } else {
+            for (Component c : panelDatabase.getComponents()) {
+                c.setEnabled(true);
+            }
+            btnEditDatabase.setText("Save");
+            editDatabase = true;
+        }
+    }//GEN-LAST:event_btnEditDatabaseActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
-    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnEditDatabase;
+    private javax.swing.JButton btnEditNetwork;
     private javax.swing.JCheckBox chkLogOut;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel panelDatabase;
     private javax.swing.JPanel panelNetwork;
+    private javax.swing.JTextField txtAddress;
     private javax.swing.JTextField txtMaxConn;
     private javax.swing.JTextField txtMaxQueued;
+    private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtPort;
+    private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 }
