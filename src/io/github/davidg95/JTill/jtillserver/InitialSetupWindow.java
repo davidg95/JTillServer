@@ -272,7 +272,7 @@ public class InitialSetupWindow extends javax.swing.JDialog {
 
         try {
             //dbConnect.connect(database_address, database_username, database_password);
-            dbConnect.create(database_username, database_password);
+            dbConnect.create(database_address, database_username, database_password);
             dbConnect.connect(dbConnect.getAddress(), database_username, database_password);
             lblConnection.setText("Connection successful");
         } catch (SQLException ex) {

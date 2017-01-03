@@ -28,8 +28,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\David\Honors Project\Till\JTillServer\installer\JTill Server.bat"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\David\Honors Project\Till\JTillServer\installer\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\David\Honors Project\Till\JTillServer\dist\JTill Server.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Honors Project\Till\JTillServer\dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

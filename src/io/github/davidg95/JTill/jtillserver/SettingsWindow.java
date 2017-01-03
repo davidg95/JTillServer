@@ -27,11 +27,20 @@ public class SettingsWindow extends javax.swing.JFrame {
 
     public static final SettingsWindow frame;
     private static Properties properties;
-
+    
+    //Static Settings
     public static int PORT = 600;
     public static int MAX_CONNECTIONS = 10;
     public static int MAX_QUEUE = 10;
     public static String hostName;
+    public static boolean autoLogout = false;
+    public static int logoutTimeout = 30;
+    public static String DB_ADDRESS;
+    public static String DB_USERNAME;
+    public static String DB_PASSWORD;
+    private final String defaultAddress = "jdbc:derby:TillEmbedded;create=false";
+    private final String defaultUsername = "APP";
+    private final String defaultPassword = "App";
     
     private final DBConnect dbConn;
 
@@ -46,7 +55,6 @@ public class SettingsWindow extends javax.swing.JFrame {
         this.dbConn = TillServer.getDBConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        init();
     }
 
     static {
@@ -72,6 +80,13 @@ public class SettingsWindow extends javax.swing.JFrame {
             PORT = Integer.parseInt(properties.getProperty("port", Integer.toString(PORT)));
             MAX_CONNECTIONS = Integer.parseInt(properties.getProperty("max_conn", Integer.toString(MAX_CONNECTIONS)));
             MAX_QUEUE = Integer.parseInt(properties.getProperty("max_queue", Integer.toString(MAX_QUEUE)));
+            autoLogout = Boolean.parseBoolean(properties.getProperty("autoLogout", "false"));
+            logoutTimeout = Integer.parseInt(properties.getProperty("logoutTimeout", "30"));
+            DB_ADDRESS = properties.getProperty("db_address", "jdbc:derby:TillEmbedded;create=false");
+            DB_USERNAME = properties.getProperty("db_username", "APP");
+            DB_PASSWORD = properties.getProperty("db_password", "App");
+            
+            frame.init();
 
             in.close();
         } catch (FileNotFoundException | UnknownHostException ex) {
@@ -93,6 +108,11 @@ public class SettingsWindow extends javax.swing.JFrame {
             properties.setProperty("port", Integer.toString(PORT));
             properties.setProperty("max_conn", Integer.toString(MAX_CONNECTIONS));
             properties.setProperty("max_queue", Integer.toString(MAX_QUEUE));
+            properties.setProperty("autoLogout", Boolean.toString(autoLogout));
+            properties.setProperty("logoutTimeout", Integer.toString(logoutTimeout));
+            properties.setProperty("db_address", DB_ADDRESS);
+            properties.setProperty("db_username", DB_USERNAME);
+            properties.setProperty("db_password", DB_PASSWORD);
 
             properties.store(out, null);
             out.close();
@@ -109,6 +129,19 @@ public class SettingsWindow extends javax.swing.JFrame {
         txtPort.setText(PORT + "");
         txtMaxConn.setText(MAX_CONNECTIONS + "");
         txtMaxQueued.setText(MAX_QUEUE + "");
+        txtAddress.setText(DB_ADDRESS);
+        txtUsername.setText(DB_USERNAME);
+        txtPassword.setText(DB_PASSWORD);
+        chkLogOut.setSelected(autoLogout);
+        if(logoutTimeout == -1){
+            chkLogoutTimeout.setSelected(false);
+            txtLogoutTimeout.setText("");
+            txtLogoutTimeout.setEnabled(false);
+        } else{
+            chkLogoutTimeout.setSelected(true);
+            txtLogoutTimeout.setText(logoutTimeout + "");
+            txtLogoutTimeout.setEnabled(true);
+        }
     }
 
     /**
@@ -120,7 +153,6 @@ public class SettingsWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        chkLogOut = new javax.swing.JCheckBox();
         panelNetwork = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txtPort = new javax.swing.JTextField();
@@ -138,12 +170,18 @@ public class SettingsWindow extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         btnEditDatabase = new javax.swing.JButton();
+        panelSecurity = new javax.swing.JPanel();
+        txtLogoutTimeout = new javax.swing.JTextField();
+        chkLogOut = new javax.swing.JCheckBox();
+        jLabel8 = new javax.swing.JLabel();
+        chkLogoutTimeout = new javax.swing.JCheckBox();
+        btnSaveSecurity = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        btnDatabaseDefault = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JTill Settings");
         setIconImage(TillServer.getIcon());
-
-        chkLogOut.setText("Log Out After Sale");
 
         panelNetwork.setBorder(javax.swing.BorderFactory.createTitledBorder("Network Options"));
 
@@ -208,7 +246,13 @@ public class SettingsWindow extends javax.swing.JFrame {
         });
 
         panelDatabase.setBorder(javax.swing.BorderFactory.createTitledBorder("Database Options"));
+        panelDatabase.setEnabled(false);
 
+        txtAddress.setEnabled(false);
+
+        txtUsername.setEnabled(false);
+
+        txtPassword.setEnabled(false);
         txtPassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtPasswordActionPerformed(evt);
@@ -216,10 +260,13 @@ public class SettingsWindow extends javax.swing.JFrame {
         });
 
         jLabel4.setText("Address:");
+        jLabel4.setEnabled(false);
 
         jLabel5.setText("Username:");
+        jLabel5.setEnabled(false);
 
         jLabel6.setText("Password:");
+        jLabel6.setEnabled(false);
 
         javax.swing.GroupLayout panelDatabaseLayout = new javax.swing.GroupLayout(panelDatabase);
         panelDatabase.setLayout(panelDatabaseLayout);
@@ -231,10 +278,10 @@ public class SettingsWindow extends javax.swing.JFrame {
                     .addComponent(jLabel5)
                     .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelDatabaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(panelDatabaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtAddress)
                     .addComponent(txtUsername)
-                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(txtPassword)))
         );
         panelDatabaseLayout.setVerticalGroup(
             panelDatabaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -259,25 +306,91 @@ public class SettingsWindow extends javax.swing.JFrame {
             }
         });
 
+        panelSecurity.setBorder(javax.swing.BorderFactory.createTitledBorder("Security"));
+
+        txtLogoutTimeout.setText("30");
+
+        chkLogOut.setText("Log Out After Sale Is Complete");
+
+        jLabel8.setText("seconds");
+
+        chkLogoutTimeout.setSelected(true);
+        chkLogoutTimeout.setText("Enabled");
+        chkLogoutTimeout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkLogoutTimeoutActionPerformed(evt);
+            }
+        });
+
+        btnSaveSecurity.setText("Save Changes");
+        btnSaveSecurity.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveSecurityActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setText("Automatic Logout Timeout:");
+
+        javax.swing.GroupLayout panelSecurityLayout = new javax.swing.GroupLayout(panelSecurity);
+        panelSecurity.setLayout(panelSecurityLayout);
+        panelSecurityLayout.setHorizontalGroup(
+            panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(chkLogOut)
+            .addGroup(panelSecurityLayout.createSequentialGroup()
+                .addGroup(panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnSaveSecurity)
+                    .addGroup(panelSecurityLayout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtLogoutTimeout, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(chkLogoutTimeout))
+        );
+        panelSecurityLayout.setVerticalGroup(
+            panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelSecurityLayout.createSequentialGroup()
+                .addComponent(chkLogOut)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(txtLogoutTimeout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(chkLogoutTimeout))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSaveSecurity))
+        );
+
+        btnDatabaseDefault.setText("Reset To Default");
+        btnDatabaseDefault.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDatabaseDefaultActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(chkLogOut)
-                .addGap(37, 37, 37)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnEditDatabase)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnClose))
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(panelSecurity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnEditNetwork)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnEditDatabase)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnDatabaseDefault, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(panelNetwork, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnEditNetwork)
                             .addComponent(panelDatabase, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 384, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -285,21 +398,19 @@ public class SettingsWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(chkLogOut)
-                    .addComponent(panelNetwork, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(panelNetwork, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(panelSecurity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnEditNetwork)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                        .addComponent(btnClose)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEditDatabase)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnEditDatabase)
+                    .addComponent(btnDatabaseDefault))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 246, Short.MAX_VALUE)
+                .addComponent(btnClose)
+                .addContainerGap())
         );
 
         pack();
@@ -345,12 +456,12 @@ public class SettingsWindow extends javax.swing.JFrame {
 
     private void btnEditDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditDatabaseActionPerformed
         if (editDatabase) {
-            String address = txtPort.getText();
-            String username = txtMaxConn.getText();
-            String password = txtMaxQueued.getText();
-            dbConn.address = address;
-            dbConn.username = username;
-            dbConn.password = password;
+            String address = txtAddress.getText();
+            String username = txtUsername.getText();
+            String password = new String(txtPassword.getPassword());
+            DB_ADDRESS = address;
+            DB_USERNAME = username;
+            DB_PASSWORD = password;
             SettingsWindow.saveProperties();
             for (Component c : panelDatabase.getComponents()) {
                 c.setEnabled(false);
@@ -367,20 +478,52 @@ public class SettingsWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEditDatabaseActionPerformed
 
+    private void btnSaveSecurityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveSecurityActionPerformed
+        autoLogout = chkLogOut.isSelected();
+        if(chkLogoutTimeout.isSelected()){
+            logoutTimeout = Integer.parseInt(txtLogoutTimeout.getText());
+        } else{
+            logoutTimeout = -1;
+        }
+        saveProperties();
+    }//GEN-LAST:event_btnSaveSecurityActionPerformed
+
+    private void chkLogoutTimeoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkLogoutTimeoutActionPerformed
+        txtLogoutTimeout.setEnabled(chkLogoutTimeout.isSelected());
+    }//GEN-LAST:event_chkLogoutTimeoutActionPerformed
+
+    private void btnDatabaseDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDatabaseDefaultActionPerformed
+        DB_ADDRESS = defaultAddress;
+        DB_USERNAME = defaultUsername;
+        DB_PASSWORD = defaultPassword;
+        txtAddress.setText(DB_ADDRESS);
+        txtUsername.setText(DB_USERNAME);
+        txtPassword.setText(DB_PASSWORD);
+        saveProperties();
+        JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
+    }//GEN-LAST:event_btnDatabaseDefaultActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnDatabaseDefault;
     private javax.swing.JButton btnEditDatabase;
     private javax.swing.JButton btnEditNetwork;
+    private javax.swing.JButton btnSaveSecurity;
     private javax.swing.JCheckBox chkLogOut;
+    private javax.swing.JCheckBox chkLogoutTimeout;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel panelDatabase;
     private javax.swing.JPanel panelNetwork;
+    private javax.swing.JPanel panelSecurity;
     private javax.swing.JTextField txtAddress;
+    private javax.swing.JTextField txtLogoutTimeout;
     private javax.swing.JTextField txtMaxConn;
     private javax.swing.JTextField txtMaxQueued;
     private javax.swing.JPasswordField txtPassword;

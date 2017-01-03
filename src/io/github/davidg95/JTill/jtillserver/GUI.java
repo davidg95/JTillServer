@@ -55,7 +55,7 @@ public class GUI extends javax.swing.JFrame {
     private void initialSetup() {
         try {
             TillSplashScreen.setLabel("Creating database...");
-            dbConn.create("APP", "App");
+            dbConn.create(SettingsWindow.DB_ADDRESS, SettingsWindow.DB_USERNAME, SettingsWindow.DB_PASSWORD);
             TillSplashScreen.setLabel("Creating tables...");
             dbConn.initDatabase();
             Staff s = StaffDialog.showNewStaffDialog(this);
@@ -74,7 +74,7 @@ public class GUI extends javax.swing.JFrame {
 
     public void databaseLogin() {
         try {
-            dbConn.connect("jdbc:derby:TillEmbedded;create=false", "APP", "App");
+            dbConn.connect(SettingsWindow.DB_ADDRESS, SettingsWindow.DB_USERNAME, SettingsWindow.DB_PASSWORD);
             TillSplashScreen.setLabel("Connected to database");
             lblDatabase.setText("Connected to database");
             if (dbConn.staffCount() == 0) {
@@ -313,7 +313,6 @@ public class GUI extends javax.swing.JFrame {
 
         btnScreens.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/screens.png"))); // NOI18N
         btnScreens.setToolTipText("Edit Screens");
-        btnScreens.setEnabled(false);
         btnScreens.setFocusable(false);
         btnScreens.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnScreens.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -656,10 +655,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCategorysActionPerformed
 
     private void itemServerOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemServerOptionsActionPerformed
-        int result = ServerOptionsDialog.showDialog(this);
-        if (result == 1) {
-            JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
-        }
+        SettingsWindow.showSettingsWindow();
     }//GEN-LAST:event_itemServerOptionsActionPerformed
 
     private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
@@ -692,7 +688,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSettingsActionPerformed
 
     private void btnScreensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScreensActionPerformed
-        // TODO add your handling code here:
+        ScreenEditWindow.showScreenEditWindow();
     }//GEN-LAST:event_btnScreensActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

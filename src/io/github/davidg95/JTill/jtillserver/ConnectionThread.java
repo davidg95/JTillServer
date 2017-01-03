@@ -16,6 +16,7 @@ import io.github.davidg95.JTill.jtill.OutOfStockException;
 import io.github.davidg95.JTill.jtill.ProductNotFoundException;
 import io.github.davidg95.JTill.jtill.LoginException;
 import io.github.davidg95.JTill.jtill.Sale;
+import io.github.davidg95.JTill.jtill.TillInitData;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -294,6 +295,10 @@ public class ConnectionThread extends Thread {
                         } catch (StaffNotFoundException ex) {
                             out.println("FAIL");
                         }
+                        break;
+                    case "INIT": //Get Init Data
+                        TillInitData initData = new TillInitData(SettingsWindow.autoLogout, SettingsWindow.logoutTimeout);
+                        obOut.writeObject(initData);
                         break;
                     case "GETINIT": //Load till configuration
                         try {

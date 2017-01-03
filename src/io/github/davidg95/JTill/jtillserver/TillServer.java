@@ -93,8 +93,8 @@ public class TillServer {
         try {
             dbConnection.connect("jdbc:derby:TillEmbedded;create=false", "APP", "App");
         } catch (SQLException ex) {
-                }
-                }
+        }
+    }
 
     public void headlessLogin() {
         Staff staff;
