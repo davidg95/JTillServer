@@ -7,6 +7,7 @@ package io.github.davidg95.JTill.jtillserver;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JWindow;
 
 /**
@@ -16,24 +17,31 @@ import javax.swing.JWindow;
 public class TillSplashScreen extends JWindow {
 
     private static JWindow window;
+    private static JProgressBar bar;
     private static JLabel prgLabel;
     
     public TillSplashScreen() {
         JLabel label = new JLabel();
+        bar = new JProgressBar();
         prgLabel = new JLabel();
         prgLabel.setText("Starting JTill Server...");
         label.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/splashIcon.png")));
         JPanel pan = new JPanel();
         pan.add(label);
+        pan.add(bar);
         pan.add(prgLabel);
         add(pan);
         setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
         setBounds(500, 150, 500, 320);
         setLocationRelativeTo(null);
     }
+    
+    static{
+        window = new TillSplashScreen();
+    }
 
     public static void showSplashScreen() {
-        window = new TillSplashScreen();
+        //window = new TillSplashScreen();
         window.setVisible(true);
     }
     
@@ -43,6 +51,10 @@ public class TillSplashScreen extends JWindow {
     
     public static void setLabel(String text){
         prgLabel.setText(text);
+    }
+    
+    public static void addBar(int val){
+        bar.setValue(bar.getValue() + val);
     }
 
 }

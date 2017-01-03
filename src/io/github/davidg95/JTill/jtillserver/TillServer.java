@@ -80,6 +80,7 @@ public class TillServer {
         if (connThread != null) {
             connThread.start();
         }
+        TillSplashScreen.addBar(50);
         if (!GraphicsEnvironment.isHeadless()) {
             TillSplashScreen.hideSplashScreen();
             g.setVisible(true);

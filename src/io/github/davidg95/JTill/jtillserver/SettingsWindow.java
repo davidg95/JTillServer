@@ -87,6 +87,8 @@ public class SettingsWindow extends javax.swing.JFrame {
             DB_PASSWORD = properties.getProperty("db_password", "App");
             
             frame.init();
+            
+            TillSplashScreen.addBar(10);
 
             in.close();
         } catch (FileNotFoundException | UnknownHostException ex) {

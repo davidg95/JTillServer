@@ -76,6 +76,7 @@ public class GUI extends javax.swing.JFrame {
         try {
             dbConn.connect(SettingsWindow.DB_ADDRESS, SettingsWindow.DB_USERNAME, SettingsWindow.DB_PASSWORD);
             TillSplashScreen.setLabel("Connected to database");
+            TillSplashScreen.addBar(40);
             lblDatabase.setText("Connected to database");
             if (dbConn.staffCount() == 0) {
                 Staff s = StaffDialog.showNewStaffDialog(this);
