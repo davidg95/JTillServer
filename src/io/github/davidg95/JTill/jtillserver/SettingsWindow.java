@@ -27,7 +27,7 @@ public class SettingsWindow extends javax.swing.JFrame {
 
     public static final SettingsWindow frame;
     private static Properties properties;
-    
+
     //Static Settings
     public static int PORT = 600;
     public static int MAX_CONNECTIONS = 10;
@@ -35,13 +35,13 @@ public class SettingsWindow extends javax.swing.JFrame {
     public static String hostName;
     public static boolean autoLogout = false;
     public static int logoutTimeout = 30;
-    public static String DB_ADDRESS;
-    public static String DB_USERNAME;
-    public static String DB_PASSWORD;
-    private final String defaultAddress = "jdbc:derby:TillEmbedded;create=false";
+    public static String DB_ADDRESS = "jdbc:derby:TillEmbedded;";
+    public static String DB_USERNAME = "APP";
+    public static String DB_PASSWORD = "App";
+    private final String defaultAddress = "jdbc:derby:TillEmbedded;";
     private final String defaultUsername = "APP";
     private final String defaultPassword = "App";
-    
+
     private final DBConnect dbConn;
 
     private boolean editNetwork = false;
@@ -82,12 +82,12 @@ public class SettingsWindow extends javax.swing.JFrame {
             MAX_QUEUE = Integer.parseInt(properties.getProperty("max_queue", Integer.toString(MAX_QUEUE)));
             autoLogout = Boolean.parseBoolean(properties.getProperty("autoLogout", "false"));
             logoutTimeout = Integer.parseInt(properties.getProperty("logoutTimeout", "30"));
-            DB_ADDRESS = properties.getProperty("db_address", "jdbc:derby:TillEmbedded;create=false");
+            DB_ADDRESS = properties.getProperty("db_address", "jdbc:derby:TillEmbedded;");
             DB_USERNAME = properties.getProperty("db_username", "APP");
             DB_PASSWORD = properties.getProperty("db_password", "App");
-            
+
             frame.init();
-            
+
             TillSplashScreen.addBar(10);
 
             in.close();
@@ -135,11 +135,11 @@ public class SettingsWindow extends javax.swing.JFrame {
         txtUsername.setText(DB_USERNAME);
         txtPassword.setText(DB_PASSWORD);
         chkLogOut.setSelected(autoLogout);
-        if(logoutTimeout == -1){
+        if (logoutTimeout == -1) {
             chkLogoutTimeout.setSelected(false);
             txtLogoutTimeout.setText("");
             txtLogoutTimeout.setEnabled(false);
-        } else{
+        } else {
             chkLogoutTimeout.setSelected(true);
             txtLogoutTimeout.setText(logoutTimeout + "");
             txtLogoutTimeout.setEnabled(true);
@@ -482,9 +482,9 @@ public class SettingsWindow extends javax.swing.JFrame {
 
     private void btnSaveSecurityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveSecurityActionPerformed
         autoLogout = chkLogOut.isSelected();
-        if(chkLogoutTimeout.isSelected()){
+        if (chkLogoutTimeout.isSelected()) {
             logoutTimeout = Integer.parseInt(txtLogoutTimeout.getText());
-        } else{
+        } else {
             logoutTimeout = -1;
         }
         saveProperties();

@@ -55,7 +55,7 @@ public class GUI extends javax.swing.JFrame {
     private void initialSetup() {
         try {
             TillSplashScreen.setLabel("Creating database...");
-            dbConn.create(SettingsWindow.DB_ADDRESS, SettingsWindow.DB_USERNAME, SettingsWindow.DB_PASSWORD);
+            dbConn.create(SettingsWindow.DB_ADDRESS + "create=true;", SettingsWindow.DB_USERNAME, SettingsWindow.DB_PASSWORD);
             TillSplashScreen.setLabel("Creating tables...");
             dbConn.initDatabase();
             Staff s = StaffDialog.showNewStaffDialog(this);
@@ -222,6 +222,7 @@ public class GUI extends javax.swing.JFrame {
         menuStock = new javax.swing.JMenu();
         itemStock = new javax.swing.JMenuItem();
         itemDiscounts = new javax.swing.JMenuItem();
+        itemVouchers = new javax.swing.JMenuItem();
         itemCategorys = new javax.swing.JMenuItem();
         itemTaxes = new javax.swing.JMenuItem();
         menuStaff = new javax.swing.JMenu();
@@ -468,6 +469,14 @@ public class GUI extends javax.swing.JFrame {
         });
         menuStock.add(itemDiscounts);
 
+        itemVouchers.setText("Manage Vouchers");
+        itemVouchers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemVouchersActionPerformed(evt);
+            }
+        });
+        menuStock.add(itemVouchers);
+
         itemCategorys.setText("Manage Categorys");
         itemCategorys.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -692,6 +701,10 @@ public class GUI extends javax.swing.JFrame {
         ScreenEditWindow.showScreenEditWindow();
     }//GEN-LAST:event_btnScreensActionPerformed
 
+    private void itemVouchersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemVouchersActionPerformed
+        VoucherWindow.showVoucherWindow();
+    }//GEN-LAST:event_itemVouchersActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -716,6 +729,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemStock;
     private javax.swing.JMenuItem itemTaxes;
     private javax.swing.JMenuItem itemUpdate;
+    private javax.swing.JMenuItem itemVouchers;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
