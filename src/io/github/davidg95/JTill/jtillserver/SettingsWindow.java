@@ -5,7 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DBConnect;
+import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -42,7 +42,7 @@ public class SettingsWindow extends javax.swing.JFrame {
     private final String defaultUsername = "APP";
     private final String defaultPassword = "App";
 
-    private final DBConnect dbConn;
+    private final DataConnectInterface dbConn;
 
     private boolean editNetwork = false;
 
@@ -52,7 +52,7 @@ public class SettingsWindow extends javax.swing.JFrame {
      * Creates new form Settings
      */
     public SettingsWindow() {
-        this.dbConn = TillServer.getDBConnection();
+        this.dbConn = TillServer.getDataConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }

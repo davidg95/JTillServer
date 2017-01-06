@@ -5,13 +5,15 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.Category;
-import io.github.davidg95.JTill.jtill.DBConnect;
+import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import io.github.davidg95.JTill.jtill.Discount;
 import io.github.davidg95.JTill.jtill.DiscountNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -24,7 +26,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
 
     public static final DiscountsWindow frame;
 
-    private final DBConnect dbConn;
+    private final DataConnectInterface dbConn;
 
     private Discount discount;
 
@@ -35,7 +37,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
      * Creates new form DiscountsWindow
      */
     public DiscountsWindow() {
-        this.dbConn = TillServer.getDBConnection();
+        this.dbConn = TillServer.getDataConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -77,8 +79,8 @@ public class DiscountsWindow extends javax.swing.JFrame {
         try {
             currentTableContents = dbConn.getAllDiscounts();
             updateTable();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException | IOException ex) {
+            showError(ex);
         }
     }
 
@@ -307,7 +309,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
                         dbConn.addDiscount(d);
                         showAllDiscounts();
                         setCurrentDiscount(null);
-                    } catch (SQLException ex) {
+                    } catch (SQLException | IOException ex) {
                         showError(ex);
                     }
                 }
@@ -339,9 +341,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
 
                 try {
                     dbConn.updateDiscount(discount);
-                } catch (SQLException ex) {
-                    showError(ex);
-                } catch (DiscountNotFoundException ex) {
+                } catch (SQLException | DiscountNotFoundException | IOException ex) {
                     showError(ex);
                 }
 
@@ -359,9 +359,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dbConn.removeDiscount(currentTableContents.get(index).getId());
-                } catch (SQLException ex) {
-                    showError(ex);
-                } catch (DiscountNotFoundException ex) {
+                } catch (SQLException | DiscountNotFoundException | IOException ex) {
                     showError(ex);
                 }
                 showAllDiscounts();

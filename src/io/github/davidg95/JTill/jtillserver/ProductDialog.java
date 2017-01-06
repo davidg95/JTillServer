@@ -5,18 +5,13 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.Category;
-import io.github.davidg95.JTill.jtill.CategoryNotFoundException;
-import io.github.davidg95.JTill.jtill.DBConnect;
-import io.github.davidg95.JTill.jtill.Discount;
-import io.github.davidg95.JTill.jtill.DiscountNotFoundException;
-import io.github.davidg95.JTill.jtill.Product;
-import io.github.davidg95.JTill.jtill.Tax;
-import io.github.davidg95.JTill.jtill.TaxNotFoundException;
+import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
+import java.awt.HeadlessException;
 import java.awt.Window;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
@@ -35,7 +30,7 @@ public class ProductDialog extends javax.swing.JDialog {
     private static Product product;
 
     private Data data;
-    private final DBConnect dbConn;
+    private final DataConnectInterface dbConn;
 
     private boolean editMode;
 
@@ -52,7 +47,7 @@ public class ProductDialog extends javax.swing.JDialog {
      */
     public ProductDialog(Window parent) {
         super(parent);
-        this.dbConn = TillServer.getDBConnection();
+        this.dbConn = TillServer.getDataConnection();
         initComponents();
         this.editMode = false;
         this.setLocationRelativeTo(parent);
@@ -67,7 +62,7 @@ public class ProductDialog extends javax.swing.JDialog {
 
     public ProductDialog(Window parent, Data data, Product p) {
         super(parent);
-        this.dbConn = TillServer.getDBConnection();
+        this.dbConn = TillServer.getDataConnection();
         this.data = data;
         initComponents();
         init();
@@ -111,10 +106,8 @@ public class ProductDialog extends javax.swing.JDialog {
                 }
             }
             cmbTax.setSelectedIndex(index);
-        } catch (SQLException ex) {
+        } catch (CategoryNotFoundException | DiscountNotFoundException | TaxNotFoundException | IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
-        } catch (TaxNotFoundException | CategoryNotFoundException | DiscountNotFoundException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Product", JOptionPane.ERROR_MESSAGE);
         }
         btnAddProduct.setText("Save Changes");
         this.setTitle("Edit Product " + p.getName());
@@ -131,8 +124,8 @@ public class ProductDialog extends javax.swing.JDialog {
             cmbDiscount.setModel(discountsModel);
             cmbTax.setModel(taxesModel);
             cmbCategory.setModel(categorysModel);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException | SQLException ex) {
+            showError(ex);
         }
     }
 
@@ -185,6 +178,10 @@ public class ProductDialog extends javax.swing.JDialog {
         product = p;
         dialog.setVisible(true);
         return product;
+    }
+    
+    private void showError(Exception e) {
+        JOptionPane.showMessageDialog(this, e, "Product", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -456,7 +453,7 @@ public class ProductDialog extends javax.swing.JDialog {
                     product = new Product(name, shortName, category, comments, tax, discount, button, color, true);
                     dbConn.addProduct(product);
                     this.setVisible(false);
-                } catch (SQLException ex) {
+                } catch (IOException | SQLException ex) {
                     JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
@@ -488,7 +485,7 @@ public class ProductDialog extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "Barcode already in use", "New Product", JOptionPane.ERROR_MESSAGE);
                 }
             }
-        } catch (SQLException ex) {
+        } catch (HeadlessException | IOException | NumberFormatException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddProductActionPerformed

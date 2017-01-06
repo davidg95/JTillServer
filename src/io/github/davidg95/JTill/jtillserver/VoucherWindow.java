@@ -6,9 +6,11 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.DBConnect;
+import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import io.github.davidg95.JTill.jtill.Voucher;
 import io.github.davidg95.JTill.jtill.VoucherNotFoundException;
 import java.awt.Component;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ public class VoucherWindow extends javax.swing.JFrame {
 
     private static final VoucherWindow frame;
 
-    private final DBConnect dbConn;
+    private final DataConnectInterface dbConn;
 
     private Voucher voucher;
 
@@ -37,7 +39,7 @@ public class VoucherWindow extends javax.swing.JFrame {
      * Creates new form VoucherWindow
      */
     public VoucherWindow() {
-        this.dbConn = TillServer.getDBConnection();
+        this.dbConn = TillServer.getDataConnection();
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -80,7 +82,7 @@ public class VoucherWindow extends javax.swing.JFrame {
     private void showAllVouchers() {
         try {
             currentTableContents = dbConn.getAllVouchers();
-        } catch (SQLException ex) {
+        } catch (IOException | SQLException ex) {
             showError(ex);
         }
         updateTable();
@@ -480,7 +482,7 @@ public class VoucherWindow extends javax.swing.JFrame {
         try {
             dbConn.addVoucher(v);
             update();
-        } catch (SQLException ex) {
+        } catch (IOException | SQLException ex) {
             showError(ex);
         }
     }//GEN-LAST:event_btnAddNewActionPerformed
@@ -502,7 +504,7 @@ public class VoucherWindow extends javax.swing.JFrame {
                     setCurrentVoucher(null);
                     update();
                 }
-            } catch (SQLException | VoucherNotFoundException ex) {
+            } catch (IOException | SQLException | VoucherNotFoundException ex) {
                 showError(ex);
             }
         }

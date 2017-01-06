@@ -7,13 +7,17 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.Customer;
 import io.github.davidg95.JTill.jtill.DBConnect;
+import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import io.github.davidg95.JTill.jtill.Discount;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -28,10 +32,10 @@ public class CustomerDialog extends javax.swing.JDialog {
     private static Customer customer;
 
     private Data data;
-    private DBConnect dbConn;
+    private DataConnectInterface dbConn;
 
     private boolean editMode;
-    
+
     private DefaultComboBoxModel discountsModel;
     private List<Discount> discounts;
 
@@ -41,7 +45,7 @@ public class CustomerDialog extends javax.swing.JDialog {
     public CustomerDialog(Window parent) {
         super(parent);
         initComponents();
-        this.dbConn = TillServer.getDBConnection();
+        this.dbConn = TillServer.getDataConnection();
         editMode = false;
         this.setLocationRelativeTo(parent);
         this.setModal(true);
@@ -112,17 +116,17 @@ public class CustomerDialog extends javax.swing.JDialog {
         dialog.setVisible(true);
         return customer;
     }
-    
+
     private void init() {
         try {
             discounts = dbConn.getAllDiscounts();
             discountsModel = new DefaultComboBoxModel(discounts.toArray());
             cmbDiscount.setModel(discountsModel);
-        } catch (SQLException ex) {
+        } catch (IOException | SQLException ex) {
             showDatabaseError(ex);
         }
     }
-    
+
     private void showDatabaseError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Database Error", JOptionPane.ERROR_MESSAGE);
     }
@@ -412,6 +416,8 @@ public class CustomerDialog extends javax.swing.JDialog {
                     dbConn.addCustomer(customer);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }

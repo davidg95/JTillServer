@@ -5,19 +5,14 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.Category;
-import io.github.davidg95.JTill.jtill.CategoryNotFoundException;
-import io.github.davidg95.JTill.jtill.DBConnect;
-import io.github.davidg95.JTill.jtill.Discount;
-import io.github.davidg95.JTill.jtill.DiscountNotFoundException;
-import io.github.davidg95.JTill.jtill.Product;
-import io.github.davidg95.JTill.jtill.ProductNotFoundException;
-import io.github.davidg95.JTill.jtill.Tax;
-import io.github.davidg95.JTill.jtill.TaxNotFoundException;
+import io.github.davidg95.JTill.jtill.*;
 import java.awt.Color;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
@@ -33,7 +28,7 @@ public class ProductsWindow extends javax.swing.JFrame {
     public static final ProductsWindow frame;
 
     private final Data data;
-    private final DBConnect dbConn;
+    private final DataConnectInterface dbConn;
 
     private Product product;
 
@@ -53,7 +48,7 @@ public class ProductsWindow extends javax.swing.JFrame {
      */
     public ProductsWindow() {
         this.data = TillServer.getData();
-        this.dbConn = TillServer.getDBConnection();
+        this.dbConn = TillServer.getDataConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -91,7 +86,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             cmbDiscount.setModel(discountsModel);
             cmbTax.setModel(taxesModel);
             cmbCategory.setModel(categorysModel);
-        } catch (SQLException ex) {
+        } catch (SQLException | IOException ex) {
             showError(ex);
         }
     }
@@ -110,7 +105,7 @@ public class ProductsWindow extends javax.swing.JFrame {
     private void showAllProducts() {
         try {
             currentTableContents = dbConn.getAllProducts();
-        } catch (SQLException ex) {
+        } catch (IOException | SQLException ex) {
             showError(ex);
         }
         updateTable();
@@ -251,7 +246,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                     chkDefault.setSelected(true);
                     chkDefault.setEnabled(false);
                 }
-            } catch (SQLException | DiscountNotFoundException | CategoryNotFoundException | TaxNotFoundException ex) {
+            } catch (SQLException | DiscountNotFoundException | CategoryNotFoundException | TaxNotFoundException | IOException ex) {
                 showError(ex);
             }
         }
@@ -686,7 +681,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dbConn.removeProduct(currentTableContents.get(index).getProductCode());
-                } catch (SQLException | ProductNotFoundException ex) {
+                } catch (ProductNotFoundException | IOException | SQLException ex) {
                     showError(ex);
                 }
                 showAllProducts();
@@ -754,7 +749,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         }
         try {
             dbConn.updateProduct(product);
-        } catch (SQLException | ProductNotFoundException ex) {
+        } catch (ProductNotFoundException | IOException | SQLException ex) {
             showError(ex);
         }
         updateTable();
@@ -810,7 +805,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                         showAllProducts();
                         setCurrentProduct(null);
                         txtName.requestFocus();
-                    } catch (SQLException ex) {
+                    } catch (IOException | SQLException ex) {
                         showError(ex);
                     }
                 }
@@ -831,7 +826,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                             showAllProducts();
                             setCurrentProduct(null);
                             txtName.requestFocus();
-                        } catch (SQLException ex) {
+                        } catch (IOException | SQLException ex) {
                             showError(ex);
                         }
                     }

@@ -6,14 +6,19 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.Category;
+import io.github.davidg95.JTill.jtill.CategoryNotFoundException;
 import io.github.davidg95.JTill.jtill.DBConnect;
+import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -27,7 +32,7 @@ public class CategorySelectDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static Category category;
 
-    private final DBConnect dbConn;
+    private final DataConnectInterface dbConn;
 
     private final DefaultTableModel model;
     private List<Category> currentTableContents;
@@ -37,7 +42,7 @@ public class CategorySelectDialog extends javax.swing.JDialog {
      */
     public CategorySelectDialog(Window parent) {
         super(parent);
-        dbConn = TillServer.getDBConnection();
+        dbConn = TillServer.getDataConnection();
         initComponents();
         setLocationRelativeTo(parent);
         setModal(true);
@@ -74,11 +79,11 @@ public class CategorySelectDialog extends javax.swing.JDialog {
         try {
             currentTableContents = dbConn.getAllCategorys();
             updateTable();
-        } catch (SQLException ex) {
+        } catch (SQLException | IOException ex) {
             showError(ex);
         }
     }
-    
+
     private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Categorys", JOptionPane.ERROR_MESSAGE);
     }

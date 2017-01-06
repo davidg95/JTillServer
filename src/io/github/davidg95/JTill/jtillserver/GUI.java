@@ -6,6 +6,8 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.DBConnect;
+import io.github.davidg95.JTill.jtill.DataConnectInterface;
+import io.github.davidg95.JTill.jtill.ServerConnection;
 import io.github.davidg95.JTill.jtill.Staff;
 import io.github.davidg95.JTill.jtill.StaffNotFoundException;
 import java.awt.SystemTray;
@@ -16,6 +18,8 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -30,7 +34,7 @@ public class GUI extends javax.swing.JFrame {
     private String password;
 
     private final Data data;
-    private final DBConnect dbConn;
+    private final DataConnectInterface dbConn;
     private boolean isLoggedOn;
 
     private Staff staff;
@@ -44,7 +48,7 @@ public class GUI extends javax.swing.JFrame {
      * @param data
      * @param dbConnection
      */
-    public GUI(Data data, DBConnect dbConnection) {
+    public GUI(Data data, DataConnectInterface dbConnection) {
         this.dbConn = dbConnection;
         this.data = data;
         initComponents();
@@ -53,39 +57,63 @@ public class GUI extends javax.swing.JFrame {
     }
 
     private void initialSetup() {
-        try {
-            TillSplashScreen.setLabel("Creating database...");
-            dbConn.create(SettingsWindow.DB_ADDRESS + "create=true;", SettingsWindow.DB_USERNAME, SettingsWindow.DB_PASSWORD);
-            TillSplashScreen.setLabel("Creating tables...");
-            dbConn.initDatabase();
-            Staff s = StaffDialog.showNewStaffDialog(this);
-            if (s == null) {
-                System.exit(0);
-            }
-        } catch (SQLException ex) {
-            if (ex.getErrorCode() == 40000) {
-                JOptionPane.showMessageDialog(this, "The database is already in use by another application. Program will now terminate.\nError Code " + ex.getErrorCode(), "Database in use", JOptionPane.ERROR_MESSAGE);
-                System.exit(0);
-            } else {
-                JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    public void databaseLogin() {
-        try {
-            dbConn.connect(SettingsWindow.DB_ADDRESS, SettingsWindow.DB_USERNAME, SettingsWindow.DB_PASSWORD);
-            TillSplashScreen.setLabel("Connected to database");
-            TillSplashScreen.addBar(40);
-            lblDatabase.setText("Connected to database");
-            if (dbConn.staffCount() == 0) {
+        if (dbConn instanceof DBConnect) {
+            try {
+                DBConnect db = (DBConnect) dbConn;
+                TillSplashScreen.setLabel("Creating database...");
+                db.create(SettingsWindow.DB_ADDRESS + "create=true;", SettingsWindow.DB_USERNAME, SettingsWindow.DB_PASSWORD);
+                TillSplashScreen.setLabel("Creating tables...");
                 Staff s = StaffDialog.showNewStaffDialog(this);
                 if (s == null) {
                     System.exit(0);
                 }
+            } catch (SQLException ex) {
+                if (ex.getErrorCode() == 40000) {
+                    JOptionPane.showMessageDialog(this, "The database is already in use by another application. Program will now terminate.\nError Code " + ex.getErrorCode(), "Database in use", JOptionPane.ERROR_MESSAGE);
+                    System.exit(0);
+                } else {
+                    JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
-        } catch (SQLException ex) {
-            initialSetup();
+        } else {
+
+        }
+    }
+
+    public void databaseLogin() {
+        if (dbConn instanceof DBConnect) {
+            try {
+                DBConnect db = (DBConnect) dbConn;
+                db.connect(SettingsWindow.DB_ADDRESS, SettingsWindow.DB_USERNAME, SettingsWindow.DB_PASSWORD);
+                TillSplashScreen.setLabel("Connected to database");
+                TillSplashScreen.addBar(40);
+                lblDatabase.setText("Connected to database");
+                if (dbConn.staffCount() == 0) {
+                    Staff s = StaffDialog.showNewStaffDialog(this);
+                    if (s == null) {
+                        System.exit(0);
+                    }
+                }
+            } catch (SQLException ex) {
+                initialSetup();
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
+            } catch (StaffNotFoundException ex) {
+                Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+
+        }
+    }
+
+    public void connect(String host, int port) {
+        if (dbConn instanceof ServerConnection) {
+            ServerConnection sc = (ServerConnection) dbConn;
+            try {
+                sc.connect(username, ABORT);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 

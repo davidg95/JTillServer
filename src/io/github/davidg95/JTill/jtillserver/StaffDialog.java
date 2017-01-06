@@ -5,13 +5,15 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DBConnect;
-import io.github.davidg95.JTill.jtill.Staff;
+import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -25,7 +27,7 @@ public class StaffDialog extends javax.swing.JDialog {
     private static Staff staff;
 
     private Data data;
-    private DBConnect dbConn;
+    private DataConnectInterface dbConn;
     private Staff s;
     private boolean editMode;
 
@@ -37,7 +39,7 @@ public class StaffDialog extends javax.swing.JDialog {
     public StaffDialog(Window parent) {
         super(parent);
         editMode = false;
-        this.dbConn = TillServer.getDBConnection();
+        this.dbConn = TillServer.getDataConnection();
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setModal(true);
@@ -65,7 +67,7 @@ public class StaffDialog extends javax.swing.JDialog {
         initComponents();
         editMode = true;
         this.s = staff;
-        this.dbConn = TillServer.getDBConnection();
+        this.dbConn = TillServer.getDataConnection();
         this.setLocationRelativeTo(parent);
         this.setModal(true);
         txtName.setText(s.getName());
@@ -109,6 +111,10 @@ public class StaffDialog extends javax.swing.JDialog {
         staff = s;
         dialog.setVisible(true);
         return staff;
+    }
+
+    private void showError(Exception e) {
+        JOptionPane.showMessageDialog(this, e, "Staff", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -245,8 +251,8 @@ public class StaffDialog extends javax.swing.JDialog {
                 if (dbConn != null) {
                     try {
                         dbConn.addStaff(staff);
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+                    } catch (SQLException | IOException | StaffNotFoundException ex) {
+                        showError(ex);
                     }
                 }
                 this.setVisible(false);

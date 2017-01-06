@@ -5,12 +5,13 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DBConnect;
-import io.github.davidg95.JTill.jtill.Staff;
-import io.github.davidg95.JTill.jtill.StaffNotFoundException;
+import io.github.davidg95.JTill.jtill.*;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -25,7 +26,7 @@ public class StaffWindow extends javax.swing.JFrame {
 
     private final Data data;
 
-    private final DBConnect dbConn;
+    private final DataConnectInterface dbConn;
 
     private Staff staff;
 
@@ -37,7 +38,7 @@ public class StaffWindow extends javax.swing.JFrame {
      */
     public StaffWindow() {
         this.data = TillServer.getData();
-        this.dbConn = TillServer.getDBConnection();
+        this.dbConn = TillServer.getDataConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -76,7 +77,7 @@ public class StaffWindow extends javax.swing.JFrame {
     private void showAllStaff() {
         try {
             currentTableContents = dbConn.getAllStaff();
-        } catch (SQLException ex) {
+        } catch (IOException | SQLException ex) {
             showError(ex);
         }
         updateTable();
@@ -366,8 +367,8 @@ public class StaffWindow extends javax.swing.JFrame {
                     setCurrentStaff(null);
                     showAllStaff();
                     txtName.requestFocus();
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+                } catch (IOException | SQLException | StaffNotFoundException ex) {
+                    showError(ex);
                 }
             } else {
                 JOptionPane.showMessageDialog(rootPane, btnSave, name, HEIGHT);
@@ -389,7 +390,7 @@ public class StaffWindow extends javax.swing.JFrame {
             staff.setPosition(position);
             try {
                 dbConn.updateStaff(staff);
-            } catch (SQLException | StaffNotFoundException ex) {
+            } catch (SQLException | StaffNotFoundException | IOException ex) {
                 showError(ex);
             }
         } else {
@@ -406,7 +407,7 @@ public class StaffWindow extends javax.swing.JFrame {
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dbConn.removeStaff(currentTableContents.get(index).getId());
-                } catch (SQLException | StaffNotFoundException ex) {
+                } catch (SQLException | StaffNotFoundException | IOException ex) {
                     showError(ex);
                 }
                 this.updateTable();

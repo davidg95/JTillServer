@@ -5,12 +5,14 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DBConnect;
-import io.github.davidg95.JTill.jtill.Sale;
+import io.github.davidg95.JTill.jtill.*;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -24,7 +26,7 @@ public class SalesWindow extends javax.swing.JFrame {
     private static final SalesWindow frame;
 
     private final Data data;
-    private final DBConnect dbConn;
+    private final DataConnectInterface dbConn;
 
     private Sale sale;
 
@@ -36,7 +38,7 @@ public class SalesWindow extends javax.swing.JFrame {
      */
     public SalesWindow() {
         this.data = TillServer.getData();
-        this.dbConn = TillServer.getDBConnection();
+        this.dbConn = TillServer.getDataConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         model = (DefaultTableModel) tableSales.getModel();
@@ -99,7 +101,7 @@ public class SalesWindow extends javax.swing.JFrame {
             }
             lblDailySales.setText("Daily Sales: " + count);
             
-        } catch (SQLException ex) {
+        } catch (SQLException | IOException ex) {
             showError(ex);
         }
 
@@ -108,7 +110,7 @@ public class SalesWindow extends javax.swing.JFrame {
     private void showAllSales() {
         try {
             currentTableContents = dbConn.getAllSales();
-        } catch (SQLException ex) {
+        } catch (SQLException | IOException ex) {
             showError(ex);
         }
         updateTable();

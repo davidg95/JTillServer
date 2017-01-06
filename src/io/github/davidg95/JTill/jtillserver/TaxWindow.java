@@ -5,9 +5,8 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DBConnect;
-import io.github.davidg95.JTill.jtill.Tax;
-import io.github.davidg95.JTill.jtill.TaxNotFoundException;
+import io.github.davidg95.JTill.jtill.*;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ public class TaxWindow extends javax.swing.JFrame {
 
     public static final TaxWindow frame;
 
-    private final DBConnect dbConn;
+    private final DataConnectInterface dbConn;
     private Tax tax;
 
     private final DefaultTableModel model;
@@ -33,7 +32,7 @@ public class TaxWindow extends javax.swing.JFrame {
      * Creates new form TaxWindow
      */
     public TaxWindow() {
-        dbConn = TillServer.getDBConnection();
+        dbConn = TillServer.getDataConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -74,7 +73,7 @@ public class TaxWindow extends javax.swing.JFrame {
         try {
             currentTableContents = dbConn.getAllTax();
             updateTable();
-        } catch (SQLException ex) {
+        } catch (IOException | SQLException ex) {
             showError(ex);
         }
     }
@@ -291,7 +290,7 @@ public class TaxWindow extends javax.swing.JFrame {
                         dbConn.addTax(t);
                         showAllTaxes();
                         setCurrentTax(null);
-                    } catch (SQLException ex) {
+                    } catch (IOException | SQLException ex) {
                         showError(ex);
                     }
                 }
@@ -323,9 +322,7 @@ public class TaxWindow extends javax.swing.JFrame {
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dbConn.removeTax(currentTableContents.get(index).getId());
-                } catch (SQLException ex) {
-                    showError(ex);
-                } catch (TaxNotFoundException ex) {
+                } catch (IOException | SQLException | TaxNotFoundException ex) {
                     showError(ex);
                 }
                 showAllTaxes();

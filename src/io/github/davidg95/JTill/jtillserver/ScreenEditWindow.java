@@ -5,9 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.Category;
-import io.github.davidg95.JTill.jtill.DBConnect;
-import io.github.davidg95.JTill.jtill.Product;
+import io.github.davidg95.JTill.jtill.*;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -33,7 +31,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
     private static final ScreenEditWindow frame;
 
-    private final DBConnect dbConn;
+    private final DataConnectInterface dbConn;
 
     private final CardLayout categoryCards;
     private final ButtonGroup cardsButtonGroup;
@@ -42,7 +40,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
      * Creates new form ScreenEditWindow
      */
     public ScreenEditWindow() {
-        dbConn = TillServer.getDBConnection();
+        dbConn = TillServer.getDataConnection();
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         categoryCards = (CardLayout) panelProducts.getLayout();
@@ -83,7 +81,9 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 panelCategories.add(panel);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ScreenEditWindow.class.getName()).log(Level.SEVERE, null, ex);
+            showError(ex);
+        } catch (IOException ex) {
+            showError(ex);
         }
     }
 
@@ -133,9 +133,13 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
             panelProducts.add(panel, c.getName());
             panelCategories.add(cButton);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException | IOException | CategoryNotFoundException ex) {
+            showError(ex);
         }
+    }
+    
+    private void showError(Exception e) {
+        JOptionPane.showMessageDialog(this, e, "Staff", JOptionPane.ERROR_MESSAGE);
     }
 
     /**

@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.DBConnect;
+import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import io.github.davidg95.JTill.jtill.LoginException;
 import io.github.davidg95.JTill.jtill.Staff;
 import java.awt.AWTException;
@@ -110,7 +111,7 @@ public class TillServer {
         try {
             staff = data.login(username, password);
             System.out.println("You are logged in");
-        } catch (LoginException | SQLException ex) {
+        } catch (IOException | LoginException | SQLException ex) {
             System.out.println(ex);
         }
     }
@@ -173,8 +174,9 @@ public class TillServer {
         }
     }
 
-    public static DBConnect getDBConnection() {
-        return dbConnection;
+    public static DataConnectInterface getDataConnection() {
+        DataConnectInterface dbi = dbConnection;
+        return dbi;
     }
 
     public static Data getData() {

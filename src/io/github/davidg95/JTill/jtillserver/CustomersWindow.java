@@ -8,11 +8,15 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.Customer;
 import io.github.davidg95.JTill.jtill.CustomerNotFoundException;
 import io.github.davidg95.JTill.jtill.DBConnect;
+import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import io.github.davidg95.JTill.jtill.Discount;
 import io.github.davidg95.JTill.jtill.DiscountNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -27,7 +31,7 @@ public class CustomersWindow extends javax.swing.JFrame {
     public static final CustomersWindow frame;
 
     private final Data data;
-    private final DBConnect dbConn;
+    private final DataConnectInterface dbConn;
 
     private Customer customer;
 
@@ -41,7 +45,7 @@ public class CustomersWindow extends javax.swing.JFrame {
      */
     public CustomersWindow() {
         this.data = TillServer.getData();
-        this.dbConn = TillServer.getDBConnection();
+        this.dbConn = TillServer.getDataConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -73,7 +77,7 @@ public class CustomersWindow extends javax.swing.JFrame {
             discounts = dbConn.getAllDiscounts();
             discountsModel = new DefaultComboBoxModel(discounts.toArray());
             cmbDiscount.setModel(discountsModel);
-        } catch (SQLException ex) {
+        } catch (SQLException | IOException ex) {
             showError(ex);
         }
     }
@@ -93,8 +97,8 @@ public class CustomersWindow extends javax.swing.JFrame {
         try {
             currentTableContents = dbConn.getAllCustomers();
             updateTable();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException | IOException ex) {
+            showError(ex);
         }
     }
 
@@ -147,7 +151,7 @@ public class CustomersWindow extends javax.swing.JFrame {
                     }
                 }
                 cmbDiscount.setSelectedIndex(index);
-            } catch (SQLException | DiscountNotFoundException ex) {
+            } catch (SQLException | DiscountNotFoundException | IOException ex) {
                 showError(ex);
             }
         }
@@ -553,8 +557,8 @@ public class CustomersWindow extends javax.swing.JFrame {
                         setCurrentCustomer(null);
                         jTabbedPane1.setSelectedIndex(0);
                         txtName.requestFocus();
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+                    } catch (SQLException | IOException ex) {
+                        showError(ex);
                     }
                 }
             } catch (NumberFormatException e) {
@@ -601,7 +605,7 @@ public class CustomersWindow extends javax.swing.JFrame {
 
         try {
             dbConn.updateCustomer(customer);
-        } catch (SQLException | CustomerNotFoundException ex) {
+        } catch (SQLException | CustomerNotFoundException | IOException ex) {
             showError(ex);
         }
 
@@ -615,7 +619,7 @@ public class CustomersWindow extends javax.swing.JFrame {
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dbConn.removeCustomer(currentTableContents.get(index).getId());
-                } catch (SQLException | CustomerNotFoundException ex) {
+                } catch (SQLException | CustomerNotFoundException | IOException ex) {
                     showError(ex);
                 }
                 showAllCustomers();
@@ -644,8 +648,8 @@ public class CustomersWindow extends javax.swing.JFrame {
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         int option;
         String terms = txtSearch.getText();
-        
-        if(terms.isEmpty()){
+
+        if (terms.isEmpty()) {
             showAllCustomers();
             return;
         }

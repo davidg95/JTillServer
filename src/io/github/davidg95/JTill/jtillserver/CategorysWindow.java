@@ -8,13 +8,17 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.Category;
 import io.github.davidg95.JTill.jtill.CategoryNotFoundException;
 import io.github.davidg95.JTill.jtill.DBConnect;
+import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import java.awt.Color;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -28,7 +32,7 @@ public class CategorysWindow extends javax.swing.JFrame {
 
     public static final CategorysWindow frame;
 
-    private final DBConnect dbConn;
+    private final DataConnectInterface dbConn;
     private Category category;
 
     private final DefaultTableModel model;
@@ -38,7 +42,7 @@ public class CategorysWindow extends javax.swing.JFrame {
      * Creates new form CategoryWindow
      */
     public CategorysWindow() {
-        dbConn = TillServer.getDBConnection();
+        dbConn = TillServer.getDataConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -79,7 +83,7 @@ public class CategorysWindow extends javax.swing.JFrame {
         try {
             currentTableContents = dbConn.getAllCategorys();
             updateTable();
-        } catch (SQLException ex) {
+        } catch (IOException | SQLException ex) {
             showError(ex);
         }
     }
@@ -437,7 +441,7 @@ public class CategorysWindow extends javax.swing.JFrame {
                         dbConn.addCategory(c);
                         showAllCategorys();
                         setCurrentCategory(null);
-                    } catch (SQLException ex) {
+                    } catch (SQLException | IOException ex) {
                         showError(ex);
                     }
                 }
@@ -484,7 +488,7 @@ public class CategorysWindow extends javax.swing.JFrame {
 
                 try {
                     dbConn.updateCategory(category);
-                } catch (SQLException | CategoryNotFoundException ex) {
+                } catch (SQLException | CategoryNotFoundException | IOException ex) {
                     showError(ex);
                 }
 
@@ -505,6 +509,8 @@ public class CategorysWindow extends javax.swing.JFrame {
                 try {
                     dbConn.removeCategory(currentTableContents.get(index).getID());
                 } catch (SQLException | CategoryNotFoundException ex) {
+                    showError(ex);
+                } catch (IOException ex) {
                     showError(ex);
                 }
                 showAllCategorys();

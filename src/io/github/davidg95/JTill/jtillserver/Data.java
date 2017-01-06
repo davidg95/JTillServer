@@ -5,11 +5,12 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DBConnect;
+import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import io.github.davidg95.JTill.jtill.StaffNotFoundException;
 import io.github.davidg95.JTill.jtill.Staff;
 import io.github.davidg95.JTill.jtill.LoginException;
 import io.github.davidg95.JTill.jtill.Sale;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.logging.Logger;
  */
 public class Data {
 
-    private final DBConnect dbConnection;
+    private final DataConnectInterface dbConnection;
     private final GUI g;
 
     private final List<Staff> loggedIn;
@@ -42,7 +43,7 @@ public class Data {
      * @param db DBConnect class.
      * @param g GUI class.
      */
-    public Data(DBConnect db, GUI g) {
+    public Data(DataConnectInterface db, GUI g) {
         this.dbConnection = db;
         this.g = g;
         loggedIn = new ArrayList<>();
@@ -60,8 +61,9 @@ public class Data {
      * @return the member of staff who has logged in.
      * @throws LoginException if there was an error logging in.
      * @throws java.sql.SQLException if there was a database error.
+     * @throws java.io.IOException if there was a server error.
      */
-    public Staff login(String username, String password) throws LoginException, SQLException {
+    public Staff login(String username, String password) throws LoginException, SQLException, IOException {
         Staff s = dbConnection.login(username, password);
         try {
             logSem.acquire();
@@ -83,8 +85,9 @@ public class Data {
      * @return the member of staff who has logged in.
      * @throws LoginException if they are already logged in on a till.
      * @throws java.sql.SQLException if there was a database error.
+     * @throws java.io.IOException if there was a server error.
      */
-    public Staff login(int id) throws LoginException, SQLException {
+    public Staff login(int id) throws LoginException, SQLException, IOException {
         Staff s;
         try {
             s = dbConnection.getStaff(id);
@@ -144,8 +147,8 @@ public class Data {
         throw new StaffNotFoundException(id + "");
     }
 
-    public void logAllTillsOut(){
-        for(int i = 0; i < this.loggedInTill.size(); i++){
+    public void logAllTillsOut() {
+        for (int i = 0; i < this.loggedInTill.size(); i++) {
             this.loggedInTill.remove(i);
         }
     }
@@ -154,7 +157,7 @@ public class Data {
         takings += val;
     }
 
-    public void addSale(Sale s) throws SQLException {
+    public void addSale(Sale s) throws SQLException, IOException {
         sales++;
         addTakings(s.getTotal());
         dbConnection.addSale(s);
