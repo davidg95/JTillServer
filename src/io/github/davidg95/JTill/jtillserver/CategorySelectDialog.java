@@ -6,8 +6,6 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.Category;
-import io.github.davidg95.JTill.jtill.CategoryNotFoundException;
-import io.github.davidg95.JTill.jtill.DBConnect;
 import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -17,8 +15,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -40,9 +36,9 @@ public class CategorySelectDialog extends javax.swing.JDialog {
     /**
      * Creates new form CategorySelectDialog
      */
-    public CategorySelectDialog(Window parent) {
+    public CategorySelectDialog(Window parent, DataConnectInterface dc) {
         super(parent);
-        dbConn = TillServer.getDataConnection();
+        dbConn = dc;
         initComponents();
         setLocationRelativeTo(parent);
         setModal(true);
@@ -51,12 +47,12 @@ public class CategorySelectDialog extends javax.swing.JDialog {
         showAllCategorys();
     }
 
-    public static Category showDialog(Component parent) {
+    public static Category showDialog(Component parent, DataConnectInterface dc) {
         Window window = null;
         if (parent instanceof Frame || parent instanceof Dialog) {
             window = (Window) parent;
         }
-        dialog = new CategorySelectDialog(window);
+        dialog = new CategorySelectDialog(window, dc);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         category = null;
         dialog.setVisible(true);

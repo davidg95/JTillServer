@@ -28,7 +28,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class CustomersWindow extends javax.swing.JFrame {
 
-    public static final CustomersWindow frame;
+    public static CustomersWindow frame;
 
     private final Data data;
     private final DataConnectInterface dbConn;
@@ -43,7 +43,7 @@ public class CustomersWindow extends javax.swing.JFrame {
     /**
      * Creates new form CustomersWindow
      */
-    public CustomersWindow() {
+    public CustomersWindow(DataConnectInterface dc) {
         this.data = TillServer.getData();
         this.dbConn = TillServer.getDataConnection();
         initComponents();
@@ -54,12 +54,18 @@ public class CustomersWindow extends javax.swing.JFrame {
         init();
     }
 
-    static {
-        frame = new CustomersWindow();
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    public static void initWindow() {
+//        if (frame != null) {
+//            frame = new CustomersWindow();
+//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+//        }
     }
 
-    public static void showCustomersListWindow() {
+    public static void showCustomersListWindow(DataConnectInterface dc) {
+        if (frame == null) {
+            frame = new CustomersWindow(dc);
+            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        }
         update();
         frame.setCurrentCustomer(null);
         frame.setVisible(true);

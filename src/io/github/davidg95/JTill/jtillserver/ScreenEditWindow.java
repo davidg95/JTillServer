@@ -14,8 +14,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -29,7 +27,7 @@ import javax.swing.JToggleButton;
  */
 public class ScreenEditWindow extends javax.swing.JFrame {
 
-    private static final ScreenEditWindow frame;
+    private static ScreenEditWindow frame;
 
     private final DataConnectInterface dbConn;
 
@@ -39,7 +37,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     /**
      * Creates new form ScreenEditWindow
      */
-    public ScreenEditWindow() {
+    public ScreenEditWindow(DataConnectInterface dc) {
         dbConn = TillServer.getDataConnection();
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -47,12 +45,18 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         cardsButtonGroup = new ButtonGroup();
     }
 
-    static {
-        frame = new ScreenEditWindow();
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    public static void initWindow() {
+//        if (frame != null) {
+//            frame = new ScreenEditWindow();
+//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+//        }
     }
 
-    public static void showScreenEditWindow() {
+    public static void showScreenEditWindow(DataConnectInterface dc) {
+        if (frame != null) {
+            frame = new ScreenEditWindow(dc);
+            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        }
         update();
         frame.setVisible(true);
     }
@@ -137,7 +141,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             showError(ex);
         }
     }
-    
+
     private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Staff", JOptionPane.ERROR_MESSAGE);
     }
@@ -225,7 +229,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewScreenActionPerformed
-        Category c = CategorySelectDialog.showDialog(this);
+        Category c = CategorySelectDialog.showDialog(this, dbConn);
         addCategoryButton(c);
     }//GEN-LAST:event_btnNewScreenActionPerformed
 

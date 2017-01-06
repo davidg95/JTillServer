@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
-Wed Jan 04 17:17:56 GMT 2017:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.3 - (1557168): instance a816c00e-0159-6a7c-b1f8-000006564790 
-on database directory C:\Users\David\Honors Project\Till\JTillServer\TillEmbedded with class loader sun.misc.Launcher$AppClassLoader@58644d46 
+Fri Jan 06 17:29:31 GMT 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.3 - (1557168): instance a816c00e-0159-74d4-0e70-00000672b758 
+on database directory C:\Users\David\Honors Project\Till\JTillServer\TillEmbedded with class loader sun.misc.Launcher$AppClassLoader@7d4991ad 
 Loaded from file:/C:/Users/David/Honors%20Project/Till/JTillServer/derby/derby.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_31-b13

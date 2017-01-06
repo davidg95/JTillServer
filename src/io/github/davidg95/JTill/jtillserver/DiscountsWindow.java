@@ -24,7 +24,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class DiscountsWindow extends javax.swing.JFrame {
 
-    public static final DiscountsWindow frame;
+    public static DiscountsWindow frame;
 
     private final DataConnectInterface dbConn;
 
@@ -36,7 +36,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
     /**
      * Creates new form DiscountsWindow
      */
-    public DiscountsWindow() {
+    public DiscountsWindow(DataConnectInterface dc) {
         this.dbConn = TillServer.getDataConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -46,12 +46,18 @@ public class DiscountsWindow extends javax.swing.JFrame {
 
     }
 
-    static {
-        frame = new DiscountsWindow();
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    public static void initWindow() {
+//        if (frame != null) {
+//            frame = new DiscountsWindow();
+//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+//        }
     }
 
-    public static void showDiscountListWindow() {
+    public static void showDiscountListWindow(DataConnectInterface dc) {
+        if (frame == null) {
+            frame = new DiscountsWindow(dc);
+            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        }
         update();
         frame.setCurrentDiscount(null);
         frame.setVisible(true);

@@ -26,7 +26,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class VoucherWindow extends javax.swing.JFrame {
 
-    private static final VoucherWindow frame;
+    private static VoucherWindow frame;
 
     private final DataConnectInterface dbConn;
 
@@ -38,7 +38,7 @@ public class VoucherWindow extends javax.swing.JFrame {
     /**
      * Creates new form VoucherWindow
      */
-    public VoucherWindow() {
+    public VoucherWindow(DataConnectInterface dc) {
         this.dbConn = TillServer.getDataConnection();
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -48,12 +48,18 @@ public class VoucherWindow extends javax.swing.JFrame {
         init();
     }
 
-    static {
-        frame = new VoucherWindow();
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    public static void initWindow() {
+//        if (frame != null) {
+//            frame = new VoucherWindow();
+//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+//        }
     }
 
-    public static void showVoucherWindow() {
+    public static void showVoucherWindow(DataConnectInterface dc) {
+        if (frame == null) {
+            frame = new VoucherWindow(dc);
+            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        }
         frame.setVisible(true);
     }
 

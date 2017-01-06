@@ -608,11 +608,11 @@ public class GUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnManageStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStockActionPerformed
-        ProductsWindow.showProductsListWindow();
+        ProductsWindow.showProductsListWindow(dbConn);
     }//GEN-LAST:event_btnManageStockActionPerformed
 
     private void itemStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStockActionPerformed
-        ProductsWindow.showProductsListWindow();
+        ProductsWindow.showProductsListWindow(dbConn);
     }//GEN-LAST:event_itemStockActionPerformed
 
     private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
@@ -625,11 +625,11 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_itemUpdateActionPerformed
 
     private void itemCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCustomersActionPerformed
-        CustomersWindow.showCustomersListWindow();
+        CustomersWindow.showCustomersListWindow(dbConn);
     }//GEN-LAST:event_itemCustomersActionPerformed
 
     private void btnManageCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageCustomersActionPerformed
-        CustomersWindow.showCustomersListWindow();
+        CustomersWindow.showCustomersListWindow(dbConn);
     }//GEN-LAST:event_btnManageCustomersActionPerformed
 
     private void itemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLoginActionPerformed
@@ -641,11 +641,11 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_itemLoginActionPerformed
 
     private void itemStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffActionPerformed
-        StaffWindow.showStaffListWindow();
+        StaffWindow.showStaffListWindow(dbConn);
     }//GEN-LAST:event_itemStaffActionPerformed
 
     private void btnManageStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStaffActionPerformed
-        StaffWindow.showStaffListWindow();
+        StaffWindow.showStaffListWindow(dbConn);
     }//GEN-LAST:event_btnManageStaffActionPerformed
 
     private void lblClientsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblClientsMouseClicked
@@ -673,27 +673,27 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_itemIntervalActionPerformed
 
     private void itemDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDiscountsActionPerformed
-        DiscountsWindow.showDiscountListWindow();
+        DiscountsWindow.showDiscountListWindow(dbConn);
     }//GEN-LAST:event_itemDiscountsActionPerformed
 
     private void itemCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCategorysActionPerformed
-        CategorysWindow.showCategoryWindow();
+        CategorysWindow.showCategoryWindow(dbConn);
     }//GEN-LAST:event_itemCategorysActionPerformed
 
     private void itemTaxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTaxesActionPerformed
-        TaxWindow.showTaxWindow();
+        TaxWindow.showTaxWindow(dbConn);
     }//GEN-LAST:event_itemTaxesActionPerformed
 
     private void btnDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiscountsActionPerformed
-        DiscountsWindow.showDiscountListWindow();
+        DiscountsWindow.showDiscountListWindow(dbConn);
     }//GEN-LAST:event_btnDiscountsActionPerformed
 
     private void btnCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategorysActionPerformed
-        CategorysWindow.showCategoryWindow();
+        CategorysWindow.showCategoryWindow(dbConn);
     }//GEN-LAST:event_btnCategorysActionPerformed
 
     private void itemServerOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemServerOptionsActionPerformed
-        SettingsWindow.showSettingsWindow();
+        SettingsWindow.showSettingsWindow(dbConn);
     }//GEN-LAST:event_itemServerOptionsActionPerformed
 
     private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
@@ -705,7 +705,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void itemSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSalesActionPerformed
 //        JOptionPane.showMessageDialog(this, "Takings: £" + data.getTakings() + "\nSales: " + data.getSales(), "Sales Data", JOptionPane.PLAIN_MESSAGE);
-        SalesWindow.showSalesWindow();
+        SalesWindow.showSalesWindow(dbConn);
     }//GEN-LAST:event_itemSalesActionPerformed
 
     private void itemResetSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemResetSalesActionPerformed
@@ -718,19 +718,19 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_itemLogOutTillActionPerformed
 
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
-        SalesWindow.showSalesWindow();
+        SalesWindow.showSalesWindow(dbConn);
     }//GEN-LAST:event_btnReportsActionPerformed
 
     private void btnSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsActionPerformed
-        SettingsWindow.showSettingsWindow();
+        SettingsWindow.showSettingsWindow(dbConn);
     }//GEN-LAST:event_btnSettingsActionPerformed
 
     private void btnScreensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScreensActionPerformed
-        ScreenEditWindow.showScreenEditWindow();
+        ScreenEditWindow.showScreenEditWindow(dbConn);
     }//GEN-LAST:event_btnScreensActionPerformed
 
     private void itemVouchersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemVouchersActionPerformed
-        VoucherWindow.showVoucherWindow();
+        VoucherWindow.showVoucherWindow(dbConn);
     }//GEN-LAST:event_itemVouchersActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

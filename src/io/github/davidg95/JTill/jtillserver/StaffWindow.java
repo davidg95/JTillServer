@@ -22,7 +22,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class StaffWindow extends javax.swing.JFrame {
 
-    public static final StaffWindow frame;
+    public static StaffWindow frame;
 
     private final Data data;
 
@@ -36,7 +36,7 @@ public class StaffWindow extends javax.swing.JFrame {
     /**
      * Creates new form StaffWindow
      */
-    public StaffWindow() {
+    public StaffWindow(DataConnectInterface dc) {
         this.data = TillServer.getData();
         this.dbConn = TillServer.getDataConnection();
         initComponents();
@@ -46,12 +46,18 @@ public class StaffWindow extends javax.swing.JFrame {
         showAllStaff();
     }
 
-    static {
-        frame = new StaffWindow();
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    public static void initWindow() {
+//        if (frame != null) {
+//            frame = new StaffWindow();
+//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+//        }
     }
 
-    public static void showStaffListWindow() {
+    public static void showStaffListWindow(DataConnectInterface dc) {
+        if (frame == null) {
+            frame = new StaffWindow(dc);
+            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        }
         update();
         frame.setCurrentStaff(null);
         frame.setVisible(true);

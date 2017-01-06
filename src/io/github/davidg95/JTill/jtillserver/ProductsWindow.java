@@ -25,7 +25,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ProductsWindow extends javax.swing.JFrame {
 
-    public static final ProductsWindow frame;
+    public static ProductsWindow frame;
 
     private final Data data;
     private final DataConnectInterface dbConn;
@@ -46,7 +46,7 @@ public class ProductsWindow extends javax.swing.JFrame {
     /**
      * Creates new form ProductsWindow
      */
-    public ProductsWindow() {
+    public ProductsWindow(DataConnectInterface dc) {
         this.data = TillServer.getData();
         this.dbConn = TillServer.getDataConnection();
         initComponents();
@@ -57,12 +57,18 @@ public class ProductsWindow extends javax.swing.JFrame {
         init();
     }
 
-    static {
-        frame = new ProductsWindow();
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    public static void initWindow() {
+//        if (frame != null) {
+//            frame = new ProductsWindow();
+//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+//        }
     }
 
-    public static void showProductsListWindow() {
+    public static void showProductsListWindow(DataConnectInterface dc) {
+        if (frame == null) {
+            frame = new ProductsWindow(dc);
+            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        }
         update();
         frame.setCurrentProduct(null);
         frame.setVisible(true);
@@ -849,17 +855,17 @@ public class ProductsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_tableProductsMousePressed
 
     private void btnShowCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowCategorysActionPerformed
-        CategorysWindow.showCategoryWindow();
+        CategorysWindow.showCategoryWindow(dbConn);
         init();
     }//GEN-LAST:event_btnShowCategorysActionPerformed
 
     private void btnShowTaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowTaxActionPerformed
-        TaxWindow.showTaxWindow();
+        TaxWindow.showTaxWindow(dbConn);
         init();
     }//GEN-LAST:event_btnShowTaxActionPerformed
 
     private void btnShowDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowDiscountsActionPerformed
-        DiscountsWindow.showDiscountListWindow();
+        DiscountsWindow.showDiscountListWindow(dbConn);
         init();
     }//GEN-LAST:event_btnShowDiscountsActionPerformed
 

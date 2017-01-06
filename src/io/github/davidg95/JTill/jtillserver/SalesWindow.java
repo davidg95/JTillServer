@@ -23,7 +23,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class SalesWindow extends javax.swing.JFrame {
 
-    private static final SalesWindow frame;
+    private static SalesWindow frame;
 
     private final Data data;
     private final DataConnectInterface dbConn;
@@ -36,7 +36,7 @@ public class SalesWindow extends javax.swing.JFrame {
     /**
      * Creates new form SalesWindow
      */
-    public SalesWindow() {
+    public SalesWindow(DataConnectInterface dc) {
         this.data = TillServer.getData();
         this.dbConn = TillServer.getDataConnection();
         initComponents();
@@ -44,12 +44,18 @@ public class SalesWindow extends javax.swing.JFrame {
         model = (DefaultTableModel) tableSales.getModel();
     }
 
-    static {
-        frame = new SalesWindow();
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    public static void initWindow() {
+//        if (frame != null) {
+//            frame = new SalesWindow();
+//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+//        }
     }
 
-    public static void showSalesWindow() {
+    public static void showSalesWindow(DataConnectInterface dc) {
+        if (frame == null) {
+            frame = new SalesWindow(dc);
+            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        }
         frame.setCurrentSale(null);
         update();
         frame.setVisible(true);
@@ -89,7 +95,7 @@ public class SalesWindow extends javax.swing.JFrame {
                 lblCurrentTakings.setText("Current Takings: £" + df.format(val));
             }
             lblSaleCount.setText("Current Sale Count: " + count);
-            
+
             val = data.getTakings();
             count = data.getSales();
             if (val > 1) {
@@ -100,7 +106,7 @@ public class SalesWindow extends javax.swing.JFrame {
                 lblDailyTakings.setText("Daily Takings: £" + df.format(val));
             }
             lblDailySales.setText("Daily Sales: " + count);
-            
+
         } catch (SQLException | IOException ex) {
             showError(ex);
         }

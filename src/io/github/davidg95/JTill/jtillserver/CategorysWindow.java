@@ -5,10 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.Category;
-import io.github.davidg95.JTill.jtill.CategoryNotFoundException;
-import io.github.davidg95.JTill.jtill.DBConnect;
-import io.github.davidg95.JTill.jtill.DataConnectInterface;
+import io.github.davidg95.JTill.jtill.*;
 import java.awt.Color;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -17,8 +14,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -30,7 +25,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class CategorysWindow extends javax.swing.JFrame {
 
-    public static final CategorysWindow frame;
+    public static CategorysWindow frame;
 
     private final DataConnectInterface dbConn;
     private Category category;
@@ -41,7 +36,7 @@ public class CategorysWindow extends javax.swing.JFrame {
     /**
      * Creates new form CategoryWindow
      */
-    public CategorysWindow() {
+    public CategorysWindow(DataConnectInterface dc) {
         dbConn = TillServer.getDataConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -50,12 +45,18 @@ public class CategorysWindow extends javax.swing.JFrame {
         showAllCategorys();
     }
 
-    static {
-        frame = new CategorysWindow();
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    public static void initWindow() {
+//        if (frame != null) {
+//            frame = new CategorysWindow();
+//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+//        }
     }
 
-    public static void showCategoryWindow() {
+    public static void showCategoryWindow(DataConnectInterface dc) {
+        if (frame == null) {
+            frame = new CategorysWindow(dc);
+            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        }
         update();
         frame.setCurrentCategory(null);
         frame.setVisible(true);
@@ -508,9 +509,7 @@ public class CategorysWindow extends javax.swing.JFrame {
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dbConn.removeCategory(currentTableContents.get(index).getID());
-                } catch (SQLException | CategoryNotFoundException ex) {
-                    showError(ex);
-                } catch (IOException ex) {
+                } catch (SQLException | CategoryNotFoundException | IOException ex) {
                     showError(ex);
                 }
                 showAllCategorys();

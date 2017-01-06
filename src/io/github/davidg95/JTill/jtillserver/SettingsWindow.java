@@ -25,7 +25,7 @@ import javax.swing.JOptionPane;
  */
 public class SettingsWindow extends javax.swing.JFrame {
 
-    public static final SettingsWindow frame;
+    public static SettingsWindow frame;
     private static Properties properties;
 
     //Static Settings
@@ -51,18 +51,24 @@ public class SettingsWindow extends javax.swing.JFrame {
     /**
      * Creates new form Settings
      */
-    public SettingsWindow() {
+    public SettingsWindow(DataConnectInterface dc) {
         this.dbConn = TillServer.getDataConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
-    static {
-        frame = new SettingsWindow();
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    public static void initWindow() {
+//        if (frame != null) {
+//            frame = new SettingsWindow();
+//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+//        }
     }
 
-    public static void showSettingsWindow() {
+    public static void showSettingsWindow(DataConnectInterface dc) {
+        if (frame == null) {
+            frame = new SettingsWindow(dc);
+            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        }
         update();
         frame.setVisible(true);
     }
@@ -85,8 +91,6 @@ public class SettingsWindow extends javax.swing.JFrame {
             DB_ADDRESS = properties.getProperty("db_address", "jdbc:derby:TillEmbedded;");
             DB_USERNAME = properties.getProperty("db_username", "APP");
             DB_PASSWORD = properties.getProperty("db_password", "App");
-
-            frame.init();
 
             TillSplashScreen.addBar(10);
 

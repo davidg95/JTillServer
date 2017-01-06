@@ -20,7 +20,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TaxWindow extends javax.swing.JFrame {
 
-    public static final TaxWindow frame;
+    public static TaxWindow frame;
 
     private final DataConnectInterface dbConn;
     private Tax tax;
@@ -31,7 +31,7 @@ public class TaxWindow extends javax.swing.JFrame {
     /**
      * Creates new form TaxWindow
      */
-    public TaxWindow() {
+    public TaxWindow(DataConnectInterface dc) {
         dbConn = TillServer.getDataConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -40,12 +40,18 @@ public class TaxWindow extends javax.swing.JFrame {
         showAllTaxes();
     }
 
-    static {
-        frame = new TaxWindow();
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    public static void initWindow() {
+//        if (frame != null) {
+//            frame = new TaxWindow();
+//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+//        }
     }
 
-    public static void showTaxWindow() {
+    public static void showTaxWindow(DataConnectInterface dc) {
+        if (frame == null) {
+            frame = new TaxWindow(dc);
+            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        }
         update();
         frame.setCurrentTax(null);
         frame.setVisible(true);
