@@ -110,7 +110,8 @@ public class GUI extends javax.swing.JFrame {
         if (dbConn instanceof ServerConnection) {
             ServerConnection sc = (ServerConnection) dbConn;
             try {
-                sc.connect(username, ABORT);
+                sc.connect(host, port);
+                lblDatabase.setText("Connected to JTill Server");
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
             }

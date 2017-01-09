@@ -17,7 +17,7 @@ DefaultDirName=C:\JTill Server
 DefaultGroupName=JTill Server
 OutputDir=C:\Users\David\Honors Project\Till\JTillServer\Compiler
 OutputBaseFilename=jtillserverinstaller
-SetupIconFile=C:\Users\David\Honors Project\Till\JTillServer\favicon.ico
+SetupIconFile=C:\Users\David\Honors Project\Till\JTillServer\dist\favicon.ico
 Compression=lzma
 SolidCompression=yes
 
