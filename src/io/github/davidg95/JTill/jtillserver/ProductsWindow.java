@@ -48,7 +48,7 @@ public class ProductsWindow extends javax.swing.JFrame {
      */
     public ProductsWindow(DataConnectInterface dc) {
         this.data = TillServer.getData();
-        this.dbConn = TillServer.getDataConnection();
+        this.dbConn = dc;
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();

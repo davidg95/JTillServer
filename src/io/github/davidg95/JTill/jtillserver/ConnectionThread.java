@@ -5,7 +5,6 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DBConnect;
 import io.github.davidg95.JTill.jtill.Category;
 import io.github.davidg95.JTill.jtill.CategoryNotFoundException;
 import io.github.davidg95.JTill.jtill.CustomerNotFoundException;
@@ -640,8 +639,15 @@ public class ConnectionThread extends Thread {
                         obOut.flush();
                         break;
                     case "INIT": //Get Init Data
-                        TillInitData initData = new TillInitData(SettingsWindow.autoLogout, SettingsWindow.logoutTimeout);
-                        obOut.writeObject(initData);
+                        obOut.writeObject(TillInitData.initData);
+                        break;
+                    case "SENDINIT": //Send init data to the server
+                        try {
+                            TillInitData initData = (TillInitData) obIn.readObject();
+                            dbConn.setInitData(initData);
+                        } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         break;
                     case "GETINIT": //Load till configuration
                         try {

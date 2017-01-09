@@ -61,7 +61,7 @@ public class GUI extends javax.swing.JFrame {
             try {
                 DBConnect db = (DBConnect) dbConn;
                 TillSplashScreen.setLabel("Creating database...");
-                db.create(SettingsWindow.DB_ADDRESS + "create=true;", SettingsWindow.DB_USERNAME, SettingsWindow.DB_PASSWORD);
+                db.create(DBConnect.DB_ADDRESS + "create=true;", DBConnect.DB_USERNAME, DBConnect.DB_PASSWORD);
                 TillSplashScreen.setLabel("Creating tables...");
                 Staff s = StaffDialog.showNewStaffDialog(this);
                 if (s == null) {
@@ -84,7 +84,7 @@ public class GUI extends javax.swing.JFrame {
         if (dbConn instanceof DBConnect) {
             try {
                 DBConnect db = (DBConnect) dbConn;
-                db.connect(SettingsWindow.DB_ADDRESS, SettingsWindow.DB_USERNAME, SettingsWindow.DB_PASSWORD);
+                db.connect(DBConnect.DB_ADDRESS, DBConnect.DB_USERNAME, DBConnect.DB_PASSWORD);
                 TillSplashScreen.setLabel("Connected to database");
                 TillSplashScreen.addBar(40);
                 lblDatabase.setText("Connected to database");
@@ -149,7 +149,10 @@ public class GUI extends javax.swing.JFrame {
             log(staff.getName() + " has logged in");
             isLoggedOn = true;
         } else {
-            SettingsWindow.saveProperties();
+            if (dbConn instanceof DBConnect) {
+                DBConnect db = (DBConnect) dbConn;
+                db.saveProperties();
+            }
             if (SystemTray.isSupported()) {
                 this.setVisible(false);
                 TillServer.trayIcon.displayMessage("JTill Server is still running", "JTill Server is still running in the background, click this icon to bring it back up.", TrayIcon.MessageType.INFO);
@@ -183,7 +186,7 @@ public class GUI extends javax.swing.JFrame {
             writer.println(username);
             writer.println(password);
             writer.println(TillServer.updateInterval);
-            writer.println(SettingsWindow.PORT);
+            writer.println(DBConnect.PORT);
         } catch (IOException ex) {
 
         }
@@ -201,7 +204,7 @@ public class GUI extends javax.swing.JFrame {
                 username = fileReader.nextLine();
                 password = fileReader.nextLine();
                 TillServer.updateInterval = Long.parseLong(fileReader.nextLine());
-                SettingsWindow.PORT = Integer.parseInt(fileReader.nextLine());
+                DBConnect.PORT = Integer.parseInt(fileReader.nextLine());
             } else {
             }
         } catch (IOException e) {
@@ -616,7 +619,10 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_itemStockActionPerformed
 
     private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
-        SettingsWindow.saveProperties();
+        if (dbConn instanceof DBConnect) {
+            DBConnect db = (DBConnect) dbConn;
+            db.saveProperties();
+        }
         System.exit(0);
     }//GEN-LAST:event_itemExitActionPerformed
 
@@ -698,7 +704,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
         JOptionPane.showMessageDialog(null, "JTill Server is running on port number "
-                + SettingsWindow.PORT + " with " + clientCounter + " connections.\n"
+                + DBConnect.PORT + " with " + clientCounter + " connections.\n"
                 + dbConn.toString(), "JTill Server",
                 JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_itemAboutActionPerformed

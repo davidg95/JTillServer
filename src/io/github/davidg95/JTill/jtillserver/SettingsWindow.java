@@ -7,15 +7,6 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Properties;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -26,21 +17,6 @@ import javax.swing.JOptionPane;
 public class SettingsWindow extends javax.swing.JFrame {
 
     public static SettingsWindow frame;
-    private static Properties properties;
-
-    //Static Settings
-    public static int PORT = 600;
-    public static int MAX_CONNECTIONS = 10;
-    public static int MAX_QUEUE = 10;
-    public static String hostName;
-    public static boolean autoLogout = false;
-    public static int logoutTimeout = 30;
-    public static String DB_ADDRESS = "jdbc:derby:TillEmbedded;";
-    public static String DB_USERNAME = "APP";
-    public static String DB_PASSWORD = "App";
-    private final String defaultAddress = "jdbc:derby:TillEmbedded;";
-    private final String defaultUsername = "APP";
-    private final String defaultPassword = "App";
 
     private final DataConnectInterface dbConn;
 
@@ -73,79 +49,26 @@ public class SettingsWindow extends javax.swing.JFrame {
         frame.setVisible(true);
     }
 
-    public static void loadProperties() {
-        properties = new Properties();
-        InputStream in;
-
-        try {
-            in = new FileInputStream("server.properties");
-
-            properties.load(in);
-
-            hostName = properties.getProperty("host");
-            PORT = Integer.parseInt(properties.getProperty("port", Integer.toString(PORT)));
-            MAX_CONNECTIONS = Integer.parseInt(properties.getProperty("max_conn", Integer.toString(MAX_CONNECTIONS)));
-            MAX_QUEUE = Integer.parseInt(properties.getProperty("max_queue", Integer.toString(MAX_QUEUE)));
-            autoLogout = Boolean.parseBoolean(properties.getProperty("autoLogout", "false"));
-            logoutTimeout = Integer.parseInt(properties.getProperty("logoutTimeout", "30"));
-            DB_ADDRESS = properties.getProperty("db_address", "jdbc:derby:TillEmbedded;");
-            DB_USERNAME = properties.getProperty("db_username", "APP");
-            DB_PASSWORD = properties.getProperty("db_password", "App");
-
-            TillSplashScreen.addBar(10);
-
-            in.close();
-        } catch (FileNotFoundException | UnknownHostException ex) {
-            saveProperties();
-        } catch (IOException ex) {
-        }
-    }
-
-    public static void saveProperties() {
-        properties = new Properties();
-        OutputStream out;
-
-        try {
-            out = new FileOutputStream("server.properties");
-
-            hostName = InetAddress.getLocalHost().getHostName();
-
-            properties.setProperty("host", hostName);
-            properties.setProperty("port", Integer.toString(PORT));
-            properties.setProperty("max_conn", Integer.toString(MAX_CONNECTIONS));
-            properties.setProperty("max_queue", Integer.toString(MAX_QUEUE));
-            properties.setProperty("autoLogout", Boolean.toString(autoLogout));
-            properties.setProperty("logoutTimeout", Integer.toString(logoutTimeout));
-            properties.setProperty("db_address", DB_ADDRESS);
-            properties.setProperty("db_username", DB_USERNAME);
-            properties.setProperty("db_password", DB_PASSWORD);
-
-            properties.store(out, null);
-            out.close();
-        } catch (FileNotFoundException | UnknownHostException ex) {
-        } catch (IOException ex) {
-        }
-    }
-
     public static void update() {
         frame.init();
     }
 
     private void init() {
-        txtPort.setText(PORT + "");
-        txtMaxConn.setText(MAX_CONNECTIONS + "");
-        txtMaxQueued.setText(MAX_QUEUE + "");
-        txtAddress.setText(DB_ADDRESS);
-        txtUsername.setText(DB_USERNAME);
-        txtPassword.setText(DB_PASSWORD);
-        chkLogOut.setSelected(autoLogout);
-        if (logoutTimeout == -1) {
+        txtPort.setText(DBConnect.PORT + "");
+        txtMaxConn.setText(DBConnect.MAX_CONNECTIONS + "");
+        txtMaxQueued.setText(DBConnect.MAX_QUEUE + "");
+        txtAddress.setText(DBConnect.DB_ADDRESS);
+        txtUsername.setText(DBConnect.DB_USERNAME);
+        txtPassword.setText(DBConnect.DB_PASSWORD);
+        chkLogOut.setSelected(TillInitData.initData.autoLogout);
+        txtLogonMessage.setText(TillInitData.initData.logonScreenMessage);
+        if (TillInitData.initData.logoutTimeout == -1) {
             chkLogoutTimeout.setSelected(false);
             txtLogoutTimeout.setText("");
             txtLogoutTimeout.setEnabled(false);
         } else {
             chkLogoutTimeout.setSelected(true);
-            txtLogoutTimeout.setText(logoutTimeout + "");
+            txtLogoutTimeout.setText(TillInitData.initData.logoutTimeout + "");
             txtLogoutTimeout.setEnabled(true);
         }
     }
@@ -184,6 +107,9 @@ public class SettingsWindow extends javax.swing.JFrame {
         btnSaveSecurity = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         btnDatabaseDefault = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        txtLogonMessage = new javax.swing.JTextField();
+        btnLogonMessage = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JTill Settings");
@@ -375,6 +301,15 @@ public class SettingsWindow extends javax.swing.JFrame {
             }
         });
 
+        jLabel9.setText("Logon Screen Message:");
+
+        btnLogonMessage.setText("Save");
+        btnLogonMessage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogonMessageActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -396,16 +331,30 @@ public class SettingsWindow extends javax.swing.JFrame {
                             .addComponent(panelNetwork, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnEditNetwork)
                             .addComponent(panelDatabase, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 384, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtLogonMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnLogonMessage)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelNetwork, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(panelSecurity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(panelNetwork, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(panelSecurity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel9)
+                            .addComponent(txtLogonMessage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnLogonMessage))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnEditNetwork)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -432,10 +381,13 @@ public class SettingsWindow extends javax.swing.JFrame {
             } else if (max < 0 || queue < 0) {
                 JOptionPane.showMessageDialog(this, "Please enter a value greater than 0", "Server Options", JOptionPane.PLAIN_MESSAGE);
             } else {
-                SettingsWindow.PORT = port;
-                SettingsWindow.MAX_CONNECTIONS = max;
-                SettingsWindow.MAX_QUEUE = queue;
-                SettingsWindow.saveProperties();
+                DBConnect.PORT = port;
+                DBConnect.MAX_CONNECTIONS = max;
+                DBConnect.MAX_QUEUE = queue;
+                if (dbConn instanceof DBConnect) {
+                    DBConnect db = (DBConnect) dbConn;
+                    db.saveProperties();
+                }
             }
             for (Component c : panelNetwork.getComponents()) {
                 c.setEnabled(false);
@@ -465,10 +417,13 @@ public class SettingsWindow extends javax.swing.JFrame {
             String address = txtAddress.getText();
             String username = txtUsername.getText();
             String password = new String(txtPassword.getPassword());
-            DB_ADDRESS = address;
-            DB_USERNAME = username;
-            DB_PASSWORD = password;
-            SettingsWindow.saveProperties();
+            DBConnect.DB_ADDRESS = address;
+            DBConnect.DB_USERNAME = username;
+            DBConnect.DB_PASSWORD = password;
+            if (dbConn instanceof DBConnect) {
+                DBConnect db = (DBConnect) dbConn;
+                db.saveProperties();
+            }
             for (Component c : panelDatabase.getComponents()) {
                 c.setEnabled(false);
             }
@@ -485,13 +440,18 @@ public class SettingsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEditDatabaseActionPerformed
 
     private void btnSaveSecurityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveSecurityActionPerformed
-        autoLogout = chkLogOut.isSelected();
+        TillInitData.initData.autoLogout = chkLogOut.isSelected();
         if (chkLogoutTimeout.isSelected()) {
-            logoutTimeout = Integer.parseInt(txtLogoutTimeout.getText());
+            TillInitData.initData.logoutTimeout = Integer.parseInt(txtLogoutTimeout.getText());
         } else {
-            logoutTimeout = -1;
+            TillInitData.initData.logoutTimeout = -1;
         }
-        saveProperties();
+        TillInitData.initData.setLogoutTimeout(TillInitData.initData.logoutTimeout);
+        TillInitData.initData.setAutoLogout(TillInitData.initData.autoLogout);
+        if (dbConn instanceof DBConnect) {
+            DBConnect db = (DBConnect) dbConn;
+            db.saveProperties();
+        }
     }//GEN-LAST:event_btnSaveSecurityActionPerformed
 
     private void chkLogoutTimeoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkLogoutTimeoutActionPerformed
@@ -499,21 +459,29 @@ public class SettingsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_chkLogoutTimeoutActionPerformed
 
     private void btnDatabaseDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDatabaseDefaultActionPerformed
-        DB_ADDRESS = defaultAddress;
-        DB_USERNAME = defaultUsername;
-        DB_PASSWORD = defaultPassword;
-        txtAddress.setText(DB_ADDRESS);
-        txtUsername.setText(DB_USERNAME);
-        txtPassword.setText(DB_PASSWORD);
-        saveProperties();
+        DBConnect.DB_ADDRESS = DBConnect.defaultAddress;
+        DBConnect.DB_USERNAME = DBConnect.defaultUsername;
+        DBConnect.DB_PASSWORD = DBConnect.defaultPassword;
+        txtAddress.setText(DBConnect.DB_ADDRESS);
+        txtUsername.setText(DBConnect.DB_USERNAME);
+        txtPassword.setText(DBConnect.DB_PASSWORD);
+        if (dbConn instanceof DBConnect) {
+            DBConnect db = (DBConnect) dbConn;
+            db.saveProperties();
+        }
         JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_btnDatabaseDefaultActionPerformed
+
+    private void btnLogonMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogonMessageActionPerformed
+        TillInitData.initData.setLogonScreenMessage(txtLogonMessage.getText());
+    }//GEN-LAST:event_btnLogonMessageActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnDatabaseDefault;
     private javax.swing.JButton btnEditDatabase;
     private javax.swing.JButton btnEditNetwork;
+    private javax.swing.JButton btnLogonMessage;
     private javax.swing.JButton btnSaveSecurity;
     private javax.swing.JCheckBox chkLogOut;
     private javax.swing.JCheckBox chkLogoutTimeout;
@@ -525,10 +493,12 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel panelDatabase;
     private javax.swing.JPanel panelNetwork;
     private javax.swing.JPanel panelSecurity;
     private javax.swing.JTextField txtAddress;
+    private javax.swing.JTextField txtLogonMessage;
     private javax.swing.JTextField txtLogoutTimeout;
     private javax.swing.JTextField txtMaxConn;
     private javax.swing.JTextField txtMaxQueued;

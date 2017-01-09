@@ -5,6 +5,8 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.DBConnect;
+import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -21,35 +23,37 @@ public class ServerOptionsDialog extends javax.swing.JDialog {
 
     private static JDialog dialog;
     private static int result;
+    private DataConnectInterface dataConn;
 
     /**
      * Creates new form ServerOptionsDialog
      *
      * @param parent the parent component.
      */
-    public ServerOptionsDialog(Window parent) {
+    public ServerOptionsDialog(Window parent, DataConnectInterface dataConn) {
         super(parent);
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setModal(true);
-        txtPort.setText(SettingsWindow.PORT + "");
-        txtMaxConn.setText(SettingsWindow.MAX_CONNECTIONS + "");
-        txtMaxQueued.setText(SettingsWindow.MAX_QUEUE + "");
+        txtPort.setText(DBConnect.PORT + "");
+        txtMaxConn.setText(DBConnect.MAX_CONNECTIONS + "");
+        txtMaxQueued.setText(DBConnect.MAX_QUEUE + "");
     }
 
     /**
      * Method to show the server options dialog.
      *
      * @param parent the parent component.
+     * @param dataConn the connection to the main server data source.
      * @return result of 0 means user clicked cancel or close, 1 means they
      * clicked save.
      */
-    public static int showDialog(Component parent) {
+    public static int showDialog(Component parent, DataConnectInterface dataConn) {
         Window window = null;
         if (parent instanceof Frame || parent instanceof Dialog) {
             window = (Window) parent;
         }
-        dialog = new ServerOptionsDialog(window);
+        dialog = new ServerOptionsDialog(window, dataConn);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         result = 0;
         dialog.setVisible(true);
@@ -157,11 +161,14 @@ public class ServerOptionsDialog extends javax.swing.JDialog {
             } else if (max < 0 || queue < 0) {
                 JOptionPane.showMessageDialog(this, "Please enter a value greater than 0", "Server Options", JOptionPane.PLAIN_MESSAGE);
             } else {
-                SettingsWindow.PORT = port;
-                SettingsWindow.MAX_CONNECTIONS = max;
-                SettingsWindow.MAX_QUEUE = queue;
+                DBConnect.PORT = port;
+                DBConnect.MAX_CONNECTIONS = max;
+                DBConnect.MAX_QUEUE = queue;
                 result = 1;
-                SettingsWindow.saveProperties();
+                if (dataConn instanceof DBConnect) {
+                    DBConnect db = (DBConnect) dataConn;
+                    db.saveProperties();
+                }
                 this.setVisible(false);
             }
         } catch (NumberFormatException ex) {

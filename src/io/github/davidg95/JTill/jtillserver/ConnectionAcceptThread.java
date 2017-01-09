@@ -5,6 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.DBConnect;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -30,7 +31,7 @@ public class ConnectionAcceptThread extends Thread {
 
     @Override
     public void run() {
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(SettingsWindow.MAX_CONNECTIONS, SettingsWindow.MAX_QUEUE, 50000L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(SettingsWindow.MAX_QUEUE));
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(DBConnect.MAX_CONNECTIONS, DBConnect.MAX_QUEUE, 50000L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(DBConnect.MAX_QUEUE));
         pool.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 
         TillServer.g.log("Ready to accept connections");

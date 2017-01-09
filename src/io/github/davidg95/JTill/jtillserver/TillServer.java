@@ -57,15 +57,15 @@ public class TillServer {
 
     public TillServer() {
         icon = new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/tillIcon.png")).getImage();
-        SettingsWindow.loadProperties();
         dbConnection = new DBConnect();
+        dbConnection.loadProperties();
         data = new Data(dbConnection, g);
         if (!GraphicsEnvironment.isHeadless()) {
             g = new GUI(data, dbConnection);
             setSystemTray();
         }
         try {
-            s = new ServerSocket(SettingsWindow.PORT);
+            s = new ServerSocket(DBConnect.PORT);
             connThread = new ConnectionAcceptThread(s, data);
         } catch (IOException ex) {
         }
@@ -133,7 +133,7 @@ public class TillServer {
 
         aboutItem.addActionListener((ActionEvent e) -> {
             JOptionPane.showMessageDialog(null, "JTill Server is running on port number "
-                    + SettingsWindow.PORT + " with " + g.clientCounter + " connections.\n"
+                    + DBConnect.PORT + " with " + g.clientCounter + " connections.\n"
                     + dbConnection.toString(), "JTill Server",
                     JOptionPane.INFORMATION_MESSAGE);
         });
@@ -146,7 +146,7 @@ public class TillServer {
         });
 
         statusItem.addActionListener((ActionEvent e) -> {
-            JOptionPane.showMessageDialog(null, "Connected Clients: " + g.clientCounter + "/" + SettingsWindow.MAX_CONNECTIONS
+            JOptionPane.showMessageDialog(null, "Connected Clients: " + g.clientCounter + "/" + DBConnect.MAX_CONNECTIONS
                     + "\nDatabase Address- " + dbConnection.getAddress()
                     + "\nDatabase User- " + dbConnection.getUsername(),
                     "JTill Server Status", JOptionPane.INFORMATION_MESSAGE);
@@ -188,7 +188,7 @@ public class TillServer {
     }
 
     public static String getHostName() {
-        return SettingsWindow.hostName;
+        return DBConnect.hostName;
     }
 
 //    public static void setUpdateTimer() {
