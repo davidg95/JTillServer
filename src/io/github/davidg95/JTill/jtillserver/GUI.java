@@ -42,6 +42,8 @@ public class GUI extends javax.swing.JFrame {
     public int clientCounter = 0;
     private final ArrayList<String> connections;
 
+    private boolean remote;
+
     /**
      * Creates new form GUI
      *
@@ -84,6 +86,7 @@ public class GUI extends javax.swing.JFrame {
         if (dbConn instanceof DBConnect) {
             try {
                 DBConnect db = (DBConnect) dbConn;
+                remote = false;
                 db.connect(DBConnect.DB_ADDRESS, DBConnect.DB_USERNAME, DBConnect.DB_PASSWORD);
                 TillSplashScreen.setLabel("Connected to database");
                 TillSplashScreen.addBar(40);
@@ -102,13 +105,15 @@ public class GUI extends javax.swing.JFrame {
                 Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-
+            lblDatabase.setText("Connected to JTill Server");
+            remote = true;
         }
     }
 
     public void connect(String host, int port) {
         if (dbConn instanceof ServerConnection) {
             ServerConnection sc = (ServerConnection) dbConn;
+            remote = true;
             try {
                 sc.connect(host, port);
                 lblDatabase.setText("Connected to JTill Server");
@@ -153,6 +158,9 @@ public class GUI extends javax.swing.JFrame {
             if (dbConn instanceof DBConnect) {
                 DBConnect db = (DBConnect) dbConn;
                 db.saveProperties();
+            }
+            if(remote){
+                System.exit(0);
             }
             if (SystemTray.isSupported()) {
                 this.setVisible(false);
