@@ -32,7 +32,7 @@ public class TaxWindow extends javax.swing.JFrame {
      * Creates new form TaxWindow
      */
     public TaxWindow(DataConnectInterface dc) {
-        dbConn = TillServer.getDataConnection();
+        dbConn = dc;
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();

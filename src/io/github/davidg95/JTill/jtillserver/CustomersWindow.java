@@ -7,7 +7,6 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.Customer;
 import io.github.davidg95.JTill.jtill.CustomerNotFoundException;
-import io.github.davidg95.JTill.jtill.DBConnect;
 import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import io.github.davidg95.JTill.jtill.Discount;
 import io.github.davidg95.JTill.jtill.DiscountNotFoundException;
@@ -15,8 +14,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -29,8 +26,7 @@ import javax.swing.table.DefaultTableModel;
 public class CustomersWindow extends javax.swing.JFrame {
 
     public static CustomersWindow frame;
-
-    private final Data data;
+    
     private final DataConnectInterface dbConn;
 
     private Customer customer;
@@ -44,8 +40,7 @@ public class CustomersWindow extends javax.swing.JFrame {
      * Creates new form CustomersWindow
      */
     public CustomersWindow(DataConnectInterface dc) {
-        this.data = TillServer.getData();
-        this.dbConn = TillServer.getDataConnection();
+        this.dbConn = dc;
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -112,7 +107,7 @@ public class CustomersWindow extends javax.swing.JFrame {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
             Customer c = currentTableContents.get(selectedRow);
-            CustomerDialog.showEditCusomerDialog(this, data, c);
+            CustomerDialog.showEditCusomerDialog(this, c);
             updateTable();
         }
     }

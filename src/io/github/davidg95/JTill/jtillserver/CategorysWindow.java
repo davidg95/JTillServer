@@ -37,7 +37,7 @@ public class CategorysWindow extends javax.swing.JFrame {
      * Creates new form CategoryWindow
      */
     public CategorysWindow(DataConnectInterface dc) {
-        dbConn = TillServer.getDataConnection();
+        dbConn = dc;
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();

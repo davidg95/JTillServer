@@ -38,7 +38,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
      * Creates new form ScreenEditWindow
      */
     public ScreenEditWindow(DataConnectInterface dc) {
-        dbConn = TillServer.getDataConnection();
+        dbConn = dc;
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         categoryCards = (CardLayout) panelProducts.getLayout();
@@ -53,7 +53,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     }
 
     public static void showScreenEditWindow(DataConnectInterface dc) {
-        if (frame != null) {
+        if (frame == null) {
             frame = new ScreenEditWindow(dc);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
@@ -68,9 +68,9 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     public void setButtons() {
         try {
             List<Category> categorys = dbConn.getAllCategorys();
-            for (Category c : categorys) {
-                if (!c.isButton()) {
-                    categorys.remove(c);
+            for (int i = 0; i < categorys.size(); i++) {
+                if (!categorys.get(i).isButton()) {
+                    categorys.remove(i);
                 }
             }
             panelCategories.removeAll();

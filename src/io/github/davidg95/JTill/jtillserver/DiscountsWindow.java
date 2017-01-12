@@ -37,7 +37,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
      * Creates new form DiscountsWindow
      */
     public DiscountsWindow(DataConnectInterface dc) {
-        this.dbConn = TillServer.getDataConnection();
+        this.dbConn = dc;
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();

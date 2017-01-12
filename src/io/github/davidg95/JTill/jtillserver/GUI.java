@@ -50,9 +50,10 @@ public class GUI extends javax.swing.JFrame {
      * @param data
      * @param dbConnection
      */
-    public GUI(Data data, DataConnectInterface dbConnection) {
+    public GUI(Data data, DataConnectInterface dbConnection, boolean remote) {
         this.dbConn = dbConnection;
         this.data = data;
+        this.remote = remote;
         initComponents();
         connections = new ArrayList<>();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -83,10 +84,9 @@ public class GUI extends javax.swing.JFrame {
     }
 
     public void databaseLogin() {
-        if (dbConn instanceof DBConnect) {
+        if (!remote) {
             try {
                 DBConnect db = (DBConnect) dbConn;
-                remote = false;
                 db.connect(DBConnect.DB_ADDRESS, DBConnect.DB_USERNAME, DBConnect.DB_PASSWORD);
                 TillSplashScreen.setLabel("Connected to database");
                 TillSplashScreen.addBar(40);
@@ -106,20 +106,6 @@ public class GUI extends javax.swing.JFrame {
             }
         } else {
             lblDatabase.setText("Connected to JTill Server");
-            remote = true;
-        }
-    }
-
-    public void connect(String host, int port) {
-        if (dbConn instanceof ServerConnection) {
-            ServerConnection sc = (ServerConnection) dbConn;
-            remote = true;
-            try {
-                sc.connect(host, port);
-                lblDatabase.setText("Connected to JTill Server");
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
-            }
         }
     }
 

@@ -61,7 +61,7 @@ public class TillServer {
         dbConnection.loadProperties();
         data = new Data(dbConnection, g);
         if (!GraphicsEnvironment.isHeadless()) {
-            g = new GUI(data, dbConnection);
+            g = new GUI(data, dbConnection ,false);
             setSystemTray();
         }
         try {

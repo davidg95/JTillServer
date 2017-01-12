@@ -11,8 +11,6 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;

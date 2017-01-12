@@ -24,8 +24,6 @@ public class StaffWindow extends javax.swing.JFrame {
 
     public static StaffWindow frame;
 
-    private final Data data;
-
     private final DataConnectInterface dbConn;
 
     private Staff staff;
@@ -37,8 +35,7 @@ public class StaffWindow extends javax.swing.JFrame {
      * Creates new form StaffWindow
      */
     public StaffWindow(DataConnectInterface dc) {
-        this.data = TillServer.getData();
-        this.dbConn = TillServer.getDataConnection();
+        this.dbConn = dc;
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();

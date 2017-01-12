@@ -6,7 +6,6 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.Customer;
-import io.github.davidg95.JTill.jtill.DBConnect;
 import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import io.github.davidg95.JTill.jtill.Discount;
 import java.awt.Component;
@@ -16,8 +15,6 @@ import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -30,8 +27,7 @@ public class CustomerDialog extends javax.swing.JDialog {
 
     private static JDialog dialog;
     private static Customer customer;
-
-    private Data data;
+    
     private DataConnectInterface dbConn;
 
     private boolean editMode;
@@ -51,14 +47,8 @@ public class CustomerDialog extends javax.swing.JDialog {
         this.setModal(true);
     }
 
-    public CustomerDialog(Window parent, Data data) {
-        this(parent);
-        this.data = data;
-    }
-
-    public CustomerDialog(Window parent, Data d, Customer c) {
+    public CustomerDialog(Window parent, Customer c) {
         super(parent);
-        this.data = d;
         initComponents();
         editMode = true;
         this.setLocationRelativeTo(parent);
@@ -93,24 +83,12 @@ public class CustomerDialog extends javax.swing.JDialog {
         return customer;
     }
 
-    public static Customer showNewCustomerDialog(Component parent, Data data) {
+    public static Customer showEditCusomerDialog(Component parent, Customer c) {
         Window window = null;
         if (parent instanceof Frame || parent instanceof Dialog) {
             window = (Window) parent;
         }
-        dialog = new CustomerDialog(window, data);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        customer = null;
-        dialog.setVisible(true);
-        return customer;
-    }
-
-    public static Customer showEditCusomerDialog(Component parent, Data d, Customer c) {
-        Window window = null;
-        if (parent instanceof Frame || parent instanceof Dialog) {
-            window = (Window) parent;
-        }
-        dialog = new CustomerDialog(window, d, c);
+        dialog = new CustomerDialog(window, c);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         customer = c;
         dialog.setVisible(true);
@@ -411,14 +389,12 @@ public class CustomerDialog extends javax.swing.JDialog {
             customer.setPostcode(postcode);
         } else {
             customer = new Customer(name, phone, mobile, email, discount, address1, address2, town, county, country, postcode, notes, loyalty);
-            if (data != null) {
-                try {
-                    dbConn.addCustomer(customer);
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
-                }
+            try {
+                dbConn.addCustomer(customer);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         this.setVisible(false);

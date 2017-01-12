@@ -28,7 +28,7 @@ public class SettingsWindow extends javax.swing.JFrame {
      * Creates new form Settings
      */
     public SettingsWindow(DataConnectInterface dc) {
-        this.dbConn = TillServer.getDataConnection();
+        this.dbConn = dc;
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
