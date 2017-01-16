@@ -14,6 +14,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -67,77 +69,62 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
     public void setButtons() {
         try {
-            List<Category> categorys = dbConn.getAllCategorys();
-            for (int i = 0; i < categorys.size(); i++) {
-                if (!categorys.get(i).isButton()) {
-                    categorys.remove(i);
-                }
-            }
+            List<Screen> screens = dbConn.getAllScreens();
             panelCategories.removeAll();
             panelCategories.setLayout(new GridLayout(2, 5));
-            for (Category c : categorys) {
-                addCategoryButton(c);
+            for (Screen s : screens) {
+                addScreenButton(s);
             }
 
-            for (int i = categorys.size() - 1; i < 9; i++) {
+            for (int i = screens.size() - 1; i < 9; i++) {
                 JPanel panel = new JPanel();
                 panel.setBackground(Color.WHITE);
                 panelCategories.add(panel);
             }
-        } catch (SQLException ex) {
-            showError(ex);
-        } catch (IOException ex) {
+        } catch (SQLException | IOException ex) {
             showError(ex);
         }
     }
 
-    public void addCategoryButton(Category c) {
-        JToggleButton cButton = new JToggleButton(c.getName());
-        if (c.getColorValue() != 0) {
-            cButton.setBackground(new Color(c.getColorValue()));
+    public void addScreenButton(Screen s) {
+        JToggleButton cButton = new JToggleButton(s.getName());
+        if (s.getColorValue() != 0) {
+            cButton.setBackground(new Color(s.getColorValue()));
         }
-        //cButton.setSize(140, 50);
-        cButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                categoryCards.show(panelProducts, c.getName());
-            }
-
+        cButton.addActionListener((ActionEvent e) -> {
+            categoryCards.show(panelProducts, s.getName());
         });
         cardsButtonGroup.add(cButton);
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(10, 5));
 
-        List<Product> products;
+        List<Button> buttons;
         try {
-            products = dbConn.getProductsInCategory(c.getID());
-            for (Product p : products) {
-                if (p.isButton()) {
-                    JButton pButton = new JButton(p.getShortName());
-                    if (p.getColorValue() != 0) {
-                        pButton.setBackground(new Color(p.getColorValue()));
-                    }
-                    //pButton.setSize(140, 50);
-                    pButton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-
-                        }
-
-                    });
-                    panel.add(pButton);
+            buttons = dbConn.getButtonsOnScreen(s);
+            for (Button b : buttons) {
+                JButton pButton = new JButton(b.getName());
+                if (b.getColorValue() != 0) {
+                    pButton.setBackground(new Color(b.getColorValue()));
                 }
+                pButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+
+                    }
+
+                });
+                panel.add(pButton);
             }
 
-            for (int i = products.size() - 1; i < 49; i++) {
+            for (int i = buttons.size() - 1; i < 49; i++) {
                 JPanel blankPanel = new JPanel();
                 blankPanel.setBackground(Color.WHITE);
                 panel.add(blankPanel);
             }
 
-            panelProducts.add(panel, c.getName());
+            panelProducts.add(panel, s.getName());
             panelCategories.add(cButton);
-        } catch (SQLException | IOException | CategoryNotFoundException ex) {
+        } catch (SQLException | IOException | ScreenNotFoundException ex) {
             showError(ex);
         }
     }
@@ -189,14 +176,19 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        btnNewScreen.setText("Add New Screen");
+        btnNewScreen.setText("Add Screen");
         btnNewScreen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNewScreenActionPerformed(evt);
             }
         });
 
-        btnNewProduct.setText("Add New Product");
+        btnNewProduct.setText("Add Product");
+        btnNewProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewProductActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -207,7 +199,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnNewScreen)
                     .addComponent(btnNewProduct))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
                 .addComponent(panelEditor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -229,9 +221,22 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewScreenActionPerformed
-        Category c = CategorySelectDialog.showDialog(this, dbConn);
-        addCategoryButton(c);
+        try {
+            String name = JOptionPane.showInputDialog("Enter Name");
+            int position = dbConn.getAllScreens().size() - 1;
+            Screen s = new Screen(name, position, 0);
+            dbConn.addScreen(s);
+            setButtons();
+        } catch (IOException ex) {
+            Logger.getLogger(ScreenEditWindow.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ScreenEditWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnNewScreenActionPerformed
+
+    private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
+        Product p = ProductSelectDialog.showDialog(this, dbConn);
+    }//GEN-LAST:event_btnNewProductActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNewProduct;

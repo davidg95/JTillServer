@@ -5,6 +5,8 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.Button;
+import io.github.davidg95.JTill.jtill.ButtonNotFoundException;
 import io.github.davidg95.JTill.jtill.Category;
 import io.github.davidg95.JTill.jtill.CategoryNotFoundException;
 import io.github.davidg95.JTill.jtill.CustomerNotFoundException;
@@ -20,6 +22,8 @@ import io.github.davidg95.JTill.jtill.ProductNotFoundException;
 import io.github.davidg95.JTill.jtill.LoginException;
 import io.github.davidg95.JTill.jtill.Sale;
 import io.github.davidg95.JTill.jtill.SaleNotFoundException;
+import io.github.davidg95.JTill.jtill.Screen;
+import io.github.davidg95.JTill.jtill.ScreenNotFoundException;
 import io.github.davidg95.JTill.jtill.Tax;
 import io.github.davidg95.JTill.jtill.TaxNotFoundException;
 import io.github.davidg95.JTill.jtill.TillInitData;
@@ -668,35 +672,110 @@ public class ConnectionThread extends Thread {
                             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
                         }
                         break;
-                    case "GETCATBUTTONS": //Load category buttons
+                    case "ADDSCREEN": //Add a new screen
                         try {
-                            List<Category> categorys = dbConn.getAllCategorys();
-                            for (int i = 0; i < categorys.size(); i++) {
-                                if (!categorys.get(i).isButton()) {
-                                    categorys.remove(i);
-                                }
-                            }
-                            obOut.writeObject(categorys);
-                        } catch (SQLException ex) {
-                            obOut.writeObject(ex);
-                        }
-                        break;
-                    case "GETPRODUCTBUTTONS": //Load product buttons
-                        try {
-                            int id = Integer.parseInt(inp[1]);
-                            List<Product> products = dbConn.getProductsInCategory(id);
-                            for (int i = 0; i < products.size(); i++) {
-                                if (!products.get(i).isButton()) {
-                                    products.remove(i);
-                                }
-                            }
-                            obOut.writeObject(products);
-                        } catch (SQLException ex) {
-                            obOut.writeObject(ex);
-                        } catch (CategoryNotFoundException ex) {
+                            Screen s = (Screen) obIn.readObject();
+                            dbConn.addScreen(s);
+                        } catch (ClassNotFoundException | SQLException ex) {
                             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
                         }
                         break;
+                    case "ADDBUTTON": //Add a new button
+                        try {
+                            Button b = (Button) obIn.readObject();
+                            dbConn.addButton(b);
+                        } catch (ClassNotFoundException | SQLException ex) {
+                            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        break;
+                    case "REMOVESCREEN": //Remove a screen
+                        try {
+                            Screen s = (Screen) obIn.readObject();
+                            dbConn.removeScreen(s);
+                            out.println("SUCC");
+                        } catch (ClassNotFoundException | SQLException ex) {
+                            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (ScreenNotFoundException ex) {
+                            out.println("FAIL");
+                        }
+                        break;
+                    case "REMOVEBUTTON": //Remove a button
+                        try {
+                            Button b = (Button) obIn.readObject();
+                            dbConn.removeButton(b);
+                            out.println("SUCC");
+                        } catch (ClassNotFoundException | SQLException ex) {
+                            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (ButtonNotFoundException ex) {
+                            out.println("FAIL");
+                        }
+                        break;
+                    case "UPDATESCREEN": //Update a screen
+                        try {
+                            Screen s = (Screen) obIn.readObject();
+                            dbConn.updateScreen(s);
+                            obOut.writeObject(s);
+                        } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (SQLException | ScreenNotFoundException ex) {
+                            obOut.writeObject(ex);
+                        }
+                        break;
+                    case "UPDATEBUTTON": //Update a button
+                        try {
+                            Button b = (Button) obIn.readObject();
+                            dbConn.updateButton(b);
+                            obOut.writeObject(b);
+                        } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (SQLException | ButtonNotFoundException ex) {
+                            obOut.writeObject(ex);
+                        }
+                        break;
+                    case "GETSCREEN": //Update a screen
+                        try {
+                            int id = Integer.parseInt(inp[1]);
+                            Screen s = dbConn.getScreen(id);
+                            obOut.writeObject(s);
+                        } catch (SQLException | ScreenNotFoundException ex) {
+                            obOut.writeObject(ex);
+                        }
+                        break;
+                    case "GETBUTTON": //Updatea a button
+                        try {
+                            int id = Integer.parseInt(inp[1]);
+                            Button b = dbConn.getButton(id);
+                            obOut.writeObject(b);
+                        } catch (SQLException | ButtonNotFoundException ex) {
+                            obOut.writeObject(ex);
+                        }
+                        break;
+                    case "GETALLSCREENS": //Get all screens
+                        try {
+                            List<Screen> screens = dbConn.getAllScreens();
+                            obOut.writeObject(screens);
+                        } catch (SQLException ex) {
+                            obOut.writeObject(ex);
+                        }
+                        break;
+                    case "GETALLBUTTONS": //Get all buttons
+                        try {
+                            List<Button> buttons = dbConn.getAllButtons();
+                            obOut.writeObject(buttons);
+                        } catch (SQLException ex) {
+                            obOut.writeObject(ex);
+                        }
+                        break;
+                    case "GETBUTTONSONSCREEN": //Get buttons on a screen
+                        try {
+                            Screen s = (Screen) obIn.readObject();
+                            List<Button> buttons = dbConn.getButtonsOnScreen(s);
+                            obOut.writeObject(buttons);
+                        } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (SQLException | ScreenNotFoundException ex) {
+                            obOut.writeObject(ex);
+                        }
                     case "CONNTERM": //Terminate the connection
                         conn_term = true;
                         if (staff != null) {

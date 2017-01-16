@@ -6,15 +6,11 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Color;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -154,11 +150,6 @@ public class ProductsWindow extends javax.swing.JFrame {
             cmbDiscount.setSelectedIndex(0);
             cmbTax.setSelectedIndex(0);
             cmbCategory.setSelectedIndex(0);
-            chkButton.setSelected(false);
-            btnColor.setBackground(null);
-            btnColor.setEnabled(false);
-            chkDefault.setSelected(true);
-            chkDefault.setEnabled(false);
             product = null;
         } else {
             try {
@@ -234,24 +225,6 @@ public class ProductsWindow extends javax.swing.JFrame {
                     }
                 }
                 cmbTax.setSelectedIndex(index);
-                chkButton.setSelected(product.isButton());
-                if (product.isButton()) {
-                    chkDefault.setEnabled(true);
-                    if (product.getColorValue() != 0) {
-                        btnColor.setBackground(new Color(product.getColorValue()));
-                        btnColor.setEnabled(true);
-                        chkDefault.setSelected(false);
-                    } else {
-                        btnColor.setBackground(null);
-                        btnColor.setEnabled(false);
-                        chkDefault.setSelected(true);
-                    }
-                } else {
-                    btnColor.setEnabled(false);
-                    btnColor.setBackground(null);
-                    chkDefault.setSelected(true);
-                    chkDefault.setEnabled(false);
-                }
             } catch (SQLException | DiscountNotFoundException | CategoryNotFoundException | TaxNotFoundException | IOException ex) {
                 showError(ex);
             }
@@ -308,15 +281,12 @@ public class ProductsWindow extends javax.swing.JFrame {
         btnShowCategorys = new javax.swing.JButton();
         btnShowTax = new javax.swing.JButton();
         btnShowDiscounts = new javax.swing.JButton();
-        chkButton = new javax.swing.JCheckBox();
-        btnColor = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
         radName = new javax.swing.JRadioButton();
         radBarcode = new javax.swing.JRadioButton();
         radCode = new javax.swing.JRadioButton();
         btnSearch = new javax.swing.JButton();
-        chkDefault = new javax.swing.JCheckBox();
 
         setTitle("Stock Managment");
         setIconImage(TillServer.getIcon());
@@ -453,21 +423,6 @@ public class ProductsWindow extends javax.swing.JFrame {
             }
         });
 
-        chkButton.setText("Button");
-        chkButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkButtonActionPerformed(evt);
-            }
-        });
-
-        btnColor.setText("Set Button Color");
-        btnColor.setEnabled(false);
-        btnColor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnColorActionPerformed(evt);
-            }
-        });
-
         jLabel13.setText("Search:");
 
         txtSearch.addActionListener(new java.awt.event.ActionListener() {
@@ -490,15 +445,6 @@ public class ProductsWindow extends javax.swing.JFrame {
         btnSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSearchActionPerformed(evt);
-            }
-        });
-
-        chkDefault.setSelected(true);
-        chkDefault.setText("Use Default Colour");
-        chkDefault.setEnabled(false);
-        chkDefault.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkDefaultActionPerformed(evt);
             }
         });
 
@@ -542,8 +488,9 @@ public class ProductsWindow extends javax.swing.JFrame {
                                     .addComponent(cmbCategory, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(cmbTax, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(cmbDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(cmbTax, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(cmbDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtMaxStock)
@@ -554,21 +501,14 @@ public class ProductsWindow extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(chkButton)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(btnNewProduct)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnColor)
+                                .addComponent(btnRemoveProduct)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(chkDefault))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(btnNewProduct)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnRemoveProduct)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnSaveChanges))))))
+                                .addComponent(btnSaveChanges)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -639,13 +579,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                             .addComponent(cmbDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnShowDiscounts)
                             .addComponent(jLabel12))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chkButton)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(btnColor)
-                                .addComponent(chkDefault)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(27, 27, 27)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))
@@ -713,13 +647,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         if (!discounts.isEmpty()) {
             discount = discounts.get(cmbDiscount.getSelectedIndex()).getId();
         }
-        boolean button = chkButton.isSelected();
         int color;
-        if (chkDefault.isSelected()) {
-            color = 0;
-        } else {
-            color = btnColor.getBackground().getRGB();
-        }
         if (chkOpen.isSelected()) {
             product.setName(name);
             product.setShortName(shortName);
@@ -727,8 +655,6 @@ public class ProductsWindow extends javax.swing.JFrame {
             product.setTaxID(tax);
             product.setDiscountID(discount);
             product.setComments(comments);
-            product.setButton(button);
-            product.setColorValue(color);
             product.setOpen(true);
         } else {
             String barcode = txtBarcode.getText();
@@ -749,8 +675,6 @@ public class ProductsWindow extends javax.swing.JFrame {
             product.setMinStockLevel(minStock);
             product.setMaxStockLevel(maxStock);
             product.setComments(comments);
-            product.setButton(button);
-            product.setColorValue(color);
             product.setOpen(false);
         }
         try {
@@ -793,19 +717,12 @@ public class ProductsWindow extends javax.swing.JFrame {
             if (!discounts.isEmpty()) {
                 discount = discounts.get(cmbDiscount.getSelectedIndex()).getId();
             }
-            boolean button = chkButton.isSelected();
-            int color;
-            if (chkDefault.isSelected()) {
-                color = 0;
-            } else {
-                color = btnColor.getBackground().getRGB();
-            }
             Product p;
             if (chkOpen.isSelected()) {
                 if (name == null || shortName == null || comments == null) {
                     JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    p = new Product(name, shortName, category, comments, tax, discount, button, color, true);
+                    p = new Product(name, shortName, category, comments, tax, discount, true);
                     try {
                         dbConn.addProduct(p);
                         showAllProducts();
@@ -826,7 +743,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                     if (name.equals("") || shortName.equals("") || barcode.equals("")) {
                         JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        p = new Product(name, shortName, category, comments, tax, discount, button, color, false, price, costPrice, stock, minStock, maxStock, barcode);
+                        p = new Product(name, shortName, category, comments, tax, discount, false, price, costPrice, stock, minStock, maxStock, barcode);
                         try {
                             dbConn.addProduct(p);
                             showAllProducts();
@@ -868,24 +785,6 @@ public class ProductsWindow extends javax.swing.JFrame {
         DiscountsWindow.showDiscountListWindow(dbConn);
         init();
     }//GEN-LAST:event_btnShowDiscountsActionPerformed
-
-    private void btnColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColorActionPerformed
-        btnColor.setBackground(JColorChooser.showDialog(this, "Choose color for button", btnColor.getBackground()));
-    }//GEN-LAST:event_btnColorActionPerformed
-
-    private void chkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkButtonActionPerformed
-        chkDefault.setEnabled(chkButton.isSelected());
-        if (chkButton.isSelected()) {
-            if (chkDefault.isSelected()) {
-                btnColor.setEnabled(false);
-            } else {
-                btnColor.setEnabled(true);
-            }
-        } else {
-            btnColor.setEnabled(false);
-            chkDefault.setEnabled(false);
-        }
-    }//GEN-LAST:event_chkButtonActionPerformed
 
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
         btnSearch.doClick();
@@ -944,13 +843,8 @@ public class ProductsWindow extends javax.swing.JFrame {
         updateTable();
     }//GEN-LAST:event_btnSearchActionPerformed
 
-    private void chkDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDefaultActionPerformed
-        btnColor.setEnabled(!chkDefault.isSelected());
-    }//GEN-LAST:event_chkDefaultActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
-    private javax.swing.JButton btnColor;
     private javax.swing.JButton btnNewProduct;
     private javax.swing.JButton btnRemoveProduct;
     private javax.swing.JButton btnSaveChanges;
@@ -960,8 +854,6 @@ public class ProductsWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnShowDiscounts;
     private javax.swing.JButton btnShowTax;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JCheckBox chkButton;
-    private javax.swing.JCheckBox chkDefault;
     private javax.swing.JCheckBox chkOpen;
     private javax.swing.JComboBox<String> cmbCategory;
     private javax.swing.JComboBox<String> cmbDiscount;
