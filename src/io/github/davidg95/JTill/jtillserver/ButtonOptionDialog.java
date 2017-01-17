@@ -46,7 +46,7 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
         dialog = new ButtonOptionDialog(window);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setVisible(true);
-        return button;
+        return ButtonOptionDialog.button;
     }
 
     /**

@@ -126,6 +126,8 @@ public class TillServer {
         final PopupMenu popup = new PopupMenu();
         trayIcon = new TrayIcon(icon);
         tray = SystemTray.getSystemTray();
+        
+        trayIcon.setImageAutoSize(true);
 
         // Create a pop-up menu components
         MenuItem aboutItem = new MenuItem("About");
