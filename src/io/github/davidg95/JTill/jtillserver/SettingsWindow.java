@@ -108,8 +108,9 @@ public class SettingsWindow extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         btnDatabaseDefault = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
-        txtLogonMessage = new javax.swing.JTextField();
         btnLogonMessage = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtLogonMessage = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JTill Settings");
@@ -310,6 +311,11 @@ public class SettingsWindow extends javax.swing.JFrame {
             }
         });
 
+        txtLogonMessage.setColumns(20);
+        txtLogonMessage.setRows(5);
+        txtLogonMessage.setWrapStyleWord(true);
+        jScrollPane1.setViewportView(txtLogonMessage);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -334,10 +340,10 @@ public class SettingsWindow extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtLogonMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnLogonMessage)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -353,7 +359,6 @@ public class SettingsWindow extends javax.swing.JFrame {
                         .addGap(30, 30, 30)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9)
-                            .addComponent(txtLogonMessage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnLogonMessage))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnEditNetwork)
@@ -366,6 +371,10 @@ public class SettingsWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 246, Short.MAX_VALUE)
                 .addComponent(btnClose)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -494,11 +503,12 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelDatabase;
     private javax.swing.JPanel panelNetwork;
     private javax.swing.JPanel panelSecurity;
     private javax.swing.JTextField txtAddress;
-    private javax.swing.JTextField txtLogonMessage;
+    private javax.swing.JTextArea txtLogonMessage;
     private javax.swing.JTextField txtLogoutTimeout;
     private javax.swing.JTextField txtMaxConn;
     private javax.swing.JTextField txtMaxQueued;

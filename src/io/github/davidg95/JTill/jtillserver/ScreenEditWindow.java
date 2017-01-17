@@ -36,6 +36,9 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     private final CardLayout categoryCards;
     private final ButtonGroup cardsButtonGroup;
 
+    private Screen currentScreen;
+    private Button currentButton;
+
     /**
      * Creates new form ScreenEditWindow
      */
@@ -81,6 +84,12 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 panel.setBackground(Color.WHITE);
                 panelCategories.add(panel);
             }
+            repaint();
+            revalidate();
+
+            //cardsButtonGroup.setSelected(cardsButtonGroup.getElements().nextElement().getModel(), true);
+            cardsButtonGroup.getElements().nextElement().doClick();
+            currentScreen = screens.get(0);
         } catch (SQLException | IOException ex) {
             showError(ex);
         }
@@ -93,6 +102,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         }
         cButton.addActionListener((ActionEvent e) -> {
             categoryCards.show(panelProducts, s.getName());
+            currentScreen = s;
         });
         cardsButtonGroup.add(cButton);
         JPanel panel = new JPanel();
@@ -109,7 +119,8 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 pButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-
+                        currentButton = b;
+                        showButtonOptions();
                     }
 
                 });
@@ -127,6 +138,24 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         } catch (SQLException | IOException | ScreenNotFoundException ex) {
             showError(ex);
         }
+    }
+
+    private void showButtonOptions() {
+        currentButton = ButtonOptionDialog.showDialog(this, currentButton);
+        if (currentButton == null) {
+            try {
+                dbConn.removeButton(currentButton);
+            } catch (IOException | SQLException | ButtonNotFoundException ex) {
+                showError(ex);
+            }
+        } else {
+            try {
+                dbConn.updateButton(currentButton);
+            } catch (IOException | SQLException | ButtonNotFoundException ex) {
+                showError(ex);
+            }
+        }
+        setButtons();
     }
 
     private void showError(Exception e) {
@@ -227,15 +256,25 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             Screen s = new Screen(name, position, 0);
             dbConn.addScreen(s);
             setButtons();
-        } catch (IOException ex) {
-            Logger.getLogger(ScreenEditWindow.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(ScreenEditWindow.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | SQLException ex) {
+            showError(ex);
         }
     }//GEN-LAST:event_btnNewScreenActionPerformed
 
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
-        Product p = ProductSelectDialog.showDialog(this, dbConn);
+        try {
+            if (currentScreen == null) {
+                JOptionPane.showMessageDialog(this, "Select a screen", "New Button", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            Product p = ProductSelectDialog.showDialog(this, dbConn);
+            int position = dbConn.getButtonsOnScreen(currentScreen).size();
+            Button b = new Button(p.getShortName(), p.getProductCode(), position, currentScreen.getId(), 0);
+            dbConn.addButton(b);
+            setButtons();
+        } catch (IOException | SQLException | ScreenNotFoundException ex) {
+            showError(ex);
+        }
     }//GEN-LAST:event_btnNewProductActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

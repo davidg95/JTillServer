@@ -14,7 +14,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -100,11 +99,6 @@ public class CategorysWindow extends javax.swing.JFrame {
             txtStartTime.setText("");
             txtEndTime.setText("");
             spinAge.setValue(0);
-            chkButton.setSelected(false);
-            btnColor.setBackground(null);
-            btnColor.setEnabled(false);
-            chkDefault.setSelected(true);
-            chkDefault.setEnabled(false);
             category = null;
         } else {
             category = c;
@@ -128,24 +122,6 @@ public class CategorysWindow extends javax.swing.JFrame {
                 txtEndTime.setText("");
             }
             spinAge.setValue(c.getMinAge());
-            chkButton.setSelected(category.isButton());
-            if (category.isButton()) {
-                chkDefault.setEnabled(true);
-                if (category.getColorValue() != 0) {
-                    btnColor.setEnabled(true);
-                    btnColor.setBackground(new Color(category.getColorValue()));
-                    chkDefault.setSelected(false);
-                } else {
-                    btnColor.setEnabled(false);
-                    btnColor.setBackground(null);
-                    chkDefault.setSelected(true);
-                }
-            } else {
-                btnColor.setEnabled(false);
-                btnColor.setBackground(null);
-                chkDefault.setSelected(true);
-                chkDefault.setEnabled(false);
-            }
         }
     }
 
@@ -177,12 +153,9 @@ public class CategorysWindow extends javax.swing.JFrame {
         lblTimeDash = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         spinAge = new javax.swing.JSpinner();
-        chkButton = new javax.swing.JCheckBox();
-        btnColor = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
-        chkDefault = new javax.swing.JCheckBox();
 
         setTitle("Categorys");
         setIconImage(TillServer.getIcon());
@@ -273,21 +246,6 @@ public class CategorysWindow extends javax.swing.JFrame {
 
         jLabel2.setText("Minimum Age:");
 
-        chkButton.setText("Button");
-        chkButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkButtonActionPerformed(evt);
-            }
-        });
-
-        btnColor.setText("Set Button Color");
-        btnColor.setEnabled(false);
-        btnColor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnColorActionPerformed(evt);
-            }
-        });
-
         jLabel3.setText("Search:");
 
         txtSearch.addActionListener(new java.awt.event.ActionListener() {
@@ -303,15 +261,6 @@ public class CategorysWindow extends javax.swing.JFrame {
             }
         });
 
-        chkDefault.setSelected(true);
-        chkDefault.setText("Use Default Colour");
-        chkDefault.setEnabled(false);
-        chkDefault.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkDefaultActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -319,39 +268,35 @@ public class CategorysWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(jLabel1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblTime)
+                            .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtStartTime)
+                            .addComponent(spinAge, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblTimeDash)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtEndTime, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(69, 69, 69))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(chkTime)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAdd)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSave)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRemove))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(lblTime)
-                                .addComponent(jLabel2))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtStartTime)
-                                .addComponent(spinAge, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(lblTimeDash)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtEndTime, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(chkButton)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnColor)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(chkDefault))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(70, 70, 70)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(chkTime)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnAdd)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnSave)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnRemove)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
@@ -386,12 +331,7 @@ public class CategorysWindow extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(spinAge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(chkButton)
-                            .addComponent(btnColor)
-                            .addComponent(chkDefault))
-                        .addGap(40, 40, 40)
+                        .addGap(65, 65, 65)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAdd)
                             .addComponent(btnSave)
@@ -423,17 +363,10 @@ public class CategorysWindow extends javax.swing.JFrame {
                     endSell = new Time(sdf.parse(txtEndTime.getText()).getTime());
                 }
                 int minAge = (int) spinAge.getValue();
-                boolean button = chkButton.isSelected();
-                int color;
-                if (chkDefault.isSelected()) {
-                    color = 0;
-                } else {
-                    color = btnColor.getBackground().getRGB();
-                }
                 if (name.equals("")) {
                     JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Category", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    c = new Category(name, startSell, endSell, time, minAge, button, color);
+                    c = new Category(name, startSell, endSell, time, minAge);
                     try {
                         dbConn.addCategory(c);
                         showAllCategorys();
@@ -465,13 +398,6 @@ public class CategorysWindow extends javax.swing.JFrame {
                 endSell = new Time(sdf.parse(txtEndTime.getText()).getTime());
             }
             int minAge = (int) spinAge.getValue();
-            boolean button = chkButton.isSelected();
-            int color;
-            if (chkDefault.isSelected()) {
-                color = 0;
-            } else {
-                color = btnColor.getBackground().getRGB();
-            }
             if (name.equals("")) {
                 JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Category", JOptionPane.ERROR_MESSAGE);
             } else {
@@ -480,8 +406,6 @@ public class CategorysWindow extends javax.swing.JFrame {
                 category.setEndSell(endSell);
                 category.setTimeRestrict(time);
                 category.setMinAge(minAge);
-                category.setButton(button);
-                category.setColorValue(color);
 
                 try {
                     dbConn.updateCategory(category);
@@ -531,24 +455,6 @@ public class CategorysWindow extends javax.swing.JFrame {
         txtEndTime.setEnabled(chkTime.isSelected());
     }//GEN-LAST:event_chkTimeActionPerformed
 
-    private void btnColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColorActionPerformed
-        btnColor.setBackground(JColorChooser.showDialog(this, "Select button color", btnColor.getBackground()));
-    }//GEN-LAST:event_btnColorActionPerformed
-
-    private void chkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkButtonActionPerformed
-        chkDefault.setEnabled(chkButton.isSelected());
-        if (chkButton.isSelected()) {
-            if (chkDefault.isSelected()) {
-                btnColor.setEnabled(false);
-            } else {
-                btnColor.setEnabled(true);
-            }
-        } else {
-            btnColor.setEnabled(false);
-            chkDefault.setEnabled(false);
-        }
-    }//GEN-LAST:event_chkButtonActionPerformed
-
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         String terms = txtSearch.getText();
 
@@ -580,19 +486,12 @@ public class CategorysWindow extends javax.swing.JFrame {
         btnSearch.doClick();
     }//GEN-LAST:event_txtSearchActionPerformed
 
-    private void chkDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDefaultActionPerformed
-        btnColor.setEnabled(!chkDefault.isSelected());
-    }//GEN-LAST:event_chkDefaultActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClose;
-    private javax.swing.JButton btnColor;
     private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
-    private javax.swing.JCheckBox chkButton;
-    private javax.swing.JCheckBox chkDefault;
     private javax.swing.JCheckBox chkTime;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

@@ -185,6 +185,7 @@ public class ConnectionThread extends Thread {
                         } catch (ProductNotFoundException ex) {
                             out.println("FAIL");
                         }
+                        break;
                     case "GETPRODUCTSDISCOUNT": //Gets all discounts for a product
                         try {
                             Object o = obIn.readObject();
@@ -198,6 +199,7 @@ public class ConnectionThread extends Thread {
                         } catch (SQLException ex) {
                             obOut.writeObject(ex);
                         }
+                        break;
                     case "GETPRODUCTCOUNT": //Get product count
                         try {
                             out.write(dbConn.getProductCount());
@@ -656,11 +658,6 @@ public class ConnectionThread extends Thread {
                     case "GETINIT": //Load till configuration
                         try {
                             List<Category> categorys = dbConn.getAllCategorys();
-                            for (int i = 0; i < categorys.size(); i++) {
-                                if (!categorys.get(i).isButton()) {
-                                    categorys.remove(i);
-                                }
-                            }
                             out.print(categorys.size());
                             for (Category c : categorys) {
                                 List<Product> products = dbConn.getProductsInCategory(c.getID());
@@ -720,6 +717,7 @@ public class ConnectionThread extends Thread {
                         } catch (SQLException | ScreenNotFoundException ex) {
                             obOut.writeObject(ex);
                         }
+                        obOut.flush();
                         break;
                     case "UPDATEBUTTON": //Update a button
                         try {
@@ -731,6 +729,7 @@ public class ConnectionThread extends Thread {
                         } catch (SQLException | ButtonNotFoundException ex) {
                             obOut.writeObject(ex);
                         }
+                        obOut.flush();
                         break;
                     case "GETSCREEN": //Update a screen
                         try {
@@ -740,6 +739,7 @@ public class ConnectionThread extends Thread {
                         } catch (SQLException | ScreenNotFoundException ex) {
                             obOut.writeObject(ex);
                         }
+                        obOut.flush();
                         break;
                     case "GETBUTTON": //Updatea a button
                         try {
@@ -749,6 +749,7 @@ public class ConnectionThread extends Thread {
                         } catch (SQLException | ButtonNotFoundException ex) {
                             obOut.writeObject(ex);
                         }
+                        obOut.flush();
                         break;
                     case "GETALLSCREENS": //Get all screens
                         try {
@@ -757,6 +758,7 @@ public class ConnectionThread extends Thread {
                         } catch (SQLException ex) {
                             obOut.writeObject(ex);
                         }
+                        obOut.flush();
                         break;
                     case "GETALLBUTTONS": //Get all buttons
                         try {
@@ -765,6 +767,7 @@ public class ConnectionThread extends Thread {
                         } catch (SQLException ex) {
                             obOut.writeObject(ex);
                         }
+                        obOut.flush();
                         break;
                     case "GETBUTTONSONSCREEN": //Get buttons on a screen
                         try {
@@ -776,6 +779,8 @@ public class ConnectionThread extends Thread {
                         } catch (SQLException | ScreenNotFoundException ex) {
                             obOut.writeObject(ex);
                         }
+                        obOut.flush();
+                        break;
                     case "CONNTERM": //Terminate the connection
                         conn_term = true;
                         if (staff != null) {

@@ -103,6 +103,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         btnSearch = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Select Product");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
