@@ -35,6 +35,9 @@ public class CategorySelectDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form CategorySelectDialog
+     *
+     * @param parent the parent component.
+     * @param dc reference to the data connection.
      */
     public CategorySelectDialog(Window parent, DataConnectInterface dc) {
         super(parent);

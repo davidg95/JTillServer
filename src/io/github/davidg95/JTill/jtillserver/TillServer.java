@@ -43,6 +43,7 @@ public class TillServer {
 
     public static Image icon;
     public static TrayIcon trayIcon;
+    public static SystemTray tray;
 
     /**
      * @param args the command line arguments
@@ -61,7 +62,7 @@ public class TillServer {
         dbConnection.loadProperties();
         data = new Data(dbConnection, g);
         if (!GraphicsEnvironment.isHeadless()) {
-            g = new GUI(data, dbConnection ,false);
+            g = new GUI(data, dbConnection, false);
             setSystemTray();
         }
         try {
@@ -124,7 +125,7 @@ public class TillServer {
         }
         final PopupMenu popup = new PopupMenu();
         trayIcon = new TrayIcon(icon);
-        final SystemTray tray = SystemTray.getSystemTray();
+        tray = SystemTray.getSystemTray();
 
         // Create a pop-up menu components
         MenuItem aboutItem = new MenuItem("About");
@@ -174,6 +175,10 @@ public class TillServer {
         }
     }
 
+    public static void removeSystemTrayIcon() {
+        tray.remove(trayIcon);
+    }
+
     public static DataConnectInterface getDataConnection() {
         DataConnectInterface dbi = dbConnection;
         return dbi;
@@ -190,44 +195,4 @@ public class TillServer {
     public static String getHostName() {
         return DBConnect.hostName;
     }
-
-//    public static void setUpdateTimer() {
-//        updateTimer = new Timer();
-//        updateTimer.schedule(updateTask, 10000L, updateInterval);
-//    }
-//
-//    public static void resetUpdateTimer() {
-//        updateTask.cancel();
-//        updateTimer.cancel();
-//        updateTimer.purge();
-//        setUpdateTimer();
-//    }
-//    /**
-//     * Timer class for updating the database.
-//     */
-//    public class DatabaseUpdate extends TimerTask {
-//
-//        @Override
-//        public void run() {
-//            try {
-//                if (dbConnection.isConnected()) {
-//                    g.setUpdateLabel("Updating Database");//Set the label
-//                    g.log("Updating database");
-//                    data.updateDatabase();
-//                    new Timer().schedule(new TimerTask() {
-//                        @Override
-//                        public void run() {
-//                            SwingUtilities.invokeLater(() -> {
-//                                g.setUpdateLabel("");
-//                            });
-//                        }
-//
-//                    }, 5000L); //Clear the label after 5 seconds
-//                }
-//            } catch (SQLException ex) {
-//                Logger.getLogger(TillServer.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//
-//    }
 }

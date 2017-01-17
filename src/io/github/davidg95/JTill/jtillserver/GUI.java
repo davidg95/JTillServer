@@ -7,7 +7,6 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.DBConnect;
 import io.github.davidg95.JTill.jtill.DataConnectInterface;
-import io.github.davidg95.JTill.jtill.ServerConnection;
 import io.github.davidg95.JTill.jtill.Staff;
 import io.github.davidg95.JTill.jtill.StaffNotFoundException;
 import java.awt.SystemTray;
@@ -42,13 +41,14 @@ public class GUI extends javax.swing.JFrame {
     public int clientCounter = 0;
     private final ArrayList<String> connections;
 
-    private boolean remote;
+    private final boolean remote;
 
     /**
      * Creates new form GUI
      *
      * @param data
      * @param dbConnection
+     * @param remote flag indicating whether this is a remote connection or not.
      */
     public GUI(Data data, DataConnectInterface dbConnection, boolean remote) {
         this.dbConn = dbConnection;
@@ -145,7 +145,7 @@ public class GUI extends javax.swing.JFrame {
                 DBConnect db = (DBConnect) dbConn;
                 db.saveProperties();
             }
-            if(remote){
+            if (remote) {
                 System.exit(0);
             }
             if (SystemTray.isSupported()) {
@@ -618,6 +618,7 @@ public class GUI extends javax.swing.JFrame {
             DBConnect db = (DBConnect) dbConn;
             db.saveProperties();
         }
+        TillServer.removeSystemTrayIcon();
         System.exit(0);
     }//GEN-LAST:event_itemExitActionPerformed
 

@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 

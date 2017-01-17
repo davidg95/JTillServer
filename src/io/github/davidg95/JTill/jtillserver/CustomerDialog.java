@@ -27,16 +27,18 @@ public class CustomerDialog extends javax.swing.JDialog {
 
     private static JDialog dialog;
     private static Customer customer;
-    
+
     private DataConnectInterface dbConn;
 
-    private boolean editMode;
+    private final boolean editMode;
 
     private DefaultComboBoxModel discountsModel;
     private List<Discount> discounts;
 
     /**
-     * Creates new form CustomerDialog
+     * Creates new form CustomerDialog.
+     *
+     * @param parent the parent component.
      */
     public CustomerDialog(Window parent) {
         super(parent);

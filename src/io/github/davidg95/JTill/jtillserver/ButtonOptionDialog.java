@@ -24,7 +24,9 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
     private static Button button;
 
     /**
-     * Creates new form ButtonOptionDialog
+     * Creates new form ButtonOptionDialog.
+     *
+     * @param parent the parent component.
      */
     public ButtonOptionDialog(Window parent) {
         super(parent);

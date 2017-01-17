@@ -468,9 +468,9 @@ public class SettingsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_chkLogoutTimeoutActionPerformed
 
     private void btnDatabaseDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDatabaseDefaultActionPerformed
-        DBConnect.DB_ADDRESS = DBConnect.defaultAddress;
-        DBConnect.DB_USERNAME = DBConnect.defaultUsername;
-        DBConnect.DB_PASSWORD = DBConnect.defaultPassword;
+        DBConnect.DB_ADDRESS = DBConnect.DEFAULT_ADDRESS;
+        DBConnect.DB_USERNAME = DBConnect.DEFAULT_USERNAME;
+        DBConnect.DB_PASSWORD = DBConnect.DEFAULT_PASSWORD;
         txtAddress.setText(DBConnect.DB_ADDRESS);
         txtUsername.setText(DBConnect.DB_USERNAME);
         txtPassword.setText(DBConnect.DB_PASSWORD);

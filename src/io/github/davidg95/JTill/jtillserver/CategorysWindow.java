@@ -6,7 +6,6 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Color;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Time;
