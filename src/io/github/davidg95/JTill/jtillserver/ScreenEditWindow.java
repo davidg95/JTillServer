@@ -87,9 +87,10 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             repaint();
             revalidate();
 
-            //cardsButtonGroup.setSelected(cardsButtonGroup.getElements().nextElement().getModel(), true);
-            cardsButtonGroup.getElements().nextElement().doClick();
-            currentScreen = screens.get(0);
+            if (cardsButtonGroup.getButtonCount() > 0) {
+                cardsButtonGroup.getElements().nextElement().doClick();
+                currentScreen = screens.get(0);
+            }
         } catch (SQLException | IOException ex) {
             showError(ex);
         }
@@ -268,7 +269,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 return;
             }
             Product p = ProductSelectDialog.showDialog(this, dbConn);
-            int position = dbConn.getButtonsOnScreen(currentScreen).size();
+            int position = dbConn.getButtonsOnScreen(currentScreen).size() + 1;
             Button b = new Button(p.getShortName(), p.getProductCode(), position, currentScreen.getId(), 0);
             dbConn.addButton(b);
             setButtons();

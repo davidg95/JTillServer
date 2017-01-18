@@ -38,7 +38,6 @@ public class TillServer {
     private ConnectionAcceptThread connThread;
 
     public static Timer updateTimer;
-//    public static DatabaseUpdate updateTask;
     public static long updateInterval = 60000L;
 
     public static Image icon;
