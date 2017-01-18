@@ -31,10 +31,16 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
     public ButtonOptionDialog(Window parent) {
         super(parent);
         initComponents();
-        panelColor.setBackground(button.getColor());
+        if (button.getColorValue() != 0) {
+            panelColor.setBackground(button.getColor());
+        }
         setLocationRelativeTo(parent);
         setModal(true);
         setTitle(button.getName());
+        if (button.getName().equals("[SPACE]")) {
+            btnColor.setEnabled(false);
+            btnRemove.setText("Remove Space");
+        }
     }
 
     /**

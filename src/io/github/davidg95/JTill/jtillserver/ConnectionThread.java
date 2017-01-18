@@ -5,30 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.Button;
-import io.github.davidg95.JTill.jtill.ButtonNotFoundException;
-import io.github.davidg95.JTill.jtill.Category;
-import io.github.davidg95.JTill.jtill.CategoryNotFoundException;
-import io.github.davidg95.JTill.jtill.CustomerNotFoundException;
-import io.github.davidg95.JTill.jtill.StaffNotFoundException;
-import io.github.davidg95.JTill.jtill.Customer;
-import io.github.davidg95.JTill.jtill.DataConnectInterface;
-import io.github.davidg95.JTill.jtill.Discount;
-import io.github.davidg95.JTill.jtill.DiscountNotFoundException;
-import io.github.davidg95.JTill.jtill.Staff;
-import io.github.davidg95.JTill.jtill.Product;
-import io.github.davidg95.JTill.jtill.OutOfStockException;
-import io.github.davidg95.JTill.jtill.ProductNotFoundException;
-import io.github.davidg95.JTill.jtill.LoginException;
-import io.github.davidg95.JTill.jtill.Sale;
-import io.github.davidg95.JTill.jtill.SaleNotFoundException;
-import io.github.davidg95.JTill.jtill.Screen;
-import io.github.davidg95.JTill.jtill.ScreenNotFoundException;
-import io.github.davidg95.JTill.jtill.Tax;
-import io.github.davidg95.JTill.jtill.TaxNotFoundException;
-import io.github.davidg95.JTill.jtill.TillInitData;
-import io.github.davidg95.JTill.jtill.Voucher;
-import io.github.davidg95.JTill.jtill.VoucherNotFoundException;
+import io.github.davidg95.JTill.jtill.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
