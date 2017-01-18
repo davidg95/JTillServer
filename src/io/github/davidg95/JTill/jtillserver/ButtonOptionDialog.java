@@ -37,6 +37,14 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
         setTitle(button.getName());
     }
 
+    /**
+     * Shows the ButtonOptionsDialog. Returns null if remove button was
+     * selected, otherwise it will return an updated button object.
+     *
+     * @param parent the parent window.
+     * @param button the button object.
+     * @return
+     */
     public static Button showDialog(Component parent, Button button) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {

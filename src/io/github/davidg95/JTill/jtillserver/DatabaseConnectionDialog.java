@@ -15,6 +15,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 /**
+ * Dialog for entering the database connection details.
  *
  * @author David
  */
@@ -36,6 +37,14 @@ public class DatabaseConnectionDialog extends javax.swing.JDialog {
         this.setModal(true);
     }
 
+    /**
+     * Method to show the database connection dialog.
+     *
+     * @param parent thew parent component.
+     * @param db a reference to the DBConnect object.
+     * @return true or false indicating whether the connection was successful or
+     * not.
+     */
     public static boolean showConnectionDialog(Component parent, DBConnect db) {
         Window window = null;
         if (parent instanceof Frame || parent instanceof Dialog) {

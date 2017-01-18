@@ -16,16 +16,16 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 /**
+ * Dialog for entering search terms for a customer.
  *
  * @author David
  */
 public class CustomerSearchDialog extends javax.swing.JDialog {
-    
+
     private static JDialog dialog;
     private static List<Customer> newList;
-    
+
     private final List<Customer> customers;
-    
 
     /**
      * Creates new form CustomerSearchDialog
@@ -37,10 +37,17 @@ public class CustomerSearchDialog extends javax.swing.JDialog {
         this.setLocationRelativeTo(parent);
         this.setModal(true);
     }
-    
-    public static List<Customer> showSearchDialog(Component parent, List<Customer> customers){
+
+    /**
+     * Method to show the customer search dialog.
+     *
+     * @param parent the parent component.
+     * @param customers the customers. to search.
+     * @return customers which match the criteria
+     */
+    public static List<Customer> showSearchDialog(Component parent, List<Customer> customers) {
         Window window = null;
-        if(parent instanceof Dialog || parent instanceof Frame){
+        if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
         dialog = new CustomerSearchDialog(window, customers);
@@ -49,9 +56,12 @@ public class CustomerSearchDialog extends javax.swing.JDialog {
         dialog.setVisible(true);
         return newList;
     }
-    
-    private enum Selection{
-        ID,NAME
+
+    /**
+     * Enum for the selection type. ID and NAME.
+     */
+    private enum Selection {
+        ID, NAME
     }
 
     /**
@@ -139,32 +149,32 @@ public class CustomerSearchDialog extends javax.swing.JDialog {
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         Selection option;
         String terms = txtSearchTerms.getText();
-        
-        if(radID.isSelected()){
+
+        if (radID.isSelected()) {
             option = Selection.ID;
-        } else{
+        } else {
             option = Selection.NAME;
         }
-        
-        if(option == Selection.ID){
-            for(Customer c: customers){
-                if((c.getId() + "").equals(terms)){
+
+        if (option == Selection.ID) {
+            for (Customer c : customers) {
+                if ((c.getId() + "").equals(terms)) {
                     newList.add(c);
                 }
             }
-        } else{
-            for(Customer c: customers){
-                if(c.getName().toLowerCase().contains(terms.toLowerCase())){
+        } else {
+            for (Customer c : customers) {
+                if (c.getName().toLowerCase().contains(terms.toLowerCase())) {
                     newList.add(c);
                 }
             }
         }
-        
-        if(newList.isEmpty()){
+
+        if (newList.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.PLAIN_MESSAGE);
             newList = customers;
         }
-        
+
         this.setVisible(false);
     }//GEN-LAST:event_btnSearchActionPerformed
 

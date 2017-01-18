@@ -14,6 +14,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 
 /**
+ * Dialog which shows all current connected clients.
  *
  * @author David
  */
@@ -40,6 +41,12 @@ public class ConnectionsDialog extends javax.swing.JDialog {
         setList();
     }
 
+    /**
+     * Method to show the connections dialog.
+     *
+     * @param parent the parent window.
+     * @param clients the list of clients to show.
+     */
     public static void showConnectionsDialog(Component parent, List<String> clients) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
@@ -50,6 +57,9 @@ public class ConnectionsDialog extends javax.swing.JDialog {
         dialog.setVisible(true);
     }
 
+    /**
+     * Method to display the contents of the list in the dialog.
+     */
     private void setList() {
         if (clients.isEmpty()) {
             model.addElement("There are no connected clients");

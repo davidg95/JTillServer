@@ -147,30 +147,60 @@ public class Data {
         throw new StaffNotFoundException(id + "");
     }
 
+    /**
+     * Method to set all users to be logged out of the tills. this will not
+     * actually log anyone out of a till, it will just signal that there is no
+     * one currently logged in and will allow people to log in again.
+     */
     public void logAllTillsOut() {
         for (int i = 0; i < this.loggedInTill.size(); i++) {
             this.loggedInTill.remove(i);
         }
     }
 
+    /**
+     * Method to add takings to the count.
+     *
+     * @param val the takings to add.
+     */
     public void addTakings(double val) {
         takings += val;
     }
 
+    /**
+     * Method to add a sale.
+     *
+     * @param s the sale to add.
+     * @throws SQLException if there as an error with the database.
+     * @throws IOException if there was an error a network connection.
+     */
     public void addSale(Sale s) throws SQLException, IOException {
         sales++;
         addTakings(s.getTotal());
         dbConnection.addSale(s);
     }
 
+    /**
+     * Method to get the current taking count.
+     *
+     * @return the current amount of takings.
+     */
     public double getTakings() {
         return takings;
     }
 
+    /**
+     * Method to get the total number of transactions.
+     *
+     * @return the number of transactions.
+     */
     public int getSales() {
         return sales;
     }
 
+    /**
+     * Method to reset the takings and sales counters to 0;
+     */
     public void reset() {
         takings = 0;
         sales = 0;

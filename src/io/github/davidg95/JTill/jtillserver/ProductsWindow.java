@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
+ * Window which allows for adding, editing and deleting products,
  *
  * @author David
  */
@@ -41,6 +42,8 @@ public class ProductsWindow extends javax.swing.JFrame {
 
     /**
      * Creates new form ProductsWindow
+     *
+     * @param dc the data source.
      */
     public ProductsWindow(DataConnectInterface dc) {
         this.data = TillServer.getData();
@@ -53,13 +56,12 @@ public class ProductsWindow extends javax.swing.JFrame {
         init();
     }
 
-    public static void initWindow() {
-//        if (frame != null) {
-//            frame = new ProductsWindow();
-//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-//        }
-    }
-
+    /**
+     * Method to showing the products list window. This will create the window
+     * if needed.
+     *
+     * @param dc the data source.
+     */
     public static void showProductsListWindow(DataConnectInterface dc) {
         if (frame == null) {
             frame = new ProductsWindow(dc);
@@ -70,6 +72,10 @@ public class ProductsWindow extends javax.swing.JFrame {
         frame.setVisible(true);
     }
 
+    /**
+     * Method to update the contents of the window if a change has been made
+     * from another class.
+     */
     public static void update() {
         if (frame != null) {
             frame.showAllProducts();
@@ -77,6 +83,9 @@ public class ProductsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Method to init the discounts, categories and taxes.
+     */
     private void init() {
         try {
             discounts = dbConn.getAllDiscounts();
@@ -93,6 +102,10 @@ public class ProductsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Method to update the contents of the table with the currentTableContents
+     * list.
+     */
     private void updateTable() {
         model.setRowCount(0);
 
@@ -104,6 +117,9 @@ public class ProductsWindow extends javax.swing.JFrame {
         tableProducts.setModel(model);
     }
 
+    /**
+     * Method to show all the products in the database.
+     */
     private void showAllProducts() {
         try {
             currentTableContents = dbConn.getAllProducts();
@@ -113,6 +129,9 @@ public class ProductsWindow extends javax.swing.JFrame {
         updateTable();
     }
 
+    /**
+     * Method to call the EditProduct dialog on a product.
+     */
     private void editProduct() {
         int selectedRow = tableProducts.getSelectedRow();
         if (selectedRow != -1) {
@@ -122,6 +141,11 @@ public class ProductsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Method to set the fields with a current product,
+     *
+     * @param p the product to show.
+     */
     private void setCurrentProduct(Product p) {
         if (p == null) {
             txtName.setText("");
@@ -231,6 +255,11 @@ public class ProductsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Method to show an error.
+     *
+     * @param e the exception to show.
+     */
     private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Products", JOptionPane.ERROR_MESSAGE);
     }

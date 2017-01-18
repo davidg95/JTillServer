@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
+ * Window which allows categorys to be added, edited or deleted.
  *
  * @author David
  */
@@ -43,13 +44,12 @@ public class CategorysWindow extends javax.swing.JFrame {
         showAllCategorys();
     }
 
-    public static void initWindow() {
-//        if (frame != null) {
-//            frame = new CategorysWindow();
-//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-//        }
-    }
-
+    /**
+     * Method to show the category window. If this is the first time it is being
+     * called, it will first construct the window.
+     *
+     * @param dc the reference to the data source.
+     */
     public static void showCategoryWindow(DataConnectInterface dc) {
         if (frame == null) {
             frame = new CategorysWindow(dc);
@@ -60,12 +60,20 @@ public class CategorysWindow extends javax.swing.JFrame {
         frame.setVisible(true);
     }
 
+    /**
+     * Method to update the contents of the window. This can be called from
+     * another class if change is made to any categorys elsewhere.
+     */
     public static void update() {
         if (frame != null) {
             frame.showAllCategorys();
         }
     }
 
+    /**
+     * Method to update the contents of the table with whatever is in the
+     * currentTableContents list.
+     */
     private void updateTable() {
         model.setRowCount(0);
 
@@ -78,6 +86,9 @@ public class CategorysWindow extends javax.swing.JFrame {
         ProductsWindow.update();
     }
 
+    /**
+     * Method to show all the categorys in the database.
+     */
     private void showAllCategorys() {
         try {
             currentTableContents = dbConn.getAllCategorys();
@@ -87,6 +98,12 @@ public class CategorysWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Method to set the current selected category and fill the fields
+     * accordingly.
+     *
+     * @param c the category to show.
+     */
     private void setCurrentCategory(Category c) {
         if (c == null) {
             txtName.setText("");
@@ -124,6 +141,11 @@ public class CategorysWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Method to show an error message.
+     *
+     * @param e the exception to show.
+     */
     private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Categorys", JOptionPane.ERROR_MESSAGE);
     }

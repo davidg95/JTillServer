@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
+ * Dialog to select and return a category.
  *
  * @author David
  */
@@ -50,6 +51,14 @@ public class CategorySelectDialog extends javax.swing.JDialog {
         showAllCategorys();
     }
 
+    /**
+     * Shows the category select dialog. Returns the category selected by the
+     * user.
+     *
+     * @param parent the parent window.
+     * @param dc the pointer to the data connection class.
+     * @return the category that was selected by the user.
+     */
     public static Category showDialog(Component parent, DataConnectInterface dc) {
         Window window = null;
         if (parent instanceof Frame || parent instanceof Dialog) {
@@ -62,6 +71,9 @@ public class CategorySelectDialog extends javax.swing.JDialog {
         return category;
     }
 
+    /**
+     * Updates the contends of the table after a change.
+     */
     private void updateTable() {
         model.setRowCount(0);
 
@@ -74,6 +86,9 @@ public class CategorySelectDialog extends javax.swing.JDialog {
         ProductsWindow.update();
     }
 
+    /**
+     * Shows every category in the table.
+     */
     private void showAllCategorys() {
         try {
             currentTableContents = dbConn.getAllCategorys();
@@ -83,6 +98,11 @@ public class CategorySelectDialog extends javax.swing.JDialog {
         }
     }
 
+    /**
+     * Displays an error message.
+     *
+     * @param e the exception to show.
+     */
     private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Categorys", JOptionPane.ERROR_MESSAGE);
     }

@@ -20,6 +20,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 /**
+ * Dialog box which allows for customers to be edited.
  *
  * @author David
  */
@@ -49,6 +50,12 @@ public class CustomerDialog extends javax.swing.JDialog {
         this.setModal(true);
     }
 
+    /**
+     * Constructor for the customer dialog.
+     *
+     * @param parent the parent component.
+     * @param c the customer to edit.
+     */
     public CustomerDialog(Window parent, Customer c) {
         super(parent);
         initComponents();
@@ -73,6 +80,12 @@ public class CustomerDialog extends javax.swing.JDialog {
         this.setTitle("Edit Customer " + c.getName());
     }
 
+    /**
+     * Method which shows a blank customer dialog for creating a new customer.
+     *
+     * @param parent the parent component for the dialog.
+     * @return a new customer object.
+     */
     public static Customer showNewCustomerDialog(Component parent) {
         Window window = null;
         if (parent instanceof Frame || parent instanceof Dialog) {
@@ -85,6 +98,13 @@ public class CustomerDialog extends javax.swing.JDialog {
         return customer;
     }
 
+    /**
+     * Method which shows the dialog that allows a customer to be edited.
+     *
+     * @param parent the parent component.
+     * @param c the customer to edit.
+     * @return the customer after being edited.
+     */
     public static Customer showEditCusomerDialog(Component parent, Customer c) {
         Window window = null;
         if (parent instanceof Frame || parent instanceof Dialog) {
@@ -97,16 +117,11 @@ public class CustomerDialog extends javax.swing.JDialog {
         return customer;
     }
 
-    private void init() {
-        try {
-            discounts = dbConn.getAllDiscounts();
-            discountsModel = new DefaultComboBoxModel(discounts.toArray());
-            cmbDiscount.setModel(discountsModel);
-        } catch (IOException | SQLException ex) {
-            showDatabaseError(ex);
-        }
-    }
-
+    /**
+     * Method to show an error message.
+     *
+     * @param e the exception to show.
+     */
     private void showDatabaseError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Database Error", JOptionPane.ERROR_MESSAGE);
     }

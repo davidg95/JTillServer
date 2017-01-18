@@ -17,6 +17,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 /**
+ * Dialog for logging in to the server.
  *
  * @author 1301480
  */
@@ -38,6 +39,13 @@ public class LoginDialog extends javax.swing.JDialog {
         this.setModal(true);
     }
 
+    /**
+     * Shows the login dialog.
+     *
+     * @param parent the parent component.
+     * @param data the data which stored who is logged in and who is not.
+     * @return the member of staff logging in.
+     */
     public static Staff showLoginDialog(Component parent, Data data) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {

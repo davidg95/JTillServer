@@ -20,13 +20,14 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
+ * Window for adding, editing and deleting customers.
  *
  * @author David
  */
 public class CustomersWindow extends javax.swing.JFrame {
 
     public static CustomersWindow frame;
-    
+
     private final DataConnectInterface dbConn;
 
     private Customer customer;
@@ -49,13 +50,12 @@ public class CustomersWindow extends javax.swing.JFrame {
         init();
     }
 
-    public static void initWindow() {
-//        if (frame != null) {
-//            frame = new CustomersWindow();
-//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-//        }
-    }
-
+    /**
+     * Method to show the customers window. If this is the first time it is
+     * being called, then it will create the window.
+     *
+     * @param dc a reference to the data source.
+     */
     public static void showCustomersListWindow(DataConnectInterface dc) {
         if (frame == null) {
             frame = new CustomersWindow(dc);
@@ -66,6 +66,10 @@ public class CustomersWindow extends javax.swing.JFrame {
         frame.setVisible(true);
     }
 
+    /**
+     * Method to update the customers list that can be called from another
+     * class.
+     */
     public static void update() {
         if (frame != null) {
             frame.showAllCustomers();
@@ -73,6 +77,9 @@ public class CustomersWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Method to init the discounts combo box.
+     */
     private void init() {
         try {
             discounts = dbConn.getAllDiscounts();
@@ -83,6 +90,10 @@ public class CustomersWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Method to update the contents of the table with whatever is in the
+     * currentTableContents array.
+     */
     private void updateTable() {
         model.setRowCount(0);
 
@@ -94,6 +105,9 @@ public class CustomersWindow extends javax.swing.JFrame {
         table.setModel(model);
     }
 
+    /**
+     * Method to show every customer in the database.
+     */
     private void showAllCustomers() {
         try {
             currentTableContents = dbConn.getAllCustomers();
@@ -103,6 +117,9 @@ public class CustomersWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Method to call the CustomerEditDialog on the current selected customer.
+     */
     private void editCustomer() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
@@ -112,6 +129,11 @@ public class CustomersWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Method to set the fields to a customer.
+     *
+     * @param c the customer to show.
+     */
     private void setCurrentCustomer(Customer c) {
         if (c == null) {
             txtName.setText("");
@@ -158,6 +180,11 @@ public class CustomersWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Method to show an error.
+     *
+     * @param e the exception to show.
+     */
     private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Customers", JOptionPane.ERROR_MESSAGE);
     }

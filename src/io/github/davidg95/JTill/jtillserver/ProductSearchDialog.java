@@ -16,6 +16,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 /**
+ * Dialog for searching a product.
  *
  * @author David
  */
@@ -28,6 +29,9 @@ public class ProductSearchDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form ProductSearchDialog
+     *
+     * @param parent the parent component.
+     * @param products the products to search.
      */
     public ProductSearchDialog(Window parent, List<Product> products) {
         super(parent);
@@ -37,6 +41,13 @@ public class ProductSearchDialog extends javax.swing.JDialog {
         this.setModal(true);
     }
 
+    /**
+     * Method for showing the product search dialog.
+     *
+     * @param parent the parent component.
+     * @param products the list of products which will be searched.
+     * @return a list of products which matched the criteria.
+     */
     public static List<Product> showSearchDialog(Component parent, List<Product> products) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
@@ -175,8 +186,8 @@ public class ProductSearchDialog extends javax.swing.JDialog {
                 }
                 break;
         }
-        
-        if(newList.isEmpty()){
+
+        if (newList.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.PLAIN_MESSAGE);
             newList = products;
         }

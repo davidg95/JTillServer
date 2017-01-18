@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Thread which accepts incoming connections from clients.
  *
  * @author David
  */

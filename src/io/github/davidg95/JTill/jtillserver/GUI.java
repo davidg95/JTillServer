@@ -23,6 +23,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
+ * The main GUI for the server.
  *
  * @author David
  */
@@ -59,6 +60,9 @@ public class GUI extends javax.swing.JFrame {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
+    /**
+     * Initial setup of the gui which creates the database.
+     */
     private void initialSetup() {
         if (dbConn instanceof DBConnect) {
             try {
@@ -83,6 +87,11 @@ public class GUI extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Method to log in to the database. this will not attempt login if the
+     * remote flag has indicated this this is a remote connection to the main
+     * server.
+     */
     public void databaseLogin() {
         if (!remote) {
             try {
@@ -129,10 +138,18 @@ public class GUI extends javax.swing.JFrame {
         lblClients.setText(text);
     }
 
+    /**
+     * Method to log something in the server log at the bottom of the screen.
+     *
+     * @param o the object to log.
+     */
     public void log(Object o) {
         txtLog.append(o.toString() + "\n");
     }
 
+    /**
+     * Method to log a member of staff in to the server.
+     */
     public void login() {
         staff = LoginDialog.showLoginDialog(this, data);
         if (staff != null) {
@@ -155,6 +172,10 @@ public class GUI extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Method to log a member of staff out of the server and display the login
+     * dialog.
+     */
     private void logout() {
         try {
             lblUser.setText("Not Logged In");

@@ -15,13 +15,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
+ * Dialog which allows a product to be selected.
  *
  * @author David
  */
@@ -37,6 +36,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form ProductSelectDialog
+     *
+     * @param parent the parent component.
+     * @param dc the data source.
      */
     public ProductSelectDialog(Window parent, DataConnectInterface dc) {
         super(parent);
@@ -49,9 +51,16 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         showAllProducts();
     }
 
+    /**
+     * method to show the product select dialog.
+     *
+     * @param parent the parent component.
+     * @param dc the data source.
+     * @return the product selected by the user.
+     */
     public static Product showDialog(Component parent, DataConnectInterface dc) {
         Window window = null;
-        if(parent instanceof Dialog || parent instanceof Frame){
+        if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
         dialog = new ProductSelectDialog(window, dc);
@@ -61,6 +70,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         return product;
     }
 
+    /**
+     * Method to update the contents of the table.
+     */
     private void updateTable() {
         model.setRowCount(0);
 
@@ -73,6 +85,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         ProductsWindow.update();
     }
 
+    /**
+     * Method to show all products in the list.
+     */
     private void showAllProducts() {
         try {
             currentTableContents = dbConn.getAllProducts();
@@ -82,6 +97,11 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         }
     }
 
+    /**
+     * Method to show an error.
+     *
+     * @param e the exception to show.
+     */
     private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Categorys", JOptionPane.ERROR_MESSAGE);
     }

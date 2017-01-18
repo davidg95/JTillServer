@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
+ * Window for adding, editing and remove discounts.
  *
  * @author David
  */
@@ -44,13 +45,11 @@ public class DiscountsWindow extends javax.swing.JFrame {
 
     }
 
-    public static void initWindow() {
-//        if (frame != null) {
-//            frame = new DiscountsWindow();
-//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-//        }
-    }
-
+    /**
+     * Method to show the discount window.
+     *
+     * @param dc the data source.
+     */
     public static void showDiscountListWindow(DataConnectInterface dc) {
         if (frame == null) {
             frame = new DiscountsWindow(dc);
@@ -61,12 +60,20 @@ public class DiscountsWindow extends javax.swing.JFrame {
         frame.setVisible(true);
     }
 
+    /**
+     * Method to update the contents of the discounts, this can be called from
+     * another class if a change is made to the discount data while the window
+     * is open.
+     */
     public static void update() {
         if (frame != null) {
             frame.showAllDiscounts();
         }
     }
 
+    /**
+     * Method to update the contents of the discounts window.
+     */
     private void updateTable() {
         model.setRowCount(0);
 
@@ -79,6 +86,9 @@ public class DiscountsWindow extends javax.swing.JFrame {
         ProductsWindow.update();
     }
 
+    /**
+     * Method to show all the discounts in the database.
+     */
     private void showAllDiscounts() {
         try {
             currentTableContents = dbConn.getAllDiscounts();
@@ -88,6 +98,11 @@ public class DiscountsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Method to set the fields to show a certain discount.
+     *
+     * @param d
+     */
     private void setCurrentDiscount(Discount d) {
         if (d == null) {
             txtName.setText("");
@@ -100,6 +115,11 @@ public class DiscountsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Method to show an error.
+     *
+     * @param e the exception to show.
+     */
     private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Database error", JOptionPane.ERROR_MESSAGE);
     }
