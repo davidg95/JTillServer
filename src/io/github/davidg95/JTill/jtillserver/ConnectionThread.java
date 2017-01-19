@@ -769,7 +769,6 @@ public class ConnectionThread extends Thread {
                         }
                         break;
                 }
-                obOut.flush();
             }
 //            data.removeConnection(site);
             TillServer.g.decreaseClientCount(site);

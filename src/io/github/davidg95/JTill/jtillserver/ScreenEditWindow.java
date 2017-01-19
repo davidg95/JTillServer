@@ -11,12 +11,15 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -36,6 +39,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
     private Screen currentScreen;
     private Button currentButton;
+    private List<Button> currentButtons;
 
     /**
      * Creates new form ScreenEditWindow
@@ -100,26 +104,66 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(10, 5));
 
-        List<Button> buttons;
         try {
-            buttons = dbConn.getButtonsOnScreen(s);
-            for (Button b : buttons) {
-                JButton pButton = new JButton(b.getName());
-                if (b.getColorValue() != 0) {
-                    pButton.setBackground(new Color(b.getColorValue()));
-                }
-                pButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        currentButton = b;
-                        showButtonOptions();
-                    }
+            currentButtons = dbConn.getButtonsOnScreen(s);
+            for (int i = 0; i < currentButtons.size(); i++) {
+                for (Button b : currentButtons) {
+                    if (b.getOrder() == i) {
+                        JButton pButton = new JButton(b.getName());
+                        if (b.getColorValue() != 0) {
+                            pButton.setBackground(new Color(b.getColorValue()));
+                        }
+                        if (b.getName().equals("[SPACE]")) {
+                            JPanel pan = new JPanel();
+                            pan.setBackground(Color.WHITE);
+                            pan.setLayout(new GridLayout(1, 1));
+                            pan.add(new JLabel("<Space>"));
+                            pan.addMouseListener(new MouseListener() {
+                                @Override
+                                public void mouseClicked(MouseEvent e) {
+                                    currentButton = b;
+                                    showButtonOptions();
+                                }
 
-                });
-                panel.add(pButton);
+                                @Override
+                                public void mousePressed(MouseEvent e) {
+
+                                }
+
+                                @Override
+                                public void mouseReleased(MouseEvent e) {
+
+                                }
+
+                                @Override
+                                public void mouseEntered(MouseEvent e) {
+                                    pan.setBackground(Color.GRAY);
+                                }
+
+                                @Override
+                                public void mouseExited(MouseEvent e) {
+                                    pan.setBackground(Color.WHITE);
+                                }
+
+                            });
+                            panel.add(pan);
+                        } else {
+                            pButton.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    currentButton = b;
+                                    showButtonOptions();
+                                }
+
+                            });
+                            panel.add(pButton);
+                        }
+                        break;
+                    }
+                }
             }
 
-            for (int i = buttons.size() - 1; i < 49; i++) {
+            for (int i = currentButtons.size() - 1; i < 49; i++) {
                 JPanel blankPanel = new JPanel();
                 blankPanel.setBackground(Color.WHITE);
                 panel.add(blankPanel);
@@ -133,8 +177,9 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     }
 
     private void showButtonOptions() {
+        int originalOrder = currentButton.getOrder();
         Button but = currentButton;
-        currentButton = ButtonOptionDialog.showDialog(this, currentButton);
+        currentButton = ButtonOptionDialog.showDialog(this, currentButton, currentButtons.size() - 1);
         if (currentButton == null) {
             try {
                 dbConn.removeButton(but);
@@ -143,12 +188,30 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             }
         } else {
             try {
+                if (currentButton.getOrder() != originalOrder) {
+                    int newOrder = currentButton.getOrder();
+                    Button otherButton = changeButtonPosition(newOrder, originalOrder);
+                    dbConn.updateButton(otherButton);
+                }
                 dbConn.updateButton(currentButton);
             } catch (IOException | SQLException | ButtonNotFoundException ex) {
                 showError(ex);
             }
         }
         setButtons();
+    }
+
+    private Button changeButtonPosition(int pos, int newPos) {
+        for (Button b : currentButtons) {
+            if (b.getOrder() == pos) {
+                if (b.getName().equals(currentButton.getName())) {
+                    continue;
+                }
+                b.setOrder(newPos);
+                return b;
+            }
+        }
+        return null;
     }
 
     private void showError(Exception e) {
