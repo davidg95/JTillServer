@@ -43,13 +43,6 @@ public class StaffWindow extends javax.swing.JFrame {
         showAllStaff();
     }
 
-    public static void initWindow() {
-//        if (frame != null) {
-//            frame = new StaffWindow();
-//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-//        }
-    }
-
     public static void showStaffListWindow(DataConnectInterface dc) {
         if (frame == null) {
             frame = new StaffWindow(dc);
