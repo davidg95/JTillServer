@@ -261,8 +261,6 @@ public class GUI extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         itemLogin = new javax.swing.JMenuItem();
-        itemUpdate = new javax.swing.JMenuItem();
-        itemInterval = new javax.swing.JMenuItem();
         itemServerOptions = new javax.swing.JMenuItem();
         itemAbout = new javax.swing.JMenuItem();
         itemExit = new javax.swing.JMenuItem();
@@ -454,24 +452,6 @@ public class GUI extends javax.swing.JFrame {
         });
         menuFile.add(itemLogin);
 
-        itemUpdate.setText("Update Database");
-        itemUpdate.setEnabled(false);
-        itemUpdate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemUpdateActionPerformed(evt);
-            }
-        });
-        menuFile.add(itemUpdate);
-
-        itemInterval.setText("Update Interval");
-        itemInterval.setEnabled(false);
-        itemInterval.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemIntervalActionPerformed(evt);
-            }
-        });
-        menuFile.add(itemInterval);
-
         itemServerOptions.setText("Server Options");
         itemServerOptions.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -640,12 +620,9 @@ public class GUI extends javax.swing.JFrame {
             db.saveProperties();
             TillServer.removeSystemTrayIcon();
         }
+        dbConn.close();
         System.exit(0);
     }//GEN-LAST:event_itemExitActionPerformed
-
-    private void itemUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemUpdateActionPerformed
-
-    }//GEN-LAST:event_itemUpdateActionPerformed
 
     private void itemCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCustomersActionPerformed
         CustomersWindow.showCustomersListWindow(dbConn);
@@ -688,12 +665,6 @@ public class GUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, dbConn, "Database Connection", JOptionPane.PLAIN_MESSAGE);
         }
     }//GEN-LAST:event_lblDatabaseMouseClicked
-
-    private void itemIntervalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemIntervalActionPerformed
-        TillServer.updateInterval = Long.parseLong((String) JOptionPane.showInputDialog(this, "Enter value for update interval in seconds", "Database Update Interval", JOptionPane.PLAIN_MESSAGE, null, null, TillServer.updateInterval / 1000)) * 1000;
-        saveToFile();
-        JOptionPane.showMessageDialog(this, "Changes will take effect next time server restarts", "Update Interval", JOptionPane.PLAIN_MESSAGE);
-    }//GEN-LAST:event_itemIntervalActionPerformed
 
     private void itemDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDiscountsActionPerformed
         DiscountsWindow.showDiscountListWindow(dbConn);
@@ -770,7 +741,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemCustomers;
     private javax.swing.JMenuItem itemDiscounts;
     private javax.swing.JMenuItem itemExit;
-    private javax.swing.JMenuItem itemInterval;
     private javax.swing.JMenuItem itemLogOutTill;
     private javax.swing.JMenuItem itemLogin;
     private javax.swing.JMenuItem itemResetSales;
@@ -779,7 +749,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStock;
     private javax.swing.JMenuItem itemTaxes;
-    private javax.swing.JMenuItem itemUpdate;
     private javax.swing.JMenuItem itemVouchers;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
