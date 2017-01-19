@@ -638,8 +638,8 @@ public class GUI extends javax.swing.JFrame {
         if (dbConn instanceof DBConnect) {
             DBConnect db = (DBConnect) dbConn;
             db.saveProperties();
+            TillServer.removeSystemTrayIcon();
         }
-        TillServer.removeSystemTrayIcon();
         System.exit(0);
     }//GEN-LAST:event_itemExitActionPerformed
 
