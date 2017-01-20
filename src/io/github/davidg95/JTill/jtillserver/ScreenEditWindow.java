@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -95,8 +93,6 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                             button.doClick();
                         }
                     }
-//                cardsButtonGroup.getElements().nextElement().doClick();
-//                currentScreen = screens.get(0);
                 }
             }
         } catch (SQLException | IOException ex) {
@@ -119,7 +115,6 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
         try {
             currentButtons = dbConn.getButtonsOnScreen(s);
-            checkButtonsIntegrity();
             for (int i = 0; i < currentButtons.size(); i++) {
                 for (Button b : currentButtons) {
                     if (b.getOrder() == i) {
@@ -235,21 +230,6 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         return null;
     }
 
-    private void checkButtonsIntegrity() {
-        for (Button b : currentButtons) {
-            for (Button c : currentButtons) {
-                if (c.getName().equals(b.getName()) && c.getOrder() == b.getOrder()) {
-                    try {
-                        dbConn.removeButton(c);
-                    } catch (IOException | SQLException | ButtonNotFoundException ex) {
-                        showError(ex);
-                    }
-                    return;
-                }
-            }
-        }
-    }
-
     private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Staff", JOptionPane.ERROR_MESSAGE);
     }
@@ -269,6 +249,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         btnNewScreen = new javax.swing.JButton();
         btnNewProduct = new javax.swing.JButton();
         btnSpace = new javax.swing.JButton();
+        btnWipeAll = new javax.swing.JButton();
 
         setTitle("Screen Editor");
         setIconImage(TillServer.getIcon());
@@ -319,6 +300,13 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             }
         });
 
+        btnWipeAll.setText("Wipe All");
+        btnWipeAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnWipeAllActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -330,7 +318,8 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnNewProduct)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSpace)))
+                        .addComponent(btnSpace))
+                    .addComponent(btnWipeAll))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                 .addComponent(panelEditor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -346,7 +335,9 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnNewProduct)
                             .addComponent(btnSpace))
-                        .addGap(0, 419, Short.MAX_VALUE))
+                        .addGap(63, 63, 63)
+                        .addComponent(btnWipeAll)
+                        .addGap(0, 333, Short.MAX_VALUE))
                     .addComponent(panelEditor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -367,38 +358,63 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNewScreenActionPerformed
 
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
-        try {
-            if (currentScreen == null) {
-                JOptionPane.showMessageDialog(this, "Select a screen", "New Button", JOptionPane.ERROR_MESSAGE);
-                return;
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    if (currentScreen == null) {
+                        JOptionPane.showMessageDialog(ScreenEditWindow.this, "Select a screen", "New Button", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    Product p = ProductSelectDialog.showDialog(ScreenEditWindow.this, dbConn);
+                    if (p != null) {
+                        int position = dbConn.getButtonsOnScreen(currentScreen).size();
+                        Button b = new Button(p.getShortName(), p.getProductCode(), position, currentScreen.getId(), 0);
+                        dbConn.addButton(b);
+                        setButtons();
+                    }
+                } catch (IOException | SQLException | ScreenNotFoundException ex) {
+                    showError(ex);
+                }
             }
-            Product p = ProductSelectDialog.showDialog(this, dbConn);
-            if (p != null) {
-                int position = dbConn.getButtonsOnScreen(currentScreen).size();
-                Button b = new Button(p.getShortName(), p.getProductCode(), position, currentScreen.getId(), 0);
-                dbConn.addButton(b);
-                setButtons();
-            }
-        } catch (IOException | SQLException | ScreenNotFoundException ex) {
-            showError(ex);
-        }
+        }.start();
     }//GEN-LAST:event_btnNewProductActionPerformed
 
     private void btnSpaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSpaceActionPerformed
-        try {
-            int position = dbConn.getButtonsOnScreen(currentScreen).size();
-            Button b = new Button("[SPACE]", 1, position, currentScreen.getId(), 0);
-            dbConn.addButton(b);
-            setButtons();
-        } catch (IOException | SQLException | ScreenNotFoundException ex) {
-            showError(ex);
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    int position = dbConn.getButtonsOnScreen(currentScreen).size();
+                    Button b = new Button("[SPACE]", 1, position, currentScreen.getId(), 0);
+                    dbConn.addButton(b);
+                    setButtons();
+                } catch (IOException | SQLException | ScreenNotFoundException ex) {
+                    showError(ex);
+                }
+            }
+        }.start();
     }//GEN-LAST:event_btnSpaceActionPerformed
+
+    private void btnWipeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWipeAllActionPerformed
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    dbConn.deleteAllScreensAndButtons();
+                    setButtons();
+                } catch (IOException | SQLException ex) {
+                    showError(ex);
+                }
+            }
+        }.start();
+    }//GEN-LAST:event_btnWipeAllActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNewProduct;
     private javax.swing.JButton btnNewScreen;
     private javax.swing.JButton btnSpace;
+    private javax.swing.JButton btnWipeAll;
     private javax.swing.JPanel panelCategories;
     private javax.swing.JPanel panelEditor;
     private javax.swing.JPanel panelProducts;
