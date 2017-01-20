@@ -368,7 +368,7 @@ public class ConnectionThread extends Thread {
                         try {
                             String username = inp[1];
                             String password = inp[2];
-                            Staff s = data.login(username, password);
+                            Staff s = dbConn.login(username, password);
                             this.staff = s;
                             TillServer.g.log(staff.getName() + " has logged in");
                             obOut.writeObject(s);
@@ -380,7 +380,7 @@ public class ConnectionThread extends Thread {
                     case "TILLLOGIN": //Till login
                         try {
                             int id = Integer.parseInt(inp[1]);
-                            Staff s = data.login(id);
+                            Staff s = dbConn.tillLogin(id);
                             this.staff = s;
                             TillServer.g.log(staff.getName() + " has logged in from " + site);
                             obOut.writeObject(s);
@@ -392,7 +392,7 @@ public class ConnectionThread extends Thread {
                     case "LOGOUT": //Logout
                         try {
                             int id = Integer.parseInt(inp[1]);
-                            data.logout(id);
+                            dbConn.logout(id);
                             TillServer.g.log(staff.getName() + " has logged out");
                             this.staff = null;
                             out.println("SUCC");
@@ -403,7 +403,7 @@ public class ConnectionThread extends Thread {
                     case "TILLLOGOUT": //Till logout
                         try {
                             int id = Integer.parseInt(inp[1]);
-                            data.tillLogout(id);
+                            dbConn.tillLogout(id);
                             TillServer.g.log(staff.getName() + " has logged out");
                             this.staff = null;
                             out.println("SUCC");

@@ -5,6 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import io.github.davidg95.JTill.jtill.LoginException;
 import io.github.davidg95.JTill.jtill.Staff;
 import java.awt.Component;
@@ -26,14 +27,15 @@ public class LoginDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static Staff staff;
 
-    private final Data data;
+//    private final Data data;
+    private final DataConnectInterface dc;
 
     /**
      * Creates new form LoginDialog
      */
-    public LoginDialog(Window parent, Data data) {
+    public LoginDialog(Window parent, DataConnectInterface dc) {
         super(parent);
-        this.data = data;
+        this.dc = dc;
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setModal(true);
@@ -46,12 +48,12 @@ public class LoginDialog extends javax.swing.JDialog {
      * @param data the data which stored who is logged in and who is not.
      * @return the member of staff logging in.
      */
-    public static Staff showLoginDialog(Component parent, Data data) {
+    public static Staff showLoginDialog(Component parent, DataConnectInterface dc) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new LoginDialog(window, data);
+        dialog = new LoginDialog(window, dc);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         staff = null;
         dialog.setVisible(true);
@@ -167,7 +169,8 @@ public class LoginDialog extends javax.swing.JDialog {
             lblLogin.setText("Please enter both username and password");
         } else {
             try {
-                staff = data.login(username, password);
+//                staff = data.login(username, password);
+                staff = dc.login(username, password);
                 this.setVisible(false);
             } catch (LoginException ex) {
                 lblLogin.setText(ex.getMessage());

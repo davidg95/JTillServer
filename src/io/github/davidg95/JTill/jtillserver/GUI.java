@@ -151,7 +151,7 @@ public class GUI extends javax.swing.JFrame {
      * Method to log a member of staff in to the server.
      */
     public void login() {
-        staff = LoginDialog.showLoginDialog(this, data);
+        staff = LoginDialog.showLoginDialog(this, dbConn);
         if (staff != null) {
             lblUser.setText(staff.getName());
             itemLogin.setText("Log Out");

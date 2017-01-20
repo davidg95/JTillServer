@@ -15,7 +15,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -82,9 +86,18 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             repaint();
             revalidate();
 
-            if (cardsButtonGroup.getButtonCount() > 0) {
-                cardsButtonGroup.getElements().nextElement().doClick();
-                currentScreen = screens.get(0);
+            if (currentScreen != null) {
+                if (cardsButtonGroup.getButtonCount() > 0) {
+                    Enumeration<AbstractButton> abButs = cardsButtonGroup.getElements();
+                    while (abButs.hasMoreElements()) {
+                        JToggleButton button = (JToggleButton) abButs.nextElement();
+                        if (button.getText().equals(currentScreen.getName())) {
+                            button.doClick();
+                        }
+                    }
+//                cardsButtonGroup.getElements().nextElement().doClick();
+//                currentScreen = screens.get(0);
+                }
             }
         } catch (SQLException | IOException ex) {
             showError(ex);
@@ -106,6 +119,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
         try {
             currentButtons = dbConn.getButtonsOnScreen(s);
+            checkButtonsIntegrity();
             for (int i = 0; i < currentButtons.size(); i++) {
                 for (Button b : currentButtons) {
                     if (b.getOrder() == i) {
@@ -177,30 +191,37 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     }
 
     private void showButtonOptions() {
-        int originalOrder = currentButton.getOrder();
-        Button but = currentButton;
+        int originalOrder = currentButton.getOrder(); //The order of the button before being changed
+        Button but = currentButton; //The button that is getting changed
         currentButton = ButtonOptionDialog.showDialog(this, currentButton, currentButtons.size() - 1);
-        if (currentButton == null) {
+        if (currentButton == null) { //If it is null then the button is getting removed.
             try {
                 dbConn.removeButton(but);
             } catch (IOException | SQLException | ButtonNotFoundException ex) {
                 showError(ex);
             }
-        } else {
+        } else { //If it is not null then it is being edited or nothing has happening to it
             try {
-                if (currentButton.getOrder() != originalOrder) {
-                    int newOrder = currentButton.getOrder();
-                    Button otherButton = changeButtonPosition(newOrder, originalOrder);
-                    dbConn.updateButton(otherButton);
+                if (currentButton.getOrder() != originalOrder) { //If the order has changed then the button is getting moved
+                    int newOrder = currentButton.getOrder(); //Get the buttons new position
+                    Button otherButton = changeButtonPosition(newOrder, originalOrder); //This will move the other button into the current buttons old position
+                    dbConn.updateButton(otherButton); //This will update the other button in the database
                 }
-                dbConn.updateButton(currentButton);
+                dbConn.updateButton(currentButton); //This will update the ucrrent button in the database
             } catch (IOException | SQLException | ButtonNotFoundException ex) {
                 showError(ex);
             }
         }
-        setButtons();
+        setButtons(); //This will update the view to reflect any changes
     }
 
+    /**
+     * This method will move a button at one position to another position,
+     *
+     * @param pos the position of the button getting moved.
+     * @param newPos the new position of the button.
+     * @return the updated button.
+     */
     private Button changeButtonPosition(int pos, int newPos) {
         for (Button b : currentButtons) {
             if (b.getOrder() == pos) {
@@ -212,6 +233,21 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             }
         }
         return null;
+    }
+
+    private void checkButtonsIntegrity() {
+        for (Button b : currentButtons) {
+            for (Button c : currentButtons) {
+                if (c.getName().equals(b.getName()) && c.getOrder() == b.getOrder()) {
+                    try {
+                        dbConn.removeButton(c);
+                    } catch (IOException | SQLException | ButtonNotFoundException ex) {
+                        showError(ex);
+                    }
+                    return;
+                }
+            }
+        }
     }
 
     private void showError(Exception e) {
