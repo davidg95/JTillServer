@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -108,6 +110,17 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         cButton.addActionListener((ActionEvent e) -> {
             categoryCards.show(panelProducts, s.getName());
             currentScreen = s;
+            try {
+                if (dbConn.getButtonsOnScreen(s).size() == 50) {
+                    btnNewProduct.setEnabled(false);
+                    btnSpace.setEnabled(false);
+                } else {
+                    btnNewProduct.setEnabled(true);
+                    btnSpace.setEnabled(true);
+                }
+            } catch (IOException | SQLException | ScreenNotFoundException ex) {
+                showError(ex);
+            }
         });
         cardsButtonGroup.add(cButton);
         JPanel panel = new JPanel();
