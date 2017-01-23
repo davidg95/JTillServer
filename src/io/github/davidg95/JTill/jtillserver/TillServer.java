@@ -30,7 +30,6 @@ import javax.swing.JOptionPane;
  */
 public class TillServer {
 
-    public static Data data;
     public static DBConnect dbConnection;
     public static GUI g;
 
@@ -59,14 +58,13 @@ public class TillServer {
         icon = new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/tillIcon.png")).getImage();
         dbConnection = new DBConnect();
         dbConnection.loadProperties();
-        data = new Data(dbConnection, g);
         if (!GraphicsEnvironment.isHeadless()) {
-            g = new GUI(data, dbConnection, false);
+            g = new GUI(dbConnection, false);
             setSystemTray();
         }
         try {
             s = new ServerSocket(DBConnect.PORT);
-            connThread = new ConnectionAcceptThread(s, data);
+            connThread = new ConnectionAcceptThread(s);
         } catch (IOException ex) {
         }
     }
@@ -109,9 +107,9 @@ public class TillServer {
             headlessLogin();
         }
         try {
-            staff = data.login(username, password);
+            staff = dbConnection.login(username, password);
             System.out.println("You are logged in");
-        } catch (IOException | LoginException | SQLException ex) {
+        } catch (LoginException | SQLException ex) {
             System.out.println(ex);
         }
     }
@@ -125,7 +123,7 @@ public class TillServer {
         final PopupMenu popup = new PopupMenu();
         trayIcon = new TrayIcon(icon);
         tray = SystemTray.getSystemTray();
-        
+
         trayIcon.setImageAutoSize(true);
 
         // Create a pop-up menu components
@@ -183,10 +181,6 @@ public class TillServer {
     public static DataConnectInterface getDataConnection() {
         DataConnectInterface dbi = dbConnection;
         return dbi;
-    }
-
-    public static Data getData() {
-        return data;
     }
 
     public static Image getIcon() {

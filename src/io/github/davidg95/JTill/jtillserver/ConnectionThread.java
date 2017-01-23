@@ -22,8 +22,7 @@ import java.util.logging.Logger;
  * @author David
  */
 public class ConnectionThread extends Thread {
-
-    private final Data data;
+    
     private final DataConnectInterface dbConn;
 
     private ObjectInputStream obIn;
@@ -45,10 +44,9 @@ public class ConnectionThread extends Thread {
      * @param s the socket used for this connection.
      * @param data the data object.
      */
-    public ConnectionThread(String name, Socket s, Data data) {
+    public ConnectionThread(String name, Socket s) {
         super(name);
         this.socket = s;
-        this.data = data;
         this.dbConn = TillServer.getDataConnection();
     }
 
@@ -61,12 +59,10 @@ public class ConnectionThread extends Thread {
 
             site = (String) obIn.readObject();
 
-            //data.addConnection(site);
             TillServer.g.increaceClientCount(site);
             TillServer.g.log(site + " has connected");
 
             while (!conn_term) {
-//                String input = (String) obIn.readObject();
                 String input;
 
                 Object o = obIn.readObject();
@@ -83,7 +79,7 @@ public class ConnectionThread extends Thread {
 
                 switch (inp[0]) {
                     case "NEWPRODUCT": //Add a new product
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 newProduct();
@@ -91,7 +87,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "REMOVEPRODUCT": //Remove a product
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 removeProduct();
@@ -99,7 +95,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "PURCHASE": //Purchase a product
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 purchase();
@@ -107,7 +103,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETPRODUCT": //Get a product
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getProduct();
@@ -115,7 +111,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "UPDATEPRODUCT": //Update a product
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 updateProduct();
@@ -123,7 +119,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETPRODUCTBARCODE": //Get a product by barcode
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getProductByBarcode();
@@ -131,7 +127,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "CHECKBARCODE": //Check if a barcode is in use
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 checkBarcode();
@@ -139,7 +135,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "SETSTOCK": //Set the stock level of a product
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 setStock();
@@ -147,7 +143,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETPRODUCTSDISCOUNT": //Gets all discounts for a product
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getProductsDiscount();
@@ -155,7 +151,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETPRODUCTCOUNT": //Get product count
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getProductCount();
@@ -163,7 +159,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETALLPRODUCTS": //Get all products
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getAllProducts();
@@ -171,7 +167,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "NEWCUSTOMER": //Add a new customer
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 newCustomer();
@@ -179,7 +175,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "REMOVECUSTOMER": //Remove a customer
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 removeCustomer();
@@ -187,7 +183,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETCUSTOMER": //Get a customer
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getCustomer();
@@ -195,7 +191,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETCUSTOMERBYNAME": //Get a customer by name
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getCustomerByName();
@@ -203,7 +199,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETCUSTOMERCOUNT": //Get customer count
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getCustomerCount();
@@ -211,7 +207,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "UPDATECUSTOMER": //Update a customer
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 updateCustomer();
@@ -219,7 +215,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETALLCUSTOMERS": //Get all customers
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getAllCustomers();
@@ -227,7 +223,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "ADDSTAFF": //Add a member of staff
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 addStaff();
@@ -235,7 +231,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "REMOVESTAFF": //Remove a member of staff
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 removeStaff();
@@ -243,7 +239,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETSTAFF": //Get a member of staff
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getStaff();
@@ -251,7 +247,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "UPDATESTAFF": //Update a member of staff
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 updateStaff();
@@ -259,7 +255,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETALLSTAFF": //Get all the staff
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getAllStaff();
@@ -267,7 +263,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "STAFFCOUNT": //Get the staff count
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 staffCount();
@@ -275,7 +271,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "ADDSALE": //Add a sale
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 addSale();
@@ -283,7 +279,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETALLSALES": //Get all sales
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getAllSales();
@@ -291,7 +287,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETSALE": //Get a sale
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getSale();
@@ -299,7 +295,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETSALEDATERANGE": //Get all sales within a date range
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getSaleDateRange();
@@ -307,7 +303,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "LOGIN": //Standard staff login
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 login();
@@ -315,7 +311,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "TILLLOGIN": //Till login
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 tillLogin();
@@ -323,7 +319,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "LOGOUT": //Logout
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 logout();
@@ -331,7 +327,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "TILLLOGOUT": //Till logout
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 tillLogout();
@@ -339,7 +335,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "ADDCATEGORY": //Add a category
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 addCategory();
@@ -347,7 +343,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "UPDATECATEGORY": //Update a category
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 updateCategory();
@@ -355,7 +351,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "REMOVECATEGORY": //Remove a category
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 removeCategory();
@@ -363,7 +359,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETCATEGORY": //Get a category
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getCategory();
@@ -371,7 +367,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETALLCATEGORYS": //Get all categorys
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getAllCategorys();
@@ -379,7 +375,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETPRODUCTSINCATEGORY": //Get all products in a category
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getProductsInCategory();
@@ -387,7 +383,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "ADDDISCOUNT": //Add a discount
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 addDiscount();
@@ -395,7 +391,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "UPDATEDISCOUNT": //Update a discount
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 updateDiscount();
@@ -403,7 +399,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "REMOVEDISCOUNT": //Remove a discount
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 removeDiscount();
@@ -411,7 +407,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETDISCOUNT": //Get a discount
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getDiscount();
@@ -419,7 +415,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETALLDISCOUNTS": //Get all discounts
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getAllDiscounts();
@@ -427,7 +423,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "ADDTAX": //Add a new tax
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 addTax();
@@ -435,7 +431,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "REMOVETAX": //Remove a tax
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 removeTax();
@@ -443,7 +439,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETTAX": //Get a tax
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getTax();
@@ -451,7 +447,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "UPDATETAX": //Update a tax
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 updateTax();
@@ -459,7 +455,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETALLTAX": //Get all tax
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getAllTax();
@@ -467,7 +463,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "ADDVOUCHER": //Add a new voucher
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 addVoucher();
@@ -475,7 +471,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "REMOVEVOUCHER": //Remove a voucher
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 removeVoucher();
@@ -483,7 +479,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETVOUCHER": //Get a voucher
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getVoucher();
@@ -491,7 +487,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "UPDATEVOUCHER": //Update a voucher
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 updateVoucher();
@@ -499,7 +495,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETALLVOUCHERS": //Get all vouchers
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getAllVouchers();
@@ -507,7 +503,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "ADDSCREEN": //Add a new screen
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 addScreen();
@@ -515,7 +511,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "ADDBUTTON": //Add a new button
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 addButton();
@@ -523,7 +519,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "REMOVESCREEN": //Remove a screen
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 removeScreen();
@@ -531,7 +527,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "REMOVEBUTTON": //Remove a button
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 removeButton();
@@ -539,7 +535,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "UPDATESCREEN": //Update a screen
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 updateScreen();
@@ -547,7 +543,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "UPDATEBUTTON": //Update a button
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 updateButton();
@@ -555,7 +551,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETSCREEN": //Update a screen
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getScreen();
@@ -563,7 +559,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETBUTTON": //Updatea a button
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getButton();
@@ -571,7 +567,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETALLSCREENS": //Get all screens
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getAllScreens();
@@ -579,7 +575,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETALLBUTTONS": //Get all buttons
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getAllButtons();
@@ -587,7 +583,7 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     case "GETBUTTONSONSCREEN": //Get buttons on a screen
-                        new Thread() {
+                        new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getButtonsOnScreen();
@@ -603,15 +599,14 @@ public class ConnectionThread extends Thread {
                         conn_term = true;
                         if (staff != null) {
                             try {
-                                data.logout(staff.getId());
-                                data.tillLogout(staff.getId());
+                                dbConn.logout(staff.getId());
+                                dbConn.tillLogout(staff.getId());
                             } catch (StaffNotFoundException ex) {
                             }
                         }
                         break;
                 }
             }
-//            data.removeConnection(site);
             TillServer.g.decreaseClientCount(site);
             TillServer.g.log(site + " has disconnected");
             socket.close();
@@ -962,7 +957,7 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 Sale s = (Sale) currentData.getData();
-                data.addSale(s);
+                dbConn.addSale(s);
             } catch (SQLException ex) {
                 Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
             }

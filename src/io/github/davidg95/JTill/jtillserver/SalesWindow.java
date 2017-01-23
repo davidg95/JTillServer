@@ -23,10 +23,7 @@ public class SalesWindow extends javax.swing.JFrame {
 
     private static SalesWindow frame;
 
-    private final Data data;
     private final DataConnectInterface dbConn;
-
-    private Sale sale;
 
     private final DefaultTableModel model;
     private List<Sale> currentTableContents;
@@ -35,7 +32,6 @@ public class SalesWindow extends javax.swing.JFrame {
      * Creates new form SalesWindow
      */
     public SalesWindow(DataConnectInterface dc) {
-        this.data = TillServer.getData();
         this.dbConn = TillServer.getDataConnection();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -94,8 +90,6 @@ public class SalesWindow extends javax.swing.JFrame {
             }
             lblSaleCount.setText("Current Sale Count: " + count);
 
-            val = data.getTakings();
-            count = data.getSales();
             if (val > 1) {
                 DecimalFormat df = new DecimalFormat("#.00"); // Set your desired format here.
                 lblDailyTakings.setText("Daily Takings: £" + df.format(val));
@@ -251,7 +245,6 @@ public class SalesWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        data.reset();
         this.setTakings();
     }//GEN-LAST:event_btnResetActionPerformed
 

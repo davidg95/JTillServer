@@ -23,11 +23,9 @@ import java.util.logging.Logger;
 public class ConnectionAcceptThread extends Thread {
 
     private final ServerSocket socket;
-    private final Data data;
 
-    public ConnectionAcceptThread(ServerSocket s, Data data) {
+    public ConnectionAcceptThread(ServerSocket s) {
         this.socket = s;
-        this.data = data;
     }
 
     @Override
@@ -39,7 +37,7 @@ public class ConnectionAcceptThread extends Thread {
         for (;;) {
             try {
                 Socket incoming = socket.accept();
-                pool.submit(new ConnectionThread(socket.getInetAddress().getHostAddress(), incoming, data));
+                pool.submit(new ConnectionThread(socket.getInetAddress().getHostAddress(), incoming));
             } catch (IOException ex) {
                 Logger.getLogger(ConnectionAcceptThread.class.getName()).log(Level.SEVERE, null, ex);
             }

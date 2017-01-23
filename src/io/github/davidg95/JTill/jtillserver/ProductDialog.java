@@ -28,7 +28,6 @@ public class ProductDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static Product product;
 
-    private Data data;
     private final DataConnectInterface dbConn;
 
     private boolean editMode;
@@ -54,15 +53,9 @@ public class ProductDialog extends javax.swing.JDialog {
         init();
     }
 
-    public ProductDialog(Window parent, Data data) {
-        this(parent);
-        this.data = data;
-    }
-
-    public ProductDialog(Window parent, Data data, Product p) {
+    public ProductDialog(Window parent, Product p) {
         super(parent);
         this.dbConn = TillServer.getDataConnection();
-        this.data = data;
         initComponents();
         init();
         this.editMode = true;
@@ -147,38 +140,18 @@ public class ProductDialog extends javax.swing.JDialog {
         return product;
     }
 
-    /**
-     * Method which shows the new product dialog. It takes in a reference to the
-     * Product List and adds the new product to that list.
-     *
-     * @param parent the parent component.
-     * @param data the list to add the product to.
-     * @return the new product object.
-     */
-    public static Product showNewProductDialog(Component parent, Data data) {
+    public static Product showEditProductDialog(Component parent, Product p) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new ProductDialog(window, data);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        product = null;
-        dialog.setVisible(true);
-        return product;
-    }
-
-    public static Product showEditProductDialog(Component parent, Data data, Product p) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
-        dialog = new ProductDialog(window, data, p);
+        dialog = new ProductDialog(window, p);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         product = p;
         dialog.setVisible(true);
         return product;
     }
-    
+
     private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Product", JOptionPane.ERROR_MESSAGE);
     }
@@ -440,9 +413,7 @@ public class ProductDialog extends javax.swing.JDialog {
                     if (!editMode) {
                         product = new Product(name, shortName, category, comments, tax, discount, false, price, costPrice, stock, minStock, maxStock, barcode);
 
-                        if (data != null) {
-                            dbConn.addProduct(product);
-                        }
+                        dbConn.addProduct(product);
                     } else {
                         product.setName(name);
                         product.setName(shortName);
@@ -479,7 +450,7 @@ public class ProductDialog extends javax.swing.JDialog {
         jLabel4.setEnabled(chkOpen.isSelected());
         jLabel10.setEnabled(chkOpen.isSelected());
         jLabel11.setEnabled(chkOpen.isSelected());
-        
+
     }//GEN-LAST:event_chkOpenActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

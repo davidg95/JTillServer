@@ -169,7 +169,6 @@ public class LoginDialog extends javax.swing.JDialog {
             lblLogin.setText("Please enter both username and password");
         } else {
             try {
-//                staff = data.login(username, password);
                 staff = dc.login(username, password);
                 this.setVisible(false);
             } catch (LoginException ex) {

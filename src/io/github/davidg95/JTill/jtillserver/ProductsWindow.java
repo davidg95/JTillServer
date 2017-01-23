@@ -24,7 +24,6 @@ public class ProductsWindow extends javax.swing.JFrame {
 
     public static ProductsWindow frame;
 
-    private final Data data;
     private final DataConnectInterface dbConn;
 
     private Product product;
@@ -46,7 +45,6 @@ public class ProductsWindow extends javax.swing.JFrame {
      * @param dc the data source.
      */
     public ProductsWindow(DataConnectInterface dc) {
-        this.data = TillServer.getData();
         this.dbConn = dc;
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -136,7 +134,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         int selectedRow = tableProducts.getSelectedRow();
         if (selectedRow != -1) {
             Product p = currentTableContents.get(selectedRow);
-            ProductDialog.showEditProductDialog(this, data, p);
+            ProductDialog.showEditProductDialog(this, p);
             updateTable();
         }
     }

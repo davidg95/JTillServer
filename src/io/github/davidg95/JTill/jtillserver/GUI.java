@@ -33,7 +33,6 @@ public class GUI extends javax.swing.JFrame {
     private String username;
     private String password;
 
-    private final Data data;
     private final DataConnectInterface dbConn;
     private boolean isLoggedOn;
 
@@ -47,13 +46,11 @@ public class GUI extends javax.swing.JFrame {
     /**
      * Creates new form GUI
      *
-     * @param data
      * @param dbConnection
      * @param remote flag indicating whether this is a remote connection or not.
      */
-    public GUI(Data data, DataConnectInterface dbConnection, boolean remote) {
+    public GUI(DataConnectInterface dbConnection, boolean remote) {
         this.dbConn = dbConnection;
-        this.data = data;
         this.remote = remote;
         initComponents();
         connections = new ArrayList<>();
@@ -179,9 +176,11 @@ public class GUI extends javax.swing.JFrame {
     private void logout() {
         try {
             lblUser.setText("Not Logged In");
-            data.logout(staff.getId());
+            dbConn.logout(staff.getId());
             log(staff.getName() + " has logged out");
         } catch (StaffNotFoundException ex) {
+        } catch (IOException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
         isLoggedOn = false;
         staff = null;
@@ -272,7 +271,6 @@ public class GUI extends javax.swing.JFrame {
         itemTaxes = new javax.swing.JMenuItem();
         menuStaff = new javax.swing.JMenu();
         itemStaff = new javax.swing.JMenuItem();
-        itemLogOutTill = new javax.swing.JMenuItem();
         menuCustomers = new javax.swing.JMenu();
         itemCustomers = new javax.swing.JMenuItem();
         menuItemReports = new javax.swing.JMenu();
@@ -348,6 +346,7 @@ public class GUI extends javax.swing.JFrame {
 
         btnReports.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/reports.png"))); // NOI18N
         btnReports.setToolTipText("Reports");
+        btnReports.setEnabled(false);
         btnReports.setFocusable(false);
         btnReports.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnReports.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -532,14 +531,6 @@ public class GUI extends javax.swing.JFrame {
         });
         menuStaff.add(itemStaff);
 
-        itemLogOutTill.setText("Log All Tills Out");
-        itemLogOutTill.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemLogOutTillActionPerformed(evt);
-            }
-        });
-        menuStaff.add(itemLogOutTill);
-
         jMenuBar1.add(menuStaff);
 
         menuCustomers.setText("Customers");
@@ -557,6 +548,7 @@ public class GUI extends javax.swing.JFrame {
         menuItemReports.setText("Reports");
 
         itemSales.setText("View Sales Data");
+        itemSales.setEnabled(false);
         itemSales.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemSalesActionPerformed(evt);
@@ -565,6 +557,7 @@ public class GUI extends javax.swing.JFrame {
         menuItemReports.add(itemSales);
 
         itemResetSales.setText("Reset Sales Data");
+        itemResetSales.setEnabled(false);
         itemResetSales.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemResetSalesActionPerformed(evt);
@@ -703,13 +696,8 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_itemSalesActionPerformed
 
     private void itemResetSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemResetSalesActionPerformed
-        data.reset();
         JOptionPane.showMessageDialog(this, "Sales data reset", "Sales Data", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_itemResetSalesActionPerformed
-
-    private void itemLogOutTillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLogOutTillActionPerformed
-        data.logAllTillsOut();
-    }//GEN-LAST:event_itemLogOutTillActionPerformed
 
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
         SalesWindow.showSalesWindow(dbConn);
@@ -741,7 +729,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemCustomers;
     private javax.swing.JMenuItem itemDiscounts;
     private javax.swing.JMenuItem itemExit;
-    private javax.swing.JMenuItem itemLogOutTill;
     private javax.swing.JMenuItem itemLogin;
     private javax.swing.JMenuItem itemResetSales;
     private javax.swing.JMenuItem itemSales;

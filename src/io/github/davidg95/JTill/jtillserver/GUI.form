@@ -103,14 +103,6 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemStaffActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="itemLogOutTill">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Log All Tills Out"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemLogOutTillActionPerformed"/>
-              </Events>
-            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="menuCustomers">
@@ -136,6 +128,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="itemSales">
               <Properties>
                 <Property name="text" type="java.lang.String" value="View Sales Data"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemSalesActionPerformed"/>
@@ -144,6 +137,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="itemResetSales">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Reset Sales Data"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemResetSalesActionPerformed"/>
@@ -295,6 +289,7 @@
               <Image iconType="3" name="/io/github/davidg95/JTill/resources/reports.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Reports"/>
+            <Property name="enabled" type="boolean" value="false"/>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
