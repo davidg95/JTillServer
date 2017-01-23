@@ -7,6 +7,7 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.DBConnect;
 import io.github.davidg95.JTill.jtill.DataConnectInterface;
+import io.github.davidg95.JTill.jtill.GUIInterface;
 import io.github.davidg95.JTill.jtill.Staff;
 import io.github.davidg95.JTill.jtill.StaffNotFoundException;
 import java.awt.SystemTray;
@@ -27,7 +28,7 @@ import javax.swing.JOptionPane;
  *
  * @author David
  */
-public class GUI extends javax.swing.JFrame {
+public class GUI extends javax.swing.JFrame implements GUIInterface {
 
     private String database_address;
     private String username;
@@ -55,6 +56,7 @@ public class GUI extends javax.swing.JFrame {
         initComponents();
         connections = new ArrayList<>();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.dbConn.setGUI(this);
     }
 
     /**
@@ -131,6 +133,7 @@ public class GUI extends javax.swing.JFrame {
         lblClients.setText("Connections: " + clientCounter);
     }
 
+    @Override
     public void setClientLabel(String text) {
         lblClients.setText(text);
     }
@@ -140,6 +143,7 @@ public class GUI extends javax.swing.JFrame {
      *
      * @param o the object to log.
      */
+    @Override
     public void log(Object o) {
         txtLog.append(o.toString() + "\n");
     }
@@ -754,4 +758,5 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JPanel statusBar;
     private javax.swing.JTextArea txtLog;
     // End of variables declaration//GEN-END:variables
+
 }

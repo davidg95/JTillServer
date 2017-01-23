@@ -42,7 +42,6 @@ public class ConnectionThread extends Thread {
      *
      * @param name the name of the thread.
      * @param s the socket used for this connection.
-     * @param data the data object.
      */
     public ConnectionThread(String name, Socket s) {
         super(name);
