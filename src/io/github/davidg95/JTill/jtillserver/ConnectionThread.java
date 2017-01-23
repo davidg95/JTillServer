@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * @author David
  */
 public class ConnectionThread extends Thread {
-    
+
     private final DataConnectInterface dbConn;
 
     private ObjectInputStream obIn;
@@ -65,12 +65,8 @@ public class ConnectionThread extends Thread {
                 String input;
 
                 Object o = obIn.readObject();
-                if (o instanceof ConnectionData) {
-                    currentData = (ConnectionData) o;
-                    input = currentData.getFlag();
-                } else {
-                    input = (String) o;
-                }
+                currentData = (ConnectionData) o;
+                input = currentData.getFlag();
 
                 TillServer.g.log("Contact from " + site);
 
