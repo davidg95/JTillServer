@@ -367,7 +367,7 @@ public class StaffWindow extends javax.swing.JFrame {
                     showError(ex);
                 }
             } else {
-                JOptionPane.showMessageDialog(rootPane, btnSave, name, HEIGHT);
+                JOptionPane.showMessageDialog(this, "Passwords do not match", "New Staff", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             setCurrentStaff(null);
@@ -406,7 +406,7 @@ public class StaffWindow extends javax.swing.JFrame {
                 } catch (SQLException | StaffNotFoundException | IOException ex) {
                     showError(ex);
                 }
-                this.updateTable();
+                showAllStaff();
                 setCurrentStaff(null);
             }
         }

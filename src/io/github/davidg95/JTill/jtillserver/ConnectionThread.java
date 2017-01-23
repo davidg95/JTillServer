@@ -36,6 +36,8 @@ public class ConnectionThread extends Thread {
     private String site;
     private Staff staff;
 
+    private ConnectionData currentData;
+
     /**
      * Constructor for Connection thread.
      *
@@ -64,7 +66,16 @@ public class ConnectionThread extends Thread {
             TillServer.g.log(site + " has connected");
 
             while (!conn_term) {
-                String input = (String) obIn.readObject();
+//                String input = (String) obIn.readObject();
+                String input;
+
+                Object o = obIn.readObject();
+                if (o instanceof ConnectionData) {
+                    currentData = (ConnectionData) o;
+                    input = currentData.getFlag();
+                } else {
+                    input = (String) o;
+                }
 
                 TillServer.g.log("Contact from " + site);
 
@@ -75,14 +86,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    Object o = obIn.readObject();
-                                    Product p = (Product) o;
-                                    dbConn.addProduct(p);
-                                } catch (ClassNotFoundException | SQLException ex) {
-                                } catch (IOException ex) {
-                                    Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+                                newProduct();
                             }
                         }.start();
                         break;
@@ -90,18 +94,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int code = Integer.parseInt(inp[1]);
-                                        dbConn.removeProduct(code);
-                                        obOut.writeObject("SUCC");
-                                    } catch (SQLException | ProductNotFoundException ex) {
-                                        obOut.writeObject("FAIL");
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                removeProduct();
                             }
                         }.start();
                         break;
@@ -109,38 +102,15 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int code = Integer.parseInt(inp[1]);
-                                        int stock = dbConn.purchaseProduct(code);
-                                        obOut.writeObject(stock);
-                                    } catch (ProductNotFoundException | SQLException | OutOfStockException ex) {
-                                        TillServer.g.log(ex);
-                                        obOut.writeObject("FAIL");
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                purchase();
                             }
                         }.start();
-
                         break;
                     case "GETPRODUCT": //Get a product
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int code = Integer.parseInt(inp[1]);
-                                        Product p = dbConn.getProduct(code);
-                                        obOut.writeObject(p);
-                                    } catch (ProductNotFoundException | SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getProduct();
                             }
                         }.start();
                         break;
@@ -148,19 +118,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Object o = obIn.readObject();
-                                        dbConn.updateProduct((Product) o);
-                                        obOut.writeObject((Product) o);
-                                    } catch (ClassNotFoundException ex) {
-
-                                    } catch (SQLException | ProductNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                updateProduct();
                             }
                         }.start();
                         break;
@@ -168,17 +126,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        String barcode = inp[1];
-                                        Product p = dbConn.getProductByBarcode(barcode);
-                                        obOut.writeObject(p);
-                                    } catch (ProductNotFoundException | SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getProductByBarcode();
                             }
                         }.start();
                         break;
@@ -186,21 +134,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        String barcode = inp[1];
-                                        boolean inUse = dbConn.checkBarcode(barcode);
-                                        if (inUse) {
-                                            obOut.writeObject("USED");
-                                        } else {
-                                            obOut.writeObject("NOTUSED");
-                                        }
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex.getMessage());
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                checkBarcode();
                             }
                         }.start();
                         break;
@@ -208,20 +142,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        int stock = Integer.parseInt(inp[2]);
-                                        dbConn.setStock(id, stock);
-                                        obOut.writeObject("SUCC");
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex.getMessage());
-                                    } catch (ProductNotFoundException ex) {
-                                        obOut.writeObject("FAIL");
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                setStock();
                             }
                         }.start();
                         break;
@@ -229,22 +150,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Object o = obIn.readObject();
-                                        Product p = (Product) o;
-
-                                        List<Discount> discounts = dbConn.getProductsDiscount(p);
-
-                                        obOut.writeObject(discounts);
-                                    } catch (ClassNotFoundException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getProductsDiscount();
                             }
                         }.start();
                         break;
@@ -252,15 +158,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        obOut.writeObject(dbConn.getProductCount());
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(-1);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getProductCount();
                             }
                         }.start();
                         break;
@@ -268,16 +166,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        List<Product> products = dbConn.getAllProducts();
-                                        obOut.writeObject(products);
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getAllProducts();
                             }
                         }.start();
                         break;
@@ -285,16 +174,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Object o = obIn.readObject();
-                                        Customer c = (Customer) o;
-                                        dbConn.addCustomer(c);
-                                    } catch (ClassNotFoundException | SQLException e) {
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                newCustomer();
                             }
                         }.start();
                         break;
@@ -302,18 +182,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        dbConn.removeCustomer(id);
-                                        obOut.writeObject("SUCC");
-                                    } catch (SQLException | CustomerNotFoundException ex) {
-                                        obOut.writeObject("FAIL");
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                removeCustomer();
                             }
                         }.start();
                         break;
@@ -321,17 +190,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        Customer c = dbConn.getCustomer(id);
-                                        obOut.writeObject(c);
-                                    } catch (CustomerNotFoundException | SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getCustomer();
                             }
                         }.start();
                         break;
@@ -339,17 +198,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        String name = inp[1];
-                                        List<Customer> customers = dbConn.getCustomerByName(name);
-                                        obOut.writeObject(customers);
-                                    } catch (SQLException | CustomerNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getCustomerByName();
                             }
                         }.start();
                         break;
@@ -357,15 +206,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        obOut.writeObject(dbConn.getCustomerCount());
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(-1);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getCustomerCount();
                             }
                         }.start();
                         break;
@@ -373,19 +214,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Object o = obIn.readObject();
-                                        Customer c = (Customer) o;
-                                        Customer customer = dbConn.updateCustomer(c);
-                                        obOut.writeObject(customer);
-                                    } catch (ClassNotFoundException ex) {
-                                    } catch (SQLException | CustomerNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                updateCustomer();
                             }
                         }.start();
                         break;
@@ -393,16 +222,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        List<Customer> customers = dbConn.getAllCustomers();
-                                        obOut.writeObject(customers);
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getAllCustomers();
                             }
                         }.start();
                         break;
@@ -410,16 +230,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Object o = obIn.readObject();
-                                        Staff s = (Staff) o;
-                                        dbConn.addStaff(s);
-                                    } catch (ClassNotFoundException | SQLException | StaffNotFoundException ex) {
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                addStaff();
                             }
                         }.start();
                         break;
@@ -427,18 +238,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        dbConn.removeStaff(id);
-                                        obOut.writeObject("SUCC");
-                                    } catch (SQLException | StaffNotFoundException ex) {
-                                        obOut.writeObject("FAIL");
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                removeStaff();
                             }
                         }.start();
                         break;
@@ -446,17 +246,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        Staff s = dbConn.getStaff(id);
-                                        obOut.writeObject(s);
-                                    } catch (StaffNotFoundException | SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getStaff();
                             }
                         }.start();
                         break;
@@ -464,19 +254,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Object o = obIn.readObject();
-                                        Staff s = (Staff) o;
-                                        Staff updatedStaff = dbConn.updateStaff(s);
-                                        obOut.writeObject(updatedStaff);
-                                    } catch (ClassNotFoundException ex) {
-                                    } catch (SQLException | StaffNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                updateStaff();
                             }
                         }.start();
                         break;
@@ -484,16 +262,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        List<Staff> staffList = dbConn.getAllStaff();
-                                        obOut.writeObject(staffList);
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getAllStaff();
                             }
                         }.start();
                         break;
@@ -501,17 +270,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        obOut.writeObject(dbConn.staffCount());
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject("FAIL");
-                                    } catch (StaffNotFoundException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                staffCount();
                             }
                         }.start();
                         break;
@@ -519,19 +278,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Object o = obIn.readObject();
-                                        Sale s = (Sale) o;
-                                        data.addSale(s);
-                                    } catch (ClassNotFoundException ex) {
-
-                                    } catch (SQLException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                addSale();
                             }
                         }.start();
                         break;
@@ -539,16 +286,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        List<Sale> sales = dbConn.getAllSales();
-                                        obOut.writeObject(sales);
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getAllSales();
                             }
                         }.start();
                         break;
@@ -556,17 +294,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        Sale s = dbConn.getSale(id);
-                                        obOut.writeObject(s);
-                                    } catch (SQLException | SaleNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getSale();
                             }
                         }.start();
                         break;
@@ -574,20 +302,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Date start = (Date) obIn.readObject();
-                                        Date end = (Date) obIn.readObject();
-                                        List<Sale> sales = dbConn.getSalesInRange(start, end);
-                                        obOut.writeObject(sales);
-                                    } catch (ClassNotFoundException | IllegalArgumentException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getSaleDateRange();
                             }
                         }.start();
                         break;
@@ -595,20 +310,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        String username = inp[1];
-                                        String password = inp[2];
-                                        Staff s = dbConn.login(username, password);
-                                        ConnectionThread.this.staff = s;
-                                        TillServer.g.log(staff.getName() + " has logged in");
-                                        obOut.writeObject(s);
-                                    } catch (SQLException | LoginException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                login();
                             }
                         }.start();
                         break;
@@ -616,19 +318,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        Staff s = dbConn.tillLogin(id);
-                                        ConnectionThread.this.staff = s;
-                                        TillServer.g.log(staff.getName() + " has logged in from " + site);
-                                        obOut.writeObject(s);
-                                    } catch (SQLException | LoginException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                tillLogin();
                             }
                         }.start();
                         break;
@@ -636,19 +326,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        dbConn.logout(id);
-                                        TillServer.g.log(staff.getName() + " has logged out");
-                                        ConnectionThread.this.staff = null;
-                                        obOut.writeObject("SUCC");
-                                    } catch (StaffNotFoundException ex) {
-                                        obOut.writeObject("FAIL");
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                logout();
                             }
                         }.start();
                         break;
@@ -656,19 +334,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        dbConn.tillLogout(id);
-                                        TillServer.g.log(staff.getName() + " has logged out");
-                                        ConnectionThread.this.staff = null;
-                                        obOut.writeObject("SUCC");
-                                    } catch (StaffNotFoundException ex) {
-                                        obOut.writeObject("FAIL");
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                tillLogout();
                             }
                         }.start();
                         break;
@@ -676,16 +342,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Category c = (Category) obIn.readObject();
-                                        dbConn.addCategory(c);
-                                    } catch (ClassNotFoundException | SQLException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                addCategory();
                             }
                         }.start();
                         break;
@@ -693,19 +350,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Category c = (Category) obIn.readObject();
-                                        Category category = dbConn.updateCategory(c);
-                                        obOut.writeObject(category);
-                                    } catch (ClassNotFoundException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (SQLException | CategoryNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                updateCategory();
                             }
                         }.start();
                         break;
@@ -713,19 +358,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        dbConn.removeCategory(id);
-                                        obOut.writeObject("SUCC");
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex.getErrorCode());
-                                    } catch (CategoryNotFoundException ex) {
-                                        obOut.writeObject("FAIL");
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                removeCategory();
                             }
                         }.start();
                         break;
@@ -733,17 +366,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        Category c = dbConn.getCategory(id);
-                                        obOut.writeObject(c);
-                                    } catch (SQLException | CategoryNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getCategory();
                             }
                         }.start();
                         break;
@@ -751,16 +374,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        List<Category> categorys = dbConn.getAllCategorys();
-                                        obOut.writeObject(categorys);
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getAllCategorys();
                             }
                         }.start();
                         break;
@@ -768,17 +382,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        List<Product> products = dbConn.getProductsInCategory(id);
-                                        obOut.writeObject(products);
-                                    } catch (SQLException | CategoryNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getProductsInCategory();
                             }
                         }.start();
                         break;
@@ -786,16 +390,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Discount d = (Discount) obIn.readObject();
-                                        dbConn.addDiscount(d);
-                                    } catch (ClassNotFoundException | SQLException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                addDiscount();
                             }
                         }.start();
                         break;
@@ -803,19 +398,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Discount d = (Discount) obIn.readObject();
-                                        Discount discount = dbConn.updateDiscount(d);
-                                        obOut.writeObject(discount);
-                                    } catch (ClassNotFoundException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (SQLException | DiscountNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                updateDiscount();
                             }
                         }.start();
                         break;
@@ -823,19 +406,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        dbConn.removeDiscount(id);
-                                        obOut.writeObject("SUCC");
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex.getErrorCode());
-                                    } catch (DiscountNotFoundException ex) {
-                                        obOut.writeObject("FAIL");
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                removeDiscount();
                             }
                         }.start();
                         break;
@@ -843,17 +414,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        Discount d = dbConn.getDiscount(id);
-                                        obOut.writeObject(d);
-                                    } catch (SQLException | DiscountNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getDiscount();
                             }
                         }.start();
                         break;
@@ -861,16 +422,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        List<Discount> discounts = dbConn.getAllDiscounts();
-                                        obOut.writeObject(discounts);
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getAllDiscounts();
                             }
                         }.start();
                         break;
@@ -878,16 +430,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Tax t = (Tax) obIn.readObject();
-                                        dbConn.addTax(t);
-                                    } catch (ClassNotFoundException | SQLException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                addTax();
                             }
                         }.start();
                         break;
@@ -895,19 +438,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        dbConn.removeTax(id);
-                                        obOut.writeObject("SUCC");
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex.getErrorCode());
-                                    } catch (TaxNotFoundException ex) {
-                                        obOut.writeObject("FAIL");
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                removeTax();
                             }
                         }.start();
                         break;
@@ -915,17 +446,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        Tax t = dbConn.getTax(id);
-                                        obOut.writeObject(t);
-                                    } catch (SQLException | TaxNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getTax();
                             }
                         }.start();
                         break;
@@ -933,19 +454,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Tax t = (Tax) obIn.readObject();
-                                        Tax tax = dbConn.updateTax(t);
-                                        obOut.writeObject(tax);
-                                    } catch (ClassNotFoundException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (SQLException | TaxNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                updateTax();
                             }
                         }.start();
                         break;
@@ -953,16 +462,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        List<Tax> tax = dbConn.getAllTax();
-                                        obOut.writeObject(tax);
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getAllTax();
                             }
                         }.start();
                         break;
@@ -970,16 +470,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Voucher v = (Voucher) obIn.readObject();
-                                        dbConn.addVoucher(v);
-                                    } catch (ClassNotFoundException | SQLException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                addVoucher();
                             }
                         }.start();
                         break;
@@ -987,19 +478,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        dbConn.removeVoucher(id);
-                                        obOut.writeObject("SUCC");
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex.getErrorCode());
-                                    } catch (VoucherNotFoundException ex) {
-                                        obOut.writeObject("FAIL");
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                removeVoucher();
                             }
                         }.start();
                         break;
@@ -1007,17 +486,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        Voucher v = dbConn.getVoucher(id);
-                                        obOut.writeObject(v);
-                                    } catch (SQLException | VoucherNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getVoucher();
                             }
                         }.start();
                         break;
@@ -1025,19 +494,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Voucher v = (Voucher) obIn.readObject();
-                                        Voucher voucher = dbConn.updateVoucher(v);
-                                        obOut.writeObject(voucher);
-                                    } catch (ClassNotFoundException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (SQLException | VoucherNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                updateVoucher();
                             }
                         }.start();
                         break;
@@ -1045,16 +502,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        List<Voucher> voucher = dbConn.getAllVouchers();
-                                        obOut.writeObject(voucher);
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getAllVouchers();
                             }
                         }.start();
                         break;
@@ -1062,16 +510,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Screen s = (Screen) obIn.readObject();
-                                        dbConn.addScreen(s);
-                                    } catch (ClassNotFoundException | SQLException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                addScreen();
                             }
                         }.start();
                         break;
@@ -1079,16 +518,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Button b = (Button) obIn.readObject();
-                                        dbConn.addButton(b);
-                                    } catch (ClassNotFoundException | SQLException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                addButton();
                             }
                         }.start();
                         break;
@@ -1096,19 +526,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Screen s = (Screen) obIn.readObject();
-                                        dbConn.removeScreen(s);
-                                        obOut.writeObject("SUCC");
-                                    } catch (ClassNotFoundException | SQLException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (ScreenNotFoundException ex) {
-                                        obOut.writeObject("FAIL");
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                removeScreen();
                             }
                         }.start();
                         break;
@@ -1116,19 +534,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Button b = (Button) obIn.readObject();
-                                        dbConn.removeButton(b);
-                                        obOut.writeObject("SUCC");
-                                    } catch (ClassNotFoundException | SQLException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (ButtonNotFoundException ex) {
-                                        obOut.writeObject("FAIL");
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                removeButton();
                             }
                         }.start();
                         break;
@@ -1136,19 +542,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Screen s = (Screen) obIn.readObject();
-                                        dbConn.updateScreen(s);
-                                        obOut.writeObject(s);
-                                    } catch (ClassNotFoundException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (SQLException | ScreenNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                updateScreen();
                             }
                         }.start();
                         break;
@@ -1156,19 +550,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Button b = (Button) obIn.readObject();
-                                        dbConn.updateButton(b);
-                                        obOut.writeObject(b);
-                                    } catch (ClassNotFoundException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (SQLException | ButtonNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                updateButton();
                             }
                         }.start();
                         break;
@@ -1176,17 +558,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        Screen s = dbConn.getScreen(id);
-                                        obOut.writeObject(s);
-                                    } catch (SQLException | ScreenNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getScreen();
                             }
                         }.start();
                         break;
@@ -1194,17 +566,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        int id = Integer.parseInt(inp[1]);
-                                        Button b = dbConn.getButton(id);
-                                        obOut.writeObject(b);
-                                    } catch (SQLException | ButtonNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getButton();
                             }
                         }.start();
                         break;
@@ -1212,16 +574,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        List<Screen> screens = dbConn.getAllScreens();
-                                        obOut.writeObject(screens);
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getAllScreens();
                             }
                         }.start();
                         break;
@@ -1229,16 +582,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        List<Button> buttons = dbConn.getAllButtons();
-                                        obOut.writeObject(buttons);
-                                    } catch (SQLException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getAllButtons();
                             }
                         }.start();
                         break;
@@ -1246,19 +590,7 @@ public class ConnectionThread extends Thread {
                         new Thread() {
                             @Override
                             public void run() {
-                                try {
-                                    try {
-                                        Screen s = (Screen) obIn.readObject();
-                                        List<Button> buttons = dbConn.getButtonsOnScreen(s);
-                                        obOut.writeObject(buttons);
-                                    } catch (ClassNotFoundException ex) {
-                                        Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (SQLException | ScreenNotFoundException ex) {
-                                        obOut.writeObject(ex);
-                                    }
-                                } catch (IOException e) {
-
-                                }
+                                getButtonsOnScreen();
                             }
                         }.start();
                         break;
@@ -1287,6 +619,912 @@ public class ConnectionThread extends Thread {
 
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void newProduct() {
+        try {
+            Product p = (Product) currentData.getData();
+            dbConn.addProduct(p);
+        } catch (SQLException ex) {
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void removeProduct() {
+        try {
+            try {
+                int code = (int) currentData.getData();
+                dbConn.removeProduct(code);
+                obOut.writeObject("SUCC");
+            } catch (SQLException | ProductNotFoundException ex) {
+                obOut.writeObject("FAIL");
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void purchase() {
+        try {
+            try {
+                int code = (int) currentData.getData();
+                int stock = dbConn.purchaseProduct(code);
+                obOut.writeObject(stock);
+            } catch (ProductNotFoundException | SQLException | OutOfStockException ex) {
+                TillServer.g.log(ex);
+                obOut.writeObject("FAIL");
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getProduct() {
+        try {
+            try {
+                int code = (int) currentData.getData();
+                Product p = dbConn.getProduct(code);
+                obOut.writeObject(p);
+            } catch (ProductNotFoundException | SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void updateProduct() {
+        try {
+            try {
+                Product p = (Product) currentData.getData();
+                dbConn.updateProduct(p);
+                obOut.writeObject(p);
+            } catch (SQLException | ProductNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getProductByBarcode() {
+        try {
+            try {
+                String barcode = (String) currentData.getData();
+                Product p = dbConn.getProductByBarcode(barcode);
+                obOut.writeObject(p);
+            } catch (ProductNotFoundException | SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void checkBarcode() {
+        try {
+            try {
+                String barcode = (String) currentData.getData();
+                boolean inUse = dbConn.checkBarcode(barcode);
+                if (inUse) {
+                    obOut.writeObject("USED");
+                } else {
+                    obOut.writeObject("NOTUSED");
+                }
+            } catch (SQLException ex) {
+                obOut.writeObject(ex.getMessage());
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void setStock() {
+        try {
+            try {
+                String[] inp = ((String) currentData.getData()).split(",");
+                int id = Integer.parseInt(inp[1]);
+                int stock = Integer.parseInt(inp[2]);
+                dbConn.setStock(id, stock);
+                obOut.writeObject("SUCC");
+            } catch (SQLException ex) {
+                obOut.writeObject(ex.getMessage());
+            } catch (ProductNotFoundException ex) {
+                obOut.writeObject("FAIL");
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getProductsDiscount() {
+        try {
+            try {
+                Product p = (Product) currentData.getData();
+
+                List<Discount> discounts = dbConn.getProductsDiscount(p);
+
+                obOut.writeObject(discounts);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getProductCount() {
+        try {
+            try {
+                obOut.writeObject(dbConn.getProductCount());
+            } catch (SQLException ex) {
+                obOut.writeObject(-1);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getAllProducts() {
+        try {
+            try {
+                List<Product> products = dbConn.getAllProducts();
+                obOut.writeObject(products);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void newCustomer() {
+        try {
+            try {
+                Customer c = (Customer) currentData.getData();
+                dbConn.addCustomer(c);
+            } catch (SQLException e) {
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void removeCustomer() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                dbConn.removeCustomer(id);
+                obOut.writeObject("SUCC");
+            } catch (SQLException | CustomerNotFoundException ex) {
+                obOut.writeObject("FAIL");
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getCustomer() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                Customer c = dbConn.getCustomer(id);
+                obOut.writeObject(c);
+            } catch (CustomerNotFoundException | SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getCustomerByName() {
+        try {
+            try {
+                String name = (String) currentData.getData();
+                List<Customer> customers = dbConn.getCustomerByName(name);
+                obOut.writeObject(customers);
+            } catch (SQLException | CustomerNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getCustomerCount() {
+        try {
+            try {
+                obOut.writeObject(dbConn.getCustomerCount());
+            } catch (SQLException ex) {
+                obOut.writeObject(-1);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void updateCustomer() {
+        try {
+            try {
+                Customer c = (Customer) currentData.getData();
+                Customer customer = dbConn.updateCustomer(c);
+                obOut.writeObject(customer);
+            } catch (SQLException | CustomerNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getAllCustomers() {
+        try {
+            try {
+                List<Customer> customers = dbConn.getAllCustomers();
+                obOut.writeObject(customers);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void addStaff() {
+        try {
+            try {
+                Staff s = (Staff) currentData.getData();
+                dbConn.addStaff(s);
+            } catch (SQLException | StaffNotFoundException ex) {
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void removeStaff() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                dbConn.removeStaff(id);
+                obOut.writeObject("SUCC");
+            } catch (SQLException | StaffNotFoundException ex) {
+                obOut.writeObject("FAIL");
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getStaff() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                Staff s = dbConn.getStaff(id);
+                obOut.writeObject(s);
+            } catch (StaffNotFoundException | SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void updateStaff() {
+        try {
+            try {
+                Staff s = (Staff) currentData.getData();
+                Staff updatedStaff = dbConn.updateStaff(s);
+                obOut.writeObject(updatedStaff);
+            } catch (SQLException | StaffNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getAllStaff() {
+        try {
+            try {
+                List<Staff> staffList = dbConn.getAllStaff();
+                obOut.writeObject(staffList);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void staffCount() {
+        try {
+            try {
+                obOut.writeObject(dbConn.staffCount());
+            } catch (SQLException ex) {
+                obOut.writeObject("FAIL");
+            } catch (StaffNotFoundException ex) {
+                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void addSale() {
+        try {
+            try {
+                Sale s = (Sale) currentData.getData();
+                data.addSale(s);
+            } catch (SQLException ex) {
+                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getAllSales() {
+        try {
+            try {
+                List<Sale> sales = dbConn.getAllSales();
+                obOut.writeObject(sales);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getSale() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                Sale s = dbConn.getSale(id);
+                obOut.writeObject(s);
+            } catch (SQLException | SaleNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getSaleDateRange() {
+        try {
+            try {
+                Date start = (Date) currentData.getData();
+                Date end = (Date) currentData.getData2();
+                List<Sale> sales = dbConn.getSalesInRange(start, end);
+                obOut.writeObject(sales);
+            } catch (IllegalArgumentException ex) {
+                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void login() {
+        try {
+            try {
+                String username = (String) currentData.getData();
+                String password = (String) currentData.getData2();
+                Staff s = dbConn.login(username, password);
+                ConnectionThread.this.staff = s;
+                TillServer.g.log(staff.getName() + " has logged in");
+                obOut.writeObject(s);
+            } catch (SQLException | LoginException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void tillLogin() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                Staff s = dbConn.tillLogin(id);
+                ConnectionThread.this.staff = s;
+                TillServer.g.log(staff.getName() + " has logged in from " + site);
+                obOut.writeObject(s);
+            } catch (SQLException | LoginException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void logout() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                dbConn.logout(id);
+                TillServer.g.log(staff.getName() + " has logged out");
+                ConnectionThread.this.staff = null;
+                obOut.writeObject("SUCC");
+            } catch (StaffNotFoundException ex) {
+                obOut.writeObject("FAIL");
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void tillLogout() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                dbConn.tillLogout(id);
+                TillServer.g.log(staff.getName() + " has logged out");
+                ConnectionThread.this.staff = null;
+                obOut.writeObject("SUCC");
+            } catch (StaffNotFoundException ex) {
+                obOut.writeObject("FAIL");
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void addCategory() {
+        try {
+            try {
+                Category c = (Category) currentData.getData();
+                dbConn.addCategory(c);
+            } catch (SQLException ex) {
+                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void updateCategory() {
+        try {
+            try {
+                Category c = (Category) currentData.getData();
+                Category category = dbConn.updateCategory(c);
+                obOut.writeObject(category);
+            } catch (SQLException | CategoryNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void removeCategory() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                dbConn.removeCategory(id);
+                obOut.writeObject("SUCC");
+            } catch (SQLException ex) {
+                obOut.writeObject(ex.getErrorCode());
+            } catch (CategoryNotFoundException ex) {
+                obOut.writeObject("FAIL");
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getCategory() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                Category c = dbConn.getCategory(id);
+                obOut.writeObject(c);
+            } catch (SQLException | CategoryNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getAllCategorys() {
+        try {
+            try {
+                List<Category> categorys = dbConn.getAllCategorys();
+                obOut.writeObject(categorys);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getProductsInCategory() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                List<Product> products = dbConn.getProductsInCategory(id);
+                obOut.writeObject(products);
+            } catch (SQLException | CategoryNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void addDiscount() {
+        try {
+            try {
+                Discount d = (Discount) currentData.getData();
+                dbConn.addDiscount(d);
+            } catch (SQLException ex) {
+                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void updateDiscount() {
+        try {
+            try {
+                Discount d = (Discount) currentData.getData();
+                Discount discount = dbConn.updateDiscount(d);
+                obOut.writeObject(discount);
+            } catch (SQLException | DiscountNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void removeDiscount() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                dbConn.removeDiscount(id);
+                obOut.writeObject("SUCC");
+            } catch (SQLException ex) {
+                obOut.writeObject(ex.getErrorCode());
+            } catch (DiscountNotFoundException ex) {
+                obOut.writeObject("FAIL");
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getDiscount() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                Discount d = dbConn.getDiscount(id);
+                obOut.writeObject(d);
+            } catch (SQLException | DiscountNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getAllDiscounts() {
+        try {
+            try {
+                List<Discount> discounts = dbConn.getAllDiscounts();
+                obOut.writeObject(discounts);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void addTax() {
+        try {
+            try {
+                Tax t = (Tax) currentData.getData();
+                dbConn.addTax(t);
+            } catch (SQLException ex) {
+                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void removeTax() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                dbConn.removeTax(id);
+                obOut.writeObject("SUCC");
+            } catch (SQLException ex) {
+                obOut.writeObject(ex.getErrorCode());
+            } catch (TaxNotFoundException ex) {
+                obOut.writeObject("FAIL");
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getTax() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                Tax t = dbConn.getTax(id);
+                obOut.writeObject(t);
+            } catch (SQLException | TaxNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void updateTax() {
+        try {
+            try {
+                Tax t = (Tax) currentData.getData();
+                Tax tax = dbConn.updateTax(t);
+                obOut.writeObject(tax);
+            } catch (SQLException | TaxNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getAllTax() {
+        try {
+            try {
+                List<Tax> tax = dbConn.getAllTax();
+                obOut.writeObject(tax);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void addVoucher() {
+        try {
+            try {
+                Voucher v = (Voucher) currentData.getData();
+                dbConn.addVoucher(v);
+            } catch (SQLException ex) {
+                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void removeVoucher() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                dbConn.removeVoucher(id);
+                obOut.writeObject("SUCC");
+            } catch (SQLException ex) {
+                obOut.writeObject(ex.getErrorCode());
+            } catch (VoucherNotFoundException ex) {
+                obOut.writeObject("FAIL");
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getVoucher() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                Voucher v = dbConn.getVoucher(id);
+                obOut.writeObject(v);
+            } catch (SQLException | VoucherNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void updateVoucher() {
+        try {
+            try {
+                Voucher v = (Voucher) currentData.getData();
+                Voucher voucher = dbConn.updateVoucher(v);
+                obOut.writeObject(voucher);
+            } catch (SQLException | VoucherNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getAllVouchers() {
+        try {
+            try {
+                List<Voucher> voucher = dbConn.getAllVouchers();
+                obOut.writeObject(voucher);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void addScreen() {
+        try {
+            try {
+                Screen s = (Screen) currentData.getData();
+                dbConn.addScreen(s);
+            } catch (SQLException ex) {
+                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void addButton() {
+        try {
+            try {
+                Button b = (Button) currentData.getData();
+                dbConn.addButton(b);
+            } catch (SQLException ex) {
+                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void removeScreen() {
+        try {
+            try {
+                Screen s = (Screen) currentData.getData();
+                dbConn.removeScreen(s);
+                obOut.writeObject("SUCC");
+            } catch (SQLException ex) {
+                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ScreenNotFoundException ex) {
+                obOut.writeObject("FAIL");
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void removeButton() {
+        try {
+            try {
+                Button b = (Button) currentData.getData();
+                dbConn.removeButton(b);
+                obOut.writeObject("SUCC");
+            } catch (SQLException ex) {
+                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ButtonNotFoundException ex) {
+                obOut.writeObject("FAIL");
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void updateScreen() {
+        try {
+            try {
+                Screen s = (Screen) currentData.getData();
+                dbConn.updateScreen(s);
+                obOut.writeObject(s);
+            } catch (SQLException | ScreenNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void updateButton() {
+        try {
+            try {
+                Button b = (Button) currentData.getData();
+                dbConn.updateButton(b);
+                obOut.writeObject(b);
+            } catch (SQLException | ButtonNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getScreen() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                Screen s = dbConn.getScreen(id);
+                obOut.writeObject(s);
+            } catch (SQLException | ScreenNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getButton() {
+        try {
+            try {
+                int id = (int) currentData.getData();
+                Button b = dbConn.getButton(id);
+                obOut.writeObject(b);
+            } catch (SQLException | ButtonNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getAllScreens() {
+        try {
+            try {
+                List<Screen> screens = dbConn.getAllScreens();
+                obOut.writeObject(screens);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getAllButtons() {
+        try {
+            try {
+                List<Button> buttons = dbConn.getAllButtons();
+                obOut.writeObject(buttons);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getButtonsOnScreen() {
+        try {
+            try {
+                Screen s = (Screen) currentData.getData();
+                List<Button> buttons = dbConn.getButtonsOnScreen(s);
+                obOut.writeObject(buttons);
+            } catch (SQLException | ScreenNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
         }
     }
 }
