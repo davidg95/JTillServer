@@ -39,7 +39,7 @@ public class ConnectionAcceptThread extends Thread {
         for (;;) {
             try {
                 Socket incoming = socket.accept();
-                pool.submit(new ConnectionThread(incoming, data));
+                pool.submit(new ConnectionThread(socket.getInetAddress().getHostAddress(), incoming, data));
             } catch (IOException ex) {
                 Logger.getLogger(ConnectionAcceptThread.class.getName()).log(Level.SEVERE, null, ex);
             }
