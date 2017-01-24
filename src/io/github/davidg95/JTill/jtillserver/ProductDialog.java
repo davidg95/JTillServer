@@ -12,6 +12,7 @@ import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.Window;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
@@ -404,8 +405,8 @@ public class ProductDialog extends javax.swing.JDialog {
             } else {
                 String barcode = txtBarcode.getText();
                 if (!dbConn.checkBarcode(barcode)) {
-                    double price = Double.parseDouble(txtPrice.getText());
-                    double costPrice = Double.parseDouble(txtCostPrice.getText());
+                    BigDecimal price = new BigDecimal(Double.parseDouble(txtPrice.getText()));
+                    BigDecimal costPrice = new BigDecimal(txtCostPrice.getText());
                     int stock = Integer.parseInt(txtStock.getText());
                     int minStock = Integer.parseInt(txtMinStock.getText());
                     int maxStock = Integer.parseInt(txtMaxStock.getText());

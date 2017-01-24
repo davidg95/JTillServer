@@ -6,7 +6,9 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Image;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,14 +40,18 @@ public class ProductsWindow extends javax.swing.JFrame {
     private DefaultComboBoxModel discountsModel;
     private DefaultComboBoxModel taxesModel;
     private DefaultComboBoxModel categorysModel;
+    
+    private Image icon;
 
     /**
      * Creates new form ProductsWindow
      *
      * @param dc the data source.
      */
-    public ProductsWindow(DataConnectInterface dc) {
+    public ProductsWindow(DataConnectInterface dc, Image icon) {
         this.dbConn = dc;
+        this.icon = icon;
+        this.setIconImage(icon);
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -60,9 +66,9 @@ public class ProductsWindow extends javax.swing.JFrame {
      *
      * @param dc the data source.
      */
-    public static void showProductsListWindow(DataConnectInterface dc) {
+    public static void showProductsListWindow(DataConnectInterface dc, Image icon) {
         if (frame == null) {
-            frame = new ProductsWindow(dc);
+            frame = new ProductsWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
         update();
@@ -685,8 +691,8 @@ public class ProductsWindow extends javax.swing.JFrame {
             product.setOpen(true);
         } else {
             String barcode = txtBarcode.getText();
-            double price = Double.parseDouble(txtPrice.getText());
-            double costPrice = Double.parseDouble(txtCostPrice.getText());
+            BigDecimal price = new BigDecimal(txtPrice.getText());
+            BigDecimal costPrice = new BigDecimal(txtCostPrice.getText());
             int stock = Integer.parseInt(txtStock.getText());
             int minStock = Integer.parseInt(txtMinStock.getText());
             int maxStock = Integer.parseInt(txtMaxStock.getText());
@@ -762,8 +768,8 @@ public class ProductsWindow extends javax.swing.JFrame {
             } else {
                 try {
                     String barcode = txtBarcode.getText();
-                    double price = Double.parseDouble(txtPrice.getText());
-                    double costPrice = Double.parseDouble(txtCostPrice.getText());
+                    BigDecimal price = new BigDecimal(txtPrice.getText());
+                    BigDecimal costPrice = new BigDecimal(txtCostPrice.getText());
                     int stock = Integer.parseInt(txtStock.getText());
                     int minStock = Integer.parseInt(txtMinStock.getText());
                     int maxStock = Integer.parseInt(txtMaxStock.getText());
@@ -799,17 +805,17 @@ public class ProductsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_tableProductsMousePressed
 
     private void btnShowCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowCategorysActionPerformed
-        CategorysWindow.showCategoryWindow(dbConn);
+        CategorysWindow.showCategoryWindow(dbConn, icon);
         init();
     }//GEN-LAST:event_btnShowCategorysActionPerformed
 
     private void btnShowTaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowTaxActionPerformed
-        TaxWindow.showTaxWindow(dbConn);
+        TaxWindow.showTaxWindow(dbConn, icon);
         init();
     }//GEN-LAST:event_btnShowTaxActionPerformed
 
     private void btnShowDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowDiscountsActionPerformed
-        DiscountsWindow.showDiscountListWindow(dbConn);
+        DiscountsWindow.showDiscountListWindow(dbConn, icon);
         init();
     }//GEN-LAST:event_btnShowDiscountsActionPerformed
 

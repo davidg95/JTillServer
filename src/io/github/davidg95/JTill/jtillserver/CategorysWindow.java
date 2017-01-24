@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Image;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -35,8 +36,9 @@ public class CategorysWindow extends javax.swing.JFrame {
     /**
      * Creates new form CategoryWindow
      */
-    public CategorysWindow(DataConnectInterface dc) {
+    public CategorysWindow(DataConnectInterface dc, Image icon) {
         dbConn = dc;
+        this.setIconImage(icon);
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -50,9 +52,9 @@ public class CategorysWindow extends javax.swing.JFrame {
      *
      * @param dc the reference to the data source.
      */
-    public static void showCategoryWindow(DataConnectInterface dc) {
+    public static void showCategoryWindow(DataConnectInterface dc, Image icon) {
         if (frame == null) {
-            frame = new CategorysWindow(dc);
+            frame = new CategorysWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
         update();

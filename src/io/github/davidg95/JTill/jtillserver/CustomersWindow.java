@@ -10,6 +10,7 @@ import io.github.davidg95.JTill.jtill.CustomerNotFoundException;
 import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import io.github.davidg95.JTill.jtill.Discount;
 import io.github.davidg95.JTill.jtill.DiscountNotFoundException;
+import java.awt.Image;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -40,8 +41,9 @@ public class CustomersWindow extends javax.swing.JFrame {
     /**
      * Creates new form CustomersWindow
      */
-    public CustomersWindow(DataConnectInterface dc) {
+    public CustomersWindow(DataConnectInterface dc, Image icon) {
         this.dbConn = dc;
+        this.setIconImage(icon);
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -56,9 +58,9 @@ public class CustomersWindow extends javax.swing.JFrame {
      *
      * @param dc a reference to the data source.
      */
-    public static void showCustomersListWindow(DataConnectInterface dc) {
+    public static void showCustomersListWindow(DataConnectInterface dc, Image icon) {
         if (frame == null) {
-            frame = new CustomersWindow(dc);
+            frame = new CustomersWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
         update();

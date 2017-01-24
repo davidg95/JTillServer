@@ -7,6 +7,7 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
+import java.awt.Image;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -27,22 +28,16 @@ public class SettingsWindow extends javax.swing.JFrame {
     /**
      * Creates new form Settings
      */
-    public SettingsWindow(DataConnectInterface dc) {
+    public SettingsWindow(DataConnectInterface dc, Image icon) {
         this.dbConn = dc;
+        this.setIconImage(icon);
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
-    public static void initWindow() {
-//        if (frame != null) {
-//            frame = new SettingsWindow();
-//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-//        }
-    }
-
-    public static void showSettingsWindow(DataConnectInterface dc) {
+    public static void showSettingsWindow(DataConnectInterface dc, Image icon) {
         if (frame == null) {
-            frame = new SettingsWindow(dc);
+            frame = new SettingsWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
         update();

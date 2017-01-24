@@ -9,6 +9,7 @@ import io.github.davidg95.JTill.jtill.*;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -47,17 +48,18 @@ public class ScreenEditWindow extends javax.swing.JFrame {
      *
      * @param dc reference to the data connect class.
      */
-    public ScreenEditWindow(DataConnectInterface dc) {
+    public ScreenEditWindow(DataConnectInterface dc, Image icon) {
         dbConn = dc;
+        this.setIconImage(icon);
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         categoryCards = (CardLayout) panelProducts.getLayout();
         cardsButtonGroup = new ButtonGroup();
     }
 
-    public static void showScreenEditWindow(DataConnectInterface dc) {
+    public static void showScreenEditWindow(DataConnectInterface dc, Image icon) {
         if (frame == null) {
-            frame = new ScreenEditWindow(dc);
+            frame = new ScreenEditWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
         update();

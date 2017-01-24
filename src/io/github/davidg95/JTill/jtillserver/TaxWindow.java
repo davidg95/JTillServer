@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Image;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -31,8 +32,9 @@ public class TaxWindow extends javax.swing.JFrame {
     /**
      * Creates new form TaxWindow
      */
-    public TaxWindow(DataConnectInterface dc) {
+    public TaxWindow(DataConnectInterface dc, Image icon) {
         dbConn = dc;
+        this.setIconImage(icon);
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -40,16 +42,9 @@ public class TaxWindow extends javax.swing.JFrame {
         showAllTaxes();
     }
 
-    public static void initWindow() {
-//        if (frame != null) {
-//            frame = new TaxWindow();
-//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-//        }
-    }
-
-    public static void showTaxWindow(DataConnectInterface dc) {
+    public static void showTaxWindow(DataConnectInterface dc, Image icon) {
         if (frame == null) {
-            frame = new TaxWindow(dc);
+            frame = new TaxWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
         update();

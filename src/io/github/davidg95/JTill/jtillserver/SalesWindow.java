@@ -6,7 +6,9 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Image;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.text.DecimalFormat;
@@ -31,23 +33,17 @@ public class SalesWindow extends javax.swing.JFrame {
     /**
      * Creates new form SalesWindow
      */
-    public SalesWindow(DataConnectInterface dc) {
+    public SalesWindow(DataConnectInterface dc, Image icon) {
         this.dbConn = TillServer.getDataConnection();
+        this.setIconImage(icon);
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         model = (DefaultTableModel) tableSales.getModel();
     }
 
-    public static void initWindow() {
-//        if (frame != null) {
-//            frame = new SalesWindow();
-//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-//        }
-    }
-
-    public static void showSalesWindow(DataConnectInterface dc) {
+    public static void showSalesWindow(DataConnectInterface dc, Image icon) {
         if (frame == null) {
-            frame = new SalesWindow(dc);
+            frame = new SalesWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
         frame.setCurrentSale(null);
@@ -76,12 +72,12 @@ public class SalesWindow extends javax.swing.JFrame {
     private void setTakings() {
         try {
             List<Sale> sales = dbConn.getAllSales();
-            double val = 0;
+            BigDecimal val = new BigDecimal("0");
             int count = sales.size();
             for (Sale s : sales) {
-                val += s.getTotal();
+                val.add(s.getTotal());
             }
-            if (val > 1) {
+            if (val.longValueExact() > 1) {
                 DecimalFormat df = new DecimalFormat("#.00"); // Set your desired format here.
                 lblCurrentTakings.setText("Current Takings: £" + df.format(val));
             } else {
@@ -90,7 +86,7 @@ public class SalesWindow extends javax.swing.JFrame {
             }
             lblSaleCount.setText("Current Sale Count: " + count);
 
-            if (val > 1) {
+            if (val.longValueExact() > 1) {
                 DecimalFormat df = new DecimalFormat("#.00"); // Set your desired format here.
                 lblDailyTakings.setText("Daily Takings: £" + df.format(val));
             } else {

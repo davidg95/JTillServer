@@ -10,6 +10,7 @@ import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import io.github.davidg95.JTill.jtill.GUIInterface;
 import io.github.davidg95.JTill.jtill.Staff;
 import io.github.davidg95.JTill.jtill.StaffNotFoundException;
+import java.awt.Image;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.io.File;
@@ -44,15 +45,20 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
     private final boolean remote;
 
+    private final Image icon;
+
     /**
      * Creates new form GUI
      *
      * @param dbConnection
      * @param remote flag indicating whether this is a remote connection or not.
+     * @param icon
      */
-    public GUI(DataConnectInterface dbConnection, boolean remote) {
+    public GUI(DataConnectInterface dbConnection, boolean remote, Image icon) {
         this.dbConn = dbConnection;
         this.remote = remote;
+        this.icon = icon;
+        this.setIconImage(icon);
         initComponents();
         connections = new ArrayList<>();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -282,7 +288,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         itemResetSales = new javax.swing.JMenuItem();
 
         setTitle("JTill Server");
-        setIconImage(TillServer.getIcon());
 
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
@@ -604,11 +609,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnManageStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStockActionPerformed
-        ProductsWindow.showProductsListWindow(dbConn);
+        ProductsWindow.showProductsListWindow(dbConn, icon);
     }//GEN-LAST:event_btnManageStockActionPerformed
 
     private void itemStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStockActionPerformed
-        ProductsWindow.showProductsListWindow(dbConn);
+        ProductsWindow.showProductsListWindow(dbConn, icon);
     }//GEN-LAST:event_itemStockActionPerformed
 
     private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
@@ -622,11 +627,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_itemExitActionPerformed
 
     private void itemCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCustomersActionPerformed
-        CustomersWindow.showCustomersListWindow(dbConn);
+        CustomersWindow.showCustomersListWindow(dbConn, icon);
     }//GEN-LAST:event_itemCustomersActionPerformed
 
     private void btnManageCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageCustomersActionPerformed
-        CustomersWindow.showCustomersListWindow(dbConn);
+        CustomersWindow.showCustomersListWindow(dbConn, icon);
     }//GEN-LAST:event_btnManageCustomersActionPerformed
 
     private void itemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLoginActionPerformed
@@ -638,11 +643,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_itemLoginActionPerformed
 
     private void itemStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffActionPerformed
-        StaffWindow.showStaffListWindow(dbConn);
+        StaffWindow.showStaffListWindow(dbConn, icon);
     }//GEN-LAST:event_itemStaffActionPerformed
 
     private void btnManageStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStaffActionPerformed
-        StaffWindow.showStaffListWindow(dbConn);
+        StaffWindow.showStaffListWindow(dbConn, icon);
     }//GEN-LAST:event_btnManageStaffActionPerformed
 
     private void lblClientsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblClientsMouseClicked
@@ -664,27 +669,27 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_lblDatabaseMouseClicked
 
     private void itemDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDiscountsActionPerformed
-        DiscountsWindow.showDiscountListWindow(dbConn);
+        DiscountsWindow.showDiscountListWindow(dbConn, icon);
     }//GEN-LAST:event_itemDiscountsActionPerformed
 
     private void itemCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCategorysActionPerformed
-        CategorysWindow.showCategoryWindow(dbConn);
+        CategorysWindow.showCategoryWindow(dbConn, icon);
     }//GEN-LAST:event_itemCategorysActionPerformed
 
     private void itemTaxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTaxesActionPerformed
-        TaxWindow.showTaxWindow(dbConn);
+        TaxWindow.showTaxWindow(dbConn, icon);
     }//GEN-LAST:event_itemTaxesActionPerformed
 
     private void btnDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiscountsActionPerformed
-        DiscountsWindow.showDiscountListWindow(dbConn);
+        DiscountsWindow.showDiscountListWindow(dbConn, icon);
     }//GEN-LAST:event_btnDiscountsActionPerformed
 
     private void btnCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategorysActionPerformed
-        CategorysWindow.showCategoryWindow(dbConn);
+        CategorysWindow.showCategoryWindow(dbConn, icon);
     }//GEN-LAST:event_btnCategorysActionPerformed
 
     private void itemServerOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemServerOptionsActionPerformed
-        SettingsWindow.showSettingsWindow(dbConn);
+        SettingsWindow.showSettingsWindow(dbConn, icon);
     }//GEN-LAST:event_itemServerOptionsActionPerformed
 
     private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
@@ -696,7 +701,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
     private void itemSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSalesActionPerformed
 //        JOptionPane.showMessageDialog(this, "Takings: £" + data.getTakings() + "\nSales: " + data.getSales(), "Sales Data", JOptionPane.PLAIN_MESSAGE);
-        SalesWindow.showSalesWindow(dbConn);
+        SalesWindow.showSalesWindow(dbConn, icon);
     }//GEN-LAST:event_itemSalesActionPerformed
 
     private void itemResetSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemResetSalesActionPerformed
@@ -704,15 +709,15 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_itemResetSalesActionPerformed
 
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
-        SalesWindow.showSalesWindow(dbConn);
+        SalesWindow.showSalesWindow(dbConn, icon);
     }//GEN-LAST:event_btnReportsActionPerformed
 
     private void btnSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsActionPerformed
-        SettingsWindow.showSettingsWindow(dbConn);
+        SettingsWindow.showSettingsWindow(dbConn, icon);
     }//GEN-LAST:event_btnSettingsActionPerformed
 
     private void btnScreensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScreensActionPerformed
-        ScreenEditWindow.showScreenEditWindow(dbConn);
+        ScreenEditWindow.showScreenEditWindow(dbConn, icon);
     }//GEN-LAST:event_btnScreensActionPerformed
 
     private void itemVouchersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemVouchersActionPerformed

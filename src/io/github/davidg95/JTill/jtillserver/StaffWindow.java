@@ -6,12 +6,11 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Image;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -34,8 +33,9 @@ public class StaffWindow extends javax.swing.JFrame {
     /**
      * Creates new form StaffWindow
      */
-    public StaffWindow(DataConnectInterface dc) {
+    public StaffWindow(DataConnectInterface dc, Image icon) {
         this.dbConn = dc;
+        this.setIconImage(icon);
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
@@ -43,9 +43,9 @@ public class StaffWindow extends javax.swing.JFrame {
         showAllStaff();
     }
 
-    public static void showStaffListWindow(DataConnectInterface dc) {
+    public static void showStaffListWindow(DataConnectInterface dc, Image icon) {
         if (frame == null) {
-            frame = new StaffWindow(dc);
+            frame = new StaffWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
         update();
