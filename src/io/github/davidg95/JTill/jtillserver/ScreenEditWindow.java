@@ -398,10 +398,14 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             @Override
             public void run() {
                 try {
-                    int position = dbConn.getButtonsOnScreen(currentScreen).size();
-                    Button b = new Button("[SPACE]", 1, position, currentScreen.getId(), 0);
-                    dbConn.addButton(b);
-                    setButtons();
+                    if (currentScreen == null) {
+                        JOptionPane.showMessageDialog(ScreenEditWindow.this, "Select a screen", "Space", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        int position = dbConn.getButtonsOnScreen(currentScreen).size();
+                        Button b = new Button("[SPACE]", 1, position, currentScreen.getId(), 0);
+                        dbConn.addButton(b);
+                        setButtons();
+                    }
                 } catch (IOException | SQLException | ScreenNotFoundException ex) {
                     showError(ex);
                 }

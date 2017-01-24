@@ -71,13 +71,14 @@ public class ConnectionThread extends Thread {
                 TillServer.g.log("Contact from " + site);
 
                 String inp[] = input.split(",");
+                final ConnectionData data = currentData.clone();
 
                 switch (inp[0]) {
                     case "NEWPRODUCT": //Add a new product
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                newProduct();
+                                newProduct(data);
                             }
                         }.start();
                         break;
@@ -85,7 +86,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                removeProduct();
+                                removeProduct(data);
                             }
                         }.start();
                         break;
@@ -93,7 +94,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                purchase();
+                                purchase(data);
                             }
                         }.start();
                         break;
@@ -101,7 +102,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getProduct();
+                                getProduct(data);
                             }
                         }.start();
                         break;
@@ -109,7 +110,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                updateProduct();
+                                updateProduct(data);
                             }
                         }.start();
                         break;
@@ -117,7 +118,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getProductByBarcode();
+                                getProductByBarcode(data);
                             }
                         }.start();
                         break;
@@ -125,7 +126,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                checkBarcode();
+                                checkBarcode(data);
                             }
                         }.start();
                         break;
@@ -133,7 +134,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                setStock();
+                                setStock(data);
                             }
                         }.start();
                         break;
@@ -141,7 +142,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getProductsDiscount();
+                                getProductsDiscount(data);
                             }
                         }.start();
                         break;
@@ -165,7 +166,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                newCustomer();
+                                newCustomer(data);
                             }
                         }.start();
                         break;
@@ -173,7 +174,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                removeCustomer();
+                                removeCustomer(data);
                             }
                         }.start();
                         break;
@@ -181,7 +182,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getCustomer();
+                                getCustomer(data);
                             }
                         }.start();
                         break;
@@ -189,7 +190,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getCustomerByName();
+                                getCustomerByName(data);
                             }
                         }.start();
                         break;
@@ -205,7 +206,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                updateCustomer();
+                                updateCustomer(data);
                             }
                         }.start();
                         break;
@@ -221,7 +222,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                addStaff();
+                                addStaff(data);
                             }
                         }.start();
                         break;
@@ -229,7 +230,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                removeStaff();
+                                removeStaff(data);
                             }
                         }.start();
                         break;
@@ -237,7 +238,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getStaff();
+                                getStaff(data);
                             }
                         }.start();
                         break;
@@ -245,7 +246,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                updateStaff();
+                                updateStaff(data);
                             }
                         }.start();
                         break;
@@ -269,7 +270,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                addSale();
+                                addSale(data);
                             }
                         }.start();
                         break;
@@ -285,7 +286,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getSale();
+                                getSale(data);
                             }
                         }.start();
                         break;
@@ -293,7 +294,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getSaleDateRange();
+                                getSaleDateRange(data);
                             }
                         }.start();
                         break;
@@ -301,7 +302,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                login();
+                                login(data);
                             }
                         }.start();
                         break;
@@ -309,7 +310,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                tillLogin();
+                                tillLogin(data);
                             }
                         }.start();
                         break;
@@ -317,7 +318,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                logout();
+                                logout(data);
                             }
                         }.start();
                         break;
@@ -325,7 +326,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                tillLogout();
+                                tillLogout(data);
                             }
                         }.start();
                         break;
@@ -333,7 +334,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                addCategory();
+                                addCategory(data);
                             }
                         }.start();
                         break;
@@ -341,7 +342,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                updateCategory();
+                                updateCategory(data);
                             }
                         }.start();
                         break;
@@ -349,7 +350,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                removeCategory();
+                                removeCategory(data);
                             }
                         }.start();
                         break;
@@ -357,7 +358,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getCategory();
+                                getCategory(data);
                             }
                         }.start();
                         break;
@@ -373,7 +374,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getProductsInCategory();
+                                getProductsInCategory(data);
                             }
                         }.start();
                         break;
@@ -381,7 +382,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                addDiscount();
+                                addDiscount(data);
                             }
                         }.start();
                         break;
@@ -389,7 +390,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                updateDiscount();
+                                updateDiscount(data);
                             }
                         }.start();
                         break;
@@ -397,7 +398,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                removeDiscount();
+                                removeDiscount(data);
                             }
                         }.start();
                         break;
@@ -405,7 +406,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getDiscount();
+                                getDiscount(data);
                             }
                         }.start();
                         break;
@@ -421,7 +422,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                addTax();
+                                addTax(data);
                             }
                         }.start();
                         break;
@@ -429,7 +430,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                removeTax();
+                                removeTax(data);
                             }
                         }.start();
                         break;
@@ -437,7 +438,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getTax();
+                                getTax(data);
                             }
                         }.start();
                         break;
@@ -445,7 +446,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                updateTax();
+                                updateTax(data);
                             }
                         }.start();
                         break;
@@ -461,7 +462,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                addVoucher();
+                                addVoucher(data);
                             }
                         }.start();
                         break;
@@ -469,7 +470,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                removeVoucher();
+                                removeVoucher(data);
                             }
                         }.start();
                         break;
@@ -477,7 +478,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getVoucher();
+                                getVoucher(data);
                             }
                         }.start();
                         break;
@@ -485,7 +486,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                updateVoucher();
+                                updateVoucher(data);
                             }
                         }.start();
                         break;
@@ -501,7 +502,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                addScreen();
+                                addScreen(data);
                             }
                         }.start();
                         break;
@@ -509,7 +510,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                addButton();
+                                addButton(data);
                             }
                         }.start();
                         break;
@@ -517,7 +518,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                removeScreen();
+                                removeScreen(data);
                             }
                         }.start();
                         break;
@@ -525,7 +526,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                removeButton();
+                                removeButton(data);
                             }
                         }.start();
                         break;
@@ -533,7 +534,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                updateScreen();
+                                updateScreen(data);
                             }
                         }.start();
                         break;
@@ -541,7 +542,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                updateButton();
+                                updateButton(data);
                             }
                         }.start();
                         break;
@@ -549,7 +550,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getScreen();
+                                getScreen(data);
                             }
                         }.start();
                         break;
@@ -557,7 +558,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getButton();
+                                getButton(data);
                             }
                         }.start();
                         break;
@@ -581,7 +582,7 @@ public class ConnectionThread extends Thread {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getButtonsOnScreen();
+                                getButtonsOnScreen(data);
                             }
                         }.start();
                         break;
@@ -612,9 +613,10 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void newProduct() {
+    private void newProduct(ConnectionData data) {
         try {
-            Product p = (Product) currentData.getData();
+            ConnectionData clone = data.clone();
+            Product p = (Product) clone.getData();
             dbConn.addProduct(p);
         } catch (SQLException ex) {
         } catch (IOException ex) {
@@ -622,10 +624,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void removeProduct() {
+    private void removeProduct(ConnectionData data) {
         try {
             try {
-                int code = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int code = (int) clone.getData();
                 dbConn.removeProduct(code);
                 obOut.writeObject("SUCC");
             } catch (SQLException | ProductNotFoundException ex) {
@@ -637,10 +640,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void purchase() {
+    private void purchase(ConnectionData data) {
         try {
             try {
-                int code = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int code = (int) clone.getData();
                 int stock = dbConn.purchaseProduct(code);
                 obOut.writeObject(stock);
             } catch (ProductNotFoundException | SQLException | OutOfStockException ex) {
@@ -653,10 +657,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getProduct() {
+    private void getProduct(ConnectionData data) {
         try {
             try {
-                int code = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int code = (int) clone.getData();
                 Product p = dbConn.getProduct(code);
                 obOut.writeObject(p);
             } catch (ProductNotFoundException | SQLException ex) {
@@ -667,10 +672,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void updateProduct() {
+    private void updateProduct(ConnectionData data) {
         try {
             try {
-                Product p = (Product) currentData.getData();
+                ConnectionData clone = data.clone();
+                Product p = (Product) clone.getData();
                 dbConn.updateProduct(p);
                 obOut.writeObject(p);
             } catch (SQLException | ProductNotFoundException ex) {
@@ -681,10 +687,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getProductByBarcode() {
+    private void getProductByBarcode(ConnectionData data) {
         try {
             try {
-                String barcode = (String) currentData.getData();
+                ConnectionData clone = data.clone();
+                String barcode = (String) clone.getData();
                 Product p = dbConn.getProductByBarcode(barcode);
                 obOut.writeObject(p);
             } catch (ProductNotFoundException | SQLException ex) {
@@ -695,10 +702,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void checkBarcode() {
+    private void checkBarcode(ConnectionData data) {
         try {
             try {
-                String barcode = (String) currentData.getData();
+                ConnectionData clone = data.clone();
+                String barcode = (String) clone.getData();
                 boolean inUse = dbConn.checkBarcode(barcode);
                 if (inUse) {
                     obOut.writeObject("USED");
@@ -713,10 +721,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void setStock() {
+    private void setStock(ConnectionData data) {
         try {
             try {
-                String[] inp = ((String) currentData.getData()).split(",");
+                ConnectionData clone = data.clone();
+                String[] inp = ((String) clone.getData()).split(",");
                 int id = Integer.parseInt(inp[1]);
                 int stock = Integer.parseInt(inp[2]);
                 dbConn.setStock(id, stock);
@@ -731,10 +740,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getProductsDiscount() {
+    private void getProductsDiscount(ConnectionData data) {
         try {
             try {
-                Product p = (Product) currentData.getData();
+                ConnectionData clone = data.clone();
+                Product p = (Product) clone.getData();
 
                 List<Discount> discounts = dbConn.getProductsDiscount(p);
 
@@ -772,10 +782,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void newCustomer() {
+    private void newCustomer(ConnectionData data) {
         try {
             try {
-                Customer c = (Customer) currentData.getData();
+                ConnectionData clone = data.clone();
+                Customer c = (Customer) clone.getData();
                 dbConn.addCustomer(c);
             } catch (SQLException e) {
             }
@@ -784,10 +795,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void removeCustomer() {
+    private void removeCustomer(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 dbConn.removeCustomer(id);
                 obOut.writeObject("SUCC");
             } catch (SQLException | CustomerNotFoundException ex) {
@@ -799,10 +811,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getCustomer() {
+    private void getCustomer(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 Customer c = dbConn.getCustomer(id);
                 obOut.writeObject(c);
             } catch (CustomerNotFoundException | SQLException ex) {
@@ -813,10 +826,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getCustomerByName() {
+    private void getCustomerByName(ConnectionData data) {
         try {
             try {
-                String name = (String) currentData.getData();
+                ConnectionData clone = data.clone();
+                String name = (String) clone.getData();
                 List<Customer> customers = dbConn.getCustomerByName(name);
                 obOut.writeObject(customers);
             } catch (SQLException | CustomerNotFoundException ex) {
@@ -839,10 +853,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void updateCustomer() {
+    private void updateCustomer(ConnectionData data) {
         try {
             try {
-                Customer c = (Customer) currentData.getData();
+                ConnectionData clone = data.clone();
+                Customer c = (Customer) clone.getData();
                 Customer customer = dbConn.updateCustomer(c);
                 obOut.writeObject(customer);
             } catch (SQLException | CustomerNotFoundException ex) {
@@ -866,10 +881,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void addStaff() {
+    private void addStaff(ConnectionData data) {
         try {
             try {
-                Staff s = (Staff) currentData.getData();
+                ConnectionData clone = data.clone();
+                Staff s = (Staff) clone.getData();
                 dbConn.addStaff(s);
             } catch (SQLException | StaffNotFoundException ex) {
             }
@@ -878,10 +894,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void removeStaff() {
+    private void removeStaff(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 dbConn.removeStaff(id);
                 obOut.writeObject("SUCC");
             } catch (SQLException | StaffNotFoundException ex) {
@@ -893,10 +910,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getStaff() {
+    private void getStaff(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 Staff s = dbConn.getStaff(id);
                 obOut.writeObject(s);
             } catch (StaffNotFoundException | SQLException ex) {
@@ -907,10 +925,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void updateStaff() {
+    private void updateStaff(ConnectionData data) {
         try {
             try {
-                Staff s = (Staff) currentData.getData();
+                ConnectionData clone = data.clone();
+                Staff s = (Staff) clone.getData();
                 Staff updatedStaff = dbConn.updateStaff(s);
                 obOut.writeObject(updatedStaff);
             } catch (SQLException | StaffNotFoundException ex) {
@@ -948,10 +967,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void addSale() {
+    private void addSale(ConnectionData data) {
         try {
             try {
-                Sale s = (Sale) currentData.getData();
+                ConnectionData clone = data.clone();
+                Sale s = (Sale) clone.getData();
                 dbConn.addSale(s);
             } catch (SQLException ex) {
                 Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -974,10 +994,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getSale() {
+    private void getSale(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 Sale s = dbConn.getSale(id);
                 obOut.writeObject(s);
             } catch (SQLException | SaleNotFoundException ex) {
@@ -988,11 +1009,12 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getSaleDateRange() {
+    private void getSaleDateRange(ConnectionData data) {
         try {
             try {
-                Date start = (Date) currentData.getData();
-                Date end = (Date) currentData.getData2();
+                ConnectionData clone = data.clone();
+                Date start = (Date) clone.getData();
+                Date end = (Date) clone.getData2();
                 List<Sale> sales = dbConn.getSalesInRange(start, end);
                 obOut.writeObject(sales);
             } catch (IllegalArgumentException ex) {
@@ -1005,11 +1027,12 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void login() {
+    private void login(ConnectionData data) {
         try {
             try {
-                String username = (String) currentData.getData();
-                String password = (String) currentData.getData2();
+                ConnectionData clone = data.clone();
+                String username = (String) clone.getData();
+                String password = (String) clone.getData2();
                 Staff s = dbConn.login(username, password);
                 ConnectionThread.this.staff = s;
                 TillServer.g.log(staff.getName() + " has logged in");
@@ -1022,10 +1045,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void tillLogin() {
+    private void tillLogin(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 Staff s = dbConn.tillLogin(id);
                 ConnectionThread.this.staff = s;
                 TillServer.g.log(staff.getName() + " has logged in from " + site);
@@ -1038,10 +1062,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void logout() {
+    private void logout(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 dbConn.logout(id);
                 TillServer.g.log(staff.getName() + " has logged out");
                 ConnectionThread.this.staff = null;
@@ -1054,10 +1079,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void tillLogout() {
+    private void tillLogout(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 dbConn.tillLogout(id);
                 TillServer.g.log(staff.getName() + " has logged out");
                 ConnectionThread.this.staff = null;
@@ -1070,10 +1096,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void addCategory() {
+    private void addCategory(ConnectionData data) {
         try {
             try {
-                Category c = (Category) currentData.getData();
+                ConnectionData clone = data.clone();
+                Category c = (Category) clone.getData();
                 dbConn.addCategory(c);
             } catch (SQLException ex) {
                 Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -1083,10 +1110,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void updateCategory() {
+    private void updateCategory(ConnectionData data) {
         try {
             try {
-                Category c = (Category) currentData.getData();
+                ConnectionData clone = data.clone();
+                Category c = (Category) clone.getData();
                 Category category = dbConn.updateCategory(c);
                 obOut.writeObject(category);
             } catch (SQLException | CategoryNotFoundException ex) {
@@ -1097,10 +1125,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void removeCategory() {
+    private void removeCategory(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 dbConn.removeCategory(id);
                 obOut.writeObject("SUCC");
             } catch (SQLException ex) {
@@ -1113,10 +1142,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getCategory() {
+    private void getCategory(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 Category c = dbConn.getCategory(id);
                 obOut.writeObject(c);
             } catch (SQLException | CategoryNotFoundException ex) {
@@ -1140,10 +1170,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getProductsInCategory() {
+    private void getProductsInCategory(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 List<Product> products = dbConn.getProductsInCategory(id);
                 obOut.writeObject(products);
             } catch (SQLException | CategoryNotFoundException ex) {
@@ -1154,10 +1185,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void addDiscount() {
+    private void addDiscount(ConnectionData data) {
         try {
             try {
-                Discount d = (Discount) currentData.getData();
+                ConnectionData clone = data.clone();
+                Discount d = (Discount) clone.getData();
                 dbConn.addDiscount(d);
             } catch (SQLException ex) {
                 Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -1167,10 +1199,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void updateDiscount() {
+    private void updateDiscount(ConnectionData data) {
         try {
             try {
-                Discount d = (Discount) currentData.getData();
+                ConnectionData clone = data.clone();
+                Discount d = (Discount) clone.getData();
                 Discount discount = dbConn.updateDiscount(d);
                 obOut.writeObject(discount);
             } catch (SQLException | DiscountNotFoundException ex) {
@@ -1181,10 +1214,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void removeDiscount() {
+    private void removeDiscount(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 dbConn.removeDiscount(id);
                 obOut.writeObject("SUCC");
             } catch (SQLException ex) {
@@ -1197,10 +1231,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getDiscount() {
+    private void getDiscount(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 Discount d = dbConn.getDiscount(id);
                 obOut.writeObject(d);
             } catch (SQLException | DiscountNotFoundException ex) {
@@ -1224,10 +1259,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void addTax() {
+    private void addTax(ConnectionData data) {
         try {
             try {
-                Tax t = (Tax) currentData.getData();
+                ConnectionData clone = data.clone();
+                Tax t = (Tax) clone.getData();
                 dbConn.addTax(t);
             } catch (SQLException ex) {
                 Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -1237,10 +1273,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void removeTax() {
+    private void removeTax(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 dbConn.removeTax(id);
                 obOut.writeObject("SUCC");
             } catch (SQLException ex) {
@@ -1253,10 +1290,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getTax() {
+    private void getTax(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 Tax t = dbConn.getTax(id);
                 obOut.writeObject(t);
             } catch (SQLException | TaxNotFoundException ex) {
@@ -1267,10 +1305,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void updateTax() {
+    private void updateTax(ConnectionData data) {
         try {
             try {
-                Tax t = (Tax) currentData.getData();
+                ConnectionData clone = data.clone();
+                Tax t = (Tax) clone.getData();
                 Tax tax = dbConn.updateTax(t);
                 obOut.writeObject(tax);
             } catch (SQLException | TaxNotFoundException ex) {
@@ -1294,10 +1333,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void addVoucher() {
+    private void addVoucher(ConnectionData data) {
         try {
             try {
-                Voucher v = (Voucher) currentData.getData();
+                ConnectionData clone = data.clone();
+                Voucher v = (Voucher) clone.getData();
                 dbConn.addVoucher(v);
             } catch (SQLException ex) {
                 Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -1307,10 +1347,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void removeVoucher() {
+    private void removeVoucher(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 dbConn.removeVoucher(id);
                 obOut.writeObject("SUCC");
             } catch (SQLException ex) {
@@ -1323,10 +1364,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getVoucher() {
+    private void getVoucher(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 Voucher v = dbConn.getVoucher(id);
                 obOut.writeObject(v);
             } catch (SQLException | VoucherNotFoundException ex) {
@@ -1337,10 +1379,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void updateVoucher() {
+    private void updateVoucher(ConnectionData data) {
         try {
             try {
-                Voucher v = (Voucher) currentData.getData();
+                ConnectionData clone = data.clone();
+                Voucher v = (Voucher) clone.getData();
                 Voucher voucher = dbConn.updateVoucher(v);
                 obOut.writeObject(voucher);
             } catch (SQLException | VoucherNotFoundException ex) {
@@ -1364,10 +1407,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void addScreen() {
+    private void addScreen(ConnectionData data) {
         try {
             try {
-                Screen s = (Screen) currentData.getData();
+                ConnectionData clone = data.clone();
+                Screen s = (Screen) clone.getData();
                 dbConn.addScreen(s);
             } catch (SQLException ex) {
                 Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -1377,10 +1421,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void addButton() {
+    private void addButton(ConnectionData data) {
         try {
             try {
-                Button b = (Button) currentData.getData();
+                ConnectionData clone = data.clone();
+                Button b = (Button) clone.getData();
                 dbConn.addButton(b);
             } catch (SQLException ex) {
                 Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -1390,10 +1435,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void removeScreen() {
+    private void removeScreen(ConnectionData data) {
         try {
             try {
-                Screen s = (Screen) currentData.getData();
+                ConnectionData clone = data.clone();
+                Screen s = (Screen) clone.getData();
                 dbConn.removeScreen(s);
                 obOut.writeObject("SUCC");
             } catch (SQLException ex) {
@@ -1406,10 +1452,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void removeButton() {
+    private void removeButton(ConnectionData data) {
         try {
             try {
-                Button b = (Button) currentData.getData();
+                ConnectionData clone = data.clone();
+                Button b = (Button) clone.getData();
                 dbConn.removeButton(b);
                 obOut.writeObject("SUCC");
             } catch (SQLException ex) {
@@ -1422,10 +1469,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void updateScreen() {
+    private void updateScreen(ConnectionData data) {
         try {
             try {
-                Screen s = (Screen) currentData.getData();
+                ConnectionData clone = data.clone();
+                Screen s = (Screen) clone.getData();
                 dbConn.updateScreen(s);
                 obOut.writeObject(s);
             } catch (SQLException | ScreenNotFoundException ex) {
@@ -1436,10 +1484,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void updateButton() {
+    private void updateButton(ConnectionData data) {
         try {
             try {
-                Button b = (Button) currentData.getData();
+                ConnectionData clone = data.clone();
+                Button b = (Button) clone.getData();
                 dbConn.updateButton(b);
                 obOut.writeObject(b);
             } catch (SQLException | ButtonNotFoundException ex) {
@@ -1450,10 +1499,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getScreen() {
+    private void getScreen(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 Screen s = dbConn.getScreen(id);
                 obOut.writeObject(s);
             } catch (SQLException | ScreenNotFoundException ex) {
@@ -1464,10 +1514,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getButton() {
+    private void getButton(ConnectionData data) {
         try {
             try {
-                int id = (int) currentData.getData();
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
                 Button b = dbConn.getButton(id);
                 obOut.writeObject(b);
             } catch (SQLException | ButtonNotFoundException ex) {
@@ -1504,10 +1555,11 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getButtonsOnScreen() {
+    private void getButtonsOnScreen(ConnectionData data) {
         try {
             try {
-                Screen s = (Screen) currentData.getData();
+                ConnectionData clone = data.clone();
+                Screen s = (Screen) clone.getData();
                 List<Button> buttons = dbConn.getButtonsOnScreen(s);
                 obOut.writeObject(buttons);
             } catch (SQLException | ScreenNotFoundException ex) {
