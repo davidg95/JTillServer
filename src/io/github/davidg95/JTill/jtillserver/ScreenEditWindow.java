@@ -10,15 +10,12 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -47,6 +44,8 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
     /**
      * Creates new form ScreenEditWindow
+     *
+     * @param dc reference to the data connect class.
      */
     public ScreenEditWindow(DataConnectInterface dc) {
         dbConn = dc;
@@ -170,13 +169,9 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                             });
                             panel.add(pan);
                         } else {
-                            pButton.addActionListener(new ActionListener() {
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
-                                    currentButton = b;
-                                    showButtonOptions();
-                                }
-
+                            pButton.addActionListener((ActionEvent e) -> {
+                                currentButton = b;
+                                showButtonOptions();
                             });
                             panel.add(pButton);
                         }
