@@ -158,6 +158,11 @@ public class SalesWindow extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tableSales.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableSalesMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tableSales);
         if (tableSales.getColumnModel().getColumnCount() > 0) {
             tableSales.getColumnModel().getColumn(0).setResizable(false);
@@ -243,6 +248,12 @@ public class SalesWindow extends javax.swing.JFrame {
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         this.setTakings();
     }//GEN-LAST:event_btnResetActionPerformed
+
+    private void tableSalesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableSalesMouseClicked
+        if (evt.getClickCount() == 2) {
+            SaleDialog.showSaleDialog(this, currentTableContents.get(tableSales.getSelectedRow()));
+        }
+    }//GEN-LAST:event_tableSalesMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;

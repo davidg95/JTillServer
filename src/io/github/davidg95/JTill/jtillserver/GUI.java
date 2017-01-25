@@ -355,7 +355,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
         btnReports.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/reports.png"))); // NOI18N
         btnReports.setToolTipText("Reports");
-        btnReports.setEnabled(false);
         btnReports.setFocusable(false);
         btnReports.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnReports.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
