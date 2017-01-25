@@ -14,9 +14,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.io.StreamCorruptedException;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -368,7 +371,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNewScreenActionPerformed
 
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
-        new Thread() {
+        new Thread("AddProductButton") {
             @Override
             public void run() {
                 try {
@@ -391,7 +394,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNewProductActionPerformed
 
     private void btnSpaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSpaceActionPerformed
-        new Thread() {
+        new Thread("AddSpaceButton") {
             @Override
             public void run() {
                 try {
@@ -403,7 +406,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                         dbConn.addButton(b);
                         setButtons();
                     }
-                } catch (IOException | SQLException | ScreenNotFoundException ex) {
+                } catch (SQLException | ScreenNotFoundException | IOException ex) {
                     showError(ex);
                 }
             }
@@ -411,7 +414,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSpaceActionPerformed
 
     private void btnWipeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWipeAllActionPerformed
-        new Thread() {
+        new Thread("WpieAllButton") {
             @Override
             public void run() {
                 try {

@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,6 +38,8 @@ public class ConnectionThread extends Thread {
 
     private ConnectionData currentData;
 
+    private final Semaphore sem;
+
     /**
      * Constructor for Connection thread.
      *
@@ -47,6 +50,17 @@ public class ConnectionThread extends Thread {
         super(name);
         this.socket = s;
         this.dbConn = TillServer.getDataConnection();
+        sem = new Semaphore(1);
+    }
+
+    public void sendLog(String message) throws IOException {
+        try {
+            sem.acquire();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        obOut.writeObject(new ConnectionData("LOG", message));
+        sem.release();
     }
 
     @Override
@@ -65,6 +79,11 @@ public class ConnectionThread extends Thread {
                 String input;
 
                 Object o = obIn.readObject();
+                try {
+                    sem.acquire();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 currentData = (ConnectionData) o;
                 input = currentData.getFlag();
 
@@ -159,6 +178,14 @@ public class ConnectionThread extends Thread {
                             @Override
                             public void run() {
                                 getAllProducts();
+                            }
+                        }.start();
+                        break;
+                    case "PRODUCTLOOKUP": //Product lookup
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                productLookup(data);
                             }
                         }.start();
                         break;
@@ -602,6 +629,7 @@ public class ConnectionThread extends Thread {
                         }
                         break;
                 }
+                sem.release();
             }
             TillServer.g.decreaseClientCount(site);
             TillServer.g.log(site + " has disconnected");
@@ -774,6 +802,21 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 List<Product> products = dbConn.getAllProducts();
+                obOut.writeObject(products);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void productLookup(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                String terms = (String) clone.getData();
+                List<Product> products = dbConn.productLookup(terms);
                 obOut.writeObject(products);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
