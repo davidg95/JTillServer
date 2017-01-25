@@ -34,7 +34,7 @@ public class SalesWindow extends javax.swing.JFrame {
      * Creates new form SalesWindow
      */
     public SalesWindow(DataConnectInterface dc, Image icon) {
-        this.dbConn = TillServer.getDataConnection();
+        this.dbConn = dc;
         this.setIconImage(icon);
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
