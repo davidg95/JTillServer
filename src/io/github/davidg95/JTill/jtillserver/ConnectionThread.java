@@ -645,7 +645,8 @@ public class ConnectionThread extends Thread {
             try {
                 ConnectionData clone = data.clone();
                 int code = (int) clone.getData();
-                int stock = dbConn.purchaseProduct(code);
+                int amount = (int) clone.getData2();
+                int stock = dbConn.purchaseProduct(code, amount);
                 obOut.writeObject(stock);
             } catch (ProductNotFoundException | SQLException | OutOfStockException ex) {
                 TillServer.g.log(ex);
