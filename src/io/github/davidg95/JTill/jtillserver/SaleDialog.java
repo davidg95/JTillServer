@@ -56,8 +56,8 @@ public class SaleDialog extends javax.swing.JDialog {
     private void init() {
         lblSaleID.setText("Sale ID: " + sale.getCode());
         lblTime.setText("Time: " + new Time(sale.getTime()));
-        if (sale.getCustomer() > 0) {
-            lblCustomer.setText("Customer: " + sale.getCustomer());
+        if (sale.getCustomer() != null) {
+            lblCustomer.setText("<html>Customer: " + sale.getCustomer() + "</html>");
         }
 
         System.out.println(sale.getLineCount());
