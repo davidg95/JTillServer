@@ -25,6 +25,7 @@ public class ConnectionAcceptThread extends Thread {
     private final ServerSocket socket;
 
     public ConnectionAcceptThread(ServerSocket s) {
+        super("ConnectionAcceptThread");
         this.socket = s;
     }
 

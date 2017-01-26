@@ -73,7 +73,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         frame.setButtons();
     }
 
-    public void setButtons() {
+    public synchronized void setButtons() {
         try {
             List<Screen> screens = dbConn.getAllScreens();
             panelCategories.removeAll();
@@ -247,6 +247,20 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, e, "Staff", JOptionPane.ERROR_MESSAGE);
     }
 
+    private boolean checkName(String name) {
+        try {
+            List<Screen> screens = dbConn.getAllScreens();
+            for (Screen s : screens) {
+                if (s.getName().equalsIgnoreCase(name)) {
+                    return false;
+                }
+            }
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(ScreenEditWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return true;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -359,58 +373,67 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewScreenActionPerformed
-        try {
-            String name = JOptionPane.showInputDialog("Enter Name");
-            int position = dbConn.getAllScreens().size() - 1;
-            Screen s = new Screen(name, position, 0);
-            dbConn.addScreen(s);
-            setButtons();
-        } catch (IOException | SQLException ex) {
-            showError(ex);
+        String name = JOptionPane.showInputDialog("Enter Name");
+        if (checkName(name)) {
+            new Thread("New Screen") {
+                @Override
+                public void run() {
+                    try {
+                        int position = dbConn.getAllScreens().size() - 1;
+                        Screen s = new Screen(name, position, 0);
+                        dbConn.addScreen(s);
+                        setButtons();
+                    } catch (IOException | SQLException ex) {
+                        showError(ex);
+                    }
+                }
+            }.start();
+        } else {
+            JOptionPane.showMessageDialog(this, "Name already in use", "New Screen", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnNewScreenActionPerformed
 
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
-        new Thread("AddProductButton") {
-            @Override
-            public void run() {
-                try {
-                    if (currentScreen == null) {
-                        JOptionPane.showMessageDialog(ScreenEditWindow.this, "Select a screen", "New Button", JOptionPane.ERROR_MESSAGE);
-                        return;
+        if (currentScreen == null) {
+            JOptionPane.showMessageDialog(ScreenEditWindow.this, "Select a screen", "New Button", JOptionPane.ERROR_MESSAGE);
+        } else {
+            Product p = ProductSelectDialog.showDialog(this, dbConn);
+            if (p != null) {
+                new Thread("AddProductButton") {
+                    @Override
+                    public void run() {
+                        try {
+                            int position = dbConn.getButtonsOnScreen(currentScreen).size();
+                            Button b = new Button(p.getShortName(), p.getProductCode(), position, currentScreen.getId(), 0);
+                            dbConn.addButton(b);
+                            setButtons();
+                        } catch (IOException | SQLException | ScreenNotFoundException ex) {
+                            showError(ex);
+                        }
                     }
-                    Product p = ProductSelectDialog.showDialog(ScreenEditWindow.this, dbConn);
-                    if (p != null) {
-                        int position = dbConn.getButtonsOnScreen(currentScreen).size();
-                        Button b = new Button(p.getShortName(), p.getProductCode(), position, currentScreen.getId(), 0);
-                        dbConn.addButton(b);
-                        setButtons();
-                    }
-                } catch (IOException | SQLException | ScreenNotFoundException ex) {
-                    showError(ex);
-                }
+                }.start();
             }
-        }.start();
+        }
     }//GEN-LAST:event_btnNewProductActionPerformed
 
     private void btnSpaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSpaceActionPerformed
-        new Thread("AddSpaceButton") {
-            @Override
-            public void run() {
-                try {
-                    if (currentScreen == null) {
-                        JOptionPane.showMessageDialog(ScreenEditWindow.this, "Select a screen", "Space", JOptionPane.ERROR_MESSAGE);
-                    } else {
+        if (currentScreen == null) {
+            JOptionPane.showMessageDialog(ScreenEditWindow.this, "Select a screen", "Space", JOptionPane.ERROR_MESSAGE);
+        } else {
+            new Thread("AddSpaceButton") {
+                @Override
+                public void run() {
+                    try {
                         int position = dbConn.getButtonsOnScreen(currentScreen).size();
                         Button b = new Button("[SPACE]", 1, position, currentScreen.getId(), 0);
                         dbConn.addButton(b);
                         setButtons();
+                    } catch (SQLException | ScreenNotFoundException | IOException ex) {
+                        showError(ex);
                     }
-                } catch (SQLException | ScreenNotFoundException | IOException ex) {
-                    showError(ex);
                 }
-            }
-        }.start();
+            }.start();
+        }
     }//GEN-LAST:event_btnSpaceActionPerformed
 
     private void btnWipeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWipeAllActionPerformed
