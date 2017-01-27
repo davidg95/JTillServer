@@ -317,6 +317,14 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
+                    case "UPDATESALE": //Update a sale
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                updateSale(data);
+                            }
+                        }.start();
+                        break;
                     case "GETSALEDATERANGE": //Get all sales within a date range
                         new Thread(inp[0]) {
                             @Override
@@ -1047,6 +1055,20 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(s);
             } catch (SQLException | SaleNotFoundException ex) {
                 obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void updateSale(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                Sale sale = (Sale) clone.getData();
+                Sale s = dbConn.updateSale(sale);
+            } catch (SQLException | SaleNotFoundException ex) {
+                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (IOException e) {
 
