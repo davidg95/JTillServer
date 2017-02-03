@@ -626,12 +626,37 @@ public class ConnectionThread extends Thread {
                             dbConn.deleteAllScreensAndButtons();
                         } catch (SQLException ex) {
                         }
+                        break;
+                    case "GETIMAGE":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getImage();
+                            }
+                        }.start();
+                        break;
+                    case "GETFXIMAGE":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getFXImage();
+                            }
+                        }.start();
+                        break;
+                    case "SETIMAGEPATH":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                setImagePath(data);
+                            }
+                        }.start();
+                        break;
                     case "CONNTERM": //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
                             try {
-                                dbConn.logout(staff.getId());
-                                dbConn.tillLogout(staff.getId());
+                                dbConn.logout(staff);
+                                dbConn.tillLogout(staff);
                             } catch (StaffNotFoundException ex) {
                             }
                         }
@@ -1132,8 +1157,8 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
-                int id = (int) clone.getData();
-                dbConn.logout(id);
+                Staff s = (Staff) clone.getData();
+                dbConn.logout(s);
                 TillServer.g.log(staff.getName() + " has logged out");
                 ConnectionThread.this.staff = null;
                 obOut.writeObject("SUCC");
@@ -1149,8 +1174,8 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
-                int id = (int) clone.getData();
-                dbConn.tillLogout(id);
+                Staff s = (Staff) clone.getData();
+                dbConn.tillLogout(s);
                 TillServer.g.log(staff.getName() + " has logged out");
                 ConnectionThread.this.staff = null;
                 obOut.writeObject("SUCC");
@@ -1633,6 +1658,33 @@ public class ConnectionThread extends Thread {
             }
         } catch (IOException e) {
 
+        }
+    }
+
+    private void getImage() {
+        try {
+            java.awt.Image image = dbConn.getImage();
+            obOut.writeObject(image);
+        } catch (IOException ex) {
+
+        }
+    }
+
+    private void getFXImage() {
+        try {
+            javafx.scene.image.Image image = dbConn.getFXImage();
+            obOut.writeObject(image);
+        } catch (IOException ex) {
+
+        }
+    }
+
+    private void setImagePath(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            String path = (String) clone.getData();
+            dbConn.setImagePath(path);
+        } catch (IOException ex) {
         }
     }
 }

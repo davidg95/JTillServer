@@ -186,7 +186,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private void logout() {
         try {
             lblUser.setText("Not Logged In");
-            dbConn.logout(staff.getId());
+            dbConn.logout(staff);
             log(staff.getName() + " has logged out");
         } catch (StaffNotFoundException ex) {
         } catch (IOException ex) {

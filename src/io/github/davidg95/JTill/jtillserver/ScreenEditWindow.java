@@ -14,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.io.StreamCorruptedException;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.List;
@@ -404,7 +403,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                     public void run() {
                         try {
                             int position = dbConn.getButtonsOnScreen(currentScreen).size();
-                            Button b = new Button(p.getShortName(), p.getProductCode(), position, currentScreen.getId(), 0);
+                            Button b = new Button(p.getShortName(), p, position, currentScreen, 0);
                             dbConn.addButton(b);
                             setButtons();
                         } catch (IOException | SQLException | ScreenNotFoundException ex) {
@@ -425,7 +424,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 public void run() {
                     try {
                         int position = dbConn.getButtonsOnScreen(currentScreen).size();
-                        Button b = new Button("[SPACE]", 1, position, currentScreen.getId(), 0);
+                        Button b = new Button("[SPACE]", null, position, currentScreen, 0);
                         dbConn.addButton(b);
                         setButtons();
                     } catch (SQLException | ScreenNotFoundException | IOException ex) {
