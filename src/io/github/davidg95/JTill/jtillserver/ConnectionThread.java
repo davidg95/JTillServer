@@ -245,6 +245,14 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
+                    case "CUSTOMERLOOKUP": //Search for a customer
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                customerLookup(data);
+                            }
+                        }.start();
+                        break;
                     case "ADDSTAFF": //Add a member of staff
                         new Thread(inp[0]) {
                             @Override
@@ -949,6 +957,21 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 List<Customer> customers = dbConn.getAllCustomers();
+                obOut.writeObject(customers);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void customerLookup(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                String terms = (String) clone.getData();
+                List<Customer> customers = dbConn.customerLookup(terms);
                 obOut.writeObject(customers);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
