@@ -37,10 +37,10 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setModal(true);
         setTitle(button.getName());
-        if(button.getOrder() == 0){
+        if (button.getOrder() == 0) {
             btnLeft.setEnabled(false);
         }
-        if(button.getOrder() == number){
+        if (button.getOrder() == number) {
             btnRight.setEnabled(false);
         }
         if (button.getName().equals("[SPACE]")) {
@@ -56,7 +56,8 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
      *
      * @param parent the parent window.
      * @param button the button object.
-     * @return
+     * @param number the number of buttons in the screen.
+     * @return the button with any changed applied.
      */
     public static Button showDialog(Component parent, Button button, int number) {
         Window window = null;

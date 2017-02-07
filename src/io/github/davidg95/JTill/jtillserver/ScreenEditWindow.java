@@ -110,6 +110,49 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         if (s.getColorValue() != 0) {
             cButton.setBackground(new Color(s.getColorValue()));
         }
+        cButton.addMouseListener(new MouseListener(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount() == 2){
+                    Screen s = ScreenButtonOptionDialog.showDialog(ScreenEditWindow.this, currentScreen);
+                    if(s == null){
+                        try {
+                            dbConn.removeScreen(currentScreen);
+                        } catch (IOException | SQLException | ScreenNotFoundException ex) {
+                            showError(ex);
+                        }
+                    } else{
+                        try {
+                            dbConn.updateScreen(s);
+                        } catch (IOException | SQLException | ScreenNotFoundException ex) {
+                            showError(ex);
+                        }
+                    }
+                    setButtons();
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                
+            }
+            
+        });
         cButton.addActionListener((ActionEvent e) -> {
             categoryCards.show(panelProducts, s.getName());
             currentScreen = s;
