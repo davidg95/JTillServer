@@ -675,6 +675,14 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
+                    case "ASSISSTANCE":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                assisstance(data);
+                            }
+                        }.start();
+                        break;
                     case "CONNTERM": //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -1746,6 +1754,16 @@ public class ConnectionThread extends Thread {
             String path = (String) clone.getData();
             dbConn.setImagePath(path);
         } catch (IOException ex) {
+        }
+    }
+
+    private void assisstance(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            String message = (String) clone.getData();
+            dbConn.assisstance(staff.getName() + " on terminal " + site + " has requested assisstance with message:\n" + message);
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

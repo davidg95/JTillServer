@@ -240,6 +240,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         }
     }
 
+    @Override
+    public void showMessage(String title, String message) {
+        JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
