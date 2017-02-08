@@ -173,7 +173,7 @@ public class PaymentDialog extends javax.swing.JDialog {
                 return;
             }
             amount = new BigDecimal(text);
-            if (amount.compareTo(customer.getMoneyDue()) == -1) {
+            if (amount.compareTo(customer.getMoneyDue()) > 0) {
                 JOptionPane.showMessageDialog(this, "They don't owe that much", "Payment", JOptionPane.ERROR_MESSAGE);
             } else {
                 customer.setMoneyDue(customer.getMoneyDue().subtract(amount));

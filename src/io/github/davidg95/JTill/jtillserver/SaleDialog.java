@@ -57,8 +57,10 @@ public class SaleDialog extends javax.swing.JDialog {
         lblSaleID.setText("Sale ID: " + sale.getCode());
         lblTime.setText("Time: " + new Time(sale.getTime()));
         if (sale.getCustomer() != null) {
-            lblCustomer.setText("<html>Customer: " + sale.getCustomer() + "</html>");
+            lblCustomer.setText("Customer: " + sale.getCustomer().getName());
         }
+
+        lblDiscount.setText("Discount: " + sale.getDiscount().getName());
 
         System.out.println(sale.getLineCount());
 
@@ -93,6 +95,7 @@ public class SaleDialog extends javax.swing.JDialog {
         lblCustomer = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableItems = new javax.swing.JTable();
+        lblDiscount = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -131,6 +134,8 @@ public class SaleDialog extends javax.swing.JDialog {
         });
         jScrollPane2.setViewportView(tableItems);
 
+        lblDiscount.setText("Discount:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -139,10 +144,11 @@ public class SaleDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lblSaleID)
                             .addComponent(lblTime)
-                            .addComponent(lblCustomer))
+                            .addComponent(lblCustomer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblDiscount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -159,7 +165,9 @@ public class SaleDialog extends javax.swing.JDialog {
                 .addComponent(lblTime)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblCustomer)
-                .addGap(233, 233, 233))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblDiscount)
+                .addGap(213, 213, 213))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -179,6 +187,7 @@ public class SaleDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnClose;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblCustomer;
+    private javax.swing.JLabel lblDiscount;
     private javax.swing.JLabel lblSaleID;
     private javax.swing.JLabel lblTime;
     private javax.swing.JTable tableItems;
