@@ -341,6 +341,22 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
+                    case "SUSPENDSALE": //Suspend a sale
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                suspendSale(data);
+                            }
+                        }.start();
+                        break;
+                    case "RESUMESALE": //Resume a sale
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                resumeSale(data);
+                            }
+                        }.start();
+                        break;
                     case "LOGIN": //Standard staff login
                         new Thread(inp[0]) {
                             @Override
@@ -1138,6 +1154,28 @@ public class ConnectionThread extends Thread {
             }
         } catch (IOException e) {
 
+        }
+    }
+
+    private void suspendSale(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            Sale sale = (Sale) clone.getData();
+            Staff s = (Staff) clone.getData2();
+            dbConn.suspendSale(sale, s);
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void resumeSale(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            Staff s = (Staff) clone.getData();
+            Sale sale = dbConn.resumeSale(s);
+            obOut.writeObject(sale);
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
