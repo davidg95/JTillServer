@@ -11,7 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.Date;
+import java.sql.Time;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
@@ -1151,8 +1151,8 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
-                Date start = (Date) clone.getData();
-                Date end = (Date) clone.getData2();
+                Time start = (Time) clone.getData();
+                Time end = (Time) clone.getData2();
                 List<Sale> sales = dbConn.getSalesInRange(start, end);
                 obOut.writeObject(sales);
             } catch (IllegalArgumentException ex) {

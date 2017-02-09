@@ -14,6 +14,7 @@ import java.awt.Window;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.text.DecimalFormat;
+import java.util.Calendar;
 import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
 
@@ -55,10 +56,13 @@ public class SaleDialog extends javax.swing.JDialog {
 
     private void init() {
         lblSaleID.setText("Sale ID: " + sale.getCode());
-        lblTime.setText("Time: " + new Time(sale.getTime()));
+        Calendar c = Calendar.getInstance();
+        c.setTime(sale.getTime());
+        lblTime.setText("Time: " + c.getTime().toString());
         if (sale.getCustomer() != null) {
             lblCustomer.setText("Customer: " + sale.getCustomer().getName());
         }
+        lblTerminal.setText("Terminal: " + sale.getTerminal());
 
         model.setRowCount(0);
 
@@ -91,6 +95,7 @@ public class SaleDialog extends javax.swing.JDialog {
         lblCustomer = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableItems = new javax.swing.JTable();
+        lblTerminal = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -129,6 +134,8 @@ public class SaleDialog extends javax.swing.JDialog {
         });
         jScrollPane2.setViewportView(tableItems);
 
+        lblTerminal.setText("Terminal:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -137,11 +144,12 @@ public class SaleDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lblSaleID)
                             .addComponent(lblTime)
-                            .addComponent(lblCustomer))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                            .addComponent(lblCustomer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblTerminal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -157,7 +165,9 @@ public class SaleDialog extends javax.swing.JDialog {
                 .addComponent(lblTime)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblCustomer)
-                .addGap(233, 233, 233))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblTerminal)
+                .addGap(213, 213, 213))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -178,6 +188,7 @@ public class SaleDialog extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblCustomer;
     private javax.swing.JLabel lblSaleID;
+    private javax.swing.JLabel lblTerminal;
     private javax.swing.JLabel lblTime;
     private javax.swing.JTable tableItems;
     // End of variables declaration//GEN-END:variables

@@ -62,7 +62,7 @@ public class SalesWindow extends javax.swing.JFrame {
         model.setRowCount(0);
 
         for (Sale s : currentTableContents) {
-            Object[] r = new Object[]{s.getCode(), s.getTotal(), 0, new Time(s.getTime()).toString()};
+            Object[] r = new Object[]{s.getCode(), s.getTotal(), 0, s.getTime().toString()};
             model.addRow(r);
         }
 
