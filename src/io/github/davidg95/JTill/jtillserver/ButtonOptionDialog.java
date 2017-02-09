@@ -171,7 +171,7 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnColorActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-        button = null;
+        button.setName("[SPACE]");
         this.setVisible(false);
     }//GEN-LAST:event_btnRemoveActionPerformed
 

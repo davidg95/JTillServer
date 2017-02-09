@@ -156,17 +156,6 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         cButton.addActionListener((ActionEvent e) -> {
             categoryCards.show(panelProducts, s.getName());
             currentScreen = s;
-            try {
-                if (dbConn.getButtonsOnScreen(s).size() == 50) {
-                    btnNewProduct.setEnabled(false);
-                    btnSpace.setEnabled(false);
-                } else {
-                    btnNewProduct.setEnabled(true);
-                    btnSpace.setEnabled(true);
-                }
-            } catch (IOException | SQLException | ScreenNotFoundException ex) {
-                showError(ex);
-            }
         });
         cardsButtonGroup.add(cButton);
         JPanel panel = new JPanel();
@@ -183,7 +172,6 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                     JPanel pan = new JPanel();
                     pan.setBackground(Color.WHITE);
                     pan.setLayout(new GridLayout(1, 1));
-                    pan.add(new JLabel("<Space>"));
                     pan.addMouseListener(new MouseListener() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
@@ -221,13 +209,6 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                     panel.add(pButton);
                 }
             }
-
-//            for (int i = currentButtons.size() - 1; i < 49; i++) {
-//                JPanel blankPanel = new JPanel();
-//                blankPanel.setBackground(Color.WHITE);
-//                panel.add(blankPanel);
-//            }
-
             panelProducts.add(panel, s.getName());
             panelCategories.add(cButton);
         } catch (SQLException | IOException | ScreenNotFoundException ex) {
@@ -240,8 +221,8 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         currentButton = ButtonOptionDialog.showDialog(this, currentButton, dbConn);
         if (currentButton == null) { //If it is null then the button is getting removed.
             try {
-                but = new TillButton("[SPACE]", null, currentScreen, 0);
-                dbConn.updateButton(but);
+                currentButton.setName("[SPACE]");
+                dbConn.updateButton(currentButton);
             } catch (IOException | SQLException | ButtonNotFoundException ex) {
                 showError(ex);
             }
@@ -286,8 +267,6 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         panelProducts = new javax.swing.JPanel();
         panelCategories = new javax.swing.JPanel();
         btnNewScreen = new javax.swing.JButton();
-        btnNewProduct = new javax.swing.JButton();
-        btnSpace = new javax.swing.JButton();
         btnWipeAll = new javax.swing.JButton();
 
         setTitle("Screen Editor");
@@ -325,20 +304,6 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             }
         });
 
-        btnNewProduct.setText("Add Product");
-        btnNewProduct.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNewProductActionPerformed(evt);
-            }
-        });
-
-        btnSpace.setText("Add Space");
-        btnSpace.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSpaceActionPerformed(evt);
-            }
-        });
-
         btnWipeAll.setText("Wipe All");
         btnWipeAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -354,12 +319,8 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnNewScreen)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnNewProduct)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSpace))
                     .addComponent(btnWipeAll))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
                 .addComponent(panelEditor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -370,11 +331,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnNewScreen)
-                        .addGap(106, 106, 106)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnNewProduct)
-                            .addComponent(btnSpace))
-                        .addGap(63, 63, 63)
+                        .addGap(192, 192, 192)
                         .addComponent(btnWipeAll)
                         .addGap(0, 333, Short.MAX_VALUE))
                     .addComponent(panelEditor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -386,69 +343,29 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
     private void btnNewScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewScreenActionPerformed
         String name = JOptionPane.showInputDialog("Enter Name");
-        if (checkName(name)) {
-            new Thread("New Screen") {
-                @Override
-                public void run() {
-                    try {
-                        int position = dbConn.getAllScreens().size() - 1;
-                        Screen s = new Screen(name, position, 0);
-                        dbConn.addScreen(s);
-                        for (int i = 0; i < 50; i++) {
-                            dbConn.addButton(new TillButton("[SPACE]", null, s, 0));
-                        }
-                        setButtons();
-                    } catch (IOException | SQLException ex) {
-                        showError(ex);
-                    }
-                }
-            }.start();
-        } else {
-            JOptionPane.showMessageDialog(this, "Name already in use", "New Screen", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_btnNewScreenActionPerformed
-
-    private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
-        if (currentScreen == null) {
-            JOptionPane.showMessageDialog(ScreenEditWindow.this, "Select a screen", "New Button", JOptionPane.ERROR_MESSAGE);
-        } else {
-            Product p = ProductSelectDialog.showDialog(this, dbConn);
-            if (p != null) {
-                new Thread("AddProductButton") {
+        if (!name.equals("")) {
+            if (checkName(name)) {
+                new Thread("New Screen") {
                     @Override
                     public void run() {
                         try {
-                            TillButton b = new TillButton(p.getName(), p, currentScreen, 0);
-                            dbConn.addButton(b);
+                            int position = dbConn.getAllScreens().size() - 1;
+                            Screen s = new Screen(name, position, 0);
+                            dbConn.addScreen(s);
+                            for (int i = 0; i < 50; i++) {
+                                dbConn.addButton(new TillButton("[SPACE]", null, s, 0));
+                            }
                             setButtons();
                         } catch (IOException | SQLException ex) {
                             showError(ex);
                         }
                     }
                 }.start();
+            } else {
+                JOptionPane.showMessageDialog(this, "Name already in use", "New Screen", JOptionPane.ERROR_MESSAGE);
             }
         }
-    }//GEN-LAST:event_btnNewProductActionPerformed
-
-    private void btnSpaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSpaceActionPerformed
-        if (currentScreen == null) {
-            JOptionPane.showMessageDialog(ScreenEditWindow.this, "Select a screen", "Space", JOptionPane.ERROR_MESSAGE);
-        } else {
-            new Thread("AddSpaceButton") {
-                @Override
-                public void run() {
-                    try {
-                        int position = dbConn.getButtonsOnScreen(currentScreen).size();
-                        TillButton b = new TillButton("[SPACE]", null, currentScreen, 0);
-                        dbConn.addButton(b);
-                        setButtons();
-                    } catch (SQLException | ScreenNotFoundException | IOException ex) {
-                        showError(ex);
-                    }
-                }
-            }.start();
-        }
-    }//GEN-LAST:event_btnSpaceActionPerformed
+    }//GEN-LAST:event_btnNewScreenActionPerformed
 
     private void btnWipeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWipeAllActionPerformed
         new Thread("WpieAllButton") {
@@ -465,9 +382,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnWipeAllActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnNewProduct;
     private javax.swing.JButton btnNewScreen;
-    private javax.swing.JButton btnSpace;
     private javax.swing.JButton btnWipeAll;
     private javax.swing.JPanel panelCategories;
     private javax.swing.JPanel panelEditor;
