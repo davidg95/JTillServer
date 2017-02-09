@@ -1585,7 +1585,7 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
-                Button b = (Button) clone.getData();
+                TillButton b = (TillButton) clone.getData();
                 dbConn.addButton(b);
             } catch (SQLException ex) {
                 Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -1616,7 +1616,7 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
-                Button b = (Button) clone.getData();
+                TillButton b = (TillButton) clone.getData();
                 dbConn.removeButton(b);
                 obOut.writeObject("SUCC");
             } catch (SQLException ex) {
@@ -1648,7 +1648,7 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
-                Button b = (Button) clone.getData();
+                TillButton b = (TillButton) clone.getData();
                 dbConn.updateButton(b);
                 obOut.writeObject(b);
             } catch (SQLException | ButtonNotFoundException ex) {
@@ -1679,7 +1679,7 @@ public class ConnectionThread extends Thread {
             try {
                 ConnectionData clone = data.clone();
                 int id = (int) clone.getData();
-                Button b = dbConn.getButton(id);
+                TillButton b = dbConn.getButton(id);
                 obOut.writeObject(b);
             } catch (SQLException | ButtonNotFoundException ex) {
                 obOut.writeObject(ex);
@@ -1705,7 +1705,7 @@ public class ConnectionThread extends Thread {
     private void getAllButtons() {
         try {
             try {
-                List<Button> buttons = dbConn.getAllButtons();
+                List<TillButton> buttons = dbConn.getAllButtons();
                 obOut.writeObject(buttons);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
@@ -1720,7 +1720,7 @@ public class ConnectionThread extends Thread {
             try {
                 ConnectionData clone = data.clone();
                 Screen s = (Screen) clone.getData();
-                List<Button> buttons = dbConn.getButtonsOnScreen(s);
+                List<TillButton> buttons = dbConn.getButtonsOnScreen(s);
                 obOut.writeObject(buttons);
             } catch (SQLException | ScreenNotFoundException ex) {
                 obOut.writeObject(ex);

@@ -42,8 +42,8 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     private final ButtonGroup cardsButtonGroup;
 
     private Screen currentScreen;
-    private Button currentButton;
-    private List<Button> currentButtons;
+    private TillButton currentButton;
+    private List<TillButton> currentButtons;
 
     /**
      * Creates new form ScreenEditWindow
@@ -110,18 +110,18 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         if (s.getColorValue() != 0) {
             cButton.setBackground(new Color(s.getColorValue()));
         }
-        cButton.addMouseListener(new MouseListener(){
+        cButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount() == 2){
+                if (e.getClickCount() == 2) {
                     Screen s = ScreenButtonOptionDialog.showDialog(ScreenEditWindow.this, currentScreen);
-                    if(s == null){
+                    if (s == null) {
                         try {
                             dbConn.removeScreen(currentScreen);
                         } catch (IOException | SQLException | ScreenNotFoundException ex) {
                             showError(ex);
                         }
-                    } else{
+                    } else {
                         try {
                             dbConn.updateScreen(s);
                         } catch (IOException | SQLException | ScreenNotFoundException ex) {
@@ -134,24 +134,24 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                
+
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                
+
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                
+
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                
+
             }
-            
+
         });
         cButton.addActionListener((ActionEvent e) -> {
             categoryCards.show(panelProducts, s.getName());
@@ -174,64 +174,59 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
         try {
             currentButtons = dbConn.getButtonsOnScreen(s);
-            for (int i = 0; i < currentButtons.size(); i++) {
-                for (Button b : currentButtons) {
-                    if (b.getOrder() == i) {
-                        JButton pButton = new JButton(b.getName());
-                        if (b.getColorValue() != 0) {
-                            pButton.setBackground(new Color(b.getColorValue()));
+            for (TillButton b : currentButtons) {
+                JButton pButton = new JButton(b.getName());
+                if (b.getColorValue() != 0) {
+                    pButton.setBackground(new Color(b.getColorValue()));
+                }
+                if (b.getName().equals("[SPACE]")) {
+                    JPanel pan = new JPanel();
+                    pan.setBackground(Color.WHITE);
+                    pan.setLayout(new GridLayout(1, 1));
+                    pan.add(new JLabel("<Space>"));
+                    pan.addMouseListener(new MouseListener() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            currentButton = b;
+                            showButtonOptions();
                         }
-                        if (b.getName().equals("[SPACE]")) {
-                            JPanel pan = new JPanel();
+
+                        @Override
+                        public void mousePressed(MouseEvent e) {
+
+                        }
+
+                        @Override
+                        public void mouseReleased(MouseEvent e) {
+
+                        }
+
+                        @Override
+                        public void mouseEntered(MouseEvent e) {
+                            pan.setBackground(Color.GRAY);
+                        }
+
+                        @Override
+                        public void mouseExited(MouseEvent e) {
                             pan.setBackground(Color.WHITE);
-                            pan.setLayout(new GridLayout(1, 1));
-                            pan.add(new JLabel("<Space>"));
-                            pan.addMouseListener(new MouseListener() {
-                                @Override
-                                public void mouseClicked(MouseEvent e) {
-                                    currentButton = b;
-                                    showButtonOptions();
-                                }
-
-                                @Override
-                                public void mousePressed(MouseEvent e) {
-
-                                }
-
-                                @Override
-                                public void mouseReleased(MouseEvent e) {
-
-                                }
-
-                                @Override
-                                public void mouseEntered(MouseEvent e) {
-                                    pan.setBackground(Color.GRAY);
-                                }
-
-                                @Override
-                                public void mouseExited(MouseEvent e) {
-                                    pan.setBackground(Color.WHITE);
-                                }
-
-                            });
-                            panel.add(pan);
-                        } else {
-                            pButton.addActionListener((ActionEvent e) -> {
-                                currentButton = b;
-                                showButtonOptions();
-                            });
-                            panel.add(pButton);
                         }
-                        break;
-                    }
+
+                    });
+                    panel.add(pan);
+                } else {
+                    pButton.addActionListener((ActionEvent e) -> {
+                        currentButton = b;
+                        showButtonOptions();
+                    });
+                    panel.add(pButton);
                 }
             }
 
-            for (int i = currentButtons.size() - 1; i < 49; i++) {
-                JPanel blankPanel = new JPanel();
-                blankPanel.setBackground(Color.WHITE);
-                panel.add(blankPanel);
-            }
+//            for (int i = currentButtons.size() - 1; i < 49; i++) {
+//                JPanel blankPanel = new JPanel();
+//                blankPanel.setBackground(Color.WHITE);
+//                panel.add(blankPanel);
+//            }
 
             panelProducts.add(panel, s.getName());
             panelCategories.add(cButton);
@@ -241,48 +236,23 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     }
 
     private void showButtonOptions() {
-        int originalOrder = currentButton.getOrder(); //The order of the button before being changed
-        Button but = currentButton; //The button that is getting changed
-        currentButton = ButtonOptionDialog.showDialog(this, currentButton, currentButtons.size() - 1);
+        TillButton but = currentButton; //The button that is getting changed
+        currentButton = ButtonOptionDialog.showDialog(this, currentButton, dbConn);
         if (currentButton == null) { //If it is null then the button is getting removed.
             try {
-                dbConn.removeButton(but);
+                but = new TillButton("[SPACE]", null, currentScreen, 0);
+                dbConn.updateButton(but);
             } catch (IOException | SQLException | ButtonNotFoundException ex) {
                 showError(ex);
             }
         } else { //If it is not null then it is being edited or nothing has happening to it
             try {
-                if (currentButton.getOrder() != originalOrder) { //If the order has changed then the button is getting moved
-                    int newOrder = currentButton.getOrder(); //Get the buttons new position
-                    Button otherButton = changeButtonPosition(newOrder, originalOrder); //This will move the other button into the current buttons old position
-                    dbConn.updateButton(otherButton); //This will update the other button in the database
-                }
                 dbConn.updateButton(currentButton); //This will update the ucrrent button in the database
             } catch (IOException | SQLException | ButtonNotFoundException ex) {
                 showError(ex);
             }
         }
         setButtons(); //This will update the view to reflect any changes
-    }
-
-    /**
-     * This method will move a button at one position to another position,
-     *
-     * @param pos the position of the button getting moved.
-     * @param newPos the new position of the button.
-     * @return the updated button.
-     */
-    private Button changeButtonPosition(int pos, int newPos) {
-        for (Button b : currentButtons) {
-            if (b.getOrder() == pos) {
-                if (b.getName().equals(currentButton.getName())) {
-                    continue;
-                }
-                b.setOrder(newPos);
-                return b;
-            }
-        }
-        return null;
     }
 
     private void showError(Exception e) {
@@ -424,6 +394,9 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                         int position = dbConn.getAllScreens().size() - 1;
                         Screen s = new Screen(name, position, 0);
                         dbConn.addScreen(s);
+                        for (int i = 0; i < 50; i++) {
+                            dbConn.addButton(new TillButton("[SPACE]", null, s, 0));
+                        }
                         setButtons();
                     } catch (IOException | SQLException ex) {
                         showError(ex);
@@ -445,11 +418,10 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                     @Override
                     public void run() {
                         try {
-                            int position = dbConn.getButtonsOnScreen(currentScreen).size();
-                            Button b = new Button(p.getName(), p, position, currentScreen, 0);
+                            TillButton b = new TillButton(p.getName(), p, currentScreen, 0);
                             dbConn.addButton(b);
                             setButtons();
-                        } catch (IOException | SQLException | ScreenNotFoundException ex) {
+                        } catch (IOException | SQLException ex) {
                             showError(ex);
                         }
                     }
@@ -467,7 +439,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 public void run() {
                     try {
                         int position = dbConn.getButtonsOnScreen(currentScreen).size();
-                        Button b = new Button("[SPACE]", null, position, currentScreen, 0);
+                        TillButton b = new TillButton("[SPACE]", null, currentScreen, 0);
                         dbConn.addButton(b);
                         setButtons();
                     } catch (SQLException | ScreenNotFoundException | IOException ex) {

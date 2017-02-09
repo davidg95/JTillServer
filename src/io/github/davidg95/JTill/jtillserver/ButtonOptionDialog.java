@@ -5,7 +5,9 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.Button;
+import io.github.davidg95.JTill.jtill.DataConnectInterface;
+import io.github.davidg95.JTill.jtill.Product;
+import io.github.davidg95.JTill.jtill.TillButton;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -21,15 +23,18 @@ import javax.swing.JDialog;
 public class ButtonOptionDialog extends javax.swing.JDialog {
 
     private static JDialog dialog;
-    private static Button button;
+    private static TillButton button;
+
+    private final DataConnectInterface dc;
 
     /**
      * Creates new form ButtonOptionDialog.
      *
      * @param parent the parent component.
      */
-    public ButtonOptionDialog(Window parent, int number) {
+    public ButtonOptionDialog(Window parent, DataConnectInterface dc) {
         super(parent);
+        this.dc = dc;
         initComponents();
         if (button.getColorValue() != 0) {
             panelColor.setBackground(button.getColor());
@@ -37,17 +42,10 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setModal(true);
         setTitle(button.getName());
-        if (button.getOrder() == 0) {
-            btnLeft.setEnabled(false);
-        }
-        if (button.getOrder() == number) {
-            btnRight.setEnabled(false);
-        }
         if (button.getName().equals("[SPACE]")) {
             btnColor.setEnabled(false);
-            btnRemove.setText("Remove Space");
+            btnRemove.setEnabled(false);
         }
-        lblPosition.setText("Position: " + button.getOrder());
     }
 
     /**
@@ -55,20 +53,19 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
      * selected, otherwise it will return an updated button object.
      *
      * @param parent the parent window.
-     * @param button the button object.
-     * @param number the number of buttons in the screen.
+     * @param b the button object.
      * @return the button with any changed applied.
      */
-    public static Button showDialog(Component parent, Button button, int number) {
+    public static TillButton showDialog(Component parent, TillButton b, DataConnectInterface dc) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        ButtonOptionDialog.button = button;
-        dialog = new ButtonOptionDialog(window, number);
+        button = b;
+        dialog = new ButtonOptionDialog(window, dc);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setVisible(true);
-        return ButtonOptionDialog.button;
+        return button;
     }
 
     /**
@@ -84,9 +81,7 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
         btnRemove = new javax.swing.JButton();
         panelColor = new javax.swing.JPanel();
         btnClose = new javax.swing.JButton();
-        lblPosition = new javax.swing.JLabel();
-        btnLeft = new javax.swing.JButton();
-        btnRight = new javax.swing.JButton();
+        btnChangeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -123,19 +118,10 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
             }
         });
 
-        lblPosition.setText("Position:");
-
-        btnLeft.setText("Move Left");
-        btnLeft.addActionListener(new java.awt.event.ActionListener() {
+        btnChangeButton.setText("Change Button");
+        btnChangeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLeftActionPerformed(evt);
-            }
-        });
-
-        btnRight.setText("Move Right");
-        btnRight.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRightActionPerformed(evt);
+                btnChangeButtonActionPerformed(evt);
             }
         });
 
@@ -146,16 +132,12 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btnRight, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(btnColor, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
-                        .addComponent(btnRemove, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnClose, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(btnColor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                    .addComponent(btnRemove, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnClose, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnChangeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblPosition)
-                    .addComponent(panelColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(panelColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -169,14 +151,10 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRemove)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnLeft)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnRight)
-                    .addComponent(lblPosition))
+                        .addComponent(btnChangeButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnClose)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         pack();
@@ -197,23 +175,19 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
         this.setVisible(false);
     }//GEN-LAST:event_btnRemoveActionPerformed
 
-    private void btnLeftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLeftActionPerformed
-        button.setOrder(button.getOrder() - 1);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnLeftActionPerformed
-
-    private void btnRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRightActionPerformed
-        button.setOrder(button.getOrder() + 1);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnRightActionPerformed
+    private void btnChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeButtonActionPerformed
+        Product p = ProductSelectDialog.showDialog(this, dc);
+        if (p != null) {
+            button.setProduct(p);
+            this.setVisible(false);
+        }
+    }//GEN-LAST:event_btnChangeButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnChangeButton;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnColor;
-    private javax.swing.JButton btnLeft;
     private javax.swing.JButton btnRemove;
-    private javax.swing.JButton btnRight;
-    private javax.swing.JLabel lblPosition;
     private javax.swing.JPanel panelColor;
     // End of variables declaration//GEN-END:variables
 }

@@ -27,17 +27,13 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                  <Component id="btnRight" pref="147" max="32767" attributes="0"/>
                   <Component id="btnColor" alignment="0" pref="147" max="32767" attributes="0"/>
                   <Component id="btnRemove" alignment="0" max="32767" attributes="0"/>
                   <Component id="btnClose" alignment="0" max="32767" attributes="0"/>
-                  <Component id="btnLeft" alignment="0" max="32767" attributes="0"/>
+                  <Component id="btnChangeButton" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="lblPosition" min="-2" max="-2" attributes="0"/>
-                  <Component id="panelColor" min="-2" max="-2" attributes="0"/>
-              </Group>
+              <Component id="panelColor" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -53,17 +49,12 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnRemove" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnLeft" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnChangeButton" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="btnRight" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="lblPosition" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
               <Component id="btnClose" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="40" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -108,25 +99,12 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCloseActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="lblPosition">
+    <Component class="javax.swing.JButton" name="btnChangeButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Position:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="btnLeft">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Move Left"/>
+        <Property name="text" type="java.lang.String" value="Change Button"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLeftActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="btnRight">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Move Right"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRightActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnChangeButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
