@@ -77,7 +77,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         model.setRowCount(0);
 
         for (Product p : currentTableContents) {
-            Object[] s = new Object[]{p.getProductCode(), p.getName()};
+            Object[] s = new Object[]{p.getId(), p.getLongName()};
             model.addRow(s);
         }
 
@@ -223,7 +223,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         List<Product> newList = new ArrayList<>();
 
         for (Product p : currentTableContents) {
-            if (p.getName().toLowerCase().contains(search.toLowerCase())) {
+            if (p.getLongName().toLowerCase().contains(search.toLowerCase())) {
                 newList.add(p);
             }
         }

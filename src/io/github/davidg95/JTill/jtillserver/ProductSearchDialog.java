@@ -166,7 +166,7 @@ public class ProductSearchDialog extends javax.swing.JDialog {
         switch (option) {
             case PRODUCT_CODE:
                 for (Product p : products) {
-                    if ((p.getProductCode() + "").equals(terms)) {
+                    if ((p.getId() + "").equals(terms)) {
                         newList.add(p);
                     }
                 }
@@ -180,7 +180,7 @@ public class ProductSearchDialog extends javax.swing.JDialog {
                 break;
             default:
                 for (Product p : products) {
-                    if (p.getName().toLowerCase().contains(terms.toLowerCase())) {
+                    if (p.getLongName().toLowerCase().contains(terms.toLowerCase())) {
                         newList.add(p);
                     }
                 }

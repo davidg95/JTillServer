@@ -63,7 +63,7 @@ public class ProductDialog extends javax.swing.JDialog {
         this.setLocationRelativeTo(parent);
         this.setModal(true);
         txtName.setText(p.getName());
-        txtShortName.setText(p.getShortName());
+        txtShortName.setText(p.getName());
         txtBarcode.setText(p.getBarcode());
         txtPrice.setText(p.getPrice() + "");
         txtCostPrice.setText(p.getCostPrice() + "");
@@ -72,15 +72,7 @@ public class ProductDialog extends javax.swing.JDialog {
         txtMaxStock.setText(p.getMaxStockLevel() + "");
         txtComments.setText(p.getComments());
         try {
-            Discount d = dbConn.getDiscount(p.getDiscountID());
             int index = 0;
-            for (int i = 0; i < discounts.size(); i++) {
-                if (discounts.get(i).getId() == d.getId()) {
-                    index = i;
-                    break;
-                }
-            }
-            cmbDiscount.setSelectedIndex(index);
             Category c = dbConn.getCategory(p.getCategoryID());
             index = 0;
             for (int i = 0; i < categorys.size(); i++) {
@@ -99,7 +91,7 @@ public class ProductDialog extends javax.swing.JDialog {
                 }
             }
             cmbTax.setSelectedIndex(index);
-        } catch (CategoryNotFoundException | DiscountNotFoundException | TaxNotFoundException | IOException | SQLException ex) {
+        } catch (CategoryNotFoundException | TaxNotFoundException | IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
         }
         btnAddProduct.setText("Save Changes");
@@ -114,7 +106,6 @@ public class ProductDialog extends javax.swing.JDialog {
             discountsModel = new DefaultComboBoxModel(discounts.toArray());
             taxesModel = new DefaultComboBoxModel(taxes.toArray());
             categorysModel = new DefaultComboBoxModel(categorys.toArray());
-            cmbDiscount.setModel(discountsModel);
             cmbTax.setModel(taxesModel);
             cmbCategory.setModel(categorysModel);
         } catch (IOException | SQLException ex) {
@@ -191,8 +182,6 @@ public class ProductDialog extends javax.swing.JDialog {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         txtMaxStock = new javax.swing.JTextField();
-        cmbDiscount = new javax.swing.JComboBox<>();
-        jLabel12 = new javax.swing.JLabel();
         chkOpen = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -243,10 +232,6 @@ public class ProductDialog extends javax.swing.JDialog {
 
         jLabel11.setText("Max Stock Level:");
 
-        cmbDiscount.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel12.setText("Discount:");
-
         chkOpen.setText("Open Price");
         chkOpen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -291,21 +276,6 @@ public class ProductDialog extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtMaxStock, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel12))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(cmbDiscount, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(cmbTax, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(cmbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addComponent(jLabel5)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -315,7 +285,22 @@ public class ProductDialog extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel9)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtCostPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(txtCostPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(54, 54, 54)
+                        .addComponent(jScrollPane1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel7))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(cmbTax, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cmbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel5))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -360,14 +345,10 @@ public class ProductDialog extends javax.swing.JDialog {
                     .addComponent(cmbTax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmbDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel12))
-                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnAddProduct, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -389,14 +370,10 @@ public class ProductDialog extends javax.swing.JDialog {
             tax = taxes.get(cmbTax.getSelectedIndex()).getId();
         }
         String comments = txtComments.getText();
-        int discount = 1;
-        if (!discounts.isEmpty()) {
-            discount = discounts.get(cmbDiscount.getSelectedIndex()).getId();
-        }
         try {
             if (chkOpen.isSelected()) {
                 try {
-                    product = new Product(name, shortName, category, comments, tax, discount, true);
+                    product = new Product(name, shortName, category, comments, tax, true);
                     dbConn.addProduct(product);
                     this.setVisible(false);
                 } catch (IOException | SQLException ex) {
@@ -412,7 +389,7 @@ public class ProductDialog extends javax.swing.JDialog {
                     int maxStock = Integer.parseInt(txtMaxStock.getText());
 
                     if (!editMode) {
-                        product = new Product(name, shortName, category, comments, tax, discount, false, price, costPrice, stock, minStock, maxStock, barcode);
+                        product = new Product(name, shortName, category, comments, tax, false, price, costPrice, stock, minStock, maxStock, barcode);
 
                         dbConn.addProduct(product);
                     } else {
@@ -459,12 +436,10 @@ public class ProductDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnClose;
     private javax.swing.JCheckBox chkOpen;
     private javax.swing.JComboBox<String> cmbCategory;
-    private javax.swing.JComboBox<String> cmbDiscount;
     private javax.swing.JComboBox<String> cmbTax;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

@@ -28,11 +28,10 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="lblSaleID" min="-2" max="-2" attributes="0"/>
                           <Component id="lblTime" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblCustomer" alignment="0" max="32767" attributes="0"/>
-                          <Component id="lblDiscount" alignment="0" max="32767" attributes="0"/>
+                          <Component id="lblCustomer" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="37" max="32767" attributes="0"/>
                       <Component id="jScrollPane2" min="-2" pref="327" max="-2" attributes="0"/>
@@ -55,9 +54,7 @@
               <Component id="lblTime" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lblCustomer" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="lblDiscount" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="213" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="233" max="-2" attributes="0"/>
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
@@ -135,10 +132,5 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JLabel" name="lblDiscount">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Discount:"/>
-      </Properties>
-    </Component>
   </SubComponents>
 </Form>

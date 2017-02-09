@@ -446,7 +446,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                     public void run() {
                         try {
                             int position = dbConn.getButtonsOnScreen(currentScreen).size();
-                            Button b = new Button(p.getShortName(), p, position, currentScreen, 0);
+                            Button b = new Button(p.getName(), p, position, currentScreen, 0);
                             dbConn.addButton(b);
                             setButtons();
                         } catch (IOException | SQLException | ScreenNotFoundException ex) {

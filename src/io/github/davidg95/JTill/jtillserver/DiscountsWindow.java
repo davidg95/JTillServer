@@ -10,6 +10,7 @@ import io.github.davidg95.JTill.jtill.Discount;
 import io.github.davidg95.JTill.jtill.DiscountNotFoundException;
 import java.awt.Image;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -330,7 +331,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
                 } else if (percentage > 100 || percentage < 0) {
                     JOptionPane.showMessageDialog(this, "Please enter a value between 0 and 100", "Discount", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    d = new Discount(name, percentage);
+                    d = new Discount(name, percentage, BigDecimal.ZERO);
                     try {
                         dbConn.addDiscount(d);
                         showAllDiscounts();

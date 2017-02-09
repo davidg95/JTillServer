@@ -98,7 +98,6 @@ public class ProductsWindow extends javax.swing.JFrame {
             discountsModel = new DefaultComboBoxModel(discounts.toArray());
             taxesModel = new DefaultComboBoxModel(taxes.toArray());
             categorysModel = new DefaultComboBoxModel(categorys.toArray());
-            cmbDiscount.setModel(discountsModel);
             cmbTax.setModel(taxesModel);
             cmbCategory.setModel(categorysModel);
         } catch (SQLException | IOException ex) {
@@ -114,7 +113,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         model.setRowCount(0);
 
         for (Product p : currentTableContents) {
-            Object[] s = new Object[]{p.getProductCode(), (p.isOpen() ? "N/A" : p.getBarcode()), p.getName(), (p.isOpen() ? "Open Price" : p.getPrice()), (p.isOpen() ? "N/A" : p.getStock())};
+            Object[] s = new Object[]{p.getId(), (p.isOpen() ? "N/A" : p.getBarcode()), p.getLongName(), (p.isOpen() ? "Open Price" : p.getPrice()), (p.isOpen() ? "N/A" : p.getStock())};
             model.addRow(s);
         }
 
@@ -175,15 +174,14 @@ public class ProductsWindow extends javax.swing.JFrame {
             jLabel10.setEnabled(true);
             jLabel11.setEnabled(true);
             chkOpen.setSelected(false);
-            cmbDiscount.setSelectedIndex(0);
             cmbTax.setSelectedIndex(0);
             cmbCategory.setSelectedIndex(0);
             product = null;
         } else {
             try {
                 this.product = p;
-                txtName.setText(p.getName());
-                txtShortName.setText(p.getShortName());
+                txtName.setText(p.getLongName());
+                txtShortName.setText(p.getName());
                 if (p.isOpen()) {
                     txtPrice.setEnabled(false);
                     txtCostPrice.setEnabled(false);
@@ -226,15 +224,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                     txtMaxStock.setText(p.getMaxStockLevel() + "");
                 }
                 txtComments.setText(p.getComments());
-                Discount d = dbConn.getDiscount(p.getDiscountID());
                 int index = 0;
-                for (int i = 0; i < discounts.size(); i++) {
-                    if (discounts.get(i).getId() == d.getId()) {
-                        index = i;
-                        break;
-                    }
-                }
-                cmbDiscount.setSelectedIndex(index);
                 Category c = dbConn.getCategory(p.getCategoryID());
                 index = 0;
                 for (int i = 0; i < categorys.size(); i++) {
@@ -253,7 +243,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                     }
                 }
                 cmbTax.setSelectedIndex(index);
-            } catch (SQLException | DiscountNotFoundException | CategoryNotFoundException | TaxNotFoundException | IOException ex) {
+            } catch (SQLException | CategoryNotFoundException | TaxNotFoundException | IOException ex) {
                 showError(ex);
             }
         }
@@ -302,10 +292,8 @@ public class ProductsWindow extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         txtMaxStock = new javax.swing.JTextField();
         txtBarcode = new javax.swing.JTextField();
-        cmbDiscount = new javax.swing.JComboBox<>();
         txtPrice = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
         txtStock = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         btnSaveChanges = new javax.swing.JButton();
@@ -313,7 +301,6 @@ public class ProductsWindow extends javax.swing.JFrame {
         btnNewProduct = new javax.swing.JButton();
         btnShowCategorys = new javax.swing.JButton();
         btnShowTax = new javax.swing.JButton();
-        btnShowDiscounts = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
         radName = new javax.swing.JRadioButton();
@@ -406,11 +393,7 @@ public class ProductsWindow extends javax.swing.JFrame {
 
         jLabel2.setText("Barcode:");
 
-        cmbDiscount.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel3.setText("Price (£):");
-
-        jLabel12.setText("Discount:");
 
         jLabel4.setText("Stock:");
 
@@ -446,13 +429,6 @@ public class ProductsWindow extends javax.swing.JFrame {
         btnShowTax.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnShowTaxActionPerformed(evt);
-            }
-        });
-
-        btnShowDiscounts.setText("Discounts");
-        btnShowDiscounts.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnShowDiscountsActionPerformed(evt);
             }
         });
 
@@ -497,8 +473,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(chkOpen)
@@ -521,15 +496,12 @@ public class ProductsWindow extends javax.swing.JFrame {
                                     .addComponent(cmbCategory, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(0, 0, Short.MAX_VALUE)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(cmbTax, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(cmbDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(cmbTax, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtMaxStock)
-                                    .addComponent(btnShowCategorys, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnShowTax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnShowDiscounts, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addComponent(btnShowCategorys, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
+                                    .addComponent(btnShowTax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                     .addComponent(btnShowAll, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel5)
@@ -608,11 +580,6 @@ public class ProductsWindow extends javax.swing.JFrame {
                             .addComponent(btnShowTax)
                             .addComponent(jLabel8))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cmbDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnShowDiscounts)
-                            .addComponent(jLabel12))
-                        .addGap(27, 27, 27)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))
@@ -653,7 +620,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following product?\n" + currentTableContents.get(index), "Remove Product", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
-                    dbConn.removeProduct(currentTableContents.get(index).getProductCode());
+                    dbConn.removeProduct(currentTableContents.get(index).getId());
                 } catch (ProductNotFoundException | IOException | SQLException ex) {
                     showError(ex);
                 }
@@ -676,17 +643,11 @@ public class ProductsWindow extends javax.swing.JFrame {
             tax = taxes.get(cmbTax.getSelectedIndex()).getId();
         }
         String comments = txtComments.getText();
-        int discount = 1;
-        if (!discounts.isEmpty()) {
-            discount = discounts.get(cmbDiscount.getSelectedIndex()).getId();
-        }
-        int color;
         if (chkOpen.isSelected()) {
-            product.setName(name);
-            product.setShortName(shortName);
+            product.setLongName(name);
+            product.setName(shortName);
             product.setCategoryID(category);
             product.setTaxID(tax);
-            product.setDiscountID(discount);
             product.setComments(comments);
             product.setOpen(true);
         } else {
@@ -696,11 +657,10 @@ public class ProductsWindow extends javax.swing.JFrame {
             int stock = Integer.parseInt(txtStock.getText());
             int minStock = Integer.parseInt(txtMinStock.getText());
             int maxStock = Integer.parseInt(txtMaxStock.getText());
-            product.setName(name);
-            product.setShortName(shortName);
+            product.setLongName(name);
+            product.setName(shortName);
             product.setCategoryID(category);
             product.setTaxID(tax);
-            product.setDiscountID(discount);
             product.setBarcode(barcode);
             product.setPrice(price);
             product.setCostPrice(costPrice);
@@ -746,16 +706,12 @@ public class ProductsWindow extends javax.swing.JFrame {
                 tax = taxes.get(cmbTax.getSelectedIndex()).getId();
             }
             String comments = txtComments.getText();
-            int discount = 1;
-            if (!discounts.isEmpty()) {
-                discount = discounts.get(cmbDiscount.getSelectedIndex()).getId();
-            }
             Product p;
             if (chkOpen.isSelected()) {
                 if (name == null || shortName == null || comments == null) {
                     JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    p = new Product(name, shortName, category, comments, tax, discount, true);
+                    p = new Product(name, shortName, category, comments, tax, true);
                     try {
                         dbConn.addProduct(p);
                         showAllProducts();
@@ -776,7 +732,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                     if (name.equals("") || shortName.equals("") || barcode.equals("")) {
                         JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        p = new Product(name, shortName, category, comments, tax, discount, false, price, costPrice, stock, minStock, maxStock, barcode);
+                        p = new Product(name, shortName, category, comments, tax, false, price, costPrice, stock, minStock, maxStock, barcode);
                         try {
                             dbConn.addProduct(p);
                             showAllProducts();
@@ -814,11 +770,6 @@ public class ProductsWindow extends javax.swing.JFrame {
         init();
     }//GEN-LAST:event_btnShowTaxActionPerformed
 
-    private void btnShowDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowDiscountsActionPerformed
-        DiscountsWindow.showDiscountListWindow(dbConn, icon);
-        init();
-    }//GEN-LAST:event_btnShowDiscountsActionPerformed
-
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
         btnSearch.doClick();
     }//GEN-LAST:event_txtSearchActionPerformed
@@ -844,7 +795,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         switch (option) {
             case 1:
                 for (Product p : currentTableContents) {
-                    if ((p.getProductCode() + "").equals(terms)) {
+                    if ((p.getId() + "").equals(terms)) {
                         newList.add(p);
                     }
                 }
@@ -858,7 +809,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                 break;
             default:
                 for (Product p : currentTableContents) {
-                    if (p.getName().toLowerCase().contains(terms.toLowerCase())) {
+                    if (p.getLongName().toLowerCase().contains(terms.toLowerCase())) {
                         newList.add(p);
                     }
                 }
@@ -884,17 +835,14 @@ public class ProductsWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnShowAll;
     private javax.swing.JButton btnShowCategorys;
-    private javax.swing.JButton btnShowDiscounts;
     private javax.swing.JButton btnShowTax;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JCheckBox chkOpen;
     private javax.swing.JComboBox<String> cmbCategory;
-    private javax.swing.JComboBox<String> cmbDiscount;
     private javax.swing.JComboBox<String> cmbTax;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
