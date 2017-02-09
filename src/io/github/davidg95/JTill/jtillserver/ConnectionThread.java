@@ -1761,7 +1761,7 @@ public class ConnectionThread extends Thread {
         try {
             ConnectionData clone = data.clone();
             String message = (String) clone.getData();
-            dbConn.assisstance(staff.getName() + " on terminal " + site + " has requested assisstance with message:\n" + message);
+            dbConn.assisstance(staff.getName() + " on terminal " + site + " has requested assistance with message:\n" + message);
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }

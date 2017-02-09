@@ -242,7 +242,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
     @Override
     public void showMessage(String title, String message) {
-        JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**

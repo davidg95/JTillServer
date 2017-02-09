@@ -60,8 +60,6 @@ public class SaleDialog extends javax.swing.JDialog {
             lblCustomer.setText("Customer: " + sale.getCustomer().getName());
         }
 
-        System.out.println(sale.getLineCount());
-
         model.setRowCount(0);
 
         for (SaleItem item : sale.getSaleItems()) {
