@@ -692,6 +692,14 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
+                    case "EMAIL":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                sendEmail(data);
+                            }
+                        }.start();
+                        break;
                     case "CONNTERM": //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -1786,6 +1794,16 @@ public class ConnectionThread extends Thread {
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
             }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void sendEmail(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            String message = (String) clone.getData();
+            dbConn.sendEmail(message);
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }
