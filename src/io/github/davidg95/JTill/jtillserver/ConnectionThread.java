@@ -9,6 +9,7 @@ import io.github.davidg95.JTill.jtill.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigDecimal;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -680,6 +681,14 @@ public class ConnectionThread extends Thread {
                             @Override
                             public void run() {
                                 assisstance(data);
+                            }
+                        }.start();
+                        break;
+                    case "TAKINGS":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getTakings(data);
                             }
                         }.start();
                         break;
@@ -1762,6 +1771,21 @@ public class ConnectionThread extends Thread {
             ConnectionData clone = data.clone();
             String message = (String) clone.getData();
             dbConn.assisstance(staff.getName() + " on terminal " + site + " has requested assistance with message:\n" + message);
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getTakings(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                String terminal = (String) clone.getData();
+                BigDecimal t = dbConn.getTillTakings(terminal);
+                obOut.writeObject(t);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }
