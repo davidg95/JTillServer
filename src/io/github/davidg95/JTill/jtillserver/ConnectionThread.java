@@ -73,6 +73,15 @@ public class ConnectionThread extends Thread {
 
             site = (String) obIn.readObject();
 
+            boolean allow = dbConn.connectTill(site);
+
+            if (!allow) {
+                obOut.writeObject(ConnectionData.create("DISALLOW"));
+                conn_term = true;
+            } else {
+                obOut.writeObject(ConnectionData.create("ALLOW"));
+            }
+
             TillServer.g.increaceClientCount(site);
             TillServer.g.log(site + " has connected");
 
@@ -668,6 +677,14 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
+                    case "UNCASHEDSALES":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getUncashedSales(data);
+                            }
+                        }.start();
+                        break;
                     case "EMAIL":
                         new Thread(inp[0]) {
                             @Override
@@ -681,6 +698,46 @@ public class ConnectionThread extends Thread {
                             @Override
                             public void run() {
                                 sendReceipt(data);
+                            }
+                        }.start();
+                        break;
+                    case "ADDTILL":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                addTill(data);
+                            }
+                        }.start();
+                        break;
+                    case "REMOVETILL":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                removeTill(data);
+                            }
+                        }.start();
+                        break;
+                    case "GETTILL":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getTill(data);
+                            }
+                        }.start();
+                        break;
+                    case "GETALLTILLS":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getAllTills();
+                            }
+                        }.start();
+                        break;
+                    case "CONNECTTILL":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                connectTill(data);
                             }
                         }.start();
                         break;
@@ -1756,6 +1813,21 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    private void getUncashedSales(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                String terminal = (String) clone.getData();
+                List<Sale> sales = dbConn.getUncashedSales(terminal);
+                obOut.writeObject(sales);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     private void sendEmail(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -1772,6 +1844,72 @@ public class ConnectionThread extends Thread {
             String email = (String) clone.getData();
             Sale sale = (Sale) clone.getData2();
             dbConn.emailReceipt(email, sale);
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void addTill(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                Till t = (Till) clone.getData();
+                dbConn.addTill(t);
+            } catch (SQLException ex) {
+                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void removeTill(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
+                dbConn.removeTill(id);
+            } catch (SQLException | TillNotFoundException ex) {
+                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getTill(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
+                Till till = dbConn.getTill(id);
+                obOut.writeObject(till);
+            } catch (SQLException | TillNotFoundException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getAllTills() {
+        try {
+            try {
+                List<Till> tills = dbConn.getAllTills();
+                obOut.writeObject(tills);
+            } catch (SQLException ex) {
+                obOut.writeObject(ex);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void connectTill(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            String t = (String) clone.getData();
+            obOut.writeBoolean(dbConn.connectTill(t));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }

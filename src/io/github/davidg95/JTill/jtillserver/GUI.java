@@ -10,6 +10,7 @@ import io.github.davidg95.JTill.jtill.DataConnectInterface;
 import io.github.davidg95.JTill.jtill.GUIInterface;
 import io.github.davidg95.JTill.jtill.Staff;
 import io.github.davidg95.JTill.jtill.StaffNotFoundException;
+import io.github.davidg95.JTill.jtill.Till;
 import java.awt.Image;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
@@ -21,8 +22,11 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.ListModel;
+import javax.swing.event.ListDataListener;
 
 /**
  * The main GUI for the server.
@@ -243,6 +247,25 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     @Override
     public void showMessage(String title, String message) {
         JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    @Override
+    public boolean showYesNoMessage(String title, String message) {
+        return JOptionPane.showConfirmDialog(this, message, title, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+    }
+
+    @Override
+    public void showModalMessage(String title, String message) {
+    }
+
+    @Override
+    public void hideModalMessage() {
+
+    }
+
+    @Override
+    public void addTill(Till t) {
+
     }
 
     /**
