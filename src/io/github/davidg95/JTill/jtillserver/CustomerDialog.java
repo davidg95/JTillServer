@@ -68,7 +68,6 @@ public class CustomerDialog extends javax.swing.JDialog {
         txtMobile.setText(c.getMobile());
         txtEmail.setText(c.getEmail());
         txtNotes.setText(c.getNotes());
-        cmbDiscount.setSelectedItem(c.getDiscountID());
         txtLoyalty.setText(c.getLoyaltyPoints() + "");
 
         txtAddress1.setText(c.getAddressLine1());
@@ -149,12 +148,10 @@ public class CustomerDialog extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
         txtLoyalty = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtNotes = new javax.swing.JTextArea();
-        cmbDiscount = new javax.swing.JComboBox<>();
         jLabel14 = new javax.swing.JLabel();
         txtMoneyDue = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
@@ -199,8 +196,6 @@ public class CustomerDialog extends javax.swing.JDialog {
 
         jLabel11.setText("Notes:");
 
-        jLabel12.setText("Discount:");
-
         txtLoyalty.setText("0");
 
         jLabel13.setText("Loyalty Points:");
@@ -208,8 +203,6 @@ public class CustomerDialog extends javax.swing.JDialog {
         txtNotes.setColumns(20);
         txtNotes.setRows(5);
         jScrollPane1.setViewportView(txtNotes);
-
-        cmbDiscount.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel14.setText("Money Due:");
 
@@ -231,7 +224,6 @@ public class CustomerDialog extends javax.swing.JDialog {
                                 .addComponent(jLabel2))
                             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
-                    .addComponent(jLabel12)
                     .addComponent(jLabel13))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -241,7 +233,6 @@ public class CustomerDialog extends javax.swing.JDialog {
                     .addComponent(txtPhone)
                     .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                     .addComponent(jScrollPane1)
-                    .addComponent(cmbDiscount, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtMoneyDue))
                 .addContainerGap(44, Short.MAX_VALUE))
         );
@@ -266,21 +257,17 @@ public class CustomerDialog extends javax.swing.JDialog {
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(cmbDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtLoyalty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel14)
-                    .addComponent(txtMoneyDue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtMoneyDue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Details", jPanel1);
@@ -389,10 +376,6 @@ public class CustomerDialog extends javax.swing.JDialog {
         String mobile = txtMobile.getText();
         String email = txtEmail.getText();
         String notes = txtNotes.getText();
-        int discount = 1;
-        if (!discounts.isEmpty()) {
-            discount = discounts.get(cmbDiscount.getSelectedIndex()).getId();
-        }
         int loyalty = Integer.parseInt(txtLoyalty.getText());
         BigDecimal moneyDue = new BigDecimal(Double.parseDouble(txtMoneyDue.getText()));
 
@@ -409,7 +392,6 @@ public class CustomerDialog extends javax.swing.JDialog {
             customer.setMobile(mobile);
             customer.setEmail(email);
             customer.setNotes(notes);
-            customer.setDiscountID(discount);
             customer.setLoyaltyPoints(loyalty);
 
             customer.setAddressLine1(address1);
@@ -420,7 +402,7 @@ public class CustomerDialog extends javax.swing.JDialog {
             customer.setPostcode(postcode);
             customer.setMoneyDue(new BigDecimal(Double.parseDouble(txtMoneyDue.getText())));
         } else {
-            customer = new Customer(name, phone, mobile, email, discount, address1, address2, town, county, country, postcode, notes, loyalty, moneyDue);
+            customer = new Customer(name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, loyalty, moneyDue);
             try {
                 dbConn.addCustomer(customer);
             } catch (SQLException ex) {
@@ -439,11 +421,9 @@ public class CustomerDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClose;
-    private javax.swing.JComboBox<String> cmbDiscount;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;

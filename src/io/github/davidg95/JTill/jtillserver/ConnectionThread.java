@@ -652,30 +652,6 @@ public class ConnectionThread extends Thread {
                         } catch (SQLException ex) {
                         }
                         break;
-                    case "GETIMAGE":
-                        new Thread(inp[0]) {
-                            @Override
-                            public void run() {
-                                getImage();
-                            }
-                        }.start();
-                        break;
-                    case "GETFXIMAGE":
-                        new Thread(inp[0]) {
-                            @Override
-                            public void run() {
-                                getFXImage();
-                            }
-                        }.start();
-                        break;
-                    case "SETIMAGEPATH":
-                        new Thread(inp[0]) {
-                            @Override
-                            public void run() {
-                                setImagePath(data);
-                            }
-                        }.start();
-                        break;
                     case "ASSISSTANCE":
                         new Thread(inp[0]) {
                             @Override
@@ -697,6 +673,14 @@ public class ConnectionThread extends Thread {
                             @Override
                             public void run() {
                                 sendEmail(data);
+                            }
+                        }.start();
+                        break;
+                    case "EMAILRECEIPT":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                sendReceipt(data);
                             }
                         }.start();
                         break;
@@ -1747,33 +1731,6 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getImage() {
-        try {
-            java.awt.Image image = dbConn.getImage();
-            obOut.writeObject(image);
-        } catch (IOException ex) {
-
-        }
-    }
-
-    private void getFXImage() {
-        try {
-            javafx.scene.image.Image image = dbConn.getFXImage();
-            obOut.writeObject(image);
-        } catch (IOException ex) {
-
-        }
-    }
-
-    private void setImagePath(ConnectionData data) {
-        try {
-            ConnectionData clone = data.clone();
-            String path = (String) clone.getData();
-            dbConn.setImagePath(path);
-        } catch (IOException ex) {
-        }
-    }
-
     private void assisstance(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -1804,6 +1761,17 @@ public class ConnectionThread extends Thread {
             ConnectionData clone = data.clone();
             String message = (String) clone.getData();
             dbConn.sendEmail(message);
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void sendReceipt(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            String email = (String) clone.getData();
+            Sale sale = (Sale) clone.getData2();
+            dbConn.emailReceipt(email, sale);
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }

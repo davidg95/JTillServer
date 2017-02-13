@@ -84,13 +84,6 @@ public class CustomersWindow extends javax.swing.JFrame {
      * Method to init the discounts combo box.
      */
     private void init() {
-        try {
-            discounts = dbConn.getAllDiscounts();
-            discountsModel = new DefaultComboBoxModel(discounts.toArray());
-            cmbDiscount.setModel(discountsModel);
-        } catch (SQLException | IOException ex) {
-            showError(ex);
-        }
     }
 
     /**
@@ -152,36 +145,22 @@ public class CustomersWindow extends javax.swing.JFrame {
             txtCounty.setText("");
             txtCountry.setText("");
             txtPostcode.setText("");
-            cmbDiscount.setSelectedIndex(0);
             customer = null;
         } else {
-            try {
-                this.customer = c;
-                txtName.setText(c.getName());
-                txtPhone.setText(c.getPhone());
-                txtMobile.setText(c.getMobile());
-                txtEmail.setText(c.getEmail());
-                txtLoyalty.setText(c.getLoyaltyPoints() + "");
-                txtMoneyDue.setText(c.getMoneyDue().toString());
-                txtNotes.setText(c.getNotes());
-                txtAddress1.setText(c.getAddressLine1());
-                txtAddress2.setText(c.getAddressLine2());
-                txtTown.setText(c.getTown());
-                txtCounty.setText(c.getCounty());
-                txtCountry.setText(c.getCountry());
-                txtPostcode.setText(c.getPostcode());
-                Discount d = dbConn.getDiscount(c.getDiscountID());
-                int index = 0;
-                for (int i = 0; i < discounts.size(); i++) {
-                    if (discounts.get(i).getId() == d.getId()) {
-                        index = i;
-                        break;
-                    }
-                }
-                cmbDiscount.setSelectedIndex(index);
-            } catch (SQLException | DiscountNotFoundException | IOException ex) {
-                showError(ex);
-            }
+            this.customer = c;
+            txtName.setText(c.getName());
+            txtPhone.setText(c.getPhone());
+            txtMobile.setText(c.getMobile());
+            txtEmail.setText(c.getEmail());
+            txtLoyalty.setText(c.getLoyaltyPoints() + "");
+            txtMoneyDue.setText(c.getMoneyDue().toString());
+            txtNotes.setText(c.getNotes());
+            txtAddress1.setText(c.getAddressLine1());
+            txtAddress2.setText(c.getAddressLine2());
+            txtTown.setText(c.getTown());
+            txtCounty.setText(c.getCounty());
+            txtCountry.setText(c.getCountry());
+            txtPostcode.setText(c.getPostcode());
         }
     }
 
@@ -222,12 +201,10 @@ public class CustomersWindow extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
         txtLoyalty = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtNotes = new javax.swing.JTextArea();
-        cmbDiscount = new javax.swing.JComboBox<>();
         txtMoneyDue = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
@@ -334,8 +311,6 @@ public class CustomersWindow extends javax.swing.JFrame {
 
         jLabel11.setText("Notes:");
 
-        jLabel12.setText("Discount:");
-
         txtLoyalty.setText("0");
 
         jLabel13.setText("Loyalty Points:");
@@ -343,8 +318,6 @@ public class CustomersWindow extends javax.swing.JFrame {
         txtNotes.setColumns(20);
         txtNotes.setRows(5);
         jScrollPane2.setViewportView(txtNotes);
-
-        cmbDiscount.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         txtMoneyDue.setText("0.00");
 
@@ -365,7 +338,6 @@ public class CustomersWindow extends javax.swing.JFrame {
                                 .addComponent(jLabel2))
                             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
-                    .addComponent(jLabel12)
                     .addComponent(jLabel13)
                     .addComponent(jLabel15))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -376,8 +348,7 @@ public class CustomersWindow extends javax.swing.JFrame {
                     .addComponent(txtMobile)
                     .addComponent(txtPhone)
                     .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2)
-                    .addComponent(cmbDiscount, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2))
                 .addContainerGap(44, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -401,10 +372,6 @@ public class CustomersWindow extends javax.swing.JFrame {
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(cmbDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtLoyalty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -415,7 +382,7 @@ public class CustomersWindow extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Details", jPanel1);
@@ -596,10 +563,6 @@ public class CustomersWindow extends javax.swing.JFrame {
                 String mobile = txtMobile.getText();
                 String email = txtEmail.getText();
                 String notes = txtNotes.getText();
-                int discount = 1;
-                if (!discounts.isEmpty()) {
-                    discount = discounts.get(cmbDiscount.getSelectedIndex()).getId();
-                }
                 int loyalty = Integer.parseInt(txtLoyalty.getText());
                 BigDecimal moneyDue = new BigDecimal(Double.parseDouble(txtMoneyDue.getText()));
 
@@ -612,7 +575,7 @@ public class CustomersWindow extends javax.swing.JFrame {
                 if (name.equals("") || phone.equals("") || mobile.equals("") || email.equals("") || address1.equals("")) {
                     JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    c = new Customer(name, phone, mobile, email, discount, address1, address2, town, county, country, postcode, notes, loyalty, moneyDue);
+                    c = new Customer(name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, loyalty, moneyDue);
                     try {
                         dbConn.addCustomer(c);
                         showAllCustomers();
@@ -637,10 +600,6 @@ public class CustomersWindow extends javax.swing.JFrame {
         String mobile = txtMobile.getText();
         String email = txtEmail.getText();
         String notes = txtNotes.getText();
-        int discount = 1;
-        if (!discounts.isEmpty()) {
-            discount = discounts.get(cmbDiscount.getSelectedIndex()).getId();
-        }
         int loyalty = Integer.parseInt(txtLoyalty.getText());
 
         String address1 = txtAddress1.getText();
@@ -655,7 +614,6 @@ public class CustomersWindow extends javax.swing.JFrame {
         customer.setMobile(mobile);
         customer.setEmail(email);
         customer.setNotes(notes);
-        customer.setDiscountID(discount);
         customer.setLoyaltyPoints(loyalty);
         customer.setMoneyDue(new BigDecimal(Double.parseDouble(txtMoneyDue.getText())));
 
@@ -778,11 +736,9 @@ public class CustomersWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnShowAll;
     private javax.swing.JButton btnTakePayment;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JComboBox<String> cmbDiscount;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
