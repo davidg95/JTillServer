@@ -22,11 +22,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.ListModel;
-import javax.swing.event.ListDataListener;
 
 /**
  * The main GUI for the server.
@@ -790,5 +787,14 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JPanel statusBar;
     private javax.swing.JTextArea txtLog;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void allow() {
+        
+    }
+
+    @Override
+    public void disallow() {
+    }
 
 }

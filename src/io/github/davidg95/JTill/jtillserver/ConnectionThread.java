@@ -766,10 +766,17 @@ public class ConnectionThread extends Thread {
 
     private void newProduct(ConnectionData data) {
         try {
-            ConnectionData clone = data.clone();
-            Product p = (Product) clone.getData();
-            dbConn.addProduct(p);
-        } catch (SQLException ex) {
+            try {
+                ConnectionData clone = data.clone();
+                if (clone.getData() == null) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A null value was received"));
+                    return;
+                }
+                Product p = (Product) clone.getData();
+                dbConn.addProduct(p);
+            } catch (SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -779,6 +786,14 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (clone.getData() == null) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "No value was received"));
+                    return;
+                }
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An int value mussed be passed in"));
+                    return;
+                }
                 int code = (int) clone.getData();
                 dbConn.removeProduct(code);
                 obOut.writeObject("SUCC");
@@ -795,6 +810,18 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (clone.getData() == null || clone.getData2() == null) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A null value was received"));
+                    return;
+                }
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An integer must be passed in"));
+                    return;
+                }
+                if (!(clone.getData2() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An integer must be passed in"));
+                    return;
+                }
                 int code = (int) clone.getData();
                 int amount = (int) clone.getData2();
                 int stock = dbConn.purchaseProduct(code, amount);
@@ -813,6 +840,14 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (clone.getData() == null) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A null value was received"));
+                    return;
+                }
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An integerp must be passed here"));
+                    return;
+                }
                 int code = (int) clone.getData();
                 Product p = dbConn.getProduct(code);
                 obOut.writeObject(p);
@@ -828,6 +863,10 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Product)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A product must be passed here"));
+                    return;
+                }
                 Product p = (Product) clone.getData();
                 dbConn.updateProduct(p);
                 obOut.writeObject(p);
@@ -843,6 +882,10 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof String)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A String must be received"));
+                    return;
+                }
                 String barcode = (String) clone.getData();
                 Product p = dbConn.getProductByBarcode(barcode);
                 obOut.writeObject(p);
@@ -858,6 +901,10 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof String)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                    return;
+                }
                 String barcode = (String) clone.getData();
                 boolean inUse = dbConn.checkBarcode(barcode);
                 if (inUse) {
@@ -877,6 +924,10 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof String)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                    return;
+                }
                 String[] inp = ((String) clone.getData()).split(",");
                 int id = Integer.parseInt(inp[1]);
                 int stock = Integer.parseInt(inp[2]);
@@ -896,10 +947,12 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Product)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Product must be received here"));
+                    return;
+                }
                 Product p = (Product) clone.getData();
-
                 List<Discount> discounts = dbConn.getProductsDiscount(p);
-
                 obOut.writeObject(discounts);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
@@ -938,6 +991,10 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof String)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                    return;
+                }
                 String terms = (String) clone.getData();
                 List<Product> products = dbConn.productLookup(terms);
                 obOut.writeObject(products);
@@ -953,9 +1010,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Customer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Customer must be received here"));
+                    return;
+                }
                 Customer c = (Customer) clone.getData();
-                dbConn.addCustomer(c);
+                Customer newC = dbConn.addCustomer(c);
+                obOut.writeObject(ConnectionData.create("NEW", newC));
             } catch (SQLException e) {
+                obOut.writeObject(ConnectionData.create("FAIL", e));
             }
         } catch (IOException e) {
 
@@ -966,6 +1029,10 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 dbConn.removeCustomer(id);
                 obOut.writeObject("SUCC");
@@ -982,6 +1049,10 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 Customer c = dbConn.getCustomer(id);
                 obOut.writeObject(c);
@@ -997,6 +1068,10 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof String)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                    return;
+                }
                 String name = (String) clone.getData();
                 List<Customer> customers = dbConn.getCustomerByName(name);
                 obOut.writeObject(customers);
@@ -1024,6 +1099,10 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Customer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Customer must be received here"));
+                    return;
+                }
                 Customer c = (Customer) clone.getData();
                 Customer customer = dbConn.updateCustomer(c);
                 obOut.writeObject(customer);
@@ -1067,9 +1146,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Staff)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Staff must be received here"));
+                    return;
+                }
                 Staff s = (Staff) clone.getData();
-                dbConn.addStaff(s);
+                Staff newS = dbConn.addStaff(s);
+                obOut.writeObject(ConnectionData.create("NEW", newS));
             } catch (SQLException | StaffNotFoundException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1080,12 +1165,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 dbConn.removeStaff(id);
-                obOut.writeObject("SUCC");
+                obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (SQLException | StaffNotFoundException ex) {
-                obOut.writeObject("FAIL");
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1096,11 +1184,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 Staff s = dbConn.getStaff(id);
-                obOut.writeObject(s);
+                obOut.writeObject(ConnectionData.create("GET", s));
             } catch (StaffNotFoundException | SQLException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1111,11 +1203,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Staff)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Staff must be received here"));
+                    return;
+                }
                 Staff s = (Staff) clone.getData();
                 Staff updatedStaff = dbConn.updateStaff(s);
-                obOut.writeObject(updatedStaff);
+                obOut.writeObject(ConnectionData.create("UPDATE", updatedStaff));
             } catch (SQLException | StaffNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1153,10 +1249,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Sale)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Sale must be received here"));
+                    return;
+                }
                 Sale s = (Sale) clone.getData();
-                dbConn.addSale(s);
+                Sale newS = dbConn.addSale(s);
+                obOut.writeObject(ConnectionData.create("NEW", newS));
             } catch (SQLException ex) {
-                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1180,11 +1281,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 Sale s = dbConn.getSale(id);
-                obOut.writeObject(s);
+                obOut.writeObject(ConnectionData.create("GET", s));
             } catch (SQLException | SaleNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1195,10 +1300,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Sale)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Sale must be received here"));
+                    return;
+                }
                 Sale sale = (Sale) clone.getData();
                 Sale s = dbConn.updateSale(sale);
+                obOut.writeObject(ConnectionData.create("UPDATE", s));
             } catch (SQLException | SaleNotFoundException ex) {
-                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1209,14 +1319,20 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Time)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Time must be received here"));
+                    return;
+                }
+                if (!(clone.getData2() instanceof Time)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Time must be received here"));
+                    return;
+                }
                 Time start = (Time) clone.getData();
                 Time end = (Time) clone.getData2();
                 List<Sale> sales = dbConn.getSalesInRange(start, end);
-                obOut.writeObject(sales);
-            } catch (IllegalArgumentException ex) {
-                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                obOut.writeObject(ConnectionData.create("GET", sales));
             } catch (SQLException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1226,9 +1342,18 @@ public class ConnectionThread extends Thread {
     private void suspendSale(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Sale)) {
+                obOut.writeObject(ConnectionData.create("FAIL", "A Sale must be received here"));
+                return;
+            }
+            if (!(clone.getData2() instanceof Staff)) {
+                obOut.writeObject(ConnectionData.create("FAIL", "A Staff must be received here"));
+                return;
+            }
             Sale sale = (Sale) clone.getData();
             Staff s = (Staff) clone.getData2();
             dbConn.suspendSale(sale, s);
+            obOut.writeObject(ConnectionData.create("SUSPEND", "SUCCESS"));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1237,9 +1362,13 @@ public class ConnectionThread extends Thread {
     private void resumeSale(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Staff)) {
+                obOut.writeObject(ConnectionData.create("FAIL", "A Staff must be received here"));
+                return;
+            }
             Staff s = (Staff) clone.getData();
             Sale sale = dbConn.resumeSale(s);
-            obOut.writeObject(sale);
+            obOut.writeObject(ConnectionData.create("RESUME", sale));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1249,14 +1378,22 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof String)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                    return;
+                }
+                if (!(clone.getData2() instanceof String)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                    return;
+                }
                 String username = (String) clone.getData();
                 String password = (String) clone.getData2();
                 Staff s = dbConn.login(username, password);
                 ConnectionThread.this.staff = s;
                 TillServer.g.log(staff.getName() + " has logged in");
-                obOut.writeObject(s);
+                obOut.writeObject(ConnectionData.create("LOGIN", s));
             } catch (SQLException | LoginException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1267,13 +1404,17 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 Staff s = dbConn.tillLogin(id);
                 ConnectionThread.this.staff = s;
                 TillServer.g.log(staff.getName() + " has logged in from " + site);
-                obOut.writeObject(s);
+                obOut.writeObject(ConnectionData.create("LOGIN", s));
             } catch (SQLException | LoginException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1284,13 +1425,17 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Staff)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Staff must be received here"));
+                    return;
+                }
                 Staff s = (Staff) clone.getData();
                 dbConn.logout(s);
                 TillServer.g.log(staff.getName() + " has logged out");
                 ConnectionThread.this.staff = null;
-                obOut.writeObject("SUCC");
+                obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (StaffNotFoundException ex) {
-                obOut.writeObject("FAIL");
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1301,13 +1446,17 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Staff)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Staff must be received here"));
+                    return;
+                }
                 Staff s = (Staff) clone.getData();
                 dbConn.tillLogout(s);
                 TillServer.g.log(staff.getName() + " has logged out");
                 ConnectionThread.this.staff = null;
-                obOut.writeObject("SUCC");
+                obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (StaffNotFoundException ex) {
-                obOut.writeObject("FAIL");
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1318,10 +1467,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Category)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Category must be received here"));
+                    return;
+                }
                 Category c = (Category) clone.getData();
-                dbConn.addCategory(c);
+                Category newC = dbConn.addCategory(c);
+                obOut.writeObject(ConnectionData.create("ADD", newC));
             } catch (SQLException ex) {
-                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1332,11 +1486,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Category)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Category must be received here"));
+                    return;
+                }
                 Category c = (Category) clone.getData();
                 Category category = dbConn.updateCategory(c);
-                obOut.writeObject(category);
+                obOut.writeObject(ConnectionData.create("UPDATE", category));
             } catch (SQLException | CategoryNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1347,13 +1505,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 dbConn.removeCategory(id);
-                obOut.writeObject("SUCC");
-            } catch (SQLException ex) {
-                obOut.writeObject(ex.getErrorCode());
-            } catch (CategoryNotFoundException ex) {
-                obOut.writeObject("FAIL");
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (SQLException | CategoryNotFoundException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1364,11 +1524,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 Category c = dbConn.getCategory(id);
-                obOut.writeObject(c);
+                obOut.writeObject(ConnectionData.create("GET", c));
             } catch (SQLException | CategoryNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1392,11 +1556,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 List<Product> products = dbConn.getProductsInCategory(id);
-                obOut.writeObject(products);
+                obOut.writeObject(ConnectionData.create("GET", products));
             } catch (SQLException | CategoryNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1407,10 +1575,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Discount)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Discount must be received here"));
+                    return;
+                }
                 Discount d = (Discount) clone.getData();
-                dbConn.addDiscount(d);
+                Discount newD = dbConn.addDiscount(d);
+                obOut.writeObject(ConnectionData.create("ADD", newD));
             } catch (SQLException ex) {
-                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1421,11 +1594,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Discount)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Discount must be received here"));
+                    return;
+                }
                 Discount d = (Discount) clone.getData();
                 Discount discount = dbConn.updateDiscount(d);
-                obOut.writeObject(discount);
+                obOut.writeObject(ConnectionData.create("UPDATE", discount));
             } catch (SQLException | DiscountNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1436,13 +1613,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 dbConn.removeDiscount(id);
-                obOut.writeObject("SUCC");
-            } catch (SQLException ex) {
-                obOut.writeObject(ex.getErrorCode());
-            } catch (DiscountNotFoundException ex) {
-                obOut.writeObject("FAIL");
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (SQLException | DiscountNotFoundException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1453,11 +1632,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 Discount d = dbConn.getDiscount(id);
-                obOut.writeObject(d);
+                obOut.writeObject(ConnectionData.create("GET", d));
             } catch (SQLException | DiscountNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1481,10 +1664,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Tax)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Tax must be received here"));
+                    return;
+                }
                 Tax t = (Tax) clone.getData();
-                dbConn.addTax(t);
+                Tax newT = dbConn.addTax(t);
+                obOut.writeObject(ConnectionData.create("ADD", newT));
             } catch (SQLException ex) {
-                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1495,13 +1683,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 dbConn.removeTax(id);
-                obOut.writeObject("SUCC");
-            } catch (SQLException ex) {
-                obOut.writeObject(ex.getErrorCode());
-            } catch (TaxNotFoundException ex) {
-                obOut.writeObject("FAIL");
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (SQLException | TaxNotFoundException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1512,11 +1702,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 Tax t = dbConn.getTax(id);
-                obOut.writeObject(t);
+                obOut.writeObject(ConnectionData.create("GET", t));
             } catch (SQLException | TaxNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1527,11 +1721,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Tax)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Tax must be received here"));
+                    return;
+                }
                 Tax t = (Tax) clone.getData();
                 Tax tax = dbConn.updateTax(t);
-                obOut.writeObject(tax);
+                obOut.writeObject(ConnectionData.create("UPDATE", tax));
             } catch (SQLException | TaxNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1555,10 +1753,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Voucher)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Voucher must be received here"));
+                    return;
+                }
                 Voucher v = (Voucher) clone.getData();
-                dbConn.addVoucher(v);
+                Voucher newV = dbConn.addVoucher(v);
+                obOut.writeObject(ConnectionData.create("ADD", newV));
             } catch (SQLException ex) {
-                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1569,13 +1772,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 dbConn.removeVoucher(id);
-                obOut.writeObject("SUCC");
-            } catch (SQLException ex) {
-                obOut.writeObject(ex.getErrorCode());
-            } catch (VoucherNotFoundException ex) {
-                obOut.writeObject("FAIL");
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (SQLException | VoucherNotFoundException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1586,11 +1791,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 Voucher v = dbConn.getVoucher(id);
-                obOut.writeObject(v);
+                obOut.writeObject(ConnectionData.create("GET", v));
             } catch (SQLException | VoucherNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1601,11 +1810,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Voucher)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Voucher must be received here"));
+                    return;
+                }
                 Voucher v = (Voucher) clone.getData();
                 Voucher voucher = dbConn.updateVoucher(v);
-                obOut.writeObject(voucher);
+                obOut.writeObject(ConnectionData.create("UPDATE", voucher));
             } catch (SQLException | VoucherNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1629,10 +1842,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Screen)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Screen must be received here"));
+                    return;
+                }
                 Screen s = (Screen) clone.getData();
-                dbConn.addScreen(s);
+                Screen newS = dbConn.addScreen(s);
+                obOut.writeObject(ConnectionData.create("ADD", newS));
             } catch (SQLException ex) {
-                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1643,10 +1861,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof TillButton)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A TillButton must be received here"));
+                    return;
+                }
                 TillButton b = (TillButton) clone.getData();
-                dbConn.addButton(b);
+                TillButton newB = dbConn.addButton(b);
+                obOut.writeObject(ConnectionData.create("ADD", newB));
             } catch (SQLException ex) {
-                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1657,13 +1880,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Screen)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Screen must be received here"));
+                    return;
+                }
                 Screen s = (Screen) clone.getData();
                 dbConn.removeScreen(s);
-                obOut.writeObject("SUCC");
-            } catch (SQLException ex) {
-                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ScreenNotFoundException ex) {
-                obOut.writeObject("FAIL");
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (SQLException | ScreenNotFoundException ex) {
+                obOut.writeObject(ConnectionData.create("SUCC", ex));
             }
         } catch (IOException e) {
 
@@ -1674,13 +1899,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof TillButton)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A TillButton must be received here"));
+                    return;
+                }
                 TillButton b = (TillButton) clone.getData();
                 dbConn.removeButton(b);
-                obOut.writeObject("SUCC");
-            } catch (SQLException ex) {
-                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ButtonNotFoundException ex) {
-                obOut.writeObject("FAIL");
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (SQLException | ButtonNotFoundException ex) {
+                ConnectionData.create("FAIL", ex);
             }
         } catch (IOException e) {
 
@@ -1691,11 +1918,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Screen)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Screen must be received here"));
+                    return;
+                }
                 Screen s = (Screen) clone.getData();
                 dbConn.updateScreen(s);
-                obOut.writeObject(s);
+                obOut.writeObject(ConnectionData.create("UPDATE", s));
             } catch (SQLException | ScreenNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1706,11 +1937,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof TillButton)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A TillButton must be received here"));
+                    return;
+                }
                 TillButton b = (TillButton) clone.getData();
                 dbConn.updateButton(b);
-                obOut.writeObject(b);
+                obOut.writeObject(ConnectionData.create("UPDATE", b));
             } catch (SQLException | ButtonNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1721,11 +1956,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 Screen s = dbConn.getScreen(id);
-                obOut.writeObject(s);
+                obOut.writeObject(ConnectionData.create("GET", s));
             } catch (SQLException | ScreenNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1736,11 +1975,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 TillButton b = dbConn.getButton(id);
-                obOut.writeObject(b);
+                obOut.writeObject(ConnectionData.create("GET", b));
             } catch (SQLException | ButtonNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1777,11 +2020,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Screen)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Screen must be received here"));
+                    return;
+                }
                 Screen s = (Screen) clone.getData();
                 List<TillButton> buttons = dbConn.getButtonsOnScreen(s);
-                obOut.writeObject(buttons);
+                obOut.writeObject(ConnectionData.create("GET", buttons));
             } catch (SQLException | ScreenNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 
@@ -1791,8 +2038,13 @@ public class ConnectionThread extends Thread {
     private void assisstance(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof String)) {
+                obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                return;
+            }
             String message = (String) clone.getData();
             dbConn.assisstance(staff.getName() + " on terminal " + site + " has requested assistance with message:\n" + message);
+            obOut.writeObject(ConnectionData.create("SUCC"));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1802,11 +2054,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof String)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                    return;
+                }
                 String terminal = (String) clone.getData();
                 BigDecimal t = dbConn.getTillTakings(terminal);
-                obOut.writeObject(t);
+                obOut.writeObject(ConnectionData.create("GET", t));
             } catch (SQLException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -1817,11 +2073,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof String)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                    return;
+                }
                 String terminal = (String) clone.getData();
                 List<Sale> sales = dbConn.getUncashedSales(terminal);
-                obOut.writeObject(sales);
+                obOut.writeObject(ConnectionData.create("GET", sales));
             } catch (SQLException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -1831,8 +2091,13 @@ public class ConnectionThread extends Thread {
     private void sendEmail(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof String)) {
+                obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                return;
+            }
             String message = (String) clone.getData();
             dbConn.sendEmail(message);
+            obOut.writeObject(ConnectionData.create("SUCC"));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1841,9 +2106,18 @@ public class ConnectionThread extends Thread {
     private void sendReceipt(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof String)) {
+                obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                return;
+            }
+            if (!(clone.getData2() instanceof Sale)) {
+                obOut.writeObject(ConnectionData.create("FAIL", "A Sale must be received here"));
+                return;
+            }
             String email = (String) clone.getData();
             Sale sale = (Sale) clone.getData2();
             dbConn.emailReceipt(email, sale);
+            obOut.writeObject(ConnectionData.create("SUCC"));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1853,10 +2127,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Till)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Till must be received here"));
+                    return;
+                }
                 Till t = (Till) clone.getData();
-                dbConn.addTill(t);
+                Till newT = dbConn.addTill(t);
+                obOut.writeObject(ConnectionData.create("ADD", newT));
             } catch (SQLException ex) {
-                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -1867,10 +2146,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 dbConn.removeTill(id);
+                obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (SQLException | TillNotFoundException ex) {
-                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -1881,11 +2165,15 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
+                    return;
+                }
                 int id = (int) clone.getData();
                 Till till = dbConn.getTill(id);
-                obOut.writeObject(till);
+                obOut.writeObject(ConnectionData.create("GET", till));
             } catch (SQLException | TillNotFoundException ex) {
-                obOut.writeObject(ex);
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -1908,8 +2196,13 @@ public class ConnectionThread extends Thread {
     private void connectTill(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof String)) {
+                obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                return;
+            }
             String t = (String) clone.getData();
-            obOut.writeBoolean(dbConn.connectTill(t));
+            boolean allowed = dbConn.connectTill(t);
+            obOut.writeObject(ConnectionData.create("CONNECT", allowed));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }
