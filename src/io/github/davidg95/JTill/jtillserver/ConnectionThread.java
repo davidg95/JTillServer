@@ -1843,7 +1843,7 @@ public class ConnectionThread extends Thread {
                 }
                 Screen s = (Screen) clone.getData();
                 Screen newS = dbConn.addScreen(s);
-                obOut.writeObject(ConnectionData.create("ADD", newS));
+                obOut.writeObject(ConnectionData.create("SUCC", newS));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
@@ -1862,7 +1862,7 @@ public class ConnectionThread extends Thread {
                 }
                 TillButton b = (TillButton) clone.getData();
                 TillButton newB = dbConn.addButton(b);
-                obOut.writeObject(ConnectionData.create("ADD", newB));
+                obOut.writeObject(ConnectionData.create("SUCC", newB));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
@@ -1919,7 +1919,7 @@ public class ConnectionThread extends Thread {
                 }
                 Screen s = (Screen) clone.getData();
                 dbConn.updateScreen(s);
-                obOut.writeObject(ConnectionData.create("UPDATE", s));
+                obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | ScreenNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
@@ -1938,7 +1938,7 @@ public class ConnectionThread extends Thread {
                 }
                 TillButton b = (TillButton) clone.getData();
                 dbConn.updateButton(b);
-                obOut.writeObject(ConnectionData.create("UPDATE", b));
+                obOut.writeObject(ConnectionData.create("SUCC", b));
             } catch (SQLException | ButtonNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
@@ -1957,7 +1957,7 @@ public class ConnectionThread extends Thread {
                 }
                 int id = (int) clone.getData();
                 Screen s = dbConn.getScreen(id);
-                obOut.writeObject(ConnectionData.create("GET", s));
+                obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | ScreenNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
@@ -1976,7 +1976,7 @@ public class ConnectionThread extends Thread {
                 }
                 int id = (int) clone.getData();
                 TillButton b = dbConn.getButton(id);
-                obOut.writeObject(ConnectionData.create("GET", b));
+                obOut.writeObject(ConnectionData.create("SUCC", b));
             } catch (SQLException | ButtonNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
@@ -2021,7 +2021,7 @@ public class ConnectionThread extends Thread {
                 }
                 Screen s = (Screen) clone.getData();
                 List<TillButton> buttons = dbConn.getButtonsOnScreen(s);
-                obOut.writeObject(ConnectionData.create("GET", buttons));
+                obOut.writeObject(ConnectionData.create("SUCC", buttons));
             } catch (SQLException | ScreenNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }

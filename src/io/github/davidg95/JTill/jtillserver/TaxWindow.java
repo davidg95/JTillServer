@@ -288,7 +288,7 @@ public class TaxWindow extends javax.swing.JFrame {
                 } else {
                     t = new Tax(name, value);
                     try {
-                        dbConn.addTax(t);
+                        Tax ta = dbConn.addTax(t);
                         showAllTaxes();
                         setCurrentTax(null);
                     } catch (IOException | SQLException ex) {

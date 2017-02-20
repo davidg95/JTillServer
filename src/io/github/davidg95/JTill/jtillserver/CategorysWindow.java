@@ -391,7 +391,7 @@ public class CategorysWindow extends javax.swing.JFrame {
                 } else {
                     c = new Category(name, startSell, endSell, time, minAge);
                     try {
-                        dbConn.addCategory(c);
+                        Category cat = dbConn.addCategory(c);
                         showAllCategorys();
                         setCurrentCategory(null);
                     } catch (SQLException | IOException ex) {

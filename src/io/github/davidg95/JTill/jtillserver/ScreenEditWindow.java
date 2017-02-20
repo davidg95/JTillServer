@@ -351,9 +351,9 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                         try {
                             int position = dbConn.getAllScreens().size() - 1;
                             Screen s = new Screen(name, position, 0);
-                            dbConn.addScreen(s);
+                            Screen sc = dbConn.addScreen(s);
                             for (int i = 0; i < 50; i++) {
-                                dbConn.addButton(new TillButton("[SPACE]", null, s, 0));
+                                TillButton bu = dbConn.addButton(new TillButton("[SPACE]", null, s, 0));
                             }
                             setButtons();
                         } catch (IOException | SQLException ex) {

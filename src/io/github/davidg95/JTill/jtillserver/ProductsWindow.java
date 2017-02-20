@@ -40,7 +40,7 @@ public class ProductsWindow extends javax.swing.JFrame {
     private DefaultComboBoxModel discountsModel;
     private DefaultComboBoxModel taxesModel;
     private DefaultComboBoxModel categorysModel;
-    
+
     private Image icon;
 
     /**
@@ -734,7 +734,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                     } else {
                         p = new Product(name, shortName, category, comments, tax, false, price, costPrice, stock, minStock, maxStock, barcode);
                         try {
-                            dbConn.addProduct(p);
+                            Product pr = dbConn.addProduct(p);
                             showAllProducts();
                             setCurrentProduct(null);
                             txtName.requestFocus();

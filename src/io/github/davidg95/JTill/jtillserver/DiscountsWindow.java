@@ -333,7 +333,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
                 } else {
                     d = new Discount(name, percentage, BigDecimal.ZERO);
                     try {
-                        dbConn.addDiscount(d);
+                        Discount dis = dbConn.addDiscount(d);
                         showAllDiscounts();
                         setCurrentDiscount(null);
                     } catch (SQLException | IOException ex) {

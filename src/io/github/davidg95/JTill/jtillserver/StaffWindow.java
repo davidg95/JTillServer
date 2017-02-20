@@ -359,7 +359,7 @@ public class StaffWindow extends javax.swing.JFrame {
             } else if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
                 try {
                     s = new Staff(name, position, username, password);
-                    dbConn.addStaff(s);
+                    Staff st = dbConn.addStaff(s);
                     setCurrentStaff(null);
                     showAllStaff();
                     txtName.requestFocus();

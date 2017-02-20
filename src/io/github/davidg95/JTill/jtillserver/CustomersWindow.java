@@ -577,7 +577,7 @@ public class CustomersWindow extends javax.swing.JFrame {
                 } else {
                     c = new Customer(name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, loyalty, moneyDue);
                     try {
-                        dbConn.addCustomer(c);
+                        Customer cu = dbConn.addCustomer(c);
                         showAllCustomers();
                         setCurrentCustomer(null);
                         jTabbedPane1.setSelectedIndex(0);
