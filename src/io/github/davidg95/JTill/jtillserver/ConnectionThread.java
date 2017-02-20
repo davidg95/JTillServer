@@ -741,6 +741,22 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
+                    case "SETSETTING":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                setSetting(data);
+                            }
+                        }.start();
+                        break;
+                    case "GETSETTING":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getSetting(data);
+                            }
+                        }.start();
+                        break;
                     case "CONNTERM": //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -2198,6 +2214,37 @@ public class ConnectionThread extends Thread {
             String t = (String) clone.getData();
             boolean allowed = dbConn.connectTill(t);
             obOut.writeObject(ConnectionData.create("CONNECT", allowed));
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void setSetting(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof String) || !(clone.getData() instanceof String)) {
+                obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                return;
+            }
+            String key = (String) clone.getData();
+            String value = (String) clone.getData2();
+            dbConn.setSetting(key, value);
+            obOut.writeObject(ConnectionData.create("SUCC"));
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getSetting(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof String)) {
+                obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                return;
+            }
+            String key = (String) clone.getData();
+            String value = dbConn.getSettings(key);
+            obOut.writeObject(ConnectionData.create("SUCC", value));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }

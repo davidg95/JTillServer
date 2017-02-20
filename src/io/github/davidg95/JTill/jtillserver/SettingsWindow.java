@@ -8,6 +8,9 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Image;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -49,26 +52,30 @@ public class SettingsWindow extends javax.swing.JFrame {
     }
 
     private void init() {
-        txtPort.setText(DBConnect.PORT + "");
-        txtMaxConn.setText(DBConnect.MAX_CONNECTIONS + "");
-        txtMaxQueued.setText(DBConnect.MAX_QUEUE + "");
-        txtAddress.setText(DBConnect.DB_ADDRESS);
-        txtUsername.setText(DBConnect.DB_USERNAME);
-        txtPassword.setText(DBConnect.DB_PASSWORD);
-        chkLogOut.setSelected(TillInitData.initData.autoLogout);
-        txtLogonMessage.setText(TillInitData.initData.logonScreenMessage);
-        if (TillInitData.initData.logoutTimeout == -1) {
-            chkLogoutTimeout.setSelected(false);
-            txtLogoutTimeout.setText("");
-            txtLogoutTimeout.setEnabled(false);
-        } else {
-            chkLogoutTimeout.setSelected(true);
-            txtLogoutTimeout.setText(TillInitData.initData.logoutTimeout + "");
-            txtLogoutTimeout.setEnabled(true);
+        try {
+            txtPort.setText(DBConnect.PORT + "");
+            txtMaxConn.setText(DBConnect.MAX_CONNECTIONS + "");
+            txtMaxQueued.setText(DBConnect.MAX_QUEUE + "");
+            txtAddress.setText(DBConnect.DB_ADDRESS);
+            txtUsername.setText(DBConnect.DB_USERNAME);
+            txtPassword.setText(DBConnect.DB_PASSWORD);
+            chkLogOut.setSelected(dbConn.getSettings("AUTO_LOGOUT").equals("true"));
+            txtLogonMessage.setText(dbConn.getSettings("LOGON_MESSAGE"));
+            if (dbConn.getSettings("LOGOUT_TIMEOUT").equals("-1")) {
+                chkLogoutTimeout.setSelected(false);
+                txtLogoutTimeout.setText("");
+                txtLogoutTimeout.setEnabled(false);
+            } else {
+                chkLogoutTimeout.setSelected(true);
+                txtLogoutTimeout.setText(dbConn.getSettings("LOGOUT_TIMEOUT"));
+                txtLogoutTimeout.setEnabled(true);
+            }
+            txtOutMail.setText(DBConnect.MAIL_SERVER);
+            txtOutgoingAddress.setText(DBConnect.OUTGOING_MAIL_ADDRESS);
+            txtMailAddress.setText(DBConnect.MAIL_ADDRESS);
+        } catch (IOException ex) {
+
         }
-        txtOutMail.setText(DBConnect.MAIL_SERVER);
-        txtOutgoingAddress.setText(DBConnect.OUTGOING_MAIL_ADDRESS);
-        txtMailAddress.setText(DBConnect.MAIL_ADDRESS);
     }
 
     /**
@@ -518,17 +525,23 @@ public class SettingsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEditDatabaseActionPerformed
 
     private void btnSaveSecurityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveSecurityActionPerformed
-        TillInitData.initData.autoLogout = chkLogOut.isSelected();
-        if (chkLogoutTimeout.isSelected()) {
-            TillInitData.initData.logoutTimeout = Integer.parseInt(txtLogoutTimeout.getText());
-        } else {
-            TillInitData.initData.logoutTimeout = -1;
-        }
-        TillInitData.initData.setLogoutTimeout(TillInitData.initData.logoutTimeout);
-        TillInitData.initData.setAutoLogout(TillInitData.initData.autoLogout);
-        if (dbConn instanceof DBConnect) {
-            DBConnect db = (DBConnect) dbConn;
-            db.saveProperties();
+        try {
+            if (chkLogOut.isSelected()) {
+                dbConn.setSetting("AUTO_LOGOUT", "TRUE");
+            } else {
+                dbConn.setSetting("AUTO_LOGOUT", "FALSE");
+            }
+            if (chkLogoutTimeout.isSelected()) {
+                dbConn.setSetting("LOGOUT_TIMEOUT", txtLogoutTimeout.getText());
+            } else {
+                dbConn.setSetting("LOGOUT_TIMEOUT", "-1");
+            }
+            if (dbConn instanceof DBConnect) {
+                DBConnect db = (DBConnect) dbConn;
+                db.saveProperties();
+            }
+        } catch (IOException ex) {
+
         }
     }//GEN-LAST:event_btnSaveSecurityActionPerformed
 
@@ -551,7 +564,10 @@ public class SettingsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDatabaseDefaultActionPerformed
 
     private void btnLogonMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogonMessageActionPerformed
-        TillInitData.initData.setLogonScreenMessage(txtLogonMessage.getText());
+        try {
+            dbConn.setSetting("LOGON_MESSAGE", txtLogonMessage.getText());
+        } catch (IOException ex) {
+        }
     }//GEN-LAST:event_btnLogonMessageActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
