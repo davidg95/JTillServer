@@ -71,31 +71,27 @@ public class ProductDialog extends javax.swing.JDialog {
         txtMinStock.setText(p.getMinStockLevel() + "");
         txtMaxStock.setText(p.getMaxStockLevel() + "");
         txtComments.setText(p.getComments());
-        try {
-            int index = 0;
-            Category c = dbConn.getCategory(p.getCategoryID());
-            index = 0;
-            for (int i = 0; i < categorys.size(); i++) {
-                if (categorys.get(i).getID() == c.getID()) {
-                    index = i;
-                    break;
-                }
+        int index = 0;
+        Category c = p.getCategory();
+        index = 0;
+        for (int i = 0; i < categorys.size(); i++) {
+            if (categorys.get(i).getID() == c.getID()) {
+                index = i;
+                break;
             }
-            cmbCategory.setSelectedIndex(index);
-            Tax t = dbConn.getTax(p.getTaxID());
-            index = 0;
-            for (int i = 0; i < taxes.size(); i++) {
-                if (taxes.get(i).getId() == t.getId()) {
-                    index = i;
-                    break;
-                }
-            }
-            cmbTax.setSelectedIndex(index);
-        } catch (CategoryNotFoundException | TaxNotFoundException | IOException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
         }
+        cmbCategory.setSelectedIndex(index);
+        Tax t = p.getTax();
+        index = 0;
+        for (int i = 0; i < taxes.size(); i++) {
+            if (taxes.get(i).getId() == t.getId()) {
+                index = i;
+                break;
+            }
+        }
+        cmbTax.setSelectedIndex(index);
         btnAddProduct.setText("Save Changes");
-        this.setTitle("Edit Product " + p.getName());
+        setTitle("Edit Product " + p.getName());
     }
 
     private void init() {
@@ -361,13 +357,13 @@ public class ProductDialog extends javax.swing.JDialog {
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         String name = txtName.getText();
         String shortName = txtShortName.getText();
-        int category = 1;
+        Category category = null;
         if (!categorys.isEmpty()) {
-            category = categorys.get(cmbCategory.getSelectedIndex()).getID();
+            category = categorys.get(cmbCategory.getSelectedIndex());
         }
-        int tax = 1;
+        Tax tax = null;
         if (!taxes.isEmpty()) {
-            tax = taxes.get(cmbTax.getSelectedIndex()).getId();
+            tax = taxes.get(cmbTax.getSelectedIndex());
         }
         String comments = txtComments.getText();
         try {
@@ -395,7 +391,7 @@ public class ProductDialog extends javax.swing.JDialog {
                     } else {
                         product.setName(name);
                         product.setName(shortName);
-                        product.setCategoryID(category);
+                        product.setCategory(category);
                         product.setBarcode(barcode);
                         product.setPrice(price);
                         product.setStock(stock);
