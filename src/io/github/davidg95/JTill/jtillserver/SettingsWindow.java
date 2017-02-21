@@ -9,8 +9,6 @@ import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Image;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -59,7 +57,7 @@ public class SettingsWindow extends javax.swing.JFrame {
             txtAddress.setText(DBConnect.DB_ADDRESS);
             txtUsername.setText(DBConnect.DB_USERNAME);
             txtPassword.setText(DBConnect.DB_PASSWORD);
-            chkLogOut.setSelected(dbConn.getSettings("AUTO_LOGOUT").equals("true"));
+            chkLogOut.setSelected(dbConn.getSettings("AUTO_LOGOUT").equals("TRUE"));
             txtLogonMessage.setText(dbConn.getSettings("LOGON_MESSAGE"));
             if (dbConn.getSettings("LOGOUT_TIMEOUT").equals("-1")) {
                 chkLogoutTimeout.setSelected(false);
