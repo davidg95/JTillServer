@@ -73,13 +73,16 @@ public class ConnectionThread extends Thread {
 
             site = (String) obIn.readObject();
 
-            boolean allow = dbConn.connectTill(site);
+            if (!site.equals("NOPERM")) {
 
-            if (!allow) {
-                obOut.writeObject(ConnectionData.create("DISALLOW"));
-                conn_term = true;
-            } else {
-                obOut.writeObject(ConnectionData.create("ALLOW"));
+                boolean allow = dbConn.connectTill(site);
+
+                if (!allow) {
+                    obOut.writeObject(ConnectionData.create("DISALLOW"));
+                    conn_term = true;
+                } else {
+                    obOut.writeObject(ConnectionData.create("ALLOW"));
+                }
             }
 
             TillServer.g.increaceClientCount(site);

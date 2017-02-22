@@ -813,8 +813,11 @@ public class ProductsWindow extends javax.swing.JFrame {
         }
 
         if (newList.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.PLAIN_MESSAGE);
+            txtSearch.setSelectionStart(0);
+            txtSearch.setSelectionEnd(txtSearch.getText().length());
+            JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.ERROR_MESSAGE);
         } else {
+            txtSearch.setText("");
             currentTableContents = newList;
             if (newList.size() == 1) {
                 setCurrentProduct(newList.get(0));
