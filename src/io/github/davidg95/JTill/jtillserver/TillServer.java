@@ -15,7 +15,6 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.util.Properties;
 import javax.swing.JOptionPane;
 
 /**
@@ -48,7 +47,6 @@ public class TillServer {
     public static SystemTray tray;
     
     private Settings settings;
-    private Properties properties;
 
     /**
      * @param args the command line arguments

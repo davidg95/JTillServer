@@ -7,8 +7,10 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +42,11 @@ public class ConnectionAcceptThread extends Thread {
         ThreadPoolExecutor pool = new ThreadPoolExecutor(Settings.MAX_CONNECTIONS, Settings.MAX_QUEUE, 50000L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(Settings.MAX_QUEUE));
         pool.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 
+        try {
+            TillServer.g.log("JTill Server local IP address is " + InetAddress.getLocalHost().getHostAddress());
+        } catch (UnknownHostException ex) {
+            TillServer.g.log(ex);
+        }
         TillServer.g.log("Ready to accept connections");
         for (;;) {
             try {
