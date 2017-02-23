@@ -5,21 +5,13 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DBConnect;
-import io.github.davidg95.JTill.jtill.DataConnectInterface;
-import io.github.davidg95.JTill.jtill.GUIInterface;
-import io.github.davidg95.JTill.jtill.Staff;
-import io.github.davidg95.JTill.jtill.StaffNotFoundException;
-import io.github.davidg95.JTill.jtill.Till;
+import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -47,6 +39,8 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private final boolean remote;
 
     private final Image icon;
+    
+    private final Settings settings;
 
     /**
      * Creates new form GUI
@@ -55,10 +49,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
      * @param remote flag indicating whether this is a remote connection or not.
      * @param icon
      */
-    public GUI(DataConnectInterface dbConnection, boolean remote, Image icon) {
+    public GUI(DataConnectInterface dbConnection, Settings settings, boolean remote, Image icon) {
         this.dbConn = dbConnection;
         this.remote = remote;
         this.icon = icon;
+        this.settings = settings;
         this.setIconImage(icon);
         initComponents();
         connections = new ArrayList<>();
@@ -76,7 +71,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                 TillSplashScreen.setLabel("Creating database...");
                 db.create(DBConnect.DB_ADDRESS + "create=true;", DBConnect.DB_USERNAME, DBConnect.DB_PASSWORD);
                 TillSplashScreen.setLabel("Creating tables...");
-                Staff s = StaffDialog.showNewStaffDialog(this);
+                Staff s = StaffDialog.showNewStaffDialog(this, db);
                 if (s == null) {
                     System.exit(0);
                 }
@@ -107,7 +102,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                 TillSplashScreen.addBar(40);
                 lblDatabase.setText("Connected to database");
                 if (dbConn.staffCount() == 0) {
-                    Staff s = StaffDialog.showNewStaffDialog(this);
+                    Staff s = StaffDialog.showNewStaffDialog(this, db);
                     if (s == null) {
                         System.exit(0);
                     }
@@ -168,7 +163,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         } else {
             if (dbConn instanceof DBConnect) {
                 DBConnect db = (DBConnect) dbConn;
-                db.saveProperties();
+                settings.saveProperties();
             }
             if (remote) {
                 System.exit(0);
@@ -201,44 +196,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
     public boolean isLoggedOn() {
         return isLoggedOn;
-    }
-
-    /**
-     * Method to save the configs.
-     */
-    private void saveToFile() {
-        try (PrintWriter writer = new PrintWriter("database.txt", "UTF-8")) {
-            writer.println(database_address);
-            writer.println(username);
-            writer.println(password);
-            writer.println(TillServer.updateInterval);
-            writer.println(DBConnect.PORT);
-        } catch (IOException ex) {
-
-        }
-    }
-
-    /**
-     * Method to load the configs.
-     */
-    private void openFile() {
-        try {
-            Scanner fileReader = new Scanner(new File("database.txt"));
-
-            if (fileReader.hasNext()) {
-                database_address = fileReader.nextLine();
-                username = fileReader.nextLine();
-                password = fileReader.nextLine();
-                TillServer.updateInterval = Long.parseLong(fileReader.nextLine());
-                DBConnect.PORT = Integer.parseInt(fileReader.nextLine());
-            } else {
-            }
-        } catch (IOException e) {
-            try {
-                boolean createNewFile = new File("database.txt").createNewFile();
-            } catch (IOException ex) {
-            }
-        }
     }
 
     @Override
@@ -643,7 +600,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
         if (dbConn instanceof DBConnect) {
             DBConnect db = (DBConnect) dbConn;
-            db.saveProperties();
+            settings.saveProperties();
             TillServer.removeSystemTrayIcon();
         }
         dbConn.close();
@@ -713,12 +670,12 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_btnCategorysActionPerformed
 
     private void itemServerOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemServerOptionsActionPerformed
-        SettingsWindow.showSettingsWindow(dbConn, icon);
+        SettingsWindow.showSettingsWindow(dbConn, settings, icon);
     }//GEN-LAST:event_itemServerOptionsActionPerformed
 
     private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
         JOptionPane.showMessageDialog(null, "JTill Server is running on port number "
-                + DBConnect.PORT + " with " + clientCounter + " connections.\n"
+                + Settings.PORT + " with " + clientCounter + " connections.\n"
                 + dbConn.toString(), "JTill Server",
                 JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_itemAboutActionPerformed
@@ -737,7 +694,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_btnReportsActionPerformed
 
     private void btnSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsActionPerformed
-        SettingsWindow.showSettingsWindow(dbConn, icon);
+        SettingsWindow.showSettingsWindow(dbConn, settings, icon);
     }//GEN-LAST:event_btnSettingsActionPerformed
 
     private void btnScreensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScreensActionPerformed
@@ -790,7 +747,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
     @Override
     public void allow() {
-        
+
     }
 
     @Override

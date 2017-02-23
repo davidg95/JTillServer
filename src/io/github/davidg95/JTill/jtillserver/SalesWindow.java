@@ -10,7 +10,6 @@ import java.awt.Image;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.List;
 import javax.swing.JFrame;
@@ -137,7 +136,6 @@ public class SalesWindow extends javax.swing.JFrame {
         lblDailySales = new javax.swing.JLabel();
 
         setTitle("Sales");
-        setIconImage(TillServer.getIcon());
 
         tableSales.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

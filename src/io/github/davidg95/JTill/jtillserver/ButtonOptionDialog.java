@@ -5,9 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DataConnectInterface;
-import io.github.davidg95.JTill.jtill.Product;
-import io.github.davidg95.JTill.jtill.TillButton;
+import io.github.davidg95.JTill.jtill.*;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -17,6 +15,7 @@ import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 
 /**
+ * ButtonOptionsDialog for editing a till button.
  *
  * @author David
  */
@@ -31,6 +30,7 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
      * Creates new form ButtonOptionDialog.
      *
      * @param parent the parent component.
+     * @param dc the data connection.
      */
     public ButtonOptionDialog(Window parent, DataConnectInterface dc) {
         super(parent);
@@ -54,6 +54,7 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
      *
      * @param parent the parent window.
      * @param b the button object.
+     * @param dc the data connection.
      * @return the button with any changed applied.
      */
     public static TillButton showDialog(Component parent, TillButton b, DataConnectInterface dc) {

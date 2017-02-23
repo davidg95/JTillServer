@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -46,9 +44,9 @@ public class ProductDialog extends javax.swing.JDialog {
     /**
      * Creates new form NewProduct
      */
-    public ProductDialog(Window parent) {
+    public ProductDialog(Window parent, DataConnectInterface dc) {
         super(parent);
-        this.dbConn = TillServer.getDataConnection();
+        this.dbConn = dc;
         initComponents();
         this.editMode = false;
         this.setLocationRelativeTo(parent);
@@ -56,9 +54,9 @@ public class ProductDialog extends javax.swing.JDialog {
         init();
     }
 
-    public ProductDialog(Window parent, Product p) {
+    public ProductDialog(Window parent, DataConnectInterface dc, Product p) {
         super(parent);
-        this.dbConn = TillServer.getDataConnection();
+        this.dbConn = dc;
         initComponents();
         init();
         this.editMode = true;
@@ -118,24 +116,24 @@ public class ProductDialog extends javax.swing.JDialog {
      * @param parent the parent component.
      * @return new Product object.
      */
-    public static Product showNewProductDialog(Component parent) {
+    public static Product showNewProductDialog(Component parent, DataConnectInterface dc) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new ProductDialog(window);
+        dialog = new ProductDialog(window, dc);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         product = null;
         dialog.setVisible(true);
         return product;
     }
 
-    public static Product showEditProductDialog(Component parent, Product p) {
+    public static Product showEditProductDialog(Component parent, DataConnectInterface dc, Product p) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new ProductDialog(window, p);
+        dialog = new ProductDialog(window, dc, p);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         product = p;
         dialog.setVisible(true);

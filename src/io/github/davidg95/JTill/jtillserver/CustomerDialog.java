@@ -5,9 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.Customer;
-import io.github.davidg95.JTill.jtill.DataConnectInterface;
-import io.github.davidg95.JTill.jtill.Discount;
+import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -30,7 +28,7 @@ public class CustomerDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static Customer customer;
 
-    private DataConnectInterface dbConn;
+    private DataConnectInterface dc;
 
     private final boolean editMode;
 
@@ -42,10 +40,10 @@ public class CustomerDialog extends javax.swing.JDialog {
      *
      * @param parent the parent component.
      */
-    public CustomerDialog(Window parent) {
+    public CustomerDialog(Window parent, DataConnectInterface dc) {
         super(parent);
         initComponents();
-        this.dbConn = TillServer.getDataConnection();
+        this.dc = dc;
         editMode = false;
         this.setLocationRelativeTo(parent);
         this.setModal(true);
@@ -84,14 +82,15 @@ public class CustomerDialog extends javax.swing.JDialog {
      * Method which shows a blank customer dialog for creating a new customer.
      *
      * @param parent the parent component for the dialog.
+     * @param dc the data connection.
      * @return a new customer object.
      */
-    public static Customer showNewCustomerDialog(Component parent) {
+    public static Customer showNewCustomerDialog(Component parent, DataConnectInterface dc) {
         Window window = null;
         if (parent instanceof Frame || parent instanceof Dialog) {
             window = (Window) parent;
         }
-        dialog = new CustomerDialog(window);
+        dialog = new CustomerDialog(window, dc);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         customer = null;
         dialog.setVisible(true);
@@ -404,9 +403,9 @@ public class CustomerDialog extends javax.swing.JDialog {
         } else {
             customer = new Customer(name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, loyalty, moneyDue);
             try {
-                dbConn.addCustomer(customer);
+                dc.addCustomer(customer);
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+                showDatabaseError(ex);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
             }

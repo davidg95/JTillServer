@@ -5,7 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DBConnect;
+import io.github.davidg95.JTill.jtill.*;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -23,22 +23,28 @@ import java.util.logging.Logger;
 public class ConnectionAcceptThread extends Thread {
 
     private final ServerSocket socket;
+    private final DataConnectInterface dc;
 
-    public ConnectionAcceptThread(ServerSocket s) {
+    public ConnectionAcceptThread(DataConnectInterface dc, int PORT) throws IOException {
         super("ConnectionAcceptThread");
-        this.socket = s;
+        this.socket = new ServerSocket(PORT);
+        this.dc = dc;
+    }
+
+    public ConnectionAcceptThread(DataConnectInterface dc) throws IOException {
+        this(dc, Settings.DEFAULT_PORT);
     }
 
     @Override
     public void run() {
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(DBConnect.MAX_CONNECTIONS, DBConnect.MAX_QUEUE, 50000L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(DBConnect.MAX_QUEUE));
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(Settings.MAX_CONNECTIONS, Settings.MAX_QUEUE, 50000L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(Settings.MAX_QUEUE));
         pool.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 
         TillServer.g.log("Ready to accept connections");
         for (;;) {
             try {
                 Socket incoming = socket.accept();
-                pool.submit(new ConnectionThread(socket.getInetAddress().getHostAddress(), incoming));
+                pool.submit(new ConnectionThread(socket.getInetAddress().getHostAddress(), dc, incoming));
             } catch (IOException ex) {
                 Logger.getLogger(ConnectionAcceptThread.class.getName()).log(Level.SEVERE, null, ex);
             }

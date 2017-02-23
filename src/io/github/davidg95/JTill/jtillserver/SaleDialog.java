@@ -5,14 +5,12 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.Sale;
-import io.github.davidg95.JTill.jtill.SaleItem;
+import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import javax.swing.JDialog;

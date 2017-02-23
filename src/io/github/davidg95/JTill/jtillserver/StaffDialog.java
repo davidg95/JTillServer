@@ -12,8 +12,6 @@ import java.awt.Frame;
 import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -26,8 +24,7 @@ public class StaffDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static Staff staff;
 
-    private Data data;
-    private DataConnectInterface dbConn;
+    private DataConnectInterface dc;
     private Staff s;
     private boolean editMode;
 
@@ -35,11 +32,12 @@ public class StaffDialog extends javax.swing.JDialog {
      * Creates new form StaffDialog
      *
      * @param parent the parent window.
+     * @param dc the data connection.
      */
-    public StaffDialog(Window parent) {
+    public StaffDialog(Window parent, DataConnectInterface dc) {
         super(parent);
         editMode = false;
-        this.dbConn = TillServer.getDataConnection();
+        this.dc = dc;
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setModal(true);
@@ -48,26 +46,16 @@ public class StaffDialog extends javax.swing.JDialog {
     /**
      * Creates new form StaffDialog
      *
-     * @param parent the parent window.
-     * @param data data for handling staff members.
-     */
-    public StaffDialog(Window parent, Data data) {
-        this(parent);
-        this.data = data;
-    }
-
-    /**
-     * Creates new form StaffDialog
-     *
      * @param parent parent window.
+     * @param dc the data connection.
      * @param staff staff getting edited.
      */
-    public StaffDialog(Window parent, Staff staff) {
+    public StaffDialog(Window parent, DataConnectInterface dc, Staff staff) {
         super(parent);
         initComponents();
         editMode = true;
         this.s = staff;
-        this.dbConn = TillServer.getDataConnection();
+        this.dc = dc;
         this.setLocationRelativeTo(parent);
         this.setModal(true);
         txtName.setText(s.getName());
@@ -77,36 +65,24 @@ public class StaffDialog extends javax.swing.JDialog {
         this.setTitle("Staff Member " + staff.getName());
     }
 
-    public static Staff showNewStaffDialog(Component parent) {
+    public static Staff showNewStaffDialog(Component parent, DataConnectInterface dc) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new StaffDialog(window);
+        dialog = new StaffDialog(window, dc);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         staff = null;
         dialog.setVisible(true);
         return staff;
     }
 
-    public static Staff showNewStaffDialog(Component parent, Data data) {
+    public static Staff showEditStaffDialog(Component parent, DataConnectInterface dc, Staff s) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new StaffDialog(window, data);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        staff = null;
-        dialog.setVisible(true);
-        return staff;
-    }
-
-    public static Staff showEditStaffDialog(Component parent, Staff s) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
-        dialog = new StaffDialog(window, s);
+        dialog = new StaffDialog(window, dc, s);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         staff = s;
         dialog.setVisible(true);
@@ -247,21 +223,24 @@ public class StaffDialog extends javax.swing.JDialog {
             if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
                 String password = new String(txtPassword.getPassword());
                 staff = new Staff(name, position, username, password);
-                if (dbConn != null) {
-                    try {
-                        Staff s = dbConn.addStaff(staff);
-                    } catch (SQLException | IOException | StaffNotFoundException ex) {
-                        showError(ex);
-                    }
+                try {
+                    Staff s = dc.addStaff(staff);
+                } catch (SQLException | IOException | StaffNotFoundException ex) {
+                    showError(ex);
                 }
                 this.setVisible(false);
             } else {
                 JOptionPane.showMessageDialog(this, "Passwords do not match", "New Staff", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            staff.setName(name);
-            staff.setUsername(username);
-            this.setVisible(false);
+            try {
+                staff.setName(name);
+                staff.setUsername(username);
+                dc.updateStaff(staff);
+                this.setVisible(false);
+            } catch (IOException | StaffNotFoundException | SQLException ex) {
+                showError(ex);
+            }
         }
     }//GEN-LAST:event_btnAddActionPerformed
 

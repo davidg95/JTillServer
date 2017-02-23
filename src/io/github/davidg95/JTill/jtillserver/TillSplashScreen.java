@@ -16,7 +16,7 @@ import javax.swing.JWindow;
  */
 public class TillSplashScreen extends JWindow {
 
-    private static JWindow window;
+    private static final JWindow window;
     private static JProgressBar bar;
     private static JLabel prgLabel;
     

@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  */
 public class ConnectionThread extends Thread {
 
-    private final DataConnectInterface dbConn;
+    private final DataConnectInterface dc;
 
     private ObjectInputStream obIn;
     private ObjectOutputStream obOut;
@@ -47,10 +47,10 @@ public class ConnectionThread extends Thread {
      * @param name the name of the thread.
      * @param s the socket used for this connection.
      */
-    public ConnectionThread(String name, Socket s) {
+    public ConnectionThread(String name, DataConnectInterface dc, Socket s) {
         super(name);
         this.socket = s;
-        this.dbConn = TillServer.getDataConnection();
+        this.dc = dc;
         sem = new Semaphore(1);
     }
 
@@ -75,7 +75,7 @@ public class ConnectionThread extends Thread {
 
             if (!site.equals("NOPERM")) {
 
-                boolean allow = dbConn.connectTill(site);
+                boolean allow = dc.connectTill(site);
 
                 if (!allow) {
                     obOut.writeObject(ConnectionData.create("DISALLOW"));
@@ -660,7 +660,7 @@ public class ConnectionThread extends Thread {
                         break;
                     case "DROPSCREENSANDBUTTONS":
                         try {
-                            dbConn.deleteAllScreensAndButtons();
+                            dc.deleteAllScreensAndButtons();
                         } catch (SQLException ex) {
                         }
                         break;
@@ -764,8 +764,8 @@ public class ConnectionThread extends Thread {
                         conn_term = true;
                         if (staff != null) {
                             try {
-                                dbConn.logout(staff);
-                                dbConn.tillLogout(staff);
+                                dc.logout(staff);
+                                dc.tillLogout(staff);
                             } catch (StaffNotFoundException ex) {
                             }
                         }
@@ -792,7 +792,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Product p = (Product) clone.getData();
-                Product newP = dbConn.addProduct(p);
+                Product newP = dc.addProduct(p);
                 obOut.writeObject(ConnectionData.create("SUCC", newP));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -815,7 +815,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int code = (int) clone.getData();
-                dbConn.removeProduct(code);
+                dc.removeProduct(code);
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (SQLException | ProductNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -843,7 +843,7 @@ public class ConnectionThread extends Thread {
                 }
                 int code = (int) clone.getData();
                 int amount = (int) clone.getData2();
-                int stock = dbConn.purchaseProduct(code, amount);
+                int stock = dc.purchaseProduct(code, amount);
                 obOut.writeObject(ConnectionData.create("SUCC", stock));
             } catch (ProductNotFoundException | SQLException | OutOfStockException ex) {
                 TillServer.g.log(ex);
@@ -867,7 +867,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int code = (int) clone.getData();
-                Product p = dbConn.getProduct(code);
+                Product p = dc.getProduct(code);
                 obOut.writeObject(ConnectionData.create("SUCC", p));
             } catch (ProductNotFoundException | SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -886,7 +886,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Product p = (Product) clone.getData();
-                dbConn.updateProduct(p);
+                dc.updateProduct(p);
                 obOut.writeObject(ConnectionData.create("SUCC", p));
             } catch (SQLException | ProductNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -905,7 +905,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 String barcode = (String) clone.getData();
-                Product p = dbConn.getProductByBarcode(barcode);
+                Product p = dc.getProductByBarcode(barcode);
                 obOut.writeObject(ConnectionData.create("SUCC", p));
             } catch (ProductNotFoundException | SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -924,7 +924,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 String barcode = (String) clone.getData();
-                boolean inUse = dbConn.checkBarcode(barcode);
+                boolean inUse = dc.checkBarcode(barcode);
                 obOut.writeObject(ConnectionData.create("SUCC", inUse));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -945,7 +945,7 @@ public class ConnectionThread extends Thread {
                 String[] inp = ((String) clone.getData()).split(",");
                 int id = Integer.parseInt(inp[1]);
                 int stock = Integer.parseInt(inp[2]);
-                dbConn.setStock(id, stock);
+                dc.setStock(id, stock);
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (SQLException | ProductNotFoundException ex) {
                 ConnectionData.create("FAIL", ex);
@@ -964,7 +964,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Product p = (Product) clone.getData();
-                List<Discount> discounts = dbConn.getProductsDiscount(p);
+                List<Discount> discounts = dc.getProductsDiscount(p);
                 obOut.writeObject(ConnectionData.create("SUCC", discounts));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -977,7 +977,7 @@ public class ConnectionThread extends Thread {
     private void getProductCount() {
         try {
             try {
-                obOut.writeObject(dbConn.getProductCount());
+                obOut.writeObject(dc.getProductCount());
             } catch (SQLException ex) {
                 obOut.writeObject(-1);
             }
@@ -989,7 +989,7 @@ public class ConnectionThread extends Thread {
     private void getAllProducts() {
         try {
             try {
-                List<Product> products = dbConn.getAllProducts();
+                List<Product> products = dc.getAllProducts();
                 obOut.writeObject(products);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
@@ -1008,7 +1008,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 String terms = (String) clone.getData();
-                List<Product> products = dbConn.productLookup(terms);
+                List<Product> products = dc.productLookup(terms);
                 obOut.writeObject(ConnectionData.create("SUCC", products));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1027,7 +1027,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Customer c = (Customer) clone.getData();
-                Customer newC = dbConn.addCustomer(c);
+                Customer newC = dc.addCustomer(c);
                 obOut.writeObject(ConnectionData.create("SUCC", newC));
             } catch (SQLException e) {
                 obOut.writeObject(ConnectionData.create("FAIL", e));
@@ -1046,7 +1046,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                dbConn.removeCustomer(id);
+                dc.removeCustomer(id);
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (SQLException | CustomerNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1065,7 +1065,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                Customer c = dbConn.getCustomer(id);
+                Customer c = dc.getCustomer(id);
                 obOut.writeObject(ConnectionData.create("SUCC", c));
             } catch (CustomerNotFoundException | SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1084,7 +1084,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 String name = (String) clone.getData();
-                List<Customer> customers = dbConn.getCustomerByName(name);
+                List<Customer> customers = dc.getCustomerByName(name);
                 obOut.writeObject(ConnectionData.create("SUCC", customers));
             } catch (SQLException | CustomerNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1097,7 +1097,7 @@ public class ConnectionThread extends Thread {
     private void getCustomerCount() {
         try {
             try {
-                obOut.writeObject(dbConn.getCustomerCount());
+                obOut.writeObject(dc.getCustomerCount());
             } catch (SQLException ex) {
                 obOut.writeObject(-1);
             }
@@ -1115,7 +1115,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Customer c = (Customer) clone.getData();
-                Customer customer = dbConn.updateCustomer(c);
+                Customer customer = dc.updateCustomer(c);
                 obOut.writeObject(ConnectionData.create("SUCC", customer));
             } catch (SQLException | CustomerNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1128,7 +1128,7 @@ public class ConnectionThread extends Thread {
     private void getAllCustomers() {
         try {
             try {
-                List<Customer> customers = dbConn.getAllCustomers();
+                List<Customer> customers = dc.getAllCustomers();
                 obOut.writeObject(customers);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
@@ -1146,7 +1146,7 @@ public class ConnectionThread extends Thread {
                     obOut.writeObject(ConnectionData.create("FAIL", "A String must be passed here"));
                 }
                 String terms = (String) clone.getData();
-                List<Customer> customers = dbConn.customerLookup(terms);
+                List<Customer> customers = dc.customerLookup(terms);
                 obOut.writeObject(ConnectionData.create("SUCC", customers));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1165,7 +1165,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Staff s = (Staff) clone.getData();
-                Staff newS = dbConn.addStaff(s);
+                Staff newS = dc.addStaff(s);
                 obOut.writeObject(ConnectionData.create("NEW", newS));
             } catch (SQLException | StaffNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1184,7 +1184,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                dbConn.removeStaff(id);
+                dc.removeStaff(id);
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (SQLException | StaffNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1203,7 +1203,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                Staff s = dbConn.getStaff(id);
+                Staff s = dc.getStaff(id);
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (StaffNotFoundException | SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1222,7 +1222,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Staff s = (Staff) clone.getData();
-                Staff updatedStaff = dbConn.updateStaff(s);
+                Staff updatedStaff = dc.updateStaff(s);
                 obOut.writeObject(ConnectionData.create("SUCC", updatedStaff));
             } catch (SQLException | StaffNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1235,7 +1235,7 @@ public class ConnectionThread extends Thread {
     private void getAllStaff() {
         try {
             try {
-                List<Staff> staffList = dbConn.getAllStaff();
+                List<Staff> staffList = dc.getAllStaff();
                 obOut.writeObject(staffList);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
@@ -1248,7 +1248,7 @@ public class ConnectionThread extends Thread {
     private void staffCount() {
         try {
             try {
-                obOut.writeObject(dbConn.staffCount());
+                obOut.writeObject(dc.staffCount());
             } catch (SQLException ex) {
                 obOut.writeObject("FAIL");
             } catch (StaffNotFoundException ex) {
@@ -1268,7 +1268,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Sale s = (Sale) clone.getData();
-                Sale newS = dbConn.addSale(s);
+                Sale newS = dc.addSale(s);
                 obOut.writeObject(ConnectionData.create("SUCC", newS));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1281,7 +1281,7 @@ public class ConnectionThread extends Thread {
     private void getAllSales() {
         try {
             try {
-                List<Sale> sales = dbConn.getAllSales();
+                List<Sale> sales = dc.getAllSales();
                 obOut.writeObject(sales);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
@@ -1300,7 +1300,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                Sale s = dbConn.getSale(id);
+                Sale s = dc.getSale(id);
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | SaleNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1319,7 +1319,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Sale sale = (Sale) clone.getData();
-                Sale s = dbConn.updateSale(sale);
+                Sale s = dc.updateSale(sale);
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | SaleNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1343,7 +1343,7 @@ public class ConnectionThread extends Thread {
                 }
                 Time start = (Time) clone.getData();
                 Time end = (Time) clone.getData2();
-                List<Sale> sales = dbConn.getSalesInRange(start, end);
+                List<Sale> sales = dc.getSalesInRange(start, end);
                 obOut.writeObject(ConnectionData.create("SUCC", sales));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1366,7 +1366,7 @@ public class ConnectionThread extends Thread {
             }
             Sale sale = (Sale) clone.getData();
             Staff s = (Staff) clone.getData2();
-            dbConn.suspendSale(sale, s);
+            dc.suspendSale(sale, s);
             obOut.writeObject(ConnectionData.create("SUSPEND", "SUCCESS"));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -1381,7 +1381,7 @@ public class ConnectionThread extends Thread {
                 return;
             }
             Staff s = (Staff) clone.getData();
-            Sale sale = dbConn.resumeSale(s);
+            Sale sale = dc.resumeSale(s);
             obOut.writeObject(ConnectionData.create("RESUME", sale));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -1402,7 +1402,7 @@ public class ConnectionThread extends Thread {
                 }
                 String username = (String) clone.getData();
                 String password = (String) clone.getData2();
-                Staff s = dbConn.login(username, password);
+                Staff s = dc.login(username, password);
                 ConnectionThread.this.staff = s;
                 TillServer.g.log(staff.getName() + " has logged in");
                 obOut.writeObject(ConnectionData.create("SUCC", s));
@@ -1423,7 +1423,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                Staff s = dbConn.tillLogin(id);
+                Staff s = dc.tillLogin(id);
                 ConnectionThread.this.staff = s;
                 TillServer.g.log(staff.getName() + " has logged in from " + site);
                 obOut.writeObject(ConnectionData.create("SUCC", s));
@@ -1444,7 +1444,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Staff s = (Staff) clone.getData();
-                dbConn.logout(s);
+                dc.logout(s);
                 TillServer.g.log(staff.getName() + " has logged out");
                 ConnectionThread.this.staff = null;
                 obOut.writeObject(ConnectionData.create("SUCC"));
@@ -1465,7 +1465,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Staff s = (Staff) clone.getData();
-                dbConn.tillLogout(s);
+                dc.tillLogout(s);
                 TillServer.g.log(staff.getName() + " has logged out");
                 ConnectionThread.this.staff = null;
                 obOut.writeObject(ConnectionData.create("SUCC"));
@@ -1486,7 +1486,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Category c = (Category) clone.getData();
-                Category newC = dbConn.addCategory(c);
+                Category newC = dc.addCategory(c);
                 obOut.writeObject(ConnectionData.create("SUCC", newC));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1505,7 +1505,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Category c = (Category) clone.getData();
-                Category category = dbConn.updateCategory(c);
+                Category category = dc.updateCategory(c);
                 obOut.writeObject(ConnectionData.create("SUCC", category));
             } catch (SQLException | CategoryNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1524,7 +1524,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                dbConn.removeCategory(id);
+                dc.removeCategory(id);
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (SQLException | CategoryNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1543,7 +1543,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                Category c = dbConn.getCategory(id);
+                Category c = dc.getCategory(id);
                 obOut.writeObject(ConnectionData.create("SUCC", c));
             } catch (SQLException | CategoryNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1556,7 +1556,7 @@ public class ConnectionThread extends Thread {
     private void getAllCategorys() {
         try {
             try {
-                List<Category> categorys = dbConn.getAllCategorys();
+                List<Category> categorys = dc.getAllCategorys();
                 obOut.writeObject(categorys);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
@@ -1575,7 +1575,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                List<Product> products = dbConn.getProductsInCategory(id);
+                List<Product> products = dc.getProductsInCategory(id);
                 obOut.writeObject(ConnectionData.create("SUCC", products));
             } catch (SQLException | CategoryNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1594,7 +1594,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Discount d = (Discount) clone.getData();
-                Discount newD = dbConn.addDiscount(d);
+                Discount newD = dc.addDiscount(d);
                 obOut.writeObject(ConnectionData.create("SUCC", newD));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1613,7 +1613,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Discount d = (Discount) clone.getData();
-                Discount discount = dbConn.updateDiscount(d);
+                Discount discount = dc.updateDiscount(d);
                 obOut.writeObject(ConnectionData.create("SUCC", discount));
             } catch (SQLException | DiscountNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1632,7 +1632,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                dbConn.removeDiscount(id);
+                dc.removeDiscount(id);
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (SQLException | DiscountNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1651,7 +1651,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                Discount d = dbConn.getDiscount(id);
+                Discount d = dc.getDiscount(id);
                 obOut.writeObject(ConnectionData.create("SUCC", d));
             } catch (SQLException | DiscountNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1664,7 +1664,7 @@ public class ConnectionThread extends Thread {
     private void getAllDiscounts() {
         try {
             try {
-                List<Discount> discounts = dbConn.getAllDiscounts();
+                List<Discount> discounts = dc.getAllDiscounts();
                 obOut.writeObject(discounts);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
@@ -1683,7 +1683,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Tax t = (Tax) clone.getData();
-                Tax newT = dbConn.addTax(t);
+                Tax newT = dc.addTax(t);
                 obOut.writeObject(ConnectionData.create("SUCC", newT));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1702,7 +1702,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                dbConn.removeTax(id);
+                dc.removeTax(id);
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (SQLException | TaxNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1721,7 +1721,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                Tax t = dbConn.getTax(id);
+                Tax t = dc.getTax(id);
                 obOut.writeObject(ConnectionData.create("SUCC", t));
             } catch (SQLException | TaxNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1740,7 +1740,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Tax t = (Tax) clone.getData();
-                Tax tax = dbConn.updateTax(t);
+                Tax tax = dc.updateTax(t);
                 obOut.writeObject(ConnectionData.create("SUCC", tax));
             } catch (SQLException | TaxNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1753,7 +1753,7 @@ public class ConnectionThread extends Thread {
     private void getAllTax() {
         try {
             try {
-                List<Tax> tax = dbConn.getAllTax();
+                List<Tax> tax = dc.getAllTax();
                 obOut.writeObject(tax);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
@@ -1772,7 +1772,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Voucher v = (Voucher) clone.getData();
-                Voucher newV = dbConn.addVoucher(v);
+                Voucher newV = dc.addVoucher(v);
                 obOut.writeObject(ConnectionData.create("SUCC", newV));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1791,7 +1791,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                dbConn.removeVoucher(id);
+                dc.removeVoucher(id);
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (SQLException | VoucherNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1810,7 +1810,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                Voucher v = dbConn.getVoucher(id);
+                Voucher v = dc.getVoucher(id);
                 obOut.writeObject(ConnectionData.create("SUCC", v));
             } catch (SQLException | VoucherNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1829,7 +1829,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Voucher v = (Voucher) clone.getData();
-                Voucher voucher = dbConn.updateVoucher(v);
+                Voucher voucher = dc.updateVoucher(v);
                 obOut.writeObject(ConnectionData.create("SUCC", voucher));
             } catch (SQLException | VoucherNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1842,7 +1842,7 @@ public class ConnectionThread extends Thread {
     private void getAllVouchers() {
         try {
             try {
-                List<Voucher> voucher = dbConn.getAllVouchers();
+                List<Voucher> voucher = dc.getAllVouchers();
                 obOut.writeObject(voucher);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
@@ -1861,7 +1861,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Screen s = (Screen) clone.getData();
-                Screen newS = dbConn.addScreen(s);
+                Screen newS = dc.addScreen(s);
                 obOut.writeObject(ConnectionData.create("SUCC", newS));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1880,7 +1880,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 TillButton b = (TillButton) clone.getData();
-                TillButton newB = dbConn.addButton(b);
+                TillButton newB = dc.addButton(b);
                 obOut.writeObject(ConnectionData.create("SUCC", newB));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1899,7 +1899,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Screen s = (Screen) clone.getData();
-                dbConn.removeScreen(s);
+                dc.removeScreen(s);
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (SQLException | ScreenNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("SUCC", ex));
@@ -1918,7 +1918,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 TillButton b = (TillButton) clone.getData();
-                dbConn.removeButton(b);
+                dc.removeButton(b);
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (SQLException | ButtonNotFoundException ex) {
                 ConnectionData.create("FAIL", ex);
@@ -1937,7 +1937,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Screen s = (Screen) clone.getData();
-                dbConn.updateScreen(s);
+                dc.updateScreen(s);
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | ScreenNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1956,7 +1956,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 TillButton b = (TillButton) clone.getData();
-                dbConn.updateButton(b);
+                dc.updateButton(b);
                 obOut.writeObject(ConnectionData.create("SUCC", b));
             } catch (SQLException | ButtonNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1975,7 +1975,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                Screen s = dbConn.getScreen(id);
+                Screen s = dc.getScreen(id);
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | ScreenNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1994,7 +1994,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                TillButton b = dbConn.getButton(id);
+                TillButton b = dc.getButton(id);
                 obOut.writeObject(ConnectionData.create("SUCC", b));
             } catch (SQLException | ButtonNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -2007,7 +2007,7 @@ public class ConnectionThread extends Thread {
     private void getAllScreens() {
         try {
             try {
-                List<Screen> screens = dbConn.getAllScreens();
+                List<Screen> screens = dc.getAllScreens();
                 obOut.writeObject(screens);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
@@ -2020,7 +2020,7 @@ public class ConnectionThread extends Thread {
     private void getAllButtons() {
         try {
             try {
-                List<TillButton> buttons = dbConn.getAllButtons();
+                List<TillButton> buttons = dc.getAllButtons();
                 obOut.writeObject(buttons);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
@@ -2039,7 +2039,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Screen s = (Screen) clone.getData();
-                List<TillButton> buttons = dbConn.getButtonsOnScreen(s);
+                List<TillButton> buttons = dc.getButtonsOnScreen(s);
                 obOut.writeObject(ConnectionData.create("SUCC", buttons));
             } catch (SQLException | ScreenNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -2057,7 +2057,7 @@ public class ConnectionThread extends Thread {
                 return;
             }
             String message = (String) clone.getData();
-            dbConn.assisstance(staff.getName() + " on terminal " + site + " has requested assistance with message:\n" + message);
+            dc.assisstance(staff.getName() + " on terminal " + site + " has requested assistance with message:\n" + message);
             obOut.writeObject(ConnectionData.create("SUCC"));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -2073,7 +2073,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 String terminal = (String) clone.getData();
-                BigDecimal t = dbConn.getTillTakings(terminal);
+                BigDecimal t = dc.getTillTakings(terminal);
                 obOut.writeObject(ConnectionData.create("GET", t));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -2092,7 +2092,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 String terminal = (String) clone.getData();
-                List<Sale> sales = dbConn.getUncashedSales(terminal);
+                List<Sale> sales = dc.getUncashedSales(terminal);
                 obOut.writeObject(ConnectionData.create("GET", sales));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -2110,7 +2110,7 @@ public class ConnectionThread extends Thread {
                 return;
             }
             String message = (String) clone.getData();
-            dbConn.sendEmail(message);
+            dc.sendEmail(message);
             obOut.writeObject(ConnectionData.create("SUCC"));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -2130,7 +2130,7 @@ public class ConnectionThread extends Thread {
             }
             String email = (String) clone.getData();
             Sale sale = (Sale) clone.getData2();
-            dbConn.emailReceipt(email, sale);
+            dc.emailReceipt(email, sale);
             obOut.writeObject(ConnectionData.create("SUCC"));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -2146,7 +2146,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Till t = (Till) clone.getData();
-                Till newT = dbConn.addTill(t);
+                Till newT = dc.addTill(t);
                 obOut.writeObject(ConnectionData.create("ADD", newT));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -2165,7 +2165,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                dbConn.removeTill(id);
+                dc.removeTill(id);
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (SQLException | TillNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -2184,7 +2184,7 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                Till till = dbConn.getTill(id);
+                Till till = dc.getTill(id);
                 obOut.writeObject(ConnectionData.create("GET", till));
             } catch (SQLException | TillNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -2197,7 +2197,7 @@ public class ConnectionThread extends Thread {
     private void getAllTills() {
         try {
             try {
-                List<Till> tills = dbConn.getAllTills();
+                List<Till> tills = dc.getAllTills();
                 obOut.writeObject(tills);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
@@ -2215,7 +2215,7 @@ public class ConnectionThread extends Thread {
                 return;
             }
             String t = (String) clone.getData();
-            boolean allowed = dbConn.connectTill(t);
+            boolean allowed = dc.connectTill(t);
             obOut.writeObject(ConnectionData.create("CONNECT", allowed));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -2231,7 +2231,7 @@ public class ConnectionThread extends Thread {
             }
             String key = (String) clone.getData();
             String value = (String) clone.getData2();
-            dbConn.setSetting(key, value);
+            dc.setSetting(key, value);
             obOut.writeObject(ConnectionData.create("SUCC"));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -2246,7 +2246,7 @@ public class ConnectionThread extends Thread {
                 return;
             }
             String key = (String) clone.getData();
-            String value = dbConn.getSettings(key);
+            String value = dc.getSettings(key);
             obOut.writeObject(ConnectionData.create("SUCC", value));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);

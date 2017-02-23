@@ -26,7 +26,7 @@ public class ProductsWindow extends javax.swing.JFrame {
 
     public static ProductsWindow frame;
 
-    private final DataConnectInterface dbConn;
+    private final DataConnectInterface dc;
 
     private Product product;
 
@@ -49,7 +49,7 @@ public class ProductsWindow extends javax.swing.JFrame {
      * @param dc the data source.
      */
     public ProductsWindow(DataConnectInterface dc, Image icon) {
-        this.dbConn = dc;
+        this.dc = dc;
         this.icon = icon;
         this.setIconImage(icon);
         initComponents();
@@ -92,9 +92,9 @@ public class ProductsWindow extends javax.swing.JFrame {
      */
     private void init() {
         try {
-            discounts = dbConn.getAllDiscounts();
-            taxes = dbConn.getAllTax();
-            categorys = dbConn.getAllCategorys();
+            discounts = dc.getAllDiscounts();
+            taxes = dc.getAllTax();
+            categorys = dc.getAllCategorys();
             discountsModel = new DefaultComboBoxModel(discounts.toArray());
             taxesModel = new DefaultComboBoxModel(taxes.toArray());
             categorysModel = new DefaultComboBoxModel(categorys.toArray());
@@ -125,7 +125,7 @@ public class ProductsWindow extends javax.swing.JFrame {
      */
     private void showAllProducts() {
         try {
-            currentTableContents = dbConn.getAllProducts();
+            currentTableContents = dc.getAllProducts();
         } catch (IOException | SQLException ex) {
             showError(ex);
         }
@@ -139,7 +139,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         int selectedRow = tableProducts.getSelectedRow();
         if (selectedRow != -1) {
             Product p = currentTableContents.get(selectedRow);
-            ProductDialog.showEditProductDialog(this, p);
+            ProductDialog.showEditProductDialog(this, dc, p);
             updateTable();
         }
     }
@@ -305,7 +305,6 @@ public class ProductsWindow extends javax.swing.JFrame {
         btnSearch = new javax.swing.JButton();
 
         setTitle("Stock Managment");
-        setIconImage(TillServer.getIcon());
 
         tableProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -616,7 +615,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following product?\n" + currentTableContents.get(index), "Remove Product", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
-                    dbConn.removeProduct(currentTableContents.get(index).getId());
+                    dc.removeProduct(currentTableContents.get(index).getId());
                 } catch (ProductNotFoundException | IOException | SQLException ex) {
                     showError(ex);
                 }
@@ -667,7 +666,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             product.setOpen(false);
         }
         try {
-            dbConn.updateProduct(product);
+            dc.updateProduct(product);
         } catch (ProductNotFoundException | IOException | SQLException ex) {
             showError(ex);
         }
@@ -709,7 +708,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                 } else {
                     p = new Product(name, shortName, category, comments, tax, true);
                     try {
-                        dbConn.addProduct(p);
+                        dc.addProduct(p);
                         showAllProducts();
                         setCurrentProduct(null);
                         txtName.requestFocus();
@@ -730,7 +729,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                     } else {
                         p = new Product(name, shortName, category, comments, tax, false, price, costPrice, stock, minStock, maxStock, barcode);
                         try {
-                            Product pr = dbConn.addProduct(p);
+                            Product pr = dc.addProduct(p);
                             showAllProducts();
                             setCurrentProduct(null);
                             txtName.requestFocus();
@@ -757,12 +756,12 @@ public class ProductsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_tableProductsMousePressed
 
     private void btnShowCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowCategorysActionPerformed
-        CategorysWindow.showCategoryWindow(dbConn, icon);
+        CategorysWindow.showCategoryWindow(dc, icon);
         init();
     }//GEN-LAST:event_btnShowCategorysActionPerformed
 
     private void btnShowTaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowTaxActionPerformed
-        TaxWindow.showTaxWindow(dbConn, icon);
+        TaxWindow.showTaxWindow(dc, icon);
         init();
     }//GEN-LAST:event_btnShowTaxActionPerformed
 

@@ -181,7 +181,6 @@ public class CategorysWindow extends javax.swing.JFrame {
         btnSearch = new javax.swing.JButton();
 
         setTitle("Categorys");
-        setIconImage(TillServer.getIcon());
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

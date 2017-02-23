@@ -5,11 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.Customer;
-import io.github.davidg95.JTill.jtill.CustomerNotFoundException;
-import io.github.davidg95.JTill.jtill.DataConnectInterface;
-import io.github.davidg95.JTill.jtill.Discount;
-import io.github.davidg95.JTill.jtill.DiscountNotFoundException;
+import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -228,7 +224,6 @@ public class CustomersWindow extends javax.swing.JFrame {
         btnTakePayment = new javax.swing.JButton();
 
         setTitle("Manage Customers");
-        setIconImage(TillServer.getIcon());
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -382,7 +377,7 @@ public class CustomersWindow extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Details", jPanel1);

@@ -5,17 +5,12 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DBConnect;
-import io.github.davidg95.JTill.jtill.DataConnectInterface;
-import io.github.davidg95.JTill.jtill.Voucher;
-import io.github.davidg95.JTill.jtill.VoucherNotFoundException;
+import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -28,7 +23,7 @@ public class VoucherWindow extends javax.swing.JFrame {
 
     private static VoucherWindow frame;
 
-    private final DataConnectInterface dbConn;
+    private final DataConnectInterface dc;
 
     private Voucher voucher;
 
@@ -39,20 +34,13 @@ public class VoucherWindow extends javax.swing.JFrame {
      * Creates new form VoucherWindow
      */
     public VoucherWindow(DataConnectInterface dc) {
-        this.dbConn = TillServer.getDataConnection();
+        this.dc = dc;
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) tableVouchers.getModel();
         showAllVouchers();
         init();
-    }
-
-    public static void initWindow() {
-//        if (frame != null) {
-//            frame = new VoucherWindow();
-//            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-//        }
     }
 
     public static void showVoucherWindow(DataConnectInterface dc) {
@@ -87,7 +75,7 @@ public class VoucherWindow extends javax.swing.JFrame {
 
     private void showAllVouchers() {
         try {
-            currentTableContents = dbConn.getAllVouchers();
+            currentTableContents = dc.getAllVouchers();
         } catch (IOException | SQLException ex) {
             showError(ex);
         }
@@ -153,7 +141,6 @@ public class VoucherWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Vouchers");
-        setIconImage(TillServer.getIcon());
 
         tableVouchers.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -486,7 +473,7 @@ public class VoucherWindow extends javax.swing.JFrame {
         String name = txtName.getText();
         Voucher v = new Voucher(name, Voucher.VoucherType.XOnYGetZOff, "", "", "", "", "", "", "", "");
         try {
-            dbConn.addVoucher(v);
+            dc.addVoucher(v);
             update();
         } catch (IOException | SQLException ex) {
             showError(ex);
@@ -506,7 +493,7 @@ public class VoucherWindow extends javax.swing.JFrame {
         if (voucher != null) {
             try {
                 if (JOptionPane.showConfirmDialog(this, "Delete " + voucher.getName() + "?") == JOptionPane.YES_OPTION) {
-                    dbConn.removeVoucher(voucher);
+                    dc.removeVoucher(voucher);
                     setCurrentVoucher(null);
                     update();
                 }

@@ -119,7 +119,6 @@ public class TaxWindow extends javax.swing.JFrame {
         btnSearch = new javax.swing.JButton();
 
         setTitle("Tax");
-        setIconImage(TillServer.getIcon());
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

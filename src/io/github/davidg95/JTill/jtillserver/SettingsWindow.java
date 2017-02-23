@@ -9,6 +9,7 @@ import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Image;
 import java.io.IOException;
+import java.util.Properties;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -26,19 +27,25 @@ public class SettingsWindow extends javax.swing.JFrame {
 
     private boolean editDatabase = false;
 
+    private Properties properties;
+
+    private final Settings settings;
+
     /**
      * Creates new form Settings
      */
-    public SettingsWindow(DataConnectInterface dc, Image icon) {
+    public SettingsWindow(DataConnectInterface dc, Settings settings, Image icon) {
         this.dbConn = dc;
+        this.settings = new Settings();
         this.setIconImage(icon);
+        properties = new Properties();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
-    public static void showSettingsWindow(DataConnectInterface dc, Image icon) {
+    public static void showSettingsWindow(DataConnectInterface dc, Settings settings, Image icon) {
         if (frame == null) {
-            frame = new SettingsWindow(dc, icon);
+            frame = new SettingsWindow(dc, settings, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
         update();
@@ -51,9 +58,9 @@ public class SettingsWindow extends javax.swing.JFrame {
 
     private void init() {
         try {
-            txtPort.setText(DBConnect.PORT + "");
-            txtMaxConn.setText(DBConnect.MAX_CONNECTIONS + "");
-            txtMaxQueued.setText(DBConnect.MAX_QUEUE + "");
+            txtPort.setText(Settings.PORT + "");
+            txtMaxConn.setText(Settings.MAX_CONNECTIONS + "");
+            txtMaxQueued.setText(Settings.MAX_QUEUE + "");
             txtAddress.setText(DBConnect.DB_ADDRESS);
             txtUsername.setText(DBConnect.DB_USERNAME);
             txtPassword.setText(DBConnect.DB_PASSWORD);
@@ -125,7 +132,6 @@ public class SettingsWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JTill Settings");
-        setIconImage(TillServer.getIcon());
 
         panelNetwork.setBorder(javax.swing.BorderFactory.createTitledBorder("Network Options"));
 
@@ -464,12 +470,12 @@ public class SettingsWindow extends javax.swing.JFrame {
             } else if (max < 0 || queue < 0) {
                 JOptionPane.showMessageDialog(this, "Please enter a value greater than 0", "Server Options", JOptionPane.PLAIN_MESSAGE);
             } else {
-                DBConnect.PORT = port;
-                DBConnect.MAX_CONNECTIONS = max;
-                DBConnect.MAX_QUEUE = queue;
+                Settings.PORT = port;
+                Settings.MAX_CONNECTIONS = max;
+                Settings.MAX_QUEUE = queue;
                 if (dbConn instanceof DBConnect) {
                     DBConnect db = (DBConnect) dbConn;
-                    db.saveProperties();
+                    settings.saveProperties();
                 }
             }
             for (Component c : panelNetwork.getComponents()) {
@@ -505,7 +511,7 @@ public class SettingsWindow extends javax.swing.JFrame {
             DBConnect.DB_PASSWORD = password;
             if (dbConn instanceof DBConnect) {
                 DBConnect db = (DBConnect) dbConn;
-                db.saveProperties();
+                settings.saveProperties();
             }
             for (Component c : panelDatabase.getComponents()) {
                 c.setEnabled(false);
@@ -536,7 +542,7 @@ public class SettingsWindow extends javax.swing.JFrame {
             }
             if (dbConn instanceof DBConnect) {
                 DBConnect db = (DBConnect) dbConn;
-                db.saveProperties();
+                settings.saveProperties();
             }
         } catch (IOException ex) {
 
@@ -556,7 +562,7 @@ public class SettingsWindow extends javax.swing.JFrame {
         txtPassword.setText(DBConnect.DB_PASSWORD);
         if (dbConn instanceof DBConnect) {
             DBConnect db = (DBConnect) dbConn;
-            db.saveProperties();
+            settings.saveProperties();
         }
         JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_btnDatabaseDefaultActionPerformed
@@ -573,7 +579,7 @@ public class SettingsWindow extends javax.swing.JFrame {
         DBConnect.OUTGOING_MAIL_ADDRESS = txtOutgoingAddress.getText();
         DBConnect.MAIL_ADDRESS = txtMailAddress.getText();
         DBConnect db = (DBConnect) dbConn;
-        db.saveProperties();
+        settings.saveProperties();
     }//GEN-LAST:event_btnSaveActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

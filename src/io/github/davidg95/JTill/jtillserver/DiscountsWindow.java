@@ -5,9 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DataConnectInterface;
-import io.github.davidg95.JTill.jtill.Discount;
-import io.github.davidg95.JTill.jtill.DiscountNotFoundException;
+import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -152,7 +150,6 @@ public class DiscountsWindow extends javax.swing.JFrame {
         btnSearch = new javax.swing.JButton();
 
         setTitle("Discounts");
-        setIconImage(TillServer.getIcon());
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

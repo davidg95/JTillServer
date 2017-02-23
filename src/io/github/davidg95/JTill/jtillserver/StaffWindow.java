@@ -23,7 +23,7 @@ public class StaffWindow extends javax.swing.JFrame {
 
     public static StaffWindow frame;
 
-    private final DataConnectInterface dbConn;
+    private final DataConnectInterface dc;
 
     private Staff staff;
 
@@ -34,7 +34,7 @@ public class StaffWindow extends javax.swing.JFrame {
      * Creates new form StaffWindow
      */
     public StaffWindow(DataConnectInterface dc, Image icon) {
-        this.dbConn = dc;
+        this.dc = dc;
         this.setIconImage(icon);
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -72,7 +72,7 @@ public class StaffWindow extends javax.swing.JFrame {
 
     private void showAllStaff() {
         try {
-            currentTableContents = dbConn.getAllStaff();
+            currentTableContents = dc.getAllStaff();
         } catch (IOException | SQLException ex) {
             showError(ex);
         }
@@ -83,7 +83,7 @@ public class StaffWindow extends javax.swing.JFrame {
         int selectedRow = tableStaff.getSelectedRow();
         if (selectedRow != -1) {
             Staff s = currentTableContents.get(selectedRow);
-            StaffDialog.showEditStaffDialog(this, s);
+            StaffDialog.showEditStaffDialog(this, dc, s);
             updateTable();
         }
     }
@@ -152,7 +152,6 @@ public class StaffWindow extends javax.swing.JFrame {
         btnSearch = new javax.swing.JButton();
 
         setTitle("Manage Staff");
-        setIconImage(TillServer.getIcon());
 
         tableStaff.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -359,7 +358,7 @@ public class StaffWindow extends javax.swing.JFrame {
             } else if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
                 try {
                     s = new Staff(name, position, username, password);
-                    Staff st = dbConn.addStaff(s);
+                    Staff st = dc.addStaff(s);
                     setCurrentStaff(null);
                     showAllStaff();
                     txtName.requestFocus();
@@ -385,7 +384,7 @@ public class StaffWindow extends javax.swing.JFrame {
             staff.setPassword(password);
             staff.setPosition(position);
             try {
-                dbConn.updateStaff(staff);
+                dc.updateStaff(staff);
             } catch (SQLException | StaffNotFoundException | IOException ex) {
                 showError(ex);
             }
@@ -402,7 +401,7 @@ public class StaffWindow extends javax.swing.JFrame {
             int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following staff member?\n" + currentTableContents.get(index), "Remove Staff", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
-                    dbConn.removeStaff(currentTableContents.get(index).getId());
+                    dc.removeStaff(currentTableContents.get(index).getId());
                 } catch (SQLException | StaffNotFoundException | IOException ex) {
                     showError(ex);
                 }
