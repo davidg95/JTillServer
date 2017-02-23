@@ -245,12 +245,11 @@ public class StaffDialog extends javax.swing.JDialog {
         Staff.Position position = Staff.Position.values()[cmbPosition.getSelectedIndex()];
         if (!editMode) {
             if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
-                //if (txtPassword.getPassword() == txtPasswordConfirm.getPassword()) {
                 String password = new String(txtPassword.getPassword());
                 staff = new Staff(name, position, username, password);
                 if (dbConn != null) {
                     try {
-                        dbConn.addStaff(staff);
+                        Staff s = dbConn.addStaff(staff);
                     } catch (SQLException | IOException | StaffNotFoundException ex) {
                         showError(ex);
                     }
@@ -259,9 +258,6 @@ public class StaffDialog extends javax.swing.JDialog {
             } else {
                 JOptionPane.showMessageDialog(this, "Passwords do not match", "New Staff", JOptionPane.ERROR_MESSAGE);
             }
-            //} else{
-            //lblError.setText("Passwords do not match");
-            //}
         } else {
             staff.setName(name);
             staff.setUsername(username);
