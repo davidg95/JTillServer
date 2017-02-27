@@ -473,10 +473,10 @@ public class SettingsWindow extends javax.swing.JFrame {
                 Settings.PORT = port;
                 Settings.MAX_CONNECTIONS = max;
                 Settings.MAX_QUEUE = queue;
-                if (dbConn instanceof DBConnect) {
-                    DBConnect db = (DBConnect) dbConn;
-                    settings.saveProperties();
-                }
+                settings.setSetting("port", Integer.toString(Settings.PORT));
+                settings.setSetting("max_conn", Integer.toString(Settings.MAX_CONNECTIONS));
+                settings.setSetting("max_queue", Integer.toString(Settings.MAX_QUEUE));
+                settings.saveProperties();
             }
             for (Component c : panelNetwork.getComponents()) {
                 c.setEnabled(false);
@@ -509,10 +509,10 @@ public class SettingsWindow extends javax.swing.JFrame {
             DBConnect.DB_ADDRESS = address;
             DBConnect.DB_USERNAME = username;
             DBConnect.DB_PASSWORD = password;
-            if (dbConn instanceof DBConnect) {
-                DBConnect db = (DBConnect) dbConn;
-                settings.saveProperties();
-            }
+            settings.setSetting("db_address", DBConnect.DB_ADDRESS);
+            settings.setSetting("db_username", DBConnect.DB_USERNAME);
+            settings.setSetting("db_password", DBConnect.DB_PASSWORD);
+            settings.saveProperties();
             for (Component c : panelDatabase.getComponents()) {
                 c.setEnabled(false);
             }
@@ -529,24 +529,17 @@ public class SettingsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEditDatabaseActionPerformed
 
     private void btnSaveSecurityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveSecurityActionPerformed
-        try {
-            if (chkLogOut.isSelected()) {
-                dbConn.setSetting("AUTO_LOGOUT", "TRUE");
-            } else {
-                dbConn.setSetting("AUTO_LOGOUT", "FALSE");
-            }
-            if (chkLogoutTimeout.isSelected()) {
-                dbConn.setSetting("LOGOUT_TIMEOUT", txtLogoutTimeout.getText());
-            } else {
-                dbConn.setSetting("LOGOUT_TIMEOUT", "-1");
-            }
-            if (dbConn instanceof DBConnect) {
-                DBConnect db = (DBConnect) dbConn;
-                settings.saveProperties();
-            }
-        } catch (IOException ex) {
-
+        if (chkLogOut.isSelected()) {
+            settings.setSetting("AUTO_LOGOUT", "TRUE");
+        } else {
+            settings.setSetting("AUTO_LOGOUT", "FALSE");
         }
+        if (chkLogoutTimeout.isSelected()) {
+            settings.setSetting("LOGOUT_TIMEOUT", txtLogoutTimeout.getText());
+        } else {
+            settings.setSetting("LOGOUT_TIMEOUT", "-1");
+        }
+        settings.saveProperties();
     }//GEN-LAST:event_btnSaveSecurityActionPerformed
 
     private void chkLogoutTimeoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkLogoutTimeoutActionPerformed
@@ -578,7 +571,9 @@ public class SettingsWindow extends javax.swing.JFrame {
         DBConnect.MAIL_SERVER = txtOutMail.getText();
         DBConnect.OUTGOING_MAIL_ADDRESS = txtOutgoingAddress.getText();
         DBConnect.MAIL_ADDRESS = txtMailAddress.getText();
-        DBConnect db = (DBConnect) dbConn;
+        settings.setSetting("mail.smtp.host", DBConnect.MAIL_SERVER);
+        settings.setSetting("OUTGOING_MAIL_ADDRESS", DBConnect.OUTGOING_MAIL_ADDRESS);
+        settings.setSetting("MAIL_ADDRESS", DBConnect.MAIL_ADDRESS);
         settings.saveProperties();
     }//GEN-LAST:event_btnSaveActionPerformed
 

@@ -61,8 +61,8 @@ public class TillServer {
 
     public TillServer() {
         icon = new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/tillIcon.png")).getImage();
-        settings = new Settings();
-        dc = new DBConnect(settings);
+        settings = Settings.getInstance();
+        dc = new DBConnect();
         settings.loadProperties();
         if (!GraphicsEnvironment.isHeadless()) {
             g = new GUI(dc, settings, false, icon);
