@@ -162,27 +162,11 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "SETSTOCK": //Set the stock level of a product
-                        new Thread(inp[0]) {
-                            @Override
-                            public void run() {
-                                setStock(data);
-                            }
-                        }.start();
-                        break;
                     case "GETPRODUCTSDISCOUNT": //Gets all discounts for a product
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getProductsDiscount(data);
-                            }
-                        }.start();
-                        break;
-                    case "GETPRODUCTCOUNT": //Get product count
-                        new Thread(inp[0]) {
-                            @Override
-                            public void run() {
-                                getProductCount();
                             }
                         }.start();
                         break;
@@ -934,27 +918,6 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void setStock(ConnectionData data) {
-        try {
-            try {
-                ConnectionData clone = data.clone();
-                if (!(clone.getData() instanceof String)) {
-                    obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
-                    return;
-                }
-                String[] inp = ((String) clone.getData()).split(",");
-                int id = Integer.parseInt(inp[1]);
-                int stock = Integer.parseInt(inp[2]);
-                dc.setStock(id, stock);
-                obOut.writeObject(ConnectionData.create("SUCC"));
-            } catch (SQLException | ProductNotFoundException ex) {
-                ConnectionData.create("FAIL", ex);
-            }
-        } catch (IOException e) {
-
-        }
-    }
-
     private void getProductsDiscount(ConnectionData data) {
         try {
             try {
@@ -968,18 +931,6 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("SUCC", discounts));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
-            }
-        } catch (IOException e) {
-
-        }
-    }
-
-    private void getProductCount() {
-        try {
-            try {
-                obOut.writeObject(dc.getProductCount());
-            } catch (SQLException ex) {
-                obOut.writeObject(-1);
             }
         } catch (IOException e) {
 
