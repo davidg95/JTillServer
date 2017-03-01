@@ -25,7 +25,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
 
     public static DiscountsWindow frame;
 
-    private final DataConnectInterface dbConn;
+    private final DataConnect dbConn;
 
     private Discount discount;
 
@@ -35,7 +35,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
     /**
      * Creates new form DiscountsWindow
      */
-    public DiscountsWindow(DataConnectInterface dc, Image icon) {
+    public DiscountsWindow(DataConnect dc, Image icon) {
         this.dbConn = dc;
         this.setIconImage(icon);
         initComponents();
@@ -51,7 +51,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
      *
      * @param dc the data source.
      */
-    public static void showDiscountListWindow(DataConnectInterface dc, Image icon) {
+    public static void showDiscountListWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new DiscountsWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

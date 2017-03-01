@@ -38,7 +38,7 @@ public class SaleDialog extends javax.swing.JDialog {
         model = (DefaultTableModel) tableItems.getModel();
         setLocationRelativeTo(parent);
         setModal(true);
-        setTitle("Sale " + sale.getCode());
+        setTitle("Sale " + sale.getId());
         init();
     }
 
@@ -53,9 +53,9 @@ public class SaleDialog extends javax.swing.JDialog {
     }
 
     private void init() {
-        lblSaleID.setText("Sale ID: " + sale.getCode());
+        lblSaleID.setText("Sale ID: " + sale.getId());
         Calendar c = Calendar.getInstance();
-        c.setTime(sale.getTime());
+        c.setTime(sale.getDate());
         lblTime.setText("Time: " + c.getTime().toString());
         if (sale.getCustomer() != null) {
             lblCustomer.setText("Customer: " + sale.getCustomer().getName());

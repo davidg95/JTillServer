@@ -26,7 +26,7 @@ public class CustomersWindow extends javax.swing.JFrame {
 
     public static CustomersWindow frame;
 
-    private final DataConnectInterface dbConn;
+    private final DataConnect dbConn;
 
     private Customer customer;
 
@@ -38,7 +38,7 @@ public class CustomersWindow extends javax.swing.JFrame {
     /**
      * Creates new form CustomersWindow
      */
-    public CustomersWindow(DataConnectInterface dc, Image icon) {
+    public CustomersWindow(DataConnect dc, Image icon) {
         this.dbConn = dc;
         this.setIconImage(icon);
         initComponents();
@@ -55,7 +55,7 @@ public class CustomersWindow extends javax.swing.JFrame {
      *
      * @param dc a reference to the data source.
      */
-    public static void showCustomersListWindow(DataConnectInterface dc, Image icon) {
+    public static void showCustomersListWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new CustomersWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

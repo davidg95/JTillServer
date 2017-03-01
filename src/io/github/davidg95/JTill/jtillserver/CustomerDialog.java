@@ -28,7 +28,7 @@ public class CustomerDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static Customer customer;
 
-    private DataConnectInterface dc;
+    private DataConnect dc;
 
     private final boolean editMode;
 
@@ -40,7 +40,7 @@ public class CustomerDialog extends javax.swing.JDialog {
      *
      * @param parent the parent component.
      */
-    public CustomerDialog(Window parent, DataConnectInterface dc) {
+    public CustomerDialog(Window parent, DataConnect dc) {
         super(parent);
         initComponents();
         this.dc = dc;
@@ -85,7 +85,7 @@ public class CustomerDialog extends javax.swing.JDialog {
      * @param dc the data connection.
      * @return a new customer object.
      */
-    public static Customer showNewCustomerDialog(Component parent, DataConnectInterface dc) {
+    public static Customer showNewCustomerDialog(Component parent, DataConnect dc) {
         Window window = null;
         if (parent instanceof Frame || parent instanceof Dialog) {
             window = (Window) parent;

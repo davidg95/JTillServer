@@ -23,7 +23,7 @@ public class StaffWindow extends javax.swing.JFrame {
 
     public static StaffWindow frame;
 
-    private final DataConnectInterface dc;
+    private final DataConnect dc;
 
     private Staff staff;
 
@@ -33,7 +33,7 @@ public class StaffWindow extends javax.swing.JFrame {
     /**
      * Creates new form StaffWindow
      */
-    public StaffWindow(DataConnectInterface dc, Image icon) {
+    public StaffWindow(DataConnect dc, Image icon) {
         this.dc = dc;
         this.setIconImage(icon);
         initComponents();
@@ -43,7 +43,7 @@ public class StaffWindow extends javax.swing.JFrame {
         showAllStaff();
     }
 
-    public static void showStaffListWindow(DataConnectInterface dc, Image icon) {
+    public static void showStaffListWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new StaffWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

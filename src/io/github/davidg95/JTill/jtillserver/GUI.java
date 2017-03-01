@@ -28,7 +28,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private String username;
     private String password;
 
-    private final DataConnectInterface dbConn;
+    private final DataConnect dbConn;
     private boolean isLoggedOn;
 
     private Staff staff;
@@ -39,21 +39,21 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private final boolean remote;
 
     private final Image icon;
-    
+
     private final Settings settings;
 
     /**
      * Creates new form GUI
      *
-     * @param dbConnection
+     * @param dataConnect
      * @param remote flag indicating whether this is a remote connection or not.
      * @param icon
      */
-    public GUI(DataConnectInterface dbConnection, Settings settings, boolean remote, Image icon) {
-        this.dbConn = dbConnection;
+    public GUI(DataConnect dataConnect, boolean remote, Image icon) {
+        this.dbConn = dataConnect;
         this.remote = remote;
         this.icon = icon;
-        this.settings = settings;
+        this.settings = Settings.getInstance();
         this.setIconImage(icon);
         initComponents();
         connections = new ArrayList<>();

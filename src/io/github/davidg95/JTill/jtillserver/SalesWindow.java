@@ -24,7 +24,7 @@ public class SalesWindow extends javax.swing.JFrame {
 
     private static SalesWindow frame;
 
-    private final DataConnectInterface dbConn;
+    private final DataConnect dbConn;
 
     private final DefaultTableModel model;
     private List<Sale> currentTableContents;
@@ -32,7 +32,7 @@ public class SalesWindow extends javax.swing.JFrame {
     /**
      * Creates new form SalesWindow
      */
-    public SalesWindow(DataConnectInterface dc, Image icon) {
+    public SalesWindow(DataConnect dc, Image icon) {
         this.dbConn = dc;
         this.setIconImage(icon);
         initComponents();
@@ -40,7 +40,7 @@ public class SalesWindow extends javax.swing.JFrame {
         model = (DefaultTableModel) tableSales.getModel();
     }
 
-    public static void showSalesWindow(DataConnectInterface dc, Image icon) {
+    public static void showSalesWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new SalesWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -61,7 +61,7 @@ public class SalesWindow extends javax.swing.JFrame {
         model.setRowCount(0);
 
         for (Sale s : currentTableContents) {
-            Object[] r = new Object[]{s.getCode(), s.getTotal(), 0, s.getTime().toString()};
+            Object[] r = new Object[]{s.getId(), s.getTotal(), 0, s.getDate().toString()};
             model.addRow(r);
         }
 

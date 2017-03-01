@@ -23,7 +23,7 @@ public class TaxWindow extends javax.swing.JFrame {
 
     public static TaxWindow frame;
 
-    private final DataConnectInterface dbConn;
+    private final DataConnect dbConn;
     private Tax tax;
 
     private final DefaultTableModel model;
@@ -32,7 +32,7 @@ public class TaxWindow extends javax.swing.JFrame {
     /**
      * Creates new form TaxWindow
      */
-    public TaxWindow(DataConnectInterface dc, Image icon) {
+    public TaxWindow(DataConnect dc, Image icon) {
         dbConn = dc;
         this.setIconImage(icon);
         initComponents();
@@ -42,7 +42,7 @@ public class TaxWindow extends javax.swing.JFrame {
         showAllTaxes();
     }
 
-    public static void showTaxWindow(DataConnectInterface dc, Image icon) {
+    public static void showTaxWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new TaxWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

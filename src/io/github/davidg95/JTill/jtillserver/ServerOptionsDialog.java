@@ -22,7 +22,7 @@ public class ServerOptionsDialog extends javax.swing.JDialog {
 
     private static JDialog dialog;
     private static int result;
-    private DataConnectInterface dataConn;
+    private DataConnect dataConn;
     private final Settings settings;
 
     /**
@@ -30,7 +30,7 @@ public class ServerOptionsDialog extends javax.swing.JDialog {
      *
      * @param parent the parent component.
      */
-    public ServerOptionsDialog(Window parent, Settings settings, DataConnectInterface dataConn) {
+    public ServerOptionsDialog(Window parent, Settings settings, DataConnect dataConn) {
         super(parent);
         this.settings = settings;
         initComponents();
@@ -49,7 +49,7 @@ public class ServerOptionsDialog extends javax.swing.JDialog {
      * @return result of 0 means user clicked cancel or close, 1 means they
      * clicked save.
      */
-    public static int showDialog(Component parent, Settings settings, DataConnectInterface dataConn) {
+    public static int showDialog(Component parent, Settings settings, DataConnect dataConn) {
         Window window = null;
         if (parent instanceof Frame || parent instanceof Dialog) {
             window = (Window) parent;

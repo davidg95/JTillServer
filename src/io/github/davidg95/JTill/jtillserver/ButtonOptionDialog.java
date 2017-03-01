@@ -24,7 +24,7 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static TillButton button;
 
-    private final DataConnectInterface dc;
+    private final DataConnect dc;
 
     /**
      * Creates new form ButtonOptionDialog.
@@ -32,7 +32,7 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
      * @param parent the parent component.
      * @param dc the data connection.
      */
-    public ButtonOptionDialog(Window parent, DataConnectInterface dc) {
+    public ButtonOptionDialog(Window parent, DataConnect dc) {
         super(parent);
         this.dc = dc;
         initComponents();
@@ -57,7 +57,7 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
      * @param dc the data connection.
      * @return the button with any changed applied.
      */
-    public static TillButton showDialog(Component parent, TillButton b, DataConnectInterface dc) {
+    public static TillButton showDialog(Component parent, TillButton b, DataConnect dc) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;

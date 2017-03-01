@@ -28,7 +28,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static Product product;
 
-    private final DataConnectInterface dbConn;
+    private final DataConnect dbConn;
 
     private final DefaultTableModel model;
     private List<Product> currentTableContents;
@@ -39,7 +39,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * @param parent the parent component.
      * @param dc the data source.
      */
-    public ProductSelectDialog(Window parent, DataConnectInterface dc) {
+    public ProductSelectDialog(Window parent, DataConnect dc) {
         super(parent);
         dbConn = dc;
         initComponents();
@@ -57,7 +57,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * @param dc the data source.
      * @return the product selected by the user.
      */
-    public static Product showDialog(Component parent, DataConnectInterface dc) {
+    public static Product showDialog(Component parent, DataConnect dc) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;

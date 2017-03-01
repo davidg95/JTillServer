@@ -21,7 +21,7 @@ public class SettingsWindow extends javax.swing.JFrame {
 
     public static SettingsWindow frame;
 
-    private final DataConnectInterface dbConn;
+    private final DataConnect dbConn;
 
     private boolean editNetwork = false;
 
@@ -34,7 +34,7 @@ public class SettingsWindow extends javax.swing.JFrame {
     /**
      * Creates new form Settings
      */
-    public SettingsWindow(DataConnectInterface dc, Settings settings, Image icon) {
+    public SettingsWindow(DataConnect dc, Settings settings, Image icon) {
         this.dbConn = dc;
         this.settings = new Settings();
         this.setIconImage(icon);
@@ -43,7 +43,7 @@ public class SettingsWindow extends javax.swing.JFrame {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
-    public static void showSettingsWindow(DataConnectInterface dc, Settings settings, Image icon) {
+    public static void showSettingsWindow(DataConnect dc, Settings settings, Image icon) {
         if (frame == null) {
             frame = new SettingsWindow(dc, settings, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

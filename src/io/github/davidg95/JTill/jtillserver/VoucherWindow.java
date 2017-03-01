@@ -23,7 +23,7 @@ public class VoucherWindow extends javax.swing.JFrame {
 
     private static VoucherWindow frame;
 
-    private final DataConnectInterface dc;
+    private final DataConnect dc;
 
     private Voucher voucher;
 
@@ -33,7 +33,7 @@ public class VoucherWindow extends javax.swing.JFrame {
     /**
      * Creates new form VoucherWindow
      */
-    public VoucherWindow(DataConnectInterface dc) {
+    public VoucherWindow(DataConnect dc) {
         this.dc = dc;
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -43,7 +43,7 @@ public class VoucherWindow extends javax.swing.JFrame {
         init();
     }
 
-    public static void showVoucherWindow(DataConnectInterface dc) {
+    public static void showVoucherWindow(DataConnect dc) {
         if (frame == null) {
             frame = new VoucherWindow(dc);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

@@ -35,7 +35,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
     private static ScreenEditWindow frame;
 
-    private final DataConnectInterface dbConn;
+    private final DataConnect dbConn;
 
     private final CardLayout categoryCards;
     private final ButtonGroup cardsButtonGroup;
@@ -49,7 +49,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
      *
      * @param dc reference to the data connect class.
      */
-    public ScreenEditWindow(DataConnectInterface dc, Image icon) {
+    public ScreenEditWindow(DataConnect dc, Image icon) {
         dbConn = dc;
         this.setIconImage(icon);
         initComponents();
@@ -58,7 +58,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         cardsButtonGroup = new ButtonGroup();
     }
 
-    public static void showScreenEditWindow(DataConnectInterface dc, Image icon) {
+    public static void showScreenEditWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new ScreenEditWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

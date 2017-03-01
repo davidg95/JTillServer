@@ -25,15 +25,15 @@ import java.util.logging.Logger;
 public class ConnectionAcceptThread extends Thread {
 
     private final ServerSocket socket;
-    private final DataConnectInterface dc;
+    private final DataConnect dc;
 
-    public ConnectionAcceptThread(DataConnectInterface dc, int PORT) throws IOException {
+    public ConnectionAcceptThread(DataConnect dc, int PORT) throws IOException {
         super("ConnectionAcceptThread");
         this.socket = new ServerSocket(PORT);
         this.dc = dc;
     }
 
-    public ConnectionAcceptThread(DataConnectInterface dc) throws IOException {
+    public ConnectionAcceptThread(DataConnect dc) throws IOException {
         this(dc, Settings.DEFAULT_PORT);
     }
 

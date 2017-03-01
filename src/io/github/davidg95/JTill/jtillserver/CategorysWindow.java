@@ -27,7 +27,7 @@ public class CategorysWindow extends javax.swing.JFrame {
 
     public static CategorysWindow frame;
 
-    private final DataConnectInterface dbConn;
+    private final DataConnect dbConn;
     private Category category;
 
     private final DefaultTableModel model;
@@ -36,7 +36,7 @@ public class CategorysWindow extends javax.swing.JFrame {
     /**
      * Creates new form CategoryWindow
      */
-    public CategorysWindow(DataConnectInterface dc, Image icon) {
+    public CategorysWindow(DataConnect dc, Image icon) {
         dbConn = dc;
         this.setIconImage(icon);
         initComponents();
@@ -52,7 +52,7 @@ public class CategorysWindow extends javax.swing.JFrame {
      *
      * @param dc the reference to the data source.
      */
-    public static void showCategoryWindow(DataConnectInterface dc, Image icon) {
+    public static void showCategoryWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new CategorysWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

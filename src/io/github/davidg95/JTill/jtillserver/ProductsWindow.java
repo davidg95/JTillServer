@@ -26,7 +26,7 @@ public class ProductsWindow extends javax.swing.JFrame {
 
     public static ProductsWindow frame;
 
-    private final DataConnectInterface dc;
+    private final DataConnect dc;
 
     private Product product;
 
@@ -48,7 +48,7 @@ public class ProductsWindow extends javax.swing.JFrame {
      *
      * @param dc the data source.
      */
-    public ProductsWindow(DataConnectInterface dc, Image icon) {
+    public ProductsWindow(DataConnect dc, Image icon) {
         this.dc = dc;
         this.icon = icon;
         this.setIconImage(icon);
@@ -66,7 +66,7 @@ public class ProductsWindow extends javax.swing.JFrame {
      *
      * @param dc the data source.
      */
-    public static void showProductsListWindow(DataConnectInterface dc, Image icon) {
+    public static void showProductsListWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new ProductsWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

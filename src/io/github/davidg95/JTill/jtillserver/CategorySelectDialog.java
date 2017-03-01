@@ -28,7 +28,7 @@ public class CategorySelectDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static Category category;
 
-    private final DataConnectInterface dbConn;
+    private final DataConnect dbConn;
 
     private final DefaultTableModel model;
     private List<Category> currentTableContents;
@@ -39,7 +39,7 @@ public class CategorySelectDialog extends javax.swing.JDialog {
      * @param parent the parent component.
      * @param dc reference to the data connection.
      */
-    public CategorySelectDialog(Window parent, DataConnectInterface dc) {
+    public CategorySelectDialog(Window parent, DataConnect dc) {
         super(parent);
         dbConn = dc;
         initComponents();
@@ -58,7 +58,7 @@ public class CategorySelectDialog extends javax.swing.JDialog {
      * @param dc the pointer to the data connection class.
      * @return the category that was selected by the user.
      */
-    public static Category showDialog(Component parent, DataConnectInterface dc) {
+    public static Category showDialog(Component parent, DataConnect dc) {
         Window window = null;
         if (parent instanceof Frame || parent instanceof Dialog) {
             window = (Window) parent;

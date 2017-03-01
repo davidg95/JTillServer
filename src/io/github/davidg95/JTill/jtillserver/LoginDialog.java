@@ -26,12 +26,12 @@ public class LoginDialog extends javax.swing.JDialog {
     private static Staff staff;
 
 //    private final Data data;
-    private final DataConnectInterface dc;
+    private final DataConnect dc;
 
     /**
      * Creates new form LoginDialog
      */
-    public LoginDialog(Window parent, DataConnectInterface dc) {
+    public LoginDialog(Window parent, DataConnect dc) {
         super(parent);
         this.dc = dc;
         initComponents();
@@ -46,7 +46,7 @@ public class LoginDialog extends javax.swing.JDialog {
      * @param data the data which stored who is logged in and who is not.
      * @return the member of staff logging in.
      */
-    public static Staff showLoginDialog(Component parent, DataConnectInterface dc) {
+    public static Staff showLoginDialog(Component parent, DataConnect dc) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;

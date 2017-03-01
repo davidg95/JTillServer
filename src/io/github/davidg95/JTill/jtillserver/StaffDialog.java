@@ -24,7 +24,7 @@ public class StaffDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static Staff staff;
 
-    private DataConnectInterface dc;
+    private DataConnect dc;
     private Staff s;
     private boolean editMode;
 
@@ -34,7 +34,7 @@ public class StaffDialog extends javax.swing.JDialog {
      * @param parent the parent window.
      * @param dc the data connection.
      */
-    public StaffDialog(Window parent, DataConnectInterface dc) {
+    public StaffDialog(Window parent, DataConnect dc) {
         super(parent);
         editMode = false;
         this.dc = dc;
@@ -50,7 +50,7 @@ public class StaffDialog extends javax.swing.JDialog {
      * @param dc the data connection.
      * @param staff staff getting edited.
      */
-    public StaffDialog(Window parent, DataConnectInterface dc, Staff staff) {
+    public StaffDialog(Window parent, DataConnect dc, Staff staff) {
         super(parent);
         initComponents();
         editMode = true;
@@ -65,7 +65,7 @@ public class StaffDialog extends javax.swing.JDialog {
         this.setTitle("Staff Member " + staff.getName());
     }
 
-    public static Staff showNewStaffDialog(Component parent, DataConnectInterface dc) {
+    public static Staff showNewStaffDialog(Component parent, DataConnect dc) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
@@ -77,7 +77,7 @@ public class StaffDialog extends javax.swing.JDialog {
         return staff;
     }
 
-    public static Staff showEditStaffDialog(Component parent, DataConnectInterface dc, Staff s) {
+    public static Staff showEditStaffDialog(Component parent, DataConnect dc, Staff s) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;

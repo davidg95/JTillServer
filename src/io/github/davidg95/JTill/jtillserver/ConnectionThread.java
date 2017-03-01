@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  */
 public class ConnectionThread extends Thread {
 
-    private final DataConnectInterface dc;
+    private final DataConnect dc;
 
     private ObjectInputStream obIn;
     private ObjectOutputStream obOut;
@@ -47,7 +47,7 @@ public class ConnectionThread extends Thread {
      * @param name the name of the thread.
      * @param s the socket used for this connection.
      */
-    public ConnectionThread(String name, DataConnectInterface dc, Socket s) {
+    public ConnectionThread(String name, DataConnect dc, Socket s) {
         super(name);
         this.socket = s;
         this.dc = dc;

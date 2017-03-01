@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  */
 public class Data {
 
-    private final DataConnectInterface dbConnection;
+    private final DataConnect dbConnection;
     private final GUI g;
 
     private final List<Staff> loggedIn;
@@ -37,7 +37,7 @@ public class Data {
      * @param db DBConnect class.
      * @param g GUI class.
      */
-    public Data(DataConnectInterface db, GUI g) {
+    public Data(DataConnect db, GUI g) {
         this.dbConnection = db;
         this.g = g;
         loggedIn = new ArrayList<>();

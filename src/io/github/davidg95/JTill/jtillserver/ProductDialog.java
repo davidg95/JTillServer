@@ -29,7 +29,7 @@ public class ProductDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static Product product;
 
-    private final DataConnectInterface dbConn;
+    private final DataConnect dbConn;
 
     private boolean editMode;
 
@@ -44,7 +44,7 @@ public class ProductDialog extends javax.swing.JDialog {
     /**
      * Creates new form NewProduct
      */
-    public ProductDialog(Window parent, DataConnectInterface dc) {
+    public ProductDialog(Window parent, DataConnect dc) {
         super(parent);
         this.dbConn = dc;
         initComponents();
@@ -54,7 +54,7 @@ public class ProductDialog extends javax.swing.JDialog {
         init();
     }
 
-    public ProductDialog(Window parent, DataConnectInterface dc, Product p) {
+    public ProductDialog(Window parent, DataConnect dc, Product p) {
         super(parent);
         this.dbConn = dc;
         initComponents();
@@ -116,7 +116,7 @@ public class ProductDialog extends javax.swing.JDialog {
      * @param parent the parent component.
      * @return new Product object.
      */
-    public static Product showNewProductDialog(Component parent, DataConnectInterface dc) {
+    public static Product showNewProductDialog(Component parent, DataConnect dc) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
@@ -128,7 +128,7 @@ public class ProductDialog extends javax.swing.JDialog {
         return product;
     }
 
-    public static Product showEditProductDialog(Component parent, DataConnectInterface dc, Product p) {
+    public static Product showEditProductDialog(Component parent, DataConnect dc, Product p) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
