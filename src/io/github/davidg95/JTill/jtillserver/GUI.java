@@ -24,10 +24,6 @@ import javax.swing.JOptionPane;
  */
 public class GUI extends javax.swing.JFrame implements GUIInterface {
 
-    private String database_address;
-    private String username;
-    private String password;
-
     private final DataConnect dbConn;
     private boolean isLoggedOn;
 
