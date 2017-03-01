@@ -102,14 +102,8 @@ public class StaffWindow extends javax.swing.JFrame {
             txtUsername.setText(s.getUsername());
             txtPassword.setText(s.getPassword());
             txtPasswordConfirm.setText(s.getPassword());
-            Staff.Position p = s.getPosition();
-            int index = 0;
-            for (int i = 0; i < Staff.Position.values().length; i++) {
-                if (Staff.Position.values()[i] == p) {
-                    index = i;
-                    break;
-                }
-            }
+            int p = s.getPosition();
+            int index = p - 1;
             cmbPosition.setSelectedIndex(index);
         }
     }
@@ -352,7 +346,7 @@ public class StaffWindow extends javax.swing.JFrame {
             String name = txtName.getText();
             String username = txtUsername.getText();
             String password = new String(txtPassword.getPassword());
-            Staff.Position position = Staff.Position.values()[cmbPosition.getSelectedIndex()];
+            int position = cmbPosition.getSelectedIndex() - 1;
             if (name.equals("") || username.equals("")) {
                 JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Staff", JOptionPane.ERROR_MESSAGE);
             } else if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
@@ -377,7 +371,7 @@ public class StaffWindow extends javax.swing.JFrame {
         String name = txtName.getText();
         String username = txtUsername.getText();
         String password = new String(txtPassword.getPassword());
-        Staff.Position position = Staff.Position.values()[cmbPosition.getSelectedIndex()];
+        int position = cmbPosition.getSelectedIndex() - 1;
         if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
             staff.setName(name);
             staff.setUsername(username);

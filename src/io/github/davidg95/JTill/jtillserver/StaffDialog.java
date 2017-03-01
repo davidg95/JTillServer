@@ -218,7 +218,7 @@ public class StaffDialog extends javax.swing.JDialog {
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         String name = txtName.getText();
         String username = txtUsername.getText();
-        Staff.Position position = Staff.Position.values()[cmbPosition.getSelectedIndex()];
+        int position = cmbPosition.getSelectedIndex() + 1;
         if (!editMode) {
             if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
                 String password = new String(txtPassword.getPassword());
