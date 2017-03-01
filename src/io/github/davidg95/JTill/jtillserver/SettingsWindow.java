@@ -27,25 +27,27 @@ public class SettingsWindow extends javax.swing.JFrame {
 
     private boolean editDatabase = false;
 
-    private Properties properties;
+    private final Properties properties;
 
     private final Settings settings;
 
     /**
      * Creates new form Settings
+     * @param dc
+     * @param icon
      */
-    public SettingsWindow(DataConnect dc, Settings settings, Image icon) {
+    public SettingsWindow(DataConnect dc, Image icon) {
         this.dbConn = dc;
-        this.settings = new Settings();
+        this.settings = Settings.getInstance();
         this.setIconImage(icon);
         properties = new Properties();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
-    public static void showSettingsWindow(DataConnect dc, Settings settings, Image icon) {
+    public static void showSettingsWindow(DataConnect dc, Image icon) {
         if (frame == null) {
-            frame = new SettingsWindow(dc, settings, icon);
+            frame = new SettingsWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
         update();
