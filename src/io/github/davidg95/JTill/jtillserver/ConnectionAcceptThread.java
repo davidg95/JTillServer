@@ -24,12 +24,15 @@ import java.util.logging.Logger;
  */
 public class ConnectionAcceptThread extends Thread {
 
+    public static int PORT_IN_USE;
+
     private final ServerSocket socket;
     private final DataConnect dc;
 
     public ConnectionAcceptThread(DataConnect dc, int PORT) throws IOException {
         super("ConnectionAcceptThread");
         this.socket = new ServerSocket(PORT);
+        PORT_IN_USE = PORT;
         this.dc = dc;
     }
 

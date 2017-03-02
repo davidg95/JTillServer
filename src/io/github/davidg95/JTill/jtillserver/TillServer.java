@@ -45,7 +45,7 @@ public class TillServer {
      */
     public static TrayIcon trayIcon;
     public static SystemTray tray;
-    
+
     private Settings settings;
 
     /**
@@ -60,22 +60,24 @@ public class TillServer {
     }
 
     public TillServer() {
+        TillSplashScreen.showSplashScreen();
         icon = new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/tillIcon.png")).getImage();
         settings = Settings.getInstance();
         dc = new DBConnect();
+        TillSplashScreen.setLabel("Loading configurations");
         settings.loadProperties();
         if (!GraphicsEnvironment.isHeadless()) {
-            g = new GUI(dc, false, icon);
+            g = GUI.create(dc, false, icon);
             setSystemTray();
         }
         try {
+            TillSplashScreen.setLabel("Starting server socket");
             connThread = new ConnectionAcceptThread(dc);
         } catch (IOException ex) {
         }
     }
 
     public void start() {
-        TillSplashScreen.showSplashScreen();
         g.databaseLogin();
         if (connThread != null) {
             connThread.start();
@@ -83,6 +85,7 @@ public class TillServer {
         TillSplashScreen.addBar(50);
         TillSplashScreen.hideSplashScreen();
         g.setVisible(true);
+        GUI.getInstance().updateLables();
         g.login();
     }
 

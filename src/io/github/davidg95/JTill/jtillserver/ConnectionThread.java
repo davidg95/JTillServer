@@ -100,8 +100,6 @@ public class ConnectionThread extends Thread {
                 currentData = (ConnectionData) o;
                 input = currentData.getFlag();
 
-                TillServer.g.log("Contact from " + site);
-
                 String inp[] = input.split(",");
                 final ConnectionData data = currentData.clone();
 
@@ -514,6 +512,13 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
+                    case "GETPRODUCTSINTAX": //Get products in tax
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getProductsInTax(data);
+                            }
+                        }.start();
                     case "ADDVOUCHER": //Add a new voucher
                         new Thread(inp[0]) {
                             @Override
@@ -1708,6 +1713,21 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(tax);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void getProductsInTax(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                int id = (int) clone.getData();
+                List<Product> products = dc.getProductsInTax(id);
+                obOut.writeObject(ConnectionData.create("SUCC", products));
+            } catch (SQLException | TaxNotFoundException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
 

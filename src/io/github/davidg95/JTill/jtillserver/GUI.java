@@ -10,6 +10,8 @@ import java.awt.Image;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -23,6 +25,8 @@ import javax.swing.JOptionPane;
  * @author David
  */
 public class GUI extends javax.swing.JFrame implements GUIInterface {
+
+    private static GUI gui;
 
     private final DataConnect dbConn;
     private boolean isLoggedOn;
@@ -52,9 +56,50 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         this.settings = Settings.getInstance();
         this.setIconImage(icon);
         initComponents();
+        try {
+            lblServerAddress.setText("Local Server Address: " + InetAddress.getLocalHost().getHostAddress());
+        } catch (UnknownHostException ex) {
+            lblServerAddress.setText("Local Server Address: UNKNOWN");
+        }
         connections = new ArrayList<>();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.dbConn.setGUI(this);
+    }
+
+    /**
+     * Creates a new instance of the GUI.
+     *
+     * @param dataConnect the data connection.
+     * @param remote if it is a remote session.
+     * @param icon the icon for the windows and dialogs.
+     * @return the GUI.
+     */
+    public static GUI create(DataConnect dataConnect, boolean remote, Image icon) {
+        gui = new GUI(dataConnect, remote, icon);
+        return gui;
+    }
+
+    /**
+     * Method to return the instance of the GUI. May return null.
+     *
+     * @return the GUI. May be null.
+     */
+    public static GUI getInstance() {
+        return gui;
+    }
+
+    public void updateLables() {
+        try {
+            lblServerAddress.setText("Local Server Address: " + InetAddress.getLocalHost().getHostAddress());
+        } catch (UnknownHostException ex) {
+            lblServerAddress.setText("Local Server Address: UNKNOWN");
+        }
+        lblPort.setText("Port Number: " + ConnectionAcceptThread.PORT_IN_USE);
+        try {
+            lblProducts.setText("Products in database: " + dbConn.getAllProducts().size());
+        } catch (IOException | SQLException ex) {
+            lblProducts.setText("Products in database: UNKNOWN");
+        }
     }
 
     /**
@@ -245,6 +290,9 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtLog = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
+        lblServerAddress = new javax.swing.JLabel();
+        lblPort = new javax.swing.JLabel();
+        lblProducts = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         itemLogin = new javax.swing.JMenuItem();
@@ -427,6 +475,12 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
         jLabel2.setText("Event Log");
 
+        lblServerAddress.setText("Local Server Address: 0.0.0.0");
+
+        lblPort.setText("Port number: 0");
+
+        lblProducts.setText("Products in database: 0");
+
         menuFile.setText("File");
 
         itemLogin.setText("Log in");
@@ -566,7 +620,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(lblServerAddress)
+                            .addComponent(lblPort)
+                            .addComponent(lblProducts))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -574,7 +632,13 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 290, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblServerAddress)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblPort)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblProducts)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 225, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -599,7 +663,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
             settings.saveProperties();
             TillServer.removeSystemTrayIcon();
         }
-        dbConn.close();
+        try {
+            dbConn.close();
+        } catch (IOException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
         System.exit(0);
     }//GEN-LAST:event_itemExitActionPerformed
 
@@ -730,6 +798,9 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblClients;
     private javax.swing.JLabel lblDatabase;
+    private javax.swing.JLabel lblPort;
+    private javax.swing.JLabel lblProducts;
+    private javax.swing.JLabel lblServerAddress;
     private javax.swing.JLabel lblUpdate;
     private javax.swing.JLabel lblUser;
     private javax.swing.JMenu menuCustomers;

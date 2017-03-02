@@ -318,7 +318,11 @@ public class TaxWindow extends javax.swing.JFrame {
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         int index = table.getSelectedRow();
         if (index != -1) {
-            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following tax?\n" + currentTableContents.get(index), "Remove Tax", JOptionPane.YES_NO_OPTION);
+            if (currentTableContents.get(index).getId() == 1) {
+                JOptionPane.showMessageDialog(this, "You cannot remove the default tax", "Remove Tax", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following tax?\n-" + currentTableContents.get(index) + "\nAll products in this ta will be set to the default tax (0%)", "Remove Tax", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dbConn.removeTax(currentTableContents.get(index).getId());

@@ -616,6 +616,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dc.removeProduct(currentTableContents.get(index).getId());
+                    GUI.getInstance().updateLables();
                 } catch (ProductNotFoundException | IOException | SQLException ex) {
                     showError(ex);
                 }
@@ -709,6 +710,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                     p = new Product(name, shortName, category, comments, tax, true);
                     try {
                         dc.addProduct(p);
+                        GUI.getInstance().updateLables();
                         showAllProducts();
                         setCurrentProduct(null);
                         txtName.requestFocus();

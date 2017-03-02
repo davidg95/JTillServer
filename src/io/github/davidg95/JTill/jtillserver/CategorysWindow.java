@@ -447,7 +447,11 @@ public class CategorysWindow extends javax.swing.JFrame {
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         int index = table.getSelectedRow();
         if (index != -1) {
-            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following category?\n" + currentTableContents.get(index), "Remove Category", JOptionPane.YES_NO_OPTION);
+            if (currentTableContents.get(index).getID() == 1) {
+                JOptionPane.showMessageDialog(this, "You cannot remote the default category", "Remove Category", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following category?\n-" + currentTableContents.get(index) + "\nAll products in this category will be moved to the DEFAULT category.", "Remove Category", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dbConn.removeCategory(currentTableContents.get(index).getID());
