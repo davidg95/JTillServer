@@ -111,11 +111,18 @@ public class CategorysWindow extends javax.swing.JFrame {
             txtName.setText("");
             chkTime.setSelected(false);
             lblTime.setEnabled(false);
-            txtStartTime.setEnabled(false);
-            lblTimeDash.setEnabled(false);
-            txtEndTime.setEnabled(false);
-            txtStartTime.setText("");
-            txtEndTime.setText("");
+            startH.setEnabled(false);
+            startM.setEnabled(false);
+            endH.setEnabled(false);
+            endM.setEnabled(false);
+            lblS.setEnabled(false);
+            lblE.setEnabled(false);
+            lblStart.setEnabled(false);
+            lblEnd.setEnabled(false);
+            startM.setValue(0);
+            startH.setValue(0);
+            endM.setValue(0);
+            endH.setValue(0);
             spinAge.setValue(0);
             category = null;
         } else {
@@ -125,19 +132,33 @@ public class CategorysWindow extends javax.swing.JFrame {
             if (c.isTimeRestrict()) {
                 chkTime.setSelected(true);
                 lblTime.setEnabled(true);
-                txtStartTime.setEnabled(true);
-                lblTimeDash.setEnabled(true);
-                txtEndTime.setEnabled(true);
-                txtStartTime.setText(c.getStartSell().toString());
-                txtEndTime.setText(c.getEndSell().toString());
+                startH.setEnabled(true);
+                startM.setEnabled(true);
+                endH.setEnabled(true);
+                endM.setEnabled(true);
+                lblS.setEnabled(true);
+                lblE.setEnabled(true);
+                lblStart.setEnabled(true);
+                lblEnd.setEnabled(true);
+                startM.setValue(c.getStartSell().getMinutes());
+                startH.setValue(c.getStartSell().getHours());
+                endM.setValue(c.getEndSell().getMinutes());
+                endH.setValue(c.getEndSell().getHours());
             } else {
                 chkTime.setSelected(false);
                 lblTime.setEnabled(false);
-                txtStartTime.setEnabled(false);
-                lblTimeDash.setEnabled(false);
-                txtEndTime.setEnabled(false);
-                txtStartTime.setText("");
-                txtEndTime.setText("");
+                startH.setEnabled(false);
+                startM.setEnabled(false);
+                endH.setEnabled(false);
+                endM.setEnabled(false);
+                lblS.setEnabled(false);
+                lblE.setEnabled(false);
+                lblStart.setEnabled(false);
+                lblEnd.setEnabled(false);
+                startM.setValue(0);
+                startH.setValue(0);
+                endM.setValue(0);
+                endH.setValue(0);
             }
             spinAge.setValue(c.getMinAge());
         }
@@ -170,15 +191,20 @@ public class CategorysWindow extends javax.swing.JFrame {
         btnSave = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
         chkTime = new javax.swing.JCheckBox();
-        txtStartTime = new javax.swing.JTextField();
-        txtEndTime = new javax.swing.JTextField();
         lblTime = new javax.swing.JLabel();
-        lblTimeDash = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         spinAge = new javax.swing.JSpinner();
         jLabel3 = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
+        startH = new javax.swing.JSpinner();
+        startM = new javax.swing.JSpinner();
+        lblS = new javax.swing.JLabel();
+        endH = new javax.swing.JSpinner();
+        lblE = new javax.swing.JLabel();
+        endM = new javax.swing.JSpinner();
+        lblStart = new javax.swing.JLabel();
+        lblEnd = new javax.swing.JLabel();
 
         setTitle("Categorys");
 
@@ -256,15 +282,8 @@ public class CategorysWindow extends javax.swing.JFrame {
             }
         });
 
-        txtStartTime.setEnabled(false);
-
-        txtEndTime.setEnabled(false);
-
         lblTime.setText("Time Restriction:");
         lblTime.setEnabled(false);
-
-        lblTimeDash.setText("-");
-        lblTimeDash.setEnabled(false);
 
         jLabel2.setText("Minimum Age:");
 
@@ -283,41 +302,77 @@ public class CategorysWindow extends javax.swing.JFrame {
             }
         });
 
+        startH.setModel(new javax.swing.SpinnerNumberModel(0, 0, 23, 1));
+        startH.setEnabled(false);
+
+        startM.setModel(new javax.swing.SpinnerNumberModel(0, 0, 59, 1));
+        startM.setEnabled(false);
+
+        lblS.setText(":");
+
+        endH.setModel(new javax.swing.SpinnerNumberModel(0, 0, 23, 1));
+        endH.setEnabled(false);
+
+        lblE.setText(":");
+
+        endM.setModel(new javax.swing.SpinnerNumberModel(0, 0, 59, 1));
+        endM.setEnabled(false);
+
+        lblStart.setText("Start");
+
+        lblEnd.setText("End");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lblTime)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtStartTime)
-                            .addComponent(spinAge, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblTimeDash)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtEndTime, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(69, 69, 69))
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(70, 70, 70)
-                                .addComponent(jLabel1)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(70, 70, 70)
+                                        .addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(chkTime)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(btnAdd)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnSave)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnRemove)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(lblTime)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(endH)
+                                    .addComponent(startH))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(lblS)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(startM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(lblE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(endM)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(chkTime)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnAdd)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnSave)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnRemove)))
+                                    .addComponent(lblStart)
+                                    .addComponent(lblEnd))
+                                .addGap(77, 77, 77))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(spinAge, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -326,7 +381,7 @@ public class CategorysWindow extends javax.swing.JFrame {
                         .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 420, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 430, Short.MAX_VALUE)
                         .addComponent(btnClose))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
@@ -345,15 +400,22 @@ public class CategorysWindow extends javax.swing.JFrame {
                         .addComponent(chkTime)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtStartTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblTime)
-                            .addComponent(lblTimeDash)
-                            .addComponent(txtEndTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(startH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblS)
+                            .addComponent(startM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblStart))
+                        .addGap(3, 3, 3)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(endH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblE)
+                            .addComponent(endM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblEnd))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(spinAge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(65, 65, 65)
+                        .addGap(40, 40, 40)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAdd)
                             .addComponent(btnSave)
@@ -381,8 +443,8 @@ public class CategorysWindow extends javax.swing.JFrame {
                 Time endSell = null;
                 if (time) {
                     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-                    startSell = new Time(sdf.parse(txtStartTime.getText()).getTime());
-                    endSell = new Time(sdf.parse(txtEndTime.getText()).getTime());
+                    startSell = new Time(sdf.parse(startH.getValue() + ":" + startM.getValue() + ":00").getTime());
+                    endSell = new Time(sdf.parse(endH.getValue() + ":" + endM.getValue() + ":00").getTime());
                 }
                 int minAge = (int) spinAge.getValue();
                 if (name.equals("")) {
@@ -416,8 +478,8 @@ public class CategorysWindow extends javax.swing.JFrame {
             Time endSell = null;
             if (time) {
                 SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-                startSell = new Time(sdf.parse(txtStartTime.getText()).getTime());
-                endSell = new Time(sdf.parse(txtEndTime.getText()).getTime());
+                startSell = new Time(sdf.parse(startH.getValue() + ":" + startM.getValue() + ":00").getTime());
+                endSell = new Time(sdf.parse(endH.getValue() + ":" + endM.getValue() + ":00").getTime());
             }
             int minAge = (int) spinAge.getValue();
             if (name.equals("")) {
@@ -476,9 +538,14 @@ public class CategorysWindow extends javax.swing.JFrame {
 
     private void chkTimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkTimeActionPerformed
         lblTime.setEnabled(chkTime.isSelected());
-        txtStartTime.setEnabled(chkTime.isSelected());
-        lblTimeDash.setEnabled(chkTime.isSelected());
-        txtEndTime.setEnabled(chkTime.isSelected());
+        startH.setEnabled(chkTime.isSelected());
+        startM.setEnabled(chkTime.isSelected());
+        endH.setEnabled(chkTime.isSelected());
+        endM.setEnabled(chkTime.isSelected());
+        lblS.setEnabled(chkTime.isSelected());
+        lblE.setEnabled(chkTime.isSelected());
+        lblStart.setEnabled(chkTime.isSelected());
+        lblEnd.setEnabled(chkTime.isSelected());
     }//GEN-LAST:event_chkTimeActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
@@ -519,17 +586,22 @@ public class CategorysWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
     private javax.swing.JCheckBox chkTime;
+    private javax.swing.JSpinner endH;
+    private javax.swing.JSpinner endM;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblE;
+    private javax.swing.JLabel lblEnd;
+    private javax.swing.JLabel lblS;
+    private javax.swing.JLabel lblStart;
     private javax.swing.JLabel lblTime;
-    private javax.swing.JLabel lblTimeDash;
     private javax.swing.JSpinner spinAge;
+    private javax.swing.JSpinner startH;
+    private javax.swing.JSpinner startM;
     private javax.swing.JTable table;
-    private javax.swing.JTextField txtEndTime;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtSearch;
-    private javax.swing.JTextField txtStartTime;
     // End of variables declaration//GEN-END:variables
 }
