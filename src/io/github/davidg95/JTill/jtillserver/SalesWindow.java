@@ -249,7 +249,7 @@ public class SalesWindow extends javax.swing.JFrame {
 
     private void tableSalesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableSalesMouseClicked
         if (evt.getClickCount() == 2) {
-            SaleDialog.showSaleDialog(this, currentTableContents.get(tableSales.getSelectedRow()));
+            SaleDialog.showSaleDialog(this, currentTableContents.get(tableSales.getSelectedRow()), dbConn);
         }
     }//GEN-LAST:event_tableSalesMouseClicked
 
