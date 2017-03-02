@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
 
 /**
  * Thread for handling incoming connections.
@@ -2090,21 +2091,25 @@ public class ConnectionThread extends Thread {
 
     private void sendReceipt(ConnectionData data) {
         try {
-            ConnectionData clone = data.clone();
-            if (!(clone.getData() instanceof String)) {
-                obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
-                return;
+            try {
+                ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof String)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                    return;
+                }
+                if (!(clone.getData2() instanceof Sale)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Sale must be received here"));
+                    return;
+                }
+                String email = (String) clone.getData();
+                Sale sale = (Sale) clone.getData2();
+                dc.emailReceipt(email, sale);
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (IOException | MessagingException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL"));
             }
-            if (!(clone.getData2() instanceof Sale)) {
-                obOut.writeObject(ConnectionData.create("FAIL", "A Sale must be received here"));
-                return;
-            }
-            String email = (String) clone.getData();
-            Sale sale = (Sale) clone.getData2();
-            dc.emailReceipt(email, sale);
-            obOut.writeObject(ConnectionData.create("SUCC"));
-        } catch (IOException ex) {
-            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException e) {
+
         }
     }
 

@@ -567,8 +567,8 @@ public class CustomersWindow extends javax.swing.JFrame {
                 String county = txtCounty.getText();
                 String country = txtCountry.getText();
                 String postcode = txtPostcode.getText();
-                if (name.equals("") || phone.equals("") || mobile.equals("") || email.equals("") || address1.equals("")) {
-                    JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
+                if (name.equals("")) {
+                    JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Customer", JOptionPane.ERROR_MESSAGE);
                 } else {
                     c = new Customer(name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, loyalty, moneyDue);
                     try {
