@@ -111,7 +111,7 @@ public class TillServer {
 
         aboutItem.addActionListener((ActionEvent e) -> {
             JOptionPane.showMessageDialog(null, "JTill Server is running on port number "
-                    + Settings.PORT + " with " + g.clientCounter + " connections.\n"
+                    + settings.getSetting("port") + " with " + g.clientCounter + " connections.\n"
                     + dc.toString(), "JTill Server",
                     JOptionPane.INFORMATION_MESSAGE);
         });
@@ -124,7 +124,7 @@ public class TillServer {
         });
 
         statusItem.addActionListener((ActionEvent e) -> {
-            JOptionPane.showMessageDialog(null, "Connected Clients: " + g.clientCounter + "/" + Settings.MAX_CONNECTIONS
+            JOptionPane.showMessageDialog(null, "Connected Clients: " + g.clientCounter + "/" + settings.getSetting("max_conn")
                     + "\nDatabase Address- " + dc.getAddress()
                     + "\nDatabase User- " + dc.getUsername(),
                     "JTill Server Status", JOptionPane.INFORMATION_MESSAGE);

@@ -36,9 +36,9 @@ public class ServerOptionsDialog extends javax.swing.JDialog {
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setModal(true);
-        txtPort.setText(Settings.PORT + "");
-        txtMaxConn.setText(Settings.MAX_CONNECTIONS + "");
-        txtMaxQueued.setText(Settings.MAX_QUEUE + "");
+        txtPort.setText(settings.getSetting("port"));
+        txtMaxConn.setText(settings.getSetting("max_conn"));
+        txtMaxQueued.setText(settings.getSetting("max_queue"));
     }
 
     /**
@@ -162,9 +162,9 @@ public class ServerOptionsDialog extends javax.swing.JDialog {
             } else if (max < 0 || queue < 0) {
                 JOptionPane.showMessageDialog(this, "Please enter a value greater than 0", "Server Options", JOptionPane.PLAIN_MESSAGE);
             } else {
-                Settings.PORT = port;
-                Settings.MAX_CONNECTIONS = max;
-                Settings.MAX_QUEUE = queue;
+                settings.setSetting("port", Integer.toString(port));
+                settings.setSetting("max_conn", Integer.toString(max));
+                settings.setSetting("max_queue", Integer.toString(queue));
                 result = 1;
                 if (dataConn instanceof DBConnect) {
                     DBConnect db = (DBConnect) dataConn;

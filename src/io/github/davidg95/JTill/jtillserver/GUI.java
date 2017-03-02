@@ -110,7 +110,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
             try {
                 DBConnect db = (DBConnect) dbConn;
                 TillSplashScreen.setLabel("Creating database...");
-                db.create(DBConnect.DB_ADDRESS + "create=true;", DBConnect.DB_USERNAME, DBConnect.DB_PASSWORD);
+                db.create(settings.getSetting("db_address") + "create=true;", settings.getSetting("db_username"), settings.getSetting("db_password"));
                 TillSplashScreen.setLabel("Creating tables...");
                 Staff s = StaffDialog.showNewStaffDialog(this, db);
                 if (s == null) {
@@ -138,7 +138,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         if (!remote) {
             try {
                 DBConnect db = (DBConnect) dbConn;
-                db.connect(DBConnect.DB_ADDRESS, DBConnect.DB_USERNAME, DBConnect.DB_PASSWORD);
+                db.connect(settings.getSetting("db_address"), settings.getSetting("db_username"), settings.getSetting("db_password"));
                 TillSplashScreen.setLabel("Connected to database");
                 TillSplashScreen.addBar(40);
                 lblDatabase.setText("Connected to database");
@@ -739,7 +739,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
     private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
         JOptionPane.showMessageDialog(null, "JTill Server is running on port number "
-                + Settings.PORT + " with " + clientCounter + " connections.\n"
+                + settings.getSetting("port") + " with " + clientCounter + " connections.\n"
                 + dbConn.toString(), "JTill Server",
                 JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_itemAboutActionPerformed

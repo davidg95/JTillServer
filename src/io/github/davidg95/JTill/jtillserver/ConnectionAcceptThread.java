@@ -25,6 +25,8 @@ import java.util.logging.Logger;
 public class ConnectionAcceptThread extends Thread {
 
     public static int PORT_IN_USE;
+    
+    private final Settings settings;
 
     private final ServerSocket socket;
     private final DataConnect dc;
@@ -34,6 +36,7 @@ public class ConnectionAcceptThread extends Thread {
         this.socket = new ServerSocket(PORT);
         PORT_IN_USE = PORT;
         this.dc = dc;
+        settings = Settings.getInstance();
     }
 
     public ConnectionAcceptThread(DataConnect dc) throws IOException {
@@ -42,7 +45,7 @@ public class ConnectionAcceptThread extends Thread {
 
     @Override
     public void run() {
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(Settings.MAX_CONNECTIONS, Settings.MAX_QUEUE, 50000L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(Settings.MAX_QUEUE));
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(Integer.parseInt(settings.getSetting("max_conn")), Integer.parseInt(settings.getSetting("max_queue")), 50000L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(Integer.parseInt(settings.getSetting("max_queue"))));
         pool.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 
         try {

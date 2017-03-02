@@ -33,6 +33,7 @@ public class SettingsWindow extends javax.swing.JFrame {
 
     /**
      * Creates new form Settings
+     *
      * @param dc
      * @param icon
      */
@@ -60,12 +61,12 @@ public class SettingsWindow extends javax.swing.JFrame {
 
     private void init() {
         try {
-            txtPort.setText(Settings.PORT + "");
-            txtMaxConn.setText(Settings.MAX_CONNECTIONS + "");
-            txtMaxQueued.setText(Settings.MAX_QUEUE + "");
-            txtAddress.setText(DBConnect.DB_ADDRESS);
-            txtUsername.setText(DBConnect.DB_USERNAME);
-            txtPassword.setText(DBConnect.DB_PASSWORD);
+            txtPort.setText(settings.getSetting("port"));
+            txtMaxConn.setText(settings.getSetting("max_conn"));
+            txtMaxQueued.setText(settings.getSetting("max_queue"));
+            txtAddress.setText(settings.getSetting("db_address"));
+            txtUsername.setText(settings.getSetting("db_username"));
+            txtPassword.setText(settings.getSetting("db_password"));
             chkLogOut.setSelected(dbConn.getSettings("AUTO_LOGOUT").equals("TRUE"));
             txtLogonMessage.setText(dbConn.getSettings("LOGON_MESSAGE"));
             if (dbConn.getSettings("LOGOUT_TIMEOUT").equals("-1")) {
@@ -77,9 +78,9 @@ public class SettingsWindow extends javax.swing.JFrame {
                 txtLogoutTimeout.setText(dbConn.getSettings("LOGOUT_TIMEOUT"));
                 txtLogoutTimeout.setEnabled(true);
             }
-            txtOutMail.setText(DBConnect.MAIL_SERVER);
-            txtOutgoingAddress.setText(DBConnect.OUTGOING_MAIL_ADDRESS);
-            txtMailAddress.setText(DBConnect.MAIL_ADDRESS);
+            txtOutMail.setText(settings.getSetting("mail.smtp.host"));
+            txtOutgoingAddress.setText(settings.getSetting("OUTGOING_MAIL_ADDRESS"));
+            txtMailAddress.setText(settings.getSetting("MAIL_ADDRESS"));
         } catch (IOException ex) {
 
         }
@@ -131,6 +132,7 @@ public class SettingsWindow extends javax.swing.JFrame {
         btnSave = new javax.swing.JButton();
         txtOutgoingAddress = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
+        btnPermissions = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JTill Settings");
@@ -390,43 +392,55 @@ public class SettingsWindow extends javax.swing.JFrame {
                 .addComponent(btnSave))
         );
 
+        btnPermissions.setText("Edit Permissions");
+        btnPermissions.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPermissionsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(panelSecurity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(panelSecurity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnClose))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(panelNetwork, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnEditNetwork))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnClose))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(panelDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnEditDatabase))
-                                    .addComponent(btnDatabaseDefault))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(125, 125, 125)
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnLogonMessage)
-                        .addGap(60, 60, 60))))
+                                        .addGap(6, 6, 6)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(panelNetwork, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(btnEditNetwork))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(panelDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(btnEditDatabase))
+                                            .addComponent(btnDatabaseDefault))
+                                        .addGap(0, 279, Short.MAX_VALUE)))
+                                .addContainerGap())
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(125, 125, 125)
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnLogonMessage)
+                                .addGap(60, 60, 60))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnPermissions)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -449,7 +463,9 @@ public class SettingsWindow extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(15, 15, 15)
                         .addComponent(btnEditDatabase)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                .addComponent(btnPermissions)
+                .addGap(13, 13, 13)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel9)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -472,12 +488,9 @@ public class SettingsWindow extends javax.swing.JFrame {
             } else if (max < 0 || queue < 0) {
                 JOptionPane.showMessageDialog(this, "Please enter a value greater than 0", "Server Options", JOptionPane.PLAIN_MESSAGE);
             } else {
-                Settings.PORT = port;
-                Settings.MAX_CONNECTIONS = max;
-                Settings.MAX_QUEUE = queue;
-                settings.setSetting("port", Integer.toString(Settings.PORT));
-                settings.setSetting("max_conn", Integer.toString(Settings.MAX_CONNECTIONS));
-                settings.setSetting("max_queue", Integer.toString(Settings.MAX_QUEUE));
+                settings.setSetting("port", Integer.toString(port));
+                settings.setSetting("max_conn", Integer.toString(max));
+                settings.setSetting("max_queue", Integer.toString(queue));
                 settings.saveProperties();
             }
             for (Component c : panelNetwork.getComponents()) {
@@ -508,12 +521,9 @@ public class SettingsWindow extends javax.swing.JFrame {
             String address = txtAddress.getText();
             String username = txtUsername.getText();
             String password = new String(txtPassword.getPassword());
-            DBConnect.DB_ADDRESS = address;
-            DBConnect.DB_USERNAME = username;
-            DBConnect.DB_PASSWORD = password;
-            settings.setSetting("db_address", DBConnect.DB_ADDRESS);
-            settings.setSetting("db_username", DBConnect.DB_USERNAME);
-            settings.setSetting("db_password", DBConnect.DB_PASSWORD);
+            settings.setSetting("db_address", address);
+            settings.setSetting("db_username", username);
+            settings.setSetting("db_password", password);
             settings.saveProperties();
             for (Component c : panelDatabase.getComponents()) {
                 c.setEnabled(false);
@@ -549,12 +559,12 @@ public class SettingsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_chkLogoutTimeoutActionPerformed
 
     private void btnDatabaseDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDatabaseDefaultActionPerformed
-        DBConnect.DB_ADDRESS = DBConnect.DEFAULT_ADDRESS;
-        DBConnect.DB_USERNAME = DBConnect.DEFAULT_USERNAME;
-        DBConnect.DB_PASSWORD = DBConnect.DEFAULT_PASSWORD;
-        txtAddress.setText(DBConnect.DB_ADDRESS);
-        txtUsername.setText(DBConnect.DB_USERNAME);
-        txtPassword.setText(DBConnect.DB_PASSWORD);
+        settings.setSetting("db_address", Settings.DEFAULT_ADDRESS);
+        settings.setSetting("db_username", Settings.DEFAULT_PASSWORD);
+        settings.setSetting("db_password", Settings.DEFAULT_PASSWORD);
+        txtAddress.setText(settings.getSetting("db_address"));
+        txtUsername.setText(settings.getSetting("db_username"));
+        txtPassword.setText(settings.getSetting("db_password"));
         if (dbConn instanceof DBConnect) {
             DBConnect db = (DBConnect) dbConn;
             settings.saveProperties();
@@ -570,14 +580,15 @@ public class SettingsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLogonMessageActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        DBConnect.MAIL_SERVER = txtOutMail.getText();
-        DBConnect.OUTGOING_MAIL_ADDRESS = txtOutgoingAddress.getText();
-        DBConnect.MAIL_ADDRESS = txtMailAddress.getText();
-        settings.setSetting("mail.smtp.host", DBConnect.MAIL_SERVER);
-        settings.setSetting("OUTGOING_MAIL_ADDRESS", DBConnect.OUTGOING_MAIL_ADDRESS);
-        settings.setSetting("MAIL_ADDRESS", DBConnect.MAIL_ADDRESS);
+        settings.setSetting("mail.smtp.host", txtOutMail.getText());
+        settings.setSetting("OUTGOING_MAIL_ADDRESS", txtOutgoingAddress.getText());
+        settings.setSetting("MAIL_ADDRESS", txtMailAddress.getText());
         settings.saveProperties();
     }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void btnPermissionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPermissionsActionPerformed
+        PermissionsWindow.showDialog(this);
+    }//GEN-LAST:event_btnPermissionsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
@@ -585,6 +596,7 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnEditDatabase;
     private javax.swing.JButton btnEditNetwork;
     private javax.swing.JButton btnLogonMessage;
+    private javax.swing.JButton btnPermissions;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSaveSecurity;
     private javax.swing.JCheckBox chkLogOut;
