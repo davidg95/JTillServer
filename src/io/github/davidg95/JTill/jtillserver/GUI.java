@@ -31,7 +31,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private final DataConnect dbConn;
     private boolean isLoggedOn;
 
-    private Staff staff;
+    public static Staff staff;
 
     public int clientCounter = 0;
     private final ArrayList<String> connections;

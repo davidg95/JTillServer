@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -92,16 +94,12 @@ public class StaffWindow extends javax.swing.JFrame {
         if (s == null) {
             txtName.setText("");
             txtUsername.setText("");
-            txtPassword.setText("");
-            txtPasswordConfirm.setText("");
             cmbPosition.setSelectedIndex(0);
             staff = null;
         } else {
             this.staff = s;
             txtName.setText(s.getName());
             txtUsername.setText(s.getUsername());
-            txtPassword.setText(s.getPassword());
-            txtPasswordConfirm.setText(s.getPassword());
             int p = s.getPosition();
             int index = p - 1;
             cmbPosition.setSelectedIndex(index);
@@ -130,13 +128,9 @@ public class StaffWindow extends javax.swing.JFrame {
         btnClose = new javax.swing.JButton();
         btnShowAll = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
         cmbPosition = new javax.swing.JComboBox<>();
         txtUsername = new javax.swing.JTextField();
-        txtPassword = new javax.swing.JPasswordField();
-        txtPasswordConfirm = new javax.swing.JPasswordField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -144,6 +138,7 @@ public class StaffWindow extends javax.swing.JFrame {
         radName = new javax.swing.JRadioButton();
         radID = new javax.swing.JRadioButton();
         btnSearch = new javax.swing.JButton();
+        btnPassword = new javax.swing.JButton();
 
         setTitle("Manage Staff");
 
@@ -217,10 +212,6 @@ public class StaffWindow extends javax.swing.JFrame {
 
         jLabel3.setText("Username:");
 
-        jLabel4.setText("Password:");
-
-        jLabel5.setText("Confirm Password:");
-
         txtName.setNextFocusableComponent(cmbPosition);
 
         cmbPosition.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Assisstant", "Supervisor", "Manager", "Area Manager"}));
@@ -245,6 +236,13 @@ public class StaffWindow extends javax.swing.JFrame {
             }
         });
 
+        btnPassword.setText("Password");
+        btnPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPasswordActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -253,27 +251,26 @@ public class StaffWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtName)
-                            .addComponent(cmbPosition, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtUsername)
-                            .addComponent(txtPassword)
-                            .addComponent(txtPasswordConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAddStaff)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSave))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnRemoveStaff)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnShowAll)))
+                        .addComponent(btnShowAll))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(38, 38, 38)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnPassword)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtName)
+                                .addComponent(cmbPosition, 0, 139, Short.MAX_VALUE)
+                                .addComponent(txtUsername)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
@@ -310,14 +307,8 @@ public class StaffWindow extends javax.swing.JFrame {
                             .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtPasswordConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addGap(63, 63, 63)
+                        .addComponent(btnPassword)
+                        .addGap(86, 86, 86)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAddStaff)
                             .addComponent(btnSave))
@@ -341,51 +332,56 @@ public class StaffWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStaffActionPerformed
-        if (staff == null) {
-            Staff s;
-            String name = txtName.getText();
-            String username = txtUsername.getText();
-            String password = new String(txtPassword.getPassword());
-            int position = cmbPosition.getSelectedIndex() + 1;
-            if (name.equals("") || username.equals("")) {
-                JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Staff", JOptionPane.ERROR_MESSAGE);
-            } else if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
-                try {
-                    s = new Staff(name, position, username, password);
-                    Staff st = dc.addStaff(s);
-                    setCurrentStaff(null);
-                    showAllStaff();
-                    txtName.requestFocus();
-                } catch (IOException | SQLException | StaffNotFoundException ex) {
-                    showError(ex);
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Passwords do not match", "New Staff", JOptionPane.ERROR_MESSAGE);
+//        if (staff == null) {
+//            Staff s;
+//            String name = txtName.getText();
+//            String username = txtUsername.getText();
+//            String password = new String(txtPassword.getPassword());
+//            int position = cmbPosition.getSelectedIndex() + 1;
+//            if (name.equals("") || username.equals("")) {
+//                JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Staff", JOptionPane.ERROR_MESSAGE);
+//            } else if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
+//                try {
+//                    s = new Staff(name, position, username, password);
+//                    Staff st = dc.addStaff(s);
+//                    setCurrentStaff(null);
+//                    showAllStaff();
+//                    txtName.requestFocus();
+//                } catch (IOException | SQLException | StaffNotFoundException ex) {
+//                    showError(ex);
+//                }
+//            } else {
+//                JOptionPane.showMessageDialog(this, "Passwords do not match", "New Staff", JOptionPane.ERROR_MESSAGE);
+//            }
+//        } else {
+//            setCurrentStaff(null);
+//        }
+
+        Staff s = StaffDialog.showNewStaffDialog(this, dc);
+
+        if (s != null) {
+            try {
+                dc.addStaff(s);
+                setCurrentStaff(null);
+                showAllStaff();
+            } catch (IOException | StaffNotFoundException | SQLException ex) {
+                showError(ex);
             }
-        } else {
-            setCurrentStaff(null);
         }
     }//GEN-LAST:event_btnAddStaffActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         String name = txtName.getText();
         String username = txtUsername.getText();
-        String password = new String(txtPassword.getPassword());
         int position = cmbPosition.getSelectedIndex() + 1;
-        if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
-            staff.setName(name);
-            staff.setUsername(username);
-            staff.setPassword(password);
-            staff.setPosition(position);
-            try {
-                dc.updateStaff(staff);
-            } catch (SQLException | StaffNotFoundException | IOException ex) {
-                showError(ex);
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Passwords do not match", "Staff", JOptionPane.ERROR_MESSAGE);
+        staff.setName(name);
+        staff.setUsername(username);
+        staff.setPosition(position);
+        try {
+            dc.updateStaff(staff);
+        } catch (SQLException | StaffNotFoundException | IOException ex) {
+            showError(ex);
         }
-
         updateTable();
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -459,9 +455,26 @@ public class StaffWindow extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnSearchActionPerformed
 
+    private void btnPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPasswordActionPerformed
+        if(GUI.staff.getPosition() >= 3){
+        String password = PasswordDialog.showDialog(this, dc, staff);
+        if (password != null) {
+            staff.setPassword(password);
+            try {
+                dc.updateStaff(staff);
+            } catch (IOException | StaffNotFoundException | SQLException ex) {
+                showError(ex);
+            }
+        }
+        } else{
+            JOptionPane.showMessageDialog(this, "You cannot change users passwords", "Password", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnPasswordActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnPassword;
     private javax.swing.JButton btnRemoveStaff;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
@@ -471,16 +484,12 @@ public class StaffWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JRadioButton radID;
     private javax.swing.JRadioButton radName;
     private javax.swing.JTable tableStaff;
     private javax.swing.JTextField txtName;
-    private javax.swing.JPasswordField txtPassword;
-    private javax.swing.JPasswordField txtPasswordConfirm;
     private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables

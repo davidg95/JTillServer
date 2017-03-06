@@ -177,9 +177,9 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnRemoveActionPerformed
 
     private void btnChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeButtonActionPerformed
-        Product p = ProductSelectDialog.showDialog(this, dc);
-        if (p != null) {
-            button.setProduct(p);
+        Item i = ItemSelectDialog.showDialog(this, dc);
+        if (i != null) {
+            button.setItem(i);
             this.setVisible(false);
         }
     }//GEN-LAST:event_btnChangeButtonActionPerformed
