@@ -14,8 +14,6 @@ import java.awt.Window;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.List;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -326,16 +324,16 @@ public class ProductDialog extends javax.swing.JDialog {
         Tax tax = selectedTax;
         String comments = txtComments.getText();
         try {
+            Plu p = dbConn.addPlu(plu);
             if (chkOpen.isSelected()) {
                 try {
-                    product = new Product(name, shortName, category, comments, tax, true);
-                    dbConn.updateProduct(product);
+                    product = new Product(name, shortName, category, comments, tax, plu, true);
+                    dbConn.addProduct(product);
                     this.setVisible(false);
                 } catch (IOException | SQLException ex) {
                     JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                Plu p = dbConn.addPlu(plu);
                 BigDecimal price = new BigDecimal(Double.parseDouble(txtPrice.getText()));
                 BigDecimal costPrice = new BigDecimal(txtCostPrice.getText());
                 int stock = Integer.parseInt(txtStock.getText());
@@ -357,6 +355,7 @@ public class ProductDialog extends javax.swing.JDialog {
                     product.setMinStockLevel(minStock);
                     product.setMaxStockLevel(maxStock);
                     product.setCostPrice(costPrice);
+                    dbConn.updateProduct(product);
                 }
                 this.setVisible(false);
             }
@@ -372,18 +371,16 @@ public class ProductDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void chkOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkOpenActionPerformed
-        txtPrice.setEnabled(chkOpen.isSelected());
-        txtCostPrice.setEnabled(chkOpen.isSelected());
-        txtBarcode.setEnabled(chkOpen.isSelected());
-        txtStock.setEnabled(chkOpen.isSelected());
-        txtMinStock.setEnabled(chkOpen.isSelected());
-        txtMaxStock.setEnabled(chkOpen.isSelected());
-        jLabel3.setEnabled(chkOpen.isSelected());
-        jLabel9.setEnabled(chkOpen.isSelected());
-        jLabel2.setEnabled(chkOpen.isSelected());
-        jLabel4.setEnabled(chkOpen.isSelected());
-        jLabel10.setEnabled(chkOpen.isSelected());
-        jLabel11.setEnabled(chkOpen.isSelected());
+        txtPrice.setEnabled(!chkOpen.isSelected());
+        txtCostPrice.setEnabled(!chkOpen.isSelected());
+        txtStock.setEnabled(!chkOpen.isSelected());
+        txtMinStock.setEnabled(!chkOpen.isSelected());
+        txtMaxStock.setEnabled(!chkOpen.isSelected());
+        jLabel3.setEnabled(!chkOpen.isSelected());
+        jLabel9.setEnabled(!chkOpen.isSelected());
+        jLabel4.setEnabled(!chkOpen.isSelected());
+        jLabel10.setEnabled(!chkOpen.isSelected());
+        jLabel11.setEnabled(!chkOpen.isSelected());
 
     }//GEN-LAST:event_chkOpenActionPerformed
 

@@ -115,7 +115,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         model.setRowCount(0);
 
         for (Product p : currentTableContents) {
-            Object[] s = new Object[]{p.getId(), (p.isOpen() ? "N/A" : p.getPlu().getCode()), p.getLongName(), (p.isOpen() ? "Open Price" : p.getPrice()), (p.isOpen() ? "N/A" : p.getStock())};
+            Object[] s = new Object[]{p.getId(), p.getPlu().getCode(), p.getLongName(), (p.isOpen() ? "Open Price" : p.getPrice()), (p.isOpen() ? "N/A" : p.getStock())};
             model.addRow(s);
         }
 
@@ -186,7 +186,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             if (p.isOpen()) {
                 txtPrice.setEnabled(false);
                 txtCostPrice.setEnabled(false);
-                txtBarcode.setEnabled(false);
+                txtBarcode.setEnabled(true);
                 txtStock.setEnabled(false);
                 txtMinStock.setEnabled(false);
                 txtMaxStock.setEnabled(false);
@@ -196,7 +196,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                 jLabel4.setEnabled(false);
                 jLabel10.setEnabled(false);
                 jLabel11.setEnabled(false);
-                txtBarcode.setText("");
+                txtBarcode.setText(p.getPlu().getCode());
                 txtPrice.setText("");
                 txtCostPrice.setText("");
                 chkOpen.setSelected(true);
