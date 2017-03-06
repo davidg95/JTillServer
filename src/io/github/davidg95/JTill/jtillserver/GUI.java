@@ -293,6 +293,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         lblServerAddress = new javax.swing.JLabel();
         lblPort = new javax.swing.JLabel();
         lblProducts = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         itemLogin = new javax.swing.JMenuItem();
@@ -481,6 +482,13 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
         lblProducts.setText("Products in database: 0");
 
+        jButton1.setText("Log Staff Out");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         menuFile.setText("File");
 
         itemLogin.setText("Log in");
@@ -624,7 +632,8 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                             .addComponent(jLabel2)
                             .addComponent(lblServerAddress)
                             .addComponent(lblPort)
-                            .addComponent(lblProducts))
+                            .addComponent(lblProducts)
+                            .addComponent(jButton1))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -638,7 +647,9 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                 .addComponent(lblPort)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblProducts)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 225, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 191, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -769,6 +780,20 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         VoucherWindow.showVoucherWindow(dbConn);
     }//GEN-LAST:event_itemVouchersActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            for (Staff s : dbConn.getAllStaff()) {
+                try {
+                    dbConn.tillLogout(s);
+                } catch (IOException | StaffNotFoundException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -791,6 +816,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemStock;
     private javax.swing.JMenuItem itemTaxes;
     private javax.swing.JMenuItem itemVouchers;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
