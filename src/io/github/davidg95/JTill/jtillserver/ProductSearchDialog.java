@@ -173,7 +173,7 @@ public class ProductSearchDialog extends javax.swing.JDialog {
                 break;
             case BARCODE:
                 for (Product p : products) {
-                    if (p.getBarcode().equals(terms)) {
+                    if (p.getPlu().getCode().equals(terms)) {
                         newList.add(p);
                     }
                 }

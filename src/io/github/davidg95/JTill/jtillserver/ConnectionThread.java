@@ -750,6 +750,54 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
+                    case "ADDPLU":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                addPlu(data);
+                            }
+                        }.start();
+                        break;
+                    case "REMOVEPLU":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                removePlu(data);
+                            }
+                        }.start();
+                        break;
+                    case "GETPLU":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getPlu(data);
+                            }
+                        }.start();
+                        break;
+                    case "GETPLUBYCODE":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getPluByCode(data);
+                            }
+                        }.start();
+                        break;
+                    case "GETALLPLUS":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getAllPlus();
+                            }
+                        }.start();
+                        break;
+                    case "UPDATEPLU":
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                updatePlu(data);
+                            }
+                        }.start();
+                        break;
                     case "CONNTERM": //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -2224,6 +2272,111 @@ public class ConnectionThread extends Thread {
             String key = (String) clone.getData();
             String value = dc.getSettings(key);
             obOut.writeObject(ConnectionData.create("SUCC", value));
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void addPlu(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Plu)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Plu must be received here"));
+                    return;
+                }
+                Plu p = (Plu) clone.getData();
+                Plu newP = dc.addPlu(p);
+                obOut.writeObject(ConnectionData.create("SUCC", newP));
+            } catch (SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void removePlu(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Plu)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Plu must be received here"));
+                    return;
+                }
+                Plu p = (Plu) clone.getData();
+                dc.removePlu(p);
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (JTillException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getPlu(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An int must be received here"));
+                }
+                int id = (int) data.getData();
+                Plu p = dc.getPlu(id);
+                obOut.writeObject(ConnectionData.create("SUCC", p));
+            } catch (JTillException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getPluByCode(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof String)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                }
+                String code = (String) data.getData();
+                Plu p = dc.getPluByCode(code);
+                obOut.writeObject(ConnectionData.create("SUCC", p));
+            } catch (JTillException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getAllPlus() {
+        try {
+            try {
+                List<Plu> p = dc.getAllPlus();
+                obOut.writeObject(ConnectionData.create("SUCC", p));
+            } catch (SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void updatePlu(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Plu)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Plu must be received here"));
+                }
+                Plu plu = (Plu) data.getData();
+                Plu p = dc.updatePlu(plu);
+                obOut.writeObject(ConnectionData.create("SUCC", p));
+            } catch (JTillException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }
