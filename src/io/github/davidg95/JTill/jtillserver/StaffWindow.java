@@ -346,7 +346,7 @@ public class StaffWindow extends javax.swing.JFrame {
             String name = txtName.getText();
             String username = txtUsername.getText();
             String password = new String(txtPassword.getPassword());
-            int position = cmbPosition.getSelectedIndex() - 1;
+            int position = cmbPosition.getSelectedIndex() + 1;
             if (name.equals("") || username.equals("")) {
                 JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Staff", JOptionPane.ERROR_MESSAGE);
             } else if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
@@ -371,7 +371,7 @@ public class StaffWindow extends javax.swing.JFrame {
         String name = txtName.getText();
         String username = txtUsername.getText();
         String password = new String(txtPassword.getPassword());
-        int position = cmbPosition.getSelectedIndex() - 1;
+        int position = cmbPosition.getSelectedIndex() + 1;
         if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
             staff.setName(name);
             staff.setUsername(username);
