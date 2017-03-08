@@ -338,7 +338,6 @@ public class StaffWindow extends javax.swing.JFrame {
 
     private void btnAddStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStaffActionPerformed
         Staff s = StaffDialog.showNewStaffDialog(this, dc);
-
         if (s != null) {
             setCurrentStaff(null);
             showAllStaff();

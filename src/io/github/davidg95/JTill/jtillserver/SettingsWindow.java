@@ -587,6 +587,10 @@ public class SettingsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnPermissionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPermissionsActionPerformed
+        if(GUI.staff.getPosition() < Integer.parseInt(settings.getSetting("SETTINGS_EDIT"))){
+            JOptionPane.showMessageDialog(this, "You do not have authority to use this screen", "Settings", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         PermissionsWindow.showDialog(this);
     }//GEN-LAST:event_btnPermissionsActionPerformed
 

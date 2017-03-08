@@ -130,14 +130,19 @@ public class StaffDialog extends javax.swing.JDialog {
             }
         });
 
+        jLabel1.setLabelFor(txtName);
         jLabel1.setText("Name:");
 
+        jLabel2.setLabelFor(cmbPosition);
         jLabel2.setText("Position:");
 
+        jLabel3.setLabelFor(txtUsername);
         jLabel3.setText("Username:");
 
+        jLabel4.setLabelFor(txtPassword);
         jLabel4.setText("Password:");
 
+        jLabel5.setLabelFor(txtPasswordConfirm);
         jLabel5.setText("Confirm Password:");
 
         btnAdd.setText("Add Employee");

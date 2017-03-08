@@ -12,6 +12,8 @@ import java.awt.Frame;
 import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -80,8 +82,10 @@ public class LoginDialog extends javax.swing.JDialog {
         setTitle("Login");
         setResizable(false);
 
+        jLabel1.setLabelFor(txtUsername);
         jLabel1.setText("Username:");
 
+        jLabel2.setLabelFor(txtPassword);
         jLabel2.setText("Password:");
 
         btnLogin.setText("Login");
@@ -168,6 +172,14 @@ public class LoginDialog extends javax.swing.JDialog {
         } else {
             try {
                 staff = dc.login(username, password);
+                if (staff.getPosition() < Integer.parseInt(Settings.getInstance().getSetting("MINIMUM_SERVER_LOGIN"))) {
+                    JOptionPane.showMessageDialog(this, "You do not have authority to log in", "Log in", JOptionPane.ERROR_MESSAGE);
+                    try {
+                        dc.logout(staff);
+                    } catch (StaffNotFoundException ex) {
+                    }
+                    return;
+                }
                 this.setVisible(false);
             } catch (LoginException ex) {
                 lblLogin.setText(ex.getMessage());
