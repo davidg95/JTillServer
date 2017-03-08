@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -51,12 +53,17 @@ public class StaffWindow extends javax.swing.JFrame {
         update();
         frame.setCurrentStaff(null);
         frame.setVisible(true);
+        frame.showInit();
     }
 
     public static void update() {
         if (frame != null) {
             frame.showAllStaff();
         }
+    }
+
+    private void showInit() {
+        btnPassword.setEnabled(false);
     }
 
     private void updateTable() {
@@ -330,41 +337,11 @@ public class StaffWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStaffActionPerformed
-//        if (staff == null) {
-//            Staff s;
-//            String name = txtName.getText();
-//            String username = txtUsername.getText();
-//            String password = new String(txtPassword.getPassword());
-//            int position = cmbPosition.getSelectedIndex() + 1;
-//            if (name.equals("") || username.equals("")) {
-//                JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Staff", JOptionPane.ERROR_MESSAGE);
-//            } else if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
-//                try {
-//                    s = new Staff(name, position, username, password);
-//                    Staff st = dc.addStaff(s);
-//                    setCurrentStaff(null);
-//                    showAllStaff();
-//                    txtName.requestFocus();
-//                } catch (IOException | SQLException | StaffNotFoundException ex) {
-//                    showError(ex);
-//                }
-//            } else {
-//                JOptionPane.showMessageDialog(this, "Passwords do not match", "New Staff", JOptionPane.ERROR_MESSAGE);
-//            }
-//        } else {
-//            setCurrentStaff(null);
-//        }
-
         Staff s = StaffDialog.showNewStaffDialog(this, dc);
 
         if (s != null) {
-            try {
-                dc.addStaff(s);
-                setCurrentStaff(null);
-                showAllStaff();
-            } catch (IOException | SQLException ex) {
-                showError(ex);
-            }
+            setCurrentStaff(null);
+            showAllStaff();
         }
     }//GEN-LAST:event_btnAddStaffActionPerformed
 
@@ -385,11 +362,24 @@ public class StaffWindow extends javax.swing.JFrame {
 
     private void btnRemoveStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveStaffActionPerformed
         int index = tableStaff.getSelectedRow();
+        Staff selected = currentTableContents.get(index);
+        if (selected.equals(GUI.staff)) {
+            JOptionPane.showMessageDialog(this, "You cannot remove yourself as you are currently logged in.", "Remove", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        try {
+            if (dc.isTillLoggedIn(selected)) {
+                JOptionPane.showMessageDialog(this, "You cannot remove this member of staff as they are currently logged in", "Remove", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (IOException | StaffNotFoundException | SQLException ex) {
+            Logger.getLogger(StaffWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (index != -1) {
-            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following staff member?\n" + currentTableContents.get(index), "Remove Staff", JOptionPane.YES_NO_OPTION);
+            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following staff member?\n" + selected, "Remove Staff", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
-                    dc.removeStaff(currentTableContents.get(index).getId());
+                    dc.removeStaff(selected.getId());
                 } catch (SQLException | StaffNotFoundException | IOException ex) {
                     showError(ex);
                 }
@@ -408,6 +398,7 @@ public class StaffWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnShowAllActionPerformed
 
     private void tableStaffMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStaffMousePressed
+        btnPassword.setEnabled(true);
         if (evt.getClickCount() == 2) {
             editStaff();
         } else if (evt.getClickCount() == 1) {
@@ -454,17 +445,20 @@ public class StaffWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPasswordActionPerformed
-        if(GUI.staff.getPosition() >= 3){
-        String password = PasswordDialog.showDialog(this, dc, staff);
-        if (password != null) {
-            staff.setPassword(password);
-            try {
-                dc.updateStaff(staff);
-            } catch (IOException | StaffNotFoundException | SQLException ex) {
-                showError(ex);
+        if (GUI.staff.getPosition() >= 3) {
+            String password = PasswordDialog.showDialog(this, dc, staff);
+            if (password != null) {
+                if (!password.equals("")) {
+                    staff.setPassword(password);
+                    try {
+                        dc.updateStaff(staff);
+                        JOptionPane.showMessageDialog(this, "Password successfully changed", "Password", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (IOException | StaffNotFoundException | SQLException ex) {
+                        showError(ex);
+                    }
+                }
             }
-        }
-        } else{
+        } else {
             JOptionPane.showMessageDialog(this, "You cannot change users passwords", "Password", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnPasswordActionPerformed

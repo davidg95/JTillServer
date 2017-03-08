@@ -6,8 +6,6 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -15,7 +13,7 @@ import javax.swing.SwingUtilities;
  */
 public class ModalDialogMessage extends javax.swing.JDialog {
 
-    private static ModalDialogMessage dialog;
+    private static final ModalDialogMessage dialog;
 
     /**
      * Creates new form ModalDialogMessage
@@ -24,28 +22,23 @@ public class ModalDialogMessage extends javax.swing.JDialog {
         initComponents();
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        setAlwaysOnTop(true);
     }
 
     static {
         dialog = new ModalDialogMessage();
     }
 
-    public static void showDialog() {
-        new Thread(() -> {
-            dialog.setVisible(true);
-        }).start();
+    public static void setLabel(String message) {
+        dialog.lblMessage.setText(message);
     }
 
-    public static void setMessage(String message) {
-        dialog.setLabel(message);
+    public static void showDialog() {
+        dialog.setVisible(true);
     }
 
     public static void hideDialog() {
         dialog.setVisible(false);
-    }
-
-    private void setLabel(String message) {
-        lblMessage.setText(message);
     }
 
     /**

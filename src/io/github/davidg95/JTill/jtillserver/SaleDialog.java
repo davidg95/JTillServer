@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -216,13 +214,9 @@ public class SaleDialog extends javax.swing.JDialog {
             email = JOptionPane.showInputDialog(this, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
         }
         try {
-            ModalDialogMessage.setMessage("Sending email...");
-            ModalDialogMessage.showDialog();
             dc.emailReceipt(email, sale);
-            ModalDialogMessage.hideDialog();
             JOptionPane.showMessageDialog(this, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException | MessagingException ex) {
-            ModalDialogMessage.hideDialog();
             JOptionPane.showMessageDialog(this, "Error sending email", "Email Receipt", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnEmailActionPerformed

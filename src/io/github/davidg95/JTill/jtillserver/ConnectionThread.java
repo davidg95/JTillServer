@@ -832,6 +832,24 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
+                    case "ISLOGGEDTILL": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                isTillLoggedIn(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "CHECKUSER": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                checkUsername(data);
+                            }
+                        }.start();
+                        break;
+                    }
                     case "CONNTERM": { //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -2307,6 +2325,42 @@ public class ConnectionThread extends Thread {
                 Plu p = dc.updatePlu(plu);
                 obOut.writeObject(ConnectionData.create("SUCC", p));
             } catch (JTillException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void isTillLoggedIn(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Staff)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A Staff must be received here"));
+                }
+                Staff s = (Staff) data.getData();
+                boolean logged = dc.isTillLoggedIn(s);
+                obOut.writeObject(ConnectionData.create("SUCC", logged));
+            } catch (StaffNotFoundException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void checkUsername(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof String)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                }
+                String username = (String) data.getData();
+                boolean used = dc.checkUsername(username);
+                obOut.writeObject(ConnectionData.create("SUCC", used));
+            } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {

@@ -46,6 +46,7 @@ public class PasswordDialog extends javax.swing.JDialog {
         }
         dialog = new PasswordDialog(window, dc, s);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        password = "";
         dialog.setVisible(true);
         return password;
     }
@@ -148,17 +149,17 @@ public class PasswordDialog extends javax.swing.JDialog {
     private void btnEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnterActionPerformed
         String pass1 = new String(txtPassword.getPassword());
         String pass2 = new String(txtConfirm.getPassword());
-        
-        if(pass1.equals("") || pass2.equals("")){
+
+        if (pass1.equals("") || pass2.equals("")) {
             JOptionPane.showMessageDialog(this, "Password cannot be empty!", "Password", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-        if(!pass1.equals(pass2)){
+
+        if (!pass1.equals(pass2)) {
             JOptionPane.showMessageDialog(this, "Passwords do not match!", "Password", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         password = pass1;
         this.setVisible(false);
     }//GEN-LAST:event_btnEnterActionPerformed

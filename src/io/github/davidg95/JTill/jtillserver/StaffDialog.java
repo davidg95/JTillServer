@@ -12,6 +12,8 @@ import java.awt.Frame;
 import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -218,6 +220,14 @@ public class StaffDialog extends javax.swing.JDialog {
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         String name = txtName.getText();
         String username = txtUsername.getText();
+        try {
+            if (dc.checkUsername(username)) {
+                JOptionPane.showMessageDialog(this, "Username already in use", "New Staff", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(StaffDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
         int position = cmbPosition.getSelectedIndex() + 1;
         if (!editMode) {
             if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
