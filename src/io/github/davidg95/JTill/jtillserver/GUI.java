@@ -142,7 +142,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                 TillSplashScreen.setLabel("Connected to database");
                 TillSplashScreen.addBar(40);
                 lblDatabase.setText("Connected to database");
-                if (dbConn.staffCount() == 0) {
+                if (dbConn.getStaffCount() == 0) {
                     Staff s = StaffDialog.showNewStaffDialog(this, db);
                     if (s == null) {
                         System.exit(0);
@@ -152,8 +152,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                 initialSetup();
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
-            } catch (StaffNotFoundException ex) {
-                Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             lblDatabase.setText("Connected to JTill Server");
@@ -303,7 +301,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         menuStock = new javax.swing.JMenu();
         itemStock = new javax.swing.JMenuItem();
         itemDiscounts = new javax.swing.JMenuItem();
-        itemVouchers = new javax.swing.JMenuItem();
         itemCategorys = new javax.swing.JMenuItem();
         itemTaxes = new javax.swing.JMenuItem();
         menuStaff = new javax.swing.JMenu();
@@ -543,14 +540,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         });
         menuStock.add(itemDiscounts);
 
-        itemVouchers.setText("Manage Vouchers");
-        itemVouchers.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemVouchersActionPerformed(evt);
-            }
-        });
-        menuStock.add(itemVouchers);
-
         itemCategorys.setText("Manage Categorys");
         itemCategorys.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -776,10 +765,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         ScreenEditWindow.showScreenEditWindow(dbConn, icon);
     }//GEN-LAST:event_btnScreensActionPerformed
 
-    private void itemVouchersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemVouchersActionPerformed
-        VoucherWindow.showVoucherWindow(dbConn);
-    }//GEN-LAST:event_itemVouchersActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
             for (Staff s : dbConn.getAllStaff()) {
@@ -815,7 +800,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStock;
     private javax.swing.JMenuItem itemTaxes;
-    private javax.swing.JMenuItem itemVouchers;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

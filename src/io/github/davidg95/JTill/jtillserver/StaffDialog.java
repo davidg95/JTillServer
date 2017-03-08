@@ -225,7 +225,7 @@ public class StaffDialog extends javax.swing.JDialog {
                 staff = new Staff(name, position, username, password);
                 try {
                     Staff s = dc.addStaff(staff);
-                } catch (SQLException | IOException | StaffNotFoundException ex) {
+                } catch (SQLException | IOException ex) {
                     showError(ex);
                 }
                 this.setVisible(false);

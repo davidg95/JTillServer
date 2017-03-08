@@ -46,6 +46,7 @@ public class ConnectionThread extends Thread {
      * Constructor for Connection thread.
      *
      * @param name the name of the thread.
+     * @param dc the data connection.
      * @param s the socket used for this connection.
      */
     public ConnectionThread(String name, DataConnect dc, Socket s) {
@@ -105,7 +106,7 @@ public class ConnectionThread extends Thread {
                 final ConnectionData data = currentData.clone();
 
                 switch (inp[0]) {
-                    case "NEWPRODUCT": //Add a new product
+                    case "NEWPRODUCT": { //Add a new product
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -113,7 +114,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "REMOVEPRODUCT": //Remove a product
+                    }
+                    case "REMOVEPRODUCT": { //Remove a product
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -121,7 +123,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "PURCHASE": //Purchase a product
+                    }
+                    case "PURCHASE": { //Purchase a product
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -129,7 +132,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETPRODUCT": //Get a product
+                    }
+                    case "GETPRODUCT": { //Get a product
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -137,7 +141,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "UPDATEPRODUCT": //Update a product
+                    }
+                    case "UPDATEPRODUCT": { //Update a product
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -145,7 +150,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETPRODUCTBARCODE": //Get a product by barcode
+                    }
+                    case "GETPRODUCTBARCODE": { //Get a product by barcode
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -153,7 +159,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "CHECKBARCODE": //Check if a barcode is in use
+                    }
+                    case "CHECKBARCODE": { //Check if a barcode is in use
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -161,7 +168,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETPRODUCTSDISCOUNT": //Gets all discounts for a product
+                    }
+                    case "GETPRODUCTSDISCOUNT": { //Gets all discounts for a product
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -169,7 +177,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETALLPRODUCTS": //Get all products
+                    }
+                    case "GETALLPRODUCTS": { //Get all products
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -177,7 +186,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "PRODUCTLOOKUP": //Product lookup
+                    }
+                    case "PRODUCTLOOKUP": { //Product lookup
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -185,7 +195,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "NEWCUSTOMER": //Add a new customer
+                    }
+                    case "NEWCUSTOMER": { //Add a new customer
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -193,7 +204,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "REMOVECUSTOMER": //Remove a customer
+                    }
+                    case "REMOVECUSTOMER": { //Remove a customer
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -201,7 +213,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETCUSTOMER": //Get a customer
+                    }
+                    case "GETCUSTOMER": { //Get a customer
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -209,7 +222,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETCUSTOMERBYNAME": //Get a customer by name
+                    }
+                    case "GETCUSTOMERBYNAME": { //Get a customer by name
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -217,15 +231,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETCUSTOMERCOUNT": //Get customer count
-                        new Thread(inp[0]) {
-                            @Override
-                            public void run() {
-                                getCustomerCount();
-                            }
-                        }.start();
-                        break;
-                    case "UPDATECUSTOMER": //Update a customer
+                    }
+                    case "UPDATECUSTOMER": { //Update a customer
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -233,7 +240,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETALLCUSTOMERS": //Get all customers
+                    }
+                    case "GETALLCUSTOMERS": { //Get all customers
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -241,7 +249,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "CUSTOMERLOOKUP": //Search for a customer
+                    }
+                    case "CUSTOMERLOOKUP": { //Search for a customer
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -249,7 +258,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "ADDSTAFF": //Add a member of staff
+                    }
+                    case "ADDSTAFF": { //Add a member of staff
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -257,7 +267,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "REMOVESTAFF": //Remove a member of staff
+                    }
+                    case "REMOVESTAFF": { //Remove a member of staff
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -265,7 +276,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETSTAFF": //Get a member of staff
+                    }
+                    case "GETSTAFF": { //Get a member of staff
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -273,7 +285,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "UPDATESTAFF": //Update a member of staff
+                    }
+                    case "UPDATESTAFF": { //Update a member of staff
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -281,7 +294,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETALLSTAFF": //Get all the staff
+                    }
+                    case "GETALLSTAFF": { //Get all the staff
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -289,7 +303,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "STAFFCOUNT": //Get the staff count
+                    }
+                    case "STAFFCOUNT": { //Get the staff count
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -297,7 +312,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "ADDSALE": //Add a sale
+                    }
+                    case "ADDSALE": { //Add a sale
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -305,7 +321,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETALLSALES": //Get all sales
+                    }
+                    case "GETALLSALES": { //Get all sales
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -313,7 +330,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETSALE": //Get a sale
+                    }
+                    case "GETSALE": { //Get a sale
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -321,7 +339,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "UPDATESALE": //Update a sale
+                    }
+                    case "UPDATESALE": { //Update a sale
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -329,7 +348,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETSALEDATERANGE": //Get all sales within a date range
+                    }
+                    case "GETSALEDATERANGE": { //Get all sales within a date range
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -337,7 +357,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "SUSPENDSALE": //Suspend a sale
+                    }
+                    case "SUSPENDSALE": { //Suspend a sale
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -345,7 +366,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "RESUMESALE": //Resume a sale
+                    }
+                    case "RESUMESALE": { //Resume a sale
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -353,7 +375,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "LOGIN": //Standard staff login
+                    }
+                    case "LOGIN": { //Standard staff login
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -361,7 +384,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "TILLLOGIN": //Till login
+                    }
+                    case "TILLLOGIN": { //Till login
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -369,7 +393,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "LOGOUT": //Logout
+                    }
+                    case "LOGOUT": { //Logout
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -377,7 +402,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "TILLLOGOUT": //Till logout
+                    }
+                    case "TILLLOGOUT": { //Till logout
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -385,7 +411,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "ADDCATEGORY": //Add a category
+                    }
+                    case "ADDCATEGORY": { //Add a category
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -393,7 +420,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "UPDATECATEGORY": //Update a category
+                    }
+                    case "UPDATECATEGORY": { //Update a category
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -401,7 +429,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "REMOVECATEGORY": //Remove a category
+                    }
+                    case "REMOVECATEGORY": { //Remove a category
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -409,7 +438,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETCATEGORY": //Get a category
+                    }
+                    case "GETCATEGORY": { //Get a category
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -417,7 +447,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETALLCATEGORYS": //Get all categorys
+                    }
+                    case "GETALLCATEGORYS": { //Get all categorys
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -425,7 +456,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETPRODUCTSINCATEGORY": //Get all products in a category
+                    }
+                    case "GETPRODUCTSINCATEGORY": { //Get all products in a category
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -433,7 +465,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "ADDDISCOUNT": //Add a discount
+                    }
+                    case "ADDDISCOUNT": { //Add a discount
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -441,7 +474,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "UPDATEDISCOUNT": //Update a discount
+                    }
+                    case "UPDATEDISCOUNT": { //Update a discount
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -449,7 +483,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "REMOVEDISCOUNT": //Remove a discount
+                    }
+                    case "REMOVEDISCOUNT": { //Remove a discount
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -457,7 +492,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETDISCOUNT": //Get a discount
+                    }
+                    case "GETDISCOUNT": { //Get a discount
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -465,7 +501,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETALLDISCOUNTS": //Get all discounts
+                    }
+                    case "GETALLDISCOUNTS": { //Get all discounts
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -473,7 +510,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "ADDTAX": //Add a new tax
+                    }
+                    case "ADDTAX": { //Add a new tax
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -481,7 +519,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "REMOVETAX": //Remove a tax
+                    }
+                    case "REMOVETAX": { //Remove a tax
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -489,7 +528,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETTAX": //Get a tax
+                    }
+                    case "GETTAX": { //Get a tax
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -497,7 +537,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "UPDATETAX": //Update a tax
+                    }
+                    case "UPDATETAX": { //Update a tax
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -505,7 +546,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETALLTAX": //Get all tax
+                    }
+                    case "GETALLTAX": { //Get all tax
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -513,54 +555,16 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETPRODUCTSINTAX": //Get products in tax
+                    }
+                    case "GETPRODUCTSINTAX": { //Get products in tax
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
                                 getProductsInTax(data);
                             }
                         }.start();
-                    case "ADDVOUCHER": //Add a new voucher
-                        new Thread(inp[0]) {
-                            @Override
-                            public void run() {
-                                addVoucher(data);
-                            }
-                        }.start();
-                        break;
-                    case "REMOVEVOUCHER": //Remove a voucher
-                        new Thread(inp[0]) {
-                            @Override
-                            public void run() {
-                                removeVoucher(data);
-                            }
-                        }.start();
-                        break;
-                    case "GETVOUCHER": //Get a voucher
-                        new Thread(inp[0]) {
-                            @Override
-                            public void run() {
-                                getVoucher(data);
-                            }
-                        }.start();
-                        break;
-                    case "UPDATEVOUCHER": //Update a voucher
-                        new Thread(inp[0]) {
-                            @Override
-                            public void run() {
-                                updateVoucher(data);
-                            }
-                        }.start();
-                        break;
-                    case "GETALLVOUCHERS": //Get all vouchers
-                        new Thread(inp[0]) {
-                            @Override
-                            public void run() {
-                                getAllVouchers();
-                            }
-                        }.start();
-                        break;
-                    case "ADDSCREEN": //Add a new screen
+                    }
+                    case "ADDSCREEN": { //Add a new screen
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -568,7 +572,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "ADDBUTTON": //Add a new button
+                    }
+                    case "ADDBUTTON": { //Add a new button
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -576,7 +581,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "REMOVESCREEN": //Remove a screen
+                    }
+                    case "REMOVESCREEN": { //Remove a screen
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -584,7 +590,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "REMOVEBUTTON": //Remove a button
+                    }
+                    case "REMOVEBUTTON": { //Remove a button
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -592,7 +599,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "UPDATESCREEN": //Update a screen
+                    }
+                    case "UPDATESCREEN": { //Update a screen
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -600,7 +608,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "UPDATEBUTTON": //Update a button
+                    }
+                    case "UPDATEBUTTON": { //Update a button
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -608,7 +617,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETSCREEN": //Update a screen
+                    }
+                    case "GETSCREEN": { //Update a screen
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -616,7 +626,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETBUTTON": //Updatea a button
+                    }
+                    case "GETBUTTON": { //Updatea a button
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -624,7 +635,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETALLSCREENS": //Get all screens
+                    }
+                    case "GETALLSCREENS": { //Get all screens
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -632,7 +644,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETALLBUTTONS": //Get all buttons
+                    }
+                    case "GETALLBUTTONS": { //Get all buttons
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -640,7 +653,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETBUTTONSONSCREEN": //Get buttons on a screen
+                    }
+                    case "GETBUTTONSONSCREEN": { //Get buttons on a screen
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -648,13 +662,15 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "DROPSCREENSANDBUTTONS":
+                    }
+                    case "DROPSCREENSANDBUTTONS": {
                         try {
                             dc.deleteAllScreensAndButtons();
                         } catch (SQLException ex) {
                         }
                         break;
-                    case "ASSISSTANCE":
+                    }
+                    case "ASSISSTANCE": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -662,7 +678,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "TAKINGS":
+                    }
+                    case "TAKINGS": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -670,7 +687,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "UNCASHEDSALES":
+                    }
+                    case "UNCASHEDSALES": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -678,7 +696,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "EMAIL":
+                    }
+                    case "EMAIL": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -686,7 +705,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "EMAILRECEIPT":
+                    }
+                    case "EMAILRECEIPT": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -694,7 +714,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "ADDTILL":
+                    }
+                    case "ADDTILL": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -702,7 +723,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "REMOVETILL":
+                    }
+                    case "REMOVETILL": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -710,7 +732,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETTILL":
+                    }
+                    case "GETTILL": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -718,7 +741,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETALLTILLS":
+                    }
+                    case "GETALLTILLS": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -726,7 +750,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "CONNECTTILL":
+                    }
+                    case "CONNECTTILL": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -734,7 +759,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "SETSETTING":
+                    }
+                    case "SETSETTING": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -742,7 +768,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETSETTING":
+                    }
+                    case "GETSETTING": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -750,7 +777,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "ADDPLU":
+                    }
+                    case "ADDPLU": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -758,7 +786,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "REMOVEPLU":
+                    }
+                    case "REMOVEPLU": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -766,7 +795,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETPLU":
+                    }
+                    case "GETPLU": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -774,7 +804,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETPLUBYCODE":
+                    }
+                    case "GETPLUBYCODE": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -782,7 +813,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "GETALLPLUS":
+                    }
+                    case "GETALLPLUS": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -790,7 +822,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "UPDATEPLU":
+                    }
+                    case "UPDATEPLU": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
@@ -798,7 +831,8 @@ public class ConnectionThread extends Thread {
                             }
                         }.start();
                         break;
-                    case "CONNTERM": //Terminate the connection
+                    }
+                    case "CONNTERM": { //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
                             try {
@@ -808,6 +842,7 @@ public class ConnectionThread extends Thread {
                             }
                         }
                         break;
+                    }
                 }
                 sem.release();
             }
@@ -1099,18 +1134,6 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getCustomerCount() {
-        try {
-            try {
-                obOut.writeObject(dc.getCustomerCount());
-            } catch (SQLException ex) {
-                obOut.writeObject(-1);
-            }
-        } catch (IOException e) {
-
-        }
-    }
-
     private void updateCustomer(ConnectionData data) {
         try {
             try {
@@ -1172,7 +1195,7 @@ public class ConnectionThread extends Thread {
                 Staff s = (Staff) clone.getData();
                 Staff newS = dc.addStaff(s);
                 obOut.writeObject(ConnectionData.create("NEW", newS));
-            } catch (SQLException | StaffNotFoundException ex) {
+            } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
@@ -1253,11 +1276,9 @@ public class ConnectionThread extends Thread {
     private void staffCount() {
         try {
             try {
-                obOut.writeObject(dc.staffCount());
+                obOut.writeObject(dc.getStaffCount());
             } catch (SQLException ex) {
                 obOut.writeObject("FAIL");
-            } catch (StaffNotFoundException ex) {
-                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (IOException e) {
 
@@ -1777,95 +1798,6 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("SUCC", products));
             } catch (SQLException | TaxNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
-            }
-        } catch (IOException e) {
-
-        }
-    }
-
-    private void addVoucher(ConnectionData data) {
-        try {
-            try {
-                ConnectionData clone = data.clone();
-                if (!(clone.getData() instanceof Voucher)) {
-                    obOut.writeObject(ConnectionData.create("FAIL", "A Voucher must be received here"));
-                    return;
-                }
-                Voucher v = (Voucher) clone.getData();
-                Voucher newV = dc.addVoucher(v);
-                obOut.writeObject(ConnectionData.create("SUCC", newV));
-            } catch (SQLException ex) {
-                obOut.writeObject(ConnectionData.create("FAIL", ex));
-            }
-        } catch (IOException e) {
-
-        }
-    }
-
-    private void removeVoucher(ConnectionData data) {
-        try {
-            try {
-                ConnectionData clone = data.clone();
-                if (!(clone.getData() instanceof Integer)) {
-                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
-                    return;
-                }
-                int id = (int) clone.getData();
-                dc.removeVoucher(id);
-                obOut.writeObject(ConnectionData.create("SUCC"));
-            } catch (SQLException | VoucherNotFoundException ex) {
-                obOut.writeObject(ConnectionData.create("FAIL", ex));
-            }
-        } catch (IOException e) {
-
-        }
-    }
-
-    private void getVoucher(ConnectionData data) {
-        try {
-            try {
-                ConnectionData clone = data.clone();
-                if (!(clone.getData() instanceof Integer)) {
-                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
-                    return;
-                }
-                int id = (int) clone.getData();
-                Voucher v = dc.getVoucher(id);
-                obOut.writeObject(ConnectionData.create("SUCC", v));
-            } catch (SQLException | VoucherNotFoundException ex) {
-                obOut.writeObject(ConnectionData.create("FAIL", ex));
-            }
-        } catch (IOException e) {
-
-        }
-    }
-
-    private void updateVoucher(ConnectionData data) {
-        try {
-            try {
-                ConnectionData clone = data.clone();
-                if (!(clone.getData() instanceof Voucher)) {
-                    obOut.writeObject(ConnectionData.create("FAIL", "A Voucher must be received here"));
-                    return;
-                }
-                Voucher v = (Voucher) clone.getData();
-                Voucher voucher = dc.updateVoucher(v);
-                obOut.writeObject(ConnectionData.create("SUCC", voucher));
-            } catch (SQLException | VoucherNotFoundException ex) {
-                obOut.writeObject(ConnectionData.create("FAIL", ex));
-            }
-        } catch (IOException e) {
-
-        }
-    }
-
-    private void getAllVouchers() {
-        try {
-            try {
-                List<Voucher> voucher = dc.getAllVouchers();
-                obOut.writeObject(voucher);
-            } catch (SQLException ex) {
-                obOut.writeObject(ex);
             }
         } catch (IOException e) {
 
