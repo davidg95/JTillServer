@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -690,62 +692,6 @@ public class ProductsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_chkOpenActionPerformed
 
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
-//        if (product == null) {
-//            String name = txtName.getText();
-//            String shortName = txtShortName.getText();
-//            Category category = null;
-//            if (!categorys.isEmpty()) {
-//                category = categorys.get(cmbCategory.getSelectedIndex());
-//            }
-//            Tax tax = null;
-//            if (!taxes.isEmpty()) {
-//                tax = taxes.get(cmbTax.getSelectedIndex());
-//            }
-//            String comments = txtComments.getText();
-//            Product p;
-//            if (chkOpen.isSelected()) {
-//                if (name == null || shortName == null || comments == null) {
-//                    JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
-//                } else {
-//                    p = new Product(name, shortName, category, comments, tax, true);
-//                    try {
-//                        dc.addProduct(p);
-//                        GUI.getInstance().updateLables();
-//                        showAllProducts();
-//                        setCurrentProduct(null);
-//                        txtName.requestFocus();
-//                    } catch (IOException | SQLException ex) {
-//                        showError(ex);
-//                    }
-//                }
-//            } else {
-//                try {
-//                    String barcode = txtBarcode.getText();
-//                    BigDecimal price = new BigDecimal(txtPrice.getText());
-//                    BigDecimal costPrice = new BigDecimal(txtCostPrice.getText());
-//                    int stock = Integer.parseInt(txtStock.getText());
-//                    int minStock = Integer.parseInt(txtMinStock.getText());
-//                    int maxStock = Integer.parseInt(txtMaxStock.getText());
-//                    if (name.equals("") || shortName.equals("") || barcode.equals("")) {
-//                        JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
-//                    } else {
-//                        p = new Product(name, shortName, category, comments, tax, false, price, costPrice, stock, minStock, maxStock, barcode);
-//                        try {
-//                            Product pr = dc.addProduct(p);
-//                            showAllProducts();
-//                            setCurrentProduct(null);
-//                            txtName.requestFocus();
-//                        } catch (IOException | SQLException ex) {
-//                            showError(ex);
-//                        }
-//                    }
-//                } catch (NumberFormatException e) {
-//                    JOptionPane.showMessageDialog(this, e, "New Product", JOptionPane.ERROR_MESSAGE);
-//                }
-//            }
-//        } else {
-//            setCurrentProduct(null);
-//        }
         String barcode = JOptionPane.showInputDialog(this, "Enter broduct barcode", "New Product", JOptionPane.INFORMATION_MESSAGE);
         if (barcode != null) {
             Plu plu = new Plu(barcode);
@@ -799,7 +745,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         switch (option) {
             case 1:
                 for (Product p : currentTableContents) {
-                    if ((p.getId() + "").equals(terms)) {
+                    if ((p.getId() + "").contains(terms)) {
                         newList.add(p);
                     }
                 }
@@ -812,11 +758,9 @@ public class ProductsWindow extends javax.swing.JFrame {
                 }
                 break;
             default:
-                for (Product p : currentTableContents) {
-                    if (p.getLongName().toLowerCase().contains(terms.toLowerCase())) {
-                        newList.add(p);
-                    }
-                }
+                currentTableContents.stream().filter((p) -> (p.getLongName().toLowerCase().contains(terms.toLowerCase()) || p.getName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((p) -> {
+                    newList.add(p);
+                });
                 break;
         }
 

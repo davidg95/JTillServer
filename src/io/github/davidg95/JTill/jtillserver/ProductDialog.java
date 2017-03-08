@@ -14,6 +14,8 @@ import java.awt.Window;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -43,6 +45,14 @@ public class ProductDialog extends javax.swing.JDialog {
         this.dbConn = dc;
         this.plu = p;
         initComponents();
+        try {
+            selectedCategory = dc.getCategory(1);
+            selectedTax = dc.getTax(1);
+            btnSelectCategory.setText(selectedCategory.getName());
+            btnSelectTax.setText(selectedTax.getName());
+        } catch (IOException | SQLException | TaxNotFoundException | CategoryNotFoundException ex) {
+            Logger.getLogger(ProductDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.editMode = false;
         this.setLocationRelativeTo(parent);
         this.setModal(true);
@@ -328,7 +338,7 @@ public class ProductDialog extends javax.swing.JDialog {
             if (chkOpen.isSelected()) {
                 try {
                     product = new Product(name, shortName, category, comments, tax, plu, true);
-                    dbConn.addProduct(product);
+                    product = dbConn.addProduct(product);
                     this.setVisible(false);
                 } catch (IOException | SQLException ex) {
                     JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
@@ -342,7 +352,7 @@ public class ProductDialog extends javax.swing.JDialog {
 
                 if (!editMode) {
                     product = new Product(name, shortName, category, comments, tax, false, price, costPrice, stock, minStock, maxStock, p);
-                    dbConn.addProduct(product);
+                    product = dbConn.addProduct(product);
                 } else {
                     product.setLongName(name);
                     product.setName(shortName);
