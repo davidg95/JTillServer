@@ -1212,7 +1212,7 @@ public class ConnectionThread extends Thread {
                 }
                 Staff s = (Staff) clone.getData();
                 Staff newS = dc.addStaff(s);
-                obOut.writeObject(ConnectionData.create("NEW", newS));
+                obOut.writeObject(ConnectionData.create("SUCC", newS));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
