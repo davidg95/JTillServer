@@ -167,7 +167,7 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddPluActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPluActionPerformed
-        String barcode = JOptionPane.showInputDialog(this, "Enter barcode", "Receive Items", JOptionPane.PLAIN_MESSAGE);
+        String barcode = JOptionPane.showInputDialog(this, "Enter or scan barcode", "Receive Items", JOptionPane.PLAIN_MESSAGE);
 
         if (barcode != null) {
             Product product;

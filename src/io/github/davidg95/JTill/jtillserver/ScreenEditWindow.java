@@ -75,7 +75,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         try {
             List<Screen> screens = dbConn.getAllScreens();
             panelCategories.removeAll();
-            panelCategories.setLayout(new GridLayout(2, 5));
+            panelCategories.setLayout(new GridLayout(2, 4));
             for (Screen s : screens) {
                 addScreenButton(s);
             }

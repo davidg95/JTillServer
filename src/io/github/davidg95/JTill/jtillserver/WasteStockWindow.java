@@ -196,7 +196,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnAddPluActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPluActionPerformed
-        String barcode = JOptionPane.showInputDialog(this, "Enter barcode", "Waste", JOptionPane.INFORMATION_MESSAGE);
+        String barcode = JOptionPane.showInputDialog(this, "Enter or scan barcode", "Waste", JOptionPane.INFORMATION_MESSAGE);
 
         if (barcode == null) {
             return;
