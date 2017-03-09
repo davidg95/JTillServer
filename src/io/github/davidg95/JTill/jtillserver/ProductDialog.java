@@ -64,9 +64,9 @@ public class ProductDialog extends javax.swing.JDialog {
         this.dbConn = dc;
         initComponents();
         this.editMode = true;
-        this.setLocationRelativeTo(parent);
-        this.setModal(true);
-        txtName.setText(p.getName());
+        setLocationRelativeTo(parent);
+        setModal(true);
+        txtName.setText(p.getLongName());
         txtShortName.setText(p.getName());
         txtBarcode.setText(p.getPlu().getCode());
         txtPrice.setText(p.getPrice() + "");

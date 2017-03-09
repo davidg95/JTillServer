@@ -18,32 +18,32 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author david
+ * @author David
  */
-public class ReceiveItemsWindow extends javax.swing.JFrame {
+public class WasteStockWindow extends javax.swing.JFrame {
 
-    private static ReceiveItemsWindow window;
+    private static WasteStockWindow window;
 
     private final DataConnect dc;
     private final List<Product> products;
     private final DefaultTableModel model;
 
     /**
-     * Creates new form ReceiveItemsWindow
+     * Creates new form WasteStockWindow
      */
-    public ReceiveItemsWindow(DataConnect dc, Image icon) {
+    public WasteStockWindow(DataConnect dc, Image icon) {
         this.dc = dc;
-        this.products = new ArrayList<>();
+        products = new ArrayList<>();
         initComponents();
-        setTitle("Receive Stock");
+        setTitle("Waste Stock");
         setIconImage(icon);
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
         model.setRowCount(0);
     }
-
-    public static void showWindow(DataConnect dc, Image icon) {
-        window = new ReceiveItemsWindow(dc, icon);
+    
+    public static void showWindow(DataConnect dc, Image icon){
+        window = new WasteStockWindow(dc, icon);
         window.setVisible(true);
     }
 
@@ -58,9 +58,9 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProducts = new javax.swing.JTable();
-        btnAddPlu = new javax.swing.JButton();
-        btnReceive = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
+        btnWaste = new javax.swing.JButton();
+        btnAddPlu = new javax.swing.JButton();
         btnAddProduct = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -73,7 +73,7 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "ID", "Product", "Barcode", "Stock In"
+                "ID", "Product", "Barcode", "Quantity"
             }
         ) {
             Class[] types = new Class [] {
@@ -99,24 +99,24 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
             tblProducts.getColumnModel().getColumn(3).setResizable(false);
         }
 
-        btnAddPlu.setText("Add Plu");
-        btnAddPlu.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddPluActionPerformed(evt);
-            }
-        });
-
-        btnReceive.setText("Receive");
-        btnReceive.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnReceiveActionPerformed(evt);
-            }
-        });
-
         btnClose.setText("Close");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCloseActionPerformed(evt);
+            }
+        });
+
+        btnWaste.setText("Waste");
+        btnWaste.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnWasteActionPerformed(evt);
+            }
+        });
+
+        btnAddPlu.setText("Add Plu");
+        btnAddPlu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddPluActionPerformed(evt);
             }
         });
 
@@ -134,27 +134,27 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnAddProduct)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddPlu)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnReceive)
+                        .addComponent(btnWaste)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnClose)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnReceive)
                     .addComponent(btnClose)
+                    .addComponent(btnWaste)
                     .addComponent(btnAddPlu)
                     .addComponent(btnAddProduct))
                 .addContainerGap())
@@ -163,50 +163,9 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAddPluActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPluActionPerformed
-        String barcode = JOptionPane.showInputDialog(this, "Enter barcode", "Receive Items", JOptionPane.PLAIN_MESSAGE);
-
-        if (barcode != null) {
-            Product product;
-            try {
-                product = dc.getProductByBarcode(barcode);
-                String amount = JOptionPane.showInputDialog(this, "How many?", "Receive Items", JOptionPane.PLAIN_MESSAGE);
-                if (amount == null || amount.equals("0") || amount.equals("")) {
-                    return;
-                }
-                product.setStock(Integer.parseInt(amount));
-                products.add(product);
-                model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), product.getStock()});
-            } catch (IOException | SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (ProductNotFoundException ex) {
-                if (JOptionPane.showConfirmDialog(this, "Barcode not found, create new product?", "Receive Items", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    Plu p = new Plu(barcode);
-                    product = ProductDialog.showNewProductDialog(this, dc, p);
-                    JOptionPane.showMessageDialog(this, product.getLongName() + " has now been added to the system with given stock level, there is no need to receive it here.", "Added", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-        }
-    }//GEN-LAST:event_btnAddPluActionPerformed
-
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        setVisible(false);
+        this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
-
-    private void btnReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiveActionPerformed
-        for (Product p : products) {
-            try {
-                Product product = dc.getProduct(p.getId());
-                product.addStock(p.getStock());
-                p = dc.updateProduct(product);
-            } catch (IOException | ProductNotFoundException | SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        JOptionPane.showMessageDialog(this, "All items have been received", "Received", JOptionPane.INFORMATION_MESSAGE);
-        model.setRowCount(0);
-        products.clear();
-    }//GEN-LAST:event_btnReceiveActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         Product product = (Product) ProductSelectDialog.showDialog(this, dc).clone();
@@ -215,7 +174,7 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
             return;
         }
 
-        String amount = JOptionPane.showInputDialog(this, "Enter amount to receive", "Receive Stock", JOptionPane.INFORMATION_MESSAGE);
+        String amount = JOptionPane.showInputDialog(this, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
 
         if (amount == null || amount.equals("0") || amount.equals("")) {
             return;
@@ -224,14 +183,52 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
         product.setStock(Integer.parseInt(amount));
 
         products.add(product);
-        model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), product.getStock()});
+        model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu(), Integer.parseInt(amount)});
     }//GEN-LAST:event_btnAddProductActionPerformed
+
+    private void btnAddPluActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPluActionPerformed
+        String barcode = JOptionPane.showInputDialog(this, "Enter barcode", "Waste", JOptionPane.INFORMATION_MESSAGE);
+
+        if (barcode == null) {
+            return;
+        }
+
+        try {
+            Product product = (Product) dc.getProductByBarcode(barcode).clone();
+            String amount = JOptionPane.showInputDialog(this, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
+            if (amount == null || amount.equals("0") || amount.equals("")) {
+                return;
+            }
+            product.setStock(Integer.parseInt(amount));
+            products.add(product);
+            model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), Integer.parseInt(amount)});
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ProductNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "Product could not be found", "Not Found", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAddPluActionPerformed
+
+    private void btnWasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWasteActionPerformed
+        for (Product p : products) {
+            try {
+                Product product = dc.getProduct(p.getId());
+                product.removeStock(p.getStock());
+                p = dc.updateProduct(product);
+            } catch (IOException | ProductNotFoundException | SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        JOptionPane.showMessageDialog(this, "All items have been wasted", "Waste", JOptionPane.INFORMATION_MESSAGE);
+        model.setRowCount(0);
+        products.clear();
+    }//GEN-LAST:event_btnWasteActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddPlu;
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnClose;
-    private javax.swing.JButton btnReceive;
+    private javax.swing.JButton btnWaste;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblProducts;
     // End of variables declaration//GEN-END:variables

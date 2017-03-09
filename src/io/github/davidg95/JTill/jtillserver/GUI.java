@@ -301,6 +301,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         menuStock = new javax.swing.JMenu();
         itemStock = new javax.swing.JMenuItem();
         itemReceive = new javax.swing.JMenuItem();
+        itemWasteStock = new javax.swing.JMenuItem();
         itemDiscounts = new javax.swing.JMenuItem();
         itemCategorys = new javax.swing.JMenuItem();
         itemTaxes = new javax.swing.JMenuItem();
@@ -540,6 +541,14 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
             }
         });
         menuStock.add(itemReceive);
+
+        itemWasteStock.setText("Waste Stock");
+        itemWasteStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemWasteStockActionPerformed(evt);
+            }
+        });
+        menuStock.add(itemWasteStock);
 
         itemDiscounts.setText("Manage Discounts");
         itemDiscounts.addActionListener(new java.awt.event.ActionListener() {
@@ -789,8 +798,12 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void itemReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReceiveActionPerformed
-        ReceiveItemsWindow.showWindow(dbConn);
+        ReceiveItemsWindow.showWindow(dbConn, icon);
     }//GEN-LAST:event_itemReceiveActionPerformed
+
+    private void itemWasteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemWasteStockActionPerformed
+        WasteStockWindow.showWindow(dbConn, icon);
+    }//GEN-LAST:event_itemWasteStockActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
@@ -814,6 +827,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStock;
     private javax.swing.JMenuItem itemTaxes;
+    private javax.swing.JMenuItem itemWasteStock;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
