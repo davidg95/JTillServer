@@ -41,8 +41,8 @@ public class WasteStockWindow extends javax.swing.JFrame {
         tblProducts.setModel(model);
         model.setRowCount(0);
     }
-    
-    public static void showWindow(DataConnect dc, Image icon){
+
+    public static void showWindow(DataConnect dc, Image icon) {
         window = new WasteStockWindow(dc, icon);
         window.setVisible(true);
     }
@@ -89,6 +89,11 @@ public class WasteStockWindow extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tblProducts.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblProductsMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tblProducts);
@@ -180,7 +185,13 @@ public class WasteStockWindow extends javax.swing.JFrame {
             return;
         }
 
-        product.setStock(Integer.parseInt(amount));
+        if (product.getStock() - Integer.parseInt(amount) < 0) {
+            if (JOptionPane.showConfirmDialog(this, "Item does not have that much in stock. If you continue, its level will be set to 0", "Waste", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                return;
+            }
+        } else {
+            product.setStock(Integer.parseInt(amount));
+        }
 
         products.add(product);
         model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu(), Integer.parseInt(amount)});
@@ -199,7 +210,13 @@ public class WasteStockWindow extends javax.swing.JFrame {
             if (amount == null || amount.equals("0") || amount.equals("")) {
                 return;
             }
-            product.setStock(Integer.parseInt(amount));
+            if (product.getStock() - Integer.parseInt(amount) < 0) {
+                if (JOptionPane.showConfirmDialog(this, "Item does not have that much in stock. If you continue, its level will be set to 0", "Waste", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+                    return;
+                }
+            } else {
+                product.setStock(Integer.parseInt(amount));
+            }
             products.add(product);
             model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), Integer.parseInt(amount)});
         } catch (IOException | SQLException ex) {
@@ -210,6 +227,9 @@ public class WasteStockWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddPluActionPerformed
 
     private void btnWasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWasteActionPerformed
+        if (products.isEmpty()) {
+            return;
+        }
         for (Product p : products) {
             try {
                 Product product = dc.getProduct(p.getId());
@@ -223,6 +243,17 @@ public class WasteStockWindow extends javax.swing.JFrame {
         model.setRowCount(0);
         products.clear();
     }//GEN-LAST:event_btnWasteActionPerformed
+
+    private void tblProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductsMouseClicked
+        if (evt.getClickCount() == 2) {
+            int row = tblProducts.getSelectedRow();
+            Product p = products.get(row);
+            if (JOptionPane.showConfirmDialog(this, "\"Are you sure you want to remove this line?\n" + p.getLongName(), "Remove", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                products.remove(row);
+                model.removeRow(row);
+            }
+        }
+    }//GEN-LAST:event_tblProductsMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddPlu;

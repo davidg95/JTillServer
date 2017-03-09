@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -89,6 +87,11 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tblProducts.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblProductsMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tblProducts);
@@ -174,6 +177,9 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                 if (amount == null || amount.equals("0") || amount.equals("")) {
                     return;
                 }
+                if (product.getStock() + Integer.parseInt(amount) > product.getMaxStockLevel()) {
+                    JOptionPane.showMessageDialog(this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product", "Stock", JOptionPane.WARNING_MESSAGE);
+                }
                 product.setStock(Integer.parseInt(amount));
                 products.add(product);
                 model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), product.getStock()});
@@ -194,6 +200,9 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiveActionPerformed
+        if(products.isEmpty()){
+            return;
+        }
         for (Product p : products) {
             try {
                 Product product = dc.getProduct(p.getId());
@@ -221,11 +230,26 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
             return;
         }
 
+        if (product.getStock() + Integer.parseInt(amount) > product.getMaxStockLevel()) {
+            JOptionPane.showMessageDialog(this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product", "Stock", JOptionPane.WARNING_MESSAGE);
+        }
+
         product.setStock(Integer.parseInt(amount));
 
         products.add(product);
         model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), product.getStock()});
     }//GEN-LAST:event_btnAddProductActionPerformed
+
+    private void tblProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductsMouseClicked
+        if (evt.getClickCount() == 2) {
+            int row = tblProducts.getSelectedRow();
+            Product p = products.get(row);
+            if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this line?\n" + p.getLongName(), "Remove", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                products.remove(row);
+                model.removeRow(row);
+            }
+        }
+    }//GEN-LAST:event_tblProductsMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddPlu;
