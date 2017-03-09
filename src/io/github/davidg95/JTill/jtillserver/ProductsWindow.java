@@ -302,6 +302,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         btnSearch = new javax.swing.JButton();
         btnWasteStock = new javax.swing.JButton();
         btnReceiveStock = new javax.swing.JButton();
+        btnChart = new javax.swing.JButton();
 
         setTitle("Stock Managment");
 
@@ -467,6 +468,13 @@ public class ProductsWindow extends javax.swing.JFrame {
             }
         });
 
+        btnChart.setText("Show Bar Chart");
+        btnChart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChartActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -528,7 +536,8 @@ public class ProductsWindow extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnReceiveStock)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnWasteStock)))
+                        .addComponent(btnWasteStock))
+                    .addComponent(btnChart))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -609,6 +618,8 @@ public class ProductsWindow extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnWasteStock)
                             .addComponent(btnReceiveStock))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnChart)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -806,7 +817,12 @@ public class ProductsWindow extends javax.swing.JFrame {
         WasteStockWindow.showWindow(dc, icon);
     }//GEN-LAST:event_btnWasteStockActionPerformed
 
+    private void btnChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChartActionPerformed
+        StockGraphWindow.showWindow(dc, icon);
+    }//GEN-LAST:event_btnChartActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnChart;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnNewProduct;
     private javax.swing.JButton btnReceiveStock;
