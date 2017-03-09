@@ -932,9 +932,9 @@ public class ConnectionThread extends Thread {
                     obOut.writeObject(ConnectionData.create("FAIL", "An integer must be passed in"));
                     return;
                 }
-                int code = (int) clone.getData();
+                Product p = (Product) clone.getData();
                 int amount = (int) clone.getData2();
-                int stock = dc.purchaseProduct(code, amount);
+                int stock = dc.purchaseProduct(p, amount);
                 obOut.writeObject(ConnectionData.create("SUCC", stock));
             } catch (ProductNotFoundException | SQLException | OutOfStockException ex) {
                 TillServer.g.log(ex);
