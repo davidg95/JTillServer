@@ -778,6 +778,24 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
+                    case "GETSETTINGDEFAULT": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getSettingDefault(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETSETTINGSINSTANCE": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getSettingsInstance();
+                            }
+                        }.start();
+                        break;
+                    }
                     case "ADDPLU": {
                         new Thread(inp[0]) {
                             @Override
@@ -2220,8 +2238,32 @@ public class ConnectionThread extends Thread {
                 return;
             }
             String key = (String) clone.getData();
-            String value = dc.getSettings(key);
+            String value = dc.getSetting(key);
             obOut.writeObject(ConnectionData.create("SUCC", value));
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getSettingDefault(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof String || !(clone.getData() instanceof String))) {
+                obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+            }
+            String key = (String) clone.getData();
+            String def_value = (String) clone.getData2();
+            String value = dc.getSetting(key, def_value);
+            obOut.writeObject(ConnectionData.create("SUCC", value));
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getSettingsInstance() {
+        try {
+            Settings settings = dc.getSettingsInstance();
+            obOut.writeObject(ConnectionData.create("SUCC", settings));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }

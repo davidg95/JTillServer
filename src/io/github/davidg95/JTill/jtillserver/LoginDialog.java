@@ -24,8 +24,7 @@ public class LoginDialog extends javax.swing.JDialog {
 
     private static JDialog dialog;
     private static Staff staff;
-
-//    private final Data data;
+    
     private final DataConnect dc;
 
     /**
@@ -43,7 +42,7 @@ public class LoginDialog extends javax.swing.JDialog {
      * Shows the login dialog.
      *
      * @param parent the parent component.
-     * @param data the data which stored who is logged in and who is not.
+     * @param dc the data which stored who is logged in and who is not.
      * @return the member of staff logging in.
      */
     public static Staff showLoginDialog(Component parent, DataConnect dc) {
@@ -170,7 +169,7 @@ public class LoginDialog extends javax.swing.JDialog {
         } else {
             try {
                 staff = dc.login(username, password);
-                if (staff.getPosition() < Integer.parseInt(Settings.getInstance().getSetting("MINIMUM_SERVER_LOGIN"))) {
+                if (staff.getPosition() < Integer.parseInt(dc.getSetting("MINIMUM_SERVER_LOGIN"))) {
                     JOptionPane.showMessageDialog(this, "You do not have authority to log in", "Log in", JOptionPane.ERROR_MESSAGE);
                     try {
                         dc.logout(staff);

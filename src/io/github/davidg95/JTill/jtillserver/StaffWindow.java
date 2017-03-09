@@ -70,7 +70,22 @@ public class StaffWindow extends javax.swing.JFrame {
         model.setRowCount(0);
 
         for (Staff s : currentTableContents) {
-            Object[] str = new Object[]{s.getId(), s.getName(), s.getPosition(), s.getUsername()};
+            String position = "";
+            switch (s.getPosition()) {
+                case 1:
+                    position = "Assisstant";
+                    break;
+                case 2:
+                    position = "Supervisor";
+                    break;
+                case 3:
+                    position = "Manager";
+                    break;
+                default:
+                    position = "Area Manager";
+                    break;
+            }
+            Object[] str = new Object[]{s.getId(), s.getName(), position, s.getUsername()};
             model.addRow(str);
         }
 

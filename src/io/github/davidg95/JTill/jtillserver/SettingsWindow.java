@@ -10,6 +10,8 @@ import java.awt.Component;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -21,15 +23,11 @@ public class SettingsWindow extends javax.swing.JFrame {
 
     public static SettingsWindow frame;
 
-    private final DataConnect dbConn;
+    private final DataConnect dc;
 
     private boolean editNetwork = false;
 
     private boolean editDatabase = false;
-
-    private final Properties properties;
-
-    private final Settings settings;
 
     /**
      * Creates new form Settings
@@ -38,10 +36,8 @@ public class SettingsWindow extends javax.swing.JFrame {
      * @param icon
      */
     public SettingsWindow(DataConnect dc, Image icon) {
-        this.dbConn = dc;
-        this.settings = Settings.getInstance();
+        this.dc = dc;
         this.setIconImage(icon);
-        properties = new Properties();
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
@@ -61,26 +57,26 @@ public class SettingsWindow extends javax.swing.JFrame {
 
     private void init() {
         try {
-            txtPort.setText(settings.getSetting("port"));
-            txtMaxConn.setText(settings.getSetting("max_conn"));
-            txtMaxQueued.setText(settings.getSetting("max_queue"));
-            txtAddress.setText(settings.getSetting("db_address"));
-            txtUsername.setText(settings.getSetting("db_username"));
-            txtPassword.setText(settings.getSetting("db_password"));
-            chkLogOut.setSelected(dbConn.getSettings("AUTO_LOGOUT").equals("TRUE"));
-            txtLogonMessage.setText(dbConn.getSettings("LOGON_MESSAGE"));
-            if (dbConn.getSettings("LOGOUT_TIMEOUT").equals("-1")) {
+            txtPort.setText(dc.getSetting("port"));
+            txtMaxConn.setText(dc.getSetting("max_conn"));
+            txtMaxQueued.setText(dc.getSetting("max_queue"));
+            txtAddress.setText(dc.getSetting("db_address"));
+            txtUsername.setText(dc.getSetting("db_username"));
+            txtPassword.setText(dc.getSetting("db_password"));
+            chkLogOut.setSelected(dc.getSetting("AUTO_LOGOUT").equals("TRUE"));
+            txtLogonMessage.setText(dc.getSetting("LOGON_MESSAGE"));
+            if (dc.getSetting("LOGOUT_TIMEOUT").equals("-1")) {
                 chkLogoutTimeout.setSelected(false);
                 txtLogoutTimeout.setText("");
                 txtLogoutTimeout.setEnabled(false);
             } else {
                 chkLogoutTimeout.setSelected(true);
-                txtLogoutTimeout.setText(dbConn.getSettings("LOGOUT_TIMEOUT"));
+                txtLogoutTimeout.setText(dc.getSetting("LOGOUT_TIMEOUT"));
                 txtLogoutTimeout.setEnabled(true);
             }
-            txtOutMail.setText(settings.getSetting("mail.smtp.host"));
-            txtOutgoingAddress.setText(settings.getSetting("OUTGOING_MAIL_ADDRESS"));
-            txtMailAddress.setText(settings.getSetting("MAIL_ADDRESS"));
+            txtOutMail.setText(dc.getSetting("mail.smtp.host"));
+            txtOutgoingAddress.setText(dc.getSetting("OUTGOING_MAIL_ADDRESS"));
+            txtMailAddress.setText(dc.getSetting("MAIL_ADDRESS"));
         } catch (IOException ex) {
 
         }
@@ -488,10 +484,13 @@ public class SettingsWindow extends javax.swing.JFrame {
             } else if (max < 0 || queue < 0) {
                 JOptionPane.showMessageDialog(this, "Please enter a value greater than 0", "Server Options", JOptionPane.PLAIN_MESSAGE);
             } else {
-                settings.setSetting("port", Integer.toString(port));
-                settings.setSetting("max_conn", Integer.toString(max));
-                settings.setSetting("max_queue", Integer.toString(queue));
-                settings.saveProperties();
+                try {
+                    dc.setSetting("port", Integer.toString(port));
+                    dc.setSetting("max_conn", Integer.toString(max));
+                    dc.setSetting("max_queue", Integer.toString(queue));
+                } catch (IOException ex) {
+                    Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             for (Component c : panelNetwork.getComponents()) {
                 c.setEnabled(false);
@@ -518,19 +517,22 @@ public class SettingsWindow extends javax.swing.JFrame {
 
     private void btnEditDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditDatabaseActionPerformed
         if (editDatabase) {
-            String address = txtAddress.getText();
-            String username = txtUsername.getText();
-            String password = new String(txtPassword.getPassword());
-            settings.setSetting("db_address", address);
-            settings.setSetting("db_username", username);
-            settings.setSetting("db_password", password);
-            settings.saveProperties();
-            for (Component c : panelDatabase.getComponents()) {
-                c.setEnabled(false);
+            try {
+                String address = txtAddress.getText();
+                String username = txtUsername.getText();
+                String password = new String(txtPassword.getPassword());
+                dc.setSetting("db_address", address);
+                dc.setSetting("db_username", username);
+                dc.setSetting("db_password", password);
+                for (Component c : panelDatabase.getComponents()) {
+                    c.setEnabled(false);
+                }
+                btnEditDatabase.setText("Edit Database Options");
+                editDatabase = false;
+                JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
+            } catch (IOException ex) {
+                Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
-            btnEditDatabase.setText("Edit Database Options");
-            editDatabase = false;
-            JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
         } else {
             for (Component c : panelDatabase.getComponents()) {
                 c.setEnabled(true);
@@ -541,17 +543,20 @@ public class SettingsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEditDatabaseActionPerformed
 
     private void btnSaveSecurityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveSecurityActionPerformed
-        if (chkLogOut.isSelected()) {
-            settings.setSetting("AUTO_LOGOUT", "TRUE");
-        } else {
-            settings.setSetting("AUTO_LOGOUT", "FALSE");
+        try {
+            if (chkLogOut.isSelected()) {
+                dc.setSetting("AUTO_LOGOUT", "TRUE");
+            } else {
+                dc.setSetting("AUTO_LOGOUT", "FALSE");
+            }
+            if (chkLogoutTimeout.isSelected()) {
+                dc.setSetting("LOGOUT_TIMEOUT", txtLogoutTimeout.getText());
+            } else {
+                dc.setSetting("LOGOUT_TIMEOUT", "-1");
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (chkLogoutTimeout.isSelected()) {
-            settings.setSetting("LOGOUT_TIMEOUT", txtLogoutTimeout.getText());
-        } else {
-            settings.setSetting("LOGOUT_TIMEOUT", "-1");
-        }
-        settings.saveProperties();
     }//GEN-LAST:event_btnSaveSecurityActionPerformed
 
     private void chkLogoutTimeoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkLogoutTimeoutActionPerformed
@@ -559,39 +564,46 @@ public class SettingsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_chkLogoutTimeoutActionPerformed
 
     private void btnDatabaseDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDatabaseDefaultActionPerformed
-        settings.setSetting("db_address", Settings.DEFAULT_ADDRESS);
-        settings.setSetting("db_username", Settings.DEFAULT_PASSWORD);
-        settings.setSetting("db_password", Settings.DEFAULT_PASSWORD);
-        txtAddress.setText(settings.getSetting("db_address"));
-        txtUsername.setText(settings.getSetting("db_username"));
-        txtPassword.setText(settings.getSetting("db_password"));
-        if (dbConn instanceof DBConnect) {
-            DBConnect db = (DBConnect) dbConn;
-            settings.saveProperties();
+        try {
+            dc.setSetting("db_address", Settings.DEFAULT_ADDRESS);
+            dc.setSetting("db_username", Settings.DEFAULT_PASSWORD);
+            dc.setSetting("db_password", Settings.DEFAULT_PASSWORD);
+            txtAddress.setText(dc.getSetting("db_address"));
+            txtUsername.setText(dc.getSetting("db_username"));
+            txtPassword.setText(dc.getSetting("db_password"));
+            JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
-        JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_btnDatabaseDefaultActionPerformed
 
     private void btnLogonMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogonMessageActionPerformed
         try {
-            dbConn.setSetting("LOGON_MESSAGE", txtLogonMessage.getText());
+            dc.setSetting("LOGON_MESSAGE", txtLogonMessage.getText());
         } catch (IOException ex) {
         }
     }//GEN-LAST:event_btnLogonMessageActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        settings.setSetting("mail.smtp.host", txtOutMail.getText());
-        settings.setSetting("OUTGOING_MAIL_ADDRESS", txtOutgoingAddress.getText());
-        settings.setSetting("MAIL_ADDRESS", txtMailAddress.getText());
-        settings.saveProperties();
+        try {
+            dc.setSetting("mail.smtp.host", txtOutMail.getText());
+            dc.setSetting("OUTGOING_MAIL_ADDRESS", txtOutgoingAddress.getText());
+            dc.setSetting("MAIL_ADDRESS", txtMailAddress.getText());
+        } catch (IOException ex) {
+            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnPermissionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPermissionsActionPerformed
-        if(GUI.staff.getPosition() < Integer.parseInt(settings.getSetting("SETTINGS_EDIT"))){
-            JOptionPane.showMessageDialog(this, "You do not have authority to use this screen", "Settings", JOptionPane.ERROR_MESSAGE);
-            return;
+        try {
+            if (GUI.staff.getPosition() < Integer.parseInt(dc.getSetting("SETTINGS_EDIT"))) {
+                JOptionPane.showMessageDialog(this, "You do not have authority to use this screen", "Settings", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            PermissionsWindow.showDialog(this);
+        } catch (IOException ex) {
+            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
-        PermissionsWindow.showDialog(this);
     }//GEN-LAST:event_btnPermissionsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
