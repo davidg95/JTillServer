@@ -5,19 +5,20 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.Settings;
+import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.JTree;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -33,18 +34,25 @@ public class PermissionsWindow extends javax.swing.JDialog {
 
     private static PermissionsWindow dialog;
 
-    private final Settings settings;
+    private Settings settings;
 
     private TreeModel model;
+
+    private final DataConnect dc;
 
     private DefaultMutableTreeNode current;
 
     /**
      * Creates new form PermissionsWindow
      */
-    public PermissionsWindow(Window parent) {
+    public PermissionsWindow(Window parent, DataConnect dc) {
         super(parent);
-        settings = Settings.getInstance();
+        this.dc = dc;
+        try {
+            settings = dc.getSettingsInstance();
+        } catch (IOException ex) {
+            Logger.getLogger(PermissionsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
         initComponents();
         setLocationRelativeTo(parent);
         setModal(true);
@@ -53,12 +61,12 @@ public class PermissionsWindow extends javax.swing.JDialog {
         init();
     }
 
-    public static void showDialog(Component parent) {
+    public static void showDialog(Component parent, DataConnect dc) {
         Window window = null;
         if (parent instanceof Frame || parent instanceof Dialog) {
             window = (Window) parent;
         }
-        dialog = new PermissionsWindow(window);
+        dialog = new PermissionsWindow(window, dc);
         dialog.setVisible(true);
     }
 
@@ -257,6 +265,13 @@ public class PermissionsWindow extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        for (Map.Entry pair : settings.getProperties().entrySet()) {
+            try {
+                dc.setSetting(pair.getKey().toString(), (String) pair.getValue());
+            } catch (IOException ex) {
+                Logger.getLogger(PermissionsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 

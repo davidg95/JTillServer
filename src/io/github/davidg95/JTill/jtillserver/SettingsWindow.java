@@ -600,7 +600,7 @@ public class SettingsWindow extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "You do not have authority to use this screen", "Settings", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            PermissionsWindow.showDialog(this);
+            PermissionsWindow.showDialog(this, dc);
         } catch (IOException ex) {
             Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
