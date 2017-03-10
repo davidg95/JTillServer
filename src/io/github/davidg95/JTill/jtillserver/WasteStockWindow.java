@@ -171,11 +171,13 @@ public class WasteStockWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        Product product = (Product) ProductSelectDialog.showDialog(this, dc).clone();
+        Product product = ProductSelectDialog.showDialog(this, dc);
 
         if (product == null) {
             return;
         }
+
+        product = (Product) product.clone();
 
         String amount = JOptionPane.showInputDialog(this, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
 

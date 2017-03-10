@@ -200,7 +200,7 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiveActionPerformed
-        if(products.isEmpty()){
+        if (products.isEmpty()) {
             return;
         }
         for (Product p : products) {
@@ -218,11 +218,13 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnReceiveActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        Product product = (Product) ProductSelectDialog.showDialog(this, dc).clone();
+        Product product = ProductSelectDialog.showDialog(this, dc);
 
         if (product == null) {
             return;
         }
+
+        product = (Product) product.clone();
 
         String amount = JOptionPane.showInputDialog(this, "Enter amount to receive", "Receive Stock", JOptionPane.INFORMATION_MESSAGE);
 
