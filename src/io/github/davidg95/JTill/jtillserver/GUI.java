@@ -26,6 +26,8 @@ import javax.swing.JOptionPane;
  */
 public class GUI extends javax.swing.JFrame implements GUIInterface {
 
+    private final Logger log = Logger.getGlobal();
+
     private static GUI gui;
 
     private final DataConnect dc;
@@ -118,9 +120,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                 }
             } catch (SQLException ex) {
                 if (ex.getErrorCode() == 40000) {
+                    log.log(Level.SEVERE, "The database is already in use. The program will now terminate");
                     JOptionPane.showMessageDialog(this, "The database is already in use by another application. Program will now terminate.\nError Code " + ex.getErrorCode(), "Database in use", JOptionPane.ERROR_MESSAGE);
                     System.exit(0);
                 } else {
+                    log.log(Level.SEVERE, null, ex);
                     JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -151,6 +155,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
             } catch (SQLException ex) {
                 initialSetup();
             } catch (IOException ex) {
+                log.log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
@@ -212,7 +217,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                 try {
                     ((ServerConnection) dc).close();
                 } catch (IOException ex) {
-                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                    log.log(Level.SEVERE, null, ex);
                 }
                 System.exit(0);
             }
@@ -234,7 +239,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
             log(staff.getName() + " has logged out");
         } catch (StaffNotFoundException ex) {
         } catch (IOException ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.SEVERE, null, ex);
         }
         isLoggedOn = false;
         staff = null;
@@ -712,7 +717,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         try {
             dc.close();
         } catch (IOException ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.SEVERE, null, ex);
         }
         System.exit(0);
     }//GEN-LAST:event_itemExitActionPerformed
@@ -791,7 +796,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_itemAboutActionPerformed
 
     private void itemSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSalesActionPerformed
-//        JOptionPane.showMessageDialog(this, "Takings: £" + data.getTakings() + "\nSales: " + data.getSales(), "Sales Data", JOptionPane.PLAIN_MESSAGE);
         SalesWindow.showSalesWindow(dc, icon);
     }//GEN-LAST:event_itemSalesActionPerformed
 
@@ -821,7 +825,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                 }
             }
         } catch (IOException | SQLException ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

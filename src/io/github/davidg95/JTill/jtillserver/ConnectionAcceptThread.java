@@ -24,6 +24,8 @@ import java.util.logging.Logger;
  */
 public class ConnectionAcceptThread extends Thread {
 
+    private static final Logger log = Logger.getGlobal();
+
     public static int PORT_IN_USE;
 
     private final Settings settings;
@@ -45,11 +47,12 @@ public class ConnectionAcceptThread extends Thread {
 
     @Override
     public void run() {
+        log.log(Level.INFO, "Starting Thread Pool Excecutor");
         ThreadPoolExecutor pool = new ThreadPoolExecutor(Integer.parseInt(settings.getSetting("max_conn")), Integer.parseInt(settings.getSetting("max_queue")), 50000L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(Integer.parseInt(settings.getSetting("max_queue"))));
         pool.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 
         try {
-            TillServer.g.log("JTill Server local IP address is " + InetAddress.getLocalHost().getHostAddress());
+            dc.getGUI().log("JTill Server local IP address is " + InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException ex) {
             dc.getGUI().log(ex);
         }
@@ -59,7 +62,7 @@ public class ConnectionAcceptThread extends Thread {
                 Socket incoming = socket.accept();
                 pool.submit(new ConnectionThread(socket.getInetAddress().getHostAddress(), dc, incoming));
             } catch (IOException ex) {
-                Logger.getLogger(ConnectionAcceptThread.class.getName()).log(Level.SEVERE, null, ex);
+                log.log(Level.SEVERE, null, ex);
             }
         }
     }

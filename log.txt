@@ -1,0 +1,4 @@
+[Fri Mar 10 16:52:05 GMT 2017] INFO Starting JTill Server
+[Fri Mar 10 16:52:05 GMT 2017] INFO Connecting to database jdbc:derby:TillEmbedded;
+[Fri Mar 10 16:52:06 GMT 2017] INFO Starting Thread Pool Excecutor
+[Fri Mar 10 16:52:24 GMT 2017] INFO Product 7 updated
