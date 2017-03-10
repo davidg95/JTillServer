@@ -9,7 +9,6 @@ import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Image;
 import java.io.IOException;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;

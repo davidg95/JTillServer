@@ -36,6 +36,7 @@ public class StockGraphWindow extends JFrame {
         init();
         setIconImage(icon);
         setTitle("Stock Graph");
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
     public static void showWindow(DataConnect dc, Image icon) {

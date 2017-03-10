@@ -28,7 +28,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
     private static GUI gui;
 
-    private final DataConnect dbConn;
+    private final DataConnect dc;
     private boolean isLoggedOn;
 
     public static Staff staff;
@@ -50,7 +50,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
      * @param icon
      */
     public GUI(DataConnect dataConnect, boolean remote, Image icon) {
-        this.dbConn = dataConnect;
+        this.dc = dataConnect;
         this.remote = remote;
         this.icon = icon;
         this.settings = Settings.getInstance();
@@ -63,7 +63,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         }
         connections = new ArrayList<>();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        this.dbConn.setGUI(this);
+        this.dc.setGUI(this);
     }
 
     /**
@@ -96,7 +96,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         }
         lblPort.setText("Port Number: " + ConnectionAcceptThread.PORT_IN_USE);
         try {
-            lblProducts.setText("Products in database: " + dbConn.getAllProducts().size());
+            lblProducts.setText("Products in database: " + dc.getAllProducts().size());
         } catch (IOException | SQLException ex) {
             lblProducts.setText("Products in database: UNKNOWN");
         }
@@ -106,9 +106,9 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
      * Initial setup of the gui which creates the database.
      */
     private void initialSetup() {
-        if (dbConn instanceof DBConnect) {
+        if (dc instanceof DBConnect) {
             try {
-                DBConnect db = (DBConnect) dbConn;
+                DBConnect db = (DBConnect) dc;
                 TillSplashScreen.setLabel("Creating database...");
                 db.create(settings.getSetting("db_address") + "create=true;", settings.getSetting("db_username"), settings.getSetting("db_password"));
                 TillSplashScreen.setLabel("Creating tables...");
@@ -137,12 +137,12 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     public void databaseLogin() {
         if (!remote) {
             try {
-                DBConnect db = (DBConnect) dbConn;
+                DBConnect db = (DBConnect) dc;
                 db.connect(settings.getSetting("db_address"), settings.getSetting("db_username"), settings.getSetting("db_password"));
                 TillSplashScreen.setLabel("Connected to database");
                 TillSplashScreen.addBar(40);
                 lblDatabase.setText("Connected to database");
-                if (dbConn.getStaffCount() == 0) {
+                if (dc.getStaffCount() == 0) {
                     Staff s = StaffDialog.showNewStaffDialog(this, db);
                     if (s == null) {
                         System.exit(0);
@@ -188,7 +188,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     public void log(Object o) {
         txtLog.append(o.toString() + "\n");
     }
-    
+
     @Override
     public void logWarning(Object o) {
         txtStockWarnings.append(o + "\n");
@@ -198,18 +198,22 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
      * Method to log a member of staff in to the server.
      */
     public void login() {
-        staff = LoginDialog.showLoginDialog(this, dbConn);
+        staff = LoginDialog.showLoginDialog(this, dc);
         if (staff != null) {
             lblUser.setText(staff.getName());
             itemLogin.setText("Log Out");
             log(staff.getName() + " has logged in");
             isLoggedOn = true;
         } else {
-            if (dbConn instanceof DBConnect) {
-                DBConnect db = (DBConnect) dbConn;
+            if (dc instanceof DBConnect) {
                 settings.saveProperties();
             }
             if (remote) {
+                try {
+                    ((ServerConnection) dc).close();
+                } catch (IOException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 System.exit(0);
             }
             if (SystemTray.isSupported()) {
@@ -226,7 +230,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private void logout() {
         try {
             lblUser.setText("Not Logged In");
-            dbConn.logout(staff);
+            dc.logout(staff);
             log(staff.getName() + " has logged out");
         } catch (StaffNotFoundException ex) {
         } catch (IOException ex) {
@@ -692,21 +696,21 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnManageStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStockActionPerformed
-        ProductsWindow.showProductsListWindow(dbConn, icon);
+        ProductsWindow.showProductsListWindow(dc, icon);
     }//GEN-LAST:event_btnManageStockActionPerformed
 
     private void itemStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStockActionPerformed
-        ProductsWindow.showProductsListWindow(dbConn, icon);
+        ProductsWindow.showProductsListWindow(dc, icon);
     }//GEN-LAST:event_itemStockActionPerformed
 
     private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
-        if (dbConn instanceof DBConnect) {
-            DBConnect db = (DBConnect) dbConn;
+        if (dc instanceof DBConnect) {
+            DBConnect db = (DBConnect) dc;
             settings.saveProperties();
             TillServer.removeSystemTrayIcon();
         }
         try {
-            dbConn.close();
+            dc.close();
         } catch (IOException ex) {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -714,11 +718,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_itemExitActionPerformed
 
     private void itemCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCustomersActionPerformed
-        CustomersWindow.showCustomersListWindow(dbConn, icon);
+        CustomersWindow.showCustomersListWindow(dc, icon);
     }//GEN-LAST:event_itemCustomersActionPerformed
 
     private void btnManageCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageCustomersActionPerformed
-        CustomersWindow.showCustomersListWindow(dbConn, icon);
+        CustomersWindow.showCustomersListWindow(dc, icon);
     }//GEN-LAST:event_btnManageCustomersActionPerformed
 
     private void itemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLoginActionPerformed
@@ -730,11 +734,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_itemLoginActionPerformed
 
     private void itemStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffActionPerformed
-        StaffWindow.showStaffListWindow(dbConn, icon);
+        StaffWindow.showStaffListWindow(dc, icon);
     }//GEN-LAST:event_itemStaffActionPerformed
 
     private void btnManageStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStaffActionPerformed
-        StaffWindow.showStaffListWindow(dbConn, icon);
+        StaffWindow.showStaffListWindow(dc, icon);
     }//GEN-LAST:event_btnManageStaffActionPerformed
 
     private void lblClientsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblClientsMouseClicked
@@ -751,44 +755,44 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
     private void lblDatabaseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDatabaseMouseClicked
         if (evt.getClickCount() == 2) {
-            JOptionPane.showMessageDialog(this, dbConn, "Database Connection", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(this, dc, "Database Connection", JOptionPane.PLAIN_MESSAGE);
         }
     }//GEN-LAST:event_lblDatabaseMouseClicked
 
     private void itemDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDiscountsActionPerformed
-        DiscountsWindow.showDiscountListWindow(dbConn, icon);
+        DiscountsWindow.showDiscountListWindow(dc, icon);
     }//GEN-LAST:event_itemDiscountsActionPerformed
 
     private void itemCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCategorysActionPerformed
-        CategorysWindow.showCategoryWindow(dbConn, icon);
+        CategorysWindow.showCategoryWindow(dc, icon);
     }//GEN-LAST:event_itemCategorysActionPerformed
 
     private void itemTaxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTaxesActionPerformed
-        TaxWindow.showTaxWindow(dbConn, icon);
+        TaxWindow.showTaxWindow(dc, icon);
     }//GEN-LAST:event_itemTaxesActionPerformed
 
     private void btnDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiscountsActionPerformed
-        DiscountsWindow.showDiscountListWindow(dbConn, icon);
+        DiscountsWindow.showDiscountListWindow(dc, icon);
     }//GEN-LAST:event_btnDiscountsActionPerformed
 
     private void btnCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategorysActionPerformed
-        CategorysWindow.showCategoryWindow(dbConn, icon);
+        CategorysWindow.showCategoryWindow(dc, icon);
     }//GEN-LAST:event_btnCategorysActionPerformed
 
     private void itemServerOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemServerOptionsActionPerformed
-        SettingsWindow.showSettingsWindow(dbConn, icon);
+        SettingsWindow.showSettingsWindow(dc, icon);
     }//GEN-LAST:event_itemServerOptionsActionPerformed
 
     private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
         JOptionPane.showMessageDialog(null, "JTill Server is running on port number "
                 + settings.getSetting("port") + " with " + clientCounter + " connections.\n"
-                + dbConn.toString(), "JTill Server",
+                + dc.toString(), "JTill Server",
                 JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_itemAboutActionPerformed
 
     private void itemSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSalesActionPerformed
 //        JOptionPane.showMessageDialog(this, "Takings: £" + data.getTakings() + "\nSales: " + data.getSales(), "Sales Data", JOptionPane.PLAIN_MESSAGE);
-        SalesWindow.showSalesWindow(dbConn, icon);
+        SalesWindow.showSalesWindow(dc, icon);
     }//GEN-LAST:event_itemSalesActionPerformed
 
     private void itemResetSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemResetSalesActionPerformed
@@ -796,22 +800,22 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_itemResetSalesActionPerformed
 
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
-        SalesWindow.showSalesWindow(dbConn, icon);
+        SalesWindow.showSalesWindow(dc, icon);
     }//GEN-LAST:event_btnReportsActionPerformed
 
     private void btnSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsActionPerformed
-        SettingsWindow.showSettingsWindow(dbConn, icon);
+        SettingsWindow.showSettingsWindow(dc, icon);
     }//GEN-LAST:event_btnSettingsActionPerformed
 
     private void btnScreensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScreensActionPerformed
-        ScreenEditWindow.showScreenEditWindow(dbConn, icon);
+        ScreenEditWindow.showScreenEditWindow(dc, icon);
     }//GEN-LAST:event_btnScreensActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-            for (Staff s : dbConn.getAllStaff()) {
+            for (Staff s : dc.getAllStaff()) {
                 try {
-                    dbConn.tillLogout(s);
+                    dc.tillLogout(s);
                 } catch (IOException | StaffNotFoundException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -822,11 +826,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void itemReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReceiveActionPerformed
-        ReceiveItemsWindow.showWindow(dbConn, icon);
+        ReceiveItemsWindow.showWindow(dc, icon);
     }//GEN-LAST:event_itemReceiveActionPerformed
 
     private void itemWasteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemWasteStockActionPerformed
-        WasteStockWindow.showWindow(dbConn, icon);
+        WasteStockWindow.showWindow(dc, icon);
     }//GEN-LAST:event_itemWasteStockActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

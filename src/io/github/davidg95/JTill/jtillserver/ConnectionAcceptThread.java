@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 public class ConnectionAcceptThread extends Thread {
 
     public static int PORT_IN_USE;
-    
+
     private final Settings settings;
 
     private final ServerSocket socket;
@@ -51,9 +51,9 @@ public class ConnectionAcceptThread extends Thread {
         try {
             TillServer.g.log("JTill Server local IP address is " + InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException ex) {
-            TillServer.g.log(ex);
+            dc.getGUI().log(ex);
         }
-        TillServer.g.log("Ready to accept connections");
+        dc.getGUI().log("Ready to accept connections");
         for (;;) {
             try {
                 Socket incoming = socket.accept();
