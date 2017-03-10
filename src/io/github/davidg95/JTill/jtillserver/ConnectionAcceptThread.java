@@ -53,8 +53,10 @@ public class ConnectionAcceptThread extends Thread {
 
         try {
             dc.getGUI().log("JTill Server local IP address is " + InetAddress.getLocalHost().getHostAddress());
+            log.log(Level.INFO, "Server Socket running on port number " + PORT_IN_USE);
         } catch (UnknownHostException ex) {
             dc.getGUI().log(ex);
+            log.log(Level.WARNING, "For some reason, the ip address of the local server could not be retrieved");
         }
         dc.getGUI().log("Ready to accept connections");
         for (;;) {

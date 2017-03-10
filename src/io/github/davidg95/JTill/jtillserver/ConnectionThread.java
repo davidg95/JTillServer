@@ -26,7 +26,7 @@ import javax.mail.MessagingException;
  */
 public class ConnectionThread extends Thread {
 
-    private static final Logger log = Logger.getGlobal();
+    private final Logger log = Logger.getGlobal();
 
     private final DataConnect dc;
 
@@ -91,6 +91,7 @@ public class ConnectionThread extends Thread {
 
             TillServer.g.increaceClientCount(site);
             dc.getGUI().log(site + " has connected");
+            log.log(Level.INFO, site + " has connected");
 
             while (!conn_term) {
                 String input;
@@ -106,6 +107,8 @@ public class ConnectionThread extends Thread {
 
                 String inp[] = input.split(",");
                 final ConnectionData data = currentData.clone();
+
+                log.log(Level.INFO, "Received " + data.getFlag() + " from server");
 
                 switch (inp[0]) {
                     case "NEWPRODUCT": { //Add a new product
@@ -876,21 +879,31 @@ public class ConnectionThread extends Thread {
                             try {
                                 dc.logout(staff);
                                 dc.tillLogout(staff);
+                                log.log(Level.INFO, site + " has terminated their connection to the server");
                             } catch (StaffNotFoundException ex) {
                             }
                         }
+                        break;
+                    }
+                    default: {
+                        log.log(Level.WARNING, "An unknown flag " + inp[0] + " was received from " + site);
                         break;
                     }
                 }
                 sem.release();
             }
             TillServer.g.decreaseClientCount(site);
-            TillServer.g.log(site + " has disconnected");
+            dc.getGUI().log(site + " has disconnected");
+            log.log(Level.INFO, site + " has disconnected");
             socket.close();
-        } catch (IOException e) {
-
-        } catch (ClassNotFoundException ex) {
-            log.log(Level.SEVERE, null, ex);
+        } catch (IOException | ClassNotFoundException ex) {
+            log.log(Level.SEVERE, "There was an error with the conenction to " + site + ". The connection will be forecfully terminated", ex);
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                log.log(Level.SEVERE, null, ex);
+            }
         }
     }
 
