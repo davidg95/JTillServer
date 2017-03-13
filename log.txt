@@ -1,63 +1,10 @@
-JTill log Mon Mar 13 16:17:28 GMT 2017
-[16:17:28] [INFO] Starting JTill Server
-[16:17:28] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[16:17:29] [INFO] Get staff count
-[16:17:29] [INFO] Starting Thread Pool Excecutor
-[16:17:29] [INFO] JTill Server local IP address is 192.168.1.65
-[16:17:29] [INFO] Server Socket running on port number 52341
-[16:17:29] [INFO] Ready to accept connections
-[16:17:32] [INFO] Login Staff dgrant
-[16:17:32] [INFO] David Grant has logged in
-[16:17:40] [INFO] Get customer -1
-[16:17:40] [INFO] Get staff 1
-[16:17:40] [INFO] Get product 6
-[16:17:40] [INFO] Get customer -1
-[16:17:40] [INFO] Get staff 1
-[16:17:40] [INFO] Get product 5
-[16:17:40] [INFO] Get customer -1
-[16:17:40] [INFO] Get staff 1
-[16:17:40] [INFO] Get product 4
-[16:17:40] [INFO] Get customer -1
-[16:17:40] [INFO] Get staff 1
-[16:17:40] [INFO] Get product 4
-[16:17:40] [INFO] Get customer -1
-[16:17:40] [INFO] Get staff 1
-[16:17:40] [INFO] Get product 6
-[16:17:40] [INFO] Get customer -1
-[16:17:40] [INFO] Get staff 1
-[16:17:40] [INFO] Get product 5
-[16:17:40] [INFO] Get customer -1
-[16:17:40] [INFO] Get staff 1
-[16:17:40] [INFO] Get product 4
-[16:17:40] [INFO] Get customer -1
-[16:17:40] [INFO] Get staff 1
-[16:17:40] [INFO] Get product 4
-[16:17:47] [INFO] Get customer -1
-[16:17:47] [INFO] Get staff 1
-[16:17:47] [INFO] Get product 6
-[16:17:47] [INFO] Get customer -1
-[16:17:47] [INFO] Get staff 1
-[16:17:47] [INFO] Get product 5
-[16:17:47] [INFO] Get customer -1
-[16:17:47] [INFO] Get staff 1
-[16:17:47] [INFO] Get product 4
-[16:17:47] [INFO] Get customer -1
-[16:17:47] [INFO] Get staff 1
-[16:17:47] [INFO] Get product 4
-[16:17:47] [INFO] Get customer -1
-[16:17:47] [INFO] Get staff 1
-[16:17:47] [INFO] Get product 6
-[16:17:47] [INFO] Get customer -1
-[16:17:47] [INFO] Get staff 1
-[16:17:47] [INFO] Get product 5
-[16:17:47] [INFO] Get customer -1
-[16:17:47] [INFO] Get staff 1
-[16:17:47] [INFO] Get product 4
-[16:17:47] [INFO] Get customer -1
-[16:17:47] [INFO] Get staff 1
-[16:17:47] [INFO] Get product 4
-[16:17:55] [INFO] Stopping JTIll Server
-[16:17:55] [INFO] Saving properties
-[16:17:56] [INFO] Disconnecting from database
-[16:17:56] [INFO] Database disconnected
-[16:17:56] [INFO] Stopping
+JTill log Mon Mar 13 16:22:27 GMT 2017
+[16:22:27] [INFO] Starting JTill Server
+[16:22:27] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[16:22:27] [INFO] Get staff count
+[16:22:28] [INFO] Starting Thread Pool Excecutor
+[16:22:28] [INFO] JTill Server local IP address is 192.168.1.65
+[16:22:28] [INFO] Server Socket running on port number 52341
+[16:22:28] [INFO] Ready to accept connections
+[16:22:30] [INFO] Login Staff dgrant
+[16:22:30] [INFO] David Grant has logged in
