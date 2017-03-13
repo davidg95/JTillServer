@@ -19,6 +19,8 @@ import javax.swing.JOptionPane;
  * @author David
  */
 public class SettingsWindow extends javax.swing.JFrame {
+    
+    private final Logger log = Logger.getGlobal();
 
     public static SettingsWindow frame;
 
@@ -488,7 +490,7 @@ public class SettingsWindow extends javax.swing.JFrame {
                     dc.setSetting("max_conn", Integer.toString(max));
                     dc.setSetting("max_queue", Integer.toString(queue));
                 } catch (IOException ex) {
-                    Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    log.log(Level.SEVERE, null, ex);
                 }
             }
             for (Component c : panelNetwork.getComponents()) {
@@ -530,7 +532,7 @@ public class SettingsWindow extends javax.swing.JFrame {
                 editDatabase = false;
                 JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
             } catch (IOException ex) {
-                Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+                log.log(Level.SEVERE, null, ex);
             }
         } else {
             for (Component c : panelDatabase.getComponents()) {
@@ -554,7 +556,7 @@ public class SettingsWindow extends javax.swing.JFrame {
                 dc.setSetting("LOGOUT_TIMEOUT", "-1");
             }
         } catch (IOException ex) {
-            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSaveSecurityActionPerformed
 
@@ -572,7 +574,7 @@ public class SettingsWindow extends javax.swing.JFrame {
             txtPassword.setText(dc.getSetting("db_password"));
             JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
         } catch (IOException ex) {
-            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnDatabaseDefaultActionPerformed
 
@@ -589,7 +591,7 @@ public class SettingsWindow extends javax.swing.JFrame {
             dc.setSetting("OUTGOING_MAIL_ADDRESS", txtOutgoingAddress.getText());
             dc.setSetting("MAIL_ADDRESS", txtMailAddress.getText());
         } catch (IOException ex) {
-            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -601,7 +603,7 @@ public class SettingsWindow extends javax.swing.JFrame {
             }
             PermissionsWindow.showDialog(this, dc);
         } catch (IOException ex) {
-            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnPermissionsActionPerformed
 

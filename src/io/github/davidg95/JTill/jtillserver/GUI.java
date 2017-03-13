@@ -13,9 +13,14 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -27,6 +32,19 @@ import javax.swing.JOptionPane;
 public class GUI extends javax.swing.JFrame implements GUIInterface {
 
     private final Logger log = Logger.getGlobal();
+
+    /**
+     * Indicates whether severe messages should show.
+     */
+    public static boolean SHOW_SEVERE = true;
+    /**
+     * Indicates whether info messages should show
+     */
+    public static boolean SHOW_INFO = true;
+    /**
+     * Indicates whether warning messages should show.
+     */
+    public static boolean SHOW_WARNING = true;
 
     private static GUI gui;
 
@@ -66,6 +84,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         connections = new ArrayList<>();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.dc.setGUI(this);
+        log.addHandler(new LogHandler());
     }
 
     /**
@@ -207,7 +226,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         if (staff != null) {
             lblUser.setText(staff.getName());
             itemLogin.setText("Log Out");
-            log(staff.getName() + " has logged in");
+            log.log(Level.INFO, staff.getName() + " has logged in");
             isLoggedOn = true;
         } else {
             if (dc instanceof DBConnect) {
@@ -236,7 +255,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         try {
             lblUser.setText("Not Logged In");
             dc.logout(staff);
-            log(staff.getName() + " has logged out");
+            log.log(Level.INFO, staff.getName() + " has logged out");
         } catch (StaffNotFoundException ex) {
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);
@@ -275,6 +294,42 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
     }
 
+    private class LogHandler extends Handler {
+
+        @Override
+        public void publish(LogRecord record) {
+            if (record.getLevel() == Level.SEVERE) {
+                if (GUI.SHOW_SEVERE == true) {
+                    send(record);
+                }
+            } else if (record.getLevel() == Level.INFO) {
+                if (GUI.SHOW_INFO == true) {
+                    send(record);
+                }
+            } else if (record.getLevel() == Level.WARNING) {
+                if (GUI.SHOW_WARNING == true) {
+                    send(record);
+                }
+            } else {
+                send(record);
+            }
+        }
+
+        private void send(LogRecord record) {
+            SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+            GUI.this.log("[" + df.format(new Date(record.getMillis())) + "] [" + record.getLevel().toString() + "] " + record.getMessage());
+        }
+
+        @Override
+        public void flush() {
+        }
+
+        @Override
+        public void close() throws SecurityException {
+        }
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -309,6 +364,9 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         jScrollPane2 = new javax.swing.JScrollPane();
         txtStockWarnings = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
+        chkSevere = new javax.swing.JCheckBox();
+        chkWarning = new javax.swing.JCheckBox();
+        chkInfo = new javax.swing.JCheckBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         itemLogin = new javax.swing.JMenuItem();
@@ -513,6 +571,30 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
         jLabel3.setText("Stock Warnings-");
 
+        chkSevere.setSelected(true);
+        chkSevere.setText("Show severe");
+        chkSevere.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkSevereActionPerformed(evt);
+            }
+        });
+
+        chkWarning.setSelected(true);
+        chkWarning.setText("Show warning");
+        chkWarning.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkWarningActionPerformed(evt);
+            }
+        });
+
+        chkInfo.setSelected(true);
+        chkInfo.setText("Show info");
+        chkInfo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkInfoActionPerformed(evt);
+            }
+        });
+
         menuFile.setText("File");
 
         itemLogin.setText("Log in");
@@ -664,12 +746,20 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                             .addComponent(lblPort)
                             .addComponent(lblProducts)
                             .addComponent(jButton1)
-                            .addComponent(jLabel2)
                             .addComponent(lblServerAddress))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))))
+                            .addComponent(jLabel3)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(chkSevere)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkWarning)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkInfo)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -689,8 +779,12 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton1))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
-                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(chkSevere)
+                    .addComponent(chkWarning)
+                    .addComponent(chkInfo))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -709,8 +803,10 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_itemStockActionPerformed
 
     private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
+        log.log(Level.INFO, "Stopping JTIll Server");
         if (dc instanceof DBConnect) {
             DBConnect db = (DBConnect) dc;
+            log.log(Level.INFO, "Saving properties");
             settings.saveProperties();
             TillServer.removeSystemTrayIcon();
         }
@@ -719,6 +815,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);
         }
+        log.log(Level.INFO, "Stopping");
         System.exit(0);
     }//GEN-LAST:event_itemExitActionPerformed
 
@@ -821,7 +918,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                 try {
                     dc.tillLogout(s);
                 } catch (IOException | StaffNotFoundException ex) {
-                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                    log.log(Level.SEVERE, null, ex);
                 }
             }
         } catch (IOException | SQLException ex) {
@@ -837,6 +934,18 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         WasteStockWindow.showWindow(dc, icon);
     }//GEN-LAST:event_itemWasteStockActionPerformed
 
+    private void chkSevereActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkSevereActionPerformed
+        GUI.SHOW_SEVERE = ((JCheckBox) evt.getSource()).isSelected();
+    }//GEN-LAST:event_chkSevereActionPerformed
+
+    private void chkWarningActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkWarningActionPerformed
+        GUI.SHOW_WARNING = ((JCheckBox) evt.getSource()).isSelected();
+    }//GEN-LAST:event_chkWarningActionPerformed
+
+    private void chkInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkInfoActionPerformed
+        GUI.SHOW_INFO = ((JCheckBox) evt.getSource()).isSelected();
+    }//GEN-LAST:event_chkInfoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -846,6 +955,9 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JButton btnReports;
     private javax.swing.JButton btnScreens;
     private javax.swing.JButton btnSettings;
+    private javax.swing.JCheckBox chkInfo;
+    private javax.swing.JCheckBox chkSevere;
+    private javax.swing.JCheckBox chkWarning;
     private javax.swing.JMenuItem itemAbout;
     private javax.swing.JMenuItem itemCategorys;
     private javax.swing.JMenuItem itemCustomers;

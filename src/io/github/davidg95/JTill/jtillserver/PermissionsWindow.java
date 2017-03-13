@@ -32,6 +32,8 @@ import javax.swing.tree.TreePath;
  */
 public class PermissionsWindow extends javax.swing.JDialog {
 
+    private final Logger log = Logger.getGlobal();
+
     private static PermissionsWindow dialog;
 
     private Settings settings;
@@ -51,7 +53,7 @@ public class PermissionsWindow extends javax.swing.JDialog {
         try {
             settings = dc.getSettingsInstance();
         } catch (IOException ex) {
-            Logger.getLogger(PermissionsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.SEVERE, null, ex);
         }
         initComponents();
         setLocationRelativeTo(parent);
@@ -269,7 +271,7 @@ public class PermissionsWindow extends javax.swing.JDialog {
             try {
                 dc.setSetting(pair.getKey().toString(), (String) pair.getValue());
             } catch (IOException ex) {
-                Logger.getLogger(PermissionsWindow.class.getName()).log(Level.SEVERE, null, ex);
+                log.log(Level.SEVERE, null, ex);
             }
         }
         setVisible(false);

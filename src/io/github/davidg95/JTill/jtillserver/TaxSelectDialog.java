@@ -25,6 +25,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TaxSelectDialog extends javax.swing.JDialog {
 
+    private final Logger log = Logger.getGlobal();
+
     private static JDialog dialog;
     private static Tax tax;
 
@@ -70,7 +72,7 @@ public class TaxSelectDialog extends javax.swing.JDialog {
             taxes = dc.getAllTax();
             updateTable();
         } catch (IOException | SQLException ex) {
-            Logger.getLogger(TaxSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.SEVERE, null, ex);
         }
     }
 

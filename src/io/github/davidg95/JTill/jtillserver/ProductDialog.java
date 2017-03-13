@@ -26,6 +26,8 @@ import javax.swing.JOptionPane;
  */
 public class ProductDialog extends javax.swing.JDialog {
 
+    private final Logger log = Logger.getGlobal();
+
     private static JDialog dialog;
     private static Product product;
 
@@ -51,7 +53,7 @@ public class ProductDialog extends javax.swing.JDialog {
             btnSelectCategory.setText(selectedCategory.getName());
             btnSelectTax.setText(selectedTax.getName());
         } catch (IOException | SQLException | TaxNotFoundException | CategoryNotFoundException ex) {
-            Logger.getLogger(ProductDialog.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.WARNING, null, ex);
         }
         this.editMode = false;
         this.setLocationRelativeTo(parent);

@@ -24,6 +24,8 @@ import javax.swing.JPanel;
  */
 public class StockGraphWindow extends JFrame {
 
+    private final Logger log = Logger.getGlobal();
+
     private static StockGraphWindow window;
 
     private final DataConnect dc;
@@ -51,10 +53,8 @@ public class StockGraphWindow extends JFrame {
             this.add(graph);
             pack();
             validate();
-        } catch (IOException ex) {
-            Logger.getLogger(StockGraphWindow.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(StockGraphWindow.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | SQLException ex) {
+            log.log(Level.SEVERE, null, ex);
         }
     }
 

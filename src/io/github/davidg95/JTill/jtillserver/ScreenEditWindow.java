@@ -33,6 +33,8 @@ import javax.swing.JToggleButton;
  */
 public class ScreenEditWindow extends javax.swing.JFrame {
 
+    private final Logger log = Logger.getGlobal();
+
     private static ScreenEditWindow frame;
 
     private final DataConnect dbConn;
@@ -248,7 +250,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 }
             }
         } catch (IOException | SQLException ex) {
-            Logger.getLogger(ScreenEditWindow.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.SEVERE, null, ex);
         }
         return true;
     }

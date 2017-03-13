@@ -23,6 +23,8 @@ import javax.swing.JOptionPane;
  */
 public class StaffDialog extends javax.swing.JDialog {
 
+    private final Logger log = Logger.getGlobal();
+
     private static JDialog dialog;
     private static Staff staff;
 
@@ -231,7 +233,7 @@ public class StaffDialog extends javax.swing.JDialog {
                 return;
             }
         } catch (IOException | SQLException ex) {
-            Logger.getLogger(StaffDialog.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.SEVERE, null, ex);
         }
         int position = cmbPosition.getSelectedIndex() + 1;
         if (!editMode) {

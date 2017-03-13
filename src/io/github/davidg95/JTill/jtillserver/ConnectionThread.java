@@ -955,14 +955,12 @@ public class ConnectionThread extends Thread {
                 ConnectionData clone = data.clone();
                 if (clone.getData() == null || clone.getData2() == null) {
                     obOut.writeObject(ConnectionData.create("FAIL", "A null value was received"));
+                    log.log(Level.SEVERE, "A null was received");
                     return;
                 }
-                if (!(clone.getData() instanceof Integer)) {
+                if (!(clone.getData() instanceof Integer) || !(clone.getData2() instanceof Integer)) {
                     obOut.writeObject(ConnectionData.create("FAIL", "An integer must be passed in"));
-                    return;
-                }
-                if (!(clone.getData2() instanceof Integer)) {
-                    obOut.writeObject(ConnectionData.create("FAIL", "An integer must be passed in"));
+                    log.log(Level.SEVERE, "An unexpected value type was received");
                     return;
                 }
                 Product p = (Product) clone.getData();
@@ -970,7 +968,7 @@ public class ConnectionThread extends Thread {
                 int stock = dc.purchaseProduct(p, amount);
                 obOut.writeObject(ConnectionData.create("SUCC", stock));
             } catch (ProductNotFoundException | SQLException | OutOfStockException ex) {
-                TillServer.g.log(ex);
+                log.log(Level.WARNING, null, ex);
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
@@ -1483,7 +1481,7 @@ public class ConnectionThread extends Thread {
                 String password = (String) clone.getData2();
                 Staff s = dc.login(username, password);
                 ConnectionThread.this.staff = s;
-                TillServer.g.log(staff.getName() + " has logged in");
+                log.log(Level.INFO, s.getName() + " has logged in");
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | LoginException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1504,7 +1502,7 @@ public class ConnectionThread extends Thread {
                 int id = (int) clone.getData();
                 Staff s = dc.tillLogin(id);
                 ConnectionThread.this.staff = s;
-                TillServer.g.log(staff.getName() + " has logged in from " + site);
+                log.log(Level.INFO, staff.getName() + " has logged in from " + site);
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | LoginException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1524,7 +1522,7 @@ public class ConnectionThread extends Thread {
                 }
                 Staff s = (Staff) clone.getData();
                 dc.logout(s);
-                TillServer.g.log(staff.getName() + " has logged out");
+                log.log(Level.INFO, staff.getName() + " has logged out");
                 ConnectionThread.this.staff = null;
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (StaffNotFoundException ex) {
@@ -1545,7 +1543,7 @@ public class ConnectionThread extends Thread {
                 }
                 Staff s = (Staff) clone.getData();
                 dc.tillLogout(s);
-                TillServer.g.log(staff.getName() + " has logged out");
+                log.log(Level.INFO, staff.getName() + " has logged out");
                 ConnectionThread.this.staff = null;
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (StaffNotFoundException ex) {

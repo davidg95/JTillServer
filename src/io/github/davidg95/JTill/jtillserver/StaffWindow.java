@@ -23,6 +23,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class StaffWindow extends javax.swing.JFrame {
 
+    private final Logger log = Logger.getGlobal();
+
     public static StaffWindow frame;
 
     private final DataConnect dc;
@@ -392,7 +394,7 @@ public class StaffWindow extends javax.swing.JFrame {
                 return;
             }
         } catch (IOException | StaffNotFoundException | SQLException ex) {
-            Logger.getLogger(StaffWindow.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.INFO, null, ex);
         }
         if (index != -1) {
             int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following staff member?\n" + selected, "Remove Staff", JOptionPane.YES_NO_OPTION);

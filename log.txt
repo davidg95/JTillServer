@@ -1,17 +1,63 @@
-[Mon Mar 13 14:56:16 GMT 2017] INFO Starting JTill Server
-[Mon Mar 13 14:56:16 GMT 2017] INFO Connecting to database jdbc:derby:TillEmbedded;
-[Mon Mar 13 14:56:16 GMT 2017] INFO Starting Thread Pool Excecutor
-[Mon Mar 13 14:56:16 GMT 2017] INFO Server Socket running on port number 52341
-[Mon Mar 13 14:56:38 GMT 2017] INFO Bessey has connected
-[Mon Mar 13 14:56:38 GMT 2017] INFO Received GETALLSCREENS from server
-[Mon Mar 13 14:56:38 GMT 2017] INFO Received GETALLSCREENS from server
-[Mon Mar 13 14:56:39 GMT 2017] INFO Received GETSTAFF from server
-[Mon Mar 13 14:56:39 GMT 2017] INFO Received TILLLOGIN from server
-[Mon Mar 13 14:56:39 GMT 2017] INFO Received RESUMESALE from server
-[Mon Mar 13 14:56:55 GMT 2017] INFO Received GETPRODUCTBARCODE from server
-[Mon Mar 13 14:56:58 GMT 2017] INFO Received ADDSALE from server
-[Mon Mar 13 14:56:58 GMT 2017] WARNING 4 is below minimum stock level
-[Mon Mar 13 14:56:59 GMT 2017] INFO Received GETSETTING from server
-[Mon Mar 13 14:57:00 GMT 2017] INFO Received TILLLOGOUT from server
-[Mon Mar 13 14:57:01 GMT 2017] INFO Received CONNTERM from server
-[Mon Mar 13 14:57:01 GMT 2017] INFO Bessey has disconnected
+JTill log Mon Mar 13 16:17:28 GMT 2017
+[16:17:28] [INFO] Starting JTill Server
+[16:17:28] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[16:17:29] [INFO] Get staff count
+[16:17:29] [INFO] Starting Thread Pool Excecutor
+[16:17:29] [INFO] JTill Server local IP address is 192.168.1.65
+[16:17:29] [INFO] Server Socket running on port number 52341
+[16:17:29] [INFO] Ready to accept connections
+[16:17:32] [INFO] Login Staff dgrant
+[16:17:32] [INFO] David Grant has logged in
+[16:17:40] [INFO] Get customer -1
+[16:17:40] [INFO] Get staff 1
+[16:17:40] [INFO] Get product 6
+[16:17:40] [INFO] Get customer -1
+[16:17:40] [INFO] Get staff 1
+[16:17:40] [INFO] Get product 5
+[16:17:40] [INFO] Get customer -1
+[16:17:40] [INFO] Get staff 1
+[16:17:40] [INFO] Get product 4
+[16:17:40] [INFO] Get customer -1
+[16:17:40] [INFO] Get staff 1
+[16:17:40] [INFO] Get product 4
+[16:17:40] [INFO] Get customer -1
+[16:17:40] [INFO] Get staff 1
+[16:17:40] [INFO] Get product 6
+[16:17:40] [INFO] Get customer -1
+[16:17:40] [INFO] Get staff 1
+[16:17:40] [INFO] Get product 5
+[16:17:40] [INFO] Get customer -1
+[16:17:40] [INFO] Get staff 1
+[16:17:40] [INFO] Get product 4
+[16:17:40] [INFO] Get customer -1
+[16:17:40] [INFO] Get staff 1
+[16:17:40] [INFO] Get product 4
+[16:17:47] [INFO] Get customer -1
+[16:17:47] [INFO] Get staff 1
+[16:17:47] [INFO] Get product 6
+[16:17:47] [INFO] Get customer -1
+[16:17:47] [INFO] Get staff 1
+[16:17:47] [INFO] Get product 5
+[16:17:47] [INFO] Get customer -1
+[16:17:47] [INFO] Get staff 1
+[16:17:47] [INFO] Get product 4
+[16:17:47] [INFO] Get customer -1
+[16:17:47] [INFO] Get staff 1
+[16:17:47] [INFO] Get product 4
+[16:17:47] [INFO] Get customer -1
+[16:17:47] [INFO] Get staff 1
+[16:17:47] [INFO] Get product 6
+[16:17:47] [INFO] Get customer -1
+[16:17:47] [INFO] Get staff 1
+[16:17:47] [INFO] Get product 5
+[16:17:47] [INFO] Get customer -1
+[16:17:47] [INFO] Get staff 1
+[16:17:47] [INFO] Get product 4
+[16:17:47] [INFO] Get customer -1
+[16:17:47] [INFO] Get staff 1
+[16:17:47] [INFO] Get product 4
+[16:17:55] [INFO] Stopping JTIll Server
+[16:17:55] [INFO] Saving properties
+[16:17:56] [INFO] Disconnecting from database
+[16:17:56] [INFO] Database disconnected
+[16:17:56] [INFO] Stopping
