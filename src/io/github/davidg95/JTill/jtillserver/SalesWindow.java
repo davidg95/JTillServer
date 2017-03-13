@@ -24,7 +24,7 @@ public class SalesWindow extends javax.swing.JFrame {
 
     private static SalesWindow frame;
 
-    private final DataConnect dbConn;
+    private final DataConnect dc;
 
     private final DefaultTableModel model;
     private List<Sale> currentTableContents;
@@ -33,7 +33,7 @@ public class SalesWindow extends javax.swing.JFrame {
      * Creates new form SalesWindow
      */
     public SalesWindow(DataConnect dc, Image icon) {
-        this.dbConn = dc;
+        this.dc = dc;
         this.setIconImage(icon);
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -70,7 +70,7 @@ public class SalesWindow extends javax.swing.JFrame {
 
     private void setTakings() {
         try {
-            List<Sale> sales = dbConn.getAllSales();
+            List<Sale> sales = dc.getAllSales();
             BigDecimal val = new BigDecimal("0");
             int count = sales.size();
             for (Sale s : sales) {
@@ -102,7 +102,7 @@ public class SalesWindow extends javax.swing.JFrame {
 
     private void showAllSales() {
         try {
-            currentTableContents = dbConn.getAllSales();
+            currentTableContents = dc.getAllSales();
         } catch (SQLException | IOException ex) {
             showError(ex);
         }
@@ -249,7 +249,7 @@ public class SalesWindow extends javax.swing.JFrame {
 
     private void tableSalesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableSalesMouseClicked
         if (evt.getClickCount() == 2) {
-            SaleDialog.showSaleDialog(this, currentTableContents.get(tableSales.getSelectedRow()), dbConn);
+            SaleDialog.showSaleDialog(this, currentTableContents.get(tableSales.getSelectedRow()), dc);
         }
     }//GEN-LAST:event_tableSalesMouseClicked
 

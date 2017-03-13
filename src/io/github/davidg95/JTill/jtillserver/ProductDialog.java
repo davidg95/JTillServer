@@ -344,7 +344,7 @@ public class ProductDialog extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                BigDecimal price = new BigDecimal(Double.parseDouble(txtPrice.getText()));
+                BigDecimal price = new BigDecimal(txtPrice.getText());
                 BigDecimal costPrice = new BigDecimal(txtCostPrice.getText());
                 int stock = Integer.parseInt(txtStock.getText());
                 int minStock = Integer.parseInt(txtMinStock.getText());

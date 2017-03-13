@@ -1,3 +1,17 @@
-[Fri Mar 10 16:53:33 GMT 2017] INFO Starting JTill Server
-[Fri Mar 10 16:53:33 GMT 2017] INFO Connecting to database jdbc:derby:TillEmbedded;
-[Fri Mar 10 16:53:33 GMT 2017] INFO Starting Thread Pool Excecutor
+[Mon Mar 13 14:56:16 GMT 2017] INFO Starting JTill Server
+[Mon Mar 13 14:56:16 GMT 2017] INFO Connecting to database jdbc:derby:TillEmbedded;
+[Mon Mar 13 14:56:16 GMT 2017] INFO Starting Thread Pool Excecutor
+[Mon Mar 13 14:56:16 GMT 2017] INFO Server Socket running on port number 52341
+[Mon Mar 13 14:56:38 GMT 2017] INFO Bessey has connected
+[Mon Mar 13 14:56:38 GMT 2017] INFO Received GETALLSCREENS from server
+[Mon Mar 13 14:56:38 GMT 2017] INFO Received GETALLSCREENS from server
+[Mon Mar 13 14:56:39 GMT 2017] INFO Received GETSTAFF from server
+[Mon Mar 13 14:56:39 GMT 2017] INFO Received TILLLOGIN from server
+[Mon Mar 13 14:56:39 GMT 2017] INFO Received RESUMESALE from server
+[Mon Mar 13 14:56:55 GMT 2017] INFO Received GETPRODUCTBARCODE from server
+[Mon Mar 13 14:56:58 GMT 2017] INFO Received ADDSALE from server
+[Mon Mar 13 14:56:58 GMT 2017] WARNING 4 is below minimum stock level
+[Mon Mar 13 14:56:59 GMT 2017] INFO Received GETSETTING from server
+[Mon Mar 13 14:57:00 GMT 2017] INFO Received TILLLOGOUT from server
+[Mon Mar 13 14:57:01 GMT 2017] INFO Received CONNTERM from server
+[Mon Mar 13 14:57:01 GMT 2017] INFO Bessey has disconnected
