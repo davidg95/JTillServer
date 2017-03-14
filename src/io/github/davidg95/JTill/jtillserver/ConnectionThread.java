@@ -873,6 +873,96 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
+                    case "ADDWASTEREPORT": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                addWasteReport(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "REMOVEWASTEREPORT": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                removeWasteReport(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETWASTEREPORT": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getWasteReport(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETALLWASTEREPORTS": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getAllWasteReports();
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "UPDATEWASTEREPORT": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                updateWasteReport(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "ADDWASTEITEM": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                addWasteItem(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "REMOVEWASTEITEM": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                removeWasteItem(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETWASTEITEM": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getWasteItem(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETALLWASTEITEMS": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getAllWasteItems();
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "UPDATEWASTEITEM": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                updateWasteItem(data);
+                            }
+                        }.start();
+                        break;
+                    }
                     case "CONNTERM": { //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -2201,7 +2291,6 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("GET", till));
             } catch (SQLException | TillNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
-
             }
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);
@@ -2215,7 +2304,6 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(tills);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
-
             }
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);
@@ -2276,6 +2364,7 @@ public class ConnectionThread extends Thread {
             ConnectionData clone = data.clone();
             if (!(clone.getData() instanceof String || !(clone.getData() instanceof String))) {
                 obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                return;
             }
             String key = (String) clone.getData();
             String def_value = (String) clone.getData2();
@@ -2291,7 +2380,6 @@ public class ConnectionThread extends Thread {
         try {
             Settings settings = dc.getSettingsInstance();
             obOut.writeObject(ConnectionData.create("SUCC", settings));
-
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);
         }
@@ -2343,6 +2431,7 @@ public class ConnectionThread extends Thread {
                 ConnectionData clone = data.clone();
                 if (!(clone.getData() instanceof Integer)) {
                     obOut.writeObject(ConnectionData.create("FAIL", "An int must be received here"));
+                    return;
                 }
                 int id = (int) data.getData();
                 Plu p = dc.getPlu(id);
@@ -2362,6 +2451,7 @@ public class ConnectionThread extends Thread {
                 ConnectionData clone = data.clone();
                 if (!(clone.getData() instanceof String)) {
                     obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                    return;
                 }
                 String code = (String) data.getData();
                 Plu p = dc.getPluByCode(code);
@@ -2395,6 +2485,7 @@ public class ConnectionThread extends Thread {
                 ConnectionData clone = data.clone();
                 if (!(clone.getData() instanceof Plu)) {
                     obOut.writeObject(ConnectionData.create("FAIL", "A Plu must be received here"));
+                    return;
                 }
                 Plu plu = (Plu) data.getData();
                 Plu p = dc.updatePlu(plu);
@@ -2414,6 +2505,7 @@ public class ConnectionThread extends Thread {
                 ConnectionData clone = data.clone();
                 if (!(clone.getData() instanceof Staff)) {
                     obOut.writeObject(ConnectionData.create("FAIL", "A Staff must be received here"));
+                    return;
                 }
                 Staff s = (Staff) data.getData();
                 boolean logged = dc.isTillLoggedIn(s);
@@ -2433,6 +2525,7 @@ public class ConnectionThread extends Thread {
                 ConnectionData clone = data.clone();
                 if (!(clone.getData() instanceof String)) {
                     obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                    return;
                 }
                 String username = (String) data.getData();
                 boolean used = dc.checkUsername(username);
@@ -2440,6 +2533,192 @@ public class ConnectionThread extends Thread {
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
 
+            }
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void addWasteReport(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof WasteReport)) {
+                    log.log(Level.SEVERE, "Unexpected data type adding waste report");
+                    obOut.writeObject(ConnectionData.create("FAIL", "Unexpected data type"));
+                    return;
+                }
+                WasteReport wr = (WasteReport) clone.getData();
+                wr = dc.addWasteReport(wr);
+                obOut.writeObject(ConnectionData.create("SUCC", wr));
+            } catch (SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void removeWasteReport(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    log.log(Level.SEVERE, "Unexpected data type removing waste report");
+                    obOut.writeObject(ConnectionData.create("FAIL", "Unexpected data type"));
+                    return;
+                }
+                int id = (int) clone.getData();
+                dc.removeWasteReport(id);
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getWasteReport(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof Integer)) {
+                    log.log(Level.SEVERE, "Unexpected data type getting waste report");
+                    obOut.writeObject(ConnectionData.create("FAIL", "Int expected"));
+                    return;
+                }
+                int id = (int) clone.getData();
+                WasteReport wr = dc.getWasteReport(id);
+                obOut.writeObject(ConnectionData.create("SUCC", wr));
+            } catch (SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getAllWasteReports() {
+        try {
+            try {
+                List<WasteReport> wrs = dc.getAllWasteReports();
+                obOut.writeObject(ConnectionData.create("SUCC", wrs));
+            } catch (IOException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void updateWasteReport(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                if (!(clone.getData() instanceof WasteReport)) {
+                    log.log(Level.SEVERE, "Unexpected data type");
+                    obOut.writeObject(ConnectionData.create("FAIL", "WasteReport expected"));
+                    return;
+                }
+                WasteReport wr = (WasteReport) clone.getData();
+                wr = dc.updateWasteReport(wr);
+                obOut.writeObject(ConnectionData.create("SUCC", wr));
+            } catch (SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void addWasteItem(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof WasteReport) || !(clone.getData2() instanceof WasteItem)) {
+                log.log(Level.SEVERE, "Unexpected data type adding a waste item");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            WasteReport wr = (WasteReport) clone.getData();
+            WasteItem wi = (WasteItem) clone.getData2();
+            try {
+                wi = dc.addWasteItem(wr, wi);
+                obOut.writeObject(ConnectionData.create("SUCC", wi));
+            } catch (IOException | SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void removeWasteItem(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                log.log(Level.SEVERE, "Unexpected data value removing a waste item");
+                obOut.writeObject(ConnectionData.create("FAIL", "Unexpected data value"));
+            }
+            int id = (int) data.getData();
+            try {
+                dc.removeWasteItem(id);
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (IOException | SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getWasteItem(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                log.log(Level.SEVERE, "Unexpected data type received getting waste items");
+                obOut.writeObject(ConnectionData.create("FAIL", "Unexpected data type received"));
+                return;
+            }
+            int id = (int) clone.getData();
+            try {
+                WasteItem wi = dc.getWasteItem(id);
+                obOut.writeObject(ConnectionData.create("SUCC", wi));
+            } catch (IOException | SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getAllWasteItems() {
+        try {
+            try {
+                List<WasteItem> wis = dc.getAllWasteItems();
+                obOut.writeObject(ConnectionData.create("SUCC", wis));
+            } catch (SQLException | IOException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void updateWasteItem(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof WasteItem)) {
+                log.log(Level.SEVERE, "Unexpected data type updating a waste item");
+                obOut.writeObject(ConnectionData.create("FAIL", "Unexpected data type"));
+                return;
+            }
+            WasteItem wi = (WasteItem) clone.getData();
+            try {
+                wi = dc.updateWasteItem(wi);
+                obOut.writeObject(ConnectionData.create("SUCC", wi));
+            } catch (IOException | SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);

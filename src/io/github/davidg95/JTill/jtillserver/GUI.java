@@ -377,6 +377,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         itemStock = new javax.swing.JMenuItem();
         itemReceive = new javax.swing.JMenuItem();
         itemWasteStock = new javax.swing.JMenuItem();
+        itemWasteReports = new javax.swing.JMenuItem();
         itemDiscounts = new javax.swing.JMenuItem();
         itemCategorys = new javax.swing.JMenuItem();
         itemTaxes = new javax.swing.JMenuItem();
@@ -656,6 +657,14 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
             }
         });
         menuStock.add(itemWasteStock);
+
+        itemWasteReports.setText("Waste Reports");
+        itemWasteReports.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemWasteReportsActionPerformed(evt);
+            }
+        });
+        menuStock.add(itemWasteReports);
 
         itemDiscounts.setText("Manage Discounts");
         itemDiscounts.addActionListener(new java.awt.event.ActionListener() {
@@ -946,6 +955,10 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         GUI.SHOW_INFO = ((JCheckBox) evt.getSource()).isSelected();
     }//GEN-LAST:event_chkInfoActionPerformed
 
+    private void itemWasteReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemWasteReportsActionPerformed
+        WasteReports.showWindow(dc);
+    }//GEN-LAST:event_itemWasteReportsActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -971,6 +984,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStock;
     private javax.swing.JMenuItem itemTaxes;
+    private javax.swing.JMenuItem itemWasteReports;
     private javax.swing.JMenuItem itemWasteStock;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
