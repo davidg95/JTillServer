@@ -254,7 +254,7 @@ public class WasteReports extends javax.swing.JFrame {
                 String terms = txtSearch.getText();
                 for (WasteReport wr : wasteReports) {
                     for (WasteItem wi : wr.getItems()) {
-                        if (wi.getReason().equalsIgnoreCase(terms)) {
+                        if (wi.getReason().getReason().equalsIgnoreCase(terms)) {
                             newList.add(wr);
                             break;
                         }

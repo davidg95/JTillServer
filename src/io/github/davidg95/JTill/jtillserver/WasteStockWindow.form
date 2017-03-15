@@ -43,7 +43,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="txtReason" min="-2" pref="160" max="-2" attributes="0"/>
+                      <Component id="cmbReason" min="-2" pref="160" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -56,8 +56,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="txtReason" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmbReason" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="lblTime" max="32767" attributes="0"/>
               </Group>
@@ -168,8 +168,6 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblTime">
     </Component>
-    <Component class="javax.swing.JTextField" name="txtReason">
-    </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
         <Property name="text" type="java.lang.String" value="Reason:"/>
@@ -179,6 +177,16 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Total Value: &#xa3;0.00"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="cmbReason">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="0"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

@@ -13,7 +13,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListDataListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -28,6 +33,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
     private WasteReport report;
     private final List<WasteItem> wasteItems;
     private final DefaultTableModel model;
+    private final DefaultComboBoxModel cmbModel;
 
     /**
      * Creates new form WasteStockWindow
@@ -42,6 +48,9 @@ public class WasteStockWindow extends javax.swing.JFrame {
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
         model.setRowCount(0);
+        cmbModel = (DefaultComboBoxModel) cmbReason.getModel();
+        cmbReason.setModel(cmbModel);
+        init();
     }
 
     public WasteStockWindow(WasteReport wr, Image icon) {
@@ -58,6 +67,9 @@ public class WasteStockWindow extends javax.swing.JFrame {
         tblProducts.setModel(model);
         lblValue.setText("Total Value: £" + wr.getTotalValue());
         setTable();
+        cmbModel = (DefaultComboBoxModel) cmbReason.getModel();
+        cmbReason.setModel(cmbModel);
+        init();
     }
 
     public static void showWindow(DataConnect dc, Image icon) {
@@ -68,6 +80,17 @@ public class WasteStockWindow extends javax.swing.JFrame {
     public static void showWindow(WasteReport wr, Image icon) {
         window = new WasteStockWindow(wr, icon);
         window.setVisible(true);
+    }
+
+    private void init() {
+        try {
+            List<WasteReason> reasons = dc.getAllWasteReasons();
+            for (WasteReason r : reasons) {
+                cmbModel.addElement(r);
+            }
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void setTable() {
@@ -94,9 +117,9 @@ public class WasteStockWindow extends javax.swing.JFrame {
         btnAddPlu = new javax.swing.JButton();
         btnAddProduct = new javax.swing.JButton();
         lblTime = new javax.swing.JLabel();
-        txtReason = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         lblValue = new javax.swing.JLabel();
+        cmbReason = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -195,7 +218,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtReason, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cmbReason, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -204,8 +227,8 @@ public class WasteStockWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtReason, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel1))
+                        .addComponent(jLabel1)
+                        .addComponent(cmbReason, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
@@ -246,20 +269,22 @@ public class WasteStockWindow extends javax.swing.JFrame {
                 return;
             }
         }
-        String reason = txtReason.getText();
-        if (reason.equals("")) {
-            reason = "Default";
+        int reason = cmbReason.getSelectedIndex() + 1;
+        WasteReason wr = null;
+        try {
+            wr = dc.getWasteReason(reason);
+            WasteItem wi = new WasteItem(product, Integer.parseInt(amount), wr);
+            wasteItems.add(wi);
+            BigDecimal val = BigDecimal.ZERO;
+            val.setScale(2);
+            for (WasteItem w : wasteItems) {
+                val = val.add(w.getProduct().getPrice().multiply(new BigDecimal(w.getQuantity())));
+            }
+            lblValue.setText("Total Value: £" + val);
+            model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu(), Integer.parseInt(amount), wi.getReason()});
+        } catch (IOException | SQLException | JTillException ex) {
+            Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
-        WasteItem wi = new WasteItem(product, Integer.parseInt(amount), reason);
-
-        wasteItems.add(wi);
-        BigDecimal val = BigDecimal.ZERO;
-        val.setScale(2);
-        for (WasteItem w : wasteItems) {
-            val = val.add(w.getProduct().getPrice().multiply(new BigDecimal(w.getQuantity())));
-        }
-        lblValue.setText("Total Value: £" + val);
-        model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu(), Integer.parseInt(amount), wi.getReason()});
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnAddPluActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPluActionPerformed
@@ -280,18 +305,25 @@ public class WasteStockWindow extends javax.swing.JFrame {
                     return;
                 }
             }
-            String reason = txtReason.getText();
-            if (reason.equals("")) {
-                reason = "Default";
-            }
+            int reason = cmbReason.getSelectedIndex() + 1;
+            WasteReason wr = null;
 
-            WasteItem wi = new WasteItem(product, Integer.parseInt(amount), reason);
+            wr = dc.getWasteReason(reason);
+            WasteItem wi = new WasteItem(product, Integer.parseInt(amount), wr);
             wasteItems.add(wi);
+            BigDecimal val = BigDecimal.ZERO;
+            val.setScale(2);
+            for (WasteItem w : wasteItems) {
+                val = val.add(w.getProduct().getPrice().multiply(new BigDecimal(w.getQuantity())));
+            }
+            lblValue.setText("Total Value: £" + val);
             model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), Integer.parseInt(amount), wi.getReason()});
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ProductNotFoundException ex) {
             JOptionPane.showMessageDialog(this, "Product could not be found", "Not Found", JOptionPane.ERROR_MESSAGE);
+        } catch (JTillException ex) {
+            Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnAddPluActionPerformed
 
@@ -303,7 +335,6 @@ public class WasteStockWindow extends javax.swing.JFrame {
         BigDecimal total = BigDecimal.ZERO;
         for (WasteItem wi : wasteItems) {
             try {
-                wi.setReason(model.getValueAt(wasteItems.indexOf(wi), 4).toString());
                 Product product = dc.getProduct(wi.getProduct().getId());
                 product.removeStock(wi.getQuantity());
                 dc.updateProduct(product);
@@ -342,11 +373,11 @@ public class WasteStockWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnWaste;
+    private javax.swing.JComboBox<String> cmbReason;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblTime;
     private javax.swing.JLabel lblValue;
     private javax.swing.JTable tblProducts;
-    private javax.swing.JTextField txtReason;
     // End of variables declaration//GEN-END:variables
 }
