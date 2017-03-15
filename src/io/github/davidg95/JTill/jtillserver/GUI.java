@@ -956,7 +956,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_chkInfoActionPerformed
 
     private void itemWasteReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemWasteReportsActionPerformed
-        WasteReports.showWindow(dc);
+        WasteReports.showWindow(dc, icon);
     }//GEN-LAST:event_itemWasteReportsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

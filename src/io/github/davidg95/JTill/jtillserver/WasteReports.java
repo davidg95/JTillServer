@@ -7,12 +7,12 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.DataConnect;
 import io.github.davidg95.JTill.jtill.WasteReport;
+import java.awt.Image;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -20,6 +20,7 @@ import javax.swing.table.DefaultTableModel;
  * @author David
  */
 public class WasteReports extends javax.swing.JFrame {
+
     private final Logger log = Logger.getGlobal();
 
     private static WasteReports window;
@@ -27,21 +28,24 @@ public class WasteReports extends javax.swing.JFrame {
     private final DataConnect dc;
     private List<WasteReport> wasteReports;
     private DefaultTableModel model;
+    private final Image icon;
 
     /**
      * Creates new form WasteReports
      */
-    public WasteReports(DataConnect dc) {
+    public WasteReports(DataConnect dc, Image icon) {
         this.dc = dc;
+        this.icon = icon;
         initComponents();
         setTitle("Waste Reports");
+        setIconImage(icon);
         model = (DefaultTableModel) tblReports.getModel();
         tblReports.setModel(model);
         reloadTable();
     }
-    
-    public static void showWindow(DataConnect dc){
-        window = new WasteReports(dc);
+
+    public static void showWindow(DataConnect dc, Image icon) {
+        window = new WasteReports(dc, icon);
         window.setVisible(true);
     }
 
@@ -141,9 +145,11 @@ public class WasteReports extends javax.swing.JFrame {
 
     private void tblReportsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblReportsMouseClicked
         int index = tblReports.getSelectedRow();
-        if(index != -1){
-            WasteReport wr = wasteReports.get(index);
-            JOptionPane.showMessageDialog(this, wr.getTotalValue(), "ID: " + wr.getId(), JOptionPane.INFORMATION_MESSAGE);
+        if (evt.getClickCount() == 2) {
+            if (index != -1) {
+                WasteReport wr = wasteReports.get(index);
+                WasteStockWindow.showWindow(wr, icon);
+            }
         }
     }//GEN-LAST:event_tblReportsMouseClicked
 

@@ -13,8 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -26,7 +24,8 @@ public class WasteStockWindow extends javax.swing.JFrame {
 
     private static WasteStockWindow window;
 
-    private final DataConnect dc;
+    private DataConnect dc;
+    private WasteReport report;
     private final List<WasteItem> wasteItems;
     private final DefaultTableModel model;
 
@@ -39,14 +38,44 @@ public class WasteStockWindow extends javax.swing.JFrame {
         initComponents();
         setTitle("Waste Stock");
         setIconImage(icon);
+        lblTime.setText("Time: " + new Date());
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
         model.setRowCount(0);
     }
 
+    public WasteStockWindow(WasteReport wr, Image icon) {
+        this.report = wr;
+        wasteItems = new ArrayList<>();
+        initComponents();
+        btnAddProduct.setEnabled(false);
+        btnAddPlu.setEnabled(false);
+        btnWaste.setEnabled(false);
+        lblTime.setText("Time: " + wr.getDate());
+        setTitle("Waste Report " + report.getId());
+        setIconImage(icon);
+        model = (DefaultTableModel) tblProducts.getModel();
+        tblProducts.setModel(model);
+        lblValue.setText("Total Value: £" + wr.getTotalValue());
+        setTable();
+    }
+
     public static void showWindow(DataConnect dc, Image icon) {
         window = new WasteStockWindow(dc, icon);
         window.setVisible(true);
+    }
+
+    public static void showWindow(WasteReport wr, Image icon) {
+        window = new WasteStockWindow(wr, icon);
+        window.setVisible(true);
+    }
+
+    private void setTable() {
+        model.setRowCount(0);
+        for (WasteItem wi : report.getItems()) {
+            Object[] row = new Object[]{wi.getId(), wi.getProduct().getLongName(), wi.getProduct().getPlu().getCode(), wi.getQuantity(), wi.getReason()};
+            model.addRow(row);
+        }
     }
 
     /**
@@ -64,25 +93,29 @@ public class WasteStockWindow extends javax.swing.JFrame {
         btnWaste = new javax.swing.JButton();
         btnAddPlu = new javax.swing.JButton();
         btnAddProduct = new javax.swing.JButton();
+        lblTime = new javax.swing.JLabel();
+        txtReason = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        lblValue = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tblProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "ID", "Product", "Barcode", "Quantity"
+                "ID", "Product", "Barcode", "Quantity", "Reason"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -104,6 +137,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
             tblProducts.getColumnModel().getColumn(1).setResizable(false);
             tblProducts.getColumnModel().getColumn(2).setResizable(false);
             tblProducts.getColumnModel().getColumn(3).setResizable(false);
+            tblProducts.getColumnModel().getColumn(4).setResizable(false);
         }
 
         btnClose.setText("Close");
@@ -134,6 +168,10 @@ public class WasteStockWindow extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("Reason:");
+
+        lblValue.setText("Total Value: £0.00");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -141,29 +179,43 @@ public class WasteStockWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblValue)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnAddProduct)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddPlu)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnWaste)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClose)))
+                        .addComponent(btnClose))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(lblTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtReason, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtReason, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1))
+                    .addComponent(lblTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
                     .addComponent(btnWaste)
                     .addComponent(btnAddPlu)
-                    .addComponent(btnAddProduct))
+                    .addComponent(btnAddProduct)
+                    .addComponent(lblValue))
                 .addContainerGap())
         );
 
@@ -194,10 +246,20 @@ public class WasteStockWindow extends javax.swing.JFrame {
                 return;
             }
         }
-        WasteItem wi = new WasteItem(product, Integer.parseInt(amount), "Default");
+        String reason = txtReason.getText();
+        if (reason.equals("")) {
+            reason = "Default";
+        }
+        WasteItem wi = new WasteItem(product, Integer.parseInt(amount), reason);
 
         wasteItems.add(wi);
-        model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu(), Integer.parseInt(amount)});
+        BigDecimal val = BigDecimal.ZERO;
+        val.setScale(2);
+        for (WasteItem w : wasteItems) {
+            val = val.add(w.getProduct().getPrice().multiply(new BigDecimal(w.getQuantity())));
+        }
+        lblValue.setText("Total Value: £" + val);
+        model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu(), Integer.parseInt(amount), wi.getReason()});
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnAddPluActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPluActionPerformed
@@ -218,10 +280,14 @@ public class WasteStockWindow extends javax.swing.JFrame {
                     return;
                 }
             }
+            String reason = txtReason.getText();
+            if (reason.equals("")) {
+                reason = "Default";
+            }
 
-            WasteItem wi = new WasteItem(product, Integer.parseInt(amount), "Default");
+            WasteItem wi = new WasteItem(product, Integer.parseInt(amount), reason);
             wasteItems.add(wi);
-            model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), Integer.parseInt(amount)});
+            model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), Integer.parseInt(amount), wi.getReason()});
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ProductNotFoundException ex) {
@@ -237,6 +303,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
         BigDecimal total = BigDecimal.ZERO;
         for (WasteItem wi : wasteItems) {
             try {
+                wi.setReason(model.getValueAt(wasteItems.indexOf(wi), 4).toString());
                 Product product = dc.getProduct(wi.getProduct().getId());
                 product.removeStock(wi.getQuantity());
                 dc.updateProduct(product);
@@ -245,6 +312,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+        total.setScale(2);
         wr.setTotalValue(total);
         wr.setItems(wasteItems);
         try {
@@ -252,6 +320,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "All items have been wasted", "Waste", JOptionPane.INFORMATION_MESSAGE);
             model.setRowCount(0);
             wasteItems.clear();
+            lblValue.setText("Total: £0.00");
         } catch (IOException | SQLException | JTillException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -273,7 +342,11 @@ public class WasteStockWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnWaste;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblTime;
+    private javax.swing.JLabel lblValue;
     private javax.swing.JTable tblProducts;
+    private javax.swing.JTextField txtReason;
     // End of variables declaration//GEN-END:variables
 }
