@@ -1,8 +1,181 @@
-JTill log Wed Mar 15 15:31:39 GMT 2017
-[15:31:39] [INFO] Starting JTill Server
-[15:31:39] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[15:31:40] [INFO] Get staff count
-[15:31:40] [INFO] Starting Thread Pool Excecutor
-[15:31:40] [INFO] JTill Server local IP address is 192.168.1.65
-[15:31:40] [INFO] Server Socket running on port number 52341
-[15:31:40] [INFO] Ready to accept connections
+JTill log Wed Mar 15 16:33:48 GMT 2017
+[16:33:48] [INFO] Starting JTill Server
+[16:33:48] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[16:33:49] [INFO] Get staff count
+[16:33:49] [INFO] Starting Thread Pool Excecutor
+[16:33:49] [INFO] JTill Server local IP address is 192.168.1.65
+[16:33:49] [INFO] Server Socket running on port number 52341
+[16:33:49] [INFO] Ready to accept connections
+[16:33:51] [INFO] Login Staff dgrant
+[16:33:51] [INFO] David Grant has logged in
+[16:33:52] [INFO] Get all discounts
+[16:33:52] [INFO] Get product 2
+[16:33:52] [INFO] Get all discounts
+[16:33:52] [INFO] Get product 2
+[16:34:02] [INFO] Add discount 0
+[16:34:02] [INFO] Get all discounts
+[16:34:02] [INFO] Get product 2
+[16:34:02] [INFO] Get product 2
+[16:34:06] [INFO] Remove discount 1
+[16:34:06] [INFO] Get all discounts
+[16:34:06] [INFO] Get product 2
+[16:34:21] [INFO] Bessey has connected
+[16:34:21] [INFO] Received GETSETTING from server
+[16:34:21] [INFO] Received GETSETTING from server
+[16:34:21] [INFO] Received GETALLDISCOUNTS from server
+[16:34:21] [INFO] Get all discounts
+[16:34:21] [INFO] Get product 2
+[16:34:21] [INFO] Received GETALLSCREENS from server
+[16:34:23] [INFO] Received GETSTAFF from server
+[16:34:23] [INFO] Get staff 1
+[16:34:23] [INFO] Received TILLLOGIN from server
+[16:34:23] [INFO] David Grant has logged in from Bessey
+[16:34:23] [INFO] Received RESUMESALE from server
+[16:34:26] [INFO] Received GETPRODUCTBARCODE from server
+[16:34:26] [INFO] Get Product 101
+[16:34:28] [INFO] Received GETPRODUCTBARCODE from server
+[16:34:28] [INFO] Get Product 102
+[16:35:20] [INFO] Received ADDSALE from server
+[16:35:20] [INFO] Purchase product 1
+[16:35:20] [WARNING] 1 is below minimum stock level
+[16:35:20] [INFO] Purchase product 2
+[16:35:20] [WARNING] 2 is below minimum stock level
+[16:35:21] [INFO] Received GETSETTING from server
+[16:35:28] [INFO] Received ADDSALE from server
+[16:35:28] [INFO] Purchase product 2
+[16:35:28] [WARNING] 2 is below minimum stock level
+[16:35:28] [INFO] Received GETSETTING from server
+[16:35:35] [INFO] Received TILLLOGOUT from server
+[16:35:35] [INFO] David Grant has logged out
+[16:35:35] [INFO] Received SUSPENDSALE from server
+[16:35:36] [INFO] Received CONNTERM from server
+[16:35:36] [INFO] Bessey has disconnected
+[16:37:29] [INFO] Bessey has connected
+[16:37:29] [INFO] Received GETSETTING from server
+[16:37:29] [INFO] Received GETSETTING from server
+[16:37:29] [INFO] Received GETALLDISCOUNTS from server
+[16:37:29] [INFO] Get all discounts
+[16:37:29] [INFO] Get product 2
+[16:37:29] [INFO] Received GETALLSCREENS from server
+[16:37:30] [INFO] Received GETSTAFF from server
+[16:37:30] [INFO] Get staff 1
+[16:37:31] [INFO] Received TILLLOGIN from server
+[16:37:31] [INFO] David Grant has logged in from Bessey
+[16:37:31] [INFO] Received RESUMESALE from server
+[16:37:33] [INFO] Received GETPRODUCTBARCODE from server
+[16:37:33] [INFO] Get Product 101
+[16:37:38] [INFO] Received ADDSALE from server
+[16:37:38] [INFO] Purchase product 2
+[16:37:38] [WARNING] 2 is below minimum stock level
+[16:37:38] [INFO] Purchase product 1
+[16:37:38] [WARNING] 1 is below minimum stock level
+[16:37:38] [INFO] Received GETSETTING from server
+[16:37:44] [INFO] Received GETPRODUCTBARCODE from server
+[16:37:44] [INFO] Get Product 102
+[16:38:00] [INFO] Received ADDSALE from server
+[16:38:00] [INFO] Purchase product 1
+[16:38:00] [WARNING] 1 is below minimum stock level
+[16:38:00] [INFO] Purchase product 2
+[16:38:00] [WARNING] 2 is below minimum stock level
+[16:38:01] [INFO] Received GETSETTING from server
+[16:38:07] [INFO] Received ADDSALE from server
+[16:38:07] [INFO] Purchase product 2
+[16:38:07] [WARNING] 2 is below minimum stock level
+[16:38:08] [INFO] Received GETSETTING from server
+[16:38:14] [INFO] Received GETPRODUCTBARCODE from server
+[16:38:14] [INFO] Get Product 1012
+[16:38:22] [INFO] Received ADDSALE from server
+[16:38:22] [INFO] Purchase product 2
+[16:38:22] [WARNING] 2 is below minimum stock level
+[16:38:24] [INFO] Received GETSETTING from server
+[16:38:24] [INFO] Received TILLLOGOUT from server
+[16:38:24] [INFO] David Grant has logged out
+[16:38:25] [INFO] Received CONNTERM from server
+[16:38:25] [INFO] Bessey has disconnected
+[16:38:29] [INFO] Get all discounts
+[16:38:29] [INFO] Get product 2
+[16:38:29] [INFO] Get all discounts
+[16:38:29] [INFO] Get product 2
+[16:38:53] [INFO] New Product 3 added
+[16:38:55] [INFO] Get all discounts
+[16:38:55] [INFO] Get product 2
+[16:38:55] [INFO] Get all discounts
+[16:38:55] [INFO] Get product 2
+[16:38:58] [INFO] Get all discounts
+[16:38:58] [INFO] Get product 2
+[16:38:58] [INFO] Get all discounts
+[16:38:58] [INFO] Get product 2
+[16:39:05] [INFO] Get all discounts
+[16:39:05] [INFO] Get product 2
+[16:39:07] [INFO] Get all discounts
+[16:39:07] [INFO] Get product 2
+[16:39:10] [INFO] Add discount 0
+[16:39:10] [INFO] Get all discounts
+[16:39:10] [INFO] Get product 2
+[16:39:10] [INFO] Get product 3
+[16:39:10] [INFO] Get all discounts
+[16:39:10] [INFO] Get product 2
+[16:39:10] [INFO] Get product 3
+[16:39:18] [INFO] Bessey has connected
+[16:39:18] [INFO] Received GETSETTING from server
+[16:39:18] [INFO] Received GETSETTING from server
+[16:39:18] [INFO] Received GETALLDISCOUNTS from server
+[16:39:18] [INFO] Get all discounts
+[16:39:18] [INFO] Get product 2
+[16:39:18] [INFO] Get product 3
+[16:39:18] [INFO] Received GETALLSCREENS from server
+[16:39:18] [INFO] Received GETSTAFF from server
+[16:39:18] [INFO] Get staff 1
+[16:39:19] [INFO] Received TILLLOGIN from server
+[16:39:19] [INFO] David Grant has logged in from Bessey
+[16:39:19] [INFO] Received RESUMESALE from server
+[16:39:31] [INFO] Received GETPRODUCTBARCODE from server
+[16:39:31] [INFO] Get Product 506002047972
+[16:39:38] [INFO] Received GETPRODUCTBARCODE from server
+[16:39:38] [INFO] Get Product 506002047972
+[16:39:47] [INFO] Get all discounts
+[16:39:47] [INFO] Get product 2
+[16:39:47] [INFO] Get product 3
+[16:39:58] [INFO] Received GETPRODUCTBARCODE from server
+[16:39:58] [INFO] Get Product 5060020474972
+[16:40:04] [INFO] Received ADDSALE from server
+[16:40:04] [INFO] Purchase product 3
+[16:40:04] [WARNING] 3 is below minimum stock level
+[16:40:05] [INFO] Received GETSETTING from server
+[16:40:09] [INFO] Received GETPRODUCTBARCODE from server
+[16:40:09] [INFO] Get Product 102
+[16:40:26] [INFO] Received ADDSALE from server
+[16:40:26] [INFO] Purchase product 2
+[16:40:26] [WARNING] 2 is below minimum stock level
+[16:40:26] [INFO] Purchase product 3
+[16:40:26] [WARNING] 3 is below minimum stock level
+[16:40:27] [INFO] Received EMAILRECEIPT from server
+[16:40:36] [WARNING] The connection to the terminal was shut down forcefully
+[16:40:36] [INFO] Logging staff out
+[16:40:40] [INFO] Bessey has connected
+[16:40:40] [INFO] Received GETSETTING from server
+[16:40:40] [INFO] Received GETSETTING from server
+[16:40:40] [INFO] Received GETALLDISCOUNTS from server
+[16:40:40] [INFO] Get all discounts
+[16:40:40] [INFO] Get product 2
+[16:40:40] [INFO] Get product 3
+[16:40:40] [INFO] Received GETALLSCREENS from server
+[16:40:42] [INFO] Received GETSTAFF from server
+[16:40:42] [INFO] Get staff 1
+[16:40:42] [INFO] Received TILLLOGIN from server
+[16:40:42] [INFO] David Grant has logged in from Bessey
+[16:40:42] [INFO] Received RESUMESALE from server
+[16:40:45] [INFO] Received GETPRODUCTBARCODE from server
+[16:40:45] [INFO] Get Product 5060020474972
+[16:40:48] [INFO] Received GETPRODUCTBARCODE from server
+[16:40:48] [INFO] Get Product 102
+[16:40:54] [INFO] Received ADDSALE from server
+[16:40:54] [INFO] Purchase product 3
+[16:40:54] [WARNING] 3 is below minimum stock level
+[16:40:54] [INFO] Purchase product 2
+[16:40:54] [WARNING] 2 is below minimum stock level
+[16:40:54] [INFO] Received GETSETTING from server
+[16:40:55] [INFO] Received TILLLOGOUT from server
+[16:40:55] [INFO] David Grant has logged out
+[16:40:56] [INFO] Received CONNTERM from server
+[16:40:56] [INFO] Bessey has disconnected

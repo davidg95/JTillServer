@@ -32,6 +32,8 @@ public class DiscountsWindow extends javax.swing.JFrame {
     private final DefaultTableModel model;
     private List<Discount> currentTableContents;
 
+    private Product product;
+
     /**
      * Creates new form DiscountsWindow
      */
@@ -148,6 +150,8 @@ public class DiscountsWindow extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        txtProduct = new javax.swing.JTextField();
 
         setTitle("Discounts");
 
@@ -238,6 +242,15 @@ public class DiscountsWindow extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setText("Product Trigger:");
+
+        txtProduct.setEditable(false);
+        txtProduct.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtProductMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -248,11 +261,13 @@ public class DiscountsWindow extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel3))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtName)
-                            .addComponent(txtPercentage)))
+                            .addComponent(txtPercentage)
+                            .addComponent(txtProduct)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -291,7 +306,11 @@ public class DiscountsWindow extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(txtPercentage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 245, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(txtProduct, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 219, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnNew)
                             .addComponent(btnSave)
@@ -328,7 +347,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
                 } else if (percentage > 100 || percentage < 0) {
                     JOptionPane.showMessageDialog(this, "Please enter a value between 0 and 100", "Discount", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    d = new Discount(name, percentage, BigDecimal.ZERO);
+                    d = new Discount(name, percentage, BigDecimal.ZERO, product);
                     try {
                         Discount dis = dbConn.addDiscount(d);
                         showAllDiscounts();
@@ -423,6 +442,15 @@ public class DiscountsWindow extends javax.swing.JFrame {
         btnSearch.doClick();
     }//GEN-LAST:event_txtSearchActionPerformed
 
+    private void txtProductMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtProductMouseClicked
+        Product p = ProductSelectDialog.showDialog(this, dbConn);
+
+        if (p != null) {
+            txtProduct.setText(p.getLongName());
+            product = p;
+        }
+    }//GEN-LAST:event_txtProductMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnDelete;
@@ -433,10 +461,12 @@ public class DiscountsWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPercentage;
+    private javax.swing.JTextField txtProduct;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }
