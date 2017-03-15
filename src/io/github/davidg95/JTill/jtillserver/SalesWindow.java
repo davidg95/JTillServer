@@ -53,7 +53,6 @@ public class SalesWindow extends javax.swing.JFrame {
     public static void update() {
         if (frame != null) {
             frame.showAllSales();
-            frame.setTakings();
         }
     }
 
@@ -66,38 +65,6 @@ public class SalesWindow extends javax.swing.JFrame {
         }
 
         tableSales.setModel(model);
-    }
-
-    private void setTakings() {
-        try {
-            List<Sale> sales = dc.getAllSales();
-            BigDecimal val = new BigDecimal("0");
-            int count = sales.size();
-            for (Sale s : sales) {
-                val.add(s.getTotal());
-            }
-            if (val.longValueExact() > 1) {
-                DecimalFormat df = new DecimalFormat("#.00"); // Set your desired format here.
-                lblCurrentTakings.setText("Current Takings: £" + df.format(val));
-            } else {
-                DecimalFormat df = new DecimalFormat("0.00"); // Set your desired format here.
-                lblCurrentTakings.setText("Current Takings: £" + df.format(val));
-            }
-            lblSaleCount.setText("Current Sale Count: " + count);
-
-            if (val.longValueExact() > 1) {
-                DecimalFormat df = new DecimalFormat("#.00"); // Set your desired format here.
-                lblDailyTakings.setText("Daily Takings: £" + df.format(val));
-            } else {
-                DecimalFormat df = new DecimalFormat("0.00"); // Set your desired format here.
-                lblDailyTakings.setText("Daily Takings: £" + df.format(val));
-            }
-            lblDailySales.setText("Daily Sales: " + count);
-
-        } catch (SQLException | IOException ex) {
-            showError(ex);
-        }
-
     }
 
     private void showAllSales() {
@@ -129,11 +96,6 @@ public class SalesWindow extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableSales = new javax.swing.JTable();
         btnClose = new javax.swing.JButton();
-        lblCurrentTakings = new javax.swing.JLabel();
-        lblSaleCount = new javax.swing.JLabel();
-        btnReset = new javax.swing.JButton();
-        lblDailyTakings = new javax.swing.JLabel();
-        lblDailySales = new javax.swing.JLabel();
 
         setTitle("Sales");
 
@@ -176,62 +138,26 @@ public class SalesWindow extends javax.swing.JFrame {
             }
         });
 
-        lblCurrentTakings.setText("Current Takings: £0.00");
-
-        lblSaleCount.setText("Current Sale Count: 0");
-
-        btnReset.setText("Rest Daily Counter");
-        btnReset.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnResetActionPerformed(evt);
-            }
-        });
-
-        lblDailyTakings.setText("Daily Takings: £0.00");
-
-        lblDailySales.setText("Daily Sales: 0");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblCurrentTakings)
-                            .addComponent(lblSaleCount)
-                            .addComponent(btnReset)
-                            .addComponent(lblDailyTakings)
-                            .addComponent(lblDailySales))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(139, 139, 139)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(43, 43, 43)
-                        .addComponent(lblDailyTakings)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblDailySales)
-                        .addGap(66, 66, 66)
-                        .addComponent(lblCurrentTakings)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblSaleCount)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnReset)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -243,10 +169,6 @@ public class SalesWindow extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 
-    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        this.setTakings();
-    }//GEN-LAST:event_btnResetActionPerformed
-
     private void tableSalesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableSalesMouseClicked
         if (evt.getClickCount() == 2) {
             SaleDialog.showSaleDialog(this, currentTableContents.get(tableSales.getSelectedRow()), dc);
@@ -255,12 +177,7 @@ public class SalesWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
-    private javax.swing.JButton btnReset;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblCurrentTakings;
-    private javax.swing.JLabel lblDailySales;
-    private javax.swing.JLabel lblDailyTakings;
-    private javax.swing.JLabel lblSaleCount;
     private javax.swing.JTable tableSales;
     // End of variables declaration//GEN-END:variables
 }
