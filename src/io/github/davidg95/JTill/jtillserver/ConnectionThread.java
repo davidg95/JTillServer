@@ -11,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.net.Socket;
+import java.net.SocketException;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.util.List;
@@ -96,7 +97,20 @@ public class ConnectionThread extends Thread {
             while (!conn_term) {
                 String input;
 
-                Object o = obIn.readObject();
+                Object o;
+
+                try {
+                    o = obIn.readObject();
+                } catch (SocketException ex) {
+                    log.log(Level.WARNING, "The connection to the terminal was shut down forcefully");
+                    try {
+                        log.log(Level.INFO, "Logging staff out");
+                        dc.tillLogout(staff);
+                    } catch (StaffNotFoundException ex1) {
+                        log.log(Level.WARNING, null, ex1);
+                    }
+                    return;
+                }
                 try {
                     sem.acquire();
                 } catch (InterruptedException ex) {

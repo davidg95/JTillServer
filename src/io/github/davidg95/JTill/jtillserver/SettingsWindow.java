@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
  * @author David
  */
 public class SettingsWindow extends javax.swing.JFrame {
-    
+
     private final Logger log = Logger.getGlobal();
 
     public static SettingsWindow frame;
@@ -66,6 +66,12 @@ public class SettingsWindow extends javax.swing.JFrame {
             txtPassword.setText(dc.getSetting("db_password"));
             chkLogOut.setSelected(dc.getSetting("AUTO_LOGOUT").equals("TRUE"));
             txtLogonMessage.setText(dc.getSetting("LOGON_MESSAGE"));
+            spinSaleCache.setValue(Integer.parseInt(dc.getSetting("MAX_CACHE_SALES")));
+            if (dc.getSetting("SEND_PRODUCTS_START").equals("TRUE")) {
+                chkSendProducts.setSelected(true);
+            } else {
+                chkSendProducts.setSelected(false);
+            }
             if (dc.getSetting("LOGOUT_TIMEOUT").equals("-1")) {
                 chkLogoutTimeout.setSelected(false);
                 txtLogoutTimeout.setText("");
@@ -130,6 +136,10 @@ public class SettingsWindow extends javax.swing.JFrame {
         txtOutgoingAddress = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         btnPermissions = new javax.swing.JButton();
+        chkSendProducts = new javax.swing.JCheckBox();
+        jLabel13 = new javax.swing.JLabel();
+        spinSaleCache = new javax.swing.JSpinner();
+        btnSaveCache = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JTill Settings");
@@ -396,6 +406,17 @@ public class SettingsWindow extends javax.swing.JFrame {
             }
         });
 
+        chkSendProducts.setText("Send all products to terminal on startup");
+
+        jLabel13.setText("Max sales to cache on terminal:");
+
+        btnSaveCache.setText("Save");
+        btnSaveCache.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveCacheActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -436,31 +457,53 @@ public class SettingsWindow extends javax.swing.JFrame {
                                 .addComponent(btnLogonMessage)
                                 .addGap(60, 60, 60))))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnPermissions)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnPermissions)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(chkSendProducts)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel13)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(spinSaleCache, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(30, 30, 30)
+                                .addComponent(btnSaveCache)))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(panelSecurity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnEditNetwork)
-                        .addComponent(panelNetwork, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(panelSecurity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(btnEditNetwork)
+                                .addComponent(panelNetwork, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(panelDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnDatabaseDefault))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(btnEditDatabase)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(panelDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnDatabaseDefault))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addComponent(btnEditDatabase)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkSendProducts)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel13)
+                            .addComponent(spinSaleCache, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSaveCache)
+                        .addGap(45, 45, 45)))
                 .addComponent(btnPermissions)
                 .addGap(13, 13, 13)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -607,6 +650,27 @@ public class SettingsWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnPermissionsActionPerformed
 
+    private void btnSaveCacheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveCacheActionPerformed
+        if (chkSendProducts.isSelected()) {
+            try {
+                dc.setSetting("SEND_PRODUCTS_START", "TRUE");
+            } catch (IOException ex) {
+                log.log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                dc.setSetting("SEND_PRODUCTS_START", "FALSE");
+            } catch (IOException ex) {
+                log.log(Level.SEVERE, null, ex);
+            }
+        }
+        try {
+            dc.setSetting("MAX_CACHE_SALES", "" + (int) spinSaleCache.getValue());
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnSaveCacheActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnDatabaseDefault;
@@ -615,13 +679,16 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnLogonMessage;
     private javax.swing.JButton btnPermissions;
     private javax.swing.JButton btnSave;
+    private javax.swing.JButton btnSaveCache;
     private javax.swing.JButton btnSaveSecurity;
     private javax.swing.JCheckBox chkLogOut;
     private javax.swing.JCheckBox chkLogoutTimeout;
+    private javax.swing.JCheckBox chkSendProducts;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -635,6 +702,7 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JPanel panelDatabase;
     private javax.swing.JPanel panelNetwork;
     private javax.swing.JPanel panelSecurity;
+    private javax.swing.JSpinner spinSaleCache;
     private javax.swing.JTextField txtAddress;
     private javax.swing.JTextArea txtLogonMessage;
     private javax.swing.JTextField txtLogoutTimeout;
