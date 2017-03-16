@@ -77,7 +77,7 @@ public class CategorySelectDialog extends javax.swing.JDialog {
         model.setRowCount(0);
 
         for (Category c : currentTableContents) {
-            Object[] s = new Object[]{c.getID(), c.getName()};
+            Object[] s = new Object[]{c.getId(), c.getName()};
             model.addRow(s);
         }
 

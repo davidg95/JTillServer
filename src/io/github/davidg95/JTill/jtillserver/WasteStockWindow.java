@@ -6,7 +6,6 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Component;
 import java.awt.Image;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -16,14 +15,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import javax.swing.table.DefaultTableModel;
 
 /**

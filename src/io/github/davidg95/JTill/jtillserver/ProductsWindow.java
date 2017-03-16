@@ -224,7 +224,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             Category c = p.getCategory();
             index = 0;
             for (int i = 0; i < categorys.size(); i++) {
-                if (categorys.get(i).getID() == c.getID()) {
+                if (categorys.get(i).getId() == c.getId()) {
                     index = i;
                     break;
                 }

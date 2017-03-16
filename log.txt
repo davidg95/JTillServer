@@ -1,43 +1,113 @@
-JTill log Thu Mar 16 12:34:03 GMT 2017
-[12:34:03] [INFO] Starting JTill Server
-[12:34:03] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[12:34:04] [INFO] Get staff count
-[12:34:04] [INFO] Starting Thread Pool Excecutor
-[12:34:04] [INFO] JTill Server local IP address is 192.168.1.65
-[12:34:04] [INFO] Server Socket running on port number 52341
-[12:34:04] [INFO] Ready to accept connections
-[12:34:06] [INFO] Login Staff dgrant
-[12:34:06] [INFO] David Grant has logged in
-[12:34:16] [INFO] Get product 1
-[12:34:16] [INFO] Product 1 updated
-[12:34:19] [INFO] Get product 1
-[12:34:19] [INFO] Get product 1
-[12:34:19] [INFO] Get product 1
-[12:34:19] [INFO] Get product 1
-[12:34:19] [INFO] Get product 1
-[12:34:19] [INFO] Get product 1
-[12:34:24] [INFO] Get product 1
-[12:34:24] [INFO] Get product 1
-[12:34:24] [INFO] Get product 1
-[12:34:24] [INFO] Get product 1
-[12:34:24] [INFO] Get product 1
-[12:34:24] [INFO] Get product 1
-[12:34:33] [INFO] Get product 1
-[12:34:33] [INFO] Product 1 updated
-[12:34:36] [INFO] Get product 1
-[12:34:36] [INFO] Get product 1
-[12:34:36] [INFO] Get product 1
-[12:34:36] [INFO] Get product 1
-[12:34:36] [INFO] Get product 1
-[12:34:36] [INFO] Get product 1
-[12:34:36] [INFO] Get product 1
-[12:34:40] [INFO] Get all discounts
-[12:34:40] [INFO] Get all discounts
-[12:34:45] [INFO] Get Product 1202
-[12:34:48] [INFO] Get product 1
-[12:34:48] [INFO] Product 1 updated
-[12:34:52] [INFO] Stopping JTIll Server
-[12:34:52] [INFO] Saving properties
-[12:34:52] [INFO] Disconnecting from database
-[12:34:52] [INFO] Database disconnected
-[12:34:52] [INFO] Stopping
+JTill log Thu Mar 16 13:25:58 GMT 2017
+[13:25:58] [INFO] Starting JTill Server
+[13:25:58] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[13:25:58] [INFO] Get staff count
+[13:25:58] [INFO] Starting Thread Pool Excecutor
+[13:25:58] [INFO] JTill Server local IP address is 192.168.1.65
+[13:25:58] [INFO] Server Socket running on port number 52341
+[13:25:58] [INFO] Ready to accept connections
+[13:26:00] [INFO] Login Staff dgrant
+[13:26:00] [INFO] David Grant has logged in
+[13:26:04] [INFO] Get product 1
+[13:26:04] [INFO] Get product 1
+[13:26:04] [INFO] Get product 1
+[13:26:04] [INFO] Get product 1
+[13:26:04] [INFO] Get product 1
+[13:26:04] [INFO] Get product 1
+[13:26:04] [INFO] Get product 1
+[13:26:04] [INFO] Get product 1
+[13:26:06] [INFO] Get all customers
+[13:26:06] [INFO] Get all staff
+[13:26:06] [INFO] Get all discounts
+[13:26:06] [INFO] Get product 1
+[13:26:06] [INFO] Get product 1
+[13:26:06] [INFO] Get product 1
+[13:26:06] [INFO] Get product 1
+[13:26:06] [INFO] Get product 1
+[13:26:06] [INFO] Get product 1
+[13:26:06] [INFO] Get product 1
+[13:26:06] [INFO] Get product 1
+[13:26:06] [INFO] Get product 1
+[13:26:06] [INFO] Get product 1
+[13:26:06] [INFO] Get product 1
+[13:26:06] [INFO] Get product 1
+[13:26:06] [INFO] Get product 1
+[13:26:06] [INFO] Get product 1
+[13:26:06] [INFO] Get product 1
+[13:26:06] [INFO] Get product 1
+[13:26:11] [INFO] Get all customers
+[13:26:11] [INFO] Get all staff
+[13:26:11] [INFO] Get all discounts
+[13:26:11] [INFO] Get product 1
+[13:26:11] [INFO] Get product 1
+[13:26:11] [INFO] Get product 1
+[13:26:11] [INFO] Get product 1
+[13:26:11] [INFO] Get product 1
+[13:26:11] [INFO] Get product 1
+[13:26:11] [INFO] Get product 1
+[13:26:11] [INFO] Get product 1
+[13:26:11] [INFO] Get product 1
+[13:26:11] [INFO] Get product 1
+[13:26:11] [INFO] Get product 1
+[13:26:11] [INFO] Get product 1
+[13:26:11] [INFO] Get product 1
+[13:26:11] [INFO] Get product 1
+[13:26:11] [INFO] Get product 1
+[13:26:11] [INFO] Get product 1
+[13:26:15] [INFO] Get all customers
+[13:26:15] [INFO] Get all staff
+[13:26:15] [INFO] Get all discounts
+[13:26:15] [INFO] Get product 1
+[13:26:15] [INFO] Get product 1
+[13:26:15] [INFO] Get product 1
+[13:26:15] [INFO] Get product 1
+[13:26:15] [INFO] Get product 1
+[13:26:15] [INFO] Get product 1
+[13:26:15] [INFO] Get product 1
+[13:26:15] [INFO] Get product 1
+[13:26:15] [INFO] Get product 1
+[13:26:15] [INFO] Get product 1
+[13:26:15] [INFO] Get product 1
+[13:26:15] [INFO] Get product 1
+[13:26:15] [INFO] Get product 1
+[13:26:15] [INFO] Get product 1
+[13:26:15] [INFO] Get product 1
+[13:26:15] [INFO] Get product 1
+[13:26:18] [INFO] Get all customers
+[13:26:18] [INFO] Get all staff
+[13:26:18] [INFO] Get all discounts
+[13:26:18] [INFO] Get product 1
+[13:26:18] [INFO] Get product 1
+[13:26:18] [INFO] Get product 1
+[13:26:18] [INFO] Get product 1
+[13:26:18] [INFO] Get product 1
+[13:26:18] [INFO] Get product 1
+[13:26:18] [INFO] Get product 1
+[13:26:18] [INFO] Get product 1
+[13:26:18] [INFO] Get product 1
+[13:26:18] [INFO] Get product 1
+[13:26:18] [INFO] Get product 1
+[13:26:18] [INFO] Get product 1
+[13:26:18] [INFO] Get product 1
+[13:26:18] [INFO] Get product 1
+[13:26:18] [INFO] Get product 1
+[13:26:18] [INFO] Get product 1
+[13:26:20] [INFO] Get all customers
+[13:26:20] [INFO] Get all staff
+[13:26:20] [INFO] Get all discounts
+[13:26:20] [INFO] Get product 1
+[13:26:20] [INFO] Get product 1
+[13:26:20] [INFO] Get product 1
+[13:26:20] [INFO] Get product 1
+[13:26:20] [INFO] Get product 1
+[13:26:20] [INFO] Get product 1
+[13:26:20] [INFO] Get product 1
+[13:26:20] [INFO] Get product 1
+[13:26:20] [INFO] Get product 1
+[13:26:20] [INFO] Get product 1
+[13:26:20] [INFO] Get product 1
+[13:26:20] [INFO] Get product 1
+[13:26:20] [INFO] Get product 1
+[13:26:20] [INFO] Get product 1
+[13:26:20] [INFO] Get product 1
+[13:26:20] [INFO] Get product 1

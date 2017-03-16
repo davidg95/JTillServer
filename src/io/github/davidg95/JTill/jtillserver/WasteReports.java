@@ -8,6 +8,7 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.DataConnect;
 import io.github.davidg95.JTill.jtill.Product;
 import io.github.davidg95.JTill.jtill.WasteItem;
+import io.github.davidg95.JTill.jtill.WasteReason;
 import io.github.davidg95.JTill.jtill.WasteReport;
 import java.awt.Image;
 import java.io.IOException;
@@ -35,6 +36,7 @@ public class WasteReports extends javax.swing.JFrame {
     private final Image icon;
 
     private Product p;
+    private WasteReason wasteReason;
 
     private static final int CONTAINING = 0;
     private static final int REASON = 1;
@@ -251,12 +253,13 @@ public class WasteReports extends javax.swing.JFrame {
                 break;
             }
             case REASON: {
-                String terms = txtSearch.getText();
-                for (WasteReport wr : wasteReports) {
-                    for (WasteItem wi : wr.getItems()) {
-                        if (wi.getReason().getReason().equalsIgnoreCase(terms)) {
-                            newList.add(wr);
-                            break;
+                if (this.wasteReason != null) {
+                    for (WasteReport wr : wasteReports) {
+                        for (WasteItem wi : wr.getItems()) {
+                            if (wi.getReason().equals(wasteReason)) {
+                                newList.add(wr);
+                                break;
+                            }
                         }
                     }
                 }
@@ -286,7 +289,7 @@ public class WasteReports extends javax.swing.JFrame {
         }
         wasteReports = newList;
         reloadTable();
-        if(wasteReports.size() == 1){
+        if (wasteReports.size() == 1) {
             WasteStockWindow.showWindow(dc, wasteReports.get(0), icon);
         }
     }//GEN-LAST:event_btnSearchActionPerformed
@@ -302,9 +305,14 @@ public class WasteReports extends javax.swing.JFrame {
 
     private void txtSearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSearchMouseClicked
         if (cmbSearch.getSelectedIndex() == CONTAINING) {
-            p = ProductSelectDialog.showDialog(this, dc);
+            p = (Product) JTillObjectSelectDialog.showDialog(this, dc, "Select a Product", Product.class);
             if (p != null) {
                 txtSearch.setText(p.getName());
+            }
+        } else if (cmbSearch.getSelectedIndex() == REASON) {
+            wasteReason = (WasteReason) JTillObjectSelectDialog.showDialog(jLabel1, dc, "Select a WasteReason", WasteReason.class);
+            if (wasteReason != null) {
+                txtSearch.setText(wasteReason.getName());
             }
         }
     }//GEN-LAST:event_txtSearchMouseClicked
