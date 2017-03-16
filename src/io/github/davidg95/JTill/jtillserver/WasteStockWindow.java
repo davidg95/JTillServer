@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Component;
 import java.awt.Image;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -16,8 +17,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.table.DefaultTableModel;
 
@@ -34,6 +39,8 @@ public class WasteStockWindow extends javax.swing.JFrame {
     private final List<WasteItem> wasteItems;
     private final DefaultTableModel model;
     private final DefaultComboBoxModel cmbModel;
+    JComboBox tableCombo = new JComboBox();
+    DefaultComboBoxModel tableComboModel;
 
     /**
      * Creates new form WasteStockWindow
@@ -86,14 +93,21 @@ public class WasteStockWindow extends javax.swing.JFrame {
     }
 
     private void init() {
+//        JComboBox tableCombo = new JComboBox();
+//        DefaultComboBoxModel tableComboModel;
+//        tableComboModel = (DefaultComboBoxModel) tableCombo.getModel();
+//        tableCombo.setModel(tableComboModel);
         try {
             List<WasteReason> reasons = dc.getAllWasteReasons();
             for (WasteReason r : reasons) {
                 cmbModel.addElement(r);
+//                tableComboModel.addElement(r);
             }
         } catch (IOException | SQLException ex) {
             Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+//        tblProducts.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(tableCombo));
     }
 
     private void setTable() {

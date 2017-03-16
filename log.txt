@@ -1,46 +1,43 @@
-JTill log Thu Mar 16 11:57:57 GMT 2017
-[11:57:57] [INFO] Starting JTill Server
-[11:57:57] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[11:57:57] [INFO] The database does not exists, so it is getting created
-[11:57:58] [INFO] Creating tables
-[11:57:58] [INFO] Created tills table
-[11:57:58] [INFO] Created tax table
-[11:57:58] [INFO] Created plus table
-[11:57:58] [INFO] Created categorys table
-[11:57:58] [INFO] Created configs table
-[11:57:58] [INFO] Created sales table
-[11:57:58] [INFO] Created customers table
-[11:57:58] [INFO] Created products table
-[11:57:58] [INFO] Created discounts table
-[11:57:58] [INFO] Created saleItems table
-[11:57:58] [INFO] Created staff table
-[11:57:58] [INFO] Created screens table
-[11:57:58] [INFO] Created buttons table
-[11:57:58] [INFO] Created waste reports table
-[11:57:58] [INFO] Created table waste reasons
-[11:57:58] [INFO] Created table waste items
-[11:58:04] [INFO] Add staff 0
-[11:58:04] [INFO] Starting Thread Pool Excecutor
-[11:58:04] [INFO] JTill Server local IP address is 192.168.1.65
-[11:58:04] [INFO] Server Socket running on port number 52341
-[11:58:04] [INFO] Ready to accept connections
-[11:58:07] [INFO] Login Staff dgrant
-[11:58:07] [INFO] David Grant has logged in
-[11:58:55] [INFO] Get Product 1202
-[11:59:07] [INFO] New Product 1 added
-[11:59:19] [INFO] Get Product 1202
-[11:59:22] [INFO] Get product 1
-[11:59:22] [INFO] Product 1 updated
-[11:59:27] [INFO] Get Product 1202
-[12:00:00] [INFO] Get Product 1202
-[12:00:02] [INFO] Get product 1
-[12:00:02] [INFO] Product 1 updated
-[12:00:05] [INFO] Get product 1
-[12:00:17] [INFO] Get product 1
-[12:01:15] [INFO] Get product 1
-[12:01:15] [INFO] Product 1 updated
-[12:01:18] [INFO] Get product 1
-[12:01:18] [INFO] Get product 1
-[12:01:30] [INFO] Get product 1
-[12:01:30] [INFO] Get product 1
-[12:01:32] [INFO] David Grant has logged out
+JTill log Thu Mar 16 12:34:03 GMT 2017
+[12:34:03] [INFO] Starting JTill Server
+[12:34:03] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[12:34:04] [INFO] Get staff count
+[12:34:04] [INFO] Starting Thread Pool Excecutor
+[12:34:04] [INFO] JTill Server local IP address is 192.168.1.65
+[12:34:04] [INFO] Server Socket running on port number 52341
+[12:34:04] [INFO] Ready to accept connections
+[12:34:06] [INFO] Login Staff dgrant
+[12:34:06] [INFO] David Grant has logged in
+[12:34:16] [INFO] Get product 1
+[12:34:16] [INFO] Product 1 updated
+[12:34:19] [INFO] Get product 1
+[12:34:19] [INFO] Get product 1
+[12:34:19] [INFO] Get product 1
+[12:34:19] [INFO] Get product 1
+[12:34:19] [INFO] Get product 1
+[12:34:19] [INFO] Get product 1
+[12:34:24] [INFO] Get product 1
+[12:34:24] [INFO] Get product 1
+[12:34:24] [INFO] Get product 1
+[12:34:24] [INFO] Get product 1
+[12:34:24] [INFO] Get product 1
+[12:34:24] [INFO] Get product 1
+[12:34:33] [INFO] Get product 1
+[12:34:33] [INFO] Product 1 updated
+[12:34:36] [INFO] Get product 1
+[12:34:36] [INFO] Get product 1
+[12:34:36] [INFO] Get product 1
+[12:34:36] [INFO] Get product 1
+[12:34:36] [INFO] Get product 1
+[12:34:36] [INFO] Get product 1
+[12:34:36] [INFO] Get product 1
+[12:34:40] [INFO] Get all discounts
+[12:34:40] [INFO] Get all discounts
+[12:34:45] [INFO] Get Product 1202
+[12:34:48] [INFO] Get product 1
+[12:34:48] [INFO] Product 1 updated
+[12:34:52] [INFO] Stopping JTIll Server
+[12:34:52] [INFO] Saving properties
+[12:34:52] [INFO] Disconnecting from database
+[12:34:52] [INFO] Database disconnected
+[12:34:52] [INFO] Stopping
