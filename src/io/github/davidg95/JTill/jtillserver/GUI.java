@@ -378,6 +378,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         itemReceive = new javax.swing.JMenuItem();
         itemWasteStock = new javax.swing.JMenuItem();
         itemWasteReports = new javax.swing.JMenuItem();
+        itemReasons = new javax.swing.JMenuItem();
         itemDiscounts = new javax.swing.JMenuItem();
         itemCategorys = new javax.swing.JMenuItem();
         itemTaxes = new javax.swing.JMenuItem();
@@ -665,6 +666,14 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
             }
         });
         menuStock.add(itemWasteReports);
+
+        itemReasons.setText("Waste Reasons");
+        itemReasons.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemReasonsActionPerformed(evt);
+            }
+        });
+        menuStock.add(itemReasons);
 
         itemDiscounts.setText("Manage Discounts");
         itemDiscounts.addActionListener(new java.awt.event.ActionListener() {
@@ -959,6 +968,10 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         WasteReports.showWindow(dc, icon);
     }//GEN-LAST:event_itemWasteReportsActionPerformed
 
+    private void itemReasonsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReasonsActionPerformed
+        WasteReasonDialog.showDialog(this, dc);
+    }//GEN-LAST:event_itemReasonsActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -977,6 +990,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemDiscounts;
     private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenuItem itemLogin;
+    private javax.swing.JMenuItem itemReasons;
     private javax.swing.JMenuItem itemReceive;
     private javax.swing.JMenuItem itemResetSales;
     private javax.swing.JMenuItem itemSales;

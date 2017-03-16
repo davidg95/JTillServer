@@ -226,7 +226,7 @@ public class WasteReports extends javax.swing.JFrame {
         if (evt.getClickCount() == 2) {
             if (index != -1) {
                 WasteReport wr = wasteReports.get(index);
-                WasteStockWindow.showWindow(wr, icon);
+                WasteStockWindow.showWindow(dc, wr, icon);
             }
         }
     }//GEN-LAST:event_tblReportsMouseClicked
@@ -287,7 +287,7 @@ public class WasteReports extends javax.swing.JFrame {
         wasteReports = newList;
         reloadTable();
         if(wasteReports.size() == 1){
-            WasteStockWindow.showWindow(wasteReports.get(0), icon);
+            WasteStockWindow.showWindow(dc, wasteReports.get(0), icon);
         }
     }//GEN-LAST:event_btnSearchActionPerformed
 

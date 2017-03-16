@@ -53,13 +53,16 @@ public class WasteStockWindow extends javax.swing.JFrame {
         init();
     }
 
-    public WasteStockWindow(WasteReport wr, Image icon) {
+    public WasteStockWindow(DataConnect dc, WasteReport wr, Image icon) {
         this.report = wr;
+        this.dc = dc;
         wasteItems = new ArrayList<>();
         initComponents();
         btnAddProduct.setEnabled(false);
         btnAddPlu.setEnabled(false);
         btnWaste.setEnabled(false);
+        cmbReason.setEnabled(false);
+        lblReason.setEnabled(false);
         lblTime.setText("Time: " + wr.getDate());
         setTitle("Waste Report " + report.getId());
         setIconImage(icon);
@@ -77,8 +80,8 @@ public class WasteStockWindow extends javax.swing.JFrame {
         window.setVisible(true);
     }
 
-    public static void showWindow(WasteReport wr, Image icon) {
-        window = new WasteStockWindow(wr, icon);
+    public static void showWindow(DataConnect dc, WasteReport wr, Image icon) {
+        window = new WasteStockWindow(dc, wr, icon);
         window.setVisible(true);
     }
 
@@ -117,7 +120,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
         btnAddPlu = new javax.swing.JButton();
         btnAddProduct = new javax.swing.JButton();
         lblTime = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        lblReason = new javax.swing.JLabel();
         lblValue = new javax.swing.JLabel();
         cmbReason = new javax.swing.JComboBox<>();
 
@@ -191,7 +194,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Reason:");
+        lblReason.setText("Reason:");
 
         lblValue.setText("Total Value: £0.00");
 
@@ -216,7 +219,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(lblTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1)
+                        .addComponent(lblReason)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cmbReason, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -227,7 +230,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1)
+                        .addComponent(lblReason)
                         .addComponent(cmbReason, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -374,8 +377,8 @@ public class WasteStockWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnWaste;
     private javax.swing.JComboBox<String> cmbReason;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblReason;
     private javax.swing.JLabel lblTime;
     private javax.swing.JLabel lblValue;
     private javax.swing.JTable tblProducts;
