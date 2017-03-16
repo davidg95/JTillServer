@@ -40,6 +40,7 @@ public class ConnectionThread extends Thread {
 
     private String site;
     private Staff staff;
+    private Till till;
 
     private ConnectionData currentData;
 
@@ -80,9 +81,9 @@ public class ConnectionThread extends Thread {
 
             if (!site.equals("NOPERM")) {
 
-                boolean allow = dc.connectTill(site);
+                till = dc.connectTill(site);
 
-                if (!allow) {
+                if (till == null) {
                     obOut.writeObject(ConnectionData.create("DISALLOW"));
                     conn_term = true;
                 } else {
@@ -90,8 +91,6 @@ public class ConnectionThread extends Thread {
                 }
             }
 
-            TillServer.g.increaceClientCount(site);
-            dc.getGUI().log(site + " has connected");
             log.log(Level.INFO, site + " has connected");
 
             while (!conn_term) {
@@ -779,6 +778,24 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
+                    case "DISCONNECTTILL": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                disconnectTill(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETCONNECTEDTILLS": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getAllConnectedTills();
+                            }
+                        }.start();
+                        break;
+                    }
                     case "SETSETTING": {
                         new Thread(inp[0]) {
                             @Override
@@ -1041,14 +1058,12 @@ public class ConnectionThread extends Thread {
                 }
                 sem.release();
             }
-            TillServer.g.decreaseClientCount(site);
-            dc.getGUI().log(site + " has disconnected");
             log.log(Level.INFO, site + " has disconnected");
-            socket.close();
         } catch (IOException | ClassNotFoundException ex) {
             log.log(Level.SEVERE, "There was an error with the conenction to " + site + ". The connection will be forecfully terminated", ex);
         } finally {
             try {
+                dc.disconnectTill(till);
                 socket.close();
             } catch (IOException ex) {
                 log.log(Level.SEVERE, null, ex);
@@ -2377,9 +2392,28 @@ public class ConnectionThread extends Thread {
                 return;
             }
             String t = (String) clone.getData();
-            boolean allowed = dc.connectTill(t);
-            obOut.writeObject(ConnectionData.create("CONNECT", allowed));
+            Till ti = dc.connectTill(t);
+            obOut.writeObject(ConnectionData.create("CONNECT", ti));
 
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void disconnectTill(ConnectionData data) {
+        ConnectionData clone = data.clone();
+        Till t = (Till) clone.getData();
+        dc.disconnectTill(t);
+    }
+
+    private void getAllConnectedTills() {
+        try {
+            try {
+                List<Till> ts = dc.getConnectedTills();
+                obOut.writeObject(ConnectionData.create("SUCC", ts));
+            } catch (IOException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);
         }

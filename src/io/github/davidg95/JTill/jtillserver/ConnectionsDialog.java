@@ -5,13 +5,18 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 /**
  * Dialog which shows all current connected clients.
@@ -22,18 +27,18 @@ public class ConnectionsDialog extends javax.swing.JDialog {
 
     private static JDialog dialog;
 
-    private final List<String> clients;
+    private final DataConnect dc;
     private final DefaultListModel model;
 
     /**
      * Creates new form ConnectionsDialog
      *
      * @param parent the parent component.
-     * @param clients the clients list.
+     * @param dc the data connection.
      */
-    public ConnectionsDialog(Window parent, List<String> clients) {
+    public ConnectionsDialog(Window parent, DataConnect dc) {
         super(parent);
-        this.clients = clients;
+        this.dc = dc;
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setModal(true);
@@ -45,14 +50,14 @@ public class ConnectionsDialog extends javax.swing.JDialog {
      * Method to show the connections dialog.
      *
      * @param parent the parent window.
-     * @param clients the list of clients to show.
+     * @param dc the data connection.
      */
-    public static void showConnectionsDialog(Component parent, List<String> clients) {
+    public static void showConnectionsDialog(Component parent, DataConnect dc) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new ConnectionsDialog(window, clients);
+        dialog = new ConnectionsDialog(window, dc);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setVisible(true);
     }
@@ -61,14 +66,18 @@ public class ConnectionsDialog extends javax.swing.JDialog {
      * Method to display the contents of the list in the dialog.
      */
     private void setList() {
-        if (clients.isEmpty()) {
-            model.addElement("There are no connected clients");
-        } else {
-            for (String s : clients) {
-                model.addElement(s);
+        try {
+            if (dc.getConnectedTills().isEmpty()) {
+                model.addElement("There are no connected clients");
+            } else {
+                for (Till t : dc.getConnectedTills()) {
+                    model.addElement(t.getName());
+                }
             }
+            lstConnections.setModel(model);
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
-        lstConnections.setModel(model);
     }
 
     /**
@@ -92,6 +101,11 @@ public class ConnectionsDialog extends javax.swing.JDialog {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
+        });
+        lstConnections.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lstConnectionsMouseClicked(evt);
+            }
         });
         jScrollPane1.setViewportView(lstConnections);
 
@@ -125,6 +139,15 @@ public class ConnectionsDialog extends javax.swing.JDialog {
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
+
+    private void lstConnectionsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstConnectionsMouseClicked
+        try {
+            Till t = dc.getConnectedTills().get(lstConnections.getSelectedIndex());
+            JOptionPane.showMessageDialog(this, "Till: " + t.getName() + "\nUncashed takings: £" + t.getUncashedTakings(), "Till", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_lstConnectionsMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;

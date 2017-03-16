@@ -122,6 +122,15 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
             lblProducts.setText("Products in database: UNKNOWN");
         }
     }
+    
+    @Override
+    public void updateTills(){
+        try {
+            lblClients.setText("Connections: " + dc.getConnectedTills().size());
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+    }
 
     /**
      * Initial setup of the gui which creates the database.
@@ -851,7 +860,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
     private void lblClientsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblClientsMouseClicked
         if (evt.getClickCount() == 2) {
-            ConnectionsDialog.showConnectionsDialog(this, connections);
+            ConnectionsDialog.showConnectionsDialog(this, dc);
         }
     }//GEN-LAST:event_lblClientsMouseClicked
 
