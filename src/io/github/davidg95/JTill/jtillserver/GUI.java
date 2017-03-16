@@ -378,17 +378,17 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         itemReceive = new javax.swing.JMenuItem();
         itemWasteStock = new javax.swing.JMenuItem();
         itemWasteReports = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        menuSetup = new javax.swing.JMenu();
         itemReasons = new javax.swing.JMenuItem();
+        itemTillScreens = new javax.swing.JMenuItem();
+        itemCustomers = new javax.swing.JMenuItem();
+        itemStaff = new javax.swing.JMenuItem();
         itemDiscounts = new javax.swing.JMenuItem();
         itemCategorys = new javax.swing.JMenuItem();
         itemTaxes = new javax.swing.JMenuItem();
-        menuStaff = new javax.swing.JMenu();
-        itemStaff = new javax.swing.JMenuItem();
-        menuCustomers = new javax.swing.JMenu();
-        itemCustomers = new javax.swing.JMenuItem();
-        menuItemReports = new javax.swing.JMenu();
-        itemSales = new javax.swing.JMenuItem();
-        itemResetSales = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        itemDatabase = new javax.swing.JMenuItem();
 
         setTitle("JTill Server");
 
@@ -666,54 +666,27 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
             }
         });
         menuStock.add(itemWasteReports);
+        menuStock.add(jSeparator1);
 
-        itemReasons.setText("Waste Reasons");
+        jMenuBar1.add(menuStock);
+
+        menuSetup.setText("Setup");
+
+        itemReasons.setText("Edit Waste Reasons");
         itemReasons.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemReasonsActionPerformed(evt);
             }
         });
-        menuStock.add(itemReasons);
+        menuSetup.add(itemReasons);
 
-        itemDiscounts.setText("Manage Discounts");
-        itemDiscounts.addActionListener(new java.awt.event.ActionListener() {
+        itemTillScreens.setText("Edit Till Screens");
+        itemTillScreens.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemDiscountsActionPerformed(evt);
+                itemTillScreensActionPerformed(evt);
             }
         });
-        menuStock.add(itemDiscounts);
-
-        itemCategorys.setText("Manage Categorys");
-        itemCategorys.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemCategorysActionPerformed(evt);
-            }
-        });
-        menuStock.add(itemCategorys);
-
-        itemTaxes.setText("Manage Taxes");
-        itemTaxes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemTaxesActionPerformed(evt);
-            }
-        });
-        menuStock.add(itemTaxes);
-
-        jMenuBar1.add(menuStock);
-
-        menuStaff.setText("Staff");
-
-        itemStaff.setText("Manage Staff");
-        itemStaff.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemStaffActionPerformed(evt);
-            }
-        });
-        menuStaff.add(itemStaff);
-
-        jMenuBar1.add(menuStaff);
-
-        menuCustomers.setText("Customers");
+        menuSetup.add(itemTillScreens);
 
         itemCustomers.setText("Manage Customers");
         itemCustomers.addActionListener(new java.awt.event.ActionListener() {
@@ -721,31 +694,46 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                 itemCustomersActionPerformed(evt);
             }
         });
-        menuCustomers.add(itemCustomers);
+        menuSetup.add(itemCustomers);
 
-        jMenuBar1.add(menuCustomers);
-
-        menuItemReports.setText("Reports");
-
-        itemSales.setText("View Sales Data");
-        itemSales.setEnabled(false);
-        itemSales.addActionListener(new java.awt.event.ActionListener() {
+        itemStaff.setText("Manage Staff");
+        itemStaff.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemSalesActionPerformed(evt);
+                itemStaffActionPerformed(evt);
             }
         });
-        menuItemReports.add(itemSales);
+        menuSetup.add(itemStaff);
 
-        itemResetSales.setText("Reset Sales Data");
-        itemResetSales.setEnabled(false);
-        itemResetSales.addActionListener(new java.awt.event.ActionListener() {
+        itemDiscounts.setText("Manage Discounts");
+        itemDiscounts.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemResetSalesActionPerformed(evt);
+                itemDiscountsActionPerformed(evt);
             }
         });
-        menuItemReports.add(itemResetSales);
+        menuSetup.add(itemDiscounts);
 
-        jMenuBar1.add(menuItemReports);
+        itemCategorys.setText("Manage Categorys");
+        itemCategorys.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemCategorysActionPerformed(evt);
+            }
+        });
+        menuSetup.add(itemCategorys);
+
+        itemTaxes.setText("Manage Taxes");
+        itemTaxes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemTaxesActionPerformed(evt);
+            }
+        });
+        menuSetup.add(itemTaxes);
+        menuSetup.add(jSeparator2);
+
+        itemDatabase.setText("Database Settings");
+        itemDatabase.setEnabled(false);
+        menuSetup.add(itemDatabase);
+
+        jMenuBar1.add(menuSetup);
 
         setJMenuBar(jMenuBar1);
 
@@ -797,7 +785,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton1))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(chkSevere)
@@ -910,14 +898,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                 JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_itemAboutActionPerformed
 
-    private void itemSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSalesActionPerformed
-        SalesWindow.showSalesWindow(dc, icon);
-    }//GEN-LAST:event_itemSalesActionPerformed
-
-    private void itemResetSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemResetSalesActionPerformed
-        JOptionPane.showMessageDialog(this, "Sales data reset", "Sales Data", JOptionPane.PLAIN_MESSAGE);
-    }//GEN-LAST:event_itemResetSalesActionPerformed
-
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
         SalesWindow.showSalesWindow(dc, icon);
     }//GEN-LAST:event_btnReportsActionPerformed
@@ -972,6 +952,10 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         WasteReasonDialog.showDialog(this, dc);
     }//GEN-LAST:event_itemReasonsActionPerformed
 
+    private void itemTillScreensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTillScreensActionPerformed
+        ScreenEditWindow.showScreenEditWindow(dc, icon);
+    }//GEN-LAST:event_itemTillScreensActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -987,17 +971,17 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemAbout;
     private javax.swing.JMenuItem itemCategorys;
     private javax.swing.JMenuItem itemCustomers;
+    private javax.swing.JMenuItem itemDatabase;
     private javax.swing.JMenuItem itemDiscounts;
     private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenuItem itemLogin;
     private javax.swing.JMenuItem itemReasons;
     private javax.swing.JMenuItem itemReceive;
-    private javax.swing.JMenuItem itemResetSales;
-    private javax.swing.JMenuItem itemSales;
     private javax.swing.JMenuItem itemServerOptions;
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStock;
     private javax.swing.JMenuItem itemTaxes;
+    private javax.swing.JMenuItem itemTillScreens;
     private javax.swing.JMenuItem itemWasteReports;
     private javax.swing.JMenuItem itemWasteStock;
     private javax.swing.JButton jButton1;
@@ -1007,6 +991,8 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblClients;
     private javax.swing.JLabel lblDatabase;
@@ -1015,10 +1001,8 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JLabel lblServerAddress;
     private javax.swing.JLabel lblUpdate;
     private javax.swing.JLabel lblUser;
-    private javax.swing.JMenu menuCustomers;
     private javax.swing.JMenu menuFile;
-    private javax.swing.JMenu menuItemReports;
-    private javax.swing.JMenu menuStaff;
+    private javax.swing.JMenu menuSetup;
     private javax.swing.JMenu menuStock;
     private javax.swing.JPanel statusBar;
     private javax.swing.JTextArea txtLog;
