@@ -11,14 +11,27 @@ import io.github.davidg95.JTill.jtill.WasteItem;
 import io.github.davidg95.JTill.jtill.WasteReason;
 import io.github.davidg95.JTill.jtill.WasteReport;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
+import org.jdatepicker.DateModel;
+import org.jdatepicker.JDateComponentFactory;
+import org.jdatepicker.JDatePanel;
+import org.jdatepicker.JDatePicker;
 
 /**
  *
@@ -37,11 +50,15 @@ public class WasteReports extends javax.swing.JFrame {
 
     private Product p;
     private WasteReason wasteReason;
+    private Date date;
+
+    private JDatePicker picker;
 
     private static final int CONTAINING = 0;
     private static final int REASON = 1;
     private static final int GREATER = 2;
     private static final int LESS = 3;
+    private static final int DAY = 4;
 
     /**
      * Creates new form WasteReports
@@ -139,7 +156,12 @@ public class WasteReports extends javax.swing.JFrame {
 
         jLabel1.setText("Search for reports");
 
-        cmbSearch.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "containing item", "with reason", "with value greater than", "with value less than" }));
+        cmbSearch.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "containing item", "with reason", "with value greater than", "with value less than", "from a specific day" }));
+        cmbSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbSearchActionPerformed(evt);
+            }
+        });
 
         txtSearch.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -283,6 +305,22 @@ public class WasteReports extends javax.swing.JFrame {
                 }
                 break;
             }
+            case DAY: {
+                for (WasteReport wr : wasteReports) {
+                    Date d = wr.getDate();
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(d);
+                    c.set(Calendar.HOUR_OF_DAY, 0);
+                    c.set(Calendar.MINUTE, 0);
+                    c.set(Calendar.SECOND, 0);
+                    c.set(Calendar.MILLISECOND, 0);
+                    d = c.getTime();
+                    if (d.equals(date)) {
+                        newList.add(wr);
+                    }
+                }
+                break;
+            }
             default: {
                 break;
             }
@@ -304,22 +342,64 @@ public class WasteReports extends javax.swing.JFrame {
     }//GEN-LAST:event_btnShowAllActionPerformed
 
     private void txtSearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSearchMouseClicked
-        if (cmbSearch.getSelectedIndex() == CONTAINING) {
-            p = (Product) JTillObjectSelectDialog.showDialog(this, dc, "Select a Product", Product.class);
-            if (p != null) {
-                txtSearch.setText(p.getName());
-            }
-        } else if (cmbSearch.getSelectedIndex() == REASON) {
-            wasteReason = (WasteReason) JTillObjectSelectDialog.showDialog(jLabel1, dc, "Select a WasteReason", WasteReason.class);
-            if (wasteReason != null) {
-                txtSearch.setText(wasteReason.getName());
-            }
+        switch (cmbSearch.getSelectedIndex()) {
+            case CONTAINING:
+                p = (Product) JTillObjectSelectDialog.showDialog(this, dc, "Select a Product", Product.class);
+                if (p != null) {
+                    txtSearch.setText(p.getName());
+                }
+                break;
+            case REASON:
+                wasteReason = (WasteReason) JTillObjectSelectDialog.showDialog(jLabel1, dc, "Select a WasteReason", WasteReason.class);
+                if (wasteReason != null) {
+                    txtSearch.setText(wasteReason.getName());
+                }
+                break;
+            case DAY:
+                JDateComponentFactory fd = new JDateComponentFactory();
+                JDialog dialog = new JDialog(this);
+                dialog.setModal(true);
+                dialog.setTitle("Select Date");
+                dialog.setLocationRelativeTo(this);
+                JPanel pan = new JPanel();
+                dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                picker = fd.createJDatePicker();
+                picker.setDoubleClickAction(true);
+                picker.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        DateModel model = picker.getModel();
+                        txtSearch.setText(model.getDay() + "/" + (model.getMonth() + 1) + "/" + model.getYear());
+                        date = new Date();
+                        Calendar c = Calendar.getInstance();
+                        c.set(model.getYear(), (model.getMonth()), model.getDay());
+                        c.set(Calendar.HOUR_OF_DAY, 0);
+                        c.set(Calendar.MINUTE, 0);
+                        c.set(Calendar.SECOND, 0);
+                        c.set(Calendar.MILLISECOND, 0);
+                        date.setTime(c.getTimeInMillis());
+                        dialog.setVisible(false);
+                    }
+
+                });
+                pan.add((JComponent) picker);
+                pan.setVisible(true);
+                dialog.add(pan);
+                dialog.pack();
+                dialog.setVisible(true);
+                break;
+            default:
+                break;
         }
     }//GEN-LAST:event_txtSearchMouseClicked
 
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
         btnSearch.doClick();
     }//GEN-LAST:event_txtSearchActionPerformed
+
+    private void cmbSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSearchActionPerformed
+        txtSearch.setText("");
+    }//GEN-LAST:event_cmbSearchActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;

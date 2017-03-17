@@ -1,34 +1,18 @@
-JTill log Thu Mar 16 16:46:40 GMT 2017
-[16:46:40] [INFO] Starting JTill Server
-[16:46:40] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[16:46:40] [INFO] Get staff count
-[16:46:40] [INFO] Starting Thread Pool Excecutor
-[16:46:40] [INFO] JTill Server local IP address is 192.168.1.65
-[16:46:40] [INFO] Server Socket running on port number 52341
-[16:46:40] [INFO] Ready to accept connections
-[16:46:44] [INFO] Login Staff dgrant
-[16:46:44] [INFO] David Grant has logged in
-[16:46:54] [INFO] Bessey has connected
-[16:46:54] [INFO] Received GETSETTING from server
-[16:46:54] [INFO] Received GETSETTING from server
-[16:46:54] [INFO] Received GETALLDISCOUNTS from server
-[16:46:54] [INFO] Get all discounts
-[16:46:54] [INFO] Received GETALLSCREENS from server
-[16:46:55] [INFO] Received GETSTAFF from server
-[16:46:55] [INFO] Get staff 1
-[16:46:56] [INFO] Received TILLLOGIN from server
-[16:46:56] [INFO] David Grant has logged in from Bessey
-[16:46:56] [INFO] Received RESUMESALE from server
-[16:47:05] [INFO] Received TILLLOGOUT from server
-[16:47:05] [INFO] David Grant has logged out
-[16:47:06] [INFO] Received TILLLOGIN from server
-[16:47:06] [INFO] David Grant has logged in from Bessey
-[16:47:06] [INFO] Received RESUMESALE from server
-[16:47:08] [INFO] Received PRODUCTLOOKUP from server
-[16:47:10] [INFO] Received ADDSALE from server
-[16:47:10] [INFO] Purchase product 4
-[16:47:11] [INFO] Received GETSETTING from server
-[16:47:31] [INFO] Received TILLLOGOUT from server
-[16:47:31] [INFO] David Grant has logged out
-[16:47:31] [INFO] Received CONNTERM from server
-[16:47:31] [INFO] Bessey has disconnected
+JTill log Fri Mar 17 17:16:45 GMT 2017
+[17:16:45] [INFO] Starting JTill Server
+[17:16:45] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[17:16:45] [INFO] Get staff count
+[17:16:45] [INFO] Starting Thread Pool Excecutor
+[17:16:45] [INFO] JTill Server local IP address is 192.168.1.65
+[17:16:45] [INFO] Server Socket running on port number 52341
+[17:16:45] [INFO] Ready to accept connections
+[17:16:48] [INFO] Login Staff dgrant
+[17:16:48] [INFO] David Grant has logged in
+[17:16:49] [INFO] Get product 7
+[17:16:49] [INFO] Get product 9
+[17:16:49] [INFO] Get product 8
+[17:16:49] [INFO] Get product 1
+[17:16:49] [INFO] Get product 2
+[17:16:49] [INFO] Get product 3
+[17:16:49] [INFO] Get product 9
+[17:16:49] [INFO] Get product 6
