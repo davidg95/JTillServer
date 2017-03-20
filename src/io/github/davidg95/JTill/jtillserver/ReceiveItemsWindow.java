@@ -7,10 +7,17 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -60,6 +67,7 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
         btnReceive = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
         btnAddProduct = new javax.swing.JButton();
+        btnAddCSV = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -130,6 +138,13 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
             }
         });
 
+        btnAddCSV.setText("Add CSV File");
+        btnAddCSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddCSVActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -140,6 +155,8 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnAddCSV)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddProduct)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddPlu)
@@ -159,7 +176,8 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                     .addComponent(btnReceive)
                     .addComponent(btnClose)
                     .addComponent(btnAddPlu)
-                    .addComponent(btnAddProduct))
+                    .addComponent(btnAddProduct)
+                    .addComponent(btnAddCSV))
                 .addContainerGap())
         );
 
@@ -253,7 +271,51 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tblProductsMouseClicked
 
+    private void btnAddCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCSVActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        int returnVal = chooser.showOpenDialog(this);
+        File file = chooser.getSelectedFile();
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+
+            while (true) {
+                String line = br.readLine();
+
+                if (line == null) {
+                    return;
+                }
+
+                String[] items = line.split(",");
+
+                String barcode = items[0];
+                int quantity = Integer.parseInt(items[1]);
+
+                Product product;
+                try {
+                    product = dc.getProductByBarcode(barcode);
+
+                    product.setStock(quantity);
+
+                    products.add(product);
+                    model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), product.getStock()});
+                } catch (ProductNotFoundException ex) {
+                    if (JOptionPane.showConfirmDialog(this, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        Plu p = new Plu(barcode);
+                        product = ProductDialog.showNewProductDialog(this, dc, p);
+                        JOptionPane.showMessageDialog(this, product.getLongName() + " has now been added to the system with given stock level, there is no need to receive it here.", "Added", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, ex, "File Not Found", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAddCSVActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddCSV;
     private javax.swing.JButton btnAddPlu;
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnClose;

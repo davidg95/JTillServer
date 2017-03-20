@@ -7,7 +7,12 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -99,7 +105,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
 
     private void setTable() {
         String symbol = "";
-        try{
+        try {
             symbol = dc.getSetting("CURRENCY_SYMBOL");
         } catch (IOException ex) {
             Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -130,6 +136,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
         lblReason = new javax.swing.JLabel();
         lblValue = new javax.swing.JLabel();
         cmbReason = new javax.swing.JComboBox<>();
+        btnCSV = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -205,6 +212,13 @@ public class WasteStockWindow extends javax.swing.JFrame {
 
         lblValue.setText("Total Value: £0.00");
 
+        btnCSV.setText("Add CSV File");
+        btnCSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCSVActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -216,6 +230,8 @@ public class WasteStockWindow extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(lblValue)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCSV)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddProduct)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddPlu)
@@ -248,7 +264,8 @@ public class WasteStockWindow extends javax.swing.JFrame {
                     .addComponent(btnWaste)
                     .addComponent(btnAddPlu)
                     .addComponent(btnAddProduct)
-                    .addComponent(lblValue))
+                    .addComponent(lblValue)
+                    .addComponent(btnCSV))
                 .addContainerGap())
         );
 
@@ -291,7 +308,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
                 val = val.add(w.getProduct().getPrice().multiply(new BigDecimal(w.getQuantity())));
             }
             lblValue.setText("Total Value: £" + val);
-            model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu(), Integer.parseInt(amount), wi.getReason()});
+            model.addRow(new Object[]{product.getId(), Integer.parseInt(amount), product.getPrice().multiply(new BigDecimal(wi.getQuantity())), wi.getReason()});
         } catch (IOException | SQLException | JTillException ex) {
             Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -327,7 +344,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
                 val = val.add(w.getProduct().getPrice().multiply(new BigDecimal(w.getQuantity())));
             }
             lblValue.setText("Total Value: £" + val);
-            model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), Integer.parseInt(amount), wi.getReason()});
+            model.addRow(new Object[]{product.getId(), product.getName(), Integer.parseInt(amount), product.getPrice().multiply(new BigDecimal(wi.getQuantity())), wi.getReason()});
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ProductNotFoundException ex) {
@@ -378,9 +395,60 @@ public class WasteStockWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tblProductsMouseClicked
 
+    private void btnCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCSVActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        int returnVal = chooser.showOpenDialog(this);
+        File file = chooser.getSelectedFile();
+        try {
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            while (true) {
+                try {
+                    String line = br.readLine();
+
+                    if (line == null) {
+                        break;
+                    }
+
+                    String[] item = line.split(",");
+
+                    Product product = dc.getProductByBarcode(item[0]);
+                    int amount = Integer.parseInt(item[1]);
+                    int reason = Integer.parseInt(item[2]);
+
+                    WasteReason wr;
+
+                    try {
+                        wr = dc.getWasteReason(reason);
+                    } catch (JTillException ex) {
+                        wr = dc.getWasteReason(0);
+                    }
+                    WasteItem wi = new WasteItem(product, amount, wr);
+                    wasteItems.add(wi);
+                    BigDecimal val = BigDecimal.ZERO;
+                    val.setScale(2);
+                    for (WasteItem w : wasteItems) {
+                        val = val.add(w.getProduct().getPrice().multiply(new BigDecimal(w.getQuantity())));
+                    }
+                    lblValue.setText("Total Value: £" + val);
+                    model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), amount, wi.getReason()});
+                } catch (ProductNotFoundException ex) {
+                    JOptionPane.showMessageDialog(this, ex, "Barcode not found", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "The file could not be found", "Open File", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (JTillException ex) {
+            Logger.getGlobal().log(Level.WARNING, null, ex);
+        }
+    }//GEN-LAST:event_btnCSVActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddPlu;
     private javax.swing.JButton btnAddProduct;
+    private javax.swing.JButton btnCSV;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnWaste;
     private javax.swing.JComboBox<String> cmbReason;

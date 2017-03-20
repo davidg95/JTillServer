@@ -30,6 +30,8 @@
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="lblValue" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
+                      <Component id="btnCSV" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnAddProduct" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnAddPlu" min="-2" max="-2" attributes="0"/>
@@ -70,6 +72,7 @@
                   <Component id="btnAddPlu" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnAddProduct" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblValue" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnCSV" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -187,6 +190,14 @@
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnCSV">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Add CSV File"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCSVActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
