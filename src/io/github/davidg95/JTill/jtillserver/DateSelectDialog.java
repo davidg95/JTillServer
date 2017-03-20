@@ -30,6 +30,7 @@ public class DateSelectDialog extends JDialog {
     private final JDatePicker picker;
 
     public DateSelectDialog(Window parent) {
+        super(parent);
         picker = new JDateComponentFactory().createJDatePicker();
         setModal(true);
         setTitle("Select Date");

@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -70,6 +69,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
         btnWaste.setEnabled(false);
         cmbReason.setEnabled(false);
         lblReason.setEnabled(false);
+        btnCSV.setEnabled(false);
         lblTime.setText("Time: " + wr.getDate());
         setTitle("Waste Report " + report.getId());
         setIconImage(icon);
@@ -386,11 +386,13 @@ public class WasteStockWindow extends javax.swing.JFrame {
 
     private void tblProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductsMouseClicked
         if (evt.getClickCount() == 2) {
-            int row = tblProducts.getSelectedRow();
-            WasteItem wi = wasteItems.get(row);
-            if (JOptionPane.showConfirmDialog(this, "\"Are you sure you want to remove this line?\n" + wi.getProduct().getLongName(), "Remove", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                wasteItems.remove(row);
-                model.removeRow(row);
+            if (!wasteItems.isEmpty()) {
+                int row = tblProducts.getSelectedRow();
+                WasteItem wi = wasteItems.get(row);
+                if (JOptionPane.showConfirmDialog(this, "\"Are you sure you want to remove this line?\n" + wi.getProduct().getLongName(), "Remove", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    wasteItems.remove(row);
+                    model.removeRow(row);
+                }
             }
         }
     }//GEN-LAST:event_tblProductsMouseClicked
@@ -439,7 +441,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
                         errors = true;
                     }
                 }
-                if(errors){
+                if (errors) {
                     JOptionPane.showMessageDialog(this, "Not all products could be found", "Waste", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (FileNotFoundException ex) {

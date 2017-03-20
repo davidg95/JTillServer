@@ -1,17 +1,44 @@
-JTill log Mon Mar 20 15:14:51 GMT 2017
-[15:14:51] [INFO] Starting JTill Server
-[15:14:51] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[15:14:51] [INFO] Get staff count
-[15:14:51] [INFO] Starting Thread Pool Excecutor
-[15:14:51] [INFO] JTill Server local IP address is 192.168.1.65
-[15:14:51] [INFO] Server Socket running on port number 52341
-[15:14:51] [INFO] Ready to accept connections
-[15:14:53] [INFO] Login Staff dgrant
-[15:14:53] [INFO] David Grant has logged in
-[15:15:00] [INFO] Get Product 4234215354
-[15:15:00] [INFO] Get Product 125452452345
-[15:15:08] [INFO] Stopping JTIll Server
-[15:15:08] [INFO] Saving properties
-[15:15:08] [INFO] Disconnecting from database
-[15:15:08] [INFO] Database disconnected
-[15:15:08] [INFO] Stopping
+JTill log Mon Mar 20 16:08:28 GMT 2017
+[16:08:28] [INFO] Starting JTill Server
+[16:08:28] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[16:08:28] [INFO] Get staff count
+[16:08:28] [INFO] Starting Thread Pool Excecutor
+[16:08:28] [INFO] JTill Server local IP address is 192.168.1.65
+[16:08:28] [INFO] Server Socket running on port number 52341
+[16:08:28] [INFO] Ready to accept connections
+[16:08:32] [INFO] Login Staff dgrant
+[16:08:32] [INFO] David Grant has logged in
+[16:08:33] [INFO] Get customer -1
+[16:08:33] [INFO] Get staff 1
+[16:08:33] [INFO] Get product 6
+[16:08:33] [INFO] Get customer -1
+[16:08:33] [INFO] Get staff 1
+[16:08:33] [INFO] Get product 4
+[16:08:53] [INFO] Get customer -1
+[16:08:53] [INFO] Get staff 1
+[16:08:53] [INFO] Get product 6
+[16:08:53] [INFO] Get customer -1
+[16:08:53] [INFO] Get staff 1
+[16:08:53] [INFO] Get product 4
+[16:08:53] [INFO] Get customer -1
+[16:08:53] [INFO] Get staff 1
+[16:08:53] [INFO] Get product 6
+[16:08:53] [INFO] Get customer -1
+[16:08:53] [INFO] Get staff 1
+[16:08:53] [INFO] Get product 4
+[16:08:53] [INFO] Get customer -1
+[16:08:53] [INFO] Get staff 1
+[16:08:53] [INFO] Get product 6
+[16:08:53] [INFO] Get customer -1
+[16:08:53] [INFO] Get staff 1
+[16:08:53] [INFO] Get product 4
+[16:08:57] [INFO] Get product 1
+[16:08:57] [INFO] Get product 2
+[16:08:57] [INFO] Get product 3
+[16:08:57] [INFO] Get product 4
+[16:08:59] [INFO] Get customer -1
+[16:08:59] [INFO] Get staff 1
+[16:08:59] [INFO] Get product 6
+[16:08:59] [INFO] Get customer -1
+[16:08:59] [INFO] Get staff 1
+[16:08:59] [INFO] Get product 4

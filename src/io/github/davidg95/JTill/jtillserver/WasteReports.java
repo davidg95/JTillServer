@@ -348,8 +348,10 @@ public class WasteReports extends javax.swing.JFrame {
                 break;
             case DAY:
                 date = DateSelectDialog.showDialog(this);
-                SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-                txtSearch.setText(df.format(date));
+                if (date != null) {
+                    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                    txtSearch.setText(df.format(date));
+                }
                 break;
             default:
                 break;

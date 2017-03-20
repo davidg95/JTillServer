@@ -8,9 +8,10 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -28,6 +29,9 @@ public class SalesWindow extends javax.swing.JFrame {
 
     private final DefaultTableModel model;
     private List<Sale> currentTableContents;
+
+    private Date start;
+    private Date end;
 
     /**
      * Creates new form SalesWindow
@@ -96,6 +100,13 @@ public class SalesWindow extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableSales = new javax.swing.JTable();
         btnClose = new javax.swing.JButton();
+        btnShowAll = new javax.swing.JButton();
+        panelDateFilter = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txtStartDate = new javax.swing.JTextField();
+        txtEndDate = new javax.swing.JTextField();
+        btnAddFilter = new javax.swing.JButton();
 
         setTitle("Sales");
 
@@ -138,18 +149,88 @@ public class SalesWindow extends javax.swing.JFrame {
             }
         });
 
+        btnShowAll.setText("Show All Sales");
+        btnShowAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnShowAllActionPerformed(evt);
+            }
+        });
+
+        panelDateFilter.setBorder(javax.swing.BorderFactory.createTitledBorder("Date Search"));
+
+        jLabel1.setText("Start Date:");
+
+        jLabel2.setText("End Date:");
+
+        txtStartDate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtStartDateMouseClicked(evt);
+            }
+        });
+
+        txtEndDate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtEndDateMouseClicked(evt);
+            }
+        });
+
+        btnAddFilter.setText("Add Filter");
+        btnAddFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddFilterActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelDateFilterLayout = new javax.swing.GroupLayout(panelDateFilter);
+        panelDateFilter.setLayout(panelDateFilterLayout);
+        panelDateFilterLayout.setHorizontalGroup(
+            panelDateFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelDateFilterLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelDateFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(panelDateFilterLayout.createSequentialGroup()
+                        .addGroup(panelDateFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelDateFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtStartDate)
+                            .addComponent(txtEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btnAddFilter))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panelDateFilterLayout.setVerticalGroup(
+            panelDateFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelDateFilterLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelDateFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtStartDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelDateFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAddFilter)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnClose))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(139, 139, 139)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE)))
+                        .addComponent(panelDateFilter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnShowAll)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnClose)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -158,8 +239,14 @@ public class SalesWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnShowAll))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(76, 76, 76)
+                .addComponent(panelDateFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -175,9 +262,41 @@ public class SalesWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tableSalesMouseClicked
 
+    private void txtStartDateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtStartDateMouseClicked
+        start = DateSelectDialog.showDialog(this);
+        txtStartDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(start));
+    }//GEN-LAST:event_txtStartDateMouseClicked
+
+    private void txtEndDateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtEndDateMouseClicked
+        end = DateSelectDialog.showDialog(this);
+        txtEndDate.setText(new SimpleDateFormat("dd/MM/YYYY").format(end));
+    }//GEN-LAST:event_txtEndDateMouseClicked
+
+    private void btnAddFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFilterActionPerformed
+        List<Sale> newList = new ArrayList<>();
+        for(Sale s: currentTableContents){
+            if(s.getDate().after(start) && s.getDate().before(end)){
+                newList.add(s);
+            }
+        }
+        currentTableContents = newList;
+        updateTable();
+    }//GEN-LAST:event_btnAddFilterActionPerformed
+
+    private void btnShowAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowAllActionPerformed
+        showAllSales();
+    }//GEN-LAST:event_btnShowAllActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddFilter;
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnShowAll;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel panelDateFilter;
     private javax.swing.JTable tableSales;
+    private javax.swing.JTextField txtEndDate;
+    private javax.swing.JTextField txtStartDate;
     // End of variables declaration//GEN-END:variables
 }
