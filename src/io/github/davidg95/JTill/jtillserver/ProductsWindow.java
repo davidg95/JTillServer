@@ -7,12 +7,18 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -303,6 +309,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         btnWasteStock = new javax.swing.JButton();
         btnReceiveStock = new javax.swing.JButton();
         btnChart = new javax.swing.JButton();
+        btnCSV = new javax.swing.JButton();
 
         setTitle("Stock Managment");
 
@@ -475,6 +482,13 @@ public class ProductsWindow extends javax.swing.JFrame {
             }
         });
 
+        btnCSV.setText("Export Current Products as CSV");
+        btnCSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCSVActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -537,7 +551,10 @@ public class ProductsWindow extends javax.swing.JFrame {
                         .addComponent(btnReceiveStock)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnWasteStock))
-                    .addComponent(btnChart))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnCSV)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnChart)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -619,7 +636,9 @@ public class ProductsWindow extends javax.swing.JFrame {
                             .addComponent(btnWasteStock)
                             .addComponent(btnReceiveStock))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnChart)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnChart)
+                            .addComponent(btnCSV))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -821,7 +840,38 @@ public class ProductsWindow extends javax.swing.JFrame {
         StockGraphWindow.showWindow(dc, icon);
     }//GEN-LAST:event_btnChartActionPerformed
 
+    private void btnCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCSVActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.setApproveButtonText("Export CSV");
+        chooser.setDialogTitle("Export CSV File");
+        int returnVal = chooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+
+            try {
+                PrintWriter pw = new PrintWriter(file);
+
+                for (Product p : currentTableContents) {
+                    pw.println(p.getId() + ","
+                            + p.getLongName() + ","
+                            + p.getCategory().getId() + ","
+                            + p.getCostPrice() + ","
+                            + p.getMaxStockLevel() + ","
+                            + p.getMinStockLevel() + ","
+                            + p.getPlu().getId() + ","
+                            + p.getPrice() + ","
+                            + p.getStock() + ","
+                            + p.getTax().getId());
+                }
+                pw.close();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(ProductsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_btnCSVActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCSV;
     private javax.swing.JButton btnChart;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnNewProduct;

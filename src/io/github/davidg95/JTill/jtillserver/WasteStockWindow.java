@@ -397,51 +397,54 @@ public class WasteStockWindow extends javax.swing.JFrame {
 
     private void btnCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCSVActionPerformed
         JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Select Waste File");
         int returnVal = chooser.showOpenDialog(this);
-        File file = chooser.getSelectedFile();
-        try {
-            FileReader fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
-            while (true) {
-                try {
-                    String line = br.readLine();
-
-                    if (line == null) {
-                        break;
-                    }
-
-                    String[] item = line.split(",");
-
-                    Product product = dc.getProductByBarcode(item[0]);
-                    int amount = Integer.parseInt(item[1]);
-                    int reason = Integer.parseInt(item[2]);
-
-                    WasteReason wr;
-
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            try {
+                FileReader fr = new FileReader(file);
+                BufferedReader br = new BufferedReader(fr);
+                while (true) {
                     try {
-                        wr = dc.getWasteReason(reason);
-                    } catch (JTillException ex) {
-                        wr = dc.getWasteReason(0);
+                        String line = br.readLine();
+
+                        if (line == null) {
+                            break;
+                        }
+
+                        String[] item = line.split(",");
+
+                        Product product = dc.getProductByBarcode(item[0]);
+                        int amount = Integer.parseInt(item[1]);
+                        int reason = Integer.parseInt(item[2]);
+
+                        WasteReason wr;
+
+                        try {
+                            wr = dc.getWasteReason(reason);
+                        } catch (JTillException ex) {
+                            wr = dc.getWasteReason(0);
+                        }
+                        WasteItem wi = new WasteItem(product, amount, wr);
+                        wasteItems.add(wi);
+                        BigDecimal val = BigDecimal.ZERO;
+                        val.setScale(2);
+                        for (WasteItem w : wasteItems) {
+                            val = val.add(w.getProduct().getPrice().multiply(new BigDecimal(w.getQuantity())));
+                        }
+                        lblValue.setText("Total Value: £" + val);
+                        model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), amount, wi.getReason()});
+                    } catch (ProductNotFoundException ex) {
+                        JOptionPane.showMessageDialog(this, ex, "Barcode not found", JOptionPane.ERROR_MESSAGE);
                     }
-                    WasteItem wi = new WasteItem(product, amount, wr);
-                    wasteItems.add(wi);
-                    BigDecimal val = BigDecimal.ZERO;
-                    val.setScale(2);
-                    for (WasteItem w : wasteItems) {
-                        val = val.add(w.getProduct().getPrice().multiply(new BigDecimal(w.getQuantity())));
-                    }
-                    lblValue.setText("Total Value: £" + val);
-                    model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), amount, wi.getReason()});
-                } catch (ProductNotFoundException ex) {
-                    JOptionPane.showMessageDialog(this, ex, "Barcode not found", JOptionPane.ERROR_MESSAGE);
                 }
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, "The file could not be found", "Open File", JOptionPane.ERROR_MESSAGE);
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (JTillException ex) {
+                Logger.getGlobal().log(Level.WARNING, null, ex);
             }
-        } catch (FileNotFoundException ex) {
-            JOptionPane.showMessageDialog(this, "The file could not be found", "Open File", JOptionPane.ERROR_MESSAGE);
-        } catch (IOException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (JTillException ex) {
-            Logger.getGlobal().log(Level.WARNING, null, ex);
         }
     }//GEN-LAST:event_btnCSVActionPerformed
 

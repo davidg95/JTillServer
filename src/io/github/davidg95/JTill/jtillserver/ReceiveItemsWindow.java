@@ -273,44 +273,47 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
 
     private void btnAddCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCSVActionPerformed
         JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Select Receive File");
         int returnVal = chooser.showOpenDialog(this);
-        File file = chooser.getSelectedFile();
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
 
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file));
 
-            while (true) {
-                String line = br.readLine();
+                while (true) {
+                    String line = br.readLine();
 
-                if (line == null) {
-                    return;
-                }
+                    if (line == null) {
+                        return;
+                    }
 
-                String[] items = line.split(",");
+                    String[] items = line.split(",");
 
-                String barcode = items[0];
-                int quantity = Integer.parseInt(items[1]);
+                    String barcode = items[0];
+                    int quantity = Integer.parseInt(items[1]);
 
-                Product product;
-                try {
-                    product = dc.getProductByBarcode(barcode);
+                    Product product;
+                    try {
+                        product = dc.getProductByBarcode(barcode);
 
-                    product.setStock(quantity);
+                        product.setStock(quantity);
 
-                    products.add(product);
-                    model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), product.getStock()});
-                } catch (ProductNotFoundException ex) {
-                    if (JOptionPane.showConfirmDialog(this, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                        Plu p = new Plu(barcode);
-                        product = ProductDialog.showNewProductDialog(this, dc, p);
-                        JOptionPane.showMessageDialog(this, product.getLongName() + " has now been added to the system with given stock level, there is no need to receive it here.", "Added", JOptionPane.INFORMATION_MESSAGE);
+                        products.add(product);
+                        model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), product.getStock()});
+                    } catch (ProductNotFoundException ex) {
+                        if (JOptionPane.showConfirmDialog(this, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                            Plu p = new Plu(barcode);
+                            product = ProductDialog.showNewProductDialog(this, dc, p);
+                            JOptionPane.showMessageDialog(this, product.getLongName() + " has now been added to the system with given stock level, there is no need to receive it here.", "Added", JOptionPane.INFORMATION_MESSAGE);
+                        }
                     }
                 }
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, ex, "File Not Found", JOptionPane.ERROR_MESSAGE);
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (FileNotFoundException ex) {
-            JOptionPane.showMessageDialog(this, ex, "File Not Found", JOptionPane.ERROR_MESSAGE);
-        } catch (IOException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddCSVActionPerformed
 
