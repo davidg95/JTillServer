@@ -14,6 +14,7 @@ import java.awt.Image;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -347,7 +348,8 @@ public class WasteReports extends javax.swing.JFrame {
                 break;
             case DAY:
                 date = DateSelectDialog.showDialog(this);
-                txtSearch.setText(date.toString());
+                SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                txtSearch.setText(df.format(date));
                 break;
             default:
                 break;

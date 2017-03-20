@@ -90,8 +90,8 @@
               <Table columnCount="5" rowCount="4">
                 <Column editable="false" title="ID" type="java.lang.Integer"/>
                 <Column editable="false" title="Product" type="java.lang.String"/>
-                <Column editable="false" title="Barcode" type="java.lang.String"/>
                 <Column editable="false" title="Quantity" type="java.lang.Integer"/>
+                <Column editable="false" title="Total Value" type="java.lang.String"/>
                 <Column editable="true" title="Reason" type="java.lang.String"/>
               </Table>
             </Property>

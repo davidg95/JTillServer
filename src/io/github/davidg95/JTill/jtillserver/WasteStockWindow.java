@@ -28,7 +28,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
 
     private static WasteStockWindow window;
 
-    private DataConnect dc;
+    private final DataConnect dc;
     private WasteReport report;
     private final List<WasteItem> wasteItems;
     private final DefaultTableModel model;
@@ -87,27 +87,26 @@ public class WasteStockWindow extends javax.swing.JFrame {
     }
 
     private void init() {
-//        JComboBox tableCombo = new JComboBox();
-//        DefaultComboBoxModel tableComboModel;
-//        tableComboModel = (DefaultComboBoxModel) tableCombo.getModel();
-//        tableCombo.setModel(tableComboModel);
         try {
             List<WasteReason> reasons = dc.getAllWasteReasons();
             for (WasteReason r : reasons) {
                 cmbModel.addElement(r);
-//                tableComboModel.addElement(r);
             }
         } catch (IOException | SQLException ex) {
             Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-//        tblProducts.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(tableCombo));
     }
 
     private void setTable() {
+        String symbol = "";
+        try{
+            symbol = dc.getSetting("CURRENCY_SYMBOL");
+        } catch (IOException ex) {
+            Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
         model.setRowCount(0);
         for (WasteItem wi : report.getItems()) {
-            Object[] row = new Object[]{wi.getId(), wi.getProduct().getLongName(), wi.getProduct().getPlu().getCode(), wi.getQuantity(), wi.getReason()};
+            Object[] row = new Object[]{wi.getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + wi.getProduct().getPrice().multiply(new BigDecimal(wi.getQuantity())), wi.getReason()};
             model.addRow(row);
         }
     }
@@ -142,11 +141,11 @@ public class WasteStockWindow extends javax.swing.JFrame {
                 {null, null, null, null, null}
             },
             new String [] {
-                "ID", "Product", "Barcode", "Quantity", "Reason"
+                "ID", "Product", "Quantity", "Total Value", "Reason"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, true
