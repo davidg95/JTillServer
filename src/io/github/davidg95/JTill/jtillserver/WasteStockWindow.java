@@ -404,6 +404,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
             try {
                 FileReader fr = new FileReader(file);
                 BufferedReader br = new BufferedReader(fr);
+                boolean errors = false;
                 while (true) {
                     try {
                         String line = br.readLine();
@@ -435,8 +436,11 @@ public class WasteStockWindow extends javax.swing.JFrame {
                         lblValue.setText("Total Value: £" + val);
                         model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), amount, wi.getReason()});
                     } catch (ProductNotFoundException ex) {
-                        JOptionPane.showMessageDialog(this, ex, "Barcode not found", JOptionPane.ERROR_MESSAGE);
+                        errors = true;
                     }
+                }
+                if(errors){
+                    JOptionPane.showMessageDialog(this, "Not all products could be found", "Waste", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, "The file could not be found", "Open File", JOptionPane.ERROR_MESSAGE);
