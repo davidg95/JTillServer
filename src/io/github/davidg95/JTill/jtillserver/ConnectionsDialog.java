@@ -11,12 +11,15 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractListModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.ListModel;
 
 /**
  * Dialog which shows all current connected clients.
@@ -28,7 +31,7 @@ public class ConnectionsDialog extends javax.swing.JDialog {
     private static JDialog dialog;
 
     private final DataConnect dc;
-    private final DefaultListModel model;
+    private MyListModel model;
 
     /**
      * Creates new form ConnectionsDialog
@@ -42,7 +45,6 @@ public class ConnectionsDialog extends javax.swing.JDialog {
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setModal(true);
-        model = new DefaultListModel();
         setList();
     }
 
@@ -62,20 +64,42 @@ public class ConnectionsDialog extends javax.swing.JDialog {
         dialog.setVisible(true);
     }
 
+    private class MyListModel extends AbstractListModel {
+
+        private final List<Till> tills;
+
+        public MyListModel(List<Till> tills) {
+            this.tills = tills;
+        }
+
+        @Override
+        public int getSize() {
+            return tills.size();
+        }
+
+        @Override
+        public Till getElementAt(int index) {
+            return tills.get(index);
+        }
+
+    }
+
     /**
      * Method to display the contents of the list in the dialog.
      */
     private void setList() {
         try {
-            if (dc.getConnectedTills().isEmpty()) {
-                model.addElement("There are no connected clients");
-            } else {
-                for (Till t : dc.getConnectedTills()) {
-                    model.addElement(t.getName());
+            List<Till> tills = dc.getAllTills();
+            for (Till t : dc.getConnectedTills()) {
+                for (Till ti : tills) {
+                    if (ti.equals(t)) {
+                        ti.setConnected(true);
+                    }
                 }
             }
+            model = new MyListModel(tills);
             lstConnections.setModel(model);
-        } catch (IOException ex) {
+        } catch (IOException | SQLException ex) {
             Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -141,11 +165,13 @@ public class ConnectionsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void lstConnectionsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstConnectionsMouseClicked
-        try {
-            Till t = dc.getConnectedTills().get(lstConnections.getSelectedIndex());
-            JOptionPane.showMessageDialog(this, "Till: " + t.getName() + "\nUncashed takings: £" + t.getUncashedTakings(), "Till", JOptionPane.INFORMATION_MESSAGE);
-        } catch (IOException ex) {
-            Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);
+        if (evt.getClickCount() == 2) {
+            try {
+                Till t = dc.getAllTills().get(lstConnections.getSelectedIndex());
+                TillDialog.showDialog(this, t);
+            } catch (IOException | SQLException ex) {
+                Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_lstConnectionsMouseClicked
 

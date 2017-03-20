@@ -5,6 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.Staff;
 import io.github.davidg95.JTill.jtill.Till;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -20,11 +21,17 @@ public class TillDialog extends javax.swing.JDialog {
 
     private static JDialog dialog;
 
+    private final Till till;
+
     /**
      * Creates new form TillDialog
+     *
+     * @param parent the parent component.
+     * @param t the till.
      */
-    public TillDialog(Window parent, Till till) {
+    public TillDialog(Window parent, Till t) {
         super(parent);
+        this.till = t;
         initComponents();
         setTitle(till.getName());
         setModal(true);
@@ -32,6 +39,16 @@ public class TillDialog extends javax.swing.JDialog {
         lblID.setText("Till ID: " + till.getId());
         lblName.setText("Till Name: " + till.getName());
         lblTakings.setText("Uncashed Takings: £" + till.getUncashedTakings());
+        for (ConnectionThread thread : ConnectionAcceptThread.connections) {
+            if (thread.till.equals(t)) {
+                Staff s = thread.staff;
+                if (s == null) {
+                    lblStaff.setText("Staff: Not logged in");
+                } else {
+                    lblStaff.setText("Staff: " + thread.staff.getName());
+                }
+            }
+        }
     }
 
     public static void showDialog(Component parent, Till till) {
@@ -56,8 +73,9 @@ public class TillDialog extends javax.swing.JDialog {
         lblName = new javax.swing.JLabel();
         lblTakings = new javax.swing.JLabel();
         btnClose = new javax.swing.JButton();
+        lblStaff = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         lblID.setText("Till ID: ");
 
@@ -72,18 +90,22 @@ public class TillDialog extends javax.swing.JDialog {
             }
         });
 
+        lblStaff.setText("Staff:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnClose)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(lblID)
-                        .addComponent(lblName)
-                        .addComponent(lblTakings)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(btnClose)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblID)
+                            .addComponent(lblName)
+                            .addComponent(lblTakings)))
+                    .addComponent(lblStaff))
                 .addGap(0, 59, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -95,7 +117,9 @@ public class TillDialog extends javax.swing.JDialog {
                 .addComponent(lblName)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblTakings)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblStaff)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                 .addComponent(btnClose)
                 .addContainerGap())
         );
@@ -111,6 +135,7 @@ public class TillDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnClose;
     private javax.swing.JLabel lblID;
     private javax.swing.JLabel lblName;
+    private javax.swing.JLabel lblStaff;
     private javax.swing.JLabel lblTakings;
     // End of variables declaration//GEN-END:variables
 }

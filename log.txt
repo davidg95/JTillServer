@@ -1,44 +1,32 @@
-JTill log Mon Mar 20 16:08:28 GMT 2017
-[16:08:28] [INFO] Starting JTill Server
-[16:08:28] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[16:08:28] [INFO] Get staff count
-[16:08:28] [INFO] Starting Thread Pool Excecutor
-[16:08:28] [INFO] JTill Server local IP address is 192.168.1.65
-[16:08:28] [INFO] Server Socket running on port number 52341
-[16:08:28] [INFO] Ready to accept connections
-[16:08:32] [INFO] Login Staff dgrant
-[16:08:32] [INFO] David Grant has logged in
-[16:08:33] [INFO] Get customer -1
-[16:08:33] [INFO] Get staff 1
-[16:08:33] [INFO] Get product 6
-[16:08:33] [INFO] Get customer -1
-[16:08:33] [INFO] Get staff 1
-[16:08:33] [INFO] Get product 4
-[16:08:53] [INFO] Get customer -1
-[16:08:53] [INFO] Get staff 1
-[16:08:53] [INFO] Get product 6
-[16:08:53] [INFO] Get customer -1
-[16:08:53] [INFO] Get staff 1
-[16:08:53] [INFO] Get product 4
-[16:08:53] [INFO] Get customer -1
-[16:08:53] [INFO] Get staff 1
-[16:08:53] [INFO] Get product 6
-[16:08:53] [INFO] Get customer -1
-[16:08:53] [INFO] Get staff 1
-[16:08:53] [INFO] Get product 4
-[16:08:53] [INFO] Get customer -1
-[16:08:53] [INFO] Get staff 1
-[16:08:53] [INFO] Get product 6
-[16:08:53] [INFO] Get customer -1
-[16:08:53] [INFO] Get staff 1
-[16:08:53] [INFO] Get product 4
-[16:08:57] [INFO] Get product 1
-[16:08:57] [INFO] Get product 2
-[16:08:57] [INFO] Get product 3
-[16:08:57] [INFO] Get product 4
-[16:08:59] [INFO] Get customer -1
-[16:08:59] [INFO] Get staff 1
-[16:08:59] [INFO] Get product 6
-[16:08:59] [INFO] Get customer -1
-[16:08:59] [INFO] Get staff 1
-[16:08:59] [INFO] Get product 4
+JTill log Mon Mar 20 17:13:44 GMT 2017
+[17:13:44] [INFO] Starting JTill Server
+[17:13:45] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[17:13:45] [INFO] Get staff count
+[17:13:45] [INFO] Starting Thread Pool Excecutor
+[17:13:45] [INFO] JTill Server local IP address is 192.168.1.65
+[17:13:45] [INFO] Server Socket running on port number 52341
+[17:13:45] [INFO] Ready to accept connections
+[17:13:47] [INFO] Login Staff dgrant
+[17:13:47] [INFO] David Grant has logged in
+[17:13:54] [INFO] Bessey has connected
+[17:13:54] [INFO] Received GETSETTING from server
+[17:13:54] [INFO] Received GETSETTING from server
+[17:13:54] [INFO] Received GETSETTING from server
+[17:13:54] [INFO] Received GETALLDISCOUNTS from server
+[17:13:54] [INFO] Get all discounts
+[17:13:54] [INFO] Received GETALLSCREENS from server
+[17:13:54] [INFO] Received GETBUTTONSONSCREEN from server
+[17:13:54] [INFO] Get product 1
+[17:13:54] [INFO] Get product 2
+[17:13:54] [INFO] Received GETBUTTONSONSCREEN from server
+[17:13:54] [INFO] Get product 3
+[17:13:54] [INFO] Get product 4
+[17:14:00] [INFO] Received GETSTAFF from server
+[17:14:00] [INFO] Get staff 1
+[17:14:02] [INFO] Received TILLLOGIN from server
+[17:14:02] [INFO] David Grant has logged in from Bessey
+[17:14:02] [INFO] Received RESUMESALE from server
+[17:14:29] [INFO] Received TILLLOGOUT from server
+[17:14:29] [INFO] David Grant has logged out
+[17:14:29] [INFO] Received CONNTERM from server
+[17:14:29] [INFO] Bessey has disconnected

@@ -27,7 +27,7 @@ import javax.mail.MessagingException;
  */
 public class ConnectionThread extends Thread {
 
-    private final Logger log = Logger.getGlobal();
+    private final Logger LOG = Logger.getGlobal();
 
     private final DataConnect dc;
 
@@ -39,8 +39,8 @@ public class ConnectionThread extends Thread {
     private boolean conn_term = false;
 
     private String site;
-    private Staff staff;
-    private Till till;
+    public Staff staff;
+    public Till till;
 
     private ConnectionData currentData;
 
@@ -64,7 +64,7 @@ public class ConnectionThread extends Thread {
         try {
             sem.acquire();
         } catch (InterruptedException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
         obOut.writeObject(new ConnectionData("LOG", message));
         sem.release();
@@ -91,7 +91,7 @@ public class ConnectionThread extends Thread {
                 }
             }
 
-            log.log(Level.INFO, site + " has connected");
+            LOG.log(Level.INFO, site + " has connected");
 
             while (!conn_term) {
                 String input;
@@ -101,19 +101,19 @@ public class ConnectionThread extends Thread {
                 try {
                     o = obIn.readObject();
                 } catch (SocketException ex) {
-                    log.log(Level.WARNING, "The connection to the terminal was shut down forcefully");
+                    LOG.log(Level.WARNING, "The connection to the terminal was shut down forcefully");
                     try {
-                        log.log(Level.INFO, "Logging staff out");
+                        LOG.log(Level.INFO, "Logging staff out");
                         dc.tillLogout(staff);
                     } catch (StaffNotFoundException ex1) {
-                        log.log(Level.WARNING, null, ex1);
+                        LOG.log(Level.WARNING, null, ex1);
                     }
                     return;
                 }
                 try {
                     sem.acquire();
                 } catch (InterruptedException ex) {
-                    log.log(Level.SEVERE, null, ex);
+                    LOG.log(Level.SEVERE, null, ex);
                 }
                 currentData = (ConnectionData) o;
                 input = currentData.getFlag();
@@ -121,7 +121,7 @@ public class ConnectionThread extends Thread {
                 String inp[] = input.split(",");
                 final ConnectionData data = currentData.clone();
 
-                log.log(Level.INFO, "Received " + data.getFlag() + " from server");
+                LOG.log(Level.INFO, "Received " + data.getFlag() + " from server");
 
                 switch (inp[0]) {
                     case "NEWPRODUCT": { //Add a new product
@@ -1045,29 +1045,30 @@ public class ConnectionThread extends Thread {
                             try {
                                 dc.logout(staff);
                                 dc.tillLogout(staff);
-                                log.log(Level.INFO, site + " has terminated their connection to the server");
+                                LOG.log(Level.INFO, site + " has terminated their connection to the server");
                             } catch (StaffNotFoundException ex) {
                             }
                         }
                         break;
                     }
                     default: {
-                        log.log(Level.WARNING, "An unknown flag " + inp[0] + " was received from " + site);
+                        LOG.log(Level.WARNING, "An unknown flag " + inp[0] + " was received from " + site);
                         break;
                     }
                 }
                 sem.release();
             }
-            log.log(Level.INFO, site + " has disconnected");
+            LOG.log(Level.INFO, site + " has disconnected");
         } catch (IOException | ClassNotFoundException ex) {
-            log.log(Level.SEVERE, "There was an error with the conenction to " + site + ". The connection will be forecfully terminated", ex);
+            LOG.log(Level.SEVERE, "There was an error with the conenction to " + site + ". The connection will be forecfully terminated", ex);
         } finally {
             try {
                 dc.disconnectTill(till);
                 socket.close();
             } catch (IOException ex) {
-                log.log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, null, ex);
             }
+            ConnectionAcceptThread.removeConnection(this);
         }
     }
 
@@ -1086,7 +1087,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1109,7 +1110,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1119,12 +1120,12 @@ public class ConnectionThread extends Thread {
                 ConnectionData clone = data.clone();
                 if (clone.getData() == null || clone.getData2() == null) {
                     obOut.writeObject(ConnectionData.create("FAIL", "A null value was received"));
-                    log.log(Level.SEVERE, "A null was received");
+                    LOG.log(Level.SEVERE, "A null was received");
                     return;
                 }
                 if (!(clone.getData() instanceof Integer) || !(clone.getData2() instanceof Integer)) {
                     obOut.writeObject(ConnectionData.create("FAIL", "An integer must be passed in"));
-                    log.log(Level.SEVERE, "An unexpected value type was received");
+                    LOG.log(Level.SEVERE, "An unexpected value type was received");
                     return;
                 }
                 Product p = (Product) clone.getData();
@@ -1132,11 +1133,11 @@ public class ConnectionThread extends Thread {
                 int stock = dc.purchaseProduct(p, amount);
                 obOut.writeObject(ConnectionData.create("SUCC", stock));
             } catch (ProductNotFoundException | SQLException | OutOfStockException ex) {
-                log.log(Level.WARNING, null, ex);
+                LOG.log(Level.WARNING, null, ex);
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1159,7 +1160,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1178,7 +1179,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1197,7 +1198,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1216,7 +1217,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1235,7 +1236,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1248,7 +1249,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ex);
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1267,7 +1268,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1286,7 +1287,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", e));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1305,7 +1306,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1324,7 +1325,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1343,7 +1344,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1362,7 +1363,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1375,7 +1376,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ex);
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1393,7 +1394,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1412,7 +1413,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1431,7 +1432,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1450,7 +1451,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1469,7 +1470,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1482,7 +1483,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ex);
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1494,7 +1495,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject("FAIL");
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1513,7 +1514,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1526,7 +1527,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ex);
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1545,7 +1546,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1564,7 +1565,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1588,7 +1589,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1609,7 +1610,7 @@ public class ConnectionThread extends Thread {
             obOut.writeObject(ConnectionData.create("SUSPEND", "SUCCESS"));
 
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1625,7 +1626,7 @@ public class ConnectionThread extends Thread {
             obOut.writeObject(ConnectionData.create("RESUME", sale));
 
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1645,13 +1646,13 @@ public class ConnectionThread extends Thread {
                 String password = (String) clone.getData2();
                 Staff s = dc.login(username, password);
                 ConnectionThread.this.staff = s;
-                log.log(Level.INFO, s.getName() + " has logged in");
+                LOG.log(Level.INFO, s.getName() + " has logged in");
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | LoginException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1666,13 +1667,13 @@ public class ConnectionThread extends Thread {
                 int id = (int) clone.getData();
                 Staff s = dc.tillLogin(id);
                 ConnectionThread.this.staff = s;
-                log.log(Level.INFO, staff.getName() + " has logged in from " + site);
+                LOG.log(Level.INFO, staff.getName() + " has logged in from " + site);
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | LoginException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1686,14 +1687,14 @@ public class ConnectionThread extends Thread {
                 }
                 Staff s = (Staff) clone.getData();
                 dc.logout(s);
-                log.log(Level.INFO, staff.getName() + " has logged out");
+                LOG.log(Level.INFO, staff.getName() + " has logged out");
                 ConnectionThread.this.staff = null;
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (StaffNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1707,14 +1708,14 @@ public class ConnectionThread extends Thread {
                 }
                 Staff s = (Staff) clone.getData();
                 dc.tillLogout(s);
-                log.log(Level.INFO, staff.getName() + " has logged out");
+                LOG.log(Level.INFO, staff.getName() + " has logged out");
                 ConnectionThread.this.staff = null;
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (StaffNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1733,7 +1734,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1752,7 +1753,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1771,7 +1772,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1790,7 +1791,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1803,7 +1804,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ex);
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1822,7 +1823,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1841,7 +1842,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1860,7 +1861,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1879,7 +1880,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1898,7 +1899,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1911,7 +1912,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ex);
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1930,7 +1931,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1949,7 +1950,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1968,7 +1969,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -1987,7 +1988,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -2000,7 +2001,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ex);
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -2015,7 +2016,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -2034,7 +2035,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -2053,7 +2054,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -2072,7 +2073,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("SUCC", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -2091,7 +2092,7 @@ public class ConnectionThread extends Thread {
                 ConnectionData.create("FAIL", ex);
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -2110,7 +2111,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -2129,7 +2130,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -2148,7 +2149,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -2167,7 +2168,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -2180,7 +2181,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ex);
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -2193,7 +2194,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ex);
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -2212,7 +2213,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -2228,7 +2229,7 @@ public class ConnectionThread extends Thread {
             obOut.writeObject(ConnectionData.create("SUCC"));
 
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2248,7 +2249,7 @@ public class ConnectionThread extends Thread {
 
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2268,7 +2269,7 @@ public class ConnectionThread extends Thread {
 
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2284,7 +2285,7 @@ public class ConnectionThread extends Thread {
             obOut.writeObject(ConnectionData.create("SUCC"));
 
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2308,7 +2309,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL"));
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -2328,7 +2329,7 @@ public class ConnectionThread extends Thread {
 
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2348,7 +2349,7 @@ public class ConnectionThread extends Thread {
 
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2367,7 +2368,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2380,7 +2381,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ex);
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2396,7 +2397,7 @@ public class ConnectionThread extends Thread {
             obOut.writeObject(ConnectionData.create("CONNECT", ti));
 
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2415,7 +2416,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2432,7 +2433,7 @@ public class ConnectionThread extends Thread {
             obOut.writeObject(ConnectionData.create("SUCC"));
 
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2448,7 +2449,7 @@ public class ConnectionThread extends Thread {
             obOut.writeObject(ConnectionData.create("SUCC", value));
 
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2465,7 +2466,7 @@ public class ConnectionThread extends Thread {
             obOut.writeObject(ConnectionData.create("SUCC", value));
 
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2474,7 +2475,7 @@ public class ConnectionThread extends Thread {
             Settings settings = dc.getSettingsInstance();
             obOut.writeObject(ConnectionData.create("SUCC", settings));
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2494,7 +2495,7 @@ public class ConnectionThread extends Thread {
 
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2514,7 +2515,7 @@ public class ConnectionThread extends Thread {
 
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2534,7 +2535,7 @@ public class ConnectionThread extends Thread {
 
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2554,7 +2555,7 @@ public class ConnectionThread extends Thread {
 
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2568,7 +2569,7 @@ public class ConnectionThread extends Thread {
 
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2588,7 +2589,7 @@ public class ConnectionThread extends Thread {
 
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2608,7 +2609,7 @@ public class ConnectionThread extends Thread {
 
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2628,7 +2629,7 @@ public class ConnectionThread extends Thread {
 
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2637,7 +2638,7 @@ public class ConnectionThread extends Thread {
             try {
                 ConnectionData clone = data.clone();
                 if (!(clone.getData() instanceof WasteReport)) {
-                    log.log(Level.SEVERE, "Unexpected data type adding waste report");
+                    LOG.log(Level.SEVERE, "Unexpected data type adding waste report");
                     obOut.writeObject(ConnectionData.create("FAIL", "Unexpected data type"));
                     return;
                 }
@@ -2648,7 +2649,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2657,7 +2658,7 @@ public class ConnectionThread extends Thread {
             try {
                 ConnectionData clone = data.clone();
                 if (!(clone.getData() instanceof Integer)) {
-                    log.log(Level.SEVERE, "Unexpected data type removing waste report");
+                    LOG.log(Level.SEVERE, "Unexpected data type removing waste report");
                     obOut.writeObject(ConnectionData.create("FAIL", "Unexpected data type"));
                     return;
                 }
@@ -2668,7 +2669,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2677,7 +2678,7 @@ public class ConnectionThread extends Thread {
             try {
                 ConnectionData clone = data.clone();
                 if (!(clone.getData() instanceof Integer)) {
-                    log.log(Level.SEVERE, "Unexpected data type getting waste report");
+                    LOG.log(Level.SEVERE, "Unexpected data type getting waste report");
                     obOut.writeObject(ConnectionData.create("FAIL", "Int expected"));
                     return;
                 }
@@ -2688,7 +2689,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2701,7 +2702,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2710,7 +2711,7 @@ public class ConnectionThread extends Thread {
             try {
                 ConnectionData clone = data.clone();
                 if (!(clone.getData() instanceof WasteReport)) {
-                    log.log(Level.SEVERE, "Unexpected data type");
+                    LOG.log(Level.SEVERE, "Unexpected data type");
                     obOut.writeObject(ConnectionData.create("FAIL", "WasteReport expected"));
                     return;
                 }
@@ -2721,7 +2722,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2729,7 +2730,7 @@ public class ConnectionThread extends Thread {
         try {
             ConnectionData clone = data.clone();
             if (!(clone.getData() instanceof WasteReport) || !(clone.getData2() instanceof WasteItem)) {
-                log.log(Level.SEVERE, "Unexpected data type adding a waste item");
+                LOG.log(Level.SEVERE, "Unexpected data type adding a waste item");
                 obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
                 return;
             }
@@ -2742,7 +2743,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2750,7 +2751,7 @@ public class ConnectionThread extends Thread {
         try {
             ConnectionData clone = data.clone();
             if (!(clone.getData() instanceof Integer)) {
-                log.log(Level.SEVERE, "Unexpected data value removing a waste item");
+                LOG.log(Level.SEVERE, "Unexpected data value removing a waste item");
                 obOut.writeObject(ConnectionData.create("FAIL", "Unexpected data value"));
             }
             int id = (int) data.getData();
@@ -2761,7 +2762,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2769,7 +2770,7 @@ public class ConnectionThread extends Thread {
         try {
             ConnectionData clone = data.clone();
             if (!(clone.getData() instanceof Integer)) {
-                log.log(Level.SEVERE, "Unexpected data type received getting waste items");
+                LOG.log(Level.SEVERE, "Unexpected data type received getting waste items");
                 obOut.writeObject(ConnectionData.create("FAIL", "Unexpected data type received"));
                 return;
             }
@@ -2781,7 +2782,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2794,7 +2795,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2802,7 +2803,7 @@ public class ConnectionThread extends Thread {
         try {
             ConnectionData clone = data.clone();
             if (!(clone.getData() instanceof WasteItem)) {
-                log.log(Level.SEVERE, "Unexpected data type updating a waste item");
+                LOG.log(Level.SEVERE, "Unexpected data type updating a waste item");
                 obOut.writeObject(ConnectionData.create("FAIL", "Unexpected data type"));
                 return;
             }
@@ -2814,7 +2815,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2822,7 +2823,7 @@ public class ConnectionThread extends Thread {
         try {
             ConnectionData clone = data.clone();
             if (!(clone.getData() instanceof WasteReason)) {
-                log.log(Level.SEVERE, "Unexpected data type adding a waste reaspm");
+                LOG.log(Level.SEVERE, "Unexpected data type adding a waste reaspm");
                 obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
                 return;
             }
@@ -2834,7 +2835,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2842,7 +2843,7 @@ public class ConnectionThread extends Thread {
         try {
             ConnectionData clone = data.clone();
             if (!(clone.getData() instanceof Integer)) {
-                log.log(Level.SEVERE, "Unexpected data value removing a waste reason");
+                LOG.log(Level.SEVERE, "Unexpected data value removing a waste reason");
                 obOut.writeObject(ConnectionData.create("FAIL", "Unexpected data value"));
             }
             int id = (int) data.getData();
@@ -2853,7 +2854,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2861,7 +2862,7 @@ public class ConnectionThread extends Thread {
         try {
             ConnectionData clone = data.clone();
             if (!(clone.getData() instanceof Integer)) {
-                log.log(Level.SEVERE, "Unexpected data type received getting waste reason");
+                LOG.log(Level.SEVERE, "Unexpected data type received getting waste reason");
                 obOut.writeObject(ConnectionData.create("FAIL", "Unexpected data type received"));
                 return;
             }
@@ -2873,7 +2874,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2886,7 +2887,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2894,7 +2895,7 @@ public class ConnectionThread extends Thread {
         try {
             ConnectionData clone = data.clone();
             if (!(clone.getData() instanceof WasteItem)) {
-                log.log(Level.SEVERE, "Unexpected data type updating a waste reason");
+                LOG.log(Level.SEVERE, "Unexpected data type updating a waste reason");
                 obOut.writeObject(ConnectionData.create("FAIL", "Unexpected data type"));
                 return;
             }
@@ -2906,7 +2907,7 @@ public class ConnectionThread extends Thread {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 }
