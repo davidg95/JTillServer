@@ -16,10 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractListModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.ListModel;
 
 /**
  * Dialog which shows all current connected clients.
@@ -168,6 +165,11 @@ public class ConnectionsDialog extends javax.swing.JDialog {
         if (evt.getClickCount() == 2) {
             try {
                 Till t = dc.getAllTills().get(lstConnections.getSelectedIndex());
+                for(Till ti: dc.getConnectedTills()){
+                    if(ti.equals(t)){
+                        t = ti;
+                    }
+                }
                 TillDialog.showDialog(this, t);
             } catch (IOException | SQLException ex) {
                 Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);

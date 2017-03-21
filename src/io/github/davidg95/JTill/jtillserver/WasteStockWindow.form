@@ -34,15 +34,15 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnAddProduct" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnAddPlu" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnWaste" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnClose" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="lblTime" max="32767" attributes="0"/>
+                      <Component id="lblTime" min="-2" pref="226" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnDate" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="lblReason" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="cmbReason" min="-2" pref="160" max="-2" attributes="0"/>
@@ -60,16 +60,16 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="lblReason" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="cmbReason" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnDate" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="lblTime" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="279" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="276" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnClose" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnWaste" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnAddPlu" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnAddProduct" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblValue" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnCSV" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -153,14 +153,6 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnWasteActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnAddPlu">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Add Plu"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddPluActionPerformed"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JButton" name="btnAddProduct">
       <Properties>
         <Property name="text" type="java.lang.String" value="Add Product"/>
@@ -197,6 +189,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCSVActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnDate">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Change Date"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDateActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

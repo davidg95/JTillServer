@@ -48,6 +48,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         showAllProducts();
+        txtSearch.requestFocus();
     }
 
     /**
@@ -114,12 +115,15 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        searchButtonGroup = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         btnClose = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
+        radName = new javax.swing.JRadioButton();
+        radBarcode = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Select Product");
@@ -168,6 +172,23 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             }
         });
 
+        searchButtonGroup.add(radName);
+        radName.setText("Name");
+        radName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radNameActionPerformed(evt);
+            }
+        });
+
+        searchButtonGroup.add(radBarcode);
+        radBarcode.setSelected(true);
+        radBarcode.setText("Barcode");
+        radBarcode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radBarcodeActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -180,8 +201,12 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSearch)
+                        .addComponent(radName)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radBarcode)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnClose))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -198,7 +223,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                     .addComponent(btnClose)
                     .addComponent(jLabel1)
                     .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSearch))
+                    .addComponent(btnSearch)
+                    .addComponent(radName)
+                    .addComponent(radBarcode))
                 .addContainerGap())
         );
 
@@ -222,23 +249,50 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         List<Product> newList = new ArrayList<>();
 
         for (Product p : currentTableContents) {
-            if (p.getLongName().toLowerCase().contains(search.toLowerCase())) {
-                newList.add(p);
+            if (radName.isSelected()) {
+                if (p.getLongName().toLowerCase().contains(search.toLowerCase())) {
+                    newList.add(p);
+                }
+            } else {
+                if (p.getPlu().getCode().equals(search)) {
+                    newList.add(p);
+                }
             }
+        }
+        if(newList.isEmpty()){
+            txtSearch.setSelectionStart(0);
+            txtSearch.setSelectionEnd(txtSearch.getText().length());
+            JOptionPane.showMessageDialog(this, "No Results", "Search", JOptionPane.INFORMATION_MESSAGE);
+            return;
         }
         currentTableContents = newList;
         updateTable();
+        if (currentTableContents.size() == 1) {
+            product = currentTableContents.get(0);
+            this.setVisible(false);
+        }
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
         btnSearch.doClick();
     }//GEN-LAST:event_txtSearchActionPerformed
 
+    private void radNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radNameActionPerformed
+        txtSearch.requestFocus();
+    }//GEN-LAST:event_radNameActionPerformed
+
+    private void radBarcodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radBarcodeActionPerformed
+        txtSearch.requestFocus();
+    }//GEN-LAST:event_radBarcodeActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnSearch;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JRadioButton radBarcode;
+    private javax.swing.JRadioButton radName;
+    private javax.swing.ButtonGroup searchButtonGroup;
     private javax.swing.JTable table;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables

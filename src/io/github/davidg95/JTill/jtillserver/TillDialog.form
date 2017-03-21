@@ -35,8 +35,9 @@
                       </Group>
                   </Group>
                   <Component id="lblStaff" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblLastContact" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="0" pref="59" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="97" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -51,7 +52,9 @@
               <Component id="lblTakings" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lblStaff" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="13" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="lblLastContact" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="39" max="32767" attributes="0"/>
               <Component id="btnClose" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -85,6 +88,11 @@
     <Component class="javax.swing.JLabel" name="lblStaff">
       <Properties>
         <Property name="text" type="java.lang.String" value="Staff:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblLastContact">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Last Contact:"/>
       </Properties>
     </Component>
   </SubComponents>

@@ -11,6 +11,7 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.text.SimpleDateFormat;
 import javax.swing.JDialog;
 
 /**
@@ -39,6 +40,11 @@ public class TillDialog extends javax.swing.JDialog {
         lblID.setText("Till ID: " + till.getId());
         lblName.setText("Till Name: " + till.getName());
         lblTakings.setText("Uncashed Takings: £" + till.getUncashedTakings());
+        if (t.getLastContact() == null) {
+            lblLastContact.setText("Last Contact: None");
+        } else {
+            lblLastContact.setText("Last Contact: " + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(till.getLastContact()));
+        }
         for (ConnectionThread thread : ConnectionAcceptThread.connections) {
             if (thread.till.equals(t)) {
                 Staff s = thread.staff;
@@ -74,6 +80,7 @@ public class TillDialog extends javax.swing.JDialog {
         lblTakings = new javax.swing.JLabel();
         btnClose = new javax.swing.JButton();
         lblStaff = new javax.swing.JLabel();
+        lblLastContact = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -92,6 +99,8 @@ public class TillDialog extends javax.swing.JDialog {
 
         lblStaff.setText("Staff:");
 
+        lblLastContact.setText("Last Contact:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -105,8 +114,9 @@ public class TillDialog extends javax.swing.JDialog {
                             .addComponent(lblID)
                             .addComponent(lblName)
                             .addComponent(lblTakings)))
-                    .addComponent(lblStaff))
-                .addGap(0, 59, Short.MAX_VALUE))
+                    .addComponent(lblStaff)
+                    .addComponent(lblLastContact))
+                .addGap(0, 97, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -119,7 +129,9 @@ public class TillDialog extends javax.swing.JDialog {
                 .addComponent(lblTakings)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblStaff)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblLastContact)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                 .addComponent(btnClose)
                 .addContainerGap())
         );
@@ -134,6 +146,7 @@ public class TillDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JLabel lblID;
+    private javax.swing.JLabel lblLastContact;
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblStaff;
     private javax.swing.JLabel lblTakings;

@@ -1,15 +1,27 @@
-JTill log Tue Mar 21 09:50:23 GMT 2017
-[09:50:23] [INFO] Starting JTill Server
-[09:50:23] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[09:50:24] [INFO] Get staff count
-[09:50:25] [INFO] Starting Thread Pool Excecutor
-[09:50:25] [INFO] JTill Server local IP address is 10.151.16.78
-[09:50:25] [INFO] Server Socket running on port number 52341
-[09:50:25] [INFO] Ready to accept connections
-[09:50:32] [INFO] Login Staff dgrant
-[09:50:33] [INFO] David Grant has logged in
-[09:50:34] [INFO] Get all discounts
-[09:50:34] [INFO] Get all discounts
-[09:50:39] [INFO] Get all discounts
-[09:50:49] [INFO] Get all discounts
-[09:50:51] [INFO] Get all discounts
+JTill log Tue Mar 21 13:38:49 GMT 2017
+[13:38:49] [INFO] Starting JTill Server
+[13:38:49] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[13:38:51] [INFO] Get staff count
+[13:38:51] [INFO] Starting Thread Pool Excecutor
+[13:38:51] [INFO] JTill Server local IP address is 192.168.1.43
+[13:38:51] [INFO] Server Socket running on port number 52341
+[13:38:51] [INFO] Ready to accept connections
+[13:39:00] [INFO] Login Staff dgrant
+[13:39:00] [INFO] David Grant has logged in
+[13:39:02] [INFO] Bessey has connected
+[13:39:02] [INFO] Received GETSETTING from server
+[13:39:02] [INFO] Received GETSETTING from server
+[13:39:02] [INFO] Received GETSETTING from server
+[13:39:02] [INFO] Received GETALLDISCOUNTS from server
+[13:39:02] [INFO] Get all discounts
+[13:39:02] [INFO] Received GETALLSCREENS from server
+[13:39:03] [INFO] Received GETBUTTONSONSCREEN from server
+[13:39:03] [INFO] Get product 1
+[13:39:03] [INFO] Get product 2
+[13:39:03] [INFO] Received GETBUTTONSONSCREEN from server
+[13:39:03] [INFO] Get product 3
+[13:39:03] [INFO] Get product 4
+[13:39:08] [INFO] Received GETSTAFF from server
+[13:39:08] [INFO] Get staff 1
+[13:39:10] [WARNING] The connection to the terminal was shut down forcefully
+[13:39:10] [INFO] Logging staff out

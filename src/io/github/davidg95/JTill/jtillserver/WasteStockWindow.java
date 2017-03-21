@@ -6,10 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Desktop;
 import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,7 +21,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -45,8 +41,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
     private final List<WasteItem> wasteItems;
     private final DefaultTableModel model;
     private final DefaultComboBoxModel cmbModel;
-    JComboBox tableCombo = new JComboBox();
-    DefaultComboBoxModel tableComboModel;
+    private Date date;
 
     /**
      * Creates new form WasteStockWindow
@@ -57,7 +52,8 @@ public class WasteStockWindow extends javax.swing.JFrame {
         initComponents();
         setTitle("Waste Stock");
         setIconImage(icon);
-        lblTime.setText("Time: " + new Date());
+        date = new Date();
+        lblTime.setText("Time: " + date);
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
         model.setRowCount(0);
@@ -72,11 +68,11 @@ public class WasteStockWindow extends javax.swing.JFrame {
         wasteItems = new ArrayList<>();
         initComponents();
         btnAddProduct.setEnabled(false);
-        btnAddPlu.setEnabled(false);
         btnWaste.setEnabled(false);
         cmbReason.setEnabled(false);
         lblReason.setEnabled(false);
         btnCSV.setEnabled(false);
+        btnDate.setEnabled(false);
         lblTime.setText("Time: " + wr.getDate());
         setTitle("Waste Report " + report.getId());
         setIconImage(icon);
@@ -137,13 +133,13 @@ public class WasteStockWindow extends javax.swing.JFrame {
         tblProducts = new javax.swing.JTable();
         btnClose = new javax.swing.JButton();
         btnWaste = new javax.swing.JButton();
-        btnAddPlu = new javax.swing.JButton();
         btnAddProduct = new javax.swing.JButton();
         lblTime = new javax.swing.JLabel();
         lblReason = new javax.swing.JLabel();
         lblValue = new javax.swing.JLabel();
         cmbReason = new javax.swing.JComboBox<>();
         btnCSV = new javax.swing.JButton();
+        btnDate = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -201,13 +197,6 @@ public class WasteStockWindow extends javax.swing.JFrame {
             }
         });
 
-        btnAddPlu.setText("Add Plu");
-        btnAddPlu.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddPluActionPerformed(evt);
-            }
-        });
-
         btnAddProduct.setText("Add Product");
         btnAddProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -226,6 +215,13 @@ public class WasteStockWindow extends javax.swing.JFrame {
             }
         });
 
+        btnDate.setText("Change Date");
+        btnDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDateActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -241,14 +237,14 @@ public class WasteStockWindow extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddProduct)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAddPlu)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnWaste)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnClose))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(lblTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblReason)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cmbReason, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -261,15 +257,15 @@ public class WasteStockWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(lblReason)
-                        .addComponent(cmbReason, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cmbReason, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnDate))
                     .addComponent(lblTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
                     .addComponent(btnWaste)
-                    .addComponent(btnAddPlu)
                     .addComponent(btnAddProduct)
                     .addComponent(lblValue)
                     .addComponent(btnCSV))
@@ -315,57 +311,17 @@ public class WasteStockWindow extends javax.swing.JFrame {
                 val = val.add(w.getProduct().getPrice().multiply(new BigDecimal(w.getQuantity())));
             }
             lblValue.setText("Total Value: £" + val);
-            model.addRow(new Object[]{product.getId(), Integer.parseInt(amount), product.getPrice().multiply(new BigDecimal(wi.getQuantity())), wi.getReason()});
+            model.addRow(new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), Integer.parseInt(amount), product.getPrice().multiply(new BigDecimal(wi.getQuantity())), wi.getReason()});
         } catch (IOException | SQLException | JTillException ex) {
             Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnAddProductActionPerformed
 
-    private void btnAddPluActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPluActionPerformed
-        String barcode = JOptionPane.showInputDialog(this, "Enter or scan barcode", "Waste", JOptionPane.INFORMATION_MESSAGE);
-
-        if (barcode == null) {
-            return;
-        }
-
-        try {
-            Product product = (Product) dc.getProductByBarcode(barcode).clone();
-            String amount = JOptionPane.showInputDialog(this, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
-            if (amount == null || amount.equals("0") || amount.equals("")) {
-                return;
-            }
-            if (product.getStock() - Integer.parseInt(amount) < 0) {
-                if (JOptionPane.showConfirmDialog(this, "Item does not have that much in stock. Continue?", "Waste", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
-                    return;
-                }
-            }
-            int reason = cmbReason.getSelectedIndex() + 1;
-            WasteReason wr = null;
-
-            wr = dc.getWasteReason(reason);
-            WasteItem wi = new WasteItem(product, Integer.parseInt(amount), wr);
-            wasteItems.add(wi);
-            BigDecimal val = BigDecimal.ZERO;
-            val.setScale(2);
-            for (WasteItem w : wasteItems) {
-                val = val.add(w.getProduct().getPrice().multiply(new BigDecimal(w.getQuantity())));
-            }
-            lblValue.setText("Total Value: £" + val);
-            model.addRow(new Object[]{product.getId(), product.getName(), Integer.parseInt(amount), product.getPrice().multiply(new BigDecimal(wi.getQuantity())), wi.getReason()});
-        } catch (IOException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ProductNotFoundException ex) {
-            JOptionPane.showMessageDialog(this, "Product could not be found", "Not Found", JOptionPane.ERROR_MESSAGE);
-        } catch (JTillException ex) {
-            Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnAddPluActionPerformed
-
     private void btnWasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWasteActionPerformed
         if (wasteItems.isEmpty()) {
             return;
         }
-        WasteReport wr = new WasteReport(new Date());
+        WasteReport wr = new WasteReport(date);
         BigDecimal total = BigDecimal.ZERO;
         for (WasteItem wi : wasteItems) {
             try {
@@ -403,6 +359,9 @@ public class WasteStockWindow extends javax.swing.JFrame {
             }
         }
 
+        if (tblProducts.getSelectedRow() == -1) {
+            return;
+        }
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem item = new JMenuItem("Remove");
@@ -443,6 +402,11 @@ public class WasteStockWindow extends javax.swing.JFrame {
 
                         String[] item = line.split(",");
 
+                        if (item.length != 3) {
+                            JOptionPane.showMessageDialog(this, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
                         Product product = dc.getProductByBarcode(item[0]);
                         int amount = Integer.parseInt(item[1]);
                         int reason = Integer.parseInt(item[2]);
@@ -480,11 +444,19 @@ public class WasteStockWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnCSVActionPerformed
 
+    private void btnDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDateActionPerformed
+        Date d = DateSelectDialog.showDialog(this);
+        if (d != null) {
+            date = d;
+            lblTime.setText("Time: " + date);
+        }
+    }//GEN-LAST:event_btnDateActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAddPlu;
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnCSV;
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnDate;
     private javax.swing.JButton btnWaste;
     private javax.swing.JComboBox<String> cmbReason;
     private javax.swing.JScrollPane jScrollPane1;

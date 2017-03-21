@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
@@ -100,6 +101,8 @@ public class ConnectionThread extends Thread {
 
                 try {
                     o = obIn.readObject();
+                    
+                    till.setLastContact(new Date());
                 } catch (SocketException ex) {
                     LOG.log(Level.WARNING, "The connection to the terminal was shut down forcefully");
                     try {

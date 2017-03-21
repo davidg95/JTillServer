@@ -7,18 +7,23 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -63,11 +68,11 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProducts = new javax.swing.JTable();
-        btnAddPlu = new javax.swing.JButton();
         btnReceive = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
         btnAddProduct = new javax.swing.JButton();
         btnAddCSV = new javax.swing.JButton();
+        lblValue = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -110,13 +115,6 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
             tblProducts.getColumnModel().getColumn(3).setResizable(false);
         }
 
-        btnAddPlu.setText("Add Plu");
-        btnAddPlu.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddPluActionPerformed(evt);
-            }
-        });
-
         btnReceive.setText("Receive");
         btnReceive.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -145,6 +143,8 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
             }
         });
 
+        lblValue.setText("Total Value: £0.00");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -154,12 +154,11 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblValue)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnAddCSV)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddProduct)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAddPlu)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnReceive)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -175,43 +174,14 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnReceive)
                     .addComponent(btnClose)
-                    .addComponent(btnAddPlu)
                     .addComponent(btnAddProduct)
-                    .addComponent(btnAddCSV))
+                    .addComponent(btnAddCSV)
+                    .addComponent(lblValue))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnAddPluActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPluActionPerformed
-        String barcode = JOptionPane.showInputDialog(this, "Enter or scan barcode", "Receive Items", JOptionPane.PLAIN_MESSAGE);
-
-        if (barcode != null) {
-            Product product;
-            try {
-                product = dc.getProductByBarcode(barcode);
-                String amount = JOptionPane.showInputDialog(this, "How many?", "Receive Items", JOptionPane.PLAIN_MESSAGE);
-                if (amount == null || amount.equals("0") || amount.equals("")) {
-                    return;
-                }
-                if (product.getStock() + Integer.parseInt(amount) > product.getMaxStockLevel()) {
-                    JOptionPane.showMessageDialog(this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product", "Stock", JOptionPane.WARNING_MESSAGE);
-                }
-                product.setStock(Integer.parseInt(amount));
-                products.add(product);
-                model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), product.getStock()});
-            } catch (IOException | SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (ProductNotFoundException ex) {
-                if (JOptionPane.showConfirmDialog(this, "Barcode not found, create new product?", "Receive Items", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    Plu p = new Plu(barcode);
-                    product = ProductDialog.showNewProductDialog(this, dc, p);
-                    JOptionPane.showMessageDialog(this, product.getLongName() + " has now been added to the system with given stock level, there is no need to receive it here.", "Added", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-        }
-    }//GEN-LAST:event_btnAddPluActionPerformed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
         setVisible(false);
@@ -257,6 +227,12 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
         product.setStock(Integer.parseInt(amount));
 
         products.add(product);
+        BigDecimal val = BigDecimal.ZERO;
+        val.setScale(2);
+        for (Product p : products) {
+            val = val.add(p.getPrice().multiply(new BigDecimal(p.getStock())));
+        }
+        lblValue.setText("Total Value: £" + val);
         model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), product.getStock()});
     }//GEN-LAST:event_btnAddProductActionPerformed
 
@@ -268,6 +244,25 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                 products.remove(row);
                 model.removeRow(row);
             }
+        }
+
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem item = new JMenuItem("Remove");
+            item.addActionListener((ActionEvent e) -> {
+                if (JOptionPane.showConfirmDialog(this, "Remove this item?", "Remove Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    products.remove(tblProducts.getSelectedRow());
+                    BigDecimal val = BigDecimal.ZERO;
+                    val.setScale(2);
+                    for (Product p : products) {
+                        val = val.add(p.getPrice().multiply(new BigDecimal(p.getStock())));
+                    }
+                    lblValue.setText("Total Value: £" + val);
+                    model.removeRow(tblProducts.getSelectedRow());
+                }
+            });
+            menu.add(item);
+            menu.show(tblProducts, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tblProductsMouseClicked
 
@@ -289,6 +284,11 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                     }
 
                     String[] items = line.split(",");
+
+                    if (items.length != 2) {
+                        JOptionPane.showMessageDialog(this, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
 
                     String barcode = items[0];
                     int quantity = Integer.parseInt(items[1]);
@@ -319,11 +319,11 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddCSV;
-    private javax.swing.JButton btnAddPlu;
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnReceive;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblValue;
     private javax.swing.JTable tblProducts;
     // End of variables declaration//GEN-END:variables
 }

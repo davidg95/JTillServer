@@ -28,12 +28,11 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jScrollPane1" pref="550" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="lblValue" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="btnAddCSV" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnAddProduct" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnAddPlu" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnReceive" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -53,9 +52,9 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnReceive" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnClose" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnAddPlu" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnAddProduct" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnAddCSV" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblValue" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -114,14 +113,6 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="btnAddPlu">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Add Plu"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddPluActionPerformed"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JButton" name="btnReceive">
       <Properties>
         <Property name="text" type="java.lang.String" value="Receive"/>
@@ -153,6 +144,11 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddCSVActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblValue">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Total Value: &#xa3;0.00"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>
