@@ -8,6 +8,7 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.print.PrinterException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +16,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +26,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JTable.PrintMode;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -201,8 +205,23 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
             }
         }
         JOptionPane.showMessageDialog(this, "All items have been received", "Received", JOptionPane.INFORMATION_MESSAGE);
+        if (JOptionPane.showConfirmDialog(this, "Do you want to print the report?", "Print", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            try {
+                BigDecimal val = BigDecimal.ZERO;
+                for (Product p : products) {
+                    val = val.add(p.getPrice());
+                }
+                MessageFormat header = new MessageFormat("Receive Stock " + new Date());
+                MessageFormat footer = new MessageFormat("Page{0,number,integer}");
+                tblProducts.print(PrintMode.FIT_WIDTH, header, footer);
+            } catch (PrinterException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        lblValue.setText("Total: £0.00");
         model.setRowCount(0);
         products.clear();
+        this.setVisible(false);
     }//GEN-LAST:event_btnReceiveActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed

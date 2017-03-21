@@ -9,11 +9,19 @@ import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Window;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -84,6 +92,37 @@ public class SaleDialog extends javax.swing.JDialog {
         tableItems.setModel(model);
     }
 
+    private class ReceiptPrinter implements Printable {
+
+        PrinterJob job = PrinterJob.getPrinterJob();
+        Sale toPrint;
+
+        public ReceiptPrinter(Sale s) {
+            toPrint = s;
+        }
+
+        @Override
+        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+            if (pageIndex > 0) {
+                return NO_SUCH_PAGE;
+            }
+
+            Graphics2D g2 = (Graphics2D) graphics;
+            g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+
+            int y = 100;
+            for (SaleItem it : toPrint.getSaleItems()) {
+                graphics.drawString(it.getName(), 100, y);
+                graphics.drawString("" + it.getQuantity(), 200, y);
+                graphics.drawString("£" + it.getPrice(), 300, y);
+                y += 50;
+            }
+
+            return PAGE_EXISTS;
+        }
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -102,6 +141,7 @@ public class SaleDialog extends javax.swing.JDialog {
         lblTerminal = new javax.swing.JLabel();
         btnEmail = new javax.swing.JButton();
         lblTotal = new javax.swing.JLabel();
+        btnPrint = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -151,6 +191,13 @@ public class SaleDialog extends javax.swing.JDialog {
 
         lblTotal.setText("Sale Total: ");
 
+        btnPrint.setText("Print Receipt");
+        btnPrint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrintActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -170,6 +217,8 @@ public class SaleDialog extends javax.swing.JDialog {
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnPrint)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnEmail)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnClose)))
@@ -195,7 +244,8 @@ public class SaleDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
-                    .addComponent(btnEmail))
+                    .addComponent(btnEmail)
+                    .addComponent(btnPrint))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -213,17 +263,58 @@ public class SaleDialog extends javax.swing.JDialog {
         } else {
             email = JOptionPane.showInputDialog(this, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
         }
-        try {
-            dc.emailReceipt(email, sale);
-            JOptionPane.showMessageDialog(this, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);
-        } catch (IOException | MessagingException ex) {
-            JOptionPane.showMessageDialog(this, "Error sending email", "Email Receipt", JOptionPane.ERROR_MESSAGE);
-        }
+        final ModalDialog mDialog = new ModalDialog("Email...", "Sending email...");
+        Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    dc.emailReceipt(email, sale);
+                } catch (IOException | MessagingException ex) {
+                    JOptionPane.showMessageDialog(SaleDialog.this, "Error sending email", "Email Receipt", JOptionPane.ERROR_MESSAGE);
+                } finally{
+                    mDialog.hide();
+                }
+            }
+        };
+        
+        Thread th = new Thread(run);
+        th.start();
+        
+        mDialog.show();
+
+        JOptionPane.showMessageDialog(this, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnEmailActionPerformed
+
+    private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
+        ReceiptPrinter prt = new ReceiptPrinter(sale);
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPrintable(prt);
+        boolean ok = job.printDialog();
+        final ModalDialog mDialog = new ModalDialog("Printing...", "Printing...");
+        if (ok) {
+            Runnable print = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        job.print();
+                    } catch (PrinterException ex) {
+                        Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
+                    } finally {
+                        mDialog.hide();
+                    }
+                }
+            };
+
+            Thread th = new Thread(print);
+            th.start();
+            mDialog.show();
+        }
+    }//GEN-LAST:event_btnPrintActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnEmail;
+    private javax.swing.JButton btnPrint;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblCustomer;
     private javax.swing.JLabel lblSaleID;
