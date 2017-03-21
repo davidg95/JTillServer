@@ -447,12 +447,27 @@ public class ProductsWindow extends javax.swing.JFrame {
         buttonGroup1.add(radName);
         radName.setSelected(true);
         radName.setText("Name");
+        radName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radNameActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(radBarcode);
         radBarcode.setText("Barcode");
+        radBarcode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radBarcodeActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(radCode);
         radCode.setText("Product Code");
+        radCode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radCodeActionPerformed(evt);
+            }
+        });
 
         btnSearch.setText("Search");
         btnSearch.addActionListener(new java.awt.event.ActionListener() {
@@ -869,6 +884,18 @@ public class ProductsWindow extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnCSVActionPerformed
+
+    private void radNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radNameActionPerformed
+        txtSearch.requestFocus();
+    }//GEN-LAST:event_radNameActionPerformed
+
+    private void radBarcodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radBarcodeActionPerformed
+        txtSearch.requestFocus();
+    }//GEN-LAST:event_radBarcodeActionPerformed
+
+    private void radCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radCodeActionPerformed
+        txtSearch.requestFocus();
+    }//GEN-LAST:event_radCodeActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCSV;

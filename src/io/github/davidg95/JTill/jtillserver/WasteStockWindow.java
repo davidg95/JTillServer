@@ -6,7 +6,11 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Desktop;
 import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,7 +26,10 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -394,6 +401,25 @@ public class WasteStockWindow extends javax.swing.JFrame {
                     model.removeRow(row);
                 }
             }
+        }
+
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem item = new JMenuItem("Remove");
+            item.addActionListener((ActionEvent e) -> {
+                if (JOptionPane.showConfirmDialog(this, "Remove this item?", "Remove Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    wasteItems.remove(tblProducts.getSelectedRow());
+                    BigDecimal val = BigDecimal.ZERO;
+                    val.setScale(2);
+                    for (WasteItem w : wasteItems) {
+                        val = val.add(w.getProduct().getPrice().multiply(new BigDecimal(w.getQuantity())));
+                    }
+                    lblValue.setText("Total Value: £" + val);
+                    model.removeRow(tblProducts.getSelectedRow());
+                }
+            });
+            menu.add(item);
+            menu.show(tblProducts, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tblProductsMouseClicked
 

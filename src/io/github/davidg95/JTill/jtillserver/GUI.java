@@ -6,9 +6,15 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Desktop;
 import java.awt.Image;
 import java.awt.SystemTray;
+import java.awt.Toolkit;
 import java.awt.TrayIcon;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -22,7 +28,10 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 
 /**
  * The main GUI for the server.
@@ -77,6 +86,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         this.setIconImage(icon);
         initComponents();
         try {
+            setTitle("JTill Server - " + dc.getSetting("SITE_NAME"));
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+        try {
             lblServerAddress.setText("Local Server Address: " + InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException ex) {
             lblServerAddress.setText("Local Server Address: UNKNOWN");
@@ -122,9 +136,9 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
             lblProducts.setText("Products in database: UNKNOWN");
         }
     }
-    
+
     @Override
-    public void updateTills(){
+    public void updateTills() {
         try {
             lblClients.setText("Connections: " + dc.getConnectedTills().size());
         } catch (IOException ex) {
@@ -369,7 +383,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         lblServerAddress = new javax.swing.JLabel();
         lblPort = new javax.swing.JLabel();
         lblProducts = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtStockWarnings = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
@@ -387,7 +400,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         itemReceive = new javax.swing.JMenuItem();
         itemWasteStock = new javax.swing.JMenuItem();
         itemWasteReports = new javax.swing.JMenuItem();
-        jSeparator1 = new javax.swing.JPopupMenu.Separator();
         menuSetup = new javax.swing.JMenu();
         itemReasons = new javax.swing.JMenuItem();
         itemTillScreens = new javax.swing.JMenuItem();
@@ -557,6 +569,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         txtLog.setEditable(false);
         txtLog.setColumns(20);
         txtLog.setRows(5);
+        txtLog.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtLogMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(txtLog);
 
         jLabel2.setText("Event Log");
@@ -566,13 +583,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         lblPort.setText("Port number: 0");
 
         lblProducts.setText("Products in database: 0");
-
-        jButton1.setText("Log Staff Out");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
 
         txtStockWarnings.setEditable(false);
         txtStockWarnings.setColumns(20);
@@ -675,7 +685,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
             }
         });
         menuStock.add(itemWasteReports);
-        menuStock.add(jSeparator1);
 
         jMenuBar1.add(menuStock);
 
@@ -760,7 +769,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblPort)
                             .addComponent(lblProducts)
-                            .addComponent(jButton1)
                             .addComponent(lblServerAddress))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -790,9 +798,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblPort)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblProducts)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1))
+                        .addComponent(lblProducts))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -818,8 +824,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_itemStockActionPerformed
 
     private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
-        log.log(Level.INFO, "Stopping JTIll Server");
         if (dc instanceof DBConnect) {
+            if (JOptionPane.showConfirmDialog(this, "Are you sure you want to stop JTill server?", "JTill Server", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+                return;
+            }
+            log.log(Level.INFO, "Stopping JTIll Server");
             DBConnect db = (DBConnect) dc;
             log.log(Level.INFO, "Saving properties");
             settings.saveProperties();
@@ -919,20 +928,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         ScreenEditWindow.showScreenEditWindow(dc, icon);
     }//GEN-LAST:event_btnScreensActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-            for (Staff s : dc.getAllStaff()) {
-                try {
-                    dc.tillLogout(s);
-                } catch (IOException | StaffNotFoundException ex) {
-                    log.log(Level.SEVERE, null, ex);
-                }
-            }
-        } catch (IOException | SQLException ex) {
-            log.log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void itemReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReceiveActionPerformed
         ReceiveItemsWindow.showWindow(dc, icon);
     }//GEN-LAST:event_itemReceiveActionPerformed
@@ -965,6 +960,28 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         ScreenEditWindow.showScreenEditWindow(dc, icon);
     }//GEN-LAST:event_itemTillScreensActionPerformed
 
+    private void txtLogMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtLogMouseClicked
+        if(SwingUtilities.isRightMouseButton(evt)){
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem item = new JMenuItem("Copy");
+            JMenuItem item2 = new JMenuItem("Open Log File");
+            item.addActionListener((ActionEvent e) -> {
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(txtLog.getSelectedText()), null);
+            });
+            item2.addActionListener((ActionEvent e) ->{
+                try {
+                    Desktop.getDesktop().open(new File("log.txt"));
+                } catch (IOException ex) {
+                    log.log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(this, "Error opening log file", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+            menu.add(item);
+            menu.add(item2);
+            menu.show(txtLog, evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_txtLogMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -993,14 +1010,12 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemTillScreens;
     private javax.swing.JMenuItem itemWasteReports;
     private javax.swing.JMenuItem itemWasteStock;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblClients;
