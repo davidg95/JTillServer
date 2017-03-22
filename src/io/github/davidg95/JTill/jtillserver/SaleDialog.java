@@ -8,12 +8,14 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Dialog;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Window;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
+import java.awt.print.PrinterAbortException;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.IOException;
@@ -92,11 +94,18 @@ public class SaleDialog extends javax.swing.JDialog {
         tableItems.setModel(model);
     }
 
+    /**
+     * Inner class for printing a receipt from the sale.
+     */
     private class ReceiptPrinter implements Printable {
+        
+        private final Sale toPrint; //The Sale to print.
 
-        PrinterJob job = PrinterJob.getPrinterJob();
-        Sale toPrint;
-
+        /**
+         * Create a new receipt for printing.
+         *
+         * @param s the Sale to print.
+         */
         public ReceiptPrinter(Sale s) {
             toPrint = s;
         }
@@ -107,16 +116,55 @@ public class SaleDialog extends javax.swing.JDialog {
                 return NO_SUCH_PAGE;
             }
 
+            String header = "Sale Receipt";
+            String footer = "Thank you for your custom";
+            try {
+                header = dc.getSetting("RECEIPT_HEADER"); //Get the receipt header for the receipt.
+                footer = dc.getSetting("RECEIPT_FOOTER"); //Get the receipt footer for ther receipt.
+            } catch (IOException ex) {
+                Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
             Graphics2D g2 = (Graphics2D) graphics;
             g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 
-            int y = 100;
+            Font oldFont = graphics.getFont();
+
+            g2.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
+            g2.drawString(header, 70, 60);
+            g2.setFont(oldFont); //Chagne back to the old font.
+
+            //Print sale info.
+            g2.drawString("Receipt for sale: " + toPrint.getId(), 70, 90);
+            g2.drawString("Time: " + toPrint.getDate(), 70, 110);
+            g2.drawString("Served by " + toPrint.getStaff(), 70, 130);
+
+            final int item = 100;
+            final int quantity = 300;
+            final int total = 420;
+            int y = 170;
+
+            //Print collumn headers.
+            g2.drawString("Item", item, y);
+            g2.drawString("Quantity", quantity, y);
+            g2.drawString("Total", total, y);
+            g2.drawLine(item - 30, y + 10, total + 100, y + 10);
+
+            y += 30;
+
+            //Print the sale items.
             for (SaleItem it : toPrint.getSaleItems()) {
-                graphics.drawString(it.getName(), 100, y);
-                graphics.drawString("" + it.getQuantity(), 200, y);
-                graphics.drawString("£" + it.getPrice(), 300, y);
-                y += 50;
+                g2.drawString(it.getName(), item, y);
+                g2.drawString("" + it.getQuantity(), quantity, y);
+                g2.drawString("£" + it.getPrice(), total, y);
+                y += 30;
             }
+            g2.drawLine(item - 30, y - 20, total + 100, y - 20);
+            g2.drawString("Total: £" + toPrint.getTotal(), total, y);
+
+            //Print the footer.
+            g2.setFont(new Font("Arial", Font.BOLD, 20));
+            g2.drawString(footer, 150, y + 50);
 
             return PAGE_EXISTS;
         }
@@ -263,26 +311,28 @@ public class SaleDialog extends javax.swing.JDialog {
         } else {
             email = JOptionPane.showInputDialog(this, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
         }
+        if (email.equals("")) {
+            return;
+        }
         final ModalDialog mDialog = new ModalDialog("Email...", "Sending email...");
         Runnable run = new Runnable() {
             @Override
             public void run() {
                 try {
                     dc.emailReceipt(email, sale);
+                    mDialog.hide();
+                    JOptionPane.showMessageDialog(SaleDialog.this, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);
                 } catch (IOException | MessagingException ex) {
+                    mDialog.hide();
                     JOptionPane.showMessageDialog(SaleDialog.this, "Error sending email", "Email Receipt", JOptionPane.ERROR_MESSAGE);
-                } finally{
+                } finally {
                     mDialog.hide();
                 }
             }
         };
-        
         Thread th = new Thread(run);
         th.start();
-        
         mDialog.show();
-
-        JOptionPane.showMessageDialog(this, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnEmailActionPerformed
 
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
@@ -290,13 +340,15 @@ public class SaleDialog extends javax.swing.JDialog {
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPrintable(prt);
         boolean ok = job.printDialog();
-        final ModalDialog mDialog = new ModalDialog("Printing...", "Printing...");
+        final ModalDialog mDialog = new ModalDialog("Printing...", "Printing...", job);
         if (ok) {
             Runnable print = new Runnable() {
                 @Override
                 public void run() {
                     try {
                         job.print();
+                    } catch (PrinterAbortException ex) {
+                        mDialog.setText("Print aborted");
                     } catch (PrinterException ex) {
                         Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
                     } finally {
@@ -308,6 +360,11 @@ public class SaleDialog extends javax.swing.JDialog {
             Thread th = new Thread(print);
             th.start();
             mDialog.show();
+            if (job.isCancelled()) {
+                JOptionPane.showMessageDialog(this, "Printing cancelled", "Print", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btnPrintActionPerformed
 

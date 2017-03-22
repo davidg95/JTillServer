@@ -54,6 +54,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
         this.dc = dc;
         wasteItems = new ArrayList<>();
         initComponents();
+        btnPrint.setEnabled(false);
         setTitle("Waste Stock");
         setIconImage(icon);
         date = new Date();
@@ -144,6 +145,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
         cmbReason = new javax.swing.JComboBox<>();
         btnCSV = new javax.swing.JButton();
         btnDate = new javax.swing.JButton();
+        btnPrint = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -226,6 +228,13 @@ public class WasteStockWindow extends javax.swing.JFrame {
             }
         });
 
+        btnPrint.setText("Print");
+        btnPrint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrintActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -237,6 +246,8 @@ public class WasteStockWindow extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(lblValue)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnPrint)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCSV)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddProduct)
@@ -272,7 +283,8 @@ public class WasteStockWindow extends javax.swing.JFrame {
                     .addComponent(btnWaste)
                     .addComponent(btnAddProduct)
                     .addComponent(lblValue)
-                    .addComponent(btnCSV))
+                    .addComponent(btnCSV)
+                    .addComponent(btnPrint))
                 .addContainerGap())
         );
 
@@ -343,7 +355,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
         try {
             dc.addWasteReport(wr);
             JOptionPane.showMessageDialog(this, "All items have been wasted", "Waste", JOptionPane.INFORMATION_MESSAGE);
-            if(JOptionPane.showConfirmDialog(this, "Do you want to print this report?", "Print", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+            if (JOptionPane.showConfirmDialog(this, "Do you want to print this report?", "Print", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 try {
                     MessageFormat header = new MessageFormat("Waste for " + new Date());
                     MessageFormat footer = new MessageFormat("Page {0,number,integer}");
@@ -466,11 +478,22 @@ public class WasteStockWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnDateActionPerformed
 
+    private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
+        try {
+            MessageFormat header = new MessageFormat("Waste for " + new Date());
+            MessageFormat footer = new MessageFormat("Page {0,number,integer}");
+            tblProducts.print(PrintMode.FIT_WIDTH, header, footer);
+        } catch (PrinterException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnPrintActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnCSV;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnDate;
+    private javax.swing.JButton btnPrint;
     private javax.swing.JButton btnWaste;
     private javax.swing.JComboBox<String> cmbReason;
     private javax.swing.JScrollPane jScrollPane1;

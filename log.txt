@@ -1,26 +1,43 @@
-JTill log Tue Mar 21 15:01:55 GMT 2017
-[15:01:55] [INFO] Starting JTill Server
-[15:01:55] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[15:01:56] [INFO] Get staff count
-[15:01:57] [INFO] Starting Thread Pool Excecutor
-[15:01:57] [INFO] JTill Server local IP address is 10.151.16.78
-[15:01:57] [INFO] Server Socket running on port number 52341
-[15:01:57] [INFO] Ready to accept connections
-[15:02:08] [INFO] Login Staff dgrant
-[15:02:08] [INFO] David Grant has logged in
-[15:02:08] [INFO] Get customer -1
-[15:02:09] [INFO] Get staff 1
-[15:02:09] [INFO] Get product 6
-[15:02:09] [INFO] Get customer -1
-[15:02:09] [INFO] Get staff 1
-[15:02:09] [INFO] Get product 4
-[15:02:09] [INFO] Get customer -1
-[15:02:09] [INFO] Get staff 1
-[15:02:09] [INFO] Get product 14
-[15:02:09] [INFO] Get customer -1
-[15:02:09] [INFO] Get staff 1
-[15:02:09] [INFO] Get product 14
-[15:02:09] [INFO] Get customer -1
-[15:02:09] [INFO] Get staff 1
-[15:02:09] [INFO] Get product 1
-[15:02:09] [INFO] Get product 2
+JTill log Wed Mar 22 13:49:46 GMT 2017
+[13:49:46] [INFO] Starting JTill Server
+[13:49:46] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[13:49:46] [INFO] Get staff count
+[13:49:46] [INFO] Starting Thread Pool Excecutor
+[13:49:46] [INFO] JTill Server local IP address is 192.168.1.65
+[13:49:46] [INFO] Server Socket running on port number 52341
+[13:49:46] [INFO] Ready to accept connections
+[13:49:59] [INFO] Bessey has connected
+[13:49:59] [INFO] Received GETSETTING from server
+[13:49:59] [INFO] Received GETSETTING from server
+[13:49:59] [INFO] Received GETSETTING from server
+[13:49:59] [INFO] Received GETSETTING from server
+[13:49:59] [INFO] Received GETALLDISCOUNTS from server
+[13:49:59] [INFO] Get all discounts
+[13:49:59] [INFO] Received GETALLSCREENS from server
+[13:49:59] [INFO] Received GETBUTTONSONSCREEN from server
+[13:49:59] [INFO] Get product 1
+[13:49:59] [INFO] Get product 2
+[13:49:59] [INFO] Received GETBUTTONSONSCREEN from server
+[13:49:59] [INFO] Get product 3
+[13:49:59] [INFO] Get product 4
+[13:50:01] [INFO] Received GETSTAFF from server
+[13:50:01] [INFO] Get staff 1
+[13:50:01] [INFO] Received TILLLOGIN from server
+[13:50:01] [INFO] David Grant has logged in from Bessey
+[13:50:01] [INFO] Received RESUMESALE from server
+[13:50:04] [INFO] Received ADDSALE from server
+[13:50:04] [INFO] Purchase product 2
+[13:50:04] [INFO] Received GETSETTING from server
+[13:50:07] [INFO] Received TILLLOGOUT from server
+[13:50:07] [INFO] David Grant has logged out
+[13:50:13] [INFO] Received GETSETTING from server
+[13:50:13] [INFO] Received GETSETTING from server
+[13:50:13] [INFO] Received GETSETTING from server
+[13:50:13] [INFO] Received GETSETTING from server
+[13:50:20] [INFO] Received TILLLOGIN from server
+[13:50:20] [INFO] David Grant has logged in from Bessey
+[13:50:20] [INFO] Received RESUMESALE from server
+[13:50:25] [INFO] Received TILLLOGOUT from server
+[13:50:25] [INFO] David Grant has logged out
+[13:50:25] [INFO] Received CONNTERM from server
+[13:50:25] [INFO] Bessey has disconnected

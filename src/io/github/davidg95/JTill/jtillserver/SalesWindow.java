@@ -18,38 +18,46 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
+ * Class for the sale window.
  *
  * @author 1301480
  */
 public class SalesWindow extends javax.swing.JFrame {
 
-    private static SalesWindow frame;
+    private static SalesWindow frame; //The frame.
 
-    private final DataConnect dc;
+    private final DataConnect dc; //The data connection.
 
-    private final DefaultTableModel model;
-    private List<Sale> currentTableContents;
+    private final DefaultTableModel model; //The model for the table.
+    private List<Sale> currentTableContents; //The current table contents.
 
-    private Date start;
-    private Date end;
+    private Date start; //The start date when comparing sales.
+    private Date end; //The end date when comparing sales.
 
     /**
      * Creates new form SalesWindow
+     *
+     * @param dc the data connection.
+     * @param icon the icon for the window.
      */
     public SalesWindow(DataConnect dc, Image icon) {
         this.dc = dc;
-        this.setIconImage(icon);
+        init(icon);
         initComponents();
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         model = (DefaultTableModel) tableSales.getModel();
     }
 
+    /**
+     * Method to show the sales window.
+     *
+     * @param dc the data connection.
+     * @param icon the icon for the window.
+     */
     public static void showSalesWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new SalesWindow(dc, icon);
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
-        frame.setCurrentSale(null);
         update();
         frame.setVisible(true);
     }
@@ -60,17 +68,28 @@ public class SalesWindow extends javax.swing.JFrame {
         }
     }
 
+    private void init(Image icon) {
+        this.setIconImage(icon);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    }
+
+    /**
+     * Sets the table to the contents of the <code>currentTableContents</code>
+     * list.
+     */
     private void updateTable() {
         model.setRowCount(0);
 
-        for (Sale s : currentTableContents) {
-            Object[] r = new Object[]{s.getId(), s.getTotal(), 0, s.getDate().toString()};
+        currentTableContents.stream().map((s) -> new Object[]{s.getId(), s.getTotal(), 0, s.getDate().toString()}).forEachOrdered((r) -> {
             model.addRow(r);
-        }
+        });
 
         tableSales.setModel(model);
     }
 
+    /**
+     * Shows all sales in the database.
+     */
     private void showAllSales() {
         try {
             currentTableContents = dc.getAllSales();
@@ -78,10 +97,6 @@ public class SalesWindow extends javax.swing.JFrame {
             showError(ex);
         }
         updateTable();
-    }
-
-    private void setCurrentSale(Sale s) {
-
     }
 
     private void showError(Exception e) {
@@ -237,16 +252,16 @@ public class SalesWindow extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(panelDateFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnShowAll))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(76, 76, 76)
-                .addComponent(panelDateFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -274,13 +289,11 @@ public class SalesWindow extends javax.swing.JFrame {
 
     private void btnAddFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFilterActionPerformed
         List<Sale> newList = new ArrayList<>();
-        for(Sale s: currentTableContents){
-            if(s.getDate().after(start) && s.getDate().before(end)){
-                newList.add(s);
-            }
-        }
+        currentTableContents.stream().filter((s) -> (s.getDate().after(start) && s.getDate().before(end))).forEachOrdered((s) -> {
+            newList.add(s); //Add the sale to the list if it matches the filter.
+        });
         currentTableContents = newList;
-        updateTable();
+        updateTable(); //Set the table to the current table contents.
     }//GEN-LAST:event_btnAddFilterActionPerformed
 
     private void btnShowAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowAllActionPerformed
