@@ -91,7 +91,7 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="panelGeneral" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="12" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="btnClose" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnPermissions" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -514,11 +514,6 @@
                       <Component id="chkSendProducts" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="txtSiteName" max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="txtSymbol" max="32767" attributes="0"/>
@@ -530,6 +525,14 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="spinSaleCache" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="btnCompanyDetails" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtSiteName" max="32767" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
                   </Group>
@@ -557,7 +560,9 @@
                       <Component id="jLabel15" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtSiteName" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="17" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="btnCompanyDetails" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="btnSaveCache" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -598,6 +603,14 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="txtSiteName">
+        </Component>
+        <Component class="javax.swing.JButton" name="btnCompanyDetails">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Company Details"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCompanyDetailsActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

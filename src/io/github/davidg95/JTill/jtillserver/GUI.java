@@ -86,11 +86,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         this.setIconImage(icon);
         initComponents();
         try {
-            setTitle("JTill Server - " + dc.getSetting("SITE_NAME"));
-        } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
-        }
-        try {
             lblServerAddress.setText("Local Server Address: " + InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException ex) {
             lblServerAddress.setText("Local Server Address: UNKNOWN");
@@ -181,6 +176,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
      * server.
      */
     public void databaseLogin() {
+        try {
+            setTitle("JTill Server - " + dc.getSetting("SITE_NAME"));
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
         if (!remote) {
             try {
                 DBConnect db = (DBConnect) dc;
@@ -961,14 +961,14 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     }//GEN-LAST:event_itemTillScreensActionPerformed
 
     private void txtLogMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtLogMouseClicked
-        if(SwingUtilities.isRightMouseButton(evt)){
+        if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem item = new JMenuItem("Copy");
             JMenuItem item2 = new JMenuItem("Open Log File");
             item.addActionListener((ActionEvent e) -> {
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(txtLog.getSelectedText()), null);
             });
-            item2.addActionListener((ActionEvent e) ->{
+            item2.addActionListener((ActionEvent e) -> {
                 try {
                     Desktop.getDesktop().open(new File("log.txt"));
                 } catch (IOException ex) {

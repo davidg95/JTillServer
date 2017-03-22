@@ -144,6 +144,7 @@ public class SettingsWindow extends javax.swing.JFrame {
         txtSymbol = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         txtSiteName = new javax.swing.JTextField();
+        btnCompanyDetails = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
@@ -419,6 +420,13 @@ public class SettingsWindow extends javax.swing.JFrame {
 
         jLabel15.setText("Site Name:");
 
+        btnCompanyDetails.setText("Company Details");
+        btnCompanyDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCompanyDetailsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelGeneralLayout = new javax.swing.GroupLayout(panelGeneral);
         panelGeneral.setLayout(panelGeneralLayout);
         panelGeneralLayout.setHorizontalGroup(
@@ -429,10 +437,6 @@ public class SettingsWindow extends javax.swing.JFrame {
                     .addComponent(chkSendProducts)
                     .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelGeneralLayout.createSequentialGroup()
-                            .addComponent(jLabel15)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtSiteName))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelGeneralLayout.createSequentialGroup()
                             .addComponent(jLabel14)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(txtSymbol))
@@ -441,7 +445,13 @@ public class SettingsWindow extends javax.swing.JFrame {
                                 .addComponent(btnSaveCache)
                                 .addComponent(jLabel13))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(spinSaleCache, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(spinSaleCache, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelGeneralLayout.createSequentialGroup()
+                            .addComponent(jLabel15)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(btnCompanyDetails)
+                                .addComponent(txtSiteName)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelGeneralLayout.setVerticalGroup(
@@ -461,7 +471,9 @@ public class SettingsWindow extends javax.swing.JFrame {
                 .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15)
                     .addComponent(txtSiteName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCompanyDetails)
+                .addGap(18, 18, 18)
                 .addComponent(btnSaveCache)
                 .addContainerGap())
         );
@@ -567,7 +579,7 @@ public class SettingsWindow extends javax.swing.JFrame {
                                         .addComponent(btnDatabaseDefault)))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnClose)
                             .addComponent(btnPermissions)))
@@ -745,8 +757,13 @@ public class SettingsWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnReceiptSaveActionPerformed
 
+    private void btnCompanyDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompanyDetailsActionPerformed
+        CompanyDetailsDialog.showDialog(this);
+    }//GEN-LAST:event_btnCompanyDetailsActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnCompanyDetails;
     private javax.swing.JButton btnDatabaseDefault;
     private javax.swing.JButton btnEditDatabase;
     private javax.swing.JButton btnEditNetwork;

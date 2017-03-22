@@ -98,7 +98,7 @@ public class SaleDialog extends javax.swing.JDialog {
      * Inner class for printing a receipt from the sale.
      */
     private class ReceiptPrinter implements Printable {
-        
+
         private final Sale toPrint; //The Sale to print.
 
         /**
@@ -308,18 +308,22 @@ public class SaleDialog extends javax.swing.JDialog {
         String email;
         if (sale.getCustomer() != null) {
             email = sale.getCustomer().getEmail();
+            if (email == null) {
+                email = JOptionPane.showInputDialog(this, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
+            }
         } else {
             email = JOptionPane.showInputDialog(this, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
         }
-        if (email.equals("")) {
+        if (email == null) {
             return;
         }
         final ModalDialog mDialog = new ModalDialog(this, "Email...", "Sending email...");
+        final String fEmail = email;
         Runnable run = new Runnable() {
             @Override
             public void run() {
                 try {
-                    dc.emailReceipt(email, sale);
+                    dc.emailReceipt(fEmail, sale);
                     mDialog.hide();
                     JOptionPane.showMessageDialog(SaleDialog.this, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);
                 } catch (IOException | MessagingException ex) {
