@@ -314,7 +314,7 @@ public class SaleDialog extends javax.swing.JDialog {
         if (email.equals("")) {
             return;
         }
-        final ModalDialog mDialog = new ModalDialog("Email...", "Sending email...");
+        final ModalDialog mDialog = new ModalDialog(this, "Email...", "Sending email...");
         Runnable run = new Runnable() {
             @Override
             public void run() {
@@ -340,7 +340,7 @@ public class SaleDialog extends javax.swing.JDialog {
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPrintable(prt);
         boolean ok = job.printDialog();
-        final ModalDialog mDialog = new ModalDialog("Printing...", "Printing...", job);
+        final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing...", job);
         if (ok) {
             Runnable print = new Runnable() {
                 @Override

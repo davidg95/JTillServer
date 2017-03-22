@@ -6,9 +6,15 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,7 +33,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.JTable;
 import javax.swing.JTable.PrintMode;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -123,6 +128,65 @@ public class WasteStockWindow extends javax.swing.JFrame {
             Object[] row = new Object[]{wi.getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + wi.getProduct().getPrice().multiply(new BigDecimal(wi.getQuantity())), wi.getReason()};
             model.addRow(row);
         }
+    }
+
+    private class WasteReportPrintout implements Printable {
+
+        private final WasteReport wr;
+
+        public WasteReportPrintout(WasteReport wr) {
+            this.wr = wr;
+        }
+
+        @Override
+        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+            if (pageIndex > 0) {
+                return NO_SUCH_PAGE;
+            }
+
+            String header = "Waste Report";
+
+            Graphics2D g2 = (Graphics2D) graphics;
+            g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+
+            Font oldFont = graphics.getFont();
+
+            g2.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
+            g2.drawString(header, 70, 60);
+            g2.setFont(oldFont); //Chagne back to the old font.
+
+            //Print sale info.
+            g2.drawString("Time: " + wr.getDate(), 70, 110);
+
+            final int item = 100;
+            final int quantity = 200;
+            final int total = 300;
+            final int reason = 400;
+            int y = 130;
+
+            //Print collumn headers.
+            g2.drawString("Item", item, y);
+            g2.drawString("Quantity", quantity, y);
+            g2.drawString("Total", total, y);
+            g2.drawString("Reason", reason, y);
+            g2.drawLine(item - 30, y + 10, reason + 100, y + 10);
+
+            y += 30;
+
+            //Print the sale items.
+            for (WasteItem wi : wr.getItems()) {
+                g2.drawString(wi.getName(), item, y);
+                g2.drawString("" + wi.getQuantity(), quantity, y);
+                g2.drawString("£" + wi.getProduct().getPrice().multiply(new BigDecimal(wi.getQuantity())), total, y);
+                g2.drawString(wi.getReason().getName(), reason, y);
+                y += 30;
+            }
+            g2.drawLine(item - 30, y - 20, reason + 100, y - 20);
+            g2.drawString("Total: £" + wr.getTotalValue().setScale(2), total, y);
+
+            return PAGE_EXISTS;
+        }
+
     }
 
     /**
@@ -322,9 +386,8 @@ public class WasteStockWindow extends javax.swing.JFrame {
             WasteItem wi = new WasteItem(product, Integer.parseInt(amount), wr);
             wasteItems.add(wi);
             BigDecimal val = BigDecimal.ZERO;
-            val.setScale(2);
             for (WasteItem w : wasteItems) {
-                val = val.add(w.getProduct().getPrice().multiply(new BigDecimal(w.getQuantity())));
+                val = val.add(w.getProduct().getPrice().setScale(2).multiply(new BigDecimal(w.getQuantity())));
             }
             lblValue.setText("Total Value: £" + val);
             model.addRow(new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), Integer.parseInt(amount), product.getPrice().multiply(new BigDecimal(wi.getQuantity())), wi.getReason()});
@@ -356,12 +419,27 @@ public class WasteStockWindow extends javax.swing.JFrame {
             dc.addWasteReport(wr);
             JOptionPane.showMessageDialog(this, "All items have been wasted", "Waste", JOptionPane.INFORMATION_MESSAGE);
             if (JOptionPane.showConfirmDialog(this, "Do you want to print this report?", "Print", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                try {
-                    MessageFormat header = new MessageFormat("Waste for " + new Date());
-                    MessageFormat footer = new MessageFormat("Page {0,number,integer}");
-                    tblProducts.print(PrintMode.FIT_WIDTH, header, footer);
-                } catch (PrinterException ex) {
-                    JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                PrinterJob job = PrinterJob.getPrinterJob();
+                job.setPrintable(new WasteReportPrintout(wr));
+                boolean ok = job.printDialog();
+                final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing report...", job);
+                if (ok) {
+                    Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                job.print();
+                            } catch (PrinterException ex) {
+                                mDialog.hide();
+                                JOptionPane.showMessageDialog(WasteStockWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                            } finally {
+                                mDialog.hide();
+                            }
+                        }
+                    };
+                    Thread th = new Thread(runnable);
+                    th.start();
+                    mDialog.show();
                 }
             }
             model.setRowCount(0);
@@ -479,12 +557,28 @@ public class WasteStockWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDateActionPerformed
 
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
-        try {
-            MessageFormat header = new MessageFormat("Waste for " + new Date());
-            MessageFormat footer = new MessageFormat("Page {0,number,integer}");
-            tblProducts.print(PrintMode.FIT_WIDTH, header, footer);
-        } catch (PrinterException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPrintable(new WasteReportPrintout(report));
+        boolean ok = job.printDialog();
+        final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing report...", job);
+        if (ok) {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        job.print();
+                    } catch (PrinterException ex) {
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(WasteStockWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                    } finally {
+                        mDialog.hide();
+                    }
+                }
+            };
+            Thread th = new Thread(runnable);
+            th.start();
+            mDialog.show();
+            JOptionPane.showMessageDialog(this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnPrintActionPerformed
 

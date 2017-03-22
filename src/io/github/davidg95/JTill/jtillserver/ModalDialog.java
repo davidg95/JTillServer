@@ -5,6 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.print.PrinterJob;
@@ -32,13 +33,15 @@ public class ModalDialog {
     /**
      * Constructor which creates the dialog.
      *
+     * @param parent the parent component.
      * @param title the title.
      * @param text the message.
      */
-    public ModalDialog(String title, String text) {
+    public ModalDialog(Component parent, String title, String text) {
         this.title = title;
         this.text = text;
         init();
+        dialog.setLocationRelativeTo(parent);
     }
 
     /**
@@ -46,12 +49,13 @@ public class ModalDialog {
      * <code>PrinterJob</code> to the dialog which can be cancelled by clicking
      * the cancel button.
      *
+     * @param parent the parent component.
      * @param title the title.
      * @param text the message.
      * @param job the PrinterJob to assign.
      */
-    public ModalDialog(String title, String text, PrinterJob job) {
-        this(title, text);
+    public ModalDialog(Component parent, String title, String text, PrinterJob job) {
+        this(parent, title, text);
         this.job = job;
         JButton button = new JButton("Cancel");
         button.addActionListener((ActionEvent e) -> {
