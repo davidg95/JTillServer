@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -41,6 +42,7 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
     private final DataConnect dc;
     private final List<Product> products;
     private final DefaultTableModel model;
+    private final DefaultComboBoxModel cmbModel;
 
     /**
      * Creates new form ReceiveItemsWindow
@@ -54,11 +56,26 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
         model.setRowCount(0);
+        cmbModel = (DefaultComboBoxModel) cmbSuppliers.getModel();
+        cmbSuppliers.setModel(cmbModel);
+        init();
     }
 
     public static void showWindow(DataConnect dc, Image icon) {
         window = new ReceiveItemsWindow(dc, icon);
         window.setVisible(true);
+    }
+
+    private void init() {
+        cmbModel.removeAllElements();
+        try {
+            List<Supplier> suppliers = dc.getAllSuppliers();
+            for (Supplier s : suppliers) {
+                cmbModel.addElement(s);
+            }
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -77,6 +94,8 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
         btnAddProduct = new javax.swing.JButton();
         btnAddCSV = new javax.swing.JButton();
         lblValue = new javax.swing.JLabel();
+        cmbSuppliers = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -149,6 +168,10 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
 
         lblValue.setText("Total Value: £0.00");
 
+        cmbSuppliers.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel1.setText("Supplier:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -166,14 +189,23 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnReceive)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClose)))
+                        .addComponent(btnClose))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmbSuppliers, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmbSuppliers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnReceive)
@@ -341,6 +373,8 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnReceive;
+    private javax.swing.JComboBox<String> cmbSuppliers;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblValue;
     private javax.swing.JTable tblProducts;

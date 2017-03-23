@@ -13,7 +13,6 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -56,19 +55,24 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     public static boolean SHOW_WARNING = true;
 
     private static GUI gui;
-
     private final DataConnect dc;
-    private boolean isLoggedOn;
+    private boolean isLoggedOn; //Boolean to indicate whether someone is logged on or not.
 
-    public static Staff staff;
+    public static Staff staff; //The current logged on staff.
 
     public int clientCounter = 0;
     private final ArrayList<String> connections;
 
     private final boolean remote;
 
+    /**
+     * The image icon for the server.
+     */
     private final Image icon;
 
+    /**
+     * The settings.
+     */
     private final Settings settings;
 
     /**

@@ -1,5 +1,4 @@
-JTill log Thu Mar 23 16:00:14 GMT 2017
-[16:00:14] [INFO] Connecting to database {0}
-[16:00:14] [INFO] Get staff count
-[16:00:17] [INFO] Login Staff {0}
-[16:00:17] [INFO] David Grant has logged in
+JTill log Thu Mar 23 17:00:51 GMT 2017
+[17:00:51] [INFO] Connecting to database {0}
+[17:00:51] [INFO] Get staff count
+[17:01:23] [SEVERE] java.sql.SQLException: Column 'PRODUCTS.ID' not found.
