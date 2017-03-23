@@ -28,7 +28,7 @@ import javax.mail.MessagingException;
  */
 public class ConnectionThread extends Thread {
 
-    private final Logger LOG = Logger.getGlobal();
+    private static final Logger LOG = Logger.getGlobal();
 
     private final DataConnect dc;
 
@@ -92,7 +92,7 @@ public class ConnectionThread extends Thread {
                 }
             }
 
-            LOG.log(Level.INFO, site + " has connected");
+            LOG.log(Level.INFO, "{0} has connected", site);
 
             while (!conn_term) {
                 String input;
@@ -101,7 +101,7 @@ public class ConnectionThread extends Thread {
 
                 try {
                     o = obIn.readObject();
-                    
+
                     till.setLastContact(new Date());
                 } catch (SocketException ex) {
                     LOG.log(Level.WARNING, "The connection to the terminal was shut down forcefully");
@@ -124,7 +124,7 @@ public class ConnectionThread extends Thread {
                 String inp[] = input.split(",");
                 final ConnectionData data = currentData.clone();
 
-                LOG.log(Level.INFO, "Received " + data.getFlag() + " from server");
+                LOG.log(Level.INFO, "Received {0} from server", data.getFlag());
 
                 switch (inp[0]) {
                     case "NEWPRODUCT": { //Add a new product
@@ -1042,26 +1042,71 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
+                    case "ADDSUPPLIER": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                addSupplier(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "REMOVESUPPLIER": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                removeSupplier(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETSUPPLIER": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getSupplier(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETALLSUPPLIERS": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getAllSuppliers();
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "UPDATESUPPLIER": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                updateSupplier(data);
+                            }
+                        }.start();
+                        break;
+                    }
                     case "CONNTERM": { //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
                             try {
                                 dc.logout(staff);
                                 dc.tillLogout(staff);
-                                LOG.log(Level.INFO, site + " has terminated their connection to the server");
+                                LOG.log(Level.INFO, "{0} has terminated their connection to the server", site);
                             } catch (StaffNotFoundException ex) {
                             }
                         }
                         break;
                     }
                     default: {
-                        LOG.log(Level.WARNING, "An unknown flag " + inp[0] + " was received from " + site);
+                        LOG.log(Level.WARNING, "An unknown flag {0} was received from {1}", new Object[]{inp[0], site});
                         break;
                     }
                 }
                 sem.release();
             }
-            LOG.log(Level.INFO, site + " has disconnected");
+            LOG.log(Level.INFO, "{0} has disconnected", site);
         } catch (IOException | ClassNotFoundException ex) {
             LOG.log(Level.SEVERE, "There was an error with the conenction to " + site + ". The connection will be forecfully terminated", ex);
         } finally {
@@ -1649,7 +1694,7 @@ public class ConnectionThread extends Thread {
                 String password = (String) clone.getData2();
                 Staff s = dc.login(username, password);
                 ConnectionThread.this.staff = s;
-                LOG.log(Level.INFO, s.getName() + " has logged in");
+                LOG.log(Level.INFO, "{0} has logged in", s.getName());
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | LoginException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1670,7 +1715,7 @@ public class ConnectionThread extends Thread {
                 int id = (int) clone.getData();
                 Staff s = dc.tillLogin(id);
                 ConnectionThread.this.staff = s;
-                LOG.log(Level.INFO, staff.getName() + " has logged in from " + site);
+                LOG.log(Level.INFO, "{0} has logged in from {1}", new Object[]{staff.getName(), site});
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | LoginException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1690,7 +1735,7 @@ public class ConnectionThread extends Thread {
                 }
                 Staff s = (Staff) clone.getData();
                 dc.logout(s);
-                LOG.log(Level.INFO, staff.getName() + " has logged out");
+                LOG.log(Level.INFO, "{0} has logged out", staff.getName());
                 ConnectionThread.this.staff = null;
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (StaffNotFoundException ex) {
@@ -1711,7 +1756,7 @@ public class ConnectionThread extends Thread {
                 }
                 Staff s = (Staff) clone.getData();
                 dc.tillLogout(s);
-                LOG.log(Level.INFO, staff.getName() + " has logged out");
+                LOG.log(Level.INFO, "{0} has logged out", staff.getName());
                 ConnectionThread.this.staff = null;
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (StaffNotFoundException ex) {
@@ -2365,8 +2410,8 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 int id = (int) clone.getData();
-                Till till = dc.getTill(id);
-                obOut.writeObject(ConnectionData.create("GET", till));
+                Till t = dc.getTill(id);
+                obOut.writeObject(ConnectionData.create("GET", t));
             } catch (SQLException | TillNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
@@ -2906,6 +2951,99 @@ public class ConnectionThread extends Thread {
             try {
                 wr = dc.updateWasteReason(wr);
                 obOut.writeObject(ConnectionData.create("SUCC", wr));
+            } catch (IOException | SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void addSupplier(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Supplier)) {
+                LOG.log(Level.SEVERE, "Unexpected data type adding a supplier");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            Supplier s = (Supplier) clone.getData();
+            try {
+                s = dc.addSupplier(s);
+                obOut.writeObject(ConnectionData.create("SUCC", s));
+            } catch (IOException | SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void removeSupplier(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type removing a supplier");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) clone.getData();
+            try {
+                dc.removeSupplier(id);
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (IOException | SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getSupplier(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type getting a supplier");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) clone.getData();
+            try {
+                Supplier s = dc.getSupplier(id);
+                obOut.writeObject(ConnectionData.create("SUCC", s));
+            } catch (IOException | SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getAllSuppliers() {
+        try {
+            try {
+                List<Supplier> s = dc.getAllSuppliers();
+                obOut.writeObject(ConnectionData.create("SUCC", s));
+            } catch (IOException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void updateSupplier(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Supplier)) {
+                LOG.log(Level.SEVERE, "Unexpected data type updating a supplier");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            Supplier s = (Supplier) clone.getData();
+            try {
+                s = dc.updateSupplier(s);
+                obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (IOException | SQLException | JTillException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }

@@ -402,6 +402,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         itemWasteReports = new javax.swing.JMenuItem();
         menuSetup = new javax.swing.JMenu();
         itemReasons = new javax.swing.JMenuItem();
+        itemSuppliers = new javax.swing.JMenuItem();
         itemTillScreens = new javax.swing.JMenuItem();
         itemCustomers = new javax.swing.JMenuItem();
         itemStaff = new javax.swing.JMenuItem();
@@ -698,6 +699,14 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         });
         menuSetup.add(itemReasons);
 
+        itemSuppliers.setText("Edit Suppliers");
+        itemSuppliers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemSuppliersActionPerformed(evt);
+            }
+        });
+        menuSetup.add(itemSuppliers);
+
         itemTillScreens.setText("Edit Till Screens");
         itemTillScreens.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -982,6 +991,10 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         }
     }//GEN-LAST:event_txtLogMouseClicked
 
+    private void itemSuppliersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSuppliersActionPerformed
+        SupplierWindow.showWindow(dc, icon);
+    }//GEN-LAST:event_itemSuppliersActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1006,6 +1019,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemServerOptions;
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStock;
+    private javax.swing.JMenuItem itemSuppliers;
     private javax.swing.JMenuItem itemTaxes;
     private javax.swing.JMenuItem itemTillScreens;
     private javax.swing.JMenuItem itemWasteReports;

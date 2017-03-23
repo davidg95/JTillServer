@@ -12,19 +12,30 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Window;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterAbortException;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.mail.MessagingException;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -134,6 +145,12 @@ public class SaleDialog extends javax.swing.JDialog {
             g2.drawString(header, 70, 60);
             g2.setFont(oldFont); //Chagne back to the old font.
 
+            //Draw the logo
+            Image img = loadImage();
+            if (img != null) {
+                g2.drawImage(img, 500, 40, 50, 50, null);
+            }
+
             //Print sale info.
             g2.drawString("Receipt for sale: " + toPrint.getId(), 70, 90);
             g2.drawString("Time: " + toPrint.getDate(), 70, 110);
@@ -167,6 +184,34 @@ public class SaleDialog extends javax.swing.JDialog {
             g2.drawString(footer, 150, y + 50);
 
             return PAGE_EXISTS;
+        }
+
+        private Image loadImage() {
+            InputStream in;
+            Properties properties = new Properties();
+            try {
+                in = new FileInputStream("company.details");
+                properties.load(in);
+
+                String logoURL = properties.getProperty("LOGO");
+                File file = new File(logoURL);
+
+                Image image = ImageIO.read(file);
+                in.close();
+
+                return image;
+            } catch (FileNotFoundException | UnknownHostException ex) {
+                OutputStream out;
+                try {
+                    out = new FileOutputStream("company.details");
+                    properties.store(out, null);
+                    out.close();
+                } catch (FileNotFoundException | UnknownHostException e) {
+                } catch (IOException e) {
+                }
+            } catch (IOException ex) {
+            }
+            return null;
         }
 
     }
