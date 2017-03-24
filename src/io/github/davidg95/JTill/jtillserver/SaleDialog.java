@@ -35,7 +35,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.mail.MessagingException;
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -129,6 +128,7 @@ public class SaleDialog extends javax.swing.JDialog {
 
             String header = "Sale Receipt";
             String footer = "Thank you for your custom";
+            Image img = loadImage();
             try {
                 header = dc.getSetting("RECEIPT_HEADER"); //Get the receipt header for the receipt.
                 footer = dc.getSetting("RECEIPT_FOOTER"); //Get the receipt footer for ther receipt.
@@ -142,24 +142,19 @@ public class SaleDialog extends javax.swing.JDialog {
             Font oldFont = graphics.getFont();
 
             g2.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
-            g2.drawString(header, 70, 60);
+            //g2.drawString(header, 70, 60);
+            g2.drawImage(img, 70, 60, 400, 100, null);
             g2.setFont(oldFont); //Chagne back to the old font.
 
-            //Draw the logo
-            Image img = loadImage();
-            if (img != null) {
-                g2.drawImage(img, 500, 40, 50, 50, null);
-            }
-
             //Print sale info.
-            g2.drawString("Receipt for sale: " + toPrint.getId(), 70, 90);
-            g2.drawString("Time: " + toPrint.getDate(), 70, 110);
-            g2.drawString("Served by " + toPrint.getStaff(), 70, 130);
+            g2.drawString("Receipt for sale: " + toPrint.getId(), 70, 140);
+            g2.drawString("Time: " + toPrint.getDate(), 70, 160);
+            g2.drawString("Served by " + toPrint.getStaff(), 70, 180);
 
             final int item = 100;
             final int quantity = 300;
             final int total = 420;
-            int y = 170;
+            int y = 220;
 
             //Print collumn headers.
             g2.drawString("Item", item, y);

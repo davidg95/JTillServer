@@ -1,4 +1,12 @@
-JTill log Thu Mar 23 17:00:51 GMT 2017
-[17:00:51] [INFO] Connecting to database {0}
-[17:00:51] [INFO] Get staff count
-[17:01:23] [SEVERE] java.sql.SQLException: Column 'PRODUCTS.ID' not found.
+JTill log Fri Mar 24 17:09:03 GMT 2017
+[17:09:03] [INFO] Connecting to database {0}
+[17:09:03] [INFO] Get staff count
+[17:09:03] [INFO] Starting Thread Pool Excecutor
+[17:09:03] [INFO] JTill Server local IP address is 192.168.1.65
+[17:09:03] [INFO] Server Socket running on port number 52341
+[17:09:03] [INFO] Ready to accept connections
+[17:09:08] [INFO] Login Staff {0}
+[17:09:08] [INFO] David Grant has logged in
+[17:09:09] [INFO] Get customer {0}
+[17:09:09] [INFO] Get staff {0}
+[17:09:09] [INFO] Get product {0}
