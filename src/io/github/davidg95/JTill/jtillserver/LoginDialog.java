@@ -12,6 +12,8 @@ import java.awt.Frame;
 import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -182,6 +184,7 @@ public class LoginDialog extends javax.swing.JDialog {
                 lblLogin.setText(ex.getMessage());
             } catch (IOException | SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                Logger.getGlobal().log(Level.WARNING, null, ex);
             }
         }
     }//GEN-LAST:event_btnLoginActionPerformed
