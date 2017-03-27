@@ -1,25 +1,31 @@
-JTill log Mon Mar 27 11:08:50 BST 2017
-[11:08:51] [INFO] Connecting to database {0}
-[11:08:51] [INFO] Get staff count
-[11:08:51] [INFO] Starting Thread Pool Excecutor
-[11:08:51] [INFO] JTill Server local IP address is 192.168.1.65
-[11:08:51] [INFO] Server Socket running on port number 52341
-[11:08:51] [INFO] Ready to accept connections
-[11:08:55] [INFO] Login Staff {0}
-[11:08:55] [INFO] David Grant has logged in
-[11:08:56] [INFO] Get all discounts
-[11:08:56] [INFO] Get all discounts
-[11:09:07] [INFO] New Product {0} added
-[11:09:12] [INFO] Product {0} removed
-[11:09:31] [INFO] New Product {0} added
-[11:09:41] [INFO] Get all discounts
-[11:09:45] [INFO] Get product {0}
-[11:09:45] [INFO] Product {0} updated
-[11:09:48] [INFO] Get all discounts
-[11:09:53] [INFO] Product {0} removed
-[11:10:06] [INFO] Get product {0}
-[11:10:06] [INFO] Get product {0}
-[11:10:06] [INFO] Get product {0}
-[11:10:06] [INFO] Get product {0}
-[11:10:06] [INFO] Get product {0}
-[11:10:06] [INFO] Get product {0}
+JTill log Mon Mar 27 11:57:19 BST 2017
+[11:57:19] [INFO] Connecting to database {0}
+[11:57:19] [INFO] Get staff count
+[11:57:19] [INFO] Starting Thread Pool Excecutor
+[11:57:19] [INFO] JTill Server local IP address is 192.168.1.65
+[11:57:19] [INFO] Server Socket running on port number 52341
+[11:57:19] [INFO] Ready to accept connections
+[11:57:22] [INFO] Login Staff {0}
+[11:57:22] [INFO] David Grant has logged in
+[11:57:23] [INFO] Get all discounts
+[11:57:23] [INFO] Get all discounts
+[11:57:28] [INFO] Get all discounts
+[11:57:32] [INFO] Get all discounts
+[11:57:34] [INFO] Get product {0}
+[11:57:34] [INFO] Product {0} updated
+[11:57:34] [INFO] Get product {0}
+[11:57:34] [INFO] Product {0} updated
+[11:57:39] [INFO] Get all discounts
+[11:57:40] [INFO] Get all discounts
+[11:57:42] [INFO] Get product {0}
+[11:57:42] [INFO] Product {0} updated
+[11:57:42] [INFO] Get product {0}
+[11:57:42] [INFO] Product {0} updated
+[11:57:48] [INFO] Get all discounts
+[11:57:52] [INFO] Get product {0}
+[11:57:52] [INFO] Product {0} updated
+[11:57:55] [INFO] Get all discounts
+[11:58:01] [INFO] Get all discounts
+[11:58:04] [INFO] Get product {0}
+[11:58:04] [INFO] Product {0} updated
+[11:58:08] [INFO] Get all discounts
