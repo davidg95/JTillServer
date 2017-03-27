@@ -1087,6 +1087,51 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
+                    case "ADDDEPARTMENT": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                addDepartment(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "REMOVEDEPARTMENT": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                removeDepartment(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETDEPARTMENT": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getDepartment(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETALLDEPARTMENTS": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getAllDepartments();
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "UPDATEDEPARTMENT": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                updateDepartment(data);
+                            }
+                        }.start();
+                        break;
+                    }
                     case "CONNTERM": { //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -3044,6 +3089,99 @@ public class ConnectionThread extends Thread {
             try {
                 s = dc.updateSupplier(s);
                 obOut.writeObject(ConnectionData.create("SUCC", s));
+            } catch (IOException | SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void addDepartment(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Department)) {
+                LOG.log(Level.SEVERE, "Unexpected data type adding a department");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            Department d = (Department) clone.getData();
+            try {
+                d = dc.addDepartment(d);
+                obOut.writeObject(ConnectionData.create("SUCC", d));
+            } catch (IOException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void removeDepartment(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type removing a department");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) clone.getData();
+            try {
+                dc.removeDepartment(id);
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (IOException | SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getDepartment(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type getting a department");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) clone.getData();
+            try {
+                Department d = dc.getDepartment(id);
+                obOut.writeObject(ConnectionData.create("SUCC", d));
+            } catch (IOException | SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getAllDepartments() {
+        try {
+            try {
+                List<Department> d = dc.getAllDepartments();
+                obOut.writeObject(ConnectionData.create("SUCC", d));
+            } catch (IOException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void updateDepartment(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Department)) {
+                LOG.log(Level.SEVERE, "Unexpected data type updating a department");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            Department d = (Department) clone.getData();
+            try {
+                d = dc.updateDepartment(d);
+                obOut.writeObject(ConnectionData.create("SUCC", d));
             } catch (IOException | SQLException | JTillException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
