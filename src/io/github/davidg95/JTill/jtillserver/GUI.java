@@ -412,6 +412,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         itemStaff = new javax.swing.JMenuItem();
         itemDiscounts = new javax.swing.JMenuItem();
         itemCategorys = new javax.swing.JMenuItem();
+        itemDepartments = new javax.swing.JMenuItem();
         itemTaxes = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         itemDatabase = new javax.swing.JMenuItem();
@@ -753,6 +754,14 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         });
         menuSetup.add(itemCategorys);
 
+        itemDepartments.setText("Manage Departments");
+        itemDepartments.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemDepartmentsActionPerformed(evt);
+            }
+        });
+        menuSetup.add(itemDepartments);
+
         itemTaxes.setText("Manage Taxes");
         itemTaxes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1008,6 +1017,10 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         SupplierWindow.showWindow(dc, icon);
     }//GEN-LAST:event_itemSuppliersActionPerformed
 
+    private void itemDepartmentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDepartmentsActionPerformed
+        DepartmentsWindow.showWindow(dc, icon);
+    }//GEN-LAST:event_itemDepartmentsActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1024,6 +1037,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemCategorys;
     private javax.swing.JMenuItem itemCustomers;
     private javax.swing.JMenuItem itemDatabase;
+    private javax.swing.JMenuItem itemDepartments;
     private javax.swing.JMenuItem itemDiscounts;
     private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenuItem itemLogin;

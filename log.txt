@@ -1,16 +1,25 @@
-JTill log Mon Mar 27 16:08:48 BST 2017
-[16:08:48] [INFO] Connecting to database {0}
-[16:08:48] [INFO] Connecting to database {0}
-[16:08:48] [INFO] Get staff count
-[16:08:48] [INFO] Starting Thread Pool Excecutor
-[16:08:48] [INFO] JTill Server local IP address is 192.168.1.65
-[16:08:48] [INFO] Server Socket running on port number 52341
-[16:08:48] [INFO] Ready to accept connections
-[16:08:48] [INFO] Connecting to database {0}
-[16:08:51] [INFO] Connecting to database {0}
-[16:08:51] [INFO] Login Staff {0}
-[16:08:51] [INFO] David Grant has logged in
-[16:08:53] [INFO] Connecting to database {0}
-[16:08:53] [INFO] Connecting to database {0}
-[16:08:53] [INFO] Connecting to database {0}
-[16:08:53] [INFO] Get product {0}
+JTill log Mon Mar 27 16:40:03 BST 2017
+[16:40:04] [INFO] Connecting to database {0}
+[16:40:04] [INFO] Connecting to database {0}
+[16:40:04] [INFO] Get staff count
+[16:40:04] [INFO] Starting Thread Pool Excecutor
+[16:40:04] [INFO] JTill Server local IP address is 192.168.1.65
+[16:40:04] [INFO] Server Socket running on port number 52341
+[16:40:04] [INFO] Ready to accept connections
+[16:40:04] [INFO] Connecting to database {0}
+[16:40:08] [INFO] Connecting to database {0}
+[16:40:08] [INFO] Login Staff {0}
+[16:40:08] [INFO] David Grant has logged in
+[16:40:11] [INFO] Connecting to database {0}
+[16:40:18] [INFO] Connecting to database {0}
+[16:40:18] [INFO] Connecting to database {0}
+[16:40:26] [INFO] Connecting to database {0}
+[16:40:26] [INFO] Connecting to database {0}
+[16:40:26] [INFO] Get all discounts
+[16:40:26] [INFO] Connecting to database {0}
+[16:40:26] [INFO] Connecting to database {0}
+[16:40:26] [INFO] Connecting to database {0}
+[16:40:26] [INFO] Connecting to database {0}
+[16:40:26] [INFO] Get all discounts
+[16:40:26] [INFO] Connecting to database {0}
+[16:40:26] [INFO] Connecting to database {0}
