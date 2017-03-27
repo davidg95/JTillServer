@@ -415,6 +415,8 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         itemTaxes = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         itemDatabase = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         setTitle("JTill Server");
 
@@ -766,6 +768,13 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
         jMenuBar1.add(menuSetup);
 
+        jMenu1.setText("Report");
+
+        jMenuItem1.setText("Sales Reporting");
+        jMenu1.add(jMenuItem1);
+
+        jMenuBar1.add(jMenu1);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1031,7 +1040,9 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator2;
