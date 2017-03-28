@@ -6,6 +6,15 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import static java.awt.print.Printable.NO_SUCH_PAGE;
+import static java.awt.print.Printable.PAGE_EXISTS;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -31,6 +40,76 @@ public class ReportingWindow extends javax.swing.JFrame {
     public ReportingWindow(DataConnect dc) {
         this.dc = dc;
         initComponents();
+    }
+
+    public class ReportPrinter implements Printable {
+
+        private final List<SaleItem> items;
+        public PrinterJob job;
+        public boolean ready;
+
+        public ReportPrinter(List<SaleItem> items) {
+            this.items = items;
+        }
+
+        public void printReport() {
+            job = PrinterJob.getPrinterJob();
+            ready = job.printDialog();
+            if (ready) {
+                job.setPrintable(this);
+                try {
+                    job.print();
+                } catch (PrinterException ex) {
+                    Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        @Override
+        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+            if (pageIndex > 0) {
+                return NO_SUCH_PAGE;
+            }
+
+            String header = "Sales Report";
+
+            Graphics2D g2 = (Graphics2D) graphics;
+            g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+
+            Font oldFont = graphics.getFont();
+
+            g2.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
+            g2.drawString(header, 70, 60);
+            g2.setFont(oldFont); //Chagne back to the old font.
+
+            //Print sale info.
+            g2.drawString("Items: " + items.size(), 70, 90);
+
+            final int itemCol = 100;
+            final int quantityCol = 300;
+            final int totalCol = 420;
+            int y = 170;
+
+            //Print collumn headers.
+            g2.drawString("Item", itemCol, y);
+            g2.drawString("Quantity", quantityCol, y);
+            g2.drawString("Total", totalCol, y);
+            g2.drawLine(itemCol - 30, y + 10, totalCol + 100, y + 10);
+
+            y += 30;
+
+            //Print the sale items.
+            for (SaleItem it : items) {
+                g2.drawString(it.getName(), itemCol, y);
+                g2.drawString("" + it.getQuantity(), quantityCol, y);
+                g2.drawString("£" + it.getPrice(), totalCol, y);
+                y += 30;
+            }
+            g2.drawLine(itemCol - 30, y - 20, totalCol + 100, y - 20);
+
+            return PAGE_EXISTS;
+        }
+
     }
 
     /**
@@ -151,6 +230,7 @@ public class ReportingWindow extends javax.swing.JFrame {
         try {
             List<SaleItem> items = dc.getAllSaleItems();
             List<SaleItem> fil = new ArrayList<>();
+            List<SaleItem> fil2 = new ArrayList<>();
             for (SaleItem i : items) {
                 if (cat != null) {
                     if (i.getItem() instanceof Product) {
@@ -168,13 +248,16 @@ public class ReportingWindow extends javax.swing.JFrame {
                     if (i.getItem() instanceof Product) {
                         Product p = (Product) i.getItem();
                         if (p.getCategory().equals(dep)) {
-                            fil.add(i);
+                            fil2.add(i);
                         }
                     }
                 } else {
-                    fil.add(i);
+                    fil2.add(i);
                 }
             }
+            
+            ReportPrinter p = new ReportPrinter(fil);
+            p.printReport();
         } catch (IOException | SQLException ex) {
             Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
         }

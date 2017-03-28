@@ -780,6 +780,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         jMenu1.setText("Report");
 
         jMenuItem1.setText("Sales Reporting");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem1);
 
         jMenuBar1.add(jMenu1);
@@ -1020,6 +1025,10 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private void itemDepartmentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDepartmentsActionPerformed
         DepartmentsWindow.showWindow(dc, icon);
     }//GEN-LAST:event_itemDepartmentsActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        new ReportingWindow(dc).setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
