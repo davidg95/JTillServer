@@ -47,9 +47,13 @@ public class ReportingWindow extends javax.swing.JFrame {
         private final List<SaleItem> items;
         public PrinterJob job;
         public boolean ready;
+        private final String dep;
+        private final String cat;
 
-        public ReportPrinter(List<SaleItem> items) {
+        public ReportPrinter(List<SaleItem> items, String d, String c) {
             this.items = items;
+            this.dep = d;
+            this.cat = c;
         }
 
         public void printReport() {
@@ -84,6 +88,8 @@ public class ReportingWindow extends javax.swing.JFrame {
 
             //Print sale info.
             g2.drawString("Items: " + items.size(), 70, 90);
+            g2.drawString("Department: " + dep, 70, 110);
+            g2.drawString("Category: " + cat, 70, 130);
 
             final int itemCol = 100;
             final int quantityCol = 300;
@@ -231,6 +237,14 @@ public class ReportingWindow extends javax.swing.JFrame {
             List<SaleItem> items = dc.getAllSaleItems();
             List<SaleItem> fil = new ArrayList<>();
             List<SaleItem> fil2 = new ArrayList<>();
+            String deps = "All";
+            if (dep != null) {
+                deps = dep.getName();
+            }
+            String cats = "All";
+            if (cat != null) {
+                cats = cat.getName();
+            }
             for (SaleItem i : items) {
                 if (cat != null) {
                     if (i.getItem() instanceof Product) {
@@ -255,8 +269,8 @@ public class ReportingWindow extends javax.swing.JFrame {
                     fil2.add(i);
                 }
             }
-            
-            ReportPrinter p = new ReportPrinter(fil);
+
+            ReportPrinter p = new ReportPrinter(fil2, deps, cats);
             p.printReport();
         } catch (IOException | SQLException ex) {
             Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
