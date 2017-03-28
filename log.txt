@@ -1,71 +1,24 @@
-JTill log Tue Mar 28 15:30:09 BST 2017
-[15:30:09] [INFO] Connecting to database {0}
-[15:30:09] [INFO] Connecting to database {0}
-[15:30:10] [INFO] Get staff count
-[15:30:10] [INFO] Starting Thread Pool Excecutor
-[15:30:10] [INFO] JTill Server local IP address is 192.168.1.65
-[15:30:10] [INFO] Connecting to database {0}
-[15:30:10] [INFO] Server Socket running on port number 52341
-[15:30:10] [INFO] Ready to accept connections
-[15:30:16] [INFO] Connecting to database {0}
-[15:30:16] [INFO] Login Staff {0}
-[15:30:16] [INFO] David Grant has logged in
-[15:30:19] [INFO] Connecting to database {0}
-[15:30:22] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
-[15:30:24] [INFO] Connecting to database {0}
-[15:30:24] [INFO] Get product {0}
+JTill log Tue Mar 28 15:49:41 BST 2017
+[15:49:41] [INFO] Connecting to database {0}
+[15:49:41] [INFO] Connecting to database {0}
+[15:49:42] [INFO] Get staff count
+[15:49:42] [INFO] Starting Thread Pool Excecutor
+[15:49:42] [INFO] JTill Server local IP address is 192.168.1.65
+[15:49:42] [INFO] Server Socket running on port number 52341
+[15:49:42] [INFO] Ready to accept connections
+[15:49:42] [INFO] Connecting to database {0}
+[15:49:44] [INFO] Connecting to database {0}
+[15:49:44] [INFO] Login Staff {0}
+[15:49:44] [INFO] David Grant has logged in
+[15:49:45] [INFO] Connecting to database {0}
+[15:49:45] [INFO] Connecting to database {0}
+[15:49:45] [INFO] Connecting to database {0}
+[15:49:45] [INFO] Get product {0}
+[15:49:45] [INFO] Connecting to database {0}
+[15:49:45] [INFO] Connecting to database {0}
+[15:49:45] [INFO] Get product {0}
+[15:49:45] [INFO] Connecting to database {0}
+[15:49:45] [INFO] Connecting to database {0}
+[15:49:45] [INFO] Get product {0}
+[15:49:45] [INFO] Connecting to database {0}
+[15:49:45] [INFO] Get product {0}

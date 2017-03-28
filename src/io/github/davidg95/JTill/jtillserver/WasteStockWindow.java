@@ -148,26 +148,30 @@ public class WasteStockWindow extends javax.swing.JFrame {
             g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 
             Font oldFont = graphics.getFont();
+            
+            int y = 60;
 
             g2.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
-            g2.drawString(header, 70, 60);
+            g2.drawString(header, 70, y);
+            y += 30;
             g2.setFont(oldFont); //Chagne back to the old font.
 
             //Print sale info.
-            g2.drawString("Time: " + wr.getDate(), 70, 110);
+            g2.drawString("Time: " + wr.getDate(), 70, y);
 
             final int item = 100;
-            final int quantity = 200;
-            final int total = 300;
-            final int reason = 400;
-            int y = 130;
+            final int quantity = 240;
+            final int reason = 340;
+            final int total = 440;
+            
+            y += 30;
 
             //Print collumn headers.
             g2.drawString("Item", item, y);
             g2.drawString("Quantity", quantity, y);
             g2.drawString("Total", total, y);
             g2.drawString("Reason", reason, y);
-            g2.drawLine(item - 30, y + 10, reason + 100, y + 10);
+            g2.drawLine(item - 30, y + 10, total + 100, y + 10);
 
             y += 30;
 
@@ -179,7 +183,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
                 g2.drawString(wi.getReason().getName(), reason, y);
                 y += 30;
             }
-            g2.drawLine(item - 30, y - 20, reason + 100, y - 20);
+            g2.drawLine(item - 30, y - 20, total + 100, y - 20);
             g2.drawString("Total: £" + wr.getTotalValue().setScale(2), total, y);
 
             return PAGE_EXISTS;
