@@ -27,11 +27,11 @@ import javax.swing.JOptionPane;
 public class ProductDialog extends javax.swing.JDialog {
 
     private final Logger log = Logger.getGlobal();
-
     private static JDialog dialog;
-    private static Product product;
 
-    private final DataConnect dbConn;
+    private static Product product; //The product that is getting returned.
+
+    private final DataConnect dc;
     private Plu plu;
 
     private final boolean editMode;
@@ -42,13 +42,15 @@ public class ProductDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form NewProduct
+     *
      * @param parent
      * @param dc
      * @param p
+     * @param stock stock level to set the field to.
      */
-    public ProductDialog(Window parent, DataConnect dc, Plu p) {
+    public ProductDialog(Window parent, DataConnect dc, Plu p, int stock) {
         super(parent);
-        this.dbConn = dc;
+        this.dc = dc;
         this.plu = p;
         initComponents();
         try {
@@ -63,12 +65,15 @@ public class ProductDialog extends javax.swing.JDialog {
         this.editMode = false;
         this.setLocationRelativeTo(parent);
         this.setModal(true);
+        txtStock.setText(stock + "");
+        txtMinStock.setText("0");
+        txtMaxStock.setText("0");
         txtBarcode.setText(p.getCode());
     }
 
     public ProductDialog(Window parent, DataConnect dc, Product p) {
         super(parent);
-        this.dbConn = dc;
+        this.dc = dc;
         initComponents();
         this.editMode = true;
         setLocationRelativeTo(parent);
@@ -96,12 +101,12 @@ public class ProductDialog extends javax.swing.JDialog {
      * @param parent the parent component.
      * @return new Product object.
      */
-    public static Product showNewProductDialog(Component parent, DataConnect dc, Plu p) {
+    public static Product showNewProductDialog(Component parent, DataConnect dc, Plu p, int stock) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new ProductDialog(window, dc, p);
+        dialog = new ProductDialog(window, dc, p, stock);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         product = null;
         dialog.setVisible(true);
@@ -353,11 +358,11 @@ public class ProductDialog extends javax.swing.JDialog {
         Department dep = selectedDepartment;
         String comments = txtComments.getText();
         try {
-            Plu p = dbConn.addPlu(plu);
+            Plu p = dc.addPlu(plu);
             if (chkOpen.isSelected()) {
                 try {
                     product = new Product(name, shortName, category, dep, comments, tax, plu, true);
-                    product = dbConn.addProduct(product);
+                    product = dc.addProduct(product);
                     this.setVisible(false);
                 } catch (IOException | SQLException ex) {
                     JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
@@ -371,7 +376,7 @@ public class ProductDialog extends javax.swing.JDialog {
 
                 if (!editMode) {
                     product = new Product(name, shortName, category, dep, comments, tax, false, price, costPrice, stock, minStock, maxStock, p);
-                    product = dbConn.addProduct(product);
+                    product = dc.addProduct(product);
                 } else {
                     product.setLongName(name);
                     product.setName(shortName);
@@ -384,7 +389,7 @@ public class ProductDialog extends javax.swing.JDialog {
                     product.setMinStockLevel(minStock);
                     product.setMaxStockLevel(maxStock);
                     product.setCostPrice(costPrice);
-                    dbConn.updateProduct(product);
+                    dc.updateProduct(product);
                 }
                 this.setVisible(false);
             }
@@ -414,17 +419,17 @@ public class ProductDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_chkOpenActionPerformed
 
     private void btnSelectCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectCategoryActionPerformed
-        selectedCategory = CategorySelectDialog.showDialog(this, dbConn);
+        selectedCategory = CategorySelectDialog.showDialog(this, dc);
         btnSelectCategory.setText(selectedCategory.getName());
     }//GEN-LAST:event_btnSelectCategoryActionPerformed
 
     private void btnSelectTaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectTaxActionPerformed
-        selectedTax = TaxSelectDialog.showDialog(this, dbConn);
+        selectedTax = TaxSelectDialog.showDialog(this, dc);
         btnSelectTax.setText(selectedTax.getName());
     }//GEN-LAST:event_btnSelectTaxActionPerformed
 
     private void btnSelectDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectDepartmentActionPerformed
-        selectedDepartment = DepartmentSelectDialog.showDialog(this, dbConn);
+        selectedDepartment = DepartmentSelectDialog.showDialog(this, dc);
         btnSelectDepartment.setText(selectedDepartment.getName());
     }//GEN-LAST:event_btnSelectDepartmentActionPerformed
 

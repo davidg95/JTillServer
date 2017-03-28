@@ -798,7 +798,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         String barcode = JOptionPane.showInputDialog(this, "Enter or scan barcode", "New Product", JOptionPane.INFORMATION_MESSAGE);
         if (barcode != null && !barcode.equals("")) {
             Plu plu = new Plu(barcode);
-            Product p = ProductDialog.showNewProductDialog(this, dc, plu);
+            Product p = ProductDialog.showNewProductDialog(this, dc, plu, 0);
             showAllProducts();
             setCurrentProduct(null);
         }

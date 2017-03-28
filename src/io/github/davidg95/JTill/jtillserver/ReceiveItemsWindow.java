@@ -355,7 +355,7 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                     } catch (ProductNotFoundException ex) {
                         if (JOptionPane.showConfirmDialog(this, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                             Plu p = new Plu(barcode);
-                            product = ProductDialog.showNewProductDialog(this, dc, p);
+                            product = ProductDialog.showNewProductDialog(this, dc, p, quantity);
                             JOptionPane.showMessageDialog(this, product.getLongName() + " has now been added to the system with given stock level, there is no need to receive it here.", "Added", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
