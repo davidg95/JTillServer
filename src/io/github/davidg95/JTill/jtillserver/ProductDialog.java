@@ -36,11 +36,15 @@ public class ProductDialog extends javax.swing.JDialog {
 
     private final boolean editMode;
 
-    private Category selectedCategory;
-    private Tax selectedTax;
+    private Category selectedCategory; //The selected category for the product.
+    private Tax selectedTax; //The selected tax for the product.
+    private Department selectedDepartment; //The selected Department for the product.
 
     /**
      * Creates new form NewProduct
+     * @param parent
+     * @param dc
+     * @param p
      */
     public ProductDialog(Window parent, DataConnect dc, Plu p) {
         super(parent);
@@ -50,9 +54,10 @@ public class ProductDialog extends javax.swing.JDialog {
         try {
             selectedCategory = dc.getCategory(1);
             selectedTax = dc.getTax(1);
+            selectedDepartment = dc.getDepartment(1);
             btnSelectCategory.setText(selectedCategory.getName());
             btnSelectTax.setText(selectedTax.getName());
-        } catch (IOException | SQLException | TaxNotFoundException | CategoryNotFoundException ex) {
+        } catch (IOException | SQLException | TaxNotFoundException | CategoryNotFoundException | JTillException ex) {
             log.log(Level.WARNING, null, ex);
         }
         this.editMode = false;
@@ -77,13 +82,9 @@ public class ProductDialog extends javax.swing.JDialog {
         txtMinStock.setText(p.getMinStockLevel() + "");
         txtMaxStock.setText(p.getMaxStockLevel() + "");
         txtComments.setText(p.getComments());
-        int index = 0;
-        Category c = p.getCategory();
-        index = 0;
         btnSelectCategory.setText((p.getCategory().getName()));
         btnSelectTax.setText(p.getTax().getName());
-        Tax t = p.getTax();
-        index = 0;
+        btnSelectDepartment.setText(p.getDepartment().getName());
         btnAddProduct.setText("Save Changes");
         setTitle("Edit Product " + p.getName());
     }
@@ -231,6 +232,11 @@ public class ProductDialog extends javax.swing.JDialog {
         jLabel12.setText("Department:");
 
         btnSelectDepartment.setText("Select Department");
+        btnSelectDepartment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSelectDepartmentActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -274,10 +280,9 @@ public class ProductDialog extends javax.swing.JDialog {
                             .addComponent(txtBarcode, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                             .addComponent(txtShortName, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                             .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(btnSelectTax, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnSelectCategory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnSelectDepartment, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btnSelectTax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnSelectCategory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnSelectDepartment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane1))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -345,12 +350,13 @@ public class ProductDialog extends javax.swing.JDialog {
         String shortName = txtShortName.getText();
         Category category = selectedCategory;
         Tax tax = selectedTax;
+        Department dep = selectedDepartment;
         String comments = txtComments.getText();
         try {
             Plu p = dbConn.addPlu(plu);
             if (chkOpen.isSelected()) {
                 try {
-                    product = new Product(name, shortName, category, new Department(1, "DEFAULT"), comments, tax, plu, true);
+                    product = new Product(name, shortName, category, dep, comments, tax, plu, true);
                     product = dbConn.addProduct(product);
                     this.setVisible(false);
                 } catch (IOException | SQLException ex) {
@@ -364,7 +370,7 @@ public class ProductDialog extends javax.swing.JDialog {
                 int maxStock = Integer.parseInt(txtMaxStock.getText());
 
                 if (!editMode) {
-                    product = new Product(name, shortName, category, new Department(1, "DEFAULT"), comments, tax, false, price, costPrice, stock, minStock, maxStock, p);
+                    product = new Product(name, shortName, category, dep, comments, tax, false, price, costPrice, stock, minStock, maxStock, p);
                     product = dbConn.addProduct(product);
                 } else {
                     product.setLongName(name);
@@ -416,6 +422,11 @@ public class ProductDialog extends javax.swing.JDialog {
         selectedTax = TaxSelectDialog.showDialog(this, dbConn);
         btnSelectTax.setText(selectedTax.getName());
     }//GEN-LAST:event_btnSelectTaxActionPerformed
+
+    private void btnSelectDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectDepartmentActionPerformed
+        selectedDepartment = DepartmentSelectDialog.showDialog(this, dbConn);
+        btnSelectDepartment.setText(selectedDepartment.getName());
+    }//GEN-LAST:event_btnSelectDepartmentActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProduct;

@@ -39,9 +39,10 @@ public class ProductsWindow extends javax.swing.JFrame {
     private final DefaultTableModel model;
     private List<Product> currentTableContents;
 
-    private List<Discount> discounts;
+    private List<Department> departments;
     private List<Tax> taxes;
     private List<Category> categorys;
+    private DefaultComboBoxModel departmentsModel;
     private DefaultComboBoxModel taxesModel;
     private DefaultComboBoxModel categorysModel;
 
@@ -96,11 +97,13 @@ public class ProductsWindow extends javax.swing.JFrame {
      */
     private void init() {
         try {
-            discounts = dc.getAllDiscounts();
+            departments = dc.getAllDepartments();
             taxes = dc.getAllTax();
             categorys = dc.getAllCategorys();
+            departmentsModel = new DefaultComboBoxModel(departments.toArray());
             taxesModel = new DefaultComboBoxModel(taxes.toArray());
             categorysModel = new DefaultComboBoxModel(categorys.toArray());
+            cmbDepartments.setModel(departmentsModel);
             cmbTax.setModel(taxesModel);
             cmbCategory.setModel(categorysModel);
         } catch (SQLException | IOException ex) {
@@ -153,7 +156,7 @@ public class ProductsWindow extends javax.swing.JFrame {
      * @param p the product to show.
      */
     private void setCurrentProduct(Product p) {
-        if (p == null) {
+        if (p == null) { //If product is null then clear all the fields.
             txtName.setText("");
             txtShortName.setText("");
             txtBarcode.setText("");
@@ -179,12 +182,13 @@ public class ProductsWindow extends javax.swing.JFrame {
             chkOpen.setSelected(false);
             cmbTax.setSelectedIndex(0);
             cmbCategory.setSelectedIndex(0);
+            cmbDepartments.setSelectedIndex(0);
             product = null;
-        } else {
+        } else { //Fill the fields with the product.
             this.product = p;
             txtName.setText(p.getLongName());
             txtShortName.setText(p.getName());
-            if (p.isOpen()) {
+            if (p.isOpen()) { //Check if price is open.
                 txtPrice.setEnabled(false);
                 txtCostPrice.setEnabled(false);
                 txtBarcode.setEnabled(true);
@@ -227,6 +231,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             }
             txtComments.setText(p.getComments());
             int index = 0;
+            //Set the Category combo box.
             Category c = p.getCategory();
             index = 0;
             for (int i = 0; i < categorys.size(); i++) {
@@ -236,6 +241,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                 }
             }
             cmbCategory.setSelectedIndex(index);
+            //Set the Tax combo box.
             Tax t = p.getTax();
             index = 0;
             for (int i = 0; i < taxes.size(); i++) {
@@ -245,6 +251,16 @@ public class ProductsWindow extends javax.swing.JFrame {
                 }
             }
             cmbTax.setSelectedIndex(index);
+            //Set the Department combo box.
+            Department d = p.getDepartment();
+            index = 0;
+            for (int i = 0; i < departments.size(); i++) {
+                if (departments.get(i).getId() == d.getId()) {
+                    index = i;
+                    break;
+                }
+            }
+            cmbDepartments.setSelectedIndex(index);
         }
     }
 
@@ -310,6 +326,9 @@ public class ProductsWindow extends javax.swing.JFrame {
         btnReceiveStock = new javax.swing.JButton();
         btnChart = new javax.swing.JButton();
         btnCSV = new javax.swing.JButton();
+        jLabel12 = new javax.swing.JLabel();
+        cmbDepartments = new javax.swing.JComboBox<>();
+        btnDepartments = new javax.swing.JButton();
 
         setTitle("Stock Managment");
 
@@ -504,6 +523,12 @@ public class ProductsWindow extends javax.swing.JFrame {
             }
         });
 
+        jLabel12.setText("Department:");
+
+        cmbDepartments.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        btnDepartments.setText("Departments");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -521,7 +546,8 @@ public class ProductsWindow extends javax.swing.JFrame {
                                 .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(chkOpen)
@@ -537,6 +563,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                                 .addComponent(txtStock)
                                 .addGroup(layout.createSequentialGroup()
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(cmbDepartments, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(txtMinStock)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -549,7 +576,8 @@ public class ProductsWindow extends javax.swing.JFrame {
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(txtMaxStock)
                                         .addComponent(btnShowCategorys, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
-                                        .addComponent(btnShowTax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                        .addComponent(btnShowTax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnDepartments, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                         .addComponent(btnShowAll, javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                             .addComponent(jLabel5)
@@ -636,6 +664,11 @@ public class ProductsWindow extends javax.swing.JFrame {
                             .addComponent(btnShowTax)
                             .addComponent(jLabel8))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel12)
+                            .addComponent(cmbDepartments, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnDepartments))
+                        .addGap(26, 26, 26)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))
@@ -707,6 +740,10 @@ public class ProductsWindow extends javax.swing.JFrame {
         if (!taxes.isEmpty()) {
             tax = taxes.get(cmbTax.getSelectedIndex());
         }
+        Department dep = null;
+        if (!departments.isEmpty()) {
+            dep = departments.get(cmbDepartments.getSelectedIndex());
+        }
         String comments = txtComments.getText();
         if (chkOpen.isSelected()) {
             product.setLongName(name);
@@ -724,6 +761,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             product.setLongName(name);
             product.setName(shortName);
             product.setCategory(category);
+            product.setDepartment(dep);
             product.setTax(tax);
             product.setPrice(price);
             product.setCostPrice(costPrice);
@@ -901,6 +939,7 @@ public class ProductsWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnCSV;
     private javax.swing.JButton btnChart;
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnDepartments;
     private javax.swing.JButton btnNewProduct;
     private javax.swing.JButton btnReceiveStock;
     private javax.swing.JButton btnRemoveProduct;
@@ -913,10 +952,12 @@ public class ProductsWindow extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JCheckBox chkOpen;
     private javax.swing.JComboBox<String> cmbCategory;
+    private javax.swing.JComboBox<String> cmbDepartments;
     private javax.swing.JComboBox<String> cmbTax;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

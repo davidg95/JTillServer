@@ -1,25 +1,81 @@
-JTill log Mon Mar 27 16:40:03 BST 2017
-[16:40:04] [INFO] Connecting to database {0}
-[16:40:04] [INFO] Connecting to database {0}
-[16:40:04] [INFO] Get staff count
-[16:40:04] [INFO] Starting Thread Pool Excecutor
-[16:40:04] [INFO] JTill Server local IP address is 192.168.1.65
-[16:40:04] [INFO] Server Socket running on port number 52341
-[16:40:04] [INFO] Ready to accept connections
-[16:40:04] [INFO] Connecting to database {0}
-[16:40:08] [INFO] Connecting to database {0}
-[16:40:08] [INFO] Login Staff {0}
-[16:40:08] [INFO] David Grant has logged in
-[16:40:11] [INFO] Connecting to database {0}
-[16:40:18] [INFO] Connecting to database {0}
-[16:40:18] [INFO] Connecting to database {0}
-[16:40:26] [INFO] Connecting to database {0}
-[16:40:26] [INFO] Connecting to database {0}
-[16:40:26] [INFO] Get all discounts
-[16:40:26] [INFO] Connecting to database {0}
-[16:40:26] [INFO] Connecting to database {0}
-[16:40:26] [INFO] Connecting to database {0}
-[16:40:26] [INFO] Connecting to database {0}
-[16:40:26] [INFO] Get all discounts
-[16:40:26] [INFO] Connecting to database {0}
-[16:40:26] [INFO] Connecting to database {0}
+JTill log Tue Mar 28 11:31:48 BST 2017
+[11:31:48] [INFO] Connecting to database {0}
+[11:31:48] [INFO] Connecting to database {0}
+[11:31:48] [INFO] Get staff count
+[11:31:48] [INFO] Starting Thread Pool Excecutor
+[11:31:48] [INFO] JTill Server local IP address is 192.168.1.65
+[11:31:48] [INFO] Server Socket running on port number 52341
+[11:31:48] [INFO] Ready to accept connections
+[11:31:48] [INFO] Connecting to database {0}
+[11:31:51] [INFO] Connecting to database {0}
+[11:31:51] [INFO] Login Staff {0}
+[11:31:51] [INFO] David Grant has logged in
+[11:31:52] [INFO] Connecting to database {0}
+[11:31:52] [INFO] Connecting to database {0}
+[11:31:52] [INFO] Connecting to database {0}
+[11:31:52] [INFO] Connecting to database {0}
+[11:31:52] [INFO] Connecting to database {0}
+[11:31:52] [INFO] Connecting to database {0}
+[11:31:52] [INFO] Connecting to database {0}
+[11:31:52] [INFO] Connecting to database {0}
+[11:31:58] [INFO] Connecting to database {0}
+[11:32:00] [INFO] Connecting to database {0}
+[11:32:00] [INFO] Connecting to database {0}
+[11:32:00] [INFO] Connecting to database {0}
+[11:32:00] [INFO] Connecting to database {0}
+[11:32:07] [INFO] Connecting to database {0}
+[11:32:07] [INFO] Connecting to database {0}
+[11:32:07] [INFO] Connecting to database {0}
+[11:32:26] [INFO] Connecting to database {0}
+[11:32:28] [INFO] Connecting to database {0}
+[11:32:28] [INFO] Connecting to database {0}
+[11:32:28] [INFO] Connecting to database {0}
+[11:32:28] [INFO] Connecting to database {0}
+[11:32:28] [INFO] Connecting to database {0}
+[11:32:30] [INFO] Connecting to database {0}
+[11:32:34] [INFO] Connecting to database {0}
+[11:32:34] [INFO] Connecting to database {0}
+[11:32:34] [INFO] New Product {0} added
+[11:32:34] [INFO] Connecting to database {0}
+[11:32:42] [INFO] Connecting to database {0}
+[11:32:42] [INFO] Product {0} updated
+[11:32:54] [INFO] Connecting to database {0}
+[11:32:54] [INFO] Connecting to database {0}
+[11:32:54] [INFO] Connecting to database {0}
+[11:32:54] [INFO] Connecting to database {0}
+[11:32:54] [INFO] Connecting to database {0}
+[11:32:54] [INFO] Connecting to database {0}
+[11:32:54] [INFO] Connecting to database {0}
+[11:32:54] [INFO] Connecting to database {0}
+[11:32:54] [INFO] Connecting to database {0}
+[11:32:54] [INFO] Connecting to database {0}
+[11:32:54] [INFO] Connecting to database {0}
+[11:32:54] [INFO] Connecting to database {0}
+[11:32:54] [INFO] Connecting to database {0}
+[11:33:02] [INFO] Connecting to database {0}
+[11:33:02] [INFO] Connecting to database {0}
+[11:33:02] [INFO] Connecting to database {0}
+[11:33:02] [INFO] Connecting to database {0}
+[11:33:02] [INFO] Connecting to database {0}
+[11:33:02] [INFO] Connecting to database {0}
+[11:33:14] [INFO] Connecting to database {0}
+[11:33:25] [INFO] Connecting to database {0}
+[11:33:25] [INFO] Connecting to database {0}
+[11:33:27] [INFO] Connecting to database {0}
+[11:33:27] [INFO] Connecting to database {0}
+[11:33:27] [INFO] Connecting to database {0}
+[11:33:27] [INFO] Connecting to database {0}
+[11:33:38] [INFO] Connecting to database {0}
+[11:33:38] [INFO] Connecting to database {0}
+[11:33:38] [INFO] Connecting to database {0}
+[11:33:59] [INFO] Connecting to database {0}
+[11:34:01] [INFO] Connecting to database {0}
+[11:34:01] [INFO] Connecting to database {0}
+[11:34:01] [INFO] Connecting to database {0}
+[11:34:01] [INFO] Connecting to database {0}
+[11:34:01] [INFO] Connecting to database {0}
+[11:34:03] [INFO] Connecting to database {0}
+[11:34:05] [INFO] Connecting to database {0}
+[11:34:05] [INFO] Connecting to database {0}
+[11:34:05] [INFO] New Product {0} added
+[11:34:05] [INFO] Connecting to database {0}
