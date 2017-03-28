@@ -6,6 +6,12 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -94,6 +100,11 @@ public class ReportingWindow extends javax.swing.JFrame {
         );
 
         btnGenerate.setText("Generate Report");
+        btnGenerate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerateActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -135,6 +146,39 @@ public class ReportingWindow extends javax.swing.JFrame {
             btnCat.setText(cat.getName());
         }
     }//GEN-LAST:event_btnCatActionPerformed
+
+    private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
+        try {
+            List<SaleItem> items = dc.getAllSaleItems();
+            List<SaleItem> fil = new ArrayList<>();
+            for (SaleItem i : items) {
+                if (cat != null) {
+                    if (i.getItem() instanceof Product) {
+                        Product p = (Product) i.getItem();
+                        if (p.getCategory().equals(cat)) {
+                            fil.add(i);
+                        }
+                    }
+                } else {
+                    fil.add(i);
+                }
+            }
+            for (SaleItem i : fil) {
+                if (dep != null) {
+                    if (i.getItem() instanceof Product) {
+                        Product p = (Product) i.getItem();
+                        if (p.getCategory().equals(dep)) {
+                            fil.add(i);
+                        }
+                    }
+                } else {
+                    fil.add(i);
+                }
+            }
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnGenerateActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCat;

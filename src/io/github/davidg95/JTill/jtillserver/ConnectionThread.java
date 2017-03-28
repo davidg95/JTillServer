@@ -1132,6 +1132,51 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
+                    case "ADDSALEITEM": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                addSaleItem(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "REMVOESALEITEM": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                removeSaleItem(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETSALEITEM": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getSaleItem(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETALLSALEITEMS": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getAllSaleItems();
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "UPDATESALEITEM": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                updateSaleItem(data);
+                            }
+                        }.start();
+                        break;
+                    }
                     case "CONNTERM": { //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -3182,6 +3227,120 @@ public class ConnectionThread extends Thread {
             try {
                 d = dc.updateDepartment(d);
                 obOut.writeObject(ConnectionData.create("SUCC", d));
+            } catch (IOException | SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void addSaleItem(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Sale)) {
+                LOG.log(Level.SEVERE, "Unexpected data type adding a saleitem");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            if (!(clone.getData2() instanceof SaleItem)) {
+                LOG.log(Level.SEVERE, "Unexpected data type adding a saleitem");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            Sale s = (Sale) clone.getData();
+            SaleItem i = (SaleItem) clone.getData2();
+            try {
+                i = dc.addSaleItem(s, i);
+                obOut.writeObject(ConnectionData.create("SUCC", i));
+            } catch (IOException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void removeSaleItem(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type removing a saleitem");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) clone.getData();
+            try {
+                dc.removeSaleItem(id);
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (IOException | SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getSaleItem(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type getting a saleitem");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) clone.getData();
+            try {
+                SaleItem i = dc.getSaleItem(id);
+                obOut.writeObject(ConnectionData.create("SUCC", i));
+            } catch (IOException | SQLException | JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getAllSaleItems() {
+        try {
+            try {
+                List<SaleItem> i = dc.getAllSaleItems();
+                obOut.writeObject(ConnectionData.create("SUCC", i));
+            } catch (IOException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void subSaleItemQuery(ConnectionData data) {
+        try {
+            try {
+                ConnectionData clone = data.clone();
+                String q = (String) clone.getData();
+                List<SaleItem> i = dc.submitSaleItemQuery(q);
+                obOut.writeObject(ConnectionData.create("SUCC", i));
+            } catch (IOException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void updateSaleItem(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof SaleItem)) {
+                LOG.log(Level.SEVERE, "Unexpected data type updating a department");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            SaleItem i = (SaleItem) clone.getData();
+            try {
+                i = dc.updateSaleItem(i);
+                obOut.writeObject(ConnectionData.create("SUCC", i));
             } catch (IOException | SQLException | JTillException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }

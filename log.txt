@@ -1,81 +1,16 @@
-JTill log Tue Mar 28 11:31:48 BST 2017
-[11:31:48] [INFO] Connecting to database {0}
-[11:31:48] [INFO] Connecting to database {0}
-[11:31:48] [INFO] Get staff count
-[11:31:48] [INFO] Starting Thread Pool Excecutor
-[11:31:48] [INFO] JTill Server local IP address is 192.168.1.65
-[11:31:48] [INFO] Server Socket running on port number 52341
-[11:31:48] [INFO] Ready to accept connections
-[11:31:48] [INFO] Connecting to database {0}
-[11:31:51] [INFO] Connecting to database {0}
-[11:31:51] [INFO] Login Staff {0}
-[11:31:51] [INFO] David Grant has logged in
-[11:31:52] [INFO] Connecting to database {0}
-[11:31:52] [INFO] Connecting to database {0}
-[11:31:52] [INFO] Connecting to database {0}
-[11:31:52] [INFO] Connecting to database {0}
-[11:31:52] [INFO] Connecting to database {0}
-[11:31:52] [INFO] Connecting to database {0}
-[11:31:52] [INFO] Connecting to database {0}
-[11:31:52] [INFO] Connecting to database {0}
-[11:31:58] [INFO] Connecting to database {0}
-[11:32:00] [INFO] Connecting to database {0}
-[11:32:00] [INFO] Connecting to database {0}
-[11:32:00] [INFO] Connecting to database {0}
-[11:32:00] [INFO] Connecting to database {0}
-[11:32:07] [INFO] Connecting to database {0}
-[11:32:07] [INFO] Connecting to database {0}
-[11:32:07] [INFO] Connecting to database {0}
-[11:32:26] [INFO] Connecting to database {0}
-[11:32:28] [INFO] Connecting to database {0}
-[11:32:28] [INFO] Connecting to database {0}
-[11:32:28] [INFO] Connecting to database {0}
-[11:32:28] [INFO] Connecting to database {0}
-[11:32:28] [INFO] Connecting to database {0}
-[11:32:30] [INFO] Connecting to database {0}
-[11:32:34] [INFO] Connecting to database {0}
-[11:32:34] [INFO] Connecting to database {0}
-[11:32:34] [INFO] New Product {0} added
-[11:32:34] [INFO] Connecting to database {0}
-[11:32:42] [INFO] Connecting to database {0}
-[11:32:42] [INFO] Product {0} updated
-[11:32:54] [INFO] Connecting to database {0}
-[11:32:54] [INFO] Connecting to database {0}
-[11:32:54] [INFO] Connecting to database {0}
-[11:32:54] [INFO] Connecting to database {0}
-[11:32:54] [INFO] Connecting to database {0}
-[11:32:54] [INFO] Connecting to database {0}
-[11:32:54] [INFO] Connecting to database {0}
-[11:32:54] [INFO] Connecting to database {0}
-[11:32:54] [INFO] Connecting to database {0}
-[11:32:54] [INFO] Connecting to database {0}
-[11:32:54] [INFO] Connecting to database {0}
-[11:32:54] [INFO] Connecting to database {0}
-[11:32:54] [INFO] Connecting to database {0}
-[11:33:02] [INFO] Connecting to database {0}
-[11:33:02] [INFO] Connecting to database {0}
-[11:33:02] [INFO] Connecting to database {0}
-[11:33:02] [INFO] Connecting to database {0}
-[11:33:02] [INFO] Connecting to database {0}
-[11:33:02] [INFO] Connecting to database {0}
-[11:33:14] [INFO] Connecting to database {0}
-[11:33:25] [INFO] Connecting to database {0}
-[11:33:25] [INFO] Connecting to database {0}
-[11:33:27] [INFO] Connecting to database {0}
-[11:33:27] [INFO] Connecting to database {0}
-[11:33:27] [INFO] Connecting to database {0}
-[11:33:27] [INFO] Connecting to database {0}
-[11:33:38] [INFO] Connecting to database {0}
-[11:33:38] [INFO] Connecting to database {0}
-[11:33:38] [INFO] Connecting to database {0}
-[11:33:59] [INFO] Connecting to database {0}
-[11:34:01] [INFO] Connecting to database {0}
-[11:34:01] [INFO] Connecting to database {0}
-[11:34:01] [INFO] Connecting to database {0}
-[11:34:01] [INFO] Connecting to database {0}
-[11:34:01] [INFO] Connecting to database {0}
-[11:34:03] [INFO] Connecting to database {0}
-[11:34:05] [INFO] Connecting to database {0}
-[11:34:05] [INFO] Connecting to database {0}
-[11:34:05] [INFO] New Product {0} added
-[11:34:05] [INFO] Connecting to database {0}
+JTill log Tue Mar 28 12:38:26 BST 2017
+[12:38:26] [INFO] Connecting to database {0}
+[12:38:26] [INFO] Connecting to database {0}
+[12:38:26] [INFO] Get staff count
+[12:38:26] [INFO] Starting Thread Pool Excecutor
+[12:38:26] [INFO] JTill Server local IP address is 192.168.1.65
+[12:38:26] [INFO] Server Socket running on port number 52341
+[12:38:26] [INFO] Ready to accept connections
+[12:38:26] [INFO] Connecting to database {0}
+[12:38:29] [INFO] Connecting to database {0}
+[12:38:29] [INFO] Login Staff {0}
+[12:38:29] [INFO] David Grant has logged in
+[12:38:34] [INFO] Connecting to database {0}
+[12:38:34] [INFO] Connecting to database {0}
+[12:38:34] [INFO] Connecting to database {0}
+[12:38:34] [INFO] Get product {0}
