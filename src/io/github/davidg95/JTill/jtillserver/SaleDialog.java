@@ -143,7 +143,11 @@ public class SaleDialog extends javax.swing.JDialog {
 
             g2.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
             //g2.drawString(header, 70, 60);
-            g2.drawImage(img, 70, 30, 400, 100, null);
+            if (img == null) {
+                g2.drawString(header, 70, 30);
+            } else {
+                g2.drawImage(img, 70, 30, 400, 100, null);
+            }
             g2.setFont(oldFont); //Chagne back to the old font.
 
             //Print sale info.
