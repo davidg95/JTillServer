@@ -1,12 +1,850 @@
-JTill log Wed Mar 29 12:37:55 BST 2017
-[12:37:55] [INFO] Connecting to database {0}
-[12:37:55] [INFO] Connecting to database {0}
-[12:37:55] [INFO] Get staff count
-[12:37:55] [INFO] Starting Thread Pool Excecutor
-[12:37:55] [INFO] JTill Server local IP address is 192.168.1.65
-[12:37:55] [INFO] Server Socket running on port number 52341
-[12:37:55] [INFO] Ready to accept connections
-[12:37:55] [INFO] Connecting to database {0}
-[12:37:57] [INFO] Connecting to database {0}
-[12:37:57] [INFO] Login Staff {0}
-[12:37:57] [INFO] David Grant has logged in
+JTill log Wed Mar 29 12:52:59 BST 2017
+[12:53:00] [INFO] Connecting to database {0}
+[12:53:00] [INFO] Connecting to database {0}
+[12:53:00] [INFO] Get staff count
+[12:53:00] [INFO] Starting Thread Pool Excecutor
+[12:53:00] [INFO] JTill Server local IP address is 192.168.1.65
+[12:53:00] [INFO] Server Socket running on port number 52341
+[12:53:00] [INFO] Ready to accept connections
+[12:53:00] [INFO] Connecting to database {0}
+[12:53:07] [INFO] Connecting to database {0}
+[12:53:07] [INFO] {0} has connected
+[12:53:07] [INFO] Received {0} from server
+[12:53:07] [INFO] Received {0} from server
+[12:53:07] [INFO] Received {0} from server
+[12:53:07] [INFO] Received {0} from server
+[12:53:07] [INFO] Received {0} from server
+[12:53:07] [INFO] Connecting to database {0}
+[12:53:07] [INFO] Get all discounts
+[12:53:07] [INFO] Received {0} from server
+[12:53:07] [INFO] Connecting to database {0}
+[12:53:10] [INFO] Received {0} from server
+[12:53:10] [INFO] Connecting to database {0}
+[12:53:10] [INFO] Get staff {0}
+[12:53:10] [INFO] Received {0} from server
+[12:53:10] [INFO] Connecting to database {0}
+[12:53:10] [INFO] {0} has logged in from {1}
+[12:53:10] [INFO] Received {0} from server
+[12:53:14] [INFO] Received {0} from server
+[12:53:14] [INFO] Connecting to database {0}
+[12:53:14] [INFO] Get Product {0}
+[12:53:15] [INFO] Received {0} from server
+[12:53:15] [INFO] Connecting to database {0}
+[12:53:19] [INFO] Received {0} from server
+[12:53:19] [INFO] Connecting to database {0}
+[12:53:19] [INFO] Connecting to database {0}
+[12:53:19] [INFO] Connecting to database {0}
+[12:53:19] [INFO] Purchase product {0}
+[12:53:20] [INFO] Received {0} from server
+[12:53:24] [INFO] Received {0} from server
+[12:53:24] [INFO] Connecting to database {0}
+[12:53:29] [INFO] Received {0} from server
+[12:53:29] [INFO] {0} has logged out
+[12:53:29] [INFO] Received {0} from server
+[12:53:29] [INFO] Received {0} from server
+[12:53:29] [INFO] {0} has disconnected
+[12:57:35] [INFO] Connecting to database {0}
+[12:57:35] [INFO] {0} has connected
+[12:57:35] [INFO] Received {0} from server
+[12:57:35] [INFO] Received {0} from server
+[12:57:35] [INFO] Received {0} from server
+[12:57:35] [INFO] Received {0} from server
+[12:57:35] [INFO] Received {0} from server
+[12:57:35] [INFO] Connecting to database {0}
+[12:57:35] [INFO] Get all discounts
+[12:57:35] [INFO] Received {0} from server
+[12:57:35] [INFO] Connecting to database {0}
+[12:57:41] [INFO] Received {0} from server
+[12:57:41] [INFO] Connecting to database {0}
+[12:57:41] [INFO] Get staff {0}
+[12:57:41] [INFO] Received {0} from server
+[12:57:41] [INFO] Connecting to database {0}
+[12:57:41] [INFO] {0} has logged in from {1}
+[12:57:41] [INFO] Received {0} from server
+[12:57:59] [INFO] Received {0} from server
+[12:57:59] [INFO] Connecting to database {0}
+[12:58:04] [INFO] Received {0} from server
+[12:58:04] [INFO] {0} has logged out
+[12:58:04] [INFO] Received {0} from server
+[12:58:05] [INFO] Received {0} from server
+[12:58:05] [INFO] {0} has disconnected
+[12:58:26] [INFO] Connecting to database {0}
+[12:58:26] [INFO] {0} has connected
+[12:58:26] [INFO] Received {0} from server
+[12:58:26] [INFO] Received {0} from server
+[12:58:26] [INFO] Received {0} from server
+[12:58:26] [INFO] Received {0} from server
+[12:58:26] [INFO] Received {0} from server
+[12:58:26] [INFO] Connecting to database {0}
+[12:58:26] [INFO] Get all discounts
+[12:58:26] [INFO] Received {0} from server
+[12:58:26] [INFO] Connecting to database {0}
+[12:58:27] [INFO] Received {0} from server
+[12:58:27] [INFO] Connecting to database {0}
+[12:58:27] [INFO] Get staff {0}
+[12:58:28] [INFO] Received {0} from server
+[12:58:28] [INFO] Connecting to database {0}
+[12:58:28] [INFO] {0} has logged in from {1}
+[12:58:28] [INFO] Received {0} from server
+[12:58:31] [INFO] Received {0} from server
+[12:58:31] [INFO] Connecting to database {0}
+[12:58:31] [INFO] Connecting to database {0}
+[12:58:31] [INFO] Connecting to database {0}
+[12:58:31] [INFO] Purchase product {0}
+[12:58:36] [INFO] Received {0} from server
+[12:59:29] [INFO] Received {0} from server
+[12:59:29] [INFO] Connecting to database {0}
+[13:00:59] [WARNING] The connection to the terminal was shut down forcefully
+[13:00:59] [INFO] Logging staff out
+[13:01:04] [INFO] Connecting to database {0}
+[13:01:04] [INFO] {0} has connected
+[13:01:04] [INFO] Received {0} from server
+[13:01:04] [INFO] Received {0} from server
+[13:01:04] [INFO] Received {0} from server
+[13:01:04] [INFO] Received {0} from server
+[13:01:04] [INFO] Received {0} from server
+[13:01:04] [INFO] Connecting to database {0}
+[13:01:04] [INFO] Get all discounts
+[13:01:04] [INFO] Received {0} from server
+[13:01:04] [INFO] Connecting to database {0}
+[13:01:05] [INFO] Received {0} from server
+[13:01:05] [INFO] Connecting to database {0}
+[13:01:05] [INFO] Get staff {0}
+[13:01:05] [INFO] Received {0} from server
+[13:01:05] [INFO] Connecting to database {0}
+[13:01:05] [INFO] {0} has logged in from {1}
+[13:01:05] [INFO] Received {0} from server
+[13:01:09] [INFO] Received {0} from server
+[13:01:09] [INFO] Connecting to database {0}
+[13:03:51] [WARNING] The connection to the terminal was shut down forcefully
+[13:03:51] [INFO] Logging staff out
+[13:03:56] [INFO] Connecting to database {0}
+[13:03:56] [INFO] {0} has connected
+[13:03:56] [INFO] Received {0} from server
+[13:03:56] [INFO] Received {0} from server
+[13:03:56] [INFO] Received {0} from server
+[13:03:56] [INFO] Received {0} from server
+[13:03:56] [INFO] Received {0} from server
+[13:03:56] [INFO] Connecting to database {0}
+[13:03:56] [INFO] Get all discounts
+[13:03:56] [INFO] Received {0} from server
+[13:03:56] [INFO] Connecting to database {0}
+[13:03:59] [INFO] Received {0} from server
+[13:03:59] [INFO] Connecting to database {0}
+[13:03:59] [INFO] Get staff {0}
+[13:03:59] [INFO] Received {0} from server
+[13:03:59] [INFO] Connecting to database {0}
+[13:03:59] [INFO] {0} has logged in from {1}
+[13:03:59] [INFO] Received {0} from server
+[13:04:02] [INFO] Received {0} from server
+[13:04:02] [INFO] Connecting to database {0}
+[13:04:09] [INFO] Received {0} from server
+[13:04:09] [INFO] Connecting to database {0}
+[13:04:50] [INFO] Received {0} from server
+[13:04:50] [INFO] Connecting to database {0}
+[13:06:07] [WARNING] The connection to the terminal was shut down forcefully
+[13:06:07] [INFO] Logging staff out
+[13:06:12] [INFO] Connecting to database {0}
+[13:06:12] [INFO] {0} has connected
+[13:06:12] [INFO] Received {0} from server
+[13:06:12] [INFO] Received {0} from server
+[13:06:12] [INFO] Received {0} from server
+[13:06:12] [INFO] Received {0} from server
+[13:06:12] [INFO] Received {0} from server
+[13:06:12] [INFO] Connecting to database {0}
+[13:06:12] [INFO] Get all discounts
+[13:06:12] [INFO] Received {0} from server
+[13:06:12] [INFO] Connecting to database {0}
+[13:06:14] [INFO] Received {0} from server
+[13:06:14] [INFO] Connecting to database {0}
+[13:06:14] [INFO] Get staff {0}
+[13:06:14] [INFO] Received {0} from server
+[13:06:14] [INFO] Connecting to database {0}
+[13:06:14] [INFO] {0} has logged in from {1}
+[13:06:14] [INFO] Received {0} from server
+[13:06:44] [WARNING] The connection to the terminal was shut down forcefully
+[13:06:44] [INFO] Logging staff out
+[13:06:49] [INFO] Connecting to database {0}
+[13:06:49] [INFO] {0} has connected
+[13:06:49] [INFO] Received {0} from server
+[13:06:49] [INFO] Received {0} from server
+[13:06:49] [INFO] Received {0} from server
+[13:06:49] [INFO] Received {0} from server
+[13:06:49] [INFO] Received {0} from server
+[13:06:49] [INFO] Connecting to database {0}
+[13:06:49] [INFO] Get all discounts
+[13:06:49] [INFO] Received {0} from server
+[13:06:49] [INFO] Connecting to database {0}
+[13:06:50] [INFO] Received {0} from server
+[13:06:50] [INFO] Connecting to database {0}
+[13:06:50] [INFO] Get staff {0}
+[13:06:51] [INFO] Received {0} from server
+[13:06:51] [INFO] Connecting to database {0}
+[13:06:51] [INFO] {0} has logged in from {1}
+[13:06:51] [INFO] Received {0} from server
+[13:06:56] [WARNING] The connection to the terminal was shut down forcefully
+[13:06:56] [INFO] Logging staff out
+[13:07:09] [INFO] Connecting to database {0}
+[13:07:09] [INFO] {0} has connected
+[13:07:09] [INFO] Received {0} from server
+[13:07:09] [INFO] Received {0} from server
+[13:07:09] [INFO] Received {0} from server
+[13:07:09] [INFO] Received {0} from server
+[13:07:09] [INFO] Received {0} from server
+[13:07:09] [INFO] Connecting to database {0}
+[13:07:09] [INFO] Get all discounts
+[13:07:09] [INFO] Received {0} from server
+[13:07:09] [INFO] Connecting to database {0}
+[13:07:10] [INFO] Received {0} from server
+[13:07:10] [INFO] Connecting to database {0}
+[13:07:10] [INFO] Get staff {0}
+[13:07:11] [INFO] Received {0} from server
+[13:07:11] [INFO] Connecting to database {0}
+[13:07:11] [INFO] {0} has logged in from {1}
+[13:07:11] [INFO] Received {0} from server
+[13:07:14] [WARNING] The connection to the terminal was shut down forcefully
+[13:07:14] [INFO] Logging staff out
+[13:07:31] [INFO] Connecting to database {0}
+[13:07:31] [INFO] {0} has connected
+[13:07:31] [INFO] Received {0} from server
+[13:07:31] [INFO] Received {0} from server
+[13:07:31] [INFO] Received {0} from server
+[13:07:31] [INFO] Received {0} from server
+[13:07:31] [INFO] Received {0} from server
+[13:07:31] [INFO] Connecting to database {0}
+[13:07:31] [INFO] Get all discounts
+[13:07:31] [INFO] Received {0} from server
+[13:07:31] [INFO] Connecting to database {0}
+[13:07:32] [INFO] Received {0} from server
+[13:07:32] [INFO] Connecting to database {0}
+[13:07:32] [INFO] Get staff {0}
+[13:07:32] [INFO] Received {0} from server
+[13:07:32] [INFO] Connecting to database {0}
+[13:07:32] [INFO] {0} has logged in from {1}
+[13:07:32] [INFO] Received {0} from server
+[13:09:37] [WARNING] The connection to the terminal was shut down forcefully
+[13:09:37] [INFO] Logging staff out
+[13:09:42] [INFO] Connecting to database {0}
+[13:09:42] [INFO] {0} has connected
+[13:09:42] [INFO] Received {0} from server
+[13:09:42] [INFO] Received {0} from server
+[13:09:42] [INFO] Received {0} from server
+[13:09:42] [INFO] Received {0} from server
+[13:09:42] [INFO] Received {0} from server
+[13:09:42] [INFO] Connecting to database {0}
+[13:09:42] [INFO] Get all discounts
+[13:09:42] [INFO] Received {0} from server
+[13:09:42] [INFO] Connecting to database {0}
+[13:09:43] [INFO] Received {0} from server
+[13:09:43] [INFO] Connecting to database {0}
+[13:09:43] [INFO] Get staff {0}
+[13:09:43] [INFO] Received {0} from server
+[13:09:43] [INFO] Connecting to database {0}
+[13:09:43] [INFO] {0} has logged in from {1}
+[13:09:43] [INFO] Received {0} from server
+[13:09:48] [WARNING] The connection to the terminal was shut down forcefully
+[13:09:48] [INFO] Logging staff out
+[13:10:07] [INFO] Connecting to database {0}
+[13:10:07] [INFO] {0} has connected
+[13:10:07] [INFO] Received {0} from server
+[13:10:07] [INFO] Received {0} from server
+[13:10:07] [INFO] Received {0} from server
+[13:10:07] [INFO] Received {0} from server
+[13:10:07] [INFO] Received {0} from server
+[13:10:07] [INFO] Connecting to database {0}
+[13:10:07] [INFO] Get all discounts
+[13:10:07] [INFO] Received {0} from server
+[13:10:07] [INFO] Connecting to database {0}
+[13:10:07] [INFO] Received {0} from server
+[13:10:07] [INFO] Connecting to database {0}
+[13:10:07] [INFO] Get staff {0}
+[13:10:08] [INFO] Received {0} from server
+[13:10:08] [INFO] Connecting to database {0}
+[13:10:08] [INFO] {0} has logged in from {1}
+[13:10:08] [INFO] Received {0} from server
+[13:11:37] [WARNING] The connection to the terminal was shut down forcefully
+[13:11:37] [INFO] Logging staff out
+[13:11:41] [INFO] Connecting to database {0}
+[13:11:41] [INFO] {0} has connected
+[13:11:41] [INFO] Received {0} from server
+[13:11:41] [INFO] Received {0} from server
+[13:11:41] [INFO] Received {0} from server
+[13:11:41] [INFO] Received {0} from server
+[13:11:41] [INFO] Received {0} from server
+[13:11:41] [INFO] Connecting to database {0}
+[13:11:41] [INFO] Get all discounts
+[13:11:41] [INFO] Received {0} from server
+[13:11:41] [INFO] Connecting to database {0}
+[13:11:43] [INFO] Received {0} from server
+[13:11:43] [INFO] Connecting to database {0}
+[13:11:43] [INFO] Get staff {0}
+[13:11:43] [INFO] Received {0} from server
+[13:11:43] [INFO] Connecting to database {0}
+[13:11:43] [INFO] {0} has logged in from {1}
+[13:11:43] [INFO] Received {0} from server
+[13:11:54] [WARNING] The connection to the terminal was shut down forcefully
+[13:11:54] [INFO] Logging staff out
+[13:12:18] [INFO] Connecting to database {0}
+[13:12:18] [INFO] {0} has connected
+[13:12:18] [INFO] Received {0} from server
+[13:12:18] [INFO] Received {0} from server
+[13:12:18] [INFO] Received {0} from server
+[13:12:18] [INFO] Received {0} from server
+[13:12:18] [INFO] Received {0} from server
+[13:12:18] [INFO] Connecting to database {0}
+[13:12:18] [INFO] Get all discounts
+[13:12:18] [INFO] Received {0} from server
+[13:12:18] [INFO] Connecting to database {0}
+[13:12:19] [INFO] Received {0} from server
+[13:12:19] [INFO] Connecting to database {0}
+[13:12:19] [INFO] Get staff {0}
+[13:12:19] [INFO] Received {0} from server
+[13:12:19] [INFO] Connecting to database {0}
+[13:12:19] [INFO] {0} has logged in from {1}
+[13:12:19] [INFO] Received {0} from server
+[13:13:03] [WARNING] The connection to the terminal was shut down forcefully
+[13:13:03] [INFO] Logging staff out
+[13:13:07] [INFO] Connecting to database {0}
+[13:13:07] [INFO] {0} has connected
+[13:13:07] [INFO] Received {0} from server
+[13:13:07] [INFO] Received {0} from server
+[13:13:07] [INFO] Received {0} from server
+[13:13:07] [INFO] Received {0} from server
+[13:13:07] [INFO] Received {0} from server
+[13:13:07] [INFO] Connecting to database {0}
+[13:13:07] [INFO] Get all discounts
+[13:13:07] [INFO] Received {0} from server
+[13:13:07] [INFO] Connecting to database {0}
+[13:13:08] [INFO] Received {0} from server
+[13:13:08] [INFO] Connecting to database {0}
+[13:13:08] [INFO] Get staff {0}
+[13:13:08] [INFO] Received {0} from server
+[13:13:08] [INFO] Connecting to database {0}
+[13:13:08] [INFO] {0} has logged in from {1}
+[13:13:08] [INFO] Received {0} from server
+[13:13:18] [WARNING] The connection to the terminal was shut down forcefully
+[13:13:18] [INFO] Logging staff out
+[13:13:22] [INFO] Connecting to database {0}
+[13:13:22] [INFO] {0} has connected
+[13:13:22] [INFO] Received {0} from server
+[13:13:22] [INFO] Received {0} from server
+[13:13:22] [INFO] Received {0} from server
+[13:13:22] [INFO] Received {0} from server
+[13:13:22] [INFO] Received {0} from server
+[13:13:22] [INFO] Connecting to database {0}
+[13:13:22] [INFO] Get all discounts
+[13:13:22] [INFO] Received {0} from server
+[13:13:22] [INFO] Connecting to database {0}
+[13:13:23] [INFO] Received {0} from server
+[13:13:23] [INFO] Connecting to database {0}
+[13:13:23] [INFO] Get staff {0}
+[13:13:24] [INFO] Received {0} from server
+[13:13:24] [INFO] Connecting to database {0}
+[13:13:24] [INFO] {0} has logged in from {1}
+[13:13:24] [INFO] Received {0} from server
+[13:13:38] [WARNING] The connection to the terminal was shut down forcefully
+[13:13:38] [INFO] Logging staff out
+[13:13:42] [INFO] Connecting to database {0}
+[13:13:42] [INFO] {0} has connected
+[13:13:42] [INFO] Received {0} from server
+[13:13:42] [INFO] Received {0} from server
+[13:13:42] [INFO] Received {0} from server
+[13:13:42] [INFO] Received {0} from server
+[13:13:42] [INFO] Received {0} from server
+[13:13:42] [INFO] Connecting to database {0}
+[13:13:42] [INFO] Get all discounts
+[13:13:42] [INFO] Received {0} from server
+[13:13:42] [INFO] Connecting to database {0}
+[13:13:43] [INFO] Received {0} from server
+[13:13:43] [INFO] Connecting to database {0}
+[13:13:43] [INFO] Get staff {0}
+[13:13:44] [INFO] Received {0} from server
+[13:13:44] [INFO] Connecting to database {0}
+[13:13:44] [INFO] {0} has logged in from {1}
+[13:13:44] [INFO] Received {0} from server
+[13:14:38] [INFO] Connecting to database {0}
+[13:14:38] [INFO] Login Staff {0}
+[13:14:38] [INFO] David Grant has logged in
+[13:14:39] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:41] [INFO] Connecting to database {0}
+[13:14:44] [INFO] Connecting to database {0}
+[13:14:44] [INFO] Connecting to database {0}
+[13:14:44] [INFO] Get all discounts
+[13:14:46] [INFO] Connecting to database {0}
+[13:14:46] [INFO] Connecting to database {0}
+[13:14:46] [INFO] Connecting to database {0}
+[13:14:46] [INFO] Connecting to database {0}
+[13:14:46] [INFO] Get product {0}
+[13:14:47] [INFO] Connecting to database {0}
+[13:14:47] [INFO] Connecting to database {0}
+[13:14:47] [INFO] Get all discounts
+[13:14:48] [INFO] Connecting to database {0}
+[13:14:48] [INFO] Connecting to database {0}
+[13:14:48] [INFO] Connecting to database {0}
+[13:14:48] [INFO] Connecting to database {0}
+[13:14:48] [INFO] Get product {0}
+[13:14:48] [INFO] Connecting to database {0}
+[13:14:48] [INFO] Get product {0}
+[13:14:50] [INFO] Connecting to database {0}
+[13:14:50] [INFO] Connecting to database {0}
+[13:14:50] [INFO] Get all discounts
+[13:14:51] [INFO] Connecting to database {0}
+[13:14:51] [INFO] Connecting to database {0}
+[13:14:51] [INFO] Connecting to database {0}
+[13:14:51] [INFO] Connecting to database {0}
+[13:14:51] [INFO] Get product {0}
+[13:14:51] [INFO] Connecting to database {0}
+[13:14:51] [INFO] Get product {0}
+[13:14:51] [INFO] Connecting to database {0}
+[13:14:51] [INFO] Get product {0}
+[13:14:52] [INFO] Connecting to database {0}
+[13:14:52] [INFO] Connecting to database {0}
+[13:14:52] [INFO] Get all discounts
+[13:14:53] [INFO] Connecting to database {0}
+[13:14:53] [INFO] Connecting to database {0}
+[13:14:53] [INFO] Connecting to database {0}
+[13:14:53] [INFO] Connecting to database {0}
+[13:14:53] [INFO] Get product {0}
+[13:14:53] [INFO] Connecting to database {0}
+[13:14:53] [INFO] Get product {0}
+[13:14:53] [INFO] Connecting to database {0}
+[13:14:53] [INFO] Get product {0}
+[13:14:53] [INFO] Connecting to database {0}
+[13:14:53] [INFO] Get product {0}
+[13:14:58] [INFO] Received {0} from server
+[13:14:58] [INFO] {0} has logged out
+[13:14:58] [INFO] Received {0} from server
+[13:14:58] [INFO] {0} has disconnected
+[13:15:04] [INFO] Connecting to database {0}
+[13:15:04] [INFO] {0} has connected
+[13:15:04] [INFO] Received {0} from server
+[13:15:04] [INFO] Received {0} from server
+[13:15:04] [INFO] Received {0} from server
+[13:15:04] [INFO] Received {0} from server
+[13:15:04] [INFO] Received {0} from server
+[13:15:04] [INFO] Connecting to database {0}
+[13:15:04] [INFO] Get all discounts
+[13:15:04] [INFO] Received {0} from server
+[13:15:04] [INFO] Connecting to database {0}
+[13:15:04] [INFO] Received {0} from server
+[13:15:04] [INFO] Connecting to database {0}
+[13:15:04] [INFO] Connecting to database {0}
+[13:15:04] [INFO] Get product {0}
+[13:15:04] [INFO] Connecting to database {0}
+[13:15:04] [INFO] Get product {0}
+[13:15:04] [INFO] Connecting to database {0}
+[13:15:04] [INFO] Get product {0}
+[13:15:04] [INFO] Connecting to database {0}
+[13:15:04] [INFO] Get product {0}
+[13:15:05] [INFO] Received {0} from server
+[13:15:05] [INFO] Connecting to database {0}
+[13:15:05] [INFO] Get staff {0}
+[13:15:06] [INFO] Received {0} from server
+[13:15:06] [INFO] Connecting to database {0}
+[13:15:06] [INFO] {0} has logged in from {1}
+[13:15:06] [INFO] Received {0} from server
+[13:15:21] [WARNING] The connection to the terminal was shut down forcefully
+[13:15:21] [INFO] Logging staff out
+[13:15:26] [INFO] Connecting to database {0}
+[13:15:26] [INFO] {0} has connected
+[13:15:26] [INFO] Received {0} from server
+[13:15:26] [INFO] Received {0} from server
+[13:15:26] [INFO] Received {0} from server
+[13:15:26] [INFO] Received {0} from server
+[13:15:26] [INFO] Received {0} from server
+[13:15:26] [INFO] Connecting to database {0}
+[13:15:26] [INFO] Get all discounts
+[13:15:26] [INFO] Received {0} from server
+[13:15:26] [INFO] Connecting to database {0}
+[13:15:26] [INFO] Received {0} from server
+[13:15:26] [INFO] Connecting to database {0}
+[13:15:26] [INFO] Connecting to database {0}
+[13:15:26] [INFO] Get product {0}
+[13:15:26] [INFO] Connecting to database {0}
+[13:15:26] [INFO] Get product {0}
+[13:15:26] [INFO] Connecting to database {0}
+[13:15:26] [INFO] Get product {0}
+[13:15:26] [INFO] Connecting to database {0}
+[13:15:26] [INFO] Get product {0}
+[13:15:27] [INFO] Received {0} from server
+[13:15:27] [INFO] Connecting to database {0}
+[13:15:27] [INFO] Get staff {0}
+[13:15:27] [INFO] Received {0} from server
+[13:15:27] [INFO] Connecting to database {0}
+[13:15:27] [INFO] {0} has logged in from {1}
+[13:15:27] [INFO] Received {0} from server
+[13:15:37] [WARNING] The connection to the terminal was shut down forcefully
+[13:15:37] [INFO] Logging staff out
+[13:15:41] [INFO] Connecting to database {0}
+[13:15:41] [INFO] {0} has connected
+[13:15:41] [INFO] Received {0} from server
+[13:15:41] [INFO] Received {0} from server
+[13:15:41] [INFO] Received {0} from server
+[13:15:41] [INFO] Received {0} from server
+[13:15:41] [INFO] Received {0} from server
+[13:15:41] [INFO] Connecting to database {0}
+[13:15:41] [INFO] Get all discounts
+[13:15:41] [INFO] Received {0} from server
+[13:15:41] [INFO] Connecting to database {0}
+[13:15:41] [INFO] Received {0} from server
+[13:15:41] [INFO] Connecting to database {0}
+[13:15:41] [INFO] Connecting to database {0}
+[13:15:41] [INFO] Get product {0}
+[13:15:41] [INFO] Connecting to database {0}
+[13:15:41] [INFO] Get product {0}
+[13:15:41] [INFO] Connecting to database {0}
+[13:15:41] [INFO] Get product {0}
+[13:15:41] [INFO] Connecting to database {0}
+[13:15:41] [INFO] Get product {0}
+[13:15:52] [INFO] Received {0} from server
+[13:15:52] [INFO] Connecting to database {0}
+[13:15:52] [INFO] Get staff {0}
+[13:15:52] [INFO] Received {0} from server
+[13:15:52] [INFO] Connecting to database {0}
+[13:15:52] [INFO] {0} has logged in from {1}
+[13:15:52] [INFO] Received {0} from server
+[13:16:04] [WARNING] The connection to the terminal was shut down forcefully
+[13:16:04] [INFO] Logging staff out
+[13:16:09] [INFO] Connecting to database {0}
+[13:16:09] [INFO] {0} has connected
+[13:16:09] [INFO] Received {0} from server
+[13:16:09] [INFO] Received {0} from server
+[13:16:09] [INFO] Received {0} from server
+[13:16:09] [INFO] Received {0} from server
+[13:16:09] [INFO] Received {0} from server
+[13:16:09] [INFO] Connecting to database {0}
+[13:16:09] [INFO] Get all discounts
+[13:16:09] [INFO] Received {0} from server
+[13:16:09] [INFO] Connecting to database {0}
+[13:16:09] [INFO] Received {0} from server
+[13:16:09] [INFO] Connecting to database {0}
+[13:16:09] [INFO] Connecting to database {0}
+[13:16:09] [INFO] Get product {0}
+[13:16:09] [INFO] Connecting to database {0}
+[13:16:09] [INFO] Get product {0}
+[13:16:09] [INFO] Connecting to database {0}
+[13:16:09] [INFO] Get product {0}
+[13:16:09] [INFO] Connecting to database {0}
+[13:16:09] [INFO] Get product {0}
+[13:16:10] [INFO] Received {0} from server
+[13:16:10] [INFO] Connecting to database {0}
+[13:16:10] [INFO] Get staff {0}
+[13:16:10] [INFO] Received {0} from server
+[13:16:10] [INFO] Connecting to database {0}
+[13:16:10] [INFO] {0} has logged in from {1}
+[13:16:10] [INFO] Received {0} from server
+[13:17:17] [WARNING] The connection to the terminal was shut down forcefully
+[13:17:17] [INFO] Logging staff out
+[13:17:23] [INFO] Connecting to database {0}
+[13:17:23] [INFO] {0} has connected
+[13:17:23] [INFO] Received {0} from server
+[13:17:23] [INFO] Received {0} from server
+[13:17:23] [INFO] Received {0} from server
+[13:17:23] [INFO] Received {0} from server
+[13:17:23] [INFO] Received {0} from server
+[13:17:23] [INFO] Connecting to database {0}
+[13:17:23] [INFO] Get all discounts
+[13:17:23] [INFO] Received {0} from server
+[13:17:23] [INFO] Connecting to database {0}
+[13:17:23] [INFO] Received {0} from server
+[13:17:23] [INFO] Connecting to database {0}
+[13:17:23] [INFO] Connecting to database {0}
+[13:17:23] [INFO] Get product {0}
+[13:17:23] [INFO] Connecting to database {0}
+[13:17:23] [INFO] Get product {0}
+[13:17:23] [INFO] Connecting to database {0}
+[13:17:23] [INFO] Get product {0}
+[13:17:23] [INFO] Connecting to database {0}
+[13:17:23] [INFO] Get product {0}
+[13:18:21] [INFO] Received {0} from server
+[13:18:21] [INFO] Connecting to database {0}
+[13:18:21] [INFO] Get staff {0}
+[13:18:21] [INFO] Received {0} from server
+[13:18:21] [INFO] Connecting to database {0}
+[13:18:21] [INFO] {0} has logged in from {1}
+[13:18:21] [INFO] Received {0} from server
+[13:18:59] [WARNING] The connection to the terminal was shut down forcefully
+[13:18:59] [INFO] Logging staff out
+[13:19:04] [INFO] Connecting to database {0}
+[13:19:04] [INFO] {0} has connected
+[13:19:04] [INFO] Received {0} from server
+[13:19:04] [INFO] Received {0} from server
+[13:19:04] [INFO] Received {0} from server
+[13:19:04] [INFO] Received {0} from server
+[13:19:04] [INFO] Received {0} from server
+[13:19:04] [INFO] Connecting to database {0}
+[13:19:04] [INFO] Get all discounts
+[13:19:04] [INFO] Received {0} from server
+[13:19:04] [INFO] Connecting to database {0}
+[13:19:04] [INFO] Received {0} from server
+[13:19:04] [INFO] Connecting to database {0}
+[13:19:04] [INFO] Connecting to database {0}
+[13:19:04] [INFO] Get product {0}
+[13:19:04] [INFO] Connecting to database {0}
+[13:19:04] [INFO] Get product {0}
+[13:19:04] [INFO] Connecting to database {0}
+[13:19:04] [INFO] Get product {0}
+[13:19:04] [INFO] Connecting to database {0}
+[13:19:04] [INFO] Get product {0}
+[13:19:06] [INFO] Received {0} from server
+[13:19:06] [INFO] Connecting to database {0}
+[13:19:06] [INFO] Get staff {0}
+[13:19:06] [INFO] Received {0} from server
+[13:19:06] [INFO] Connecting to database {0}
+[13:19:06] [INFO] {0} has logged in from {1}
+[13:19:06] [INFO] Received {0} from server
+[13:19:25] [INFO] Received {0} from server
+[13:19:25] [INFO] Connecting to database {0}
+[13:19:58] [WARNING] The connection to the terminal was shut down forcefully
+[13:19:58] [INFO] Logging staff out
+[13:20:03] [INFO] Connecting to database {0}
+[13:20:03] [INFO] {0} has connected
+[13:20:03] [INFO] Received {0} from server
+[13:20:03] [INFO] Received {0} from server
+[13:20:03] [INFO] Received {0} from server
+[13:20:03] [INFO] Received {0} from server
+[13:20:03] [INFO] Received {0} from server
+[13:20:03] [INFO] Connecting to database {0}
+[13:20:03] [INFO] Get all discounts
+[13:20:03] [INFO] Received {0} from server
+[13:20:03] [INFO] Connecting to database {0}
+[13:20:03] [INFO] Received {0} from server
+[13:20:03] [INFO] Connecting to database {0}
+[13:20:03] [INFO] Connecting to database {0}
+[13:20:03] [INFO] Get product {0}
+[13:20:03] [INFO] Connecting to database {0}
+[13:20:03] [INFO] Get product {0}
+[13:20:03] [INFO] Connecting to database {0}
+[13:20:03] [INFO] Get product {0}
+[13:20:03] [INFO] Connecting to database {0}
+[13:20:03] [INFO] Get product {0}
+[13:20:04] [INFO] Received {0} from server
+[13:20:04] [INFO] Connecting to database {0}
+[13:20:04] [INFO] Get staff {0}
+[13:20:05] [INFO] Received {0} from server
+[13:20:05] [INFO] Connecting to database {0}
+[13:20:05] [INFO] {0} has logged in from {1}
+[13:20:05] [INFO] Received {0} from server
+[13:20:12] [INFO] Received {0} from server
+[13:20:12] [INFO] Connecting to database {0}
+[13:20:12] [INFO] Connecting to database {0}
+[13:20:12] [INFO] Connecting to database {0}
+[13:20:12] [INFO] Purchase product {0}
+[13:20:12] [INFO] Connecting to database {0}
+[13:20:12] [INFO] Connecting to database {0}
+[13:20:12] [INFO] Purchase product {0}
+[13:20:12] [INFO] Connecting to database {0}
+[13:20:12] [INFO] Connecting to database {0}
+[13:20:12] [INFO] Purchase product {0}
+[13:20:13] [INFO] Received {0} from server
+[13:23:17] [WARNING] The connection to the terminal was shut down forcefully
+[13:23:17] [INFO] Logging staff out
+[13:23:22] [INFO] Connecting to database {0}
+[13:23:22] [INFO] {0} has connected
+[13:23:22] [INFO] Received {0} from server
+[13:23:22] [INFO] Received {0} from server
+[13:23:22] [INFO] Received {0} from server
+[13:23:22] [INFO] Received {0} from server
+[13:23:22] [INFO] Received {0} from server
+[13:23:22] [INFO] Connecting to database {0}
+[13:23:22] [INFO] Get all discounts
+[13:23:22] [INFO] Received {0} from server
+[13:23:22] [INFO] Connecting to database {0}
+[13:23:22] [INFO] Received {0} from server
+[13:23:22] [INFO] Connecting to database {0}
+[13:23:22] [INFO] Connecting to database {0}
+[13:23:22] [INFO] Get product {0}
+[13:23:22] [INFO] Connecting to database {0}
+[13:23:22] [INFO] Get product {0}
+[13:23:22] [INFO] Connecting to database {0}
+[13:23:22] [INFO] Get product {0}
+[13:23:22] [INFO] Connecting to database {0}
+[13:23:22] [INFO] Get product {0}
+[13:23:24] [INFO] Received {0} from server
+[13:23:24] [INFO] Connecting to database {0}
+[13:23:24] [INFO] Get staff {0}
+[13:23:25] [INFO] Received {0} from server
+[13:23:25] [INFO] Connecting to database {0}
+[13:23:25] [INFO] {0} has logged in from {1}
+[13:23:25] [INFO] Received {0} from server
+[13:23:27] [INFO] Received {0} from server
+[13:23:27] [INFO] {0} has logged out
+[13:23:30] [INFO] Received {0} from server
+[13:23:30] [INFO] Connecting to database {0}
+[13:23:30] [INFO] {0} has logged in from {1}
+[13:23:30] [INFO] Received {0} from server
+[13:24:10] [WARNING] The connection to the terminal was shut down forcefully
+[13:24:10] [INFO] Logging staff out
+[13:24:14] [INFO] Connecting to database {0}
+[13:24:14] [INFO] {0} has connected
+[13:24:14] [INFO] Received {0} from server
+[13:24:14] [INFO] Received {0} from server
+[13:24:14] [INFO] Received {0} from server
+[13:24:14] [INFO] Received {0} from server
+[13:24:14] [INFO] Received {0} from server
+[13:24:14] [INFO] Connecting to database {0}
+[13:24:14] [INFO] Get all discounts
+[13:24:14] [INFO] Received {0} from server
+[13:24:14] [INFO] Connecting to database {0}
+[13:24:14] [INFO] Received {0} from server
+[13:24:14] [INFO] Connecting to database {0}
+[13:24:14] [INFO] Connecting to database {0}
+[13:24:14] [INFO] Get product {0}
+[13:24:14] [INFO] Connecting to database {0}
+[13:24:14] [INFO] Get product {0}
+[13:24:14] [INFO] Connecting to database {0}
+[13:24:14] [INFO] Get product {0}
+[13:24:14] [INFO] Connecting to database {0}
+[13:24:14] [INFO] Get product {0}
+[13:24:15] [INFO] Received {0} from server
+[13:24:15] [INFO] Connecting to database {0}
+[13:24:15] [INFO] Get staff {0}
+[13:24:16] [INFO] Received {0} from server
+[13:24:16] [INFO] Connecting to database {0}
+[13:24:16] [INFO] {0} has logged in from {1}
+[13:24:16] [INFO] Received {0} from server
+[13:25:04] [WARNING] The connection to the terminal was shut down forcefully
+[13:25:04] [INFO] Logging staff out
+[13:25:24] [INFO] Connecting to database {0}
+[13:25:24] [INFO] {0} has connected
+[13:25:24] [INFO] Received {0} from server
+[13:25:24] [INFO] Received {0} from server
+[13:25:24] [INFO] Received {0} from server
+[13:25:24] [INFO] Received {0} from server
+[13:25:24] [INFO] Received {0} from server
+[13:25:24] [INFO] Connecting to database {0}
+[13:25:24] [INFO] Get all discounts
+[13:25:24] [INFO] Received {0} from server
+[13:25:24] [INFO] Connecting to database {0}
+[13:25:24] [INFO] Received {0} from server
+[13:25:24] [INFO] Connecting to database {0}
+[13:25:24] [INFO] Connecting to database {0}
+[13:25:24] [INFO] Get product {0}
+[13:25:24] [INFO] Connecting to database {0}
+[13:25:24] [INFO] Get product {0}
+[13:25:24] [INFO] Connecting to database {0}
+[13:25:24] [INFO] Get product {0}
+[13:25:24] [INFO] Connecting to database {0}
+[13:25:24] [INFO] Get product {0}
+[13:25:25] [INFO] Received {0} from server
+[13:25:25] [INFO] Connecting to database {0}
+[13:25:25] [INFO] Get staff {0}
+[13:25:25] [INFO] Received {0} from server
+[13:25:25] [INFO] Connecting to database {0}
+[13:25:25] [INFO] {0} has logged in from {1}
+[13:25:25] [INFO] Received {0} from server
+[13:26:02] [INFO] Received {0} from server
+[13:26:02] [INFO] {0} has logged out
+[13:26:02] [INFO] Received {0} from server
+[13:26:02] [INFO] Received {0} from server
+[13:26:02] [INFO] {0} has disconnected
+[13:26:13] [INFO] Connecting to database {0}
+[13:26:13] [INFO] {0} has connected
+[13:26:13] [INFO] Received {0} from server
+[13:26:13] [INFO] Received {0} from server
+[13:26:13] [INFO] Received {0} from server
+[13:26:13] [INFO] Received {0} from server
+[13:26:13] [INFO] Received {0} from server
+[13:26:13] [INFO] Connecting to database {0}
+[13:26:13] [INFO] Get all discounts
+[13:26:13] [INFO] Received {0} from server
+[13:26:13] [INFO] Connecting to database {0}
+[13:26:13] [INFO] Received {0} from server
+[13:26:13] [INFO] Connecting to database {0}
+[13:26:13] [INFO] Connecting to database {0}
+[13:26:13] [INFO] Get product {0}
+[13:26:13] [INFO] Connecting to database {0}
+[13:26:13] [INFO] Get product {0}
+[13:26:13] [INFO] Connecting to database {0}
+[13:26:13] [INFO] Get product {0}
+[13:26:13] [INFO] Connecting to database {0}
+[13:26:13] [INFO] Get product {0}
+[13:26:14] [INFO] Received {0} from server
+[13:26:14] [INFO] Connecting to database {0}
+[13:26:14] [INFO] Get staff {0}
+[13:26:15] [INFO] Received {0} from server
+[13:26:15] [INFO] Connecting to database {0}
+[13:26:15] [INFO] {0} has logged in from {1}
+[13:26:15] [INFO] Received {0} from server
+[13:26:25] [INFO] Received {0} from server
+[13:26:25] [INFO] Connecting to database {0}
+[13:26:25] [INFO] Connecting to database {0}
+[13:26:25] [INFO] Connecting to database {0}
+[13:26:25] [INFO] Purchase product {0}
+[13:26:25] [INFO] Connecting to database {0}
+[13:26:25] [INFO] Connecting to database {0}
+[13:26:25] [INFO] Purchase product {0}
+[13:26:25] [INFO] Connecting to database {0}
+[13:26:25] [INFO] Connecting to database {0}
+[13:26:25] [INFO] Purchase product {0}
+[13:26:25] [INFO] Connecting to database {0}
+[13:26:25] [INFO] Connecting to database {0}
+[13:26:25] [INFO] Purchase product {0}
+[13:26:31] [INFO] Received {0} from server
+[13:26:33] [INFO] Received {0} from server
+[13:26:33] [INFO] {0} has logged out
+[13:26:36] [INFO] Received {0} from server
+[13:26:36] [INFO] Connecting to database {0}
+[13:26:36] [INFO] {0} has logged in from {1}
+[13:26:36] [INFO] Received {0} from server
+[13:26:37] [INFO] Received {0} from server
+[13:26:37] [INFO] {0} has logged out
+[13:26:38] [INFO] Received {0} from server
+[13:26:38] [INFO] {0} has disconnected
+[13:26:50] [INFO] Stopping JTIll Server
+[13:26:50] [INFO] Saving properties
+[13:26:50] [INFO] Stopping
