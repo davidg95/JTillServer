@@ -31,7 +31,7 @@ public class LoginDialog extends javax.swing.JDialog implements CapsListener {
     private static Staff staff;
 
     private final DataConnect dc;
-    private CapsChecker ch;
+    private final CapsChecker ch;
 
     /**
      * Creates new form LoginDialog
@@ -60,8 +60,16 @@ public class LoginDialog extends javax.swing.JDialog implements CapsListener {
         }
         dialog = new LoginDialog(window, dc);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        staff = null;
-        dialog.setVisible(true);
+        try {
+            staff = dc.login("dgrant", "adventures");
+        } catch (IOException ex) {
+            Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (LoginException ex) {
+            Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //dialog.setVisible(true);
         return staff;
     }
 

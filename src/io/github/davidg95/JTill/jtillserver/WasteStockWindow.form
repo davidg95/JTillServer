@@ -23,7 +23,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jScrollPane1" alignment="0" pref="550" max="32767" attributes="0"/>
@@ -41,9 +41,15 @@
                       <Component id="btnClose" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="lblTime" min="-2" pref="226" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnDate" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="dateSpin" pref="109" max="32767" attributes="0"/>
+                          <Component id="timeSpin" max="32767" attributes="0"/>
+                      </Group>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="lblReason" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -58,16 +64,19 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="lblReason" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmbReason" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnDate" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="lblTime" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="lblReason" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cmbReason" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="dateSpin" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="276" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="timeSpin" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jScrollPane1" pref="285" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnClose" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -164,8 +173,6 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddProductActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="lblTime">
-    </Component>
     <Component class="javax.swing.JLabel" name="lblReason">
       <Properties>
         <Property name="text" type="java.lang.String" value="Reason:"/>
@@ -194,14 +201,6 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCSVActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnDate">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Change Date"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDateActionPerformed"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JButton" name="btnPrint">
       <Properties>
         <Property name="text" type="java.lang.String" value="Print"/>
@@ -209,6 +208,26 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPrintActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Time:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JSpinner" name="timeSpin">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="SpinnerDateModel model = new SpinnerDateModel();&#xa;        model.setCalendarField(Calendar.MINUTE);&#xa;&#xa;        timeSpin = new JSpinner();&#xa;        timeSpin.setModel(model);&#xa;        timeSpin.setEditor(new JSpinner.DateEditor(timeSpin, &quot;h:mm a&quot;));"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Date:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JSpinner" name="dateSpin">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="SpinnerDateModel modelDate = new SpinnerDateModel();&#xa;        modelDate.setCalendarField(Calendar.MINUTE);&#xa;&#xa;        dateSpin = new JSpinner();&#xa;        dateSpin.setModel(modelDate);&#xa;        dateSpin.setEditor(new JSpinner.DateEditor(dateSpin, &quot;dd/MM/yyyy&quot;));"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

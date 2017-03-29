@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Component;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.print.PrinterException;
@@ -70,6 +71,10 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
         cmbModel.removeAllElements();
         try {
             List<Supplier> suppliers = dc.getAllSuppliers();
+            if (suppliers.isEmpty()) {
+                setVisible(true);
+                JOptionPane.showMessageDialog(this, "You must set up at least one supplier before receiving stock. Go to Setup -> Edit Suppliers to do this", "No Suppliers Set", JOptionPane.WARNING_MESSAGE);
+            }
             for (Supplier s : suppliers) {
                 cmbModel.addElement(s);
             }

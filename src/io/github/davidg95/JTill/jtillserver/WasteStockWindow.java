@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -32,6 +33,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerDateModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -61,7 +64,23 @@ public class WasteStockWindow extends javax.swing.JFrame {
         setTitle("Waste Stock");
         setIconImage(icon);
         date = new Date();
-        lblTime.setText("Time: " + date);
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        Calendar ca = Calendar.getInstance();
+        ca.set(Calendar.YEAR, c.get(Calendar.YEAR));
+        ca.set(Calendar.MONTH, c.get(Calendar.MONTH));
+        ca.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
+        ca.set(Calendar.HOUR_OF_DAY, 0);
+        ca.set(Calendar.MINUTE, 0);
+        ca.set(Calendar.SECOND, 0);
+        ca.set(Calendar.MILLISECOND, 0);
+        Date d = ca.getTime();
+        Calendar cb = Calendar.getInstance();
+        cb.set(Calendar.HOUR, c.get(Calendar.HOUR - 1));
+        cb.set(Calendar.MINUTE, c.get(Calendar.MINUTE));
+        Date t = cb.getTime();
+        dateSpin.setValue(d);
+        timeSpin.setValue(t);
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
         model.setRowCount(0);
@@ -80,8 +99,23 @@ public class WasteStockWindow extends javax.swing.JFrame {
         cmbReason.setEnabled(false);
         lblReason.setEnabled(false);
         btnCSV.setEnabled(false);
-        btnDate.setEnabled(false);
-        lblTime.setText("Time: " + wr.getDate());
+        Calendar c = Calendar.getInstance();
+        c.setTime(wr.getDate());
+        Calendar ca = Calendar.getInstance();
+        ca.set(Calendar.YEAR, c.get(Calendar.YEAR));
+        ca.set(Calendar.MONTH, c.get(Calendar.MONTH));
+        ca.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
+        ca.set(Calendar.HOUR_OF_DAY, 0);
+        ca.set(Calendar.MINUTE, 0);
+        ca.set(Calendar.SECOND, 0);
+        ca.set(Calendar.MILLISECOND, 0);
+        Date d = ca.getTime();
+        Calendar cb = Calendar.getInstance();
+        cb.set(Calendar.HOUR, c.get(Calendar.HOUR - 1));
+        cb.set(Calendar.MINUTE, c.get(Calendar.MINUTE));
+        Date t = cb.getTime();
+        dateSpin.setValue(d);
+        timeSpin.setValue(t);
         setTitle("Waste Report " + report.getId());
         setIconImage(icon);
         model = (DefaultTableModel) tblProducts.getModel();
@@ -148,7 +182,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
             g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 
             Font oldFont = graphics.getFont();
-            
+
             int y = 60;
 
             g2.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
@@ -163,7 +197,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
             final int quantity = 240;
             final int reason = 340;
             final int total = 440;
-            
+
             y += 30;
 
             //Print collumn headers.
@@ -205,13 +239,15 @@ public class WasteStockWindow extends javax.swing.JFrame {
         btnClose = new javax.swing.JButton();
         btnWaste = new javax.swing.JButton();
         btnAddProduct = new javax.swing.JButton();
-        lblTime = new javax.swing.JLabel();
         lblReason = new javax.swing.JLabel();
         lblValue = new javax.swing.JLabel();
         cmbReason = new javax.swing.JComboBox<>();
         btnCSV = new javax.swing.JButton();
-        btnDate = new javax.swing.JButton();
         btnPrint = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        timeSpin = new javax.swing.JSpinner();
+        jLabel2 = new javax.swing.JLabel();
+        dateSpin = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -287,19 +323,30 @@ public class WasteStockWindow extends javax.swing.JFrame {
             }
         });
 
-        btnDate.setText("Change Date");
-        btnDate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDateActionPerformed(evt);
-            }
-        });
-
         btnPrint.setText("Print");
         btnPrint.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPrintActionPerformed(evt);
             }
         });
+
+        jLabel1.setText("Time:");
+
+        SpinnerDateModel model = new SpinnerDateModel();
+        model.setCalendarField(Calendar.MINUTE);
+
+        timeSpin = new JSpinner();
+        timeSpin.setModel(model);
+        timeSpin.setEditor(new JSpinner.DateEditor(timeSpin, "h:mm a"));
+
+        jLabel2.setText("Date:");
+
+        SpinnerDateModel modelDate = new SpinnerDateModel();
+        modelDate.setCalendarField(Calendar.MINUTE);
+
+        dateSpin = new JSpinner();
+        dateSpin.setModel(modelDate);
+        dateSpin.setEditor(new JSpinner.DateEditor(dateSpin, "dd/MM/yyyy"));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -322,9 +369,13 @@ public class WasteStockWindow extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnClose))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDate)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(dateSpin, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                            .addComponent(timeSpin))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblReason)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -335,14 +386,17 @@ public class WasteStockWindow extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblReason)
-                        .addComponent(cmbReason, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnDate))
-                    .addComponent(lblTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblReason)
+                    .addComponent(cmbReason, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(dateSpin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(timeSpin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
@@ -402,6 +456,11 @@ public class WasteStockWindow extends javax.swing.JFrame {
         if (wasteItems.isEmpty()) {
             return;
         }
+        long d = ((Date)dateSpin.getValue()).getTime();
+        long t = ((Date)timeSpin.getValue()).getTime();
+        JOptionPane.showMessageDialog(this, (Date)dateSpin.getValue() + "\n" + (Date)timeSpin.getValue());
+        date = new Date(d + t);
+        JOptionPane.showMessageDialog(this, date);
         WasteReport wr = new WasteReport(date);
         BigDecimal total = BigDecimal.ZERO;
         for (WasteItem wi : wasteItems) {
@@ -550,14 +609,6 @@ public class WasteStockWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnCSVActionPerformed
 
-    private void btnDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDateActionPerformed
-        Date d = DateSelectDialog.showDialog(this);
-        if (d != null) {
-            date = d;
-            lblTime.setText("Time: " + date);
-        }
-    }//GEN-LAST:event_btnDateActionPerformed
-
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPrintable(new WasteReportPrintout(report));
@@ -588,14 +639,16 @@ public class WasteStockWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnCSV;
     private javax.swing.JButton btnClose;
-    private javax.swing.JButton btnDate;
     private javax.swing.JButton btnPrint;
     private javax.swing.JButton btnWaste;
     private javax.swing.JComboBox<String> cmbReason;
+    private javax.swing.JSpinner dateSpin;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblReason;
-    private javax.swing.JLabel lblTime;
     private javax.swing.JLabel lblValue;
     private javax.swing.JTable tblProducts;
+    private javax.swing.JSpinner timeSpin;
     // End of variables declaration//GEN-END:variables
 }
