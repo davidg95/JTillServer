@@ -5,14 +5,24 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
@@ -26,13 +36,33 @@ public class HelpPage extends javax.swing.JFrame {
     private final Map map;
     private TreeModel model;
 
+    private String text;
+
     /**
      * Creates new form HelpPage
      */
     public HelpPage() {
         initComponents();
         map = new HashMap();
+        editPane.setContentType("text/html");
+        loadFile();
+        editPane.setText(text);
+        editPane.setEditable(false);
         init();
+    }
+
+    private void loadFile() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File f = new File(classLoader.getResource("/io/github/davidg95/JTill/resources/help/help_index.html").getFile());
+
+        try {
+            Scanner in = new Scanner(f);
+            while (in.hasNext()) {
+                text += in.nextLine() + "\n";
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(HelpPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void initMap() {
@@ -62,7 +92,7 @@ public class HelpPage extends javax.swing.JFrame {
         helpTree.getSelectionModel().addTreeSelectionListener((TreeSelectionEvent e) -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
             if (map.containsKey(node.toString())) {
-                txtContent.setText(map.get(node.toString()).toString());
+
             }
         });
         revalidate();
@@ -155,8 +185,8 @@ public class HelpPage extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         helpTree = new javax.swing.JTree();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtContent = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        editPane = new javax.swing.JEditorPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Help");
@@ -166,10 +196,7 @@ public class HelpPage extends javax.swing.JFrame {
 
         jScrollPane1.setViewportView(helpTree);
 
-        txtContent.setColumns(20);
-        txtContent.setLineWrap(true);
-        txtContent.setRows(5);
-        jScrollPane2.setViewportView(txtContent);
+        jScrollPane3.setViewportView(editPane);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -181,7 +208,7 @@ public class HelpPage extends javax.swing.JFrame {
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -191,7 +218,7 @@ public class HelpPage extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane3)
                     .addComponent(jScrollPane1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -200,10 +227,10 @@ public class HelpPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JEditorPane editPane;
     private javax.swing.JTree helpTree;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea txtContent;
+    private javax.swing.JScrollPane jScrollPane3;
     // End of variables declaration//GEN-END:variables
 }
