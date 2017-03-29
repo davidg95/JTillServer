@@ -406,7 +406,7 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="lblDatabase" min="-2" pref="191" max="-2" attributes="0"/>
+                  <Component id="lblHelp" min="-2" pref="191" max="-2" attributes="0"/>
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   <Component id="lblUser" min="-2" pref="202" max="-2" attributes="0"/>
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
@@ -422,7 +422,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Component id="lblUpdate" alignment="0" max="32767" attributes="0"/>
-              <Component id="lblDatabase" alignment="0" max="32767" attributes="0"/>
+              <Component id="lblHelp" alignment="0" max="32767" attributes="0"/>
               <Component id="lblUser" alignment="0" max="32767" attributes="0"/>
               <Component id="lblClients" alignment="0" max="32767" attributes="0"/>
               <Component id="jLabel1" alignment="1" max="32767" attributes="0"/>
@@ -430,9 +430,9 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="lblDatabase">
+        <Component class="javax.swing.JLabel" name="lblHelp">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Not connected to database"/>
+            <Property name="text" type="java.lang.String" value="Press F1 for help"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
                 <EtchetBorder/>
@@ -440,7 +440,7 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lblDatabaseMouseClicked"/>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lblHelpMouseClicked"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="lblUser">

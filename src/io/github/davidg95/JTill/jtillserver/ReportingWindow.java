@@ -261,7 +261,7 @@ public class ReportingWindow extends javax.swing.JFrame {
                 if (dep != null) {
                     if (i.getItem() instanceof Product) {
                         Product p = (Product) i.getItem();
-                        if (p.getCategory().equals(dep)) {
+                        if (p.getDepartment().equals(dep)) {
                             fil2.add(i);
                         }
                     }

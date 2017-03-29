@@ -1,16 +1,12 @@
-JTill log Tue Mar 28 17:01:49 BST 2017
-[17:01:49] [INFO] Connecting to database {0}
-[17:01:49] [INFO] Connecting to database {0}
-[17:01:50] [INFO] Get staff count
-[17:01:50] [INFO] Starting Thread Pool Excecutor
-[17:01:50] [INFO] JTill Server local IP address is 192.168.1.65
-[17:01:50] [INFO] Server Socket running on port number 52341
-[17:01:50] [INFO] Ready to accept connections
-[17:01:50] [INFO] Connecting to database {0}
-[17:01:54] [INFO] Connecting to database {0}
-[17:01:54] [INFO] Login Staff {0}
-[17:01:54] [INFO] David Grant has logged in
-[17:01:57] [INFO] Connecting to database {0}
-[17:02:07] [INFO] Connecting to database {0}
-[17:02:08] [INFO] Connecting to database {0}
-[17:02:10] [INFO] Connecting to database {0}
+JTill log Wed Mar 29 12:37:55 BST 2017
+[12:37:55] [INFO] Connecting to database {0}
+[12:37:55] [INFO] Connecting to database {0}
+[12:37:55] [INFO] Get staff count
+[12:37:55] [INFO] Starting Thread Pool Excecutor
+[12:37:55] [INFO] JTill Server local IP address is 192.168.1.65
+[12:37:55] [INFO] Server Socket running on port number 52341
+[12:37:55] [INFO] Ready to accept connections
+[12:37:55] [INFO] Connecting to database {0}
+[12:37:57] [INFO] Connecting to database {0}
+[12:37:57] [INFO] Login Staff {0}
+[12:37:57] [INFO] David Grant has logged in

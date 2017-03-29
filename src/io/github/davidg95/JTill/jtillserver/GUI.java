@@ -13,6 +13,8 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -27,7 +29,6 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -38,9 +39,11 @@ import javax.swing.SwingUtilities;
  *
  * @author David
  */
-public class GUI extends javax.swing.JFrame implements GUIInterface {
+public class GUI extends JFrame implements GUIInterface {
 
     private final Logger log = Logger.getGlobal();
+
+    private static GUI gui; //The GUI.
 
     /**
      * Indicates whether severe messages should show.
@@ -55,8 +58,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
      */
     public static boolean SHOW_WARNING = true;
 
-    private static GUI gui;
-    private final DataConnect dc;
+    private final DataConnect dc; //The data connection.
     private boolean isLoggedOn; //Boolean to indicate whether someone is logged on or not.
 
     public static Staff staff; //The current logged on staff.
@@ -65,23 +67,17 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private final ArrayList<String> connections;
 
     private final boolean remote;
-
-    /**
-     * The image icon for the server.
-     */
-    private final Image icon;
-
-    /**
-     * The settings.
-     */
-    private final Settings settings;
+    
+    private final Image icon; //The icon for the frame.
+    
+    private final Settings settings; //The settings object.
 
     /**
      * Creates new form GUI
      *
      * @param dataConnect
      * @param remote flag indicating whether this is a remote connection or not.
-     * @param icon
+     * @param icon the icon for the frame.
      */
     public GUI(DataConnect dataConnect, boolean remote, Image icon) {
         this.dc = dataConnect;
@@ -99,6 +95,23 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.dc.setGUI(this);
         log.addHandler(new LogHandler());
+        addKeyListener(new KeyListener(){
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_F1){
+                    new HelpPage().setVisible(true);
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+        setFocusable(true);
     }
 
     /**
@@ -192,7 +205,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                 db.connect(settings.getSetting("db_address"), settings.getSetting("db_username"), settings.getSetting("db_password"));
                 TillSplashScreen.setLabel("Connected to database");
                 TillSplashScreen.addBar(40);
-                lblDatabase.setText("Connected to database");
                 if (dc.getStaffCount() == 0) {
                     Staff s = StaffDialog.showNewStaffDialog(this, db);
                     if (s == null) {
@@ -205,8 +217,6 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
                 log.log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            lblDatabase.setText("Connected to JTill Server");
         }
     }
 
@@ -345,7 +355,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
 
         private void send(LogRecord record) {
             SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-            GUI.this.log("[" + df.format(new Date(record.getMillis())) + "] [" + record.getLevel().toString() + "] " + record.getMessage());
+            GUI.this.log("[" + df.format(new Date(record.getMillis())) + " - " + record.getLevel().toString() + "] " + record.getMessage());
         }
 
         @Override
@@ -377,7 +387,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         btnScreens = new javax.swing.JButton();
         btnSettings = new javax.swing.JButton();
         statusBar = new javax.swing.JPanel();
-        lblDatabase = new javax.swing.JLabel();
+        lblHelp = new javax.swing.JLabel();
         lblUser = new javax.swing.JLabel();
         lblUpdate = new javax.swing.JLabel();
         lblClients = new javax.swing.JLabel();
@@ -522,11 +532,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         });
         jToolBar1.add(btnSettings);
 
-        lblDatabase.setText("Not connected to database");
-        lblDatabase.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        lblDatabase.addMouseListener(new java.awt.event.MouseAdapter() {
+        lblHelp.setText("Press F1 for help");
+        lblHelp.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        lblHelp.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblDatabaseMouseClicked(evt);
+                lblHelpMouseClicked(evt);
             }
         });
 
@@ -555,7 +565,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         statusBarLayout.setHorizontalGroup(
             statusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(statusBarLayout.createSequentialGroup()
-                .addComponent(lblDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblHelp, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(lblUser, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -569,7 +579,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         statusBarLayout.setVerticalGroup(
             statusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(lblUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(lblDatabase, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lblHelp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblClients, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -916,11 +926,11 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
         }
     }//GEN-LAST:event_lblUserMouseClicked
 
-    private void lblDatabaseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDatabaseMouseClicked
+    private void lblHelpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHelpMouseClicked
         if (evt.getClickCount() == 2) {
-            JOptionPane.showMessageDialog(this, dc, "Database Connection", JOptionPane.PLAIN_MESSAGE);
+            new HelpPage().setVisible(true);
         }
-    }//GEN-LAST:event_lblDatabaseMouseClicked
+    }//GEN-LAST:event_lblHelpMouseClicked
 
     private void itemDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDiscountsActionPerformed
         DiscountsWindow.showDiscountListWindow(dc, icon);
@@ -1072,7 +1082,7 @@ public class GUI extends javax.swing.JFrame implements GUIInterface {
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblClients;
-    private javax.swing.JLabel lblDatabase;
+    private javax.swing.JLabel lblHelp;
     private javax.swing.JLabel lblPort;
     private javax.swing.JLabel lblProducts;
     private javax.swing.JLabel lblServerAddress;
