@@ -1,31 +1,24 @@
-JTill log Thu Mar 30 12:06:40 BST 2017
-[12:06:43] [INFO] Connecting to database {0}
-[12:06:43] [INFO] Connecting to database {0}
-[12:06:43] [INFO] Get staff count
-[12:06:43] [INFO] Starting Thread Pool Excecutor
-[12:06:43] [INFO] JTill Server local IP address is 192.168.1.65
-[12:06:43] [INFO] Connecting to database {0}
-[12:06:43] [INFO] Server Socket running on port number 52341
-[12:06:43] [INFO] Ready to accept connections
-[12:06:43] [INFO] Connecting to database {0}
-[12:06:43] [INFO] Login Staff {0}
-[12:06:43] [INFO] David Grant has logged in
-[12:06:46] [INFO] Connecting to database {0}
-[12:06:46] [INFO] Connecting to database {0}
-[12:06:46] [INFO] Connecting to database {0}
-[12:06:46] [INFO] Connecting to database {0}
-[12:06:46] [INFO] Connecting to database {0}
-[12:06:46] [INFO] Connecting to database {0}
-[12:06:46] [INFO] Connecting to database {0}
-[12:06:46] [INFO] Connecting to database {0}
-[12:06:49] [INFO] Connecting to database {0}
-[12:06:51] [INFO] Connecting to database {0}
-[12:06:51] [INFO] Connecting to database {0}
-[12:06:51] [INFO] Connecting to database {0}
-[12:06:51] [INFO] Connecting to database {0}
-[12:06:51] [INFO] Connecting to database {0}
-[12:07:30] [INFO] Connecting to database {0}
-[12:07:30] [INFO] Connecting to database {0}
-[12:07:30] [INFO] Connecting to database {0}
-[12:07:30] [INFO] Connecting to database {0}
-[12:07:30] [INFO] Connecting to database {0}
+JTill log Thu Mar 30 12:14:22 BST 2017
+[12:14:24] [INFO] Connecting to database {0}
+[12:14:24] [INFO] Connecting to database {0}
+[12:14:25] [INFO] Get staff count
+[12:14:25] [INFO] Starting Thread Pool Excecutor
+[12:14:25] [INFO] JTill Server local IP address is 192.168.1.65
+[12:14:25] [INFO] Server Socket running on port number 52341
+[12:14:25] [INFO] Connecting to database {0}
+[12:14:25] [INFO] Ready to accept connections
+[12:14:25] [INFO] Connecting to database {0}
+[12:14:25] [INFO] Login Staff {0}
+[12:14:25] [INFO] David Grant has logged in
+[12:14:30] [INFO] Connecting to database {0}
+[12:14:30] [INFO] Connecting to database {0}
+[12:14:30] [INFO] Connecting to database {0}
+[12:14:30] [INFO] Connecting to database {0}
+[12:14:30] [INFO] Connecting to database {0}
+[12:14:30] [INFO] Connecting to database {0}
+[12:14:30] [INFO] Connecting to database {0}
+[12:14:30] [INFO] Connecting to database {0}
+[12:14:33] [INFO] Connecting to database {0}
+[12:14:33] [INFO] Connecting to database {0}
+[12:14:33] [INFO] Connecting to database {0}
+[12:14:54] [INFO] Connecting to database {0}

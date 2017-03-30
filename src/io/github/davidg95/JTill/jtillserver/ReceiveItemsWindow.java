@@ -275,7 +275,7 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
             return;
         }
 
-        if (product.getStock() + Integer.parseInt(amount) > product.getMaxStockLevel()) {
+        if (product.getStock() + Integer.parseInt(amount) > product.getMaxStockLevel() && product.getMaxStockLevel() != 0) {
             JOptionPane.showMessageDialog(this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product", "Stock", JOptionPane.WARNING_MESSAGE);
         }
 

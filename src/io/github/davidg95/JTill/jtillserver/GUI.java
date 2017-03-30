@@ -423,6 +423,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemReceive = new javax.swing.JMenuItem();
         itemWasteStock = new javax.swing.JMenuItem();
         itemWasteReports = new javax.swing.JMenuItem();
+        itemEnquiry = new javax.swing.JMenuItem();
         menuSetup = new javax.swing.JMenu();
         itemReasons = new javax.swing.JMenuItem();
         itemSuppliers = new javax.swing.JMenuItem();
@@ -712,6 +713,14 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         menuStock.add(itemWasteReports);
+
+        itemEnquiry.setText("Product Enquiry");
+        itemEnquiry.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemEnquiryActionPerformed(evt);
+            }
+        });
+        menuStock.add(itemEnquiry);
 
         jMenuBar1.add(menuStock);
 
@@ -1049,6 +1058,10 @@ public class GUI extends JFrame implements GUIInterface {
         new ReportingWindow(dc).setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void itemEnquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEnquiryActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_itemEnquiryActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1067,6 +1080,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemDatabase;
     private javax.swing.JMenuItem itemDepartments;
     private javax.swing.JMenuItem itemDiscounts;
+    private javax.swing.JMenuItem itemEnquiry;
     private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenuItem itemLogin;
     private javax.swing.JMenuItem itemReasons;
