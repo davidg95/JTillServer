@@ -60,16 +60,8 @@ public class LoginDialog extends javax.swing.JDialog implements CapsListener {
         }
         dialog = new LoginDialog(window, dc);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        try {
-            staff = dc.login("dgrant", "adventures");
-        } catch (IOException ex) {
-            Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (LoginException ex) {
-            Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        //dialog.setVisible(true);
+        staff = null;
+        dialog.setVisible(true);
         return staff;
     }
 
