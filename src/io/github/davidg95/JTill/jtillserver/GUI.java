@@ -438,6 +438,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemDatabase = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        itemLabelPrinting = new javax.swing.JMenuItem();
 
         setTitle("JTill Server");
 
@@ -815,6 +816,14 @@ public class GUI extends JFrame implements GUIInterface {
         });
         jMenu1.add(jMenuItem1);
 
+        itemLabelPrinting.setText("Label Printing");
+        itemLabelPrinting.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemLabelPrintingActionPerformed(evt);
+            }
+        });
+        jMenu1.add(itemLabelPrinting);
+
         jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
@@ -1055,12 +1064,16 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemDepartmentsActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        new ReportingWindow(dc).setVisible(true);
+        ReportingWindow.showWindow(dc, icon);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void itemEnquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEnquiryActionPerformed
-        new ProductEnquiry(dc).setVisible(true);
+        ProductEnquiry.showWindow(dc, icon);
     }//GEN-LAST:event_itemEnquiryActionPerformed
+
+    private void itemLabelPrintingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLabelPrintingActionPerformed
+        LabelPrintingWindow.showWindow(dc, icon);
+    }//GEN-LAST:event_itemLabelPrintingActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
@@ -1082,6 +1095,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemDiscounts;
     private javax.swing.JMenuItem itemEnquiry;
     private javax.swing.JMenuItem itemExit;
+    private javax.swing.JMenuItem itemLabelPrinting;
     private javax.swing.JMenuItem itemLogin;
     private javax.swing.JMenuItem itemReasons;
     private javax.swing.JMenuItem itemReceive;

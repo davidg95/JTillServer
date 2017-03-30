@@ -1,85 +1,32 @@
-JTill log Thu Mar 30 14:55:52 BST 2017
-[14:55:55] [INFO] Connecting to database {0}
-[14:55:55] [INFO] Connecting to database {0}
-[14:55:56] [INFO] Get staff count
-[14:55:56] [INFO] Starting Thread Pool Excecutor
-[14:55:56] [INFO] JTill Server local IP address is 192.168.1.65
-[14:55:56] [INFO] Server Socket running on port number 52341
-[14:55:56] [INFO] Connecting to database {0}
-[14:55:56] [INFO] Ready to accept connections
-[14:55:56] [INFO] Connecting to database {0}
-[14:55:56] [INFO] Login Staff {0}
-[14:55:56] [INFO] David Grant has logged in
-[14:55:59] [INFO] Connecting to database {0}
-[14:56:00] [INFO] Connecting to database {0}
-[14:56:00] [INFO] Connecting to database {0}
-[14:56:00] [INFO] Connecting to database {0}
-[14:56:00] [INFO] Connecting to database {0}
-[14:56:00] [INFO] Connecting to database {0}
-[14:56:00] [INFO] Connecting to database {0}
-[14:56:03] [INFO] Connecting to database {0}
-[14:56:03] [INFO] Get all discounts
-[14:56:03] [INFO] Connecting to database {0}
-[14:56:03] [INFO] Get all discounts
-[14:56:11] [INFO] Connecting to database {0}
-[14:56:11] [INFO] {0} has connected
-[14:56:11] [INFO] Received {0} from server
-[14:56:11] [INFO] Received {0} from server
-[14:56:11] [INFO] Received {0} from server
-[14:56:11] [INFO] Received {0} from server
-[14:56:11] [INFO] Received {0} from server
-[14:56:11] [INFO] Connecting to database {0}
-[14:56:11] [INFO] Get all discounts
-[14:56:11] [INFO] Received {0} from server
-[14:56:11] [INFO] Connecting to database {0}
-[14:56:11] [INFO] Received {0} from server
-[14:56:11] [INFO] Connecting to database {0}
-[14:56:11] [INFO] Connecting to database {0}
-[14:56:11] [INFO] Get product {0}
-[14:56:11] [INFO] Connecting to database {0}
-[14:56:11] [INFO] Get product {0}
-[14:56:11] [INFO] Connecting to database {0}
-[14:56:11] [INFO] Get product {0}
-[14:56:11] [INFO] Connecting to database {0}
-[14:56:11] [INFO] Get product {0}
-[14:56:11] [INFO] Received {0} from server
-[14:56:11] [INFO] Connecting to database {0}
-[14:56:11] [INFO] Connecting to database {0}
-[14:56:11] [INFO] Get product {0}
-[14:56:11] [INFO] Connecting to database {0}
-[14:56:11] [INFO] Get product {0}
-[14:56:13] [INFO] Received {0} from server
-[14:56:13] [INFO] Connecting to database {0}
-[14:56:13] [INFO] Get staff {0}
-[14:56:13] [INFO] Received {0} from server
-[14:56:13] [INFO] Connecting to database {0}
-[14:56:13] [INFO] {0} has logged in from {1}
-[14:56:13] [INFO] Received {0} from server
-[14:56:16] [INFO] Received {0} from server
-[14:56:16] [INFO] Connecting to database {0}
-[14:56:17] [INFO] Received {0} from server
-[14:56:17] [INFO] Connecting to database {0}
-[14:56:20] [INFO] Received {0} from server
-[14:56:20] [INFO] Connecting to database {0}
-[14:56:20] [INFO] Connecting to database {0}
-[14:56:20] [INFO] Connecting to database {0}
-[14:56:20] [INFO] Purchase product {0}
-[14:56:21] [INFO] Received {0} from server
-[14:56:22] [INFO] Received {0} from server
-[14:56:22] [INFO] {0} has logged out
-[14:56:22] [INFO] Received {0} from server
-[14:56:22] [INFO] {0} has disconnected
-[14:56:29] [INFO] Connecting to database {0}
-[14:56:30] [INFO] Connecting to database {0}
-[14:56:30] [INFO] Connecting to database {0}
-[14:56:30] [INFO] Connecting to database {0}
-[14:56:30] [INFO] Connecting to database {0}
-[14:56:30] [INFO] Connecting to database {0}
-[14:56:30] [INFO] Connecting to database {0}
-[14:56:31] [INFO] Connecting to database {0}
-[14:56:32] [INFO] Connecting to database {0}
-[14:56:32] [INFO] Connecting to database {0}
-[14:56:32] [INFO] Connecting to database {0}
-[14:56:32] [INFO] Connecting to database {0}
-[14:56:32] [INFO] Connecting to database {0}
-[14:56:32] [INFO] Connecting to database {0}
+JTill log Thu Mar 30 15:38:34 BST 2017
+[15:38:35] [INFO] Connecting to database {0}
+[15:38:35] [INFO] Connecting to database {0}
+[15:38:36] [INFO] Get staff count
+[15:38:36] [INFO] Starting Thread Pool Excecutor
+[15:38:36] [INFO] JTill Server local IP address is 192.168.1.65
+[15:38:36] [INFO] Server Socket running on port number 52341
+[15:38:36] [INFO] Ready to accept connections
+[15:38:36] [INFO] Connecting to database {0}
+[15:38:36] [INFO] Connecting to database {0}
+[15:38:36] [INFO] Login Staff {0}
+[15:38:36] [INFO] David Grant has logged in
+[15:38:48] [INFO] Connecting to database {0}
+[15:38:48] [INFO] Get Product {0}
+[15:38:48] [INFO] Connecting to database {0}
+[15:38:48] [INFO] Get Product {0}
+[15:38:54] [INFO] Connecting to database {0}
+[15:38:54] [INFO] Connecting to database {0}
+[15:38:54] [INFO] Connecting to database {0}
+[15:38:54] [INFO] Connecting to database {0}
+[15:38:54] [INFO] Connecting to database {0}
+[15:38:54] [INFO] Connecting to database {0}
+[15:38:54] [INFO] Connecting to database {0}
+[15:38:54] [INFO] Connecting to database {0}
+[15:38:54] [INFO] Connecting to database {0}
+[15:38:54] [INFO] Connecting to database {0}
+[15:38:54] [INFO] Connecting to database {0}
+[15:38:54] [INFO] Connecting to database {0}
+[15:38:54] [INFO] Connecting to database {0}
+[15:38:54] [INFO] Connecting to database {0}
+[15:38:54] [INFO] Connecting to database {0}
+[15:38:54] [INFO] Connecting to database {0}

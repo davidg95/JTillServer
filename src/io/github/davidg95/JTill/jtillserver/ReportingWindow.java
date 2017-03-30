@@ -9,6 +9,7 @@ import io.github.davidg95.JTill.jtill.*;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
@@ -35,9 +36,19 @@ public class ReportingWindow extends javax.swing.JFrame {
     /**
      * Creates new form ReportingWindow
      */
-    public ReportingWindow(DataConnect dc) {
+    public ReportingWindow(DataConnect dc, Image icon) {
         this.dc = dc;
         initComponents();
+    }
+
+    /**
+     * Method to show the reporting window.
+     *
+     * @param dc the data connection.
+     * @param icon the icon for the window.
+     */
+    public static void showWindow(DataConnect dc, Image icon) {
+        new ReportingWindow(dc, icon).setVisible(true);
     }
 
     public class ReportPrinter implements Printable {

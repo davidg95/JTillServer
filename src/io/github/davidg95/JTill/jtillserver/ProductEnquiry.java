@@ -9,10 +9,9 @@ import io.github.davidg95.JTill.jtill.*;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import static java.awt.print.Printable.NO_SUCH_PAGE;
-import static java.awt.print.Printable.PAGE_EXISTS;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.IOException;
@@ -38,9 +37,20 @@ public class ProductEnquiry extends javax.swing.JFrame {
     /**
      * Creates new form ProductEnquiry
      */
-    public ProductEnquiry(DataConnect dc) {
+    public ProductEnquiry(DataConnect dc, Image icon) {
         this.dc = dc;
         initComponents();
+        setIconImage(icon);
+    }
+
+    /**
+     * Method to show the Product Enquiry window.
+     *
+     * @param dc the data connection.
+     * @param icon the icon for the window.
+     */
+    public static void showWindow(DataConnect dc, Image icon) {
+        new ProductEnquiry(dc, icon).setVisible(true);
     }
 
     public class ProductEnquiryPrintout implements Printable {
