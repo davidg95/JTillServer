@@ -119,8 +119,13 @@ public class ProductsWindow extends javax.swing.JFrame {
         model.setRowCount(0);
 
         for (Product p : currentTableContents) {
-            Object[] s = new Object[]{p.getId(), p.getPlu().getCode(), p.getLongName(), (p.isOpen() ? "Open Price" : p.getPrice()), (p.isOpen() ? "N/A" : p.getStock())};
-            model.addRow(s);
+            try {
+                final Plu plu = dc.getPlu(p.getPlu());
+                Object[] s = new Object[]{p.getId(), plu.getCode(), p.getLongName(), (p.isOpen() ? "Open Price" : p.getPrice()), (p.isOpen() ? "N/A" : p.getStock())};
+                model.addRow(s);
+            } catch (IOException | JTillException | SQLException ex) {
+                Logger.getLogger(ProductsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         tableProducts.setModel(model);
@@ -185,82 +190,88 @@ public class ProductsWindow extends javax.swing.JFrame {
             cmbDepartments.setSelectedIndex(0);
             product = null;
         } else { //Fill the fields with the product.
-            this.product = p;
-            txtName.setText(p.getLongName());
-            txtShortName.setText(p.getName());
-            if (p.isOpen()) { //Check if price is open.
-                txtPrice.setEnabled(false);
-                txtCostPrice.setEnabled(false);
-                txtBarcode.setEnabled(true);
-                txtStock.setEnabled(false);
-                txtMinStock.setEnabled(false);
-                txtMaxStock.setEnabled(false);
-                jLabel3.setEnabled(false);
-                jLabel9.setEnabled(false);
-                jLabel2.setEnabled(false);
-                jLabel4.setEnabled(false);
-                jLabel10.setEnabled(false);
-                jLabel11.setEnabled(false);
-                txtBarcode.setText(p.getPlu().getCode());
-                txtPrice.setText("");
-                txtCostPrice.setText("");
-                chkOpen.setSelected(true);
-                txtStock.setText("");
-                txtMinStock.setText("");
-                txtMaxStock.setText("");
-            } else {
-                txtPrice.setEnabled(true);
-                txtCostPrice.setEnabled(true);
-                txtBarcode.setEnabled(true);
-                txtStock.setEnabled(true);
-                txtMinStock.setEnabled(true);
-                txtMaxStock.setEnabled(true);
-                jLabel3.setEnabled(true);
-                jLabel9.setEnabled(true);
-                jLabel2.setEnabled(true);
-                jLabel4.setEnabled(true);
-                jLabel10.setEnabled(true);
-                jLabel11.setEnabled(true);
-                txtBarcode.setText(p.getPlu().getCode());
-                txtPrice.setText(p.getPrice() + "");
-                txtCostPrice.setText(p.getCostPrice() + "");
-                chkOpen.setSelected(false);
-                txtStock.setText(p.getStock() + "");
-                txtMinStock.setText(p.getMinStockLevel() + "");
-                txtMaxStock.setText(p.getMaxStockLevel() + "");
-            }
-            txtComments.setText(p.getComments());
-            int index = 0;
-            //Set the Category combo box.
-            Category c = p.getCategory();
-            index = 0;
-            for (int i = 0; i < categorys.size(); i++) {
-                if (categorys.get(i).getId() == c.getId()) {
-                    index = i;
-                    break;
+            try {
+                this.product = p;
+                txtName.setText(p.getLongName());
+                txtShortName.setText(p.getName());
+                if (p.isOpen()) { //Check if price is open.
+                    txtPrice.setEnabled(false);
+                    txtCostPrice.setEnabled(false);
+                    txtBarcode.setEnabled(true);
+                    txtStock.setEnabled(false);
+                    txtMinStock.setEnabled(false);
+                    txtMaxStock.setEnabled(false);
+                    jLabel3.setEnabled(false);
+                    jLabel9.setEnabled(false);
+                    jLabel2.setEnabled(false);
+                    jLabel4.setEnabled(false);
+                    jLabel10.setEnabled(false);
+                    jLabel11.setEnabled(false);
+                    final Plu plu = dc.getPlu(p.getPlu());
+                    txtBarcode.setText(plu.getCode());
+                    txtPrice.setText("");
+                    txtCostPrice.setText("");
+                    chkOpen.setSelected(true);
+                    txtStock.setText("");
+                    txtMinStock.setText("");
+                    txtMaxStock.setText("");
+                } else {
+                    txtPrice.setEnabled(true);
+                    txtCostPrice.setEnabled(true);
+                    txtBarcode.setEnabled(true);
+                    txtStock.setEnabled(true);
+                    txtMinStock.setEnabled(true);
+                    txtMaxStock.setEnabled(true);
+                    jLabel3.setEnabled(true);
+                    jLabel9.setEnabled(true);
+                    jLabel2.setEnabled(true);
+                    jLabel4.setEnabled(true);
+                    jLabel10.setEnabled(true);
+                    jLabel11.setEnabled(true);
+                    final Plu plu = dc.getPlu(p.getPlu());
+                    txtBarcode.setText(plu.getCode());
+                    txtPrice.setText(p.getPrice() + "");
+                    txtCostPrice.setText(p.getCostPrice() + "");
+                    chkOpen.setSelected(false);
+                    txtStock.setText(p.getStock() + "");
+                    txtMinStock.setText(p.getMinStockLevel() + "");
+                    txtMaxStock.setText(p.getMaxStockLevel() + "");
                 }
-            }
-            cmbCategory.setSelectedIndex(index);
-            //Set the Tax combo box.
-            Tax t = p.getTax();
-            index = 0;
-            for (int i = 0; i < taxes.size(); i++) {
-                if (taxes.get(i).getId() == t.getId()) {
-                    index = i;
-                    break;
+                txtComments.setText(p.getComments());
+                int index = 0;
+                //Set the Category combo box.
+                int c = p.getCategory();
+                index = 0;
+                for (int i = 0; i < categorys.size(); i++) {
+                    if (categorys.get(i).getId() == c) {
+                        index = i;
+                        break;
+                    }
                 }
-            }
-            cmbTax.setSelectedIndex(index);
-            //Set the Department combo box.
-            Department d = p.getDepartment();
-            index = 0;
-            for (int i = 0; i < departments.size(); i++) {
-                if (departments.get(i).getId() == d.getId()) {
-                    index = i;
-                    break;
+                cmbCategory.setSelectedIndex(index);
+                //Set the Tax combo box.
+                int t = p.getTax();
+                index = 0;
+                for (int i = 0; i < taxes.size(); i++) {
+                    if (taxes.get(i).getId() == t) {
+                        index = i;
+                        break;
+                    }
                 }
+                cmbTax.setSelectedIndex(index);
+                //Set the Department combo box.
+                int d = p.getDepartment();
+                index = 0;
+                for (int i = 0; i < departments.size(); i++) {
+                    if (departments.get(i).getId() == d) {
+                        index = i;
+                        break;
+                    }
+                }
+                cmbDepartments.setSelectedIndex(index);
+            } catch (IOException | JTillException | SQLException ex) {
+                showError(ex);
             }
-            cmbDepartments.setSelectedIndex(index);
         }
     }
 
@@ -753,8 +764,8 @@ public class ProductsWindow extends javax.swing.JFrame {
         if (chkOpen.isSelected()) {
             product.setLongName(name);
             product.setName(shortName);
-            product.setCategory(category);
-            product.setTax(tax);
+            product.setCategory(category.getId());
+            product.setTax(tax.getId());
             product.setComments(comments);
             product.setOpen(true);
         } else {
@@ -765,9 +776,9 @@ public class ProductsWindow extends javax.swing.JFrame {
             int maxStock = Integer.parseInt(txtMaxStock.getText());
             product.setLongName(name);
             product.setName(shortName);
-            product.setCategory(category);
-            product.setDepartment(dep);
-            product.setTax(tax);
+            product.setCategory(category.getId());
+            product.setDepartment(dep.getId());
+            product.setTax(tax.getId());
             product.setPrice(price);
             product.setCostPrice(costPrice);
             product.setStock(stock);
@@ -849,41 +860,45 @@ public class ProductsWindow extends javax.swing.JFrame {
             option = 3;
         }
         List<Product> newList = new ArrayList<>();
-
-        switch (option) {
-            case 1:
-                for (Product p : currentTableContents) {
-                    if ((p.getId() + "").contains(terms)) {
-                        newList.add(p);
+        try {
+            switch (option) {
+                case 1:
+                    for (Product p : currentTableContents) {
+                        if ((p.getId() + "").contains(terms)) {
+                            newList.add(p);
+                        }
                     }
-                }
-                break;
-            case 2:
-                for (Product p : currentTableContents) {
-                    if (p.getPlu().getCode().equals(terms)) {
-                        newList.add(p);
+                    break;
+                case 2:
+                    for (Product p : currentTableContents) {
+                        final Plu plu = dc.getPlu(p.getPlu());
+                        if (plu.getCode().equals(terms)) {
+                            newList.add(p);
+                        }
                     }
-                }
-                break;
-            default:
-                currentTableContents.stream().filter((p) -> (p.getLongName().toLowerCase().contains(terms.toLowerCase()) || p.getName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((p) -> {
-                    newList.add(p);
-                });
-                break;
-        }
-
-        if (newList.isEmpty()) {
-            txtSearch.setSelectionStart(0);
-            txtSearch.setSelectionEnd(txtSearch.getText().length());
-            JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.ERROR_MESSAGE);
-        } else {
-            txtSearch.setText("");
-            currentTableContents = newList;
-            if (newList.size() == 1) {
-                setCurrentProduct(newList.get(0));
+                    break;
+                default:
+                    currentTableContents.stream().filter((p) -> (p.getLongName().toLowerCase().contains(terms.toLowerCase()) || p.getName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((p) -> {
+                        newList.add(p);
+                    });
+                    break;
             }
+
+            if (newList.isEmpty()) {
+                txtSearch.setSelectionStart(0);
+                txtSearch.setSelectionEnd(txtSearch.getText().length());
+                JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.ERROR_MESSAGE);
+            } else {
+                txtSearch.setText("");
+                currentTableContents = newList;
+                if (newList.size() == 1) {
+                    setCurrentProduct(newList.get(0));
+                }
+            }
+            updateTable();
+        } catch (IOException | JTillException | SQLException ex) {
+            Logger.getLogger(ProductsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
-        updateTable();
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnReceiveStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiveStockActionPerformed
@@ -912,14 +927,14 @@ public class ProductsWindow extends javax.swing.JFrame {
                 for (Product p : currentTableContents) {
                     pw.println(p.getId() + ","
                             + p.getLongName() + ","
-                            + p.getCategory().getId() + ","
+                            + p.getCategory() + ","
                             + p.getCostPrice() + ","
                             + p.getMaxStockLevel() + ","
                             + p.getMinStockLevel() + ","
-                            + p.getPlu().getId() + ","
+                            + p.getPlu() + ","
                             + p.getPrice() + ","
                             + p.getStock() + ","
-                            + p.getTax().getId());
+                            + p.getTax());
                 }
                 pw.close();
             } catch (FileNotFoundException ex) {

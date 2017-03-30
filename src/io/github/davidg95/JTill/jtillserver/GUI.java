@@ -1059,7 +1059,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void itemEnquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEnquiryActionPerformed
-        // TODO add your handling code here:
+        new ProductEnquiry(dc).setVisible(true);
     }//GEN-LAST:event_itemEnquiryActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

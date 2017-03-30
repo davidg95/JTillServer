@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -28,7 +30,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static Product product;
 
-    private final DataConnect dbConn;
+    private final DataConnect dc;
 
     private final DefaultTableModel model;
     private List<Product> currentTableContents;
@@ -41,7 +43,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      */
     public ProductSelectDialog(Window parent, DataConnect dc) {
         super(parent);
-        dbConn = dc;
+        this.dc = dc;
         initComponents();
         setLocationRelativeTo(parent);
         setModal(true);
@@ -90,7 +92,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      */
     private void showAllProducts() {
         try {
-            currentTableContents = dbConn.getAllProducts();
+            currentTableContents = dc.getAllProducts();
             updateTable();
         } catch (IOException | SQLException ex) {
             showError(ex);
@@ -254,8 +256,13 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                     newList.add(p);
                 }
             } else {
-                if (p.getPlu().getCode().equals(search)) {
-                    newList.add(p);
+                try {
+                    final Plu plu = dc.getPlu(p.getPlu());
+                    if (plu.getCode().equals(search)) {
+                        newList.add(p);
+                    }
+                } catch (IOException | JTillException | SQLException ex) {
+                    Logger.getLogger(ProductSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

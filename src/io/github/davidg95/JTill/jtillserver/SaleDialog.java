@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.net.UnknownHostException;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Properties;
@@ -82,8 +83,13 @@ public class SaleDialog extends javax.swing.JDialog {
         Calendar c = Calendar.getInstance();
         c.setTime(sale.getDate());
         lblTime.setText("Time: " + c.getTime().toString());
-        if (sale.getCustomer() != null) {
-            lblCustomer.setText("Customer: " + sale.getCustomer().getName());
+        if (sale.getCustomer() != 0) {
+            try {
+                final Customer cus = dc.getCustomer(sale.getCustomer());
+                lblCustomer.setText("Customer: " + cus.getName());
+            } catch (IOException | CustomerNotFoundException | SQLException ex) {
+                Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         lblTerminal.setText("Terminal: " + sale.getTerminal());
         lblTotal.setText("Sale Total: £" + sale.getTotal());
@@ -350,37 +356,43 @@ public class SaleDialog extends javax.swing.JDialog {
 
     private void btnEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmailActionPerformed
         String email;
-        if (sale.getCustomer() != null) {
-            email = sale.getCustomer().getEmail();
-            if (email == null) {
+        try {
+            if (sale.getCustomer() != 0) {
+                final Customer c = dc.getCustomer(sale.getCustomer());
+                email = c.getEmail();
+                if (email == null) {
+                    email = JOptionPane.showInputDialog(this, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
+                }
+
+            } else {
                 email = JOptionPane.showInputDialog(this, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
             }
-        } else {
-            email = JOptionPane.showInputDialog(this, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
-        }
-        if (email == null) {
-            return;
-        }
-        final ModalDialog mDialog = new ModalDialog(this, "Email...", "Sending email...");
-        final String fEmail = email;
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    dc.emailReceipt(fEmail, sale);
-                    mDialog.hide();
-                    JOptionPane.showMessageDialog(SaleDialog.this, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);
-                } catch (IOException | MessagingException ex) {
-                    mDialog.hide();
-                    JOptionPane.showMessageDialog(SaleDialog.this, "Error sending email", "Email Receipt", JOptionPane.ERROR_MESSAGE);
-                } finally {
-                    mDialog.hide();
-                }
+            if (email == null) {
+                return;
             }
-        };
-        Thread th = new Thread(run);
-        th.start();
-        mDialog.show();
+            final ModalDialog mDialog = new ModalDialog(this, "Email...", "Sending email...");
+            final String fEmail = email;
+            Runnable run = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        dc.emailReceipt(fEmail, sale);
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(SaleDialog.this, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (IOException | MessagingException ex) {
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(SaleDialog.this, "Error sending email", "Email Receipt", JOptionPane.ERROR_MESSAGE);
+                    } finally {
+                        mDialog.hide();
+                    }
+                }
+            };
+            Thread th = new Thread(run);
+            th.start();
+            mDialog.show();
+        } catch (IOException | CustomerNotFoundException | SQLException ex) {
+            Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnEmailActionPerformed
 
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed

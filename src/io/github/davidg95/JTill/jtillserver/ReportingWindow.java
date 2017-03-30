@@ -11,8 +11,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import static java.awt.print.Printable.NO_SUCH_PAGE;
-import static java.awt.print.Printable.PAGE_EXISTS;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.IOException;
@@ -249,7 +247,7 @@ public class ReportingWindow extends javax.swing.JFrame {
                 if (cat != null) {
                     if (i.getItem() instanceof Product) {
                         Product p = (Product) i.getItem();
-                        if (p.getCategory().equals(cat)) {
+                        if (p.getCategory() == cat.getId()) {
                             fil.add(i);
                         }
                     }
@@ -261,7 +259,7 @@ public class ReportingWindow extends javax.swing.JFrame {
                 if (dep != null) {
                     if (i.getItem() instanceof Product) {
                         Product p = (Product) i.getItem();
-                        if (p.getDepartment().equals(dep)) {
+                        if (p.getDepartment() == dep.getId()) {
                             fil2.add(i);
                         }
                     }

@@ -6,15 +6,34 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import static java.awt.print.Printable.NO_SUCH_PAGE;
+import static java.awt.print.Printable.PAGE_EXISTS;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author David
  */
 public class ProductEnquiry extends javax.swing.JFrame {
-    
-    private Product product;
+
     private final DataConnect dc;
+    private Product product;
+    private int totalSold;
+    private BigDecimal valueSold;
+    private int totalWasted;
+    private BigDecimal valueWasted;
 
     /**
      * Creates new form ProductEnquiry
@@ -22,6 +41,84 @@ public class ProductEnquiry extends javax.swing.JFrame {
     public ProductEnquiry(DataConnect dc) {
         this.dc = dc;
         initComponents();
+    }
+
+    public class ProductEnquiryPrintout implements Printable {
+
+        private final Product p;
+        private final int ts;
+        private final BigDecimal vs;
+        private final int tw;
+        private final BigDecimal vw;
+
+        public ProductEnquiryPrintout(Product p, int ts, BigDecimal vs, int tw, BigDecimal vw) {
+            this.p = p;
+            this.ts = ts;
+            this.vs = vs;
+            this.tw = tw;
+            this.vw = vw;
+        }
+
+        @Override
+        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+            if (pageIndex > 0) {
+                return NO_SUCH_PAGE;
+            }
+
+            String header = "Product Enquiry";
+
+            Graphics2D g2 = (Graphics2D) graphics;
+            g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+
+            Font oldFont = graphics.getFont();
+
+            int y = 60;
+
+            g2.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
+            g2.drawString(header, 70, y);
+            y += 30;
+            g2.setFont(oldFont); //Chagne back to the old font.
+
+            int x = 70;
+            int s = 30;
+
+            try {
+                //Print product info.
+                g2.drawString("ID: " + p.getId(), x, y);
+                y += s;
+                final Plu plu = dc.getPlu(p.getPlu());
+                final Category cat = dc.getCategory(p.getCategory());
+                final Department dep = dc.getDepartment(p.getDepartment());
+                g2.drawString("Plu: " + plu.getCode(), x, y);
+                y += s;
+                g2.drawString("Name: " + p.getLongName(), x, y);
+                y += s;
+                g2.drawString("Category: " + cat.getName(), x, y);
+                y += s;
+                g2.drawString("Department: " + dep.getName(), x, y);
+                y += s;
+                g2.drawString("Price: £" + p.getPrice(), x, y);
+                y += s;
+                g2.drawString("Cost Price: £" + p.getCostPrice(), x, y);
+                y += s;
+                g2.drawString("Stock: " + p.getStock(), x, y);
+                y += s;
+                g2.drawString("Total units sold: " + ts, x, y);
+                y += s;
+                g2.drawString("Total value sold: £" + vs, x, y);
+                y += s;
+                g2.drawString("Total units wasted: " + tw, x, y);
+                y += s;
+                g2.drawString("Total value wasted: £" + vw, x, y);
+            } catch (IOException | SQLException | JTillException ex) {
+                JOptionPane.showMessageDialog(ProductEnquiry.this, "Page could not be printed in full");
+            } catch (CategoryNotFoundException ex) {
+                Logger.getLogger(ProductEnquiry.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            return PAGE_EXISTS;
+        }
+
     }
 
     /**
@@ -61,10 +158,17 @@ public class ProductEnquiry extends javax.swing.JFrame {
         txtMinStock = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         txtMaxStock = new javax.swing.JTextField();
+        btnClose = new javax.swing.JButton();
+        btnPrint = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Product Enquiry");
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Search Product"));
 
         jLabel1.setText("Choose Product:");
+
+        txtProduct.setEditable(false);
 
         btnProductSelect.setText("Select Product");
         btnProductSelect.addActionListener(new java.awt.event.ActionListener() {
@@ -84,7 +188,7 @@ public class ProductEnquiry extends javax.swing.JFrame {
                 .addComponent(txtProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnProductSelect, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(196, Short.MAX_VALUE))
+                .addContainerGap(184, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -111,15 +215,53 @@ public class ProductEnquiry extends javax.swing.JFrame {
 
         jLabel8.setText("Sold to date:");
 
+        txtPlu.setEditable(false);
+
+        txtName.setEditable(false);
+
+        txtShortName.setEditable(false);
+
+        txtDep.setEditable(false);
+
+        txtCat.setEditable(false);
+
+        txtStock.setEditable(false);
+
+        txtSold.setEditable(false);
+
         jLabel9.setText("Units Wasted:");
+
+        txtWaste.setEditable(false);
 
         jLabel10.setText("Value Wasted:");
 
+        txtValWaste.setEditable(false);
+
         jLabel11.setText("Value Sold:");
+
+        txtValSold.setEditable(false);
 
         jLabel12.setText("Minimum Stock:");
 
+        txtMinStock.setEditable(false);
+
         jLabel13.setText("Maximum Stock:");
+
+        txtMaxStock.setEditable(false);
+
+        btnClose.setText("Close");
+        btnClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCloseActionPerformed(evt);
+            }
+        });
+
+        btnPrint.setText("Print");
+        btnPrint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrintActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -143,35 +285,41 @@ public class ProductEnquiry extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtPlu)
-                                    .addComponent(txtName)
-                                    .addComponent(txtShortName)
-                                    .addComponent(txtDep)
-                                    .addComponent(txtCat)
-                                    .addComponent(txtSold)
-                                    .addComponent(txtWaste, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel10)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtValWaste, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel11)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtValSold))))
-                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(txtStock, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel12)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtMinStock, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtMinStock, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel13)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtMaxStock, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(txtMaxStock))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(txtSold, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel11))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtPlu)
+                                            .addComponent(txtName)
+                                            .addComponent(txtShortName)
+                                            .addComponent(txtDep)
+                                            .addComponent(txtCat)
+                                            .addComponent(txtWaste, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel10)))
+                                .addGap(6, 6, 6)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtValSold, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtValWaste, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnPrint)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnClose)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -205,8 +353,8 @@ public class ProductEnquiry extends javax.swing.JFrame {
                     .addComponent(txtStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12)
                     .addComponent(txtMinStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel13)
-                    .addComponent(txtMaxStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtMaxStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
@@ -217,31 +365,92 @@ public class ProductEnquiry extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(txtWaste, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10)
-                    .addComponent(txtValWaste, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(74, Short.MAX_VALUE))
+                    .addComponent(txtValWaste, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClose)
+                    .addComponent(btnPrint))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnProductSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductSelectActionPerformed
-        product = ProductSelectDialog.showDialog(this, dc);
-        if(product == null){
-            return;
+        try {
+            product = ProductSelectDialog.showDialog(this, dc);
+            if (product == null) {
+                return;
+            }
+            final Plu plu = dc.getPlu(product.getPlu());
+            final Department dep = dc.getDepartment(product.getDepartment());
+            final Category cat = dc.getCategory(product.getCategory());
+            try {
+                totalSold = dc.getTotalSoldOfItem(product.getId());
+                valueSold = dc.getTotalValueSold(product.getId());
+            } catch (ProductNotFoundException ex) {
+                totalSold = 0;
+                valueSold = BigDecimal.ZERO;
+            }
+            try {
+                totalWasted = dc.getTotalWastedOfItem(product.getId());
+                valueWasted = dc.getValueWastedOfItem(product.getId());
+            } catch (ProductNotFoundException ex) {
+                totalWasted = 0;
+                valueWasted = BigDecimal.ZERO;
+            }
+            txtProduct.setText(product.getId() + "");
+            txtPlu.setText(plu.getCode());
+            txtName.setText(product.getLongName());
+            txtShortName.setText(product.getName());
+            txtDep.setText(dep.getName());
+            txtCat.setText(cat.getName());
+            txtStock.setText(product.getStock() + "");
+            txtMinStock.setText(product.getMinStockLevel() + "");
+            txtMaxStock.setText(product.getMaxStockLevel() + "");
+            txtSold.setText(totalSold + "");
+            txtValSold.setText("£" + valueSold.toString());
+            txtWaste.setText(totalWasted + "");
+            txtValWaste.setText("£" + valueWasted.toString());
+        } catch (IOException | JTillException | SQLException | CategoryNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, ex);
         }
-        
-        txtPlu.setText(product.getPlu().getCode());
-        txtName.setText(product.getLongName());
-        txtShortName.setText(product.getName());
-        txtDep.setText(product.getDepartment().getName());
-        txtCat.setText(product.getCategory().getName());
-        txtStock.setText(product.getStock() + "");
-        txtMinStock.setText(product.getMinStockLevel() + "");
-        txtMaxStock.setText(product.getMaxStockLevel() + "");
     }//GEN-LAST:event_btnProductSelectActionPerformed
 
+    private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
+        setVisible(false);
+    }//GEN-LAST:event_btnCloseActionPerformed
+
+    private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPrintable(new ProductEnquiryPrintout(product, totalSold, valueSold, totalWasted, valueWasted));
+        boolean ok = job.printDialog();
+        final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing report...", job);
+        if (ok) {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        job.print();
+                    } catch (PrinterException ex) {
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(ProductEnquiry.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                    } finally {
+                        mDialog.hide();
+                    }
+                }
+            };
+            Thread th = new Thread(runnable);
+            th.start();
+            mDialog.show();
+            JOptionPane.showMessageDialog(this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_btnPrintActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnPrint;
     private javax.swing.JButton btnProductSelect;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;

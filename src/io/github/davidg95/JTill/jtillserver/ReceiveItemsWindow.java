@@ -288,7 +288,12 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
             val = val.add(p.getPrice().multiply(new BigDecimal(p.getStock())));
         }
         lblValue.setText("Total Value: £" + val);
-        model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), product.getStock()});
+        try {
+            final Plu plu = dc.getPlu(product.getPlu());
+            model.addRow(new Object[]{product.getId(), product.getName(), plu.getCode(), product.getStock()});
+        } catch (IOException | JTillException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex);
+        }
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void tblProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductsMouseClicked
@@ -355,7 +360,12 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                         product.setStock(quantity);
 
                         products.add(product);
-                        model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), product.getStock()});
+                        try {
+                            final Plu plu = dc.getPlu(product.getPlu());
+                            model.addRow(new Object[]{product.getId(), product.getName(), plu.getCode(), product.getStock()});
+                        } catch (JTillException ex) {
+                            JOptionPane.showMessageDialog(this, ex);
+                        }
                     } catch (ProductNotFoundException ex) {
                         if (JOptionPane.showConfirmDialog(this, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                             Plu p = new Plu(barcode);

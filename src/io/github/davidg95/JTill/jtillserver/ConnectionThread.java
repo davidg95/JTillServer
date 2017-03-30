@@ -1177,6 +1177,42 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
+                    case "GETTOTALSOLDITEM": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getTotalSoldItem(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETVALUESOLDITEM": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getValueSoldItem(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETTOTALWASTEDITEM": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getTotalWastedItem(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETVALUEWASTEDITEM": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getValueWastedItem(data);
+                            }
+                        }.start();
+                        break;
+                    }
                     case "CONNTERM": { //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -3346,6 +3382,86 @@ public class ConnectionThread extends Thread {
             }
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getTotalSoldItem(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type getting items");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) data.getData();
+            try {
+                int value = dc.getTotalSoldOfItem(id);
+                obOut.writeObject(ConnectionData.create("SUCC", value));
+            } catch (SQLException | ProductNotFoundException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getValueSoldItem(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type getting items");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) data.getData();
+            try {
+                BigDecimal value = dc.getTotalValueSold(id);
+                obOut.writeObject(ConnectionData.create("SUCC", value));
+            } catch (SQLException | ProductNotFoundException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getTotalWastedItem(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type getting items");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) data.getData();
+            try {
+                int value = dc.getTotalWastedOfItem(id);
+                obOut.writeObject(ConnectionData.create("SUCC", value));
+            } catch (SQLException | ProductNotFoundException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getValueWastedItem(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type getting items");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) data.getData();
+            try {
+                BigDecimal value = dc.getValueWastedOfItem(id);
+                obOut.writeObject(ConnectionData.create("SUCC", value));
+            } catch (SQLException | ProductNotFoundException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

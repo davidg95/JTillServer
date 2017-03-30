@@ -269,7 +269,7 @@ public class WasteReports extends javax.swing.JFrame {
                 if (this.wasteReason != null) {
                     for (WasteReport wr : wasteReports) {
                         for (WasteItem wi : wr.getItems()) {
-                            if (wi.getReason().equals(wasteReason)) {
+                            if (wi.getReason() == wasteReason.getId()) {
                                 newList.add(wr);
                                 break;
                             }

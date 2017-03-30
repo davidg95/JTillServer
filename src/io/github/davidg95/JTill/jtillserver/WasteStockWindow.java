@@ -160,8 +160,13 @@ public class WasteStockWindow extends javax.swing.JFrame {
         }
         model.setRowCount(0);
         for (WasteItem wi : report.getItems()) {
-            Object[] row = new Object[]{wi.getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + wi.getProduct().getPrice().multiply(new BigDecimal(wi.getQuantity())), wi.getReason()};
-            model.addRow(row);
+            try {
+                WasteReason wr = dc.getWasteReason(wi.getReason());
+                Object[] row = new Object[]{wi.getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + wi.getProduct().getPrice().multiply(new BigDecimal(wi.getQuantity())), wr.getReason()};
+                model.addRow(row);
+            } catch (IOException | SQLException | JTillException ex) {
+                Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -212,16 +217,21 @@ public class WasteStockWindow extends javax.swing.JFrame {
 
             y += 30;
 
-            //Print the sale items.
-            for (WasteItem wi : wr.getItems()) {
-                g2.drawString(wi.getName(), item, y);
-                g2.drawString("" + wi.getQuantity(), quantity, y);
-                g2.drawString("£" + wi.getProduct().getPrice().multiply(new BigDecimal(wi.getQuantity())), total, y);
-                g2.drawString(wi.getReason().getName(), reason, y);
-                y += 30;
+            try {
+                //Print the sale items.
+                for (WasteItem wi : wr.getItems()) {
+                    g2.drawString(wi.getName(), item, y);
+                    g2.drawString("" + wi.getQuantity(), quantity, y);
+                    g2.drawString("£" + wi.getProduct().getPrice().multiply(new BigDecimal(wi.getQuantity())), total, y);
+                    final WasteReason wr = dc.getWasteReason(wi.getReason());
+                    g2.drawString(wr.getName(), reason, y);
+                    y += 30;
+                }
+                g2.drawLine(item - 30, y - 20, total + 100, y - 20);
+                g2.drawString("Total: £" + wr.getTotalValue().setScale(2), total, y);
+            } catch (IOException | SQLException | JTillException ex) {
+                JOptionPane.showMessageDialog(WasteStockWindow.this, "Page could not be printed in full");
             }
-            g2.drawLine(item - 30, y - 20, total + 100, y - 20);
-            g2.drawString("Total: £" + wr.getTotalValue().setScale(2), total, y);
 
             return PAGE_EXISTS;
         }
@@ -439,28 +449,22 @@ public class WasteStockWindow extends javax.swing.JFrame {
             }
         }
         int reason = cmbReason.getSelectedIndex() + 1;
-        WasteReason wr = null;
-        try {
-            wr = dc.getWasteReason(reason);
-            WasteItem wi = new WasteItem(product, Integer.parseInt(amount), wr);
-            wasteItems.add(wi);
-            BigDecimal val = BigDecimal.ZERO;
-            for (WasteItem w : wasteItems) {
-                val = val.add(w.getProduct().getPrice().setScale(2).multiply(new BigDecimal(w.getQuantity())));
-            }
-            lblValue.setText("Total Value: £" + val);
-            model.addRow(new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), Integer.parseInt(amount), product.getPrice().multiply(new BigDecimal(wi.getQuantity())), wi.getReason()});
-        } catch (IOException | SQLException | JTillException ex) {
-            Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
+        WasteItem wi = new WasteItem(product, Integer.parseInt(amount), reason);
+        wasteItems.add(wi);
+        BigDecimal val = BigDecimal.ZERO;
+        for (WasteItem w : wasteItems) {
+            val = val.add(w.getProduct().getPrice().setScale(2).multiply(new BigDecimal(w.getQuantity())));
         }
+        lblValue.setText("Total Value: £" + val);
+        model.addRow(new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), Integer.parseInt(amount), product.getPrice().multiply(new BigDecimal(wi.getQuantity())), wi.getReason()});
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnWasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWasteActionPerformed
         if (wasteItems.isEmpty()) {
             return;
         }
-        long d = ((Date)dateSpin.getValue()).getTime();
-        long t = ((Date)timeSpin.getValue()).getTime();
+        long d = ((Date) dateSpin.getValue()).getTime();
+        long t = ((Date) timeSpin.getValue()).getTime();
         date = new Date(d + t);
         Calendar c = Calendar.getInstance();
         c.setTime(date);
@@ -580,15 +584,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
                         Product product = dc.getProductByBarcode(item[0]);
                         int amount = Integer.parseInt(item[1]);
                         int reason = Integer.parseInt(item[2]);
-
-                        WasteReason wr;
-
-                        try {
-                            wr = dc.getWasteReason(reason);
-                        } catch (JTillException ex) {
-                            wr = dc.getWasteReason(0);
-                        }
-                        WasteItem wi = new WasteItem(product, amount, wr);
+                        WasteItem wi = new WasteItem(product, amount, reason);
                         wasteItems.add(wi);
                         BigDecimal val = BigDecimal.ZERO;
                         val.setScale(2);
@@ -596,7 +592,8 @@ public class WasteStockWindow extends javax.swing.JFrame {
                             val = val.add(w.getProduct().getPrice().multiply(new BigDecimal(w.getQuantity())));
                         }
                         lblValue.setText("Total Value: £" + val);
-                        model.addRow(new Object[]{product.getId(), product.getName(), product.getPlu().getCode(), amount, wi.getReason()});
+                        final Plu plu = dc.getPlu(product.getPlu());
+                        model.addRow(new Object[]{product.getId(), product.getName(), plu.getCode(), amount, wi.getReason()});
                     } catch (ProductNotFoundException ex) {
                         errors = true;
                     }
@@ -606,10 +603,8 @@ public class WasteStockWindow extends javax.swing.JFrame {
                 }
             } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, "The file could not be found", "Open File", JOptionPane.ERROR_MESSAGE);
-            } catch (IOException | SQLException ex) {
+            } catch (IOException | SQLException | JTillException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (JTillException ex) {
-                Logger.getGlobal().log(Level.WARNING, null, ex);
             }
         }
     }//GEN-LAST:event_btnCSVActionPerformed

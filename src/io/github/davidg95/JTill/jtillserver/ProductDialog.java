@@ -74,24 +74,32 @@ public class ProductDialog extends javax.swing.JDialog {
     public ProductDialog(Window parent, DataConnect dc, Product p) {
         super(parent);
         this.dc = dc;
-        initComponents();
         this.editMode = true;
-        setLocationRelativeTo(parent);
-        setModal(true);
-        txtName.setText(p.getLongName());
-        txtShortName.setText(p.getName());
-        txtBarcode.setText(p.getPlu().getCode());
-        txtPrice.setText(p.getPrice() + "");
-        txtCostPrice.setText(p.getCostPrice() + "");
-        txtStock.setText(p.getStock() + "");
-        txtMinStock.setText(p.getMinStockLevel() + "");
-        txtMaxStock.setText(p.getMaxStockLevel() + "");
-        txtComments.setText(p.getComments());
-        btnSelectCategory.setText((p.getCategory().getName()));
-        btnSelectTax.setText(p.getTax().getName());
-        btnSelectDepartment.setText(p.getDepartment().getName());
-        btnAddProduct.setText("Save Changes");
-        setTitle("Edit Product " + p.getName());
+        try {
+            initComponents();
+            setLocationRelativeTo(parent);
+            setModal(true);
+            txtName.setText(p.getLongName());
+            txtShortName.setText(p.getName());
+            plu = dc.getPlu(p.getPlu());
+            txtBarcode.setText(plu.getCode());
+            txtPrice.setText(p.getPrice() + "");
+            txtCostPrice.setText(p.getCostPrice() + "");
+            txtStock.setText(p.getStock() + "");
+            txtMinStock.setText(p.getMinStockLevel() + "");
+            txtMaxStock.setText(p.getMaxStockLevel() + "");
+            txtComments.setText(p.getComments());
+            final Category c = dc.getCategory(p.getCategory());
+            btnSelectCategory.setText(c.getName());
+            final Tax t = dc.getTax(p.getTax());
+            btnSelectTax.setText(t.getName());
+            final Department d = dc.getDepartment(p.getDepartment());
+            btnSelectDepartment.setText(d.getName());
+            btnAddProduct.setText("Save Changes");
+            setTitle("Edit Product " + p.getName());
+        } catch (IOException | JTillException | SQLException | CategoryNotFoundException | TaxNotFoundException ex) {
+            showError(ex);
+        }
     }
 
     /**
@@ -361,7 +369,7 @@ public class ProductDialog extends javax.swing.JDialog {
             Plu p = dc.addPlu(plu);
             if (chkOpen.isSelected()) {
                 try {
-                    product = new Product(name, shortName, category, dep, comments, tax, plu, true);
+                    product = new Product(name, shortName, category.getId(), dep.getId(), comments, tax.getId(), p.getId(), true);
                     product = dc.addProduct(product);
                     this.setVisible(false);
                 } catch (IOException | SQLException ex) {
@@ -375,17 +383,17 @@ public class ProductDialog extends javax.swing.JDialog {
                 int maxStock = Integer.parseInt(txtMaxStock.getText());
 
                 if (!editMode) {
-                    product = new Product(name, shortName, category, dep, comments, tax, false, price, costPrice, stock, minStock, maxStock, p);
+                    product = new Product(name, shortName, category.getId(), dep.getId(), comments, tax.getId(), false, price, costPrice, stock, minStock, maxStock, p.getId());
                     product = dc.addProduct(product);
                 } else {
                     product.setLongName(name);
                     product.setName(shortName);
-                    product.setCategory(category);
-                    product.setPlu(plu);
+                    product.setCategory(category.getId());
+                    product.setPlu(plu.getId());
                     product.setPrice(price);
                     product.setStock(stock);
                     product.setComments(comments);
-                    product.setTax(tax);
+                    product.setTax(tax.getId());
                     product.setMinStockLevel(minStock);
                     product.setMaxStockLevel(maxStock);
                     product.setCostPrice(costPrice);

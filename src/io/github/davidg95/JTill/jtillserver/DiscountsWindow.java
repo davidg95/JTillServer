@@ -347,7 +347,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
                 } else if (percentage > 100 || percentage < 0) {
                     JOptionPane.showMessageDialog(this, "Please enter a value between 0 and 100", "Discount", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    d = new Discount(name, percentage, BigDecimal.ZERO, product);
+                    d = new Discount(name, percentage, BigDecimal.ZERO, product.getId());
                     try {
                         Discount dis = dbConn.addDiscount(d);
                         showAllDiscounts();
