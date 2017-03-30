@@ -76,8 +76,11 @@ public class WasteStockWindow extends javax.swing.JFrame {
         ca.set(Calendar.MILLISECOND, 0);
         Date d = ca.getTime();
         Calendar cb = Calendar.getInstance();
-        cb.set(Calendar.HOUR, c.get(Calendar.HOUR - 1));
+        cb.setTime(new Date(0));
+        cb.set(Calendar.HOUR_OF_DAY, c.get(Calendar.HOUR_OF_DAY));
         cb.set(Calendar.MINUTE, c.get(Calendar.MINUTE));
+        cb.set(Calendar.SECOND, c.get(Calendar.SECOND));
+        cb.set(Calendar.MILLISECOND, c.get(Calendar.MILLISECOND));
         Date t = cb.getTime();
         dateSpin.setValue(d);
         timeSpin.setValue(t);
@@ -111,7 +114,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
         ca.set(Calendar.MILLISECOND, 0);
         Date d = ca.getTime();
         Calendar cb = Calendar.getInstance();
-        cb.set(Calendar.HOUR, c.get(Calendar.HOUR - 1));
+        cb.set(Calendar.HOUR_OF_DAY, c.get(Calendar.HOUR_OF_DAY));
         cb.set(Calendar.MINUTE, c.get(Calendar.MINUTE));
         Date t = cb.getTime();
         dateSpin.setValue(d);
@@ -458,9 +461,11 @@ public class WasteStockWindow extends javax.swing.JFrame {
         }
         long d = ((Date)dateSpin.getValue()).getTime();
         long t = ((Date)timeSpin.getValue()).getTime();
-        JOptionPane.showMessageDialog(this, (Date)dateSpin.getValue() + "\n" + (Date)timeSpin.getValue());
         date = new Date(d + t);
-        JOptionPane.showMessageDialog(this, date);
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.set(Calendar.HOUR_OF_DAY, c.get(Calendar.HOUR_OF_DAY) + 1);
+        date = c.getTime();
         WasteReport wr = new WasteReport(date);
         BigDecimal total = BigDecimal.ZERO;
         for (WasteItem wi : wasteItems) {

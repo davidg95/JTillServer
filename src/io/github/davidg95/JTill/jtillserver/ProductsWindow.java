@@ -528,6 +528,11 @@ public class ProductsWindow extends javax.swing.JFrame {
         cmbDepartments.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         btnDepartments.setText("Departments");
+        btnDepartments.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDepartmentsActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -934,6 +939,10 @@ public class ProductsWindow extends javax.swing.JFrame {
     private void radCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radCodeActionPerformed
         txtSearch.requestFocus();
     }//GEN-LAST:event_radCodeActionPerformed
+
+    private void btnDepartmentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartmentsActionPerformed
+        DepartmentsWindow.showWindow(dc, icon);
+    }//GEN-LAST:event_btnDepartmentsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCSV;

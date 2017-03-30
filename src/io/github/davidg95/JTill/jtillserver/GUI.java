@@ -80,6 +80,14 @@ public class GUI extends JFrame implements GUIInterface {
      * @param icon the icon for the frame.
      */
     public GUI(DataConnect dataConnect, boolean remote, Image icon) {
+        try {
+            javax.swing.UIManager.LookAndFeelInfo[] lafs = javax.swing.UIManager.getInstalledLookAndFeels();
+            javax.swing.UIManager.LookAndFeelInfo selection = (javax.swing.UIManager.LookAndFeelInfo) JOptionPane.showInputDialog(this, "Select a look and feel", "Look and feel", JOptionPane.PLAIN_MESSAGE, null, lafs, lafs[0]);
+            System.out.println("Look and feels-");
+            javax.swing.UIManager.setLookAndFeel(selection.getClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
         this.dc = dataConnect;
         this.remote = remote;
         this.icon = icon;
