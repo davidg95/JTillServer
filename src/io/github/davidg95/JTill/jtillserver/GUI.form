@@ -48,6 +48,14 @@
             <Property name="text" type="java.lang.String" value="Stock"/>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="itemCreateNewProduct">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Create New Product"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemCreateNewProductActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemStock">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Manage Stock"/>

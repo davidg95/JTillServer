@@ -424,6 +424,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemAbout = new javax.swing.JMenuItem();
         itemExit = new javax.swing.JMenuItem();
         menuStock = new javax.swing.JMenu();
+        itemCreateNewProduct = new javax.swing.JMenuItem();
         itemStock = new javax.swing.JMenuItem();
         itemReceive = new javax.swing.JMenuItem();
         itemWasteStock = new javax.swing.JMenuItem();
@@ -687,6 +688,14 @@ public class GUI extends JFrame implements GUIInterface {
         jMenuBar1.add(menuFile);
 
         menuStock.setText("Stock");
+
+        itemCreateNewProduct.setText("Create New Product");
+        itemCreateNewProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemCreateNewProductActionPerformed(evt);
+            }
+        });
+        menuStock.add(itemCreateNewProduct);
 
         itemStock.setText("Manage Stock");
         itemStock.addActionListener(new java.awt.event.ActionListener() {
@@ -1080,6 +1089,15 @@ public class GUI extends JFrame implements GUIInterface {
         LabelPrintingWindow.showWindow(dc, icon);
     }//GEN-LAST:event_itemLabelPrintingActionPerformed
 
+    private void itemCreateNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCreateNewProductActionPerformed
+        String barcode = JOptionPane.showInputDialog(this, "Enter or scan barcode", "New Product", JOptionPane.INFORMATION_MESSAGE);
+        if (barcode != null && !barcode.equals("")) {
+            Plu plu = new Plu(barcode);
+            Product p = ProductDialog.showNewProductDialog(this, dc, plu, 0);
+            JOptionPane.showMessageDialog(this, "New Product has been created", "New Product Created", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_itemCreateNewProductActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1094,6 +1112,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JCheckBox chkWarning;
     private javax.swing.JMenuItem itemAbout;
     private javax.swing.JMenuItem itemCategorys;
+    private javax.swing.JMenuItem itemCreateNewProduct;
     private javax.swing.JMenuItem itemCustomers;
     private javax.swing.JMenuItem itemDatabase;
     private javax.swing.JMenuItem itemDepartments;

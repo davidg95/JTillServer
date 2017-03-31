@@ -82,6 +82,7 @@ public class ProductDialog extends javax.swing.JDialog {
             txtName.setText(p.getLongName());
             txtShortName.setText(p.getName());
             plu = dc.getPlu(p.getPlu());
+            txtOrderCode.setText(p.getOrder_code() + "");
             txtBarcode.setText(plu.getCode());
             txtPrice.setText(p.getPrice() + "");
             txtCostPrice.setText(p.getCostPrice() + "");
@@ -174,6 +175,8 @@ public class ProductDialog extends javax.swing.JDialog {
         btnSelectTax = new javax.swing.JButton();
         jLabel12 = new javax.swing.JLabel();
         btnSelectDepartment = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
+        txtOrderCode = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("New Product");
@@ -251,6 +254,8 @@ public class ProductDialog extends javax.swing.JDialog {
             }
         });
 
+        jLabel13.setText("Order Code:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -273,7 +278,8 @@ public class ProductDialog extends javax.swing.JDialog {
                             .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
@@ -296,7 +302,8 @@ public class ProductDialog extends javax.swing.JDialog {
                             .addComponent(btnSelectTax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnSelectCategory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnSelectDepartment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1))))
+                            .addComponent(jScrollPane1)
+                            .addComponent(txtOrderCode))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -314,6 +321,10 @@ public class ProductDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(txtOrderCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -348,11 +359,11 @@ public class ProductDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -361,6 +372,7 @@ public class ProductDialog extends javax.swing.JDialog {
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         String name = txtName.getText();
         String shortName = txtShortName.getText();
+        int orderCode = Integer.parseInt(txtOrderCode.getText());
         Category category = selectedCategory;
         Tax tax = selectedTax;
         Department dep = selectedDepartment;
@@ -369,7 +381,7 @@ public class ProductDialog extends javax.swing.JDialog {
             Plu p = dc.addPlu(plu);
             if (chkOpen.isSelected()) {
                 try {
-                    product = new Product(name, shortName, category.getId(), dep.getId(), comments, tax.getId(), p.getId(), true);
+                    product = new Product(name, shortName, orderCode, category.getId(), dep.getId(), comments, tax.getId(), p.getId(), true);
                     product = dc.addProduct(product);
                     this.setVisible(false);
                 } catch (IOException | SQLException ex) {
@@ -383,7 +395,7 @@ public class ProductDialog extends javax.swing.JDialog {
                 int maxStock = Integer.parseInt(txtMaxStock.getText());
 
                 if (!editMode) {
-                    product = new Product(name, shortName, category.getId(), dep.getId(), comments, tax.getId(), false, price, costPrice, stock, minStock, maxStock, p.getId());
+                    product = new Product(name, shortName, orderCode, category.getId(), dep.getId(), comments, tax.getId(), false, price, costPrice, stock, minStock, maxStock, p.getId());
                     product = dc.addProduct(product);
                 } else {
                     product.setLongName(name);
@@ -452,6 +464,7 @@ public class ProductDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -467,6 +480,7 @@ public class ProductDialog extends javax.swing.JDialog {
     private javax.swing.JTextField txtMaxStock;
     private javax.swing.JTextField txtMinStock;
     private javax.swing.JTextField txtName;
+    private javax.swing.JTextField txtOrderCode;
     private javax.swing.JTextField txtPrice;
     private javax.swing.JTextField txtShortName;
     private javax.swing.JTextField txtStock;
