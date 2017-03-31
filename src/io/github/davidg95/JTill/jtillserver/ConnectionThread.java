@@ -1213,6 +1213,15 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
+                    case "ADDRECEIVEDITEM": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                addReceivedItem(data);
+                            }
+                        }.start();
+                        break;
+                    }
                     case "CONNTERM": { //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -3458,6 +3467,26 @@ public class ConnectionThread extends Thread {
                 BigDecimal value = dc.getValueWastedOfItem(id);
                 obOut.writeObject(ConnectionData.create("SUCC", value));
             } catch (SQLException | ProductNotFoundException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void addReceivedItem(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof ReceivedItem)) {
+                LOG.log(Level.SEVERE, "Unexpected data type receiving items");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            ReceivedItem i = (ReceivedItem) data.getData();
+            try {
+                dc.addReceivedItem(i);
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
