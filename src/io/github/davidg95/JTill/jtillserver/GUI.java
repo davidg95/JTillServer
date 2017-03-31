@@ -1090,12 +1090,13 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemLabelPrintingActionPerformed
 
     private void itemCreateNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCreateNewProductActionPerformed
-        String barcode = JOptionPane.showInputDialog(this, "Enter or scan barcode", "New Product", JOptionPane.INFORMATION_MESSAGE);
-        if (barcode != null && !barcode.equals("")) {
-            Plu plu = new Plu(barcode);
-            Product p = ProductDialog.showNewProductDialog(this, dc, plu, 0);
-            JOptionPane.showMessageDialog(this, "New Product has been created", "New Product Created", JOptionPane.INFORMATION_MESSAGE);
-        }
+        ProductEntryDialog.showDialog(this, dc, icon);
+//        String barcode = JOptionPane.showInputDialog(this, "Enter or scan barcode", "New Product", JOptionPane.INFORMATION_MESSAGE);
+//        if (barcode != null && !barcode.equals("")) {
+//            Plu plu = new Plu(barcode);
+//            Product p = ProductDialog.showNewProductDialog(this, dc, plu, 0);
+//            JOptionPane.showMessageDialog(this, "New Product has been created", "New Product Created", JOptionPane.INFORMATION_MESSAGE);
+//        }
     }//GEN-LAST:event_itemCreateNewProductActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

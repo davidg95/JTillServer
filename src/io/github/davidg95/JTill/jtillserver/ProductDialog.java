@@ -383,6 +383,8 @@ public class ProductDialog extends javax.swing.JDialog {
                 try {
                     product = new Product(name, shortName, orderCode, category.getId(), dep.getId(), comments, tax.getId(), p.getId(), true);
                     product = dc.addProduct(product);
+
+                    dc.addReceivedItem(new ReceivedItem(product.getId(), product.getStock(), product.getCostPrice()));
                     this.setVisible(false);
                 } catch (IOException | SQLException ex) {
                     JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
@@ -396,6 +398,7 @@ public class ProductDialog extends javax.swing.JDialog {
 
                 if (!editMode) {
                     product = new Product(name, shortName, orderCode, category.getId(), dep.getId(), comments, tax.getId(), false, price, costPrice, stock, minStock, maxStock, p.getId());
+                    dc.addReceivedItem(new ReceivedItem(product.getId(), product.getStock(), product.getCostPrice()));
                     product = dc.addProduct(product);
                 } else {
                     product.setLongName(name);
