@@ -15,7 +15,10 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -52,6 +55,11 @@ public class TillServer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        try {
+            javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(TillServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (GraphicsEnvironment.isHeadless()) {
             System.out.println("Headless operation not currently supported");
             System.exit(0);

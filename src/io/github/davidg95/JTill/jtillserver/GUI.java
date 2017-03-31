@@ -67,9 +67,9 @@ public class GUI extends JFrame implements GUIInterface {
     private final ArrayList<String> connections;
 
     private final boolean remote;
-    
+
     private final Image icon; //The icon for the frame.
-    
+
     private final Settings settings; //The settings object.
 
     /**
@@ -81,10 +81,11 @@ public class GUI extends JFrame implements GUIInterface {
      */
     public GUI(DataConnect dataConnect, boolean remote, Image icon) {
         try {
-            javax.swing.UIManager.LookAndFeelInfo[] lafs = javax.swing.UIManager.getInstalledLookAndFeels();
-            javax.swing.UIManager.LookAndFeelInfo selection = (javax.swing.UIManager.LookAndFeelInfo) JOptionPane.showInputDialog(this, "Select a look and feel", "Look and feel", JOptionPane.PLAIN_MESSAGE, null, lafs, lafs[0]);
-            System.out.println("Look and feels-");
-            javax.swing.UIManager.setLookAndFeel(selection.getClassName());
+//            javax.swing.UIManager.LookAndFeelInfo[] lafs = javax.swing.UIManager.getInstalledLookAndFeels();
+//            javax.swing.UIManager.LookAndFeelInfo selection = (javax.swing.UIManager.LookAndFeelInfo) JOptionPane.showInputDialog(this, "Select a look and feel", "Look and feel", JOptionPane.PLAIN_MESSAGE, null, lafs, lafs[0]);
+//            System.out.println("Look and feels-");
+//            System.out.println(selection.getClassName());
+            javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -103,14 +104,14 @@ public class GUI extends JFrame implements GUIInterface {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.dc.setGUI(this);
         log.addHandler(new LogHandler());
-        addKeyListener(new KeyListener(){
+        addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_F1){
+                if (e.getKeyCode() == KeyEvent.VK_F1) {
                     new HelpPage().setVisible(true);
                 }
             }
@@ -268,12 +269,12 @@ public class GUI extends JFrame implements GUIInterface {
      * Method to log a member of staff in to the server.
      */
     public void login() {
-        try {
-            //staff = LoginDialog.showLoginDialog(this, dc);
-            staff = dc.login("dgrant", "adventures");
-        } catch (IOException | LoginException | SQLException ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+        staff = LoginDialog.showLoginDialog(this, dc);
+//            staff = dc.login("dgrant", "adventures");
+//        } catch (IOException | LoginException | SQLException ex) {
+//            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         if (staff != null) {
             lblUser.setText(staff.getName());
             itemLogin.setText("Log Out");
@@ -436,6 +437,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemTillScreens = new javax.swing.JMenuItem();
         itemCustomers = new javax.swing.JMenuItem();
         itemStaff = new javax.swing.JMenuItem();
+        itemNewStaff = new javax.swing.JMenuItem();
         itemDiscounts = new javax.swing.JMenuItem();
         itemCategorys = new javax.swing.JMenuItem();
         itemDepartments = new javax.swing.JMenuItem();
@@ -781,6 +783,14 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemStaff);
 
+        itemNewStaff.setText("Add New Staff");
+        itemNewStaff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemNewStaffActionPerformed(evt);
+            }
+        });
+        menuSetup.add(itemNewStaff);
+
         itemDiscounts.setText("Manage Discounts");
         itemDiscounts.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1099,6 +1109,11 @@ public class GUI extends JFrame implements GUIInterface {
 //        }
     }//GEN-LAST:event_itemCreateNewProductActionPerformed
 
+    private void itemNewStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNewStaffActionPerformed
+        StaffDialog.showNewStaffDialog(this, dc);
+        JOptionPane.showMessageDialog(this, "New staff member created");
+    }//GEN-LAST:event_itemNewStaffActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1122,6 +1137,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenuItem itemLabelPrinting;
     private javax.swing.JMenuItem itemLogin;
+    private javax.swing.JMenuItem itemNewStaff;
     private javax.swing.JMenuItem itemReasons;
     private javax.swing.JMenuItem itemReceive;
     private javax.swing.JMenuItem itemServerOptions;

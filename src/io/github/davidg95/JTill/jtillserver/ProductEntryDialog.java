@@ -383,6 +383,10 @@ public class ProductEntryDialog extends javax.swing.JDialog {
 
     private void btnEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnterActionPerformed
         try {
+            if (dc.checkBarcode(txtPlu.getText())) {
+                JOptionPane.showMessageDialog(this, "Barcode is already in use", "Barcode in use", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             plu = dc.addPlu(new Plu(txtPlu.getText()));
             CardLayout c = (CardLayout) jPanel1.getLayout();
             c.show(jPanel1, "card3");
