@@ -1222,6 +1222,15 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
+                    case "GETSPENTONITEM": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getValueSpentOnItem(data);
+                            }
+                        }.start();
+                        break;
+                    }
                     case "CONNTERM": { //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -3478,7 +3487,7 @@ public class ConnectionThread extends Thread {
         try {
             ConnectionData clone = data.clone();
             if (!(clone.getData() instanceof ReceivedItem)) {
-                LOG.log(Level.SEVERE, "Unexpected data type receiving items");
+                LOG.log(Level.SEVERE, "Unexpected data type receiving item");
                 obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
                 return;
             }
@@ -3487,6 +3496,26 @@ public class ConnectionThread extends Thread {
                 dc.addReceivedItem(i);
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getValueSpentOnItem(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof ReceivedItem)) {
+                LOG.log(Level.SEVERE, "Unexpected data type getting item");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) data.getData();
+            try {
+                BigDecimal val = dc.getValueSpentOnItem(id);
+                obOut.writeObject(ConnectionData.create("SUCC", val));
+            } catch (ProductNotFoundException | SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
