@@ -268,7 +268,12 @@ public class GUI extends JFrame implements GUIInterface {
      * Method to log a member of staff in to the server.
      */
     public void login() {
-        staff = LoginDialog.showLoginDialog(this, dc);
+        try {
+            //staff = LoginDialog.showLoginDialog(this, dc);
+            staff = dc.login("dgrant", "adventures");
+        } catch (IOException | LoginException | SQLException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (staff != null) {
             lblUser.setText(staff.getName());
             itemLogin.setText("Log Out");

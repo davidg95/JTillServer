@@ -236,7 +236,7 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                 Product product = dc.getProduct(p.getId());
                 product.addStock(p.getStock());
                 p = dc.updateProduct(product);
-                dc.addReceivedItem(new ReceivedItem(p.getId(), p.getStock(), p.getPrice()));
+                dc.addReceivedItem(new ReceivedItem(p.getId(), p.getStock(), p.getCostPrice()));
             } catch (IOException | ProductNotFoundException | SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }

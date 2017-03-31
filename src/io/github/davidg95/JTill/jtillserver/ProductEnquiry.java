@@ -179,6 +179,8 @@ public class ProductEnquiry extends javax.swing.JFrame {
         txtExpectedMargin = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
         txtProfit = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
+        txtMarginToDate = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Product Enquiry");
@@ -298,6 +300,10 @@ public class ProductEnquiry extends javax.swing.JFrame {
 
         txtProfit.setEditable(false);
 
+        jLabel18.setText("Margin to date %:");
+
+        txtMarginToDate.setEditable(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -362,7 +368,12 @@ public class ProductEnquiry extends javax.swing.JFrame {
                                     .addComponent(jLabel16)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(txtExpectedMargin)))
-                            .addComponent(txtProfit, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtProfit, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtMarginToDate, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -427,7 +438,9 @@ public class ProductEnquiry extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
-                    .addComponent(txtProfit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtProfit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18)
+                    .addComponent(txtMarginToDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
@@ -461,7 +474,7 @@ public class ProductEnquiry extends javax.swing.JFrame {
                 totalWasted = 0;
                 valueWasted = BigDecimal.ZERO;
             }
-            try{
+            try {
                 totalSpent = dc.getValueSpentOnItem(product.getId());
             } catch (ProductNotFoundException ex) {
                 totalSpent = BigDecimal.ZERO;
@@ -483,6 +496,7 @@ public class ProductEnquiry extends javax.swing.JFrame {
             txtCostPrice.setText("£" + product.getCostPrice());
             txtExpectedMargin.setText((product.getCostPrice().doubleValue() / product.getPrice().doubleValue()) * 100 + "");
             txtProfit.setText("£" + valueSold.subtract(totalSpent));
+            txtMarginToDate.setText((totalSpent.doubleValue() / valueSold.doubleValue()) * 100 + "");
         } catch (IOException | JTillException | SQLException | CategoryNotFoundException ex) {
             JOptionPane.showMessageDialog(this, ex);
         }
@@ -531,6 +545,7 @@ public class ProductEnquiry extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -544,6 +559,7 @@ public class ProductEnquiry extends javax.swing.JFrame {
     private javax.swing.JTextField txtCostPrice;
     private javax.swing.JTextField txtDep;
     private javax.swing.JTextField txtExpectedMargin;
+    private javax.swing.JTextField txtMarginToDate;
     private javax.swing.JTextField txtMaxStock;
     private javax.swing.JTextField txtMinStock;
     private javax.swing.JTextField txtName;

@@ -94,7 +94,13 @@
                                   <Component id="txtExpectedMargin" max="32767" attributes="0"/>
                               </Group>
                           </Group>
-                          <Component id="txtProfit" min="-2" pref="94" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="txtProfit" min="-2" pref="94" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="txtMarginToDate" min="-2" pref="104" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
@@ -175,6 +181,8 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel17" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtProfit" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel18" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtMarginToDate" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="23" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -417,6 +425,16 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtProfit">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel18">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Margin to date %:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtMarginToDate">
       <Properties>
         <Property name="editable" type="boolean" value="false"/>
       </Properties>
