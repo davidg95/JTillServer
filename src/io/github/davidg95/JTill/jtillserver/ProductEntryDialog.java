@@ -44,6 +44,16 @@ public class ProductEntryDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setModal(true);
         setIconImage(icon);
+        try {
+            selectedCategory = dc.getCategory(1);
+            selectedTax = dc.getTax(1);
+            selectedDepartment = dc.getDepartment(1);
+            btnSelectCategory.setText(selectedCategory.getName());
+            btnSelectTax.setText(selectedTax.getName());
+            btnSelectDepartment.setText(selectedDepartment.getName());
+        } catch (IOException | SQLException | JTillException | TaxNotFoundException | CategoryNotFoundException ex) {
+            Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static void showDialog(Component parent, DataConnect dc, Image icon) {

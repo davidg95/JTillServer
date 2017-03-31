@@ -1,73 +1,71 @@
-JTill log Fri Mar 31 13:26:19 BST 2017
-[13:26:19] [INFO] Connecting to database {0}
-[13:26:19] [INFO] Connecting to database {0}
-[13:26:19] [INFO] Get staff count
-[13:26:19] [INFO] Starting Thread Pool Excecutor
-[13:26:19] [INFO] JTill Server local IP address is 192.168.1.65
-[13:26:19] [INFO] Server Socket running on port number 52341
-[13:26:19] [INFO] Ready to accept connections
-[13:26:19] [INFO] Connecting to database {0}
-[13:26:53] [INFO] Connecting to database {0}
-[13:26:53] [INFO] Login Staff {0}
-[13:26:53] [INFO] David Grant has logged in
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Connecting to database {0}
-[13:27:06] [INFO] Get product {0}
+JTill log Fri Mar 31 15:43:40 BST 2017
+[15:43:40] [INFO] Connecting to database {0}
+[15:43:40] [INFO] Connecting to database {0}
+[15:43:40] [INFO] Get staff count
+[15:43:41] [INFO] Starting Thread Pool Excecutor
+[15:43:41] [INFO] JTill Server local IP address is 192.168.1.65
+[15:43:41] [INFO] Server Socket running on port number 52341
+[15:43:41] [INFO] Ready to accept connections
+[15:43:41] [INFO] Connecting to database {0}
+[15:43:47] [INFO] Connecting to database {0}
+[15:43:47] [INFO] {0} has connected
+[15:43:47] [INFO] Received {0} from server
+[15:43:47] [INFO] Received {0} from server
+[15:43:47] [INFO] Received {0} from server
+[15:43:47] [INFO] Received {0} from server
+[15:43:47] [INFO] Received {0} from server
+[15:43:47] [INFO] Connecting to database {0}
+[15:43:47] [INFO] Get all discounts
+[15:43:47] [INFO] Received {0} from server
+[15:43:47] [INFO] Connecting to database {0}
+[15:43:48] [INFO] Received {0} from server
+[15:43:48] [INFO] Connecting to database {0}
+[15:43:48] [INFO] Get staff {0}
+[15:43:48] [INFO] Received {0} from server
+[15:43:48] [INFO] Connecting to database {0}
+[15:43:48] [INFO] {0} has logged in from {1}
+[15:43:48] [INFO] Received {0} from server
+[15:43:50] [INFO] Received {0} from server
+[15:43:50] [INFO] Connecting to database {0}
+[15:43:50] [INFO] Get Product {0}
+[15:43:50] [INFO] Received {0} from server
+[15:43:50] [INFO] Connecting to database {0}
+[15:43:51] [INFO] Received {0} from server
+[15:43:51] [INFO] Connecting to database {0}
+[15:43:51] [INFO] Get Product {0}
+[15:43:51] [INFO] Received {0} from server
+[15:43:51] [INFO] Connecting to database {0}
+[15:43:53] [INFO] Received {0} from server
+[15:43:53] [INFO] Connecting to database {0}
+[15:43:53] [INFO] Get Product {0}
+[15:43:53] [INFO] Received {0} from server
+[15:43:53] [INFO] Connecting to database {0}
+[15:43:54] [INFO] Received {0} from server
+[15:43:54] [INFO] Connecting to database {0}
+[15:43:54] [INFO] Get Product {0}
+[15:43:54] [INFO] Received {0} from server
+[15:43:54] [INFO] Connecting to database {0}
+[15:43:56] [INFO] Received {0} from server
+[15:43:56] [INFO] Connecting to database {0}
+[15:43:56] [INFO] Get Product {0}
+[15:43:57] [INFO] Received {0} from server
+[15:43:57] [INFO] Connecting to database {0}
+[15:43:57] [INFO] Get Product {0}
+[15:43:57] [INFO] Received {0} from server
+[15:43:57] [INFO] Connecting to database {0}
+[15:43:59] [INFO] Received {0} from server
+[15:43:59] [INFO] Connecting to database {0}
+[15:43:59] [INFO] Get Product {0}
+[15:43:59] [INFO] Received {0} from server
+[15:43:59] [INFO] Connecting to database {0}
+[15:44:00] [INFO] Received {0} from server
+[15:44:00] [INFO] Connecting to database {0}
+[15:44:00] [INFO] Get Product {0}
+[15:44:02] [INFO] Received {0} from server
+[15:44:02] [INFO] Connecting to database {0}
+[15:44:02] [INFO] Get Product {0}
+[15:44:03] [INFO] Received {0} from server
+[15:44:03] [INFO] {0} has logged out
+[15:44:03] [INFO] Received {0} from server
+[15:44:03] [INFO] Received {0} from server
+[15:44:03] [INFO] {0} has disconnected

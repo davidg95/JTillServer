@@ -121,10 +121,20 @@ public class ReportingWindow extends javax.swing.JFrame {
 
             //Print the sale items.
             for (SaleItem it : items) {
-                g2.drawString(it.getName(), itemCol, y);
-                g2.drawString("" + it.getQuantity(), quantityCol, y);
-                g2.drawString("£" + it.getPrice(), totalCol, y);
-                y += 30;
+                try {
+                    if (it.getType() == SaleItem.PRODUCT) {
+                        final Product product = dc.getProduct(it.getItem());
+                        g2.drawString(product.getName(), itemCol, y);
+                    } else {
+                        final Discount discount = dc.getDiscount(it.getItem());
+                        g2.drawString(discount.getName(), itemCol, y);
+                    }
+                    g2.drawString("" + it.getQuantity(), quantityCol, y);
+                    g2.drawString("£" + it.getPrice(), totalCol, y);
+                    y += 30;
+                } catch (IOException | ProductNotFoundException | SQLException | DiscountNotFoundException ex) {
+                    Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             g2.drawLine(itemCol - 30, y - 20, totalCol + 100, y - 20);
 
@@ -298,8 +308,8 @@ public class ReportingWindow extends javax.swing.JFrame {
             }
             for (SaleItem i : items) {
                 if (cat != null) {
-                    if (i.getItem() instanceof Product) {
-                        Product p = (Product) i.getItem();
+                    if (i.getType() == SaleItem.PRODUCT) {
+                        Product p = dc.getProduct(i.getItem());
                         if (p.getCategory() == cat.getId()) {
                             fil.add(i);
                         }
@@ -310,8 +320,8 @@ public class ReportingWindow extends javax.swing.JFrame {
             }
             for (SaleItem i : fil) {
                 if (dep != null) {
-                    if (i.getItem() instanceof Product) {
-                        Product p = (Product) i.getItem();
+                    if (i.getType() == SaleItem.PRODUCT) {
+                        Product p = dc.getProduct(i.getItem());
                         if (p.getDepartment() == dep.getId()) {
                             fil2.add(i);
                         }
@@ -323,7 +333,7 @@ public class ReportingWindow extends javax.swing.JFrame {
 
             ReportPrinter p = new ReportPrinter(fil2, deps, cats);
             p.printReport();
-        } catch (IOException | SQLException ex) {
+        } catch (IOException | SQLException | ProductNotFoundException ex) {
             Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnGenerateActionPerformed

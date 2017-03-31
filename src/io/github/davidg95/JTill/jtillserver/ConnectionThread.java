@@ -1304,7 +1304,7 @@ public class ConnectionThread extends Thread {
                 }
                 Product p = (Product) clone.getData();
                 int amount = (int) clone.getData2();
-                int stock = dc.purchaseProduct(p, amount);
+                int stock = dc.purchaseProduct(p.getId(), amount);
                 obOut.writeObject(ConnectionData.create("SUCC", stock));
             } catch (ProductNotFoundException | SQLException | OutOfStockException ex) {
                 LOG.log(Level.WARNING, null, ex);
