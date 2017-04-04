@@ -162,6 +162,8 @@ public class StaffWindow extends javax.swing.JFrame {
         btnSearch = new javax.swing.JButton();
         btnPassword = new javax.swing.JButton();
         lblPassword = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        txtWage = new javax.swing.JTextField();
 
         setTitle("Manage Staff");
 
@@ -268,6 +270,8 @@ public class StaffWindow extends javax.swing.JFrame {
 
         lblPassword.setText("Click to change password:");
 
+        jLabel4.setText("Wage:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -280,14 +284,15 @@ public class StaffWindow extends javax.swing.JFrame {
                             .addComponent(lblPassword)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel3))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnPassword)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtName)
-                                .addComponent(cmbPosition, 0, 139, Short.MAX_VALUE)
-                                .addComponent(txtUsername))))
+                            .addComponent(txtName)
+                            .addComponent(cmbPosition, 0, 139, Short.MAX_VALUE)
+                            .addComponent(txtUsername)
+                            .addComponent(txtWage)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAddStaff)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -335,7 +340,11 @@ public class StaffWindow extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnPassword)
                             .addComponent(lblPassword))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(2, 2, 2)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(txtWage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAddStaff)
                             .addComponent(btnSave))
@@ -370,9 +379,11 @@ public class StaffWindow extends javax.swing.JFrame {
         String name = txtName.getText();
         String username = txtUsername.getText();
         int position = cmbPosition.getSelectedIndex() + 1;
+        double wage = Double.parseDouble(txtWage.getText());
         staff.setName(name);
         staff.setUsername(username);
         staff.setPosition(position);
+        staff.setWage(wage);
         try {
             dc.updateStaff(staff);
         } catch (SQLException | StaffNotFoundException | IOException ex) {
@@ -497,6 +508,7 @@ public class StaffWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblPassword;
@@ -506,5 +518,6 @@ public class StaffWindow extends javax.swing.JFrame {
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtUsername;
+    private javax.swing.JTextField txtWage;
     // End of variables declaration//GEN-END:variables
 }

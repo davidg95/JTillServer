@@ -1,11 +1,84 @@
-JTill log Tue Apr 04 15:24:57 BST 2017
-[15:24:57] [INFO] Connecting to database {0}
-[15:24:57] [INFO] Connecting to database {0}
-[15:24:57] [INFO] Get staff count
-[15:24:57] [INFO] Starting Thread Pool Excecutor
-[15:24:57] [INFO] JTill Server local IP address is 192.168.1.65
-[15:24:57] [INFO] Server Socket running on port number 52341
-[15:24:57] [INFO] Ready to accept connections
-[15:24:57] [INFO] Connecting to database {0}
-[15:25:00] [INFO] Connecting to database {0}
-[15:25:00] [INFO] Login Staff {0}
+JTill log Tue Apr 04 16:31:18 BST 2017
+[16:31:18] [INFO] Connecting to database {0}
+[16:31:18] [INFO] Connecting to database {0}
+[16:31:19] [INFO] Get staff count
+[16:31:19] [INFO] Starting Thread Pool Excecutor
+[16:31:19] [INFO] JTill Server local IP address is 192.168.1.65
+[16:31:19] [INFO] Server Socket running on port number 52341
+[16:31:19] [INFO] Ready to accept connections
+[16:31:19] [INFO] Connecting to database {0}
+[16:31:26] [INFO] Connecting to database {0}
+[16:31:26] [INFO] {0} has connected
+[16:31:26] [INFO] Received {0} from server
+[16:31:26] [INFO] Received {0} from server
+[16:31:26] [INFO] Received {0} from server
+[16:31:26] [INFO] Received {0} from server
+[16:31:26] [INFO] Received {0} from server
+[16:31:26] [INFO] Connecting to database {0}
+[16:31:26] [INFO] Get all discounts
+[16:31:26] [INFO] Received {0} from server
+[16:31:26] [INFO] Connecting to database {0}
+[16:31:27] [INFO] Received {0} from server
+[16:31:27] [INFO] Connecting to database {0}
+[16:31:27] [INFO] Get staff {0}
+[16:31:27] [INFO] Received {0} from server
+[16:31:27] [INFO] Connecting to database {0}
+[16:31:27] [INFO] Received {0} from server
+[16:31:27] [INFO] Connecting to database {0}
+[16:31:27] [INFO] {0} has logged in from {1}
+[16:31:27] [INFO] Received {0} from server
+[16:31:34] [INFO] Received {0} from server
+[16:31:34] [INFO] Connecting to database {0}
+[16:31:34] [INFO] Get Product {0}
+[16:31:34] [INFO] Received {0} from server
+[16:31:34] [INFO] Connecting to database {0}
+[16:31:37] [INFO] Received {0} from server
+[16:31:37] [INFO] Connecting to database {0}
+[16:31:37] [INFO] Get Product {0}
+[16:31:37] [INFO] Received {0} from server
+[16:31:37] [INFO] Connecting to database {0}
+[16:31:43] [INFO] Received {0} from server
+[16:31:43] [INFO] Connecting to database {0}
+[16:31:43] [INFO] Connecting to database {0}
+[16:31:43] [INFO] Connecting to database {0}
+[16:31:43] [INFO] Purchase product {0}
+[16:31:43] [WARNING] {0} is below minimum stock level
+[16:31:43] [INFO] Connecting to database {0}
+[16:31:43] [INFO] Connecting to database {0}
+[16:31:43] [INFO] Purchase product {0}
+[16:31:44] [INFO] Received {0} from server
+[16:31:46] [INFO] Received {0} from server
+[16:31:46] [INFO] {0} has logged out
+[16:31:46] [INFO] Received {0} from server
+[16:31:46] [INFO] {0} has disconnected
+[16:31:52] [INFO] Connecting to database {0}
+[16:31:52] [INFO] {0} has connected
+[16:31:52] [INFO] Received {0} from server
+[16:31:52] [INFO] Received {0} from server
+[16:31:52] [INFO] Received {0} from server
+[16:31:52] [INFO] Received {0} from server
+[16:31:52] [INFO] Received {0} from server
+[16:31:52] [INFO] Connecting to database {0}
+[16:31:52] [INFO] Get all discounts
+[16:31:53] [INFO] Received {0} from server
+[16:31:53] [INFO] Connecting to database {0}
+[16:31:56] [INFO] Received {0} from server
+[16:31:56] [INFO] Connecting to database {0}
+[16:31:56] [INFO] Get staff {0}
+[16:31:56] [INFO] Received {0} from server
+[16:31:56] [INFO] Received {0} from server
+[16:31:56] [INFO] Connecting to database {0}
+[16:31:56] [INFO] {0} has logged in from {1}
+[16:31:56] [INFO] Received {0} from server
+[16:32:00] [INFO] Received {0} from server
+[16:32:00] [INFO] Connecting to database {0}
+[16:32:01] [INFO] Received {0} from server
+[16:32:01] [INFO] {0} has logged out
+[16:32:01] [INFO] Received {0} from server
+[16:32:01] [INFO] {0} has disconnected
+[16:32:08] [INFO] Connecting to database {0}
+[16:32:08] [INFO] Login Staff {0}
+[16:32:08] [INFO] David Grant has logged in
+[16:32:11] [INFO] Connecting to database {0}
+[16:32:11] [INFO] Get all staff
+[16:32:11] [INFO] Connecting to database {0}
