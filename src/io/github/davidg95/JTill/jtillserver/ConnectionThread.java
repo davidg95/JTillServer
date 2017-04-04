@@ -1231,6 +1231,42 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
+                    case "CLOCKON": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                clockOn(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "CLOCKOFF": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                clockOff(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETCLOCKS": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getAllClocks(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "CLEARCLOCKS": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                clearClocks(data);
+                            }
+                        }.start();
+                        break;
+                    }
                     case "CONNTERM": { //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -3506,7 +3542,7 @@ public class ConnectionThread extends Thread {
     private void getValueSpentOnItem(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
-            if (!(clone.getData() instanceof ReceivedItem)) {
+            if (!(clone.getData() instanceof Integer)) {
                 LOG.log(Level.SEVERE, "Unexpected data type getting item");
                 obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
                 return;
@@ -3516,6 +3552,86 @@ public class ConnectionThread extends Thread {
                 BigDecimal val = dc.getValueSpentOnItem(id);
                 obOut.writeObject(ConnectionData.create("SUCC", val));
             } catch (ProductNotFoundException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void clockOn(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type clocking on");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) data.getData();
+            try {
+                dc.clockOn(id);
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (StaffNotFoundException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void clockOff(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type clocking off");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) data.getData();
+            try {
+                dc.clockOff(id);
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (StaffNotFoundException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getAllClocks(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type getting clocks");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) data.getData();
+            try {
+                List<ClockItem> items = dc.getAllClocks(id);
+                obOut.writeObject(ConnectionData.create("SUCC", items));
+            } catch (StaffNotFoundException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void clearClocks(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type clearing clocks");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) data.getData();
+            try {
+                dc.clearClocks(id);
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (StaffNotFoundException | SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {

@@ -399,6 +399,7 @@ public class ProductEntryDialog extends javax.swing.JDialog {
             }
             plu = dc.addPlu(new Plu(txtPlu.getText()));
             CardLayout c = (CardLayout) jPanel1.getLayout();
+            txtName.requestFocus();
             c.show(jPanel1, "card3");
         } catch (IOException | SQLException ex) {
             Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);

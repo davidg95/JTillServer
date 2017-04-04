@@ -16,6 +16,7 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -516,13 +517,20 @@ public class ProductEnquiry extends javax.swing.JFrame {
             txtValWaste.setText("£" + valueWasted.toString());
             txtPrice.setText("£" + product.getPrice());
             txtCostPrice.setText("£" + product.getCostPrice());
-            txtExpectedMargin.setText((product.getCostPrice().doubleValue() / product.getPrice().doubleValue()) * 100 + "");
+            double expectedMargin = (product.getCostPrice().doubleValue() / product.getPrice().doubleValue()) * 100;
+            BigDecimal  bExpectedMargin = new BigDecimal(expectedMargin);
+            bExpectedMargin = bExpectedMargin.setScale(2, RoundingMode.HALF_UP);
+            txtExpectedMargin.setText(bExpectedMargin.toString());
             txtProfit.setText("£" + valueSold.subtract(totalSpent));
             double margin = (totalSpent.doubleValue() / valueSold.doubleValue()) * 100;
             if (Double.isNaN(margin)) {
                 txtMarginToDate.setText("---");
+            } else if(Double.isInfinite(margin)){
+                txtMarginToDate.setText("INFINITE");
             } else {
-                txtMarginToDate.setText((totalSpent.doubleValue() / valueSold.doubleValue()) * 100 + "");
+                BigDecimal bMargin = new BigDecimal(margin);
+                bMargin = bMargin.setScale(2, RoundingMode.HALF_UP);
+                txtMarginToDate.setText(bMargin.toString());
             }
         } catch (IOException | JTillException | SQLException | CategoryNotFoundException ex) {
             JOptionPane.showMessageDialog(this, ex);

@@ -447,6 +447,7 @@ public class GUI extends JFrame implements GUIInterface {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         itemLabelPrinting = new javax.swing.JMenuItem();
+        itemStaffClocking = new javax.swing.JMenuItem();
 
         setTitle("JTill Server");
 
@@ -848,6 +849,14 @@ public class GUI extends JFrame implements GUIInterface {
         });
         jMenu1.add(itemLabelPrinting);
 
+        itemStaffClocking.setText("Staff Hours");
+        itemStaffClocking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemStaffClockingActionPerformed(evt);
+            }
+        });
+        jMenu1.add(itemStaffClocking);
+
         jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
@@ -1114,6 +1123,10 @@ public class GUI extends JFrame implements GUIInterface {
         JOptionPane.showMessageDialog(this, "New staff member created");
     }//GEN-LAST:event_itemNewStaffActionPerformed
 
+    private void itemStaffClockingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffClockingActionPerformed
+        StaffClocking.showWindow(dc, icon);
+    }//GEN-LAST:event_itemStaffClockingActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1142,6 +1155,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemReceive;
     private javax.swing.JMenuItem itemServerOptions;
     private javax.swing.JMenuItem itemStaff;
+    private javax.swing.JMenuItem itemStaffClocking;
     private javax.swing.JMenuItem itemStock;
     private javax.swing.JMenuItem itemSuppliers;
     private javax.swing.JMenuItem itemTaxes;
