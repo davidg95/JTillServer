@@ -11,11 +11,15 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerDateModel;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -123,6 +127,8 @@ public class DiscountsWindow extends javax.swing.JFrame {
             txtMoney.setText("");
             txtOfEach.setText("");
             txtTotal.setText("");
+            spinStart.setValue(new Date());
+            spinEnd.setValue(new Date());
             discount = null;
         } else {
             this.discount = d;
@@ -158,6 +164,8 @@ public class DiscountsWindow extends javax.swing.JFrame {
                 lblAtLeast.setEnabled(true);
                 lblTotal.setEnabled(true);
             }
+            spinStart.setValue(new Date(d.getStart()));
+            spinEnd.setValue(new Date(d.getEnd()));
             getTriggers();
         }
     }
@@ -235,6 +243,10 @@ public class DiscountsWindow extends javax.swing.JFrame {
         lblTotal = new javax.swing.JLabel();
         rad1 = new javax.swing.JRadioButton();
         rad2 = new javax.swing.JRadioButton();
+        jLabel4 = new javax.swing.JLabel();
+        spinStart = new javax.swing.JSpinner();
+        jLabel6 = new javax.swing.JLabel();
+        spinEnd = new javax.swing.JSpinner();
 
         setTitle("Discounts");
 
@@ -393,6 +405,24 @@ public class DiscountsWindow extends javax.swing.JFrame {
         buttonGroup1.add(rad2);
         rad2.setText("Condition 2");
 
+        jLabel4.setText("Discount Period:");
+
+        SpinnerDateModel modelStart = new SpinnerDateModel();
+        modelStart.setCalendarField(Calendar.MINUTE);
+
+        spinStart = new JSpinner();
+        spinStart.setModel(modelStart);
+        spinStart.setEditor(new JSpinner.DateEditor(spinStart, "dd/MM/yyyy"));
+
+        jLabel6.setText("-");
+
+        SpinnerDateModel modelEnd = new SpinnerDateModel();
+        modelEnd.setCalendarField(Calendar.MINUTE);
+
+        spinEnd = new JSpinner();
+        spinEnd.setModel(modelEnd);
+        spinEnd.setEditor(new JSpinner.DateEditor(spinEnd, "dd/MM/yyyy"));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -419,7 +449,8 @@ public class DiscountsWindow extends javax.swing.JFrame {
                             .addComponent(jLabel5)
                             .addComponent(jLabel2)
                             .addComponent(lblPercentage)
-                            .addComponent(jLabel3))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -436,9 +467,9 @@ public class DiscountsWindow extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtMoney))
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(rad1)
-                                    .addComponent(rad2))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(rad1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(rad2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -450,8 +481,14 @@ public class DiscountsWindow extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(lblTotal)))))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                                        .addComponent(lblTotal))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(spinStart, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(spinEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -460,7 +497,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearch))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 642, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -507,7 +544,13 @@ public class DiscountsWindow extends javax.swing.JFrame {
                                     .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lblAtLeast)
                                     .addComponent(lblTotal))))
-                        .addGap(63, 63, 63)
+                        .addGap(2, 2, 2)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(spinStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6)
+                            .addComponent(spinEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(41, 41, 41)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnNew)
                             .addComponent(btnSave)
@@ -558,7 +601,9 @@ public class DiscountsWindow extends javax.swing.JFrame {
                 } else if (percentage > 100 || percentage < 0) {
                     JOptionPane.showMessageDialog(this, "Please enter a value between 0 and 100", "Discount", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    d = new Discount(name, percentage, new BigDecimal(Double.toString(price)), action, condition, value);
+                    Date start = (Date) spinStart.getValue();
+                    Date end = (Date) spinEnd.getValue();
+                    d = new Discount(name, percentage, new BigDecimal(Double.toString(price)), action, condition, value, start.getTime(), end.getTime());
                     try {
                         Discount dis = dc.addDiscount(d);
                         showAllDiscounts();
@@ -595,13 +640,15 @@ public class DiscountsWindow extends javax.swing.JFrame {
                 } else {
                     discount.setPrice(new BigDecimal(txtMoney.getText()));
                 }
-                if(rad1.isSelected()){
+                if (rad1.isSelected()) {
                     discount.setCondition(1);
                     discount.setConditionValue(Integer.parseInt(txtOfEach.getText()));
-                } else{
+                } else {
                     discount.setCondition(2);
                     discount.setConditionValue(Integer.parseInt(txtTotal.getText()));
                 }
+                discount.setStart(((Date) spinStart.getValue()).getTime());
+                discount.setEnd(((Date) spinEnd.getValue()).getTime());
                 try {
                     dc.updateDiscount(discount);
                 } catch (SQLException | DiscountNotFoundException | IOException ex) {
@@ -693,12 +740,12 @@ public class DiscountsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRemoveTriggerActionPerformed
 
     private void cmbActionPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_cmbActionPropertyChange
-        if(cmbAction.getSelectedIndex() == Discount.PERCENTAGE_OFF){
+        if (cmbAction.getSelectedIndex() == Discount.PERCENTAGE_OFF) {
             lblPercentage.setEnabled(true);
             txtPercentage.setEnabled(true);
             lblMoney.setEnabled(false);
             txtMoney.setEnabled(false);
-        } else{
+        } else {
             lblPercentage.setEnabled(false);
             txtPercentage.setEnabled(false);
             lblMoney.setEnabled(true);
@@ -720,7 +767,9 @@ public class DiscountsWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblAtLeast;
@@ -730,6 +779,8 @@ public class DiscountsWindow extends javax.swing.JFrame {
     private javax.swing.JLabel lblTotal;
     private javax.swing.JRadioButton rad1;
     private javax.swing.JRadioButton rad2;
+    private javax.swing.JSpinner spinEnd;
+    private javax.swing.JSpinner spinStart;
     private javax.swing.JTable table;
     private javax.swing.JTable tableTrig;
     private javax.swing.JTextField txtMoney;

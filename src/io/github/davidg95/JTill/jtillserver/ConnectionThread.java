@@ -1294,6 +1294,15 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
+                    case "GETVALIDDISCOUNTS": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getValidDiscounts();
+                            }
+                        }.start();
+                        break;
+                    }
                     case "CONNTERM": { //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -3719,6 +3728,19 @@ public class ConnectionThread extends Thread {
                 dc.removeTrigger(id);
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (JTillException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getValidDiscounts() {
+        try {
+            try {
+                List<Discount> discounts = dc.getValidDiscounts();
+                obOut.writeObject(ConnectionData.create("SUCC", discounts));
+            } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
