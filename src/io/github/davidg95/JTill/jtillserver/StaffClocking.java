@@ -120,7 +120,7 @@ public class StaffClocking extends javax.swing.JFrame {
             y += 30;
 
             //Print the sale items.
-            for(Staff s: staffList){
+            for (Staff s : staffList) {
                 g2.drawString(s.toString(), staff, y);
                 g2.drawString(s.getHours() + "", hours, y);
                 g2.drawString("£" + s.getPay(), pay, y);
@@ -348,9 +348,13 @@ public class StaffClocking extends javax.swing.JFrame {
             currentTableContents = dc.getAllClocks(staff.getId());
             clocked = 0;
             long on = 0;
+            int last = -1;
             for (ClockItem i : currentTableContents) {
                 if (i.getType() == ClockItem.CLOCK_ON) {
-                    on = i.getTime().getTime();
+                    if (last != ClockItem.CLOCK_ON) {
+                        last = ClockItem.CLOCK_ON;
+                        on = i.getTime().getTime();
+                    }
                 } else {
                     if (on != 0) {
                         long off = i.getTime().getTime();
@@ -358,6 +362,7 @@ public class StaffClocking extends javax.swing.JFrame {
                         double minutes = (duration / 1000) / 60;
                         double hours = minutes / 60;
                         clocked += hours;
+                        last = ClockItem.CLOCK_OFF;
                     }
                 }
             }
@@ -381,12 +386,12 @@ public class StaffClocking extends javax.swing.JFrame {
         double wage = clocked * rate;
         BigDecimal bWage = new BigDecimal(wage).setScale(2, RoundingMode.HALF_UP);
         txtWage.setText("£" + bWage);
-        if (JOptionPane.showConfirmDialog(this, "Do you want to clear the current clock entries?", "Hours", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(this, "Do you want to clear the current clock entries for this member of staff?", "Hours", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             try {
                 dc.clearClocks(staff.getId());
-                JOptionPane.showMessageDialog(this, "Hours cleared", "Hours", JOptionPane.INFORMATION_MESSAGE);
                 currentTableContents = new ArrayList<>();
                 setTable();
+                JOptionPane.showMessageDialog(this, "Hours cleared", "Hours", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException | SQLException | StaffNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, ex);
             }

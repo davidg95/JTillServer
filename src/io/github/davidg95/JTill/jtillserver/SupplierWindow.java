@@ -34,6 +34,7 @@ public class SupplierWindow extends javax.swing.JFrame {
         initComponents();
         this.setIconImage(icon);
         setTitle("Suppliers");
+        setLocationRelativeTo(null);
         model = new DefaultListModel();
         try {
             currentTableContents = dc.getAllSuppliers();

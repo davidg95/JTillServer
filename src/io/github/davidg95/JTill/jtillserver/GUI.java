@@ -81,10 +81,6 @@ public class GUI extends JFrame implements GUIInterface {
      */
     public GUI(DataConnect dataConnect, boolean remote, Image icon) {
         try {
-//            javax.swing.UIManager.LookAndFeelInfo[] lafs = javax.swing.UIManager.getInstalledLookAndFeels();
-//            javax.swing.UIManager.LookAndFeelInfo selection = (javax.swing.UIManager.LookAndFeelInfo) JOptionPane.showInputDialog(this, "Select a look and feel", "Look and feel", JOptionPane.PLAIN_MESSAGE, null, lafs, lafs[0]);
-//            System.out.println("Look and feels-");
-//            System.out.println(selection.getClassName());
             javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -1119,17 +1115,13 @@ public class GUI extends JFrame implements GUIInterface {
 
     private void itemCreateNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCreateNewProductActionPerformed
         ProductEntryDialog.showDialog(this, dc, icon);
-//        String barcode = JOptionPane.showInputDialog(this, "Enter or scan barcode", "New Product", JOptionPane.INFORMATION_MESSAGE);
-//        if (barcode != null && !barcode.equals("")) {
-//            Plu plu = new Plu(barcode);
-//            Product p = ProductDialog.showNewProductDialog(this, dc, plu, 0);
-//            JOptionPane.showMessageDialog(this, "New Product has been created", "New Product Created", JOptionPane.INFORMATION_MESSAGE);
-//        }
     }//GEN-LAST:event_itemCreateNewProductActionPerformed
 
     private void itemNewStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNewStaffActionPerformed
-        StaffDialog.showNewStaffDialog(this, dc);
-        JOptionPane.showMessageDialog(this, "New staff member created");
+        Staff s = StaffDialog.showNewStaffDialog(this, dc);
+        if (s != null) {
+            JOptionPane.showMessageDialog(this, "New staff member " + s + " created");
+        }
     }//GEN-LAST:event_itemNewStaffActionPerformed
 
     private void itemStaffClockingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffClockingActionPerformed
