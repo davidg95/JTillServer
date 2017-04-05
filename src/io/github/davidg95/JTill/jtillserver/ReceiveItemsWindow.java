@@ -341,7 +341,7 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                     String line = br.readLine();
 
                     if (line == null) {
-                        return;
+                        break;
                     }
 
                     String[] items = line.split(",");
