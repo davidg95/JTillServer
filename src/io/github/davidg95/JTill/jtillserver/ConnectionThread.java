@@ -1267,6 +1267,33 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
+                    case "ADDTRIGGER": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                addTrigger(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETDISCOUNTTRIGGERS": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getDiscountTriggers(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "REMOVETRIGGER": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                removeTrigger(data);
+                            }
+                        }.start();
+                        break;
+                    }
                     case "CONNTERM": { //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -3632,6 +3659,66 @@ public class ConnectionThread extends Thread {
                 dc.clearClocks(id);
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (StaffNotFoundException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void addTrigger(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Trigger)) {
+                LOG.log(Level.SEVERE, "Unexpected data type adding trigger");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            Trigger t = (Trigger) data.getData();
+            try {
+                t = dc.addTrigger(t);
+                obOut.writeObject(ConnectionData.create("SUCC", t));
+            } catch (SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getDiscountTriggers(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type getting discount triggers");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) data.getData();
+            try {
+                List<Trigger> triggers = dc.getDiscountTriggers(id);
+                obOut.writeObject(ConnectionData.create("SUCC", triggers));
+            } catch (DiscountNotFoundException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void removeTrigger(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type removing a trigger");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) data.getData();
+            try {
+                dc.removeTrigger(id);
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (JTillException | SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {

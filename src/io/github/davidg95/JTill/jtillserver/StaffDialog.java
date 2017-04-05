@@ -166,6 +166,11 @@ public class StaffDialog extends javax.swing.JDialog {
         jLabel6.setText("Wage:");
 
         txtWage.setText("0.00");
+        txtWage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtWageActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -281,6 +286,10 @@ public class StaffDialog extends javax.swing.JDialog {
     private void txtPasswordConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordConfirmActionPerformed
         btnAdd.doClick();
     }//GEN-LAST:event_txtPasswordConfirmActionPerformed
+
+    private void txtWageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtWageActionPerformed
+        btnAdd.doClick();
+    }//GEN-LAST:event_txtWageActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;

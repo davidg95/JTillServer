@@ -117,6 +117,7 @@ public class StaffWindow extends javax.swing.JFrame {
             txtName.setText("");
             txtUsername.setText("");
             cmbPosition.setSelectedIndex(0);
+            txtWage.setText("");
             staff = null;
         } else {
             this.staff = s;
@@ -125,6 +126,7 @@ public class StaffWindow extends javax.swing.JFrame {
             int p = s.getPosition();
             int index = p - 1;
             cmbPosition.setSelectedIndex(index);
+            txtWage.setText(s.getWage() + "");
         }
     }
 
