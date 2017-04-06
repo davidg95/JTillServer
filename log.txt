@@ -1,21 +1,126 @@
-JTill log Wed Apr 05 16:48:21 BST 2017
-[16:48:22] [INFO] Connecting to database {0}
-[16:48:22] [INFO] Connecting to database {0}
-[16:48:22] [INFO] Get staff count
-[16:48:22] [INFO] Starting Thread Pool Excecutor
-[16:48:22] [INFO] JTill Server local IP address is 192.168.1.65
-[16:48:22] [INFO] Server Socket running on port number 52341
-[16:48:22] [INFO] Ready to accept connections
-[16:48:22] [INFO] Connecting to database {0}
-[16:48:25] [INFO] Connecting to database {0}
-[16:48:25] [INFO] Login Staff {0}
-[16:48:25] [INFO] David Grant has logged in
-[16:48:27] [INFO] Connecting to database {0}
-[16:48:38] [INFO] Connecting to database {0}
-[16:48:42] [INFO] Connecting to database {0}
-[16:48:47] [INFO] Connecting to database {0}
-[16:48:47] [INFO] Get all staff
-[16:48:47] [INFO] Connecting to database {0}
-[16:48:47] [INFO] Get all staff
-[16:48:49] [INFO] Connecting to database {0}
-[16:48:49] [INFO] Get all staff
+JTill log Thu Apr 06 15:44:52 BST 2017
+[15:44:53] [INFO] Connecting to database {0}
+[15:44:53] [INFO] Connecting to database {0}
+[15:44:53] [INFO] Get staff count
+[15:44:53] [INFO] Starting Thread Pool Excecutor
+[15:44:53] [INFO] JTill Server local IP address is 192.168.1.65
+[15:44:53] [INFO] Server Socket running on port number 52341
+[15:44:53] [INFO] Ready to accept connections
+[15:44:53] [INFO] Connecting to database {0}
+[15:44:57] [INFO] Connecting to database {0}
+[15:44:57] [INFO] Login Staff {0}
+[15:44:57] [INFO] David Grant has logged in
+[15:44:58] [INFO] Connecting to database {0}
+[15:44:58] [INFO] Get all discounts
+[15:44:58] [INFO] Connecting to database {0}
+[15:44:58] [INFO] Get all discounts
+[15:44:59] [INFO] Connecting to database {0}
+[15:45:00] [INFO] Connecting to database {0}
+[15:45:00] [INFO] Connecting to database {0}
+[15:45:00] [INFO] Get product {0}
+[15:45:00] [INFO] Connecting to database {0}
+[15:45:01] [INFO] Connecting to database {0}
+[15:45:02] [INFO] Connecting to database {0}
+[15:45:02] [INFO] Connecting to database {0}
+[15:45:02] [INFO] Get product {0}
+[15:45:02] [INFO] Connecting to database {0}
+[15:45:03] [INFO] Connecting to database {0}
+[15:45:03] [INFO] Connecting to database {0}
+[15:45:03] [INFO] Get product {0}
+[15:45:03] [INFO] Connecting to database {0}
+[15:45:03] [INFO] Connecting to database {0}
+[15:45:03] [INFO] Connecting to database {0}
+[15:45:03] [INFO] Get product {0}
+[15:45:03] [INFO] Connecting to database {0}
+[15:45:04] [INFO] Connecting to database {0}
+[15:45:04] [INFO] Connecting to database {0}
+[15:45:04] [INFO] Get product {0}
+[15:45:04] [INFO] Connecting to database {0}
+[15:45:14] [INFO] Connecting to database {0}
+[15:45:14] [INFO] Connecting to database {0}
+[15:45:14] [INFO] Get product {0}
+[15:45:14] [INFO] Connecting to database {0}
+[15:45:14] [INFO] Connecting to database {0}
+[15:45:14] [INFO] Connecting to database {0}
+[15:45:14] [INFO] Get product {0}
+[15:45:14] [INFO] Connecting to database {0}
+[15:45:14] [INFO] Connecting to database {0}
+[15:45:14] [INFO] Connecting to database {0}
+[15:45:14] [INFO] Get product {0}
+[15:45:14] [INFO] Connecting to database {0}
+[15:45:15] [INFO] Connecting to database {0}
+[15:45:15] [INFO] Connecting to database {0}
+[15:45:15] [INFO] Get product {0}
+[15:45:15] [INFO] Connecting to database {0}
+[15:45:15] [INFO] Connecting to database {0}
+[15:45:15] [INFO] Connecting to database {0}
+[15:45:15] [INFO] Get product {0}
+[15:45:15] [INFO] Connecting to database {0}
+[15:45:15] [INFO] Connecting to database {0}
+[15:45:15] [INFO] Connecting to database {0}
+[15:45:15] [INFO] Get product {0}
+[15:45:15] [INFO] Connecting to database {0}
+[15:45:16] [INFO] Connecting to database {0}
+[15:45:16] [INFO] Connecting to database {0}
+[15:45:16] [INFO] Get product {0}
+[15:45:16] [INFO] Connecting to database {0}
+[15:45:16] [INFO] Connecting to database {0}
+[15:45:16] [INFO] Connecting to database {0}
+[15:45:16] [INFO] Get product {0}
+[15:45:16] [INFO] Connecting to database {0}
+[15:45:16] [INFO] Connecting to database {0}
+[15:45:16] [INFO] Connecting to database {0}
+[15:45:16] [INFO] Get product {0}
+[15:45:16] [INFO] Connecting to database {0}
+[15:45:17] [INFO] Connecting to database {0}
+[15:45:17] [INFO] Connecting to database {0}
+[15:45:17] [INFO] Get product {0}
+[15:45:17] [INFO] Connecting to database {0}
+[15:45:17] [INFO] Connecting to database {0}
+[15:45:17] [INFO] Connecting to database {0}
+[15:45:17] [INFO] Get product {0}
+[15:45:17] [INFO] Connecting to database {0}
+[15:45:17] [INFO] Connecting to database {0}
+[15:45:17] [INFO] Connecting to database {0}
+[15:45:17] [INFO] Get product {0}
+[15:45:17] [INFO] Connecting to database {0}
+[15:45:18] [INFO] Connecting to database {0}
+[15:45:18] [INFO] Connecting to database {0}
+[15:45:18] [INFO] Get product {0}
+[15:45:18] [INFO] Connecting to database {0}
+[15:45:18] [INFO] Connecting to database {0}
+[15:45:18] [INFO] Connecting to database {0}
+[15:45:18] [INFO] Get product {0}
+[15:45:18] [INFO] Connecting to database {0}
+[15:45:19] [INFO] Connecting to database {0}
+[15:45:19] [INFO] Connecting to database {0}
+[15:45:19] [INFO] Get product {0}
+[15:45:19] [INFO] Connecting to database {0}
+[15:45:19] [INFO] Connecting to database {0}
+[15:45:19] [INFO] Connecting to database {0}
+[15:45:19] [INFO] Get product {0}
+[15:45:19] [INFO] Connecting to database {0}
+[15:45:19] [INFO] Connecting to database {0}
+[15:45:19] [INFO] Connecting to database {0}
+[15:45:19] [INFO] Get product {0}
+[15:45:19] [INFO] Connecting to database {0}
+[15:45:20] [INFO] Connecting to database {0}
+[15:45:20] [INFO] Connecting to database {0}
+[15:45:20] [INFO] Get product {0}
+[15:45:20] [INFO] Connecting to database {0}
+[15:45:20] [INFO] Connecting to database {0}
+[15:45:20] [INFO] Connecting to database {0}
+[15:45:20] [INFO] Get product {0}
+[15:45:20] [INFO] Connecting to database {0}
+[15:45:20] [INFO] Connecting to database {0}
+[15:45:20] [INFO] Connecting to database {0}
+[15:45:20] [INFO] Get product {0}
+[15:45:20] [INFO] Connecting to database {0}
+[15:45:20] [INFO] Connecting to database {0}
+[15:45:20] [INFO] Connecting to database {0}
+[15:45:20] [INFO] Get product {0}
+[15:45:20] [INFO] Connecting to database {0}
+[15:45:21] [INFO] Connecting to database {0}
+[15:45:21] [INFO] Connecting to database {0}
+[15:45:21] [INFO] Get product {0}
+[15:45:21] [INFO] Connecting to database {0}

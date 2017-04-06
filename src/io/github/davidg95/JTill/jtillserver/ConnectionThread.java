@@ -1276,11 +1276,11 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
-                    case "GETDISCOUNTTRIGGERS": {
+                    case "GETDISCOUNTBUCKETS": {
                         new Thread(inp[0]) {
                             @Override
                             public void run() {
-                                getDiscountTriggers(data);
+                                getDiscountBuckets(data);
                             }
                         }.start();
                         break;
@@ -1299,6 +1299,51 @@ public class ConnectionThread extends Thread {
                             @Override
                             public void run() {
                                 getValidDiscounts();
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "ADDBUCKET": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                addBucket(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "REMOVEBUCKET": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                removeBucket(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "GETBUCKETTRIGGERES": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getBucketTriggers(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "UPDATETRIGGER": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                updateTrigger(data);
+                            }
+                        }.start();
+                        break;
+                    }
+                    case "UPDATEBUCKET": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                updateBucket(data);
                             }
                         }.start();
                         break;
@@ -3695,18 +3740,18 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getDiscountTriggers(ConnectionData data) {
+    private void getDiscountBuckets(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
             if (!(clone.getData() instanceof Integer)) {
-                LOG.log(Level.SEVERE, "Unexpected data type getting discount triggers");
+                LOG.log(Level.SEVERE, "Unexpected data type getting discount buckets");
                 obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
                 return;
             }
             int id = (int) data.getData();
             try {
-                List<Trigger> triggers = dc.getDiscountTriggers(id);
-                obOut.writeObject(ConnectionData.create("SUCC", triggers));
+                List<DiscountBucket> buckets = dc.getDiscountBuckets(id);
+                obOut.writeObject(ConnectionData.create("SUCC", buckets));
             } catch (DiscountNotFoundException | SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
@@ -3741,6 +3786,106 @@ public class ConnectionThread extends Thread {
                 List<Discount> discounts = dc.getValidDiscounts();
                 obOut.writeObject(ConnectionData.create("SUCC", discounts));
             } catch (SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void addBucket(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof DiscountBucket)) {
+                LOG.log(Level.SEVERE, "Unexpected data type adding a bucket");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            DiscountBucket b = (DiscountBucket) data.getData();
+            try {
+                b = dc.addBucket(b);
+                obOut.writeObject(ConnectionData.create("SUCC", b));
+            } catch (SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void removeBucket(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof DiscountBucket)) {
+                LOG.log(Level.SEVERE, "Unexpected data type removing a bucket");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) data.getData();
+            try {
+                dc.removeBucket(id);
+                obOut.writeObject(ConnectionData.create("SUCC"));
+            } catch (JTillException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getBucketTriggers(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type getting bucket triggers");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) data.getData();
+            try {
+                List<Trigger> triggers = dc.getBucketTriggers(id);
+                obOut.writeObject(ConnectionData.create("SUCC", triggers));
+            } catch (JTillException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void updateTrigger(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Trigger)) {
+                LOG.log(Level.SEVERE, "Unexpected data type updating bucket triggers");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            Trigger t = (Trigger) data.getData();
+            try {
+                t = dc.updateTrigger(t);
+                obOut.writeObject(ConnectionData.create("SUCC", t));
+            } catch (JTillException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void updateBucket(ConnectionData data){
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof DiscountBucket)) {
+                LOG.log(Level.SEVERE, "Unexpected data type updating bucket");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            DiscountBucket b = (DiscountBucket) data.getData();
+            try {
+                b = dc.updateBucket(b);
+                obOut.writeObject(ConnectionData.create("SUCC", b));
+            } catch (JTillException | SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {
