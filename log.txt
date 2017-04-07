@@ -1,81 +1,358 @@
-JTill log Fri Apr 07 14:20:28 BST 2017
-[14:20:28] [INFO] Connecting to database {0}
-[14:20:28] [INFO] Connecting to database {0}
-[14:20:28] [INFO] Get staff count
-[14:20:28] [INFO] Starting Thread Pool Excecutor
-[14:20:28] [INFO] JTill Server local IP address is 192.168.1.65
-[14:20:28] [INFO] Server Socket running on port number 52341
-[14:20:28] [INFO] Ready to accept connections
-[14:20:28] [INFO] Connecting to database {0}
-[14:20:34] [INFO] Connecting to database {0}
-[14:20:34] [INFO] Login Staff {0}
-[14:20:34] [INFO] David Grant has logged in
-[14:20:38] [INFO] Connecting to database {0}
-[14:20:38] [INFO] Connecting to database {0}
-[14:20:38] [INFO] Connecting to database {0}
-[14:20:38] [INFO] Connecting to database {0}
-[14:20:38] [INFO] Connecting to database {0}
-[14:20:38] [INFO] Connecting to database {0}
-[14:20:38] [INFO] Connecting to database {0}
-[14:20:38] [INFO] Connecting to database {0}
-[14:20:38] [INFO] Connecting to database {0}
-[14:20:38] [INFO] Connecting to database {0}
-[14:20:38] [INFO] Connecting to database {0}
-[14:20:38] [INFO] Connecting to database {0}
-[14:20:38] [INFO] Connecting to database {0}
-[14:20:38] [INFO] Connecting to database {0}
-[14:20:39] [INFO] Connecting to database {0}
-[14:20:40] [INFO] Connecting to database {0}
-[14:20:40] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Get all discounts
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Get all discounts
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:49] [INFO] Connecting to database {0}
-[14:20:50] [INFO] Connecting to database {0}
-[14:20:51] [INFO] Connecting to database {0}
-[14:20:52] [INFO] Connecting to database {0}
-[14:20:52] [INFO] Connecting to database {0}
-[14:20:52] [INFO] Get product {0}
-[14:20:52] [INFO] Connecting to database {0}
-[14:20:52] [INFO] Connecting to database {0}
-[14:20:52] [INFO] Get product {0}
-[14:20:52] [INFO] Connecting to database {0}
-[14:20:52] [INFO] Connecting to database {0}
-[14:20:52] [INFO] Connecting to database {0}
-[14:20:52] [INFO] Get product {0}
-[14:20:52] [INFO] Connecting to database {0}
-[14:20:53] [INFO] Connecting to database {0}
-[14:20:53] [INFO] Connecting to database {0}
-[14:20:53] [INFO] Get product {0}
-[14:20:53] [INFO] Connecting to database {0}
-[14:20:53] [INFO] Connecting to database {0}
-[14:20:53] [INFO] Get product {0}
-[14:20:53] [INFO] Connecting to database {0}
-[14:20:53] [INFO] Connecting to database {0}
-[14:20:53] [INFO] Connecting to database {0}
-[14:20:53] [INFO] Get product {0}
-[14:20:53] [INFO] Connecting to database {0}
-[14:20:53] [INFO] Connecting to database {0}
-[14:20:53] [INFO] Get product {0}
-[14:20:53] [INFO] Connecting to database {0}
-[14:20:55] [INFO] Connecting to database {0}
-[14:20:55] [INFO] Connecting to database {0}
-[14:20:55] [INFO] Get product {0}
-[14:20:55] [INFO] Connecting to database {0}
-[14:20:55] [INFO] Connecting to database {0}
-[14:20:55] [INFO] Get product {0}
-[14:20:55] [INFO] Connecting to database {0}
+JTill log Fri Apr 07 14:48:04 BST 2017
+[14:48:04] [INFO] Connecting to database {0}
+[14:48:04] [INFO] Connecting to database {0}
+[14:48:04] [INFO] Get staff count
+[14:48:04] [INFO] Starting Thread Pool Excecutor
+[14:48:04] [INFO] JTill Server local IP address is 192.168.1.65
+[14:48:04] [INFO] Server Socket running on port number 52341
+[14:48:04] [INFO] Ready to accept connections
+[14:48:04] [INFO] Connecting to database {0}
+[14:48:06] [INFO] Connecting to database {0}
+[14:48:07] [INFO] Login Staff {0}
+[14:48:07] [INFO] David Grant has logged in
+[14:48:07] [INFO] Connecting to database {0}
+[14:48:07] [INFO] Connecting to database {0}
+[14:48:10] [INFO] Connecting to database {0}
+[14:48:10] [INFO] Connecting to database {0}
+[14:48:10] [INFO] Get all discounts
+[14:48:11] [INFO] Connecting to database {0}
+[14:48:11] [INFO] Connecting to database {0}
+[14:48:11] [INFO] Connecting to database {0}
+[14:48:12] [INFO] Connecting to database {0}
+[14:48:12] [INFO] Connecting to database {0}
+[14:48:12] [INFO] Get all discounts
+[14:48:13] [INFO] Connecting to database {0}
+[14:48:13] [INFO] Connecting to database {0}
+[14:48:13] [INFO] Connecting to database {0}
+[14:48:15] [INFO] Connecting to database {0}
+[14:48:15] [INFO] Connecting to database {0}
+[14:48:15] [INFO] Get all discounts
+[14:48:16] [INFO] Connecting to database {0}
+[14:48:16] [INFO] Connecting to database {0}
+[14:48:16] [INFO] Connecting to database {0}
+[14:48:25] [INFO] Connecting to database {0}
+[14:48:25] [INFO] {0} has connected
+[14:48:25] [INFO] Received {0} from server
+[14:48:25] [INFO] Received {0} from server
+[14:48:25] [INFO] Received {0} from server
+[14:48:25] [INFO] Received {0} from server
+[14:48:25] [INFO] Received {0} from server
+[14:48:25] [INFO] Connecting to database {0}
+[14:48:25] [INFO] Received {0} from server
+[14:48:25] [INFO] Connecting to database {0}
+[14:48:25] [INFO] Received {0} from server
+[14:48:25] [INFO] Connecting to database {0}
+[14:48:25] [INFO] Received {0} from server
+[14:48:25] [INFO] Connecting to database {0}
+[14:48:25] [INFO] Received {0} from server
+[14:48:25] [INFO] Connecting to database {0}
+[14:48:25] [INFO] Received {0} from server
+[14:48:25] [INFO] Connecting to database {0}
+[14:48:25] [INFO] Received {0} from server
+[14:48:25] [INFO] Connecting to database {0}
+[14:48:25] [INFO] Received {0} from server
+[14:48:25] [INFO] Connecting to database {0}
+[14:48:25] [INFO] Received {0} from server
+[14:48:25] [INFO] Connecting to database {0}
+[14:48:25] [INFO] Received {0} from server
+[14:48:25] [INFO] Connecting to database {0}
+[14:48:25] [INFO] Get staff {0}
+[14:48:25] [INFO] Received {0} from server
+[14:48:26] [INFO] Connecting to database {0}
+[14:48:26] [INFO] Received {0} from server
+[14:48:26] [INFO] Connecting to database {0}
+[14:48:26] [INFO] {0} has logged in from {1}
+[14:48:26] [INFO] Received {0} from server
+[14:48:34] [INFO] Received {0} from server
+[14:48:34] [INFO] Connecting to database {0}
+[14:48:34] [INFO] Get product {0}
+[14:48:34] [INFO] Received {0} from server
+[14:48:34] [INFO] Connecting to database {0}
+[14:48:34] [INFO] Received {0} from server
+[14:48:34] [INFO] Connecting to database {0}
+[14:48:34] [INFO] Get product {0}
+[14:48:34] [INFO] Received {0} from server
+[14:48:34] [INFO] Connecting to database {0}
+[14:48:34] [INFO] Received {0} from server
+[14:48:34] [INFO] Connecting to database {0}
+[14:48:34] [INFO] Get product {0}
+[14:48:34] [INFO] Received {0} from server
+[14:48:34] [INFO] Connecting to database {0}
+[14:48:38] [INFO] Received {0} from server
+[14:48:38] [INFO] Connecting to database {0}
+[14:48:38] [INFO] Get product {0}
+[14:48:38] [INFO] Received {0} from server
+[14:48:38] [INFO] Connecting to database {0}
+[14:48:40] [INFO] Received {0} from server
+[14:48:40] [INFO] Connecting to database {0}
+[14:48:40] [INFO] Get product {0}
+[14:48:40] [INFO] Received {0} from server
+[14:48:40] [INFO] Connecting to database {0}
+[14:48:41] [INFO] Received {0} from server
+[14:48:41] [INFO] Connecting to database {0}
+[14:48:41] [INFO] Get product {0}
+[14:48:41] [INFO] Received {0} from server
+[14:48:41] [INFO] Connecting to database {0}
+[14:48:42] [INFO] Received {0} from server
+[14:48:42] [INFO] Connecting to database {0}
+[14:48:42] [INFO] Get product {0}
+[14:48:42] [INFO] Received {0} from server
+[14:48:42] [INFO] Connecting to database {0}
+[14:48:42] [INFO] Received {0} from server
+[14:48:42] [INFO] Connecting to database {0}
+[14:48:42] [INFO] Get product {0}
+[14:48:42] [INFO] Received {0} from server
+[14:48:42] [INFO] Connecting to database {0}
+[14:48:42] [INFO] Received {0} from server
+[14:48:42] [INFO] Connecting to database {0}
+[14:48:42] [INFO] Get product {0}
+[14:48:42] [INFO] Received {0} from server
+[14:48:42] [INFO] Connecting to database {0}
+[14:48:44] [INFO] Received {0} from server
+[14:48:44] [INFO] Connecting to database {0}
+[14:48:44] [INFO] Get product {0}
+[14:48:44] [INFO] Received {0} from server
+[14:48:44] [INFO] Connecting to database {0}
+[14:48:44] [INFO] Received {0} from server
+[14:48:44] [INFO] Connecting to database {0}
+[14:48:44] [INFO] Get product {0}
+[14:48:44] [INFO] Received {0} from server
+[14:48:44] [INFO] Connecting to database {0}
+[14:48:45] [INFO] Received {0} from server
+[14:48:45] [INFO] Connecting to database {0}
+[14:48:45] [INFO] Get product {0}
+[14:48:45] [INFO] Received {0} from server
+[14:48:45] [INFO] Connecting to database {0}
+[14:48:49] [INFO] Received {0} from server
+[14:48:49] [INFO] Connecting to database {0}
+[14:48:49] [INFO] Connecting to database {0}
+[14:48:49] [INFO] Connecting to database {0}
+[14:48:49] [INFO] Purchase product {0}
+[14:48:49] [WARNING] {0} is below minimum stock level
+[14:48:49] [INFO] Connecting to database {0}
+[14:48:49] [INFO] Connecting to database {0}
+[14:48:49] [INFO] Purchase product {0}
+[14:48:49] [WARNING] {0} is below minimum stock level
+[14:48:49] [INFO] Connecting to database {0}
+[14:48:49] [INFO] Connecting to database {0}
+[14:48:49] [INFO] Connecting to database {0}
+[14:48:49] [INFO] Purchase product {0}
+[14:48:49] [WARNING] {0} is below minimum stock level
+[14:48:49] [INFO] Connecting to database {0}
+[14:48:49] [INFO] Received {0} from server
+[14:48:57] [INFO] Received {0} from server
+[14:48:57] [INFO] {0} has logged out
+[14:48:57] [INFO] Received {0} from server
+[14:48:57] [INFO] {0} has disconnected
+[14:48:59] [INFO] Connecting to database {0}
+[14:48:59] [INFO] Connecting to database {0}
+[14:49:12] [INFO] Connecting to database {0}
+[14:49:12] [INFO] Connecting to database {0}
+[14:49:12] [INFO] Connecting to database {0}
+[14:49:15] [INFO] Connecting to database {0}
+[14:49:27] [INFO] Connecting to database {0}
+[14:49:27] [INFO] Connecting to database {0}
+[14:49:27] [INFO] Connecting to database {0}
+[14:49:27] [INFO] New Product {0} added
+[14:49:27] [INFO] Connecting to database {0}
+[14:49:29] [INFO] Connecting to database {0}
+[14:49:29] [INFO] Connecting to database {0}
+[14:49:29] [INFO] Connecting to database {0}
+[14:49:31] [INFO] Connecting to database {0}
+[14:49:45] [INFO] Connecting to database {0}
+[14:49:45] [INFO] Connecting to database {0}
+[14:49:45] [INFO] Connecting to database {0}
+[14:49:45] [INFO] New Product {0} added
+[14:49:45] [INFO] Connecting to database {0}
+[14:49:50] [INFO] Connecting to database {0}
+[14:49:50] [INFO] Connecting to database {0}
+[14:49:50] [INFO] Connecting to database {0}
+[14:49:55] [INFO] Connecting to database {0}
+[14:50:15] [INFO] Connecting to database {0}
+[14:50:15] [INFO] Connecting to database {0}
+[14:50:15] [INFO] Connecting to database {0}
+[14:50:15] [INFO] New Product {0} added
+[14:50:15] [INFO] Connecting to database {0}
+[14:50:17] [INFO] Connecting to database {0}
+[14:50:17] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:20] [INFO] Connecting to database {0}
+[14:50:23] [INFO] Connecting to database {0}
+[14:50:23] [INFO] Connecting to database {0}
+[14:50:23] [INFO] Get all discounts
+[14:50:25] [INFO] Connecting to database {0}
+[14:50:25] [INFO] Connecting to database {0}
+[14:50:25] [INFO] Connecting to database {0}
+[14:50:25] [INFO] Connecting to database {0}
+[14:50:27] [INFO] Connecting to database {0}
+[14:50:27] [INFO] Connecting to database {0}
+[14:50:27] [INFO] Get all discounts
+[14:50:28] [INFO] Connecting to database {0}
+[14:50:28] [INFO] Connecting to database {0}
+[14:50:28] [INFO] Connecting to database {0}
+[14:50:28] [INFO] Connecting to database {0}
+[14:50:30] [INFO] Connecting to database {0}
+[14:50:30] [INFO] Connecting to database {0}
+[14:50:30] [INFO] Get all discounts
+[14:50:31] [INFO] Connecting to database {0}
+[14:50:31] [INFO] Connecting to database {0}
+[14:50:31] [INFO] Connecting to database {0}
+[14:50:31] [INFO] Connecting to database {0}
+[14:50:39] [INFO] Connecting to database {0}
+[14:50:39] [INFO] {0} has connected
+[14:50:39] [INFO] Received {0} from server
+[14:50:39] [INFO] Received {0} from server
+[14:50:39] [INFO] Received {0} from server
+[14:50:39] [INFO] Received {0} from server
+[14:50:39] [INFO] Received {0} from server
+[14:50:39] [INFO] Connecting to database {0}
+[14:50:39] [INFO] Received {0} from server
+[14:50:39] [INFO] Connecting to database {0}
+[14:50:39] [INFO] Received {0} from server
+[14:50:39] [INFO] Connecting to database {0}
+[14:50:39] [INFO] Received {0} from server
+[14:50:39] [INFO] Connecting to database {0}
+[14:50:39] [INFO] Received {0} from server
+[14:50:39] [INFO] Connecting to database {0}
+[14:50:39] [INFO] Received {0} from server
+[14:50:39] [INFO] Connecting to database {0}
+[14:50:39] [INFO] Received {0} from server
+[14:50:39] [INFO] Connecting to database {0}
+[14:50:39] [INFO] Received {0} from server
+[14:50:39] [INFO] Connecting to database {0}
+[14:50:39] [INFO] Received {0} from server
+[14:50:39] [INFO] Connecting to database {0}
+[14:50:39] [INFO] Received {0} from server
+[14:50:39] [INFO] Connecting to database {0}
+[14:50:41] [INFO] Received {0} from server
+[14:50:41] [INFO] Connecting to database {0}
+[14:50:41] [INFO] Get staff {0}
+[14:50:41] [INFO] Received {0} from server
+[14:50:41] [INFO] Received {0} from server
+[14:50:41] [INFO] Connecting to database {0}
+[14:50:41] [INFO] {0} has logged in from {1}
+[14:50:41] [INFO] Received {0} from server
+[14:51:24] [INFO] Received {0} from server
+[14:51:24] [INFO] Connecting to database {0}
+[14:51:24] [INFO] Get product {0}
+[14:51:24] [INFO] Received {0} from server
+[14:51:24] [INFO] Connecting to database {0}
+[14:51:25] [INFO] Received {0} from server
+[14:51:25] [INFO] Connecting to database {0}
+[14:51:25] [INFO] Get product {0}
+[14:51:25] [INFO] Received {0} from server
+[14:51:25] [INFO] Connecting to database {0}
+[14:51:25] [INFO] Received {0} from server
+[14:51:25] [INFO] Connecting to database {0}
+[14:51:25] [INFO] Get product {0}
+[14:51:25] [INFO] Received {0} from server
+[14:51:25] [INFO] Connecting to database {0}
+[14:51:27] [INFO] Received {0} from server
+[14:51:27] [INFO] Connecting to database {0}
+[14:51:27] [INFO] Get product {0}
+[14:51:27] [INFO] Received {0} from server
+[14:51:27] [INFO] Connecting to database {0}
+[14:51:27] [INFO] Received {0} from server
+[14:51:27] [INFO] Connecting to database {0}
+[14:51:27] [INFO] Get product {0}
+[14:51:27] [INFO] Received {0} from server
+[14:51:27] [INFO] Connecting to database {0}
+[14:51:27] [INFO] Received {0} from server
+[14:51:27] [INFO] Connecting to database {0}
+[14:51:27] [INFO] Get product {0}
+[14:51:27] [INFO] Received {0} from server
+[14:51:27] [INFO] Connecting to database {0}
+[14:51:29] [INFO] Received {0} from server
+[14:51:29] [INFO] Connecting to database {0}
+[14:51:29] [INFO] Get Product {0}
+[14:51:33] [INFO] Received {0} from server
+[14:51:33] [INFO] Connecting to database {0}
+[14:51:33] [INFO] Connecting to database {0}
+[14:51:33] [INFO] Connecting to database {0}
+[14:51:33] [INFO] Purchase product {0}
+[14:51:33] [WARNING] {0} is below minimum stock level
+[14:51:33] [INFO] Connecting to database {0}
+[14:51:33] [INFO] Connecting to database {0}
+[14:51:33] [INFO] Connecting to database {0}
+[14:51:33] [INFO] Purchase product {0}
+[14:51:33] [INFO] Connecting to database {0}
+[14:51:33] [INFO] Connecting to database {0}
+[14:51:33] [INFO] Purchase product {0}
+[14:51:33] [INFO] Connecting to database {0}
+[14:51:33] [INFO] Connecting to database {0}
+[14:51:33] [INFO] Purchase product {0}
+[14:51:34] [INFO] Received {0} from server
+[14:51:43] [INFO] Received {0} from server
+[14:51:43] [INFO] {0} has logged out
+[14:51:45] [INFO] Received {0} from server
+[14:51:45] [INFO] Connecting to database {0}
+[14:51:45] [INFO] {0} has logged in from {1}
+[14:51:45] [INFO] Received {0} from server
+[14:51:48] [INFO] Received {0} from server
+[14:51:48] [INFO] Connecting to database {0}
+[14:51:50] [INFO] Received {0} from server
+[14:51:50] [INFO] Connecting to database {0}
+[14:51:51] [INFO] Received {0} from server
+[14:51:51] [INFO] Connecting to database {0}
+[14:51:51] [INFO] Connecting to database {0}
+[14:51:51] [INFO] Connecting to database {0}
+[14:51:51] [INFO] Purchase product {0}
+[14:51:52] [INFO] Received {0} from server
+[14:51:53] [INFO] Received {0} from server
+[14:51:53] [INFO] {0} has logged out
+[14:51:53] [INFO] Received {0} from server
+[14:51:53] [INFO] {0} has disconnected
