@@ -342,6 +342,11 @@ public class ProductEntryDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnSelectDepartmentActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
+        try {
+            plu = dc.addPlu(plu);
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
         String name = txtName.getText();
         String shortName = txtShortName.getText();
         int orderCode = Integer.parseInt(txtOrderCode.getText());
@@ -397,7 +402,7 @@ public class ProductEntryDialog extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "Barcode is already in use", "Barcode in use", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            plu = dc.addPlu(new Plu(txtPlu.getText()));
+            plu = new Plu(txtPlu.getText());
             CardLayout c = (CardLayout) jPanel1.getLayout();
             c.show(jPanel1, "card3");
             txtName.requestFocus();
