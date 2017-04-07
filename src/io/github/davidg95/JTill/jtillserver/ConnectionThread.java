@@ -88,7 +88,7 @@ public class ConnectionThread extends Thread {
                     obOut.writeObject(ConnectionData.create("DISALLOW"));
                     conn_term = true;
                 } else {
-                    obOut.writeObject(ConnectionData.create("ALLOW"));
+                    obOut.writeObject(ConnectionData.create("ALLOW", till));
                 }
             }
 
@@ -1348,6 +1348,15 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
+                    case "GETUNCASHEDTERMINALSALES": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getUncashedTerminalSales(data);
+                            }
+                        }.start();
+                        break;
+                    }
                     case "CONNTERM": { //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -2546,11 +2555,11 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 ConnectionData clone = data.clone();
-                if (!(clone.getData() instanceof String)) {
-                    obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+                if (!(clone.getData() instanceof Integer)) {
+                    obOut.writeObject(ConnectionData.create("FAIL", "An Integer must be received here"));
                     return;
                 }
-                String terminal = (String) clone.getData();
+                int terminal = (int) clone.getData();
                 BigDecimal t = dc.getTillTakings(terminal);
                 obOut.writeObject(ConnectionData.create("GET", t));
             } catch (SQLException ex) {
@@ -3872,8 +3881,8 @@ public class ConnectionThread extends Thread {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    private void updateBucket(ConnectionData data){
+
+    private void updateBucket(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
             if (!(clone.getData() instanceof DiscountBucket)) {
@@ -3886,6 +3895,26 @@ public class ConnectionThread extends Thread {
                 b = dc.updateBucket(b);
                 obOut.writeObject(ConnectionData.create("SUCC", b));
             } catch (JTillException | SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getUncashedTerminalSales(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type getting uncashed terminal sales");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) data.getData();
+            try {
+                List<Sale> sales = dc.getUncachedTillSales(id);
+                obOut.writeObject(ConnectionData.create("SUCC", sales));
+            } catch (JTillException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {

@@ -11,7 +11,9 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -165,10 +167,15 @@ public class ConnectionsDialog extends javax.swing.JDialog {
         if (evt.getClickCount() == 2) {
             try {
                 Till t = dc.getAllTills().get(lstConnections.getSelectedIndex());
-                for(Till ti: dc.getConnectedTills()){
-                    if(ti.equals(t)){
-                        t = ti;
+                try {
+                    List<Sale> sales = dc.getUncachedTillSales(t.getId());
+                    BigDecimal unCashed = BigDecimal.ZERO;
+                    for (Sale s : sales) {
+                        unCashed = unCashed.add(s.getTotal());
                     }
+                    t.setUncashedTakings(unCashed);
+                } catch (JTillException ex) {
+                    Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 TillDialog.showDialog(this, t);
             } catch (IOException | SQLException ex) {
