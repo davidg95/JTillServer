@@ -41,7 +41,6 @@ public class StaffWindow extends javax.swing.JFrame {
         this.dc = dc;
         this.setIconImage(icon);
         initComponents();
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) tableStaff.getModel();
         showAllStaff();

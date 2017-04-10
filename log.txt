@@ -1,47 +1,11 @@
-JTill log Mon Apr 10 15:02:53 BST 2017
-[15:02:53] [INFO] Connecting to database {0}
-[15:02:54] [INFO] Get staff count
-[15:02:54] [INFO] Starting Thread Pool Excecutor
-[15:02:54] [INFO] JTill Server local IP address is 192.168.1.65
-[15:02:54] [INFO] Server Socket running on port number 52341
-[15:02:54] [INFO] Ready to accept connections
-[15:03:01] [INFO] {0} has connected
-[15:03:01] [INFO] Received {0} from server
-[15:03:01] [INFO] Received {0} from server
-[15:03:01] [INFO] Received {0} from server
-[15:03:01] [INFO] Received {0} from server
-[15:03:01] [INFO] Received {0} from server
-[15:03:01] [INFO] Received {0} from server
-[15:03:01] [INFO] Received {0} from server
-[15:03:01] [INFO] Received {0} from server
-[15:03:03] [INFO] Received {0} from server
-[15:03:03] [INFO] Get staff {0}
-[15:03:03] [INFO] Received {0} from server
-[15:03:03] [INFO] Received {0} from server
-[15:03:03] [INFO] {0} has logged in from {1}
-[15:03:03] [INFO] Received {0} from server
-[15:03:06] [INFO] Received {0} from server
-[15:03:06] [INFO] Get Product {0}
-[15:03:06] [INFO] Received {0} from server
-[15:03:06] [INFO] Received {0} from server
-[15:03:08] [INFO] Received {0} from server
-[15:03:08] [INFO] Purchase product {0}
-[15:03:08] [WARNING] {0} is below minimum stock level
-[15:03:08] [INFO] Received {0} from server
-[15:03:08] [INFO] Received {0} from server
-[15:03:11] [INFO] Received {0} from server
-[15:03:13] [INFO] Received {0} from server
-[15:03:13] [INFO] Purchase product {0}
-[15:03:13] [WARNING] {0} is below minimum stock level
-[15:03:13] [INFO] Received {0} from server
-[15:03:13] [INFO] Received {0} from server
-[15:03:17] [INFO] Received {0} from server
-[15:03:18] [INFO] Received {0} from server
-[15:03:18] [INFO] Purchase product {0}
-[15:03:18] [WARNING] {0} is below minimum stock level
-[15:03:18] [INFO] Received {0} from server
-[15:03:18] [INFO] Received {0} from server
-[15:03:20] [INFO] Received {0} from server
-[15:03:20] [INFO] {0} has logged out
-[15:03:20] [INFO] Received {0} from server
-[15:03:20] [INFO] {0} has disconnected
+JTill log Mon Apr 10 15:43:09 BST 2017
+[15:43:10] [INFO] Connecting to database {0}
+[15:43:10] [INFO] Get staff count
+[15:43:10] [INFO] Starting Thread Pool Excecutor
+[15:43:10] [INFO] JTill Server local IP address is 192.168.1.65
+[15:43:10] [INFO] Server Socket running on port number 52341
+[15:43:10] [INFO] Ready to accept connections
+[15:43:13] [INFO] Login Staff {0}
+[15:43:13] [INFO] David Grant has logged in
+[15:43:46] [INFO] Get all customers
+[15:43:46] [INFO] Get all customers

@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -26,23 +25,20 @@ public class CustomersWindow extends javax.swing.JFrame {
 
     public static CustomersWindow frame;
 
-    private final DataConnect dbConn;
+    private final DataConnect dc;
 
-    private Customer customer;
+    private Customer customer; //The current selected customer
 
     private final DefaultTableModel model;
     private List<Customer> currentTableContents;
-    private DefaultComboBoxModel discountsModel;
-    private List<Discount> discounts;
 
     /**
      * Creates new form CustomersWindow
      */
     public CustomersWindow(DataConnect dc, Image icon) {
-        this.dbConn = dc;
+        this.dc = dc;
         this.setIconImage(icon);
         initComponents();
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         showAllCustomers();
@@ -102,7 +98,7 @@ public class CustomersWindow extends javax.swing.JFrame {
      */
     private void showAllCustomers() {
         try {
-            currentTableContents = dbConn.getAllCustomers();
+            currentTableContents = dc.getAllCustomers();
             updateTable();
         } catch (SQLException | IOException ex) {
             showError(ex);
@@ -572,7 +568,7 @@ public class CustomersWindow extends javax.swing.JFrame {
                 } else {
                     c = new Customer(name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, loyalty, moneyDue);
                     try {
-                        Customer cu = dbConn.addCustomer(c);
+                        Customer cu = dc.addCustomer(c);
                         showAllCustomers();
                         setCurrentCustomer(null);
                         jTabbedPane1.setSelectedIndex(0);
@@ -620,7 +616,7 @@ public class CustomersWindow extends javax.swing.JFrame {
         customer.setPostcode(postcode);
 
         try {
-            dbConn.updateCustomer(customer);
+            dc.updateCustomer(customer);
         } catch (SQLException | CustomerNotFoundException | IOException ex) {
             showError(ex);
         }
@@ -634,7 +630,7 @@ public class CustomersWindow extends javax.swing.JFrame {
             int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following customer?\n" + currentTableContents.get(index), "Remove Customer", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
-                    dbConn.removeCustomer(currentTableContents.get(index).getId());
+                    dc.removeCustomer(currentTableContents.get(index).getId());
                 } catch (SQLException | CustomerNotFoundException | IOException ex) {
                     showError(ex);
                 }
@@ -713,7 +709,7 @@ public class CustomersWindow extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Payment of " + val + " accepted", "Payment accepted", JOptionPane.INFORMATION_MESSAGE);
             }
             try {
-                dbConn.updateCustomer(customer);
+                dc.updateCustomer(customer);
                 updateTable();
                 setCurrentCustomer(customer);
             } catch (IOException | CustomerNotFoundException | SQLException ex) {

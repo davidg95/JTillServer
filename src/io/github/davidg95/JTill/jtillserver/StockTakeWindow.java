@@ -239,7 +239,7 @@ public class StockTakeWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        Product p = ProductSelectDialog.showDialog(this, dc);
+        Product p = ProductSelectDialog.showDialog(this, dc, false);
         if (p == null) {
             return;
         }
@@ -303,18 +303,20 @@ public class StockTakeWindow extends javax.swing.JFrame {
         if (currentTableContents.isEmpty()) {
             return;
         }
-        for (Product p : currentTableContents) {
-            try {
-                dc.updateProduct(p);
+        if (JOptionPane.showConfirmDialog(this, "Are you sure you want to submit this stock take?", "Stock Take", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            for (Product p : currentTableContents) {
+                try {
+                    dc.updateProduct(p);
 
-            } catch (IOException | ProductNotFoundException | SQLException ex) {
-                Logger.getLogger(StockTakeWindow.class
-                        .getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException | ProductNotFoundException | SQLException ex) {
+                    Logger.getLogger(StockTakeWindow.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
             }
+            JOptionPane.showMessageDialog(this, "Stock take submitted", "Complete", JOptionPane.INFORMATION_MESSAGE);
+            currentTableContents.clear();
+            updateTable();
         }
-        JOptionPane.showMessageDialog(this, "Stock take submitted", "Complete", JOptionPane.INFORMATION_MESSAGE);
-        currentTableContents.clear();
-        updateTable();
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed

@@ -27,7 +27,7 @@ public class CategorysWindow extends javax.swing.JFrame {
 
     public static CategorysWindow frame;
 
-    private final DataConnect dbConn;
+    private final DataConnect dc;
     private Category category;
 
     private final DefaultTableModel model;
@@ -37,10 +37,9 @@ public class CategorysWindow extends javax.swing.JFrame {
      * Creates new form CategoryWindow
      */
     public CategorysWindow(DataConnect dc, Image icon) {
-        dbConn = dc;
+        this.dc = dc;
         this.setIconImage(icon);
         initComponents();
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         showAllCategorys();
@@ -93,7 +92,7 @@ public class CategorysWindow extends javax.swing.JFrame {
      */
     private void showAllCategorys() {
         try {
-            currentTableContents = dbConn.getAllCategorys();
+            currentTableContents = dc.getAllCategorys();
             updateTable();
         } catch (IOException | SQLException ex) {
             showError(ex);
@@ -452,7 +451,7 @@ public class CategorysWindow extends javax.swing.JFrame {
                 } else {
                     c = new Category(name, startSell, endSell, time, minAge);
                     try {
-                        Category cat = dbConn.addCategory(c);
+                        Category cat = dc.addCategory(c);
                         showAllCategorys();
                         setCurrentCategory(null);
                     } catch (SQLException | IOException ex) {
@@ -492,7 +491,7 @@ public class CategorysWindow extends javax.swing.JFrame {
                 category.setMinAge(minAge);
 
                 try {
-                    dbConn.updateCategory(category);
+                    dc.updateCategory(category);
                 } catch (SQLException | CategoryNotFoundException | IOException ex) {
                     showError(ex);
                 }
@@ -516,7 +515,7 @@ public class CategorysWindow extends javax.swing.JFrame {
             int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following category?\n-" + currentTableContents.get(index) + "\nAll products in this category will be moved to the DEFAULT category.", "Remove Category", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
-                    dbConn.removeCategory(currentTableContents.get(index).getId());
+                    dc.removeCategory(currentTableContents.get(index).getId());
                 } catch (SQLException | CategoryNotFoundException | IOException ex) {
                     showError(ex);
                 }

@@ -35,15 +35,18 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     private final DefaultTableModel model;
     private List<Product> currentTableContents;
 
+    private final boolean showOpen;
+
     /**
      * Creates new form ProductSelectDialog
      *
      * @param parent the parent component.
      * @param dc the data source.
      */
-    public ProductSelectDialog(Window parent, DataConnect dc) {
+    public ProductSelectDialog(Window parent, DataConnect dc, boolean showOpen) {
         super(parent);
         this.dc = dc;
+        this.showOpen = showOpen;
         initComponents();
         setLocationRelativeTo(parent);
         setModal(true);
@@ -54,22 +57,34 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     }
 
     /**
-     * method to show the product select dialog.
+     * Method to show the product select dialog.
+     *
+     * @param parent the parent component.
+     * @param dc the data source.
+     * @param showOpen indicates whether open products should show or not.
+     * @return the product selected by the user.
+     */
+    public static Product showDialog(Component parent, DataConnect dc, boolean showOpen) {
+        Window window = null;
+        if (parent instanceof Dialog || parent instanceof Frame) {
+            window = (Window) parent;
+        }
+        dialog = new ProductSelectDialog(window, dc, showOpen);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        product = null;
+        dialog.setVisible(true);
+        return product;
+    }
+
+    /**
+     * Method to show the product select dialog.
      *
      * @param parent the parent component.
      * @param dc the data source.
      * @return the product selected by the user.
      */
     public static Product showDialog(Component parent, DataConnect dc) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
-        dialog = new ProductSelectDialog(window, dc);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        product = null;
-        dialog.setVisible(true);
-        return product;
+        return showDialog(parent, dc, true);
     }
 
     /**
@@ -93,6 +108,15 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     private void showAllProducts() {
         try {
             currentTableContents = dc.getAllProducts();
+            List<Product> newList = new ArrayList<>();
+            if (!showOpen) {
+                for (Product p : currentTableContents) {
+                    if (!p.isOpen()) {
+                        newList.add(p);
+                    }
+                }
+                currentTableContents = newList;
+            }
             updateTable();
         } catch (IOException | SQLException ex) {
             showError(ex);
@@ -251,22 +275,24 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         List<Product> newList = new ArrayList<>();
 
         for (Product p : currentTableContents) {
-            if (radName.isSelected()) {
-                if (p.getLongName().toLowerCase().contains(search.toLowerCase())) {
-                    newList.add(p);
-                }
-            } else {
-                try {
-                    final Plu plu = dc.getPlu(p.getPlu());
-                    if (plu.getCode().equals(search)) {
+            if (!showOpen && !p.isOpen()) {
+                if (radName.isSelected()) {
+                    if (p.getLongName().toLowerCase().contains(search.toLowerCase())) {
                         newList.add(p);
                     }
-                } catch (IOException | JTillException | SQLException ex) {
-                    Logger.getLogger(ProductSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
+                } else {
+                    try {
+                        final Plu plu = dc.getPlu(p.getPlu());
+                        if (plu.getCode().equals(search)) {
+                            newList.add(p);
+                        }
+                    } catch (IOException | JTillException | SQLException ex) {
+                        Logger.getLogger(ProductSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }
-        if(newList.isEmpty()){
+        if (newList.isEmpty()) {
             txtSearch.setSelectionStart(0);
             txtSearch.setSelectionEnd(txtSearch.getText().length());
             JOptionPane.showMessageDialog(this, "No Results", "Search", JOptionPane.INFORMATION_MESSAGE);

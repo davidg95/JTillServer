@@ -175,7 +175,6 @@ public class ProductsWindow extends javax.swing.JFrame {
             txtPrice.setEnabled(true);
             txtCostPrice.setEnabled(true);
             txtBarcode.setEnabled(true);
-            txtStock.setEnabled(true);
             txtMinStock.setEnabled(true);
             txtMaxStock.setEnabled(true);
             jLabel3.setEnabled(true);
@@ -428,6 +427,8 @@ public class ProductsWindow extends javax.swing.JFrame {
         txtBarcode.setEditable(false);
 
         jLabel3.setText("Price (£):");
+
+        txtStock.setEditable(false);
 
         jLabel4.setText("Stock:");
 
@@ -761,13 +762,12 @@ public class ProductsWindow extends javax.swing.JFrame {
             dep = departments.get(cmbDepartments.getSelectedIndex());
         }
         String comments = txtComments.getText();
-        if (chkOpen.isSelected()) {
+        if (product.isOpen()) {
             product.setLongName(name);
             product.setName(shortName);
             product.setCategory(category.getId());
             product.setTax(tax.getId());
             product.setComments(comments);
-            product.setOpen(true);
         } else {
             BigDecimal price = new BigDecimal(txtPrice.getText());
             BigDecimal costPrice = new BigDecimal(txtCostPrice.getText());
@@ -785,7 +785,6 @@ public class ProductsWindow extends javax.swing.JFrame {
             product.setMinStockLevel(minStock);
             product.setMaxStockLevel(maxStock);
             product.setComments(comments);
-            product.setOpen(false);
         }
         try {
             dc.updateProduct(product);
