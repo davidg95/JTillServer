@@ -810,13 +810,9 @@ public class ProductsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_chkOpenActionPerformed
 
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
-        String barcode = JOptionPane.showInputDialog(this, "Enter or scan barcode", "New Product", JOptionPane.INFORMATION_MESSAGE);
-        if (barcode != null && !barcode.equals("")) {
-            Plu plu = new Plu(barcode);
-            Product p = ProductDialog.showNewProductDialog(this, dc, plu, 0);
-            showAllProducts();
-            setCurrentProduct(null);
-        }
+        ProductEntryDialog.showDialog(this, dc, icon);
+        showAllProducts();
+        setCurrentProduct(null);
     }//GEN-LAST:event_btnNewProductActionPerformed
 
     private void tableProductsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProductsMousePressed
