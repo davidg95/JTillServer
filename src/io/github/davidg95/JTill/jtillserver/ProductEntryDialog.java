@@ -66,6 +66,37 @@ public class ProductEntryDialog extends javax.swing.JDialog {
         new ProductEntryDialog(window, dc, icon).setVisible(true);
     }
 
+    private void resetPanels() {
+        try {
+            selectedCategory = dc.getCategory(1);
+            selectedTax = dc.getTax(1);
+            selectedDepartment = dc.getDepartment(1);
+        } catch (IOException | SQLException | JTillException | TaxNotFoundException | CategoryNotFoundException ex) {
+            Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        txtPlu.setText("");
+
+        txtName.setText("");
+        txtShortName.setText("");
+        txtOrderCode.setText("0");
+        txtPrice.setText("");
+        txtCostPrice.setText("");
+        txtMinStock.setText("0");
+        txtMaxStock.setText("0");
+        txtComments.setText("");
+        btnSelectCategory.setText(selectedCategory.getName());
+        btnSelectTax.setText(selectedTax.getName());
+        btnSelectDepartment.setText(selectedDepartment.getName());
+
+        txtOpenName.setText("");
+        txtOpenShort.setText("");
+        txtOpenComments.setText("");
+        btnOpenCategory.setText(selectedCategory.getName());
+        btnOpenTax.setText(selectedTax.getName());
+        btnOpenDepartment.setText(selectedDepartment.getName());
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -127,6 +158,7 @@ public class ProductEntryDialog extends javax.swing.JDialog {
         radNew = new javax.swing.JRadioButton();
         radCopy = new javax.swing.JRadioButton();
         radNewOpen = new javax.swing.JRadioButton();
+        chkNext = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Create New Product");
@@ -141,6 +173,8 @@ public class ProductEntryDialog extends javax.swing.JDialog {
         });
 
         jLabel13.setText("Order Code:");
+
+        txtOrderCode.setText("0");
 
         jLabel5.setText("Comments:");
 
@@ -459,6 +493,13 @@ public class ProductEntryDialog extends javax.swing.JDialog {
         buttonGroup1.add(radNewOpen);
         radNewOpen.setText("Create Open Product");
 
+        chkNext.setText("Assign next avaliable");
+        chkNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkNextActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panBarcodeLayout = new javax.swing.GroupLayout(panBarcode);
         panBarcode.setLayout(panBarcodeLayout);
         panBarcodeLayout.setHorizontalGroup(
@@ -475,7 +516,9 @@ public class ProductEntryDialog extends javax.swing.JDialog {
                                 .addGap(51, 51, 51)
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtPlu, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtPlu, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(chkNext))
                             .addGroup(panBarcodeLayout.createSequentialGroup()
                                 .addGroup(panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(btnEnter, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -485,16 +528,17 @@ public class ProductEntryDialog extends javax.swing.JDialog {
                                         .addComponent(radNewOpen)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(radCopy)))
-                        .addGap(0, 125, Short.MAX_VALUE)))
+                        .addGap(0, 79, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         panBarcodeLayout.setVerticalGroup(
             panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panBarcodeLayout.createSequentialGroup()
-                .addContainerGap(164, Short.MAX_VALUE)
+                .addContainerGap(161, Short.MAX_VALUE)
                 .addGroup(panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtPlu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPlu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkNext))
                 .addGap(18, 18, 18)
                 .addGroup(panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(radNew)
@@ -538,6 +582,7 @@ public class ProductEntryDialog extends javax.swing.JDialog {
         try {
             product = dc.addProductAndPlu(product, plu);
             JOptionPane.showMessageDialog(this, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
+            resetPanels();
             CardLayout c = (CardLayout) jPanel1.getLayout();
             c.show(jPanel1, "card2");
             txtPlu.requestFocus();
@@ -568,26 +613,49 @@ public class ProductEntryDialog extends javax.swing.JDialog {
 
     private void btnEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnterActionPerformed
         try {
-            if (txtPlu.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "You must enter a barcode", "New Product", JOptionPane.WARNING_MESSAGE);
-                return;
-            } else if (txtPlu.getText().length() < 8 || txtPlu.getText().length() > 15) {
-                JOptionPane.showMessageDialog(this, "Barcodes must be between 8 and 15 characters long", "New Product", JOptionPane.WARNING_MESSAGE);
-                return;
-            } else if (!txtPlu.getText().matches("[0-9]+")) {
-                JOptionPane.showMessageDialog(this, "Must only contain numbers", "New Product", JOptionPane.WARNING_MESSAGE);
-                return;
+            if (chkNext.isSelected()) {
+                String upc = dc.getSetting("UPC_PREFIX");
+                int length = Integer.parseInt(dc.getSetting("BARCODE_LENGTH"));
+                if (!upc.equals("")) {
+                    int lengthToAdd = length - upc.length();
+                    String ref = dc.getSetting("NEXT_PLU");
+                    int n = Integer.parseInt(ref);
+                    n++;
+                    String next = Integer.toString(n);
+                    dc.setSetting("NEXT_PLU", next);
+                    for (int i = 1; i < lengthToAdd; i++) {
+                        ref = 0 + ref;
+                    }
+                    String barcode = upc + ref;
+                    plu = new Plu(barcode);
+                } else {
+                    JOptionPane.showMessageDialog(this, "You have not specified a UPC Company Prefix. This must be done before generating your own barcodes.", "Generate Barcode", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } else {
+                if (txtPlu.getText().equals("")) {
+                    JOptionPane.showMessageDialog(this, "You must enter a barcode", "New Product", JOptionPane.WARNING_MESSAGE);
+                    return;
+                } else if (txtPlu.getText().length() < 8 || txtPlu.getText().length() > 15) {
+                    JOptionPane.showMessageDialog(this, "Barcodes must be between 8 and 15 characters long", "New Product", JOptionPane.WARNING_MESSAGE);
+                    return;
+                } else if (!txtPlu.getText().matches("[0-9]+")) {
+                    JOptionPane.showMessageDialog(this, "Must only contain numbers", "New Product", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                if (dc.checkBarcode(txtPlu.getText())) {
+                    JOptionPane.showMessageDialog(this, "Barcode is already in use", "Barcode in use", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                plu = new Plu(txtPlu.getText());
             }
-            if (dc.checkBarcode(txtPlu.getText())) {
-                JOptionPane.showMessageDialog(this, "Barcode is already in use", "Barcode in use", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            plu = new Plu(txtPlu.getText());
             if (radNew.isSelected()) {
+                txtPlu.setText("");
                 CardLayout c = (CardLayout) jPanel1.getLayout();
                 c.show(jPanel1, "card3");
                 txtName.requestFocus();
             } else if (radNewOpen.isSelected()) {
+                txtPlu.setText("");
                 CardLayout c = (CardLayout) jPanel1.getLayout();
                 c.show(jPanel1, "card4");
                 txtOpenName.requestFocus();
@@ -653,7 +721,7 @@ public class ProductEntryDialog extends javax.swing.JDialog {
             product = new Product(name, shortName, 0, category.getId(), dep.getId(), comments, tax.getId(), 0, true);
             product = dc.addProductAndPlu(product, plu);
             JOptionPane.showMessageDialog(this, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
-
+            resetPanels();
             CardLayout c = (CardLayout) jPanel1.getLayout();
             c.show(jPanel1, "card2");
             txtPlu.requestFocus();
@@ -661,6 +729,10 @@ public class ProductEntryDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddOpenActionPerformed
+
+    private void chkNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkNextActionPerformed
+        txtPlu.setEnabled(!chkNext.isSelected());
+    }//GEN-LAST:event_chkNextActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddOpen;
@@ -676,6 +748,7 @@ public class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnSelectDepartment;
     private javax.swing.JButton btnSelectTax;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JCheckBox chkNext;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

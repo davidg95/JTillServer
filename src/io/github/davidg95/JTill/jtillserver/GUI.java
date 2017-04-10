@@ -433,6 +433,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemCategorys = new javax.swing.JMenuItem();
         itemDepartments = new javax.swing.JMenuItem();
         itemTaxes = new javax.swing.JMenuItem();
+        itemPluSettings = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         itemDatabase = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
@@ -820,6 +821,14 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         menuSetup.add(itemTaxes);
+
+        itemPluSettings.setText("Edit Plu Settings");
+        itemPluSettings.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemPluSettingsActionPerformed(evt);
+            }
+        });
+        menuSetup.add(itemPluSettings);
         menuSetup.add(jSeparator2);
 
         itemDatabase.setText("Database Settings");
@@ -1120,6 +1129,10 @@ public class GUI extends JFrame implements GUIInterface {
         StockTakeWindow.showWindow(dc, icon);
     }//GEN-LAST:event_itemStockTakeActionPerformed
 
+    private void itemPluSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPluSettingsActionPerformed
+        PluSettings.showWindow(dc, icon);
+    }//GEN-LAST:event_itemPluSettingsActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1144,6 +1157,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemLabelPrinting;
     private javax.swing.JMenuItem itemLogin;
     private javax.swing.JMenuItem itemNewStaff;
+    private javax.swing.JMenuItem itemPluSettings;
     private javax.swing.JMenuItem itemReasons;
     private javax.swing.JMenuItem itemReceive;
     private javax.swing.JMenuItem itemServerOptions;

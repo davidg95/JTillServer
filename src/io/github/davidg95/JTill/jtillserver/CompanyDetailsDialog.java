@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Window;
 import java.io.File;
 import java.io.FileInputStream;

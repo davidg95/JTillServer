@@ -84,7 +84,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * @return the product selected by the user.
      */
     public static Product showDialog(Component parent, DataConnect dc) {
-        return showDialog(parent, dc, true);
+        return showDialog(parent, dc, false);
     }
 
     /**
