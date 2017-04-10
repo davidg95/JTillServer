@@ -177,7 +177,7 @@ public class LabelPrintingWindow extends javax.swing.JFrame {
         btnCSV = new javax.swing.JButton();
         lblAmount = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Print Labels");
 
         table.setModel(new javax.swing.table.DefaultTableModel(

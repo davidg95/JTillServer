@@ -137,7 +137,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemCustomers">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Manage Customers"/>
+                <Property name="text" type="java.lang.String" value="Edit Customers"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemCustomersActionPerformed"/>
@@ -145,7 +145,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemStaff">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Manage Staff"/>
+                <Property name="text" type="java.lang.String" value="Edit Staff"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemStaffActionPerformed"/>
@@ -161,7 +161,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemDiscounts">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Manage Discounts"/>
+                <Property name="text" type="java.lang.String" value="Edit Discounts"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemDiscountsActionPerformed"/>
@@ -169,7 +169,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemCategorys">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Manage Categorys"/>
+                <Property name="text" type="java.lang.String" value="Edit Categorys"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemCategorysActionPerformed"/>
@@ -177,7 +177,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemDepartments">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Manage Departments"/>
+                <Property name="text" type="java.lang.String" value="Edit Departments"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemDepartmentsActionPerformed"/>
@@ -185,7 +185,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemTaxes">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Manage Taxes"/>
+                <Property name="text" type="java.lang.String" value="Edit Taxes"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemTaxesActionPerformed"/>
@@ -267,7 +267,6 @@
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="lblPort" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblProducts" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="lblServerAddress" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
@@ -302,11 +301,7 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="lblPort" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="lblProducts" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="lblPort" min="-2" max="-2" attributes="0"/>
                   <Component id="jScrollPane2" min="-2" pref="209" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="33" max="32767" attributes="0"/>
@@ -569,11 +564,6 @@
     <Component class="javax.swing.JLabel" name="lblPort">
       <Properties>
         <Property name="text" type="java.lang.String" value="Port number: 0"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="lblProducts">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Products in database: 0"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane2">

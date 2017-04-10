@@ -1357,6 +1357,14 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
+                    case "ADDPRODUCTANDPLU": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                addProductAndPlu(data);
+                            }
+                        }.start();
+                    }
                     case "CONNTERM": { //Terminate the connection
                         conn_term = true;
                         if (staff != null) {
@@ -3915,6 +3923,27 @@ public class ConnectionThread extends Thread {
                 List<Sale> sales = dc.getUncachedTillSales(id);
                 obOut.writeObject(ConnectionData.create("SUCC", sales));
             } catch (JTillException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void addProductAndPlu(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Product) || !(clone.getData2() instanceof Plu)) {
+                LOG.log(Level.SEVERE, "Unexpected data type adding new plu and product");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            Product p = (Product) data.getData();
+            Plu pl = (Plu) data.getData2();
+            try {
+                p = dc.addProductAndPlu(p, pl);
+                obOut.writeObject(ConnectionData.create("SUCC", p));
+            } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {

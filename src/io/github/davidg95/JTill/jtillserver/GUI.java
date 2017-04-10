@@ -148,11 +148,6 @@ public class GUI extends JFrame implements GUIInterface {
             lblServerAddress.setText("Local Server Address: UNKNOWN");
         }
         lblPort.setText("Port Number: " + ConnectionAcceptThread.PORT_IN_USE);
-        try {
-            lblProducts.setText("Products in database: " + dc.getAllProducts().size());
-        } catch (IOException | SQLException ex) {
-            lblProducts.setText("Products in database: UNKNOWN");
-        }
     }
 
     @Override
@@ -407,7 +402,6 @@ public class GUI extends JFrame implements GUIInterface {
         jLabel2 = new javax.swing.JLabel();
         lblServerAddress = new javax.swing.JLabel();
         lblPort = new javax.swing.JLabel();
-        lblProducts = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtStockWarnings = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
@@ -617,8 +611,6 @@ public class GUI extends JFrame implements GUIInterface {
 
         lblPort.setText("Port number: 0");
 
-        lblProducts.setText("Products in database: 0");
-
         txtStockWarnings.setEditable(false);
         txtStockWarnings.setColumns(20);
         txtStockWarnings.setLineWrap(true);
@@ -773,7 +765,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemTillScreens);
 
-        itemCustomers.setText("Manage Customers");
+        itemCustomers.setText("Edit Customers");
         itemCustomers.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemCustomersActionPerformed(evt);
@@ -781,7 +773,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemCustomers);
 
-        itemStaff.setText("Manage Staff");
+        itemStaff.setText("Edit Staff");
         itemStaff.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemStaffActionPerformed(evt);
@@ -797,7 +789,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemNewStaff);
 
-        itemDiscounts.setText("Manage Discounts");
+        itemDiscounts.setText("Edit Discounts");
         itemDiscounts.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemDiscountsActionPerformed(evt);
@@ -805,7 +797,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemDiscounts);
 
-        itemCategorys.setText("Manage Categorys");
+        itemCategorys.setText("Edit Categorys");
         itemCategorys.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemCategorysActionPerformed(evt);
@@ -813,7 +805,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemCategorys);
 
-        itemDepartments.setText("Manage Departments");
+        itemDepartments.setText("Edit Departments");
         itemDepartments.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemDepartmentsActionPerformed(evt);
@@ -821,7 +813,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemDepartments);
 
-        itemTaxes.setText("Manage Taxes");
+        itemTaxes.setText("Edit Taxes");
         itemTaxes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemTaxesActionPerformed(evt);
@@ -879,7 +871,6 @@ public class GUI extends JFrame implements GUIInterface {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblPort)
-                            .addComponent(lblProducts)
                             .addComponent(lblServerAddress))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -906,10 +897,7 @@ public class GUI extends JFrame implements GUIInterface {
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblPort)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblProducts))
+                    .addComponent(lblPort)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1181,7 +1169,6 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JLabel lblClients;
     private javax.swing.JLabel lblHelp;
     private javax.swing.JLabel lblPort;
-    private javax.swing.JLabel lblProducts;
     private javax.swing.JLabel lblServerAddress;
     private javax.swing.JLabel lblUpdate;
     private javax.swing.JLabel lblUser;
