@@ -42,9 +42,6 @@ public class PluSettings extends javax.swing.JFrame {
                 }
                 String barcode = upc + ref;
                 txtNext.setText(barcode);
-            } else {
-                JOptionPane.showMessageDialog(this, "You have not specified a UPC Company Prefix. This must be done before generating your own barcodes.", "Generate Barcode", JOptionPane.ERROR_MESSAGE);
-                return;
             }
 
         } catch (IOException ex) {
