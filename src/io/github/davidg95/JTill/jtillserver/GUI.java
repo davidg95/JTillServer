@@ -249,6 +249,7 @@ public class GUI extends JFrame implements GUIInterface {
     @Override
     public void log(Object o) {
         txtLog.append(o.toString() + "\n");
+        txtLog.setCaretPosition(txtLog.getDocument().getLength());
     }
 
     @Override
@@ -599,6 +600,7 @@ public class GUI extends JFrame implements GUIInterface {
         txtLog.setEditable(false);
         txtLog.setColumns(20);
         txtLog.setRows(5);
+        txtLog.setCaretPosition(txtLog.getDocument().getLength());
         txtLog.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 txtLogMouseClicked(evt);

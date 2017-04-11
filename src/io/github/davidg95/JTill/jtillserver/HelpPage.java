@@ -44,11 +44,11 @@ public class HelpPage extends javax.swing.JFrame {
     public HelpPage() {
         initComponents();
         map = new HashMap();
-        editPane.setContentType("text/html");
+        /*editPane.setContentType("text/html");
         loadFile();
         editPane.setText(text);
         editPane.setEditable(false);
-        init();
+        init();*/
     }
 
     private void loadFile() {
