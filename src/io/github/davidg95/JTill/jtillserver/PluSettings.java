@@ -192,6 +192,17 @@ public class PluSettings extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        int prefixLength = txtUPC.getText().length();
+        if (!txtLength.getText().matches("[0-9]+")) {
+            JOptionPane.showMessageDialog(this, "Must only contain numbers", "Length", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int barcodeLength = Integer.parseInt(txtLength.getText());
+        
+        if(barcodeLength <= prefixLength){
+            JOptionPane.showMessageDialog(this, "Your barcode length must be greater than your UPC Prefix length", "Plu settings", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         saveUPC();
         saveLength();
         JOptionPane.showMessageDialog(this, "Settings saved", "Plu Settings", JOptionPane.INFORMATION_MESSAGE);

@@ -262,7 +262,7 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnReceiveActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        Product product = ProductSelectDialog.showDialog(this, dc);
+        Product product = ProductSelectDialog.showDialog(this, dc, false);
 
         if (product == null) {
             return;

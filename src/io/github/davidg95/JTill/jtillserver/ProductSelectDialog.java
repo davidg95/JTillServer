@@ -42,6 +42,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      *
      * @param parent the parent component.
      * @param dc the data source.
+     * @param showOpen indicated whether open price products should show.
+     * new product if a barcode is not found.
      */
     public ProductSelectDialog(Window parent, DataConnect dc, boolean showOpen) {
         super(parent);
@@ -84,7 +86,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * @return the product selected by the user.
      */
     public static Product showDialog(Component parent, DataConnect dc) {
-        return showDialog(parent, dc, false);
+        return showDialog(parent, dc, true);
     }
 
     /**
@@ -275,20 +277,21 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         List<Product> newList = new ArrayList<>();
 
         for (Product p : currentTableContents) {
-            if (!showOpen && !p.isOpen()) {
-                if (radName.isSelected()) {
-                    if (p.getLongName().toLowerCase().contains(search.toLowerCase())) {
+            if (!showOpen && p.isOpen()) {
+                continue;
+            }
+            if (radName.isSelected()) {
+                if (p.getLongName().toLowerCase().contains(search.toLowerCase())) {
+                    newList.add(p);
+                }
+            } else {
+                try {
+                    final Plu plu = dc.getPlu(p.getPlu());
+                    if (plu.getCode().equals(search)) {
                         newList.add(p);
                     }
-                } else {
-                    try {
-                        final Plu plu = dc.getPlu(p.getPlu());
-                        if (plu.getCode().equals(search)) {
-                            newList.add(p);
-                        }
-                    } catch (IOException | JTillException | SQLException ex) {
-                        Logger.getLogger(ProductSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                } catch (IOException | JTillException | SQLException ex) {
+                    Logger.getLogger(ProductSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

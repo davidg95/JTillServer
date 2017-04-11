@@ -870,9 +870,10 @@ public class DiscountsWindow extends javax.swing.JFrame {
         if (evt.getClickCount() == 2) {
             int value = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter quantity required", "Chagne quantity", JOptionPane.INFORMATION_MESSAGE));
             if (value > 0) {
-                currentTriggerContents.get(tableTrig.getSelectedRow()).setQuantityRequired(value);
+                Trigger t = currentTriggerContents.get(tableTrig.getSelectedRow());
+                t.setQuantityRequired(value);
                 try {
-                    dc.updateTrigger(currentTriggerContents.get(tableTrig.getSelectedRow()));
+                    dc.updateTrigger(t);
                 } catch (IOException | SQLException | JTillException ex) {
                     Logger.getLogger(DiscountsWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
