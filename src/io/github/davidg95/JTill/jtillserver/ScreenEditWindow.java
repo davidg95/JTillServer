@@ -8,6 +8,8 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -37,14 +39,23 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
     private static ScreenEditWindow frame;
 
-    private final DataConnect dbConn;
+    private final DataConnect dc;
 
-    private final CardLayout categoryCards;
-    private final ButtonGroup cardsButtonGroup;
+    private final CardLayout categoryCards; //Cards for each screen
+    private final ButtonGroup cardsButtonGroup; //Button group for the screen buttons
 
-    private Screen currentScreen;
-    private TillButton currentButton;
-    private List<TillButton> currentButtons;
+    private Screen currentScreen; //The current selected screen.
+    private TillButton currentButton; //The current selected button.
+    private List<TillButton> currentButtons; //The current buttons.
+
+    /**
+     * The amount of buttons each screen has horizontally.
+     */
+    private int BUTTONS_GRID_X = 5;
+    /**
+     * The amount of buttons each screen has vertically.
+     */
+    private int BUTTONS_GRID_Y = 10;
 
     /**
      * Creates new form ScreenEditWindow
@@ -52,7 +63,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
      * @param dc reference to the data connect class.
      */
     public ScreenEditWindow(DataConnect dc, Image icon) {
-        dbConn = dc;
+        this.dc = dc;
         this.setIconImage(icon);
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -60,6 +71,12 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         cardsButtonGroup = new ButtonGroup();
     }
 
+    /**
+     * Show the screen edit window.
+     *
+     * @param dc the database connection.
+     * @param icon the icon for the window.
+     */
     public static void showScreenEditWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new ScreenEditWindow(dc, icon);
@@ -73,11 +90,14 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         frame.setButtons();
     }
 
+    /**
+     * Sets the buttons and screens for editing.
+     */
     public synchronized void setButtons() {
         try {
-            List<Screen> screens = dbConn.getAllScreens();
-            panelCategories.removeAll();
-            panelCategories.setLayout(new GridLayout(2, 4));
+            List<Screen> screens = dc.getAllScreens(); //Get all the screens on the server.
+            panelScreens.removeAll();
+            panelScreens.setLayout(new GridLayout(2, 4));
             for (Screen s : screens) {
                 addScreenButton(s);
             }
@@ -85,7 +105,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             for (int i = screens.size() - 1; i < 9; i++) {
                 JPanel panel = new JPanel();
                 panel.setBackground(Color.WHITE);
-                panelCategories.add(panel);
+                panelScreens.add(panel);
             }
             repaint();
             revalidate();
@@ -106,8 +126,13 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Creates a new button for the screen.
+     *
+     * @param s the screen to create a button for.
+     */
     public void addScreenButton(Screen s) {
-        JToggleButton cButton = new JToggleButton(s.getName());
+        JToggleButton cButton = new JToggleButton(s.getName()); //Create a new toggle button for the screen.
         if (s.getColorValue() != 0) {
             cButton.setBackground(new Color(s.getColorValue()));
         }
@@ -118,13 +143,13 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                     Screen s = ScreenButtonOptionDialog.showDialog(ScreenEditWindow.this, currentScreen);
                     if (s == null) {
                         try {
-                            dbConn.removeScreen(currentScreen);
+                            dc.removeScreen(currentScreen);
                         } catch (IOException | SQLException | ScreenNotFoundException ex) {
                             showError(ex);
                         }
                     } else {
                         try {
-                            dbConn.updateScreen(s);
+                            dc.updateScreen(s);
                         } catch (IOException | SQLException | ScreenNotFoundException ex) {
                             showError(ex);
                         }
@@ -158,26 +183,35 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             categoryCards.show(panelProducts, s.getName());
             currentScreen = s;
         });
-        cardsButtonGroup.add(cButton);
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(10, 5));
+        cardsButtonGroup.add(cButton); //Add the toggle button to the cards button group.
+        JPanel panel = new JPanel(); //Create a panel for the buttons on this screen.
+//        panel.setLayout(new GridLayout(BUTTONS_GRID_Y, BUTTONS_GRID_X)); //Set the grid layout.
+        panel.setLayout(new GridBagLayout());
 
         try {
-            currentButtons = dbConn.getButtonsOnScreen(s);
+            currentButtons = dc.getButtonsOnScreen(s); //Get all the buttons on the screen.
             for (TillButton b : currentButtons) {
-                JButton pButton = new JButton(b.getName());
+                JButton pButton = new JButton(b.getName()); //Creat a new button for the button.
                 if (b.getColorValue() != 0) {
                     pButton.setBackground(new Color(b.getColorValue()));
                 }
-                if (b.getName().equals("[SPACE]")) {
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.gridx = b.getX() - 1;
+                gbc.gridy = b.getY() - 1;
+                gbc.gridwidth = b.getWidth();
+                gbc.gridheight = b.getHeight();
+                gbc.weightx = 1;
+                gbc.weighty = 1;
+                gbc.fill = GridBagConstraints.BOTH;
+                if (b.getName().equals("[SPACE]")) { //If it is a space, create a panel for the button.
                     JPanel pan = new JPanel();
                     pan.setBackground(Color.WHITE);
-                    pan.setLayout(new GridLayout(1, 1));
+                    //pan.setLayout(new GridLayout(1, 1));
                     pan.addMouseListener(new MouseListener() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
                             currentButton = b;
-                            showButtonOptions();
+                            showButtonOptions(); //Show the button options dialog.
                         }
 
                         @Override
@@ -192,44 +226,46 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
                         @Override
                         public void mouseEntered(MouseEvent e) {
-                            pan.setBackground(Color.GRAY);
+                            pan.setBackground(Color.GRAY); //Set the panel to turn grey when the mouse hovers over it.
                         }
 
                         @Override
                         public void mouseExited(MouseEvent e) {
-                            pan.setBackground(Color.WHITE);
+                            pan.setBackground(Color.WHITE); //Set the panel back to white when the mouse leaves.
                         }
 
                     });
-                    panel.add(pan);
-                } else {
+                    panel.add(pan, gbc); //Add the panel to the screen panel.
+                } else { //If the button is a button.
                     pButton.addActionListener((ActionEvent e) -> {
                         currentButton = b;
-                        showButtonOptions();
+                        showButtonOptions(); //Show the button options dialog.
                     });
-                    panel.add(pButton);
+                    panel.add(pButton, gbc); //Add the button to the panel.
                 }
             }
-            panelProducts.add(panel, s.getName());
-            panelCategories.add(cButton);
+            panelProducts.add(panel, s.getName()); //Add the screen panel to the container panel for all screens.
+            panelScreens.add(cButton); //Add the screens toggle button.
         } catch (SQLException | IOException | ScreenNotFoundException ex) {
             showError(ex);
         }
     }
 
+    /**
+     * Method to show the buttons options dialog for a particular button.
+     */
     private void showButtonOptions() {
-        TillButton but = currentButton; //The button that is getting changed
-        currentButton = ButtonOptionDialog.showDialog(this, currentButton, dbConn);
+        currentButton = ButtonOptionDialog.showDialog(this, currentButton, dc);
         if (currentButton == null) { //If it is null then the button is getting removed.
             try {
                 currentButton.setName("[SPACE]");
-                dbConn.updateButton(currentButton);
+                dc.updateButton(currentButton);
             } catch (IOException | SQLException | ButtonNotFoundException ex) {
                 showError(ex);
             }
         } else { //If it is not null then it is being edited or nothing has happening to it
             try {
-                dbConn.updateButton(currentButton); //This will update the ucrrent button in the database
+                dc.updateButton(currentButton); //This will update the ucrrent button in the database
             } catch (IOException | SQLException | ButtonNotFoundException ex) {
                 showError(ex);
             }
@@ -243,7 +279,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
     private boolean checkName(String name) {
         try {
-            List<Screen> screens = dbConn.getAllScreens();
+            List<Screen> screens = dc.getAllScreens();
             for (Screen s : screens) {
                 if (s.getName().equalsIgnoreCase(name)) {
                     return false;
@@ -266,15 +302,14 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
         panelEditor = new javax.swing.JPanel();
         panelProducts = new javax.swing.JPanel();
-        panelCategories = new javax.swing.JPanel();
+        panelScreens = new javax.swing.JPanel();
         btnNewScreen = new javax.swing.JButton();
-        btnWipeAll = new javax.swing.JButton();
 
         setTitle("Screen Editor");
 
         panelProducts.setLayout(new java.awt.CardLayout());
 
-        panelCategories.setLayout(new java.awt.CardLayout());
+        panelScreens.setLayout(new java.awt.CardLayout());
 
         javax.swing.GroupLayout panelEditorLayout = new javax.swing.GroupLayout(panelEditor);
         panelEditor.setLayout(panelEditorLayout);
@@ -284,16 +319,16 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panelEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, 844, Short.MAX_VALUE)
-                    .addComponent(panelCategories, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(panelScreens, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         panelEditorLayout.setVerticalGroup(
             panelEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelEditorLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelCategories, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panelScreens, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -304,22 +339,13 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             }
         });
 
-        btnWipeAll.setText("Wipe All");
-        btnWipeAll.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnWipeAllActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnNewScreen)
-                    .addComponent(btnWipeAll))
+                .addComponent(btnNewScreen)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
                 .addComponent(panelEditor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -331,9 +357,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnNewScreen)
-                        .addGap(192, 192, 192)
-                        .addComponent(btnWipeAll)
-                        .addGap(0, 333, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(panelEditor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -344,16 +368,23 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     private void btnNewScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewScreenActionPerformed
         String name = JOptionPane.showInputDialog("Enter Name");
         if (!name.equals("")) {
-            if (checkName(name)) {
+            if (checkName(name)) { //Check if the name is already being used
                 new Thread("New Screen") {
                     @Override
                     public void run() {
                         try {
-                            int position = dbConn.getAllScreens().size() - 1;
-                            Screen s = new Screen(name, position, 0);
-                            Screen sc = dbConn.addScreen(s);
+                            int position = dc.getAllScreens().size() - 1;
+                            Screen s = new Screen(name, position, 0, 5, 10);
+                            Screen sc = dc.addScreen(s);
+                            int x = 1;
+                            int y = 1;
                             for (int i = 0; i < 50; i++) {
-                                TillButton bu = dbConn.addButton(new TillButton("[SPACE]", 0, sc.getId(), 0));
+                                TillButton bu = dc.addButton(new TillButton("[SPACE]", 0, sc.getId(), 0, 1, 1, x, y));
+                                x++;
+                                if(x == 6){
+                                    x = 1;
+                                    y++;
+                                }
                             }
                             setButtons();
                         } catch (IOException | SQLException ex) {
@@ -367,25 +398,10 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnNewScreenActionPerformed
 
-    private void btnWipeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWipeAllActionPerformed
-        new Thread("WpieAllButton") {
-            @Override
-            public void run() {
-                try {
-                    dbConn.deleteAllScreensAndButtons();
-                    setButtons();
-                } catch (IOException | SQLException ex) {
-                    showError(ex);
-                }
-            }
-        }.start();
-    }//GEN-LAST:event_btnWipeAllActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNewScreen;
-    private javax.swing.JButton btnWipeAll;
-    private javax.swing.JPanel panelCategories;
     private javax.swing.JPanel panelEditor;
     private javax.swing.JPanel panelProducts;
+    private javax.swing.JPanel panelScreens;
     // End of variables declaration//GEN-END:variables
 }

@@ -9,6 +9,7 @@ import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
+import java.awt.MouseInfo;
 import java.awt.Window;
 import javax.swing.JDialog;
 
@@ -34,12 +35,17 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
         super(parent);
         this.dc = dc;
         initComponents();
-        setLocationRelativeTo(parent);
+       // setLocationRelativeTo(parent);
+        int x = (int) MouseInfo.getPointerInfo().getLocation().getX();
+        int y = (int) MouseInfo.getPointerInfo().getLocation().getY();
+        this.setLocation(x, y);
         setModal(true);
         setTitle(button.getName());
         if (button.getName().equals("[SPACE]")) {
             btnRemove.setEnabled(false);
         }
+        txtWidth.setText(button.getWidth() + "");
+        txtHeight.setText(button.getHeight() + "");
     }
 
     /**
@@ -75,6 +81,10 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
         btnRemove = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
         btnChangeButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txtWidth = new javax.swing.JTextField();
+        txtHeight = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -100,16 +110,33 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
             }
         });
 
+        jLabel1.setText("Width:");
+
+        jLabel2.setText("Height");
+
+        txtWidth.setText("1");
+
+        txtHeight.setText("1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btnRemove, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
-                    .addComponent(btnClose, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnChangeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnRemove, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                    .addComponent(btnClose, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnChangeButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtWidth, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
+                            .addComponent(txtHeight))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -121,6 +148,14 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
                 .addComponent(btnChangeButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnClose)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -141,6 +176,8 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
         if (i != null) {
             button.setItem(i.getId());
             button.setName(i.getName());
+            button.setWidth(Integer.parseInt(txtWidth.getText()));
+            button.setHeight(Integer.parseInt(txtHeight.getText()));
             this.setVisible(false);
         }
     }//GEN-LAST:event_btnChangeButtonActionPerformed
@@ -149,5 +186,9 @@ public class ButtonOptionDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnChangeButton;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnRemove;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JTextField txtHeight;
+    private javax.swing.JTextField txtWidth;
     // End of variables declaration//GEN-END:variables
 }
