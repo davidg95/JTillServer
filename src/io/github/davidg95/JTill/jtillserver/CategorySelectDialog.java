@@ -23,7 +23,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class CategorySelectDialog extends javax.swing.JDialog {
+public final class CategorySelectDialog extends javax.swing.JDialog {
 
     private static JDialog dialog;
     private static Category category;

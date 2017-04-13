@@ -18,7 +18,7 @@ import javax.swing.JDialog;
  *
  * @author David
  */
-public class ButtonOptionDialog extends javax.swing.JDialog {
+public final class ButtonOptionDialog extends javax.swing.JDialog {
 
     private static JDialog dialog;
     private static TillButton button;

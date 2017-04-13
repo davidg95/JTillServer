@@ -35,7 +35,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author david
  */
-public class ReceiveItemsWindow extends javax.swing.JFrame {
+public final class ReceiveItemsWindow extends javax.swing.JFrame {
 
     private static ReceiveItemsWindow window;
 
@@ -46,6 +46,8 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
 
     /**
      * Creates new form ReceiveItemsWindow
+     * @param dc the data connection.
+     * @param icon the frame icon.
      */
     public ReceiveItemsWindow(DataConnect dc, Image icon) {
         this.dc = dc;
@@ -74,9 +76,9 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                 setVisible(true);
                 JOptionPane.showMessageDialog(this, "You must set up at least one supplier before receiving stock. Go to Setup -> Edit Suppliers to do this", "No Suppliers Set", JOptionPane.WARNING_MESSAGE);
             }
-            for (Supplier s : suppliers) {
+            suppliers.forEach((s) -> {
                 cmbModel.addElement(s);
-            }
+            });
         } catch (IOException | SQLException ex) {
             Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -231,7 +233,7 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
         if (products.isEmpty()) {
             return;
         }
-        for (Product p : products) {
+        products.forEach((p) -> {
             try {
                 Product product = dc.getProduct(p.getId());
                 product.addStock(p.getStock());
@@ -240,7 +242,7 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
             } catch (IOException | ProductNotFoundException | SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
-        }
+        });
         lblValue.setText("Total: £0.00");
         model.setRowCount(0);
         products.clear();

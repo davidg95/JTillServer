@@ -25,7 +25,7 @@ import javax.swing.JOptionPane;
  *
  * @author David
  */
-public class ProductEntryDialog extends javax.swing.JDialog {
+public final class ProductEntryDialog extends javax.swing.JDialog {
 
     private final DataConnect dc;
     private Plu plu;
@@ -35,7 +35,11 @@ public class ProductEntryDialog extends javax.swing.JDialog {
     private Tax selectedTax;
 
     /**
-     * Creates new form ProductEntryDialog
+     * Creates new form ProductEntryDialog.
+     *
+     * @param parent the parent component.
+     * @param dc the data connection.
+     * @param icon the frame icon.
      */
     public ProductEntryDialog(Window parent, DataConnect dc, Image icon) {
         super(parent);
@@ -44,6 +48,7 @@ public class ProductEntryDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setModal(true);
         setIconImage(icon);
+        setLocationRelativeTo(parent);
         try {
             selectedCategory = dc.getCategory(1);
             selectedTax = dc.getTax(1);
@@ -162,6 +167,7 @@ public class ProductEntryDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Create New Product");
+        setResizable(false);
 
         jPanel1.setLayout(new java.awt.CardLayout());
 

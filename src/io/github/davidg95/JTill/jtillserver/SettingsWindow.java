@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
  *
  * @author David
  */
-public class SettingsWindow extends javax.swing.JFrame {
+public final class SettingsWindow extends javax.swing.JFrame {
 
     private final Logger log = Logger.getGlobal();
 
@@ -71,15 +71,6 @@ public class SettingsWindow extends javax.swing.JFrame {
             } else {
                 chkSendProducts.setSelected(false);
             }
-            if (dc.getSetting("LOGOUT_TIMEOUT").equals("-1")) {
-                chkLogoutTimeout.setSelected(false);
-                txtLogoutTimeout.setText("");
-                txtLogoutTimeout.setEnabled(false);
-            } else {
-                chkLogoutTimeout.setSelected(true);
-                txtLogoutTimeout.setText(dc.getSetting("LOGOUT_TIMEOUT"));
-                txtLogoutTimeout.setEnabled(true);
-            }
             txtOutMail.setText(dc.getSetting("mail.smtp.host"));
             txtOutgoingAddress.setText(dc.getSetting("OUTGOING_MAIL_ADDRESS"));
             txtMailAddress.setText(dc.getSetting("MAIL_ADDRESS"));
@@ -120,12 +111,8 @@ public class SettingsWindow extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         btnEditDatabase = new javax.swing.JButton();
         panelSecurity = new javax.swing.JPanel();
-        txtLogoutTimeout = new javax.swing.JTextField();
         chkLogOut = new javax.swing.JCheckBox();
-        jLabel8 = new javax.swing.JLabel();
-        chkLogoutTimeout = new javax.swing.JCheckBox();
         btnSaveSecurity = new javax.swing.JButton();
-        jLabel7 = new javax.swing.JLabel();
         btnDatabaseDefault = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
@@ -282,19 +269,7 @@ public class SettingsWindow extends javax.swing.JFrame {
 
         panelSecurity.setBorder(javax.swing.BorderFactory.createTitledBorder("Security"));
 
-        txtLogoutTimeout.setText("30");
-
         chkLogOut.setText("Log Out After Sale Is Complete");
-
-        jLabel8.setText("seconds");
-
-        chkLogoutTimeout.setSelected(true);
-        chkLogoutTimeout.setText("Enabled");
-        chkLogoutTimeout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkLogoutTimeoutActionPerformed(evt);
-            }
-        });
 
         btnSaveSecurity.setText("Save Changes");
         btnSaveSecurity.addActionListener(new java.awt.event.ActionListener() {
@@ -303,37 +278,23 @@ public class SettingsWindow extends javax.swing.JFrame {
             }
         });
 
-        jLabel7.setText("Automatic Logout Timeout:");
-
         javax.swing.GroupLayout panelSecurityLayout = new javax.swing.GroupLayout(panelSecurity);
         panelSecurity.setLayout(panelSecurityLayout);
         panelSecurityLayout.setHorizontalGroup(
             panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(chkLogOut)
             .addGroup(panelSecurityLayout.createSequentialGroup()
                 .addGroup(panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnSaveSecurity)
-                    .addGroup(panelSecurityLayout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtLogoutTimeout, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(chkLogoutTimeout))
+                    .addComponent(chkLogOut))
+                .addGap(110, 110, 110))
         );
         panelSecurityLayout.setVerticalGroup(
             panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelSecurityLayout.createSequentialGroup()
                 .addComponent(chkLogOut)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(txtLogoutTimeout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8)
-                    .addComponent(chkLogoutTimeout))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSaveSecurity))
+                .addComponent(btnSaveSecurity)
+                .addContainerGap())
         );
 
         btnDatabaseDefault.setText("Reset To Default");
@@ -571,10 +532,6 @@ public class SettingsWindow extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(panelSecurity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(btnEditNetwork)
                                     .addComponent(panelNetwork, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -585,10 +542,14 @@ public class SettingsWindow extends javax.swing.JFrame {
                                         .addGap(9, 9, 9)
                                         .addComponent(btnEditDatabase)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnDatabaseDefault)))))
+                                        .addComponent(btnDatabaseDefault))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(panelSecurity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnClose)
                             .addComponent(btnPermissions)))
@@ -676,19 +637,10 @@ public class SettingsWindow extends javax.swing.JFrame {
             } else {
                 dc.setSetting("AUTO_LOGOUT", "FALSE");
             }
-            if (chkLogoutTimeout.isSelected()) {
-                dc.setSetting("LOGOUT_TIMEOUT", txtLogoutTimeout.getText());
-            } else {
-                dc.setSetting("LOGOUT_TIMEOUT", "-1");
-            }
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSaveSecurityActionPerformed
-
-    private void chkLogoutTimeoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkLogoutTimeoutActionPerformed
-        txtLogoutTimeout.setEnabled(chkLogoutTimeout.isSelected());
-    }//GEN-LAST:event_chkLogoutTimeoutActionPerformed
 
     private void btnDatabaseDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDatabaseDefaultActionPerformed
         try {
@@ -792,7 +744,6 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnSaveSecurity;
     private javax.swing.JCheckBox chkApproveNew;
     private javax.swing.JCheckBox chkLogOut;
-    private javax.swing.JCheckBox chkLogoutTimeout;
     private javax.swing.JCheckBox chkSendProducts;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -808,8 +759,6 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel panelDatabase;
@@ -818,7 +767,6 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JPanel panelSecurity;
     private javax.swing.JSpinner spinSaleCache;
     private javax.swing.JTextField txtAddress;
-    private javax.swing.JTextField txtLogoutTimeout;
     private javax.swing.JTextField txtMailAddress;
     private javax.swing.JTextField txtMaxConn;
     private javax.swing.JTextField txtMaxQueued;

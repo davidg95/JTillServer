@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  *
  * @author David
  */
-public class ReportingWindow extends javax.swing.JFrame {
+public final class ReportingWindow extends javax.swing.JFrame {
 
     private final DataConnect dc;
 
@@ -40,6 +40,8 @@ public class ReportingWindow extends javax.swing.JFrame {
 
     /**
      * Creates new form ReportingWindow
+     * @param dc the data connection.
+     * @param icon the frame icon.
      */
     public ReportingWindow(DataConnect dc, Image icon) {
         this.dc = dc;
@@ -395,7 +397,7 @@ public class ReportingWindow extends javax.swing.JFrame {
             int itemsSold = 0;
             BigDecimal sales = BigDecimal.ZERO;
             BigDecimal tax = BigDecimal.ZERO;
-            int transactions = 0;
+            int transactions;
 
             for (SaleItem i : fil2) {
                 if (i.getType() == SaleItem.PRODUCT) {

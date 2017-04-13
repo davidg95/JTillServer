@@ -26,7 +26,7 @@ import javax.swing.JOptionPane;
  *
  * @author David
  */
-public class ProductEnquiry extends javax.swing.JFrame {
+public final class ProductEnquiry extends javax.swing.JFrame {
 
     private final DataConnect dc;
     private Product product;
@@ -38,6 +38,8 @@ public class ProductEnquiry extends javax.swing.JFrame {
 
     /**
      * Creates new form ProductEnquiry
+     * @param dc the data connection.
+     * @param icon the frame icon.
      */
     public ProductEnquiry(DataConnect dc, Image icon) {
         this.dc = dc;
@@ -546,17 +548,14 @@ public class ProductEnquiry extends javax.swing.JFrame {
         boolean ok = job.printDialog();
         final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing report...", job);
         if (ok) {
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        job.print();
-                    } catch (PrinterException ex) {
-                        mDialog.hide();
-                        JOptionPane.showMessageDialog(ProductEnquiry.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-                    } finally {
-                        mDialog.hide();
-                    }
+            Runnable runnable = () -> {
+                try {
+                    job.print();
+                } catch (PrinterException ex) {
+                    mDialog.hide();
+                    JOptionPane.showMessageDialog(ProductEnquiry.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    mDialog.hide();
                 }
             };
             Thread th = new Thread(runnable);

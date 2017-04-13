@@ -23,7 +23,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class CategorysWindow extends javax.swing.JFrame {
+public final class CategorysWindow extends javax.swing.JFrame {
 
     public static CategorysWindow frame;
 
@@ -35,6 +35,8 @@ public class CategorysWindow extends javax.swing.JFrame {
 
     /**
      * Creates new form CategoryWindow
+     * @param dc the data connection.
+     * @param icon the frame icon.
      */
     public CategorysWindow(DataConnect dc, Image icon) {
         this.dc = dc;
@@ -49,7 +51,8 @@ public class CategorysWindow extends javax.swing.JFrame {
      * Method to show the category window. If this is the first time it is being
      * called, it will first construct the window.
      *
-     * @param dc the reference to the data source.
+     * @param dc the data connection.
+     * @param icon the frame icon.
      */
     public static void showCategoryWindow(DataConnect dc, Image icon) {
         if (frame == null) {
