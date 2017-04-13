@@ -241,6 +241,9 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+        lblValue.setText("Total: £0.00");
+        model.setRowCount(0);
+        products.clear();
         JOptionPane.showMessageDialog(this, "All items have been received", "Received", JOptionPane.INFORMATION_MESSAGE);
         if (JOptionPane.showConfirmDialog(this, "Do you want to print the report?", "Print", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             try {
@@ -255,9 +258,6 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-        lblValue.setText("Total: £0.00");
-        model.setRowCount(0);
-        products.clear();
         this.setVisible(false);
     }//GEN-LAST:event_btnReceiveActionPerformed
 
@@ -270,30 +270,37 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
 
         product = (Product) product.clone();
 
-        String amount = JOptionPane.showInputDialog(this, "Enter amount to receive", "Receive Stock", JOptionPane.INFORMATION_MESSAGE);
+        String str = JOptionPane.showInputDialog(this, "Enter amount to receive", "Receive Stock", JOptionPane.INFORMATION_MESSAGE);
 
-        if (amount == null || amount.equals("0") || amount.equals("")) {
+        if (str == null || str.isEmpty()) {
             return;
         }
 
-        if (product.getStock() + Integer.parseInt(amount) > product.getMaxStockLevel() && product.getMaxStockLevel() != 0) {
-            JOptionPane.showMessageDialog(this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product", "Stock", JOptionPane.WARNING_MESSAGE);
-        }
+        if (Utilities.isNumber(str)) {
+            int amount = Integer.parseInt(str);
+            if (product.getStock() + amount > product.getMaxStockLevel() && product.getMaxStockLevel() != 0) {
+                JOptionPane.showMessageDialog(this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product", "Stock", JOptionPane.WARNING_MESSAGE);
+            }
+            if(amount == 0){
+                return;
+            }
+            product.setStock(amount);
 
-        product.setStock(Integer.parseInt(amount));
-
-        products.add(product);
-        BigDecimal val = BigDecimal.ZERO;
-        val.setScale(2);
-        for (Product p : products) {
-            val = val.add(p.getPrice().multiply(new BigDecimal(p.getStock())));
-        }
-        lblValue.setText("Total Value: £" + val);
-        try {
-            final Plu plu = dc.getPluByProduct(product.getId());
-            model.addRow(new Object[]{product.getId(), product.getName(), plu.getCode(), product.getStock()});
-        } catch (IOException | JTillException ex) {
-            JOptionPane.showMessageDialog(this, ex);
+            products.add(product);
+            BigDecimal val = BigDecimal.ZERO;
+            val.setScale(2);
+            for (Product p : products) {
+                val = val.add(p.getPrice().multiply(new BigDecimal(p.getStock())));
+            }
+            lblValue.setText("Total Value: £" + val);
+            try {
+                final Plu plu = dc.getPluByProduct(product.getId());
+                model.addRow(new Object[]{product.getId(), product.getName(), plu.getCode(), product.getStock()});
+            } catch (IOException | JTillException ex) {
+                JOptionPane.showMessageDialog(this, ex);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddProductActionPerformed
 

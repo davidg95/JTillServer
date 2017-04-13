@@ -429,7 +429,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        Product product = ProductSelectDialog.showDialog(this, dc);
+        Product product = ProductSelectDialog.showDialog(this, dc, false);
 
         if (product == null) {
             return;
@@ -437,26 +437,34 @@ public class WasteStockWindow extends javax.swing.JFrame {
 
         product = (Product) product.clone();
 
-        String amount = JOptionPane.showInputDialog(this, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
-
-        if (amount == null || amount.equals("0") || amount.equals("")) {
+        String str = JOptionPane.showInputDialog(this, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
+        
+        if (str == null || str.isEmpty()) {
             return;
         }
 
-        if (product.getStock() - Integer.parseInt(amount) < 0) {
-            if (JOptionPane.showConfirmDialog(this, "Item does not have that much in stock. Continue?", "Waste", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+        if (Utilities.isNumber(str)) {
+            int amount = Integer.parseInt(str);
+            if (product.getStock() - amount < 0) {
+                if (JOptionPane.showConfirmDialog(this, "Item does not have that much in stock. Continue?", "Waste", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+                    return;
+                }
+            }
+            if (amount == 0) {
                 return;
             }
+            int reason = cmbReason.getSelectedIndex() + 1;
+            WasteItem wi = new WasteItem(product, amount, reason);
+            wasteItems.add(wi);
+            BigDecimal val = BigDecimal.ZERO;
+            for (WasteItem w : wasteItems) {
+                val = val.add(w.getProduct().getPrice().setScale(2).multiply(new BigDecimal(w.getQuantity())));
+            }
+            lblValue.setText("Total Value: £" + val);
+            model.addRow(new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), amount, product.getPrice().multiply(new BigDecimal(wi.getQuantity())), wi.getReason()});
+        } else {
+            JOptionPane.showMessageDialog(this, "You must enter a number", "Waste Stock", JOptionPane.ERROR_MESSAGE);
         }
-        int reason = cmbReason.getSelectedIndex() + 1;
-        WasteItem wi = new WasteItem(product, Integer.parseInt(amount), reason);
-        wasteItems.add(wi);
-        BigDecimal val = BigDecimal.ZERO;
-        for (WasteItem w : wasteItems) {
-            val = val.add(w.getProduct().getPrice().setScale(2).multiply(new BigDecimal(w.getQuantity())));
-        }
-        lblValue.setText("Total Value: £" + val);
-        model.addRow(new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), Integer.parseInt(amount), product.getPrice().multiply(new BigDecimal(wi.getQuantity())), wi.getReason()});
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnWasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWasteActionPerformed
@@ -487,6 +495,9 @@ public class WasteStockWindow extends javax.swing.JFrame {
         wr.setItems(wasteItems);
         try {
             dc.addWasteReport(wr);
+            model.setRowCount(0);
+            wasteItems.clear();
+            lblValue.setText("Total: £0.00");
             JOptionPane.showMessageDialog(this, "All items have been wasted", "Waste", JOptionPane.INFORMATION_MESSAGE);
             if (JOptionPane.showConfirmDialog(this, "Do you want to print this report?", "Print", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 PrinterJob job = PrinterJob.getPrinterJob();
@@ -512,9 +523,6 @@ public class WasteStockWindow extends javax.swing.JFrame {
                     mDialog.show();
                 }
             }
-            model.setRowCount(0);
-            wasteItems.clear();
-            lblValue.setText("Total: £0.00");
             this.setVisible(false);
         } catch (IOException | SQLException | JTillException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);

@@ -87,6 +87,7 @@ public class SettingsWindow extends javax.swing.JFrame {
             txtSiteName.setText(dc.getSetting("SITE_NAME"));
             txtReceiptHeader.setText(dc.getSetting("RECEIPT_HEADER"));
             txtReceiptFooter.setText(dc.getSetting("RECEIPT_FOOTER"));
+            chkApproveNew.setSelected(dc.getSetting("APPROVE_NEW_CONNECTIONS").equals("TRUE"));
         } catch (IOException ex) {
 
         }
@@ -145,6 +146,7 @@ public class SettingsWindow extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
         txtSiteName = new javax.swing.JTextField();
         btnCompanyDetails = new javax.swing.JButton();
+        chkApproveNew = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
@@ -427,6 +429,8 @@ public class SettingsWindow extends javax.swing.JFrame {
             }
         });
 
+        chkApproveNew.setText("Approve new connections");
+
         javax.swing.GroupLayout panelGeneralLayout = new javax.swing.GroupLayout(panelGeneral);
         panelGeneral.setLayout(panelGeneralLayout);
         panelGeneralLayout.setHorizontalGroup(
@@ -434,6 +438,12 @@ public class SettingsWindow extends javax.swing.JFrame {
             .addGroup(panelGeneralLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelGeneralLayout.createSequentialGroup()
+                        .addGap(61, 61, 61)
+                        .addComponent(btnCompanyDetails))
+                    .addGroup(panelGeneralLayout.createSequentialGroup()
+                        .addGap(86, 86, 86)
+                        .addComponent(btnSaveCache))
                     .addComponent(chkSendProducts)
                     .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelGeneralLayout.createSequentialGroup()
@@ -441,23 +451,22 @@ public class SettingsWindow extends javax.swing.JFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(txtSymbol))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelGeneralLayout.createSequentialGroup()
-                            .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(btnSaveCache)
-                                .addComponent(jLabel13))
+                            .addComponent(jLabel13)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(spinSaleCache, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelGeneralLayout.createSequentialGroup()
                             .addComponent(jLabel15)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(btnCompanyDetails)
-                                .addComponent(txtSiteName)))))
+                            .addComponent(txtSiteName, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(chkApproveNew))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelGeneralLayout.setVerticalGroup(
             panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelGeneralLayout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(chkApproveNew)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chkSendProducts)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -471,11 +480,11 @@ public class SettingsWindow extends javax.swing.JFrame {
                 .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15)
                     .addComponent(txtSiteName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCompanyDetails)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSaveCache)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Receipt Settings")));
@@ -579,7 +588,7 @@ public class SettingsWindow extends javax.swing.JFrame {
                                         .addComponent(btnDatabaseDefault)))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnClose)
                             .addComponent(btnPermissions)))
@@ -736,20 +745,29 @@ public class SettingsWindow extends javax.swing.JFrame {
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);
         }
-        try{
+        try {
             dc.setSetting("CURRENCY_SYMBOL", txtSymbol.getText());
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);
         }
-        try{
+        try {
             dc.setSetting("SITE_NAME", txtSiteName.getText());
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+        try{
+            if(chkApproveNew.isSelected()){
+                dc.setSetting("APPROVE_NEW_CONNECTIONS", "TRUE");
+            } else{
+                dc.setSetting("APPROVE_NEW_CONNECTIONS", "FALSE");
+            }
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSaveCacheActionPerformed
 
     private void btnReceiptSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiptSaveActionPerformed
-        try{
+        try {
             dc.setSetting("RECEIPT_HEADER", txtReceiptHeader.getText());
             dc.setSetting("RECEIPT_FOOTER", txtReceiptFooter.getText());
         } catch (IOException ex) {
@@ -772,6 +790,7 @@ public class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSaveCache;
     private javax.swing.JButton btnSaveSecurity;
+    private javax.swing.JCheckBox chkApproveNew;
     private javax.swing.JCheckBox chkLogOut;
     private javax.swing.JCheckBox chkLogoutTimeout;
     private javax.swing.JCheckBox chkSendProducts;

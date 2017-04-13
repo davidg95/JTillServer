@@ -261,12 +261,7 @@ public class GUI extends JFrame implements GUIInterface {
      * Method to log a member of staff in to the server.
      */
     public void login() {
-//        try {
         staff = LoginDialog.showLoginDialog(this, dc);
-//            staff = dc.login("dgrant", "adventures");
-//        } catch (IOException | LoginException | SQLException ex) {
-//            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-//        }
         if (staff != null) {
             lblUser.setText(staff.getName());
             itemLogin.setText("Log Out");
@@ -585,8 +580,7 @@ public class GUI extends JFrame implements GUIInterface {
                 .addGap(0, 0, 0)
                 .addComponent(lblClients, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         statusBarLayout.setVerticalGroup(
             statusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

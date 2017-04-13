@@ -243,9 +243,20 @@ public class StockTakeWindow extends javax.swing.JFrame {
         if (p == null) {
             return;
         }
-        int stock = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter new stock level", "Enter stock level", JOptionPane.PLAIN_MESSAGE));
-        p.setStock(stock);
-        addRow(p);
+        String val = JOptionPane.showInputDialog(this, "Enter new stock level", "Enter stock level", JOptionPane.PLAIN_MESSAGE);
+        if (val == null || val.isEmpty()) {
+            return;
+        }
+        if (Utilities.isNumber(val)) {
+            int stock = Integer.parseInt(val);
+            if (stock == 0) {
+                return;
+            }
+            p.setStock(stock);
+            addRow(p);
+        } else {
+            JOptionPane.showMessageDialog(this, "You must enter a number", "Stock Take", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnAddCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCSVActionPerformed
@@ -307,15 +318,13 @@ public class StockTakeWindow extends javax.swing.JFrame {
             for (Product p : currentTableContents) {
                 try {
                     dc.updateProduct(p);
-
                 } catch (IOException | ProductNotFoundException | SQLException ex) {
-                    Logger.getLogger(StockTakeWindow.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(StockTakeWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            JOptionPane.showMessageDialog(this, "Stock take submitted", "Complete", JOptionPane.INFORMATION_MESSAGE);
             currentTableContents.clear();
             updateTable();
+            JOptionPane.showMessageDialog(this, "Stock take submitted", "Complete", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnSubmitActionPerformed
 
@@ -342,8 +351,7 @@ public class StockTakeWindow extends javax.swing.JFrame {
 
                     }
                 } catch (IOException | JTillException ex) {
-                    Logger.getLogger(StockTakeWindow.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(StockTakeWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
