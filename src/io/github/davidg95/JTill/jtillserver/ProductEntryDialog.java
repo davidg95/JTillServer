@@ -627,7 +627,7 @@ public class ProductEntryDialog extends javax.swing.JDialog {
                         ref = 0 + ref;
                     }
                     String barcode = upc + ref;
-                    plu = new Plu(barcode);
+                    plu = new Plu(barcode, 0);
                 } else {
                     JOptionPane.showMessageDialog(this, "You have not specified a UPC Company Prefix. This must be done before generating your own barcodes.", "Generate Barcode", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -647,7 +647,7 @@ public class ProductEntryDialog extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "Barcode is already in use", "Barcode in use", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                plu = new Plu(txtPlu.getText());
+                plu = new Plu(txtPlu.getText(), 0);
             }
             if (radNew.isSelected()) {
                 txtPlu.setText("");
@@ -718,7 +718,8 @@ public class ProductEntryDialog extends javax.swing.JDialog {
         Department dep = selectedDepartment;
         String comments = txtOpenComments.getText();
         try {
-            product = new Product(name, shortName, 0, category.getId(), dep.getId(), comments, tax.getId(), 0, true);
+            product = new Product(name, shortName, 0, category.getId(), dep.getId(), comments, tax.getId(), true);
+            plu.setProduct(product.getId());
             product = dc.addProductAndPlu(product, plu);
             JOptionPane.showMessageDialog(this, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
             resetPanels();

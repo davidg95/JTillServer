@@ -35,7 +35,7 @@ import javax.swing.JToggleButton;
  */
 public class ScreenEditWindow extends javax.swing.JFrame {
 
-    private final Logger log = Logger.getGlobal();
+    private final Logger LOG = Logger.getGlobal();
 
     private static ScreenEditWindow frame;
 
@@ -61,6 +61,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
      * Creates new form ScreenEditWindow
      *
      * @param dc reference to the data connect class.
+     * @param icon the icon for the window.
      */
     public ScreenEditWindow(DataConnect dc, Image icon) {
         this.dc = dc;
@@ -286,7 +287,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 }
             }
         } catch (IOException | SQLException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
         return true;
     }
@@ -366,7 +367,10 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewScreenActionPerformed
-        String name = JOptionPane.showInputDialog("Enter Name");
+        String name = JOptionPane.showInputDialog(this, "Enter Name", "New Screen", JOptionPane.PLAIN_MESSAGE);
+        if(name == null){
+            return;
+        }
         if (!name.equals("")) {
             if (checkName(name)) { //Check if the name is already being used
                 new Thread("New Screen") {

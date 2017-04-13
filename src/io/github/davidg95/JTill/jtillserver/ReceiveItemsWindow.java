@@ -290,9 +290,9 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
         }
         lblValue.setText("Total Value: £" + val);
         try {
-            final Plu plu = dc.getPlu(product.getPlu());
+            final Plu plu = dc.getPluByProduct(product.getId());
             model.addRow(new Object[]{product.getId(), product.getName(), plu.getCode(), product.getStock()});
-        } catch (IOException | JTillException | SQLException ex) {
+        } catch (IOException | JTillException ex) {
             JOptionPane.showMessageDialog(this, ex);
         }
     }//GEN-LAST:event_btnAddProductActionPerformed
@@ -362,15 +362,16 @@ public class ReceiveItemsWindow extends javax.swing.JFrame {
 
                         products.add(product);
                         try {
-                            final Plu plu = dc.getPlu(product.getPlu());
+                            final Plu plu = dc.getPluByProduct(product.getId());
                             model.addRow(new Object[]{product.getId(), product.getName(), plu.getCode(), product.getStock()});
                         } catch (JTillException ex) {
                             JOptionPane.showMessageDialog(this, ex);
                         }
                     } catch (ProductNotFoundException ex) {
                         if (JOptionPane.showConfirmDialog(this, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                            Plu p = new Plu(barcode);
+                            Plu p = new Plu(barcode, 0);
                             product = ProductDialog.showNewProductDialog(this, dc, p, quantity);
+                            p.setProduct(product.getId());
                             JOptionPane.showMessageDialog(this, product.getLongName() + " has now been added to the system with given stock level, there is no need to receive it here.", "Added", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }

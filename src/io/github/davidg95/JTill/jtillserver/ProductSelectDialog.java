@@ -286,11 +286,11 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                 }
             } else {
                 try {
-                    final Plu plu = dc.getPlu(p.getPlu());
+                    final Plu plu = dc.getPluByProduct(p.getId());
                     if (plu.getCode().equals(search)) {
                         newList.add(p);
                     }
-                } catch (IOException | JTillException | SQLException ex) {
+                } catch (IOException | JTillException ex) {
                     Logger.getLogger(ProductSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }

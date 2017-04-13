@@ -120,10 +120,10 @@ public class ProductsWindow extends javax.swing.JFrame {
 
         for (Product p : currentTableContents) {
             try {
-                final Plu plu = dc.getPlu(p.getPlu());
+                final Plu plu = dc.getPluByProduct(p.getId());
                 Object[] s = new Object[]{p.getId(), plu.getCode(), p.getLongName(), (p.isOpen() ? "Open Price" : p.getPrice()), (p.isOpen() ? "N/A" : p.getStock())};
                 model.addRow(s);
-            } catch (IOException | JTillException | SQLException ex) {
+            } catch (IOException | JTillException ex) {
                 Logger.getLogger(ProductsWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -206,7 +206,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                     jLabel4.setEnabled(false);
                     jLabel10.setEnabled(false);
                     jLabel11.setEnabled(false);
-                    final Plu plu = dc.getPlu(p.getPlu());
+                    final Plu plu = dc.getPluByProduct(p.getId());
                     txtBarcode.setText(plu.getCode());
                     txtPrice.setText("");
                     txtCostPrice.setText("");
@@ -227,7 +227,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                     jLabel4.setEnabled(true);
                     jLabel10.setEnabled(true);
                     jLabel11.setEnabled(true);
-                    final Plu plu = dc.getPlu(p.getPlu());
+                    final Plu plu = dc.getPluByProduct(p.getId());
                     txtBarcode.setText(plu.getCode());
                     txtPrice.setText(p.getPrice() + "");
                     txtCostPrice.setText(p.getCostPrice() + "");
@@ -268,7 +268,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                     }
                 }
                 cmbDepartments.setSelectedIndex(index);
-            } catch (IOException | JTillException | SQLException ex) {
+            } catch (IOException | JTillException ex) {
                 showError(ex);
             }
         }
@@ -866,7 +866,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                     break;
                 case 2:
                     for (Product p : currentTableContents) {
-                        final Plu plu = dc.getPlu(p.getPlu());
+                        final Plu plu = dc.getPluByProduct(p.getId());
                         if (plu.getCode().equals(terms)) {
                             newList.add(p);
                         }
@@ -891,7 +891,7 @@ public class ProductsWindow extends javax.swing.JFrame {
                 }
             }
             updateTable();
-        } catch (IOException | JTillException | SQLException ex) {
+        } catch (IOException | JTillException ex) {
             Logger.getLogger(ProductsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSearchActionPerformed
@@ -926,7 +926,6 @@ public class ProductsWindow extends javax.swing.JFrame {
                             + p.getCostPrice() + ","
                             + p.getMaxStockLevel() + ","
                             + p.getMinStockLevel() + ","
-                            + p.getPlu() + ","
                             + p.getPrice() + ","
                             + p.getStock() + ","
                             + p.getTax());

@@ -184,7 +184,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
         for (Trigger t : currentTriggerContents) {
             try {
                 final Product p = dc.getProduct(t.getProduct());
-                final Plu plu = dc.getPlu(p.getPlu());
+                final Plu plu = dc.getPluByProduct(p.getId());
                 Object[] row = new Object[]{p.getName(), plu.getCode(), t.getQuantityRequired()};
                 trigModel.addRow(row);
             } catch (ProductNotFoundException | JTillException | IOException | SQLException ex) {

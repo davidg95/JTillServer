@@ -592,7 +592,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
                             val = val.add(w.getProduct().getPrice().multiply(new BigDecimal(w.getQuantity())));
                         }
                         lblValue.setText("Total Value: £" + val);
-                        final Plu plu = dc.getPlu(product.getPlu());
+                        final Plu plu = dc.getPluByProduct(product.getId());
                         model.addRow(new Object[]{product.getId(), product.getName(), plu.getCode(), amount, wi.getReason()});
                     } catch (ProductNotFoundException ex) {
                         errors = true;

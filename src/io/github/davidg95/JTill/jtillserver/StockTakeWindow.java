@@ -51,10 +51,10 @@ public class StockTakeWindow extends javax.swing.JFrame {
         model.setRowCount(0);
         for (Product p : currentTableContents) {
             try {
-                final Plu plu = dc.getPlu(p.getPlu());
+                final Plu plu = dc.getPluByProduct(p.getId());
                 Object[] row = new Object[]{p.getId(), p.getLongName(), plu.getCode(), p.getStock()};
                 model.addRow(row);
-            } catch (IOException | JTillException | SQLException ex) {
+            } catch (IOException | JTillException ex) {
                 Logger.getLogger(StockTakeWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -64,10 +64,10 @@ public class StockTakeWindow extends javax.swing.JFrame {
         model.setRowCount(0);
         for (Product p : list) {
             try {
-                final Plu plu = dc.getPlu(p.getPlu());
+                final Plu plu = dc.getPluByProduct(p.getId());
                 Object[] row = new Object[]{p.getId(), p.getLongName(), plu.getCode(), p.getStock()};
                 model.addRow(row);
-            } catch (IOException | JTillException | SQLException ex) {
+            } catch (IOException | JTillException ex) {
                 Logger.getLogger(StockTakeWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -336,12 +336,12 @@ public class StockTakeWindow extends javax.swing.JFrame {
                 }
             } else {
                 try {
-                    final Plu plu = dc.getPlu(p.getPlu());
+                    final Plu plu = dc.getPluByProduct(p.getId());
                     if (plu.getCode().equals(txtSearch.getText())) {
                         newList.add(p);
 
                     }
-                } catch (IOException | JTillException | SQLException ex) {
+                } catch (IOException | JTillException ex) {
                     Logger.getLogger(StockTakeWindow.class
                             .getName()).log(Level.SEVERE, null, ex);
                 }

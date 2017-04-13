@@ -98,7 +98,7 @@ public class ProductEnquiry extends javax.swing.JFrame {
                 //Print product info.
                 g2.drawString("ID: " + p.getId(), x, y);
                 y += s;
-                final Plu plu = dc.getPlu(p.getPlu());
+                final Plu plu = dc.getPluByProduct(p.getId());
                 final Category cat = dc.getCategory(p.getCategory());
                 final Department dep = dc.getDepartment(p.getDepartment());
                 g2.drawString("Plu: " + plu.getCode(), x, y);
@@ -475,7 +475,7 @@ public class ProductEnquiry extends javax.swing.JFrame {
             if (product == null) {
                 return;
             }
-            final Plu plu = dc.getPlu(product.getPlu());
+            final Plu plu = dc.getPluByProduct(product.getId());
             final Department dep = dc.getDepartment(product.getDepartment());
             final Category cat = dc.getCategory(product.getCategory());
             try {

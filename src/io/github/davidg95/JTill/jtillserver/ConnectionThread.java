@@ -124,7 +124,7 @@ public class ConnectionThread extends Thread {
                 String inp[] = input.split(",");
                 final ConnectionData data = currentData.clone();
 
-                LOG.log(Level.INFO, "Received {0} from server", data.getFlag());
+                LOG.log(Level.INFO, "Received {0} from client", data.getFlag());
 
                 switch (inp[0]) {
                     case "NEWPRODUCT": { //Add a new product
@@ -1364,6 +1364,16 @@ public class ConnectionThread extends Thread {
                                 addProductAndPlu(data);
                             }
                         }.start();
+                        break;
+                    }
+                    case "GETPLUBYPRODUCT": {
+                        new Thread(inp[0]) {
+                            @Override
+                            public void run() {
+                                getPluByProduct(data);
+                            }
+                        }.start();
+                        break;
                     }
                     case "CONNTERM": { //Terminate the connection
                         conn_term = true;
@@ -3944,6 +3954,26 @@ public class ConnectionThread extends Thread {
                 p = dc.addProductAndPlu(p, pl);
                 obOut.writeObject(ConnectionData.create("SUCC", p));
             } catch (SQLException ex) {
+                obOut.writeObject(ConnectionData.create("FAIL", ex));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getPluByProduct(ConnectionData data) {
+        try {
+            ConnectionData clone = data.clone();
+            if (!(clone.getData() instanceof Integer)) {
+                LOG.log(Level.SEVERE, "Unexpected data type getting plu");
+                obOut.writeObject(ConnectionData.create("FAIL", "Invalid data type received"));
+                return;
+            }
+            int id = (int) data.getData();
+            try {
+                Plu p = dc.getPluByProduct(id);
+                obOut.writeObject(ConnectionData.create("SUCC", p));
+            } catch (JTillException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
             }
         } catch (IOException ex) {

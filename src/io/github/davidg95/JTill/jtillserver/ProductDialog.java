@@ -81,7 +81,7 @@ public class ProductDialog extends javax.swing.JDialog {
             setModal(true);
             txtName.setText(p.getLongName());
             txtShortName.setText(p.getName());
-            plu = dc.getPlu(p.getPlu());
+            plu = dc.getPluByProduct(p.getId());
             txtOrderCode.setText(p.getOrder_code() + "");
             txtBarcode.setText(plu.getCode());
             txtPrice.setText(p.getPrice() + "");
@@ -381,7 +381,7 @@ public class ProductDialog extends javax.swing.JDialog {
             Plu p = dc.addPlu(plu);
             if (chkOpen.isSelected()) {
                 try {
-                    product = new Product(name, shortName, orderCode, category.getId(), dep.getId(), comments, tax.getId(), p.getId(), true);
+                    product = new Product(name, shortName, orderCode, category.getId(), dep.getId(), comments, tax.getId(), true);
                     product = dc.addProduct(product);
 
                     dc.addReceivedItem(new ReceivedItem(product.getId(), product.getStock(), product.getCostPrice()));
@@ -404,7 +404,6 @@ public class ProductDialog extends javax.swing.JDialog {
                     product.setLongName(name);
                     product.setName(shortName);
                     product.setCategory(category.getId());
-                    product.setPlu(plu.getId());
                     product.setPrice(price);
                     product.setStock(stock);
                     product.setComments(comments);
