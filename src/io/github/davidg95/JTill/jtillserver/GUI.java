@@ -99,8 +99,8 @@ public class GUI extends JFrame implements GUIInterface {
         connections = new ArrayList<>();
         LOG.addHandler(new LogHandler());
     }
-    
-    private void init(){
+
+    private void init() {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setFocusable(true);
         setIconImage(icon);
@@ -187,8 +187,6 @@ public class GUI extends JFrame implements GUIInterface {
                     JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
-        } else {
-
         }
     }
 

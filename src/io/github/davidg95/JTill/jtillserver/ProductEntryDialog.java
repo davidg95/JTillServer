@@ -617,17 +617,22 @@ public class ProductEntryDialog extends javax.swing.JDialog {
                 String upc = dc.getSetting("UPC_PREFIX");
                 int length = Integer.parseInt(dc.getSetting("BARCODE_LENGTH"));
                 if (!upc.equals("")) {
-                    int lengthToAdd = length - upc.length();
-                    String ref = dc.getSetting("NEXT_PLU");
-                    int n = Integer.parseInt(ref);
-                    n++;
-                    String next = Integer.toString(n);
-                    dc.setSetting("NEXT_PLU", next);
-                    for (int i = 1; i < lengthToAdd; i++) {
-                        ref = 0 + ref;
+                    while (true) {
+                        int lengthToAdd = length - upc.length();
+                        String ref = dc.getSetting("NEXT_PLU");
+                        int n = Integer.parseInt(ref);
+                        n++;
+                        String next = Integer.toString(n);
+                        dc.setSetting("NEXT_PLU", next);
+                        for (int i = 1; i < lengthToAdd; i++) {
+                            ref = 0 + ref;
+                        }
+                        String barcode = upc + ref;
+                        if (!dc.checkBarcode(barcode)) {
+                            plu = new Plu(barcode, 0);
+                            break;
+                        }
                     }
-                    String barcode = upc + ref;
-                    plu = new Plu(barcode, 0);
                 } else {
                     JOptionPane.showMessageDialog(this, "You have not specified a UPC Company Prefix. This must be done before generating your own barcodes.", "Generate Barcode", JOptionPane.ERROR_MESSAGE);
                     return;

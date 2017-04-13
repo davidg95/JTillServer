@@ -162,10 +162,9 @@ public class DepartmentSelectDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        if (tblDep.getSelectedRow() == -1) {
-            return;
+        if (tblDep.getSelectedRow() != -1) {
+            department = ctc.get(tblDep.getSelectedRow());
         }
-        department = ctc.get(tblDep.getSelectedRow());
         setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 

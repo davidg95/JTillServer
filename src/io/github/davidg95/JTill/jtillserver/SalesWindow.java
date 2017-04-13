@@ -80,7 +80,7 @@ public class SalesWindow extends javax.swing.JFrame {
     private void updateTable() {
         model.setRowCount(0);
 
-        currentTableContents.stream().map((s) -> new Object[]{s.getId(), s.getTotal(), 0, s.getDate().toString()}).forEachOrdered((r) -> {
+        currentTableContents.stream().map((s) -> new Object[]{s.getId(), s.getTotal(), s.getTotalItemCount(), s.getDate().toString()}).forEachOrdered((r) -> {
             model.addRow(r);
         });
 

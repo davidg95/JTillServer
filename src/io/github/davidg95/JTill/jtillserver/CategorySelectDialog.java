@@ -276,6 +276,9 @@ public class CategorySelectDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
+        if(table.getSelectedRow() != -1){
+            category = currentTableContents.get(table.getSelectedRow());
+        }
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 
