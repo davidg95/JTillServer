@@ -404,7 +404,7 @@ public class ReportingWindow extends javax.swing.JFrame {
                     final Product p = dc.getProduct(i.getItem());
                     final Tax t = dc.getTax(p.getTax());
                     double taxP = t.getValue() / 100;
-                    tax = tax.add(i.getPrice().multiply(new BigDecimal(i.getQuantity())).multiply(new BigDecimal(taxP)));
+                    tax = tax.add(i.getPrice().multiply(new BigDecimal(i.getQuantity()).multiply(new BigDecimal(taxP))));
                 }
             }
             transactions = dc.getAllSales().size();
