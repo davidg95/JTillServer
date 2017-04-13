@@ -41,7 +41,7 @@ import javax.swing.SwingUtilities;
  */
 public class GUI extends JFrame implements GUIInterface {
 
-    private final Logger log = Logger.getGlobal();
+    private static final Logger LOG = Logger.getGlobal();
 
     private static GUI gui; //The GUI.
 
@@ -89,17 +89,22 @@ public class GUI extends JFrame implements GUIInterface {
         this.remote = remote;
         this.icon = icon;
         this.settings = Settings.getInstance();
-        this.setIconImage(icon);
         initComponents();
+        init();
         try {
             lblServerAddress.setText("Local Server Address: " + InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException ex) {
             lblServerAddress.setText("Local Server Address: UNKNOWN");
         }
         connections = new ArrayList<>();
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        this.dc.setGUI(this);
-        log.addHandler(new LogHandler());
+        LOG.addHandler(new LogHandler());
+    }
+    
+    private void init(){
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setFocusable(true);
+        setIconImage(icon);
+        dc.setGUI(this);
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -116,7 +121,6 @@ public class GUI extends JFrame implements GUIInterface {
             public void keyReleased(KeyEvent e) {
             }
         });
-        setFocusable(true);
     }
 
     /**
@@ -155,7 +159,7 @@ public class GUI extends JFrame implements GUIInterface {
         try {
             lblClients.setText("Connections: " + dc.getConnectedTills().size());
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -175,11 +179,11 @@ public class GUI extends JFrame implements GUIInterface {
                 }
             } catch (SQLException ex) {
                 if (ex.getErrorCode() == 40000) {
-                    log.log(Level.SEVERE, "The database is already in use. The program will now terminate");
+                    LOG.log(Level.SEVERE, "The database is already in use. The program will now terminate");
                     JOptionPane.showMessageDialog(this, "The database is already in use by another application. Program will now terminate.\nError Code " + ex.getErrorCode(), "Database in use", JOptionPane.ERROR_MESSAGE);
                     System.exit(0);
                 } else {
-                    log.log(Level.SEVERE, null, ex);
+                    LOG.log(Level.SEVERE, null, ex);
                     JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -197,7 +201,7 @@ public class GUI extends JFrame implements GUIInterface {
         try {
             setTitle("JTill Server - " + dc.getSetting("SITE_NAME"));
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
         if (!remote) {
             try {
@@ -214,7 +218,7 @@ public class GUI extends JFrame implements GUIInterface {
             } catch (SQLException ex) {
                 initialSetup();
             } catch (IOException ex) {
-                log.log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -265,7 +269,7 @@ public class GUI extends JFrame implements GUIInterface {
         if (staff != null) {
             lblUser.setText(staff.getName());
             itemLogin.setText("Log Out");
-            log.log(Level.INFO, staff.getName() + " has logged in");
+            LOG.log(Level.INFO, "{0} has logged in", staff.getName());
             isLoggedOn = true;
         } else {
             if (dc instanceof DBConnect) {
@@ -275,7 +279,7 @@ public class GUI extends JFrame implements GUIInterface {
                 try {
                     ((ServerConnection) dc).close();
                 } catch (IOException ex) {
-                    log.log(Level.SEVERE, null, ex);
+                    LOG.log(Level.SEVERE, null, ex);
                 }
                 System.exit(0);
             }
@@ -294,10 +298,10 @@ public class GUI extends JFrame implements GUIInterface {
         try {
             lblUser.setText("Not Logged In");
             dc.logout(staff);
-            log.log(Level.INFO, staff.getName() + " has logged out");
+            LOG.log(Level.INFO, "{0} has logged out", staff.getName());
         } catch (StaffNotFoundException ex) {
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
         isLoggedOn = false;
         staff = null;
@@ -932,18 +936,18 @@ public class GUI extends JFrame implements GUIInterface {
             if (JOptionPane.showConfirmDialog(this, "Are you sure you want to stop JTill server?", "JTill Server", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                 return;
             }
-            log.log(Level.INFO, "Stopping JTIll Server");
+            LOG.log(Level.INFO, "Stopping JTIll Server");
             DBConnect db = (DBConnect) dc;
-            log.log(Level.INFO, "Saving properties");
+            LOG.log(Level.INFO, "Saving properties");
             settings.saveProperties();
             TillServer.removeSystemTrayIcon();
         }
         try {
             dc.close();
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
-        log.log(Level.INFO, "Stopping");
+        LOG.log(Level.INFO, "Stopping");
         System.exit(0);
     }//GEN-LAST:event_itemExitActionPerformed
 
@@ -1076,7 +1080,7 @@ public class GUI extends JFrame implements GUIInterface {
                 try {
                     Desktop.getDesktop().open(new File("log.txt"));
                 } catch (IOException ex) {
-                    log.log(Level.SEVERE, null, ex);
+                    LOG.log(Level.SEVERE, null, ex);
                     JOptionPane.showMessageDialog(this, "Error opening log file", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
