@@ -1,9 +1,16 @@
-JTill log Thu Apr 13 17:11:47 BST 2017
-[17:11:47] [INFO] Connecting to database {0}
-[17:11:48] [INFO] Get staff count
-[17:11:48] [INFO] Starting Thread Pool Excecutor
-[17:11:48] [INFO] JTill Server local IP address is 192.168.1.65
-[17:11:48] [INFO] Server Socket running on port number 52341
-[17:11:48] [INFO] Ready to accept connections
-[17:11:50] [INFO] Login Staff {0}
-[17:11:50] [INFO] {0} has logged in
+JTill log Fri Apr 14 15:34:19 BST 2017
+[15:34:19] [INFO] Connecting to database {0}
+[15:34:19] [INFO] Get staff count
+[15:34:19] [INFO] Starting Thread Pool Excecutor
+[15:34:19] [INFO] JTill Server local IP address is 192.168.1.65
+[15:34:19] [INFO] Server Socket running on port number 52341
+[15:34:19] [INFO] Ready to accept connections
+[15:34:25] [INFO] Login Staff {0}
+[15:34:25] [INFO] {0} has logged in
+[15:34:51] [INFO] Add staff {0}
+[15:34:54] [INFO] {0} has logged out
+[15:34:57] [INFO] Login Staff {0}
+[15:34:58] [INFO] {0} has logged in
+[15:35:01] [INFO] Stopping JTIll Server
+[15:35:01] [INFO] Saving properties
+[15:35:01] [INFO] Stopping

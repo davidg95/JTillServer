@@ -1743,7 +1743,9 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Staff s = (Staff) clone.getData();
+                s.setPassword(Encryptor.decrypt(s.getPassword()));
                 Staff newS = dc.addStaff(s);
+                s.setPassword(Encryptor.encrypt(s.getPassword()));
                 obOut.writeObject(ConnectionData.create("SUCC", newS));
             } catch (SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1782,6 +1784,7 @@ public class ConnectionThread extends Thread {
                 }
                 int id = (int) clone.getData();
                 Staff s = dc.getStaff(id);
+                s.setPassword(Encryptor.encrypt(s.getPassword()));
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (StaffNotFoundException | SQLException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1800,7 +1803,9 @@ public class ConnectionThread extends Thread {
                     return;
                 }
                 Staff s = (Staff) clone.getData();
+                s.setPassword(Encryptor.decrypt(s.getPassword()));
                 Staff updatedStaff = dc.updateStaff(s);
+                s.setPassword(Encryptor.encrypt(s.getPassword()));
                 obOut.writeObject(ConnectionData.create("SUCC", updatedStaff));
             } catch (SQLException | StaffNotFoundException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -1814,6 +1819,9 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 List<Staff> staffList = dc.getAllStaff();
+                for(Staff s: staffList){
+                    s.setPassword(Encryptor.encrypt(s.getPassword()));
+                }
                 obOut.writeObject(staffList);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
@@ -1980,9 +1988,11 @@ public class ConnectionThread extends Thread {
                 }
                 String username = (String) clone.getData();
                 String password = (String) clone.getData2();
+                password = Encryptor.decrypt(password);
                 Staff s = dc.login(username, password);
                 ConnectionThread.this.staff = s;
                 LOG.log(Level.INFO, "{0} has logged in", s.getName());
+                s.setPassword(Encryptor.encrypt(s.getPassword()));
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | LoginException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
@@ -2004,6 +2014,7 @@ public class ConnectionThread extends Thread {
                 Staff s = dc.tillLogin(id);
                 ConnectionThread.this.staff = s;
                 LOG.log(Level.INFO, "{0} has logged in from {1}", new Object[]{staff.getName(), site});
+                s.setPassword(Encryptor.encrypt(s.getPassword()));
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | LoginException ex) {
                 obOut.writeObject(ConnectionData.create("FAIL", ex));
