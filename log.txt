@@ -1,16 +1,39 @@
-JTill log Fri Apr 14 15:34:19 BST 2017
-[15:34:19] [INFO] Connecting to database {0}
-[15:34:19] [INFO] Get staff count
-[15:34:19] [INFO] Starting Thread Pool Excecutor
-[15:34:19] [INFO] JTill Server local IP address is 192.168.1.65
-[15:34:19] [INFO] Server Socket running on port number 52341
-[15:34:19] [INFO] Ready to accept connections
-[15:34:25] [INFO] Login Staff {0}
-[15:34:25] [INFO] {0} has logged in
-[15:34:51] [INFO] Add staff {0}
-[15:34:54] [INFO] {0} has logged out
-[15:34:57] [INFO] Login Staff {0}
-[15:34:58] [INFO] {0} has logged in
-[15:35:01] [INFO] Stopping JTIll Server
-[15:35:01] [INFO] Saving properties
-[15:35:01] [INFO] Stopping
+JTill log Fri Apr 14 16:47:29 BST 2017
+[16:47:29] [INFO] Connecting to database {0}
+[16:47:29] [INFO] The database does not exists, so it is getting created
+[16:47:29] [INFO] Creating tables
+[16:47:30] [INFO] Created tills table
+[16:47:30] [INFO] Created tax table
+[16:47:30] [INFO] Created categorys table
+[16:47:30] [INFO] Created departments table
+[16:47:30] [INFO] Created configs table
+[16:47:30] [INFO] Created sales table
+[16:47:30] [INFO] Created customers table
+[16:47:30] [INFO] Created products table
+[16:47:30] [INFO] Created plus table
+[16:47:30] [INFO] Created discounts table
+[16:47:30] [INFO] Created buckets table
+[16:47:30] [INFO] Create triggers table
+[16:47:30] [INFO] Created saleItems table
+[16:47:30] [INFO] Created staff table
+[16:47:30] [INFO] Created screens table
+[16:47:30] [INFO] Created buttons table
+[16:47:30] [INFO] Created waste reports table
+[16:47:30] [INFO] Created table waste reasons
+[16:47:30] [INFO] Created table waste items
+[16:47:30] [INFO] Created table suppliers
+[16:47:30] [INFO] Created table recevied items
+[16:47:30] [INFO] Created table clockonoff
+[16:47:40] [INFO] Add staff {0}
+[16:47:40] [INFO] Starting Thread Pool Excecutor
+[16:47:40] [INFO] JTill Server local IP address is 192.168.1.65
+[16:47:40] [INFO] Server Socket running on port number 52341
+[16:47:40] [INFO] Ready to accept connections
+[16:47:55] [INFO] Login Staff {0}
+[16:47:55] [INFO] {0} has logged in
+[16:47:57] [INFO] Get all staff
+[16:47:57] [INFO] Get all staff
+[16:47:59] [INFO] Get all customers
+[16:47:59] [INFO] Get all customers
+[16:48:35] [INFO] Add customer {0}
+[16:48:35] [INFO] Get all customers
