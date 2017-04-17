@@ -17,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
@@ -173,6 +174,7 @@ public class GUI extends JFrame implements GUIInterface {
                 TillSplashScreen.setLabel("Creating database...");
                 db.create(settings.getSetting("db_address") + "create=true;", settings.getSetting("db_username"), settings.getSetting("db_password"));
                 TillSplashScreen.setLabel("Creating tables...");
+                db.addCustomer(new Customer("NONE", "", "", "", "", "", "", "", "", "", "", 0, BigDecimal.ZERO));
                 Staff s = StaffDialog.showNewStaffDialog(this, db);
                 if (s == null) {
                     System.exit(0);
