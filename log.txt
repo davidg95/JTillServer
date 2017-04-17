@@ -1,39 +1,628 @@
-JTill log Fri Apr 14 16:47:29 BST 2017
-[16:47:29] [INFO] Connecting to database {0}
-[16:47:29] [INFO] The database does not exists, so it is getting created
-[16:47:29] [INFO] Creating tables
-[16:47:30] [INFO] Created tills table
-[16:47:30] [INFO] Created tax table
-[16:47:30] [INFO] Created categorys table
-[16:47:30] [INFO] Created departments table
-[16:47:30] [INFO] Created configs table
-[16:47:30] [INFO] Created sales table
-[16:47:30] [INFO] Created customers table
-[16:47:30] [INFO] Created products table
-[16:47:30] [INFO] Created plus table
-[16:47:30] [INFO] Created discounts table
-[16:47:30] [INFO] Created buckets table
-[16:47:30] [INFO] Create triggers table
-[16:47:30] [INFO] Created saleItems table
-[16:47:30] [INFO] Created staff table
-[16:47:30] [INFO] Created screens table
-[16:47:30] [INFO] Created buttons table
-[16:47:30] [INFO] Created waste reports table
-[16:47:30] [INFO] Created table waste reasons
-[16:47:30] [INFO] Created table waste items
-[16:47:30] [INFO] Created table suppliers
-[16:47:30] [INFO] Created table recevied items
-[16:47:30] [INFO] Created table clockonoff
-[16:47:40] [INFO] Add staff {0}
-[16:47:40] [INFO] Starting Thread Pool Excecutor
-[16:47:40] [INFO] JTill Server local IP address is 192.168.1.65
-[16:47:40] [INFO] Server Socket running on port number 52341
-[16:47:40] [INFO] Ready to accept connections
-[16:47:55] [INFO] Login Staff {0}
-[16:47:55] [INFO] {0} has logged in
-[16:47:57] [INFO] Get all staff
-[16:47:57] [INFO] Get all staff
-[16:47:59] [INFO] Get all customers
-[16:47:59] [INFO] Get all customers
-[16:48:35] [INFO] Add customer {0}
-[16:48:35] [INFO] Get all customers
+JTill log Mon Apr 17 14:05:18 BST 2017
+[14:05:18] [INFO] Connecting to database {0}
+[14:05:19] [INFO] Get staff count
+[14:05:19] [INFO] Starting Thread Pool Excecutor
+[14:05:19] [INFO] JTill Server local IP address is 192.168.1.65
+[14:05:19] [INFO] Server Socket running on port number 52341
+[14:05:19] [INFO] Ready to accept connections
+[14:05:25] [INFO] {0} has connected
+[14:05:25] [INFO] Received {0} from client
+[14:05:25] [INFO] Received {0} from client
+[14:05:25] [INFO] Received {0} from client
+[14:05:25] [INFO] Received {0} from client
+[14:05:25] [INFO] Received {0} from client
+[14:05:25] [INFO] Received {0} from client
+[14:05:25] [INFO] Received {0} from client
+[14:05:25] [INFO] Received {0} from client
+[14:05:25] [INFO] Get product {0}
+[14:05:26] [INFO] Received {0} from client
+[14:05:26] [INFO] Get product {0}
+[14:05:26] [INFO] Received {0} from client
+[14:05:26] [INFO] Get product {0}
+[14:05:26] [INFO] Received {0} from client
+[14:05:26] [INFO] Get product {0}
+[14:05:26] [INFO] Received {0} from client
+[14:05:26] [INFO] Get product {0}
+[14:05:26] [INFO] Received {0} from client
+[14:05:26] [INFO] Get product {0}
+[14:05:26] [INFO] Received {0} from client
+[14:05:26] [INFO] Get staff {0}
+[14:05:26] [INFO] Received {0} from client
+[14:05:27] [INFO] Received {0} from client
+[14:05:27] [INFO] {0} has logged in from {1}
+[14:05:27] [INFO] Received {0} from client
+[14:05:47] [WARNING] The connection to the terminal was shut down forcefully
+[14:05:47] [INFO] Logging staff out
+[14:05:52] [INFO] {0} has connected
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] Get product {0}
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] Get product {0}
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] Get product {0}
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] Get product {0}
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] Get product {0}
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] Get product {0}
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] Get staff {0}
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] Received {0} from client
+[14:05:52] [INFO] {0} has logged in from {1}
+[14:05:52] [INFO] Received {0} from client
+[14:06:22] [WARNING] The connection to the terminal was shut down forcefully
+[14:06:22] [INFO] Logging staff out
+[14:06:27] [INFO] {0} has connected
+[14:06:27] [INFO] Received {0} from client
+[14:06:27] [INFO] Received {0} from client
+[14:06:27] [INFO] Received {0} from client
+[14:06:27] [INFO] Received {0} from client
+[14:06:27] [INFO] Received {0} from client
+[14:06:27] [INFO] Received {0} from client
+[14:06:27] [INFO] Received {0} from client
+[14:06:27] [INFO] Received {0} from client
+[14:06:27] [INFO] Get product {0}
+[14:06:27] [INFO] Received {0} from client
+[14:06:27] [INFO] Get product {0}
+[14:06:27] [INFO] Received {0} from client
+[14:06:27] [INFO] Get product {0}
+[14:06:27] [INFO] Received {0} from client
+[14:06:27] [INFO] Get product {0}
+[14:06:27] [INFO] Received {0} from client
+[14:06:27] [INFO] Get product {0}
+[14:06:27] [INFO] Received {0} from client
+[14:06:27] [INFO] Get product {0}
+[14:06:27] [INFO] Received {0} from client
+[14:06:27] [INFO] Get staff {0}
+[14:06:27] [INFO] Received {0} from client
+[14:06:28] [INFO] Received {0} from client
+[14:06:28] [INFO] {0} has logged in from {1}
+[14:06:28] [INFO] Received {0} from client
+[14:06:37] [INFO] Received {0} from client
+[14:06:41] [INFO] Received {0} from client
+[14:06:41] [INFO] {0} has logged out
+[14:06:42] [INFO] Received {0} from client
+[14:06:42] [INFO] {0} has disconnected
+[14:09:47] [INFO] {0} has connected
+[14:09:47] [INFO] Received {0} from client
+[14:09:47] [INFO] Received {0} from client
+[14:09:47] [INFO] Received {0} from client
+[14:09:47] [INFO] Received {0} from client
+[14:09:47] [INFO] Received {0} from client
+[14:09:47] [INFO] Received {0} from client
+[14:09:47] [INFO] Received {0} from client
+[14:09:47] [INFO] Received {0} from client
+[14:09:47] [INFO] Get product {0}
+[14:09:47] [INFO] Received {0} from client
+[14:09:47] [INFO] Get product {0}
+[14:09:47] [INFO] Received {0} from client
+[14:09:47] [INFO] Get product {0}
+[14:09:47] [INFO] Received {0} from client
+[14:09:47] [INFO] Get product {0}
+[14:09:47] [INFO] Received {0} from client
+[14:09:47] [INFO] Get product {0}
+[14:09:47] [INFO] Received {0} from client
+[14:09:47] [INFO] Get product {0}
+[14:09:49] [INFO] Received {0} from client
+[14:09:49] [INFO] Get staff {0}
+[14:09:49] [INFO] Received {0} from client
+[14:09:49] [INFO] Received {0} from client
+[14:09:49] [INFO] {0} has logged in from {1}
+[14:09:49] [INFO] Received {0} from client
+[14:10:08] [INFO] Received {0} from client
+[14:11:58] [WARNING] The connection to the terminal was shut down forcefully
+[14:11:58] [INFO] Logging staff out
+[14:12:03] [INFO] {0} has connected
+[14:12:03] [INFO] Received {0} from client
+[14:12:03] [INFO] Received {0} from client
+[14:12:03] [INFO] Received {0} from client
+[14:12:03] [INFO] Received {0} from client
+[14:12:03] [INFO] Received {0} from client
+[14:12:03] [INFO] Received {0} from client
+[14:12:03] [INFO] Received {0} from client
+[14:12:03] [INFO] Received {0} from client
+[14:12:03] [INFO] Get product {0}
+[14:12:03] [INFO] Received {0} from client
+[14:12:03] [INFO] Get product {0}
+[14:12:03] [INFO] Received {0} from client
+[14:12:03] [INFO] Get product {0}
+[14:12:03] [INFO] Received {0} from client
+[14:12:03] [INFO] Get product {0}
+[14:12:03] [INFO] Received {0} from client
+[14:12:03] [INFO] Get product {0}
+[14:12:03] [INFO] Received {0} from client
+[14:12:03] [INFO] Get product {0}
+[14:12:03] [INFO] Received {0} from client
+[14:12:03] [INFO] Get staff {0}
+[14:12:03] [INFO] Received {0} from client
+[14:12:04] [INFO] Received {0} from client
+[14:12:04] [INFO] {0} has logged in from {1}
+[14:12:04] [INFO] Received {0} from client
+[14:12:36] [WARNING] The connection to the terminal was shut down forcefully
+[14:12:36] [INFO] Logging staff out
+[14:13:00] [INFO] {0} has connected
+[14:13:00] [INFO] Received {0} from client
+[14:13:00] [INFO] Received {0} from client
+[14:13:00] [INFO] Received {0} from client
+[14:13:00] [INFO] Received {0} from client
+[14:13:00] [INFO] Received {0} from client
+[14:13:00] [INFO] Received {0} from client
+[14:13:00] [INFO] Received {0} from client
+[14:13:00] [INFO] Received {0} from client
+[14:13:00] [INFO] Get product {0}
+[14:13:00] [INFO] Received {0} from client
+[14:13:00] [INFO] Get product {0}
+[14:13:00] [INFO] Received {0} from client
+[14:13:00] [INFO] Get product {0}
+[14:13:00] [INFO] Received {0} from client
+[14:13:00] [INFO] Get product {0}
+[14:13:00] [INFO] Received {0} from client
+[14:13:00] [INFO] Get product {0}
+[14:13:00] [INFO] Received {0} from client
+[14:13:00] [INFO] Get product {0}
+[14:13:00] [INFO] Received {0} from client
+[14:13:00] [INFO] Get staff {0}
+[14:13:00] [INFO] Received {0} from client
+[14:13:01] [INFO] Received {0} from client
+[14:13:01] [INFO] {0} has logged in from {1}
+[14:13:01] [INFO] Received {0} from client
+[14:13:23] [WARNING] The connection to the terminal was shut down forcefully
+[14:13:23] [INFO] Logging staff out
+[14:13:27] [INFO] {0} has connected
+[14:13:27] [INFO] Received {0} from client
+[14:13:27] [INFO] Received {0} from client
+[14:13:27] [INFO] Received {0} from client
+[14:13:27] [INFO] Received {0} from client
+[14:13:27] [INFO] Received {0} from client
+[14:13:27] [INFO] Received {0} from client
+[14:13:27] [INFO] Received {0} from client
+[14:13:27] [INFO] Received {0} from client
+[14:13:27] [INFO] Get product {0}
+[14:13:27] [INFO] Received {0} from client
+[14:13:27] [INFO] Get product {0}
+[14:13:27] [INFO] Received {0} from client
+[14:13:27] [INFO] Get product {0}
+[14:13:27] [INFO] Received {0} from client
+[14:13:27] [INFO] Get product {0}
+[14:13:27] [INFO] Received {0} from client
+[14:13:27] [INFO] Get product {0}
+[14:13:27] [INFO] Received {0} from client
+[14:13:27] [INFO] Get product {0}
+[14:13:31] [INFO] Received {0} from client
+[14:13:31] [INFO] Get staff {0}
+[14:13:31] [INFO] Received {0} from client
+[14:13:31] [INFO] Received {0} from client
+[14:13:31] [INFO] {0} has logged in from {1}
+[14:13:31] [INFO] Received {0} from client
+[14:13:39] [WARNING] The connection to the terminal was shut down forcefully
+[14:13:39] [INFO] Logging staff out
+[14:13:49] [INFO] {0} has connected
+[14:13:49] [INFO] Received {0} from client
+[14:13:49] [INFO] Received {0} from client
+[14:13:49] [INFO] Received {0} from client
+[14:13:49] [INFO] Received {0} from client
+[14:13:49] [INFO] Received {0} from client
+[14:13:49] [INFO] Received {0} from client
+[14:13:49] [INFO] Received {0} from client
+[14:13:49] [INFO] Received {0} from client
+[14:13:49] [INFO] Get product {0}
+[14:13:49] [INFO] Received {0} from client
+[14:13:49] [INFO] Get product {0}
+[14:13:49] [INFO] Received {0} from client
+[14:13:49] [INFO] Get product {0}
+[14:13:49] [INFO] Received {0} from client
+[14:13:49] [INFO] Get product {0}
+[14:13:49] [INFO] Received {0} from client
+[14:13:49] [INFO] Get product {0}
+[14:13:49] [INFO] Received {0} from client
+[14:13:49] [INFO] Get product {0}
+[14:13:50] [INFO] Received {0} from client
+[14:13:50] [INFO] Get staff {0}
+[14:13:50] [INFO] Received {0} from client
+[14:13:50] [INFO] Received {0} from client
+[14:13:50] [INFO] {0} has logged in from {1}
+[14:13:50] [INFO] Received {0} from client
+[14:14:04] [WARNING] The connection to the terminal was shut down forcefully
+[14:14:04] [INFO] Logging staff out
+[14:14:24] [INFO] {0} has connected
+[14:14:24] [INFO] Received {0} from client
+[14:14:24] [INFO] Received {0} from client
+[14:14:24] [INFO] Received {0} from client
+[14:14:24] [INFO] Received {0} from client
+[14:14:24] [INFO] Received {0} from client
+[14:14:24] [INFO] Received {0} from client
+[14:14:24] [INFO] Received {0} from client
+[14:14:24] [INFO] Received {0} from client
+[14:14:24] [INFO] Get product {0}
+[14:14:24] [INFO] Received {0} from client
+[14:14:24] [INFO] Get product {0}
+[14:14:24] [INFO] Received {0} from client
+[14:14:24] [INFO] Get product {0}
+[14:14:24] [INFO] Received {0} from client
+[14:14:24] [INFO] Get product {0}
+[14:14:24] [INFO] Received {0} from client
+[14:14:24] [INFO] Get product {0}
+[14:14:24] [INFO] Received {0} from client
+[14:14:24] [INFO] Get product {0}
+[14:14:25] [INFO] Received {0} from client
+[14:14:25] [INFO] Get staff {0}
+[14:14:25] [INFO] Received {0} from client
+[14:14:25] [INFO] Received {0} from client
+[14:14:25] [INFO] {0} has logged in from {1}
+[14:14:25] [INFO] Received {0} from client
+[14:14:26] [INFO] Received {0} from client
+[14:14:27] [INFO] Received {0} from client
+[14:14:43] [WARNING] The connection to the terminal was shut down forcefully
+[14:14:43] [INFO] Logging staff out
+[14:15:16] [INFO] {0} has connected
+[14:15:16] [INFO] Received {0} from client
+[14:15:16] [INFO] Received {0} from client
+[14:15:16] [INFO] Received {0} from client
+[14:15:16] [INFO] Received {0} from client
+[14:15:16] [INFO] Received {0} from client
+[14:15:16] [INFO] Received {0} from client
+[14:15:16] [INFO] Received {0} from client
+[14:15:16] [INFO] Received {0} from client
+[14:15:16] [INFO] Get product {0}
+[14:15:16] [INFO] Received {0} from client
+[14:15:16] [INFO] Get product {0}
+[14:15:16] [INFO] Received {0} from client
+[14:15:16] [INFO] Get product {0}
+[14:15:16] [INFO] Received {0} from client
+[14:15:16] [INFO] Get product {0}
+[14:15:16] [INFO] Received {0} from client
+[14:15:16] [INFO] Get product {0}
+[14:15:16] [INFO] Received {0} from client
+[14:15:16] [INFO] Get product {0}
+[14:15:17] [INFO] Received {0} from client
+[14:15:17] [INFO] Get staff {0}
+[14:15:17] [INFO] Received {0} from client
+[14:15:18] [INFO] Received {0} from client
+[14:15:18] [INFO] {0} has logged in from {1}
+[14:15:18] [INFO] Received {0} from client
+[14:15:22] [INFO] Received {0} from client
+[14:15:38] [WARNING] The connection to the terminal was shut down forcefully
+[14:15:38] [INFO] Logging staff out
+[14:18:32] [INFO] {0} has connected
+[14:18:32] [INFO] Received {0} from client
+[14:18:32] [INFO] Received {0} from client
+[14:18:32] [INFO] Received {0} from client
+[14:18:32] [INFO] Received {0} from client
+[14:18:32] [INFO] Received {0} from client
+[14:18:32] [INFO] Received {0} from client
+[14:18:32] [INFO] Received {0} from client
+[14:18:32] [INFO] Received {0} from client
+[14:18:32] [INFO] Get product {0}
+[14:18:32] [INFO] Received {0} from client
+[14:18:32] [INFO] Get product {0}
+[14:18:32] [INFO] Received {0} from client
+[14:18:32] [INFO] Get product {0}
+[14:18:32] [INFO] Received {0} from client
+[14:18:32] [INFO] Get product {0}
+[14:18:32] [INFO] Received {0} from client
+[14:18:32] [INFO] Get product {0}
+[14:18:32] [INFO] Received {0} from client
+[14:18:32] [INFO] Get product {0}
+[14:18:32] [INFO] Received {0} from client
+[14:18:32] [INFO] Get staff {0}
+[14:18:33] [INFO] Received {0} from client
+[14:18:33] [INFO] Received {0} from client
+[14:18:33] [INFO] {0} has logged in from {1}
+[14:18:33] [INFO] Received {0} from client
+[14:18:35] [INFO] Received {0} from client
+[14:18:35] [INFO] {0} has logged out
+[14:18:46] [WARNING] The connection to the terminal was shut down forcefully
+[14:18:46] [INFO] Logging staff out
+[14:18:50] [INFO] {0} has connected
+[14:18:50] [INFO] Received {0} from client
+[14:18:50] [INFO] Received {0} from client
+[14:18:50] [INFO] Received {0} from client
+[14:18:50] [INFO] Received {0} from client
+[14:18:50] [INFO] Received {0} from client
+[14:18:50] [INFO] Received {0} from client
+[14:18:50] [INFO] Received {0} from client
+[14:18:50] [INFO] Received {0} from client
+[14:18:50] [INFO] Get product {0}
+[14:18:50] [INFO] Received {0} from client
+[14:18:50] [INFO] Get product {0}
+[14:18:50] [INFO] Received {0} from client
+[14:18:50] [INFO] Get product {0}
+[14:18:50] [INFO] Received {0} from client
+[14:18:50] [INFO] Get product {0}
+[14:18:50] [INFO] Received {0} from client
+[14:18:50] [INFO] Get product {0}
+[14:18:50] [INFO] Received {0} from client
+[14:18:50] [INFO] Get product {0}
+[14:18:51] [INFO] Received {0} from client
+[14:18:51] [INFO] Get staff {0}
+[14:18:52] [INFO] Received {0} from client
+[14:18:52] [INFO] Received {0} from client
+[14:18:52] [INFO] {0} has logged in from {1}
+[14:18:52] [INFO] Received {0} from client
+[14:19:00] [INFO] Received {0} from client
+[14:19:03] [WARNING] The connection to the terminal was shut down forcefully
+[14:19:03] [INFO] Logging staff out
+[14:19:19] [INFO] {0} has connected
+[14:19:19] [INFO] Received {0} from client
+[14:19:19] [INFO] Received {0} from client
+[14:19:19] [INFO] Received {0} from client
+[14:19:19] [INFO] Received {0} from client
+[14:19:19] [INFO] Received {0} from client
+[14:19:19] [INFO] Received {0} from client
+[14:19:19] [INFO] Received {0} from client
+[14:19:19] [INFO] Received {0} from client
+[14:19:19] [INFO] Get product {0}
+[14:19:19] [INFO] Received {0} from client
+[14:19:19] [INFO] Get product {0}
+[14:19:19] [INFO] Received {0} from client
+[14:19:19] [INFO] Get product {0}
+[14:19:19] [INFO] Received {0} from client
+[14:19:19] [INFO] Get product {0}
+[14:19:19] [INFO] Received {0} from client
+[14:19:19] [INFO] Get product {0}
+[14:19:19] [INFO] Received {0} from client
+[14:19:19] [INFO] Get product {0}
+[14:19:19] [INFO] Received {0} from client
+[14:19:19] [INFO] Get staff {0}
+[14:19:20] [INFO] Received {0} from client
+[14:19:20] [INFO] Received {0} from client
+[14:19:20] [INFO] {0} has logged in from {1}
+[14:19:20] [INFO] Received {0} from client
+[14:20:20] [WARNING] The connection to the terminal was shut down forcefully
+[14:20:20] [INFO] Logging staff out
+[14:21:14] [INFO] {0} has connected
+[14:21:14] [INFO] Received {0} from client
+[14:21:14] [INFO] Received {0} from client
+[14:21:14] [INFO] Received {0} from client
+[14:21:14] [INFO] Received {0} from client
+[14:21:14] [INFO] Received {0} from client
+[14:21:14] [INFO] Received {0} from client
+[14:21:14] [INFO] Received {0} from client
+[14:21:14] [INFO] Received {0} from client
+[14:21:14] [INFO] Get product {0}
+[14:21:14] [INFO] Received {0} from client
+[14:21:14] [INFO] Get product {0}
+[14:21:14] [INFO] Received {0} from client
+[14:21:14] [INFO] Get product {0}
+[14:21:14] [INFO] Received {0} from client
+[14:21:14] [INFO] Get product {0}
+[14:21:14] [INFO] Received {0} from client
+[14:21:14] [INFO] Get product {0}
+[14:21:14] [INFO] Received {0} from client
+[14:21:14] [INFO] Get product {0}
+[14:21:15] [INFO] Received {0} from client
+[14:21:15] [INFO] Get staff {0}
+[14:21:15] [INFO] Received {0} from client
+[14:21:15] [INFO] Received {0} from client
+[14:21:15] [INFO] {0} has logged in from {1}
+[14:21:15] [INFO] Received {0} from client
+[14:21:55] [INFO] Received {0} from client
+[14:22:06] [INFO] Received {0} from client
+[14:22:19] [WARNING] The connection to the terminal was shut down forcefully
+[14:22:19] [INFO] Logging staff out
+[14:24:07] [INFO] {0} has connected
+[14:24:07] [INFO] Received {0} from client
+[14:24:07] [INFO] Received {0} from client
+[14:24:07] [INFO] Received {0} from client
+[14:24:07] [INFO] Received {0} from client
+[14:24:07] [INFO] Received {0} from client
+[14:24:07] [INFO] Received {0} from client
+[14:24:07] [INFO] Received {0} from client
+[14:24:07] [INFO] Received {0} from client
+[14:24:07] [INFO] Get product {0}
+[14:24:07] [INFO] Received {0} from client
+[14:24:07] [INFO] Get product {0}
+[14:24:07] [INFO] Received {0} from client
+[14:24:07] [INFO] Get product {0}
+[14:24:07] [INFO] Received {0} from client
+[14:24:07] [INFO] Get product {0}
+[14:24:07] [INFO] Received {0} from client
+[14:24:07] [INFO] Get product {0}
+[14:24:07] [INFO] Received {0} from client
+[14:24:07] [INFO] Get product {0}
+[14:24:08] [INFO] Received {0} from client
+[14:24:08] [INFO] Get staff {0}
+[14:24:08] [INFO] Received {0} from client
+[14:24:09] [INFO] Received {0} from client
+[14:24:09] [INFO] {0} has logged in from {1}
+[14:24:09] [INFO] Received {0} from client
+[14:24:34] [WARNING] The connection to the terminal was shut down forcefully
+[14:24:34] [INFO] Logging staff out
+[14:24:50] [INFO] {0} has connected
+[14:24:50] [INFO] Received {0} from client
+[14:24:50] [INFO] Received {0} from client
+[14:24:50] [INFO] Received {0} from client
+[14:24:50] [INFO] Received {0} from client
+[14:24:50] [INFO] Received {0} from client
+[14:24:50] [INFO] Received {0} from client
+[14:24:50] [INFO] Received {0} from client
+[14:24:50] [INFO] Received {0} from client
+[14:24:50] [INFO] Get product {0}
+[14:24:50] [INFO] Received {0} from client
+[14:24:50] [INFO] Get product {0}
+[14:24:50] [INFO] Received {0} from client
+[14:24:50] [INFO] Get product {0}
+[14:24:50] [INFO] Received {0} from client
+[14:24:50] [INFO] Get product {0}
+[14:24:50] [INFO] Received {0} from client
+[14:24:50] [INFO] Get product {0}
+[14:24:50] [INFO] Received {0} from client
+[14:24:50] [INFO] Get product {0}
+[14:24:51] [INFO] Received {0} from client
+[14:24:51] [INFO] Get staff {0}
+[14:24:51] [INFO] Received {0} from client
+[14:24:51] [INFO] Received {0} from client
+[14:24:51] [INFO] {0} has logged in from {1}
+[14:24:51] [INFO] Received {0} from client
+[14:24:59] [WARNING] The connection to the terminal was shut down forcefully
+[14:24:59] [INFO] Logging staff out
+[14:25:08] [INFO] {0} has connected
+[14:25:08] [INFO] Received {0} from client
+[14:25:08] [INFO] Received {0} from client
+[14:25:08] [INFO] Received {0} from client
+[14:25:08] [INFO] Received {0} from client
+[14:25:08] [INFO] Received {0} from client
+[14:25:08] [INFO] Received {0} from client
+[14:25:08] [INFO] Received {0} from client
+[14:25:08] [INFO] Received {0} from client
+[14:25:08] [INFO] Get product {0}
+[14:25:08] [INFO] Received {0} from client
+[14:25:08] [INFO] Get product {0}
+[14:25:08] [INFO] Received {0} from client
+[14:25:08] [INFO] Get product {0}
+[14:25:08] [INFO] Received {0} from client
+[14:25:08] [INFO] Get product {0}
+[14:25:08] [INFO] Received {0} from client
+[14:25:08] [INFO] Get product {0}
+[14:25:08] [INFO] Received {0} from client
+[14:25:08] [INFO] Get product {0}
+[14:25:09] [INFO] Received {0} from client
+[14:25:09] [INFO] Get staff {0}
+[14:25:09] [INFO] Received {0} from client
+[14:25:09] [INFO] Received {0} from client
+[14:25:09] [INFO] {0} has logged in from {1}
+[14:25:09] [INFO] Received {0} from client
+[14:25:41] [INFO] Received {0} from client
+[14:25:46] [WARNING] The connection to the terminal was shut down forcefully
+[14:25:46] [INFO] Logging staff out
+[14:26:18] [INFO] {0} has connected
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] Get product {0}
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] Get product {0}
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] Get product {0}
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] Get product {0}
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] Get product {0}
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] Get product {0}
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] Get staff {0}
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] Received {0} from client
+[14:26:18] [INFO] {0} has logged in from {1}
+[14:26:18] [INFO] Received {0} from client
+[14:26:25] [INFO] Received {0} from client
+[14:26:29] [WARNING] The connection to the terminal was shut down forcefully
+[14:26:29] [INFO] Logging staff out
+[14:27:29] [INFO] {0} has connected
+[14:27:29] [INFO] Received {0} from client
+[14:27:29] [INFO] Received {0} from client
+[14:27:29] [INFO] Received {0} from client
+[14:27:29] [INFO] Received {0} from client
+[14:27:29] [INFO] Received {0} from client
+[14:27:29] [INFO] Received {0} from client
+[14:27:29] [INFO] Received {0} from client
+[14:27:29] [INFO] Received {0} from client
+[14:27:29] [INFO] Get product {0}
+[14:27:29] [INFO] Received {0} from client
+[14:27:29] [INFO] Get product {0}
+[14:27:29] [INFO] Received {0} from client
+[14:27:29] [INFO] Get product {0}
+[14:27:29] [INFO] Received {0} from client
+[14:27:29] [INFO] Get product {0}
+[14:27:29] [INFO] Received {0} from client
+[14:27:29] [INFO] Get product {0}
+[14:27:29] [INFO] Received {0} from client
+[14:27:29] [INFO] Get product {0}
+[14:27:29] [INFO] Received {0} from client
+[14:27:29] [INFO] Get staff {0}
+[14:27:30] [INFO] Received {0} from client
+[14:27:30] [INFO] Received {0} from client
+[14:27:30] [INFO] {0} has logged in from {1}
+[14:27:30] [INFO] Received {0} from client
+[14:27:38] [WARNING] The connection to the terminal was shut down forcefully
+[14:27:38] [INFO] Logging staff out
+[14:27:55] [INFO] {0} has connected
+[14:27:55] [INFO] Received {0} from client
+[14:27:55] [INFO] Received {0} from client
+[14:27:55] [INFO] Received {0} from client
+[14:27:55] [INFO] Received {0} from client
+[14:27:55] [INFO] Received {0} from client
+[14:27:55] [INFO] Received {0} from client
+[14:27:55] [INFO] Received {0} from client
+[14:27:55] [INFO] Received {0} from client
+[14:27:55] [INFO] Get product {0}
+[14:27:55] [INFO] Received {0} from client
+[14:27:55] [INFO] Get product {0}
+[14:27:55] [INFO] Received {0} from client
+[14:27:55] [INFO] Get product {0}
+[14:27:55] [INFO] Received {0} from client
+[14:27:55] [INFO] Get product {0}
+[14:27:55] [INFO] Received {0} from client
+[14:27:55] [INFO] Get product {0}
+[14:27:55] [INFO] Received {0} from client
+[14:27:55] [INFO] Get product {0}
+[14:27:55] [INFO] Received {0} from client
+[14:27:55] [INFO] Get staff {0}
+[14:27:56] [INFO] Received {0} from client
+[14:27:56] [INFO] Received {0} from client
+[14:27:56] [INFO] {0} has logged in from {1}
+[14:27:56] [INFO] Received {0} from client
+[14:28:04] [INFO] Received {0} from client
+[14:28:07] [WARNING] The connection to the terminal was shut down forcefully
+[14:28:07] [INFO] Logging staff out
+[14:28:41] [INFO] {0} has connected
+[14:28:41] [INFO] Received {0} from client
+[14:28:41] [INFO] Received {0} from client
+[14:28:41] [INFO] Received {0} from client
+[14:28:41] [INFO] Received {0} from client
+[14:28:41] [INFO] Received {0} from client
+[14:28:41] [INFO] Received {0} from client
+[14:28:41] [INFO] Received {0} from client
+[14:28:41] [INFO] Received {0} from client
+[14:28:41] [INFO] Get product {0}
+[14:28:41] [INFO] Received {0} from client
+[14:28:41] [INFO] Get product {0}
+[14:28:41] [INFO] Received {0} from client
+[14:28:41] [INFO] Get product {0}
+[14:28:41] [INFO] Received {0} from client
+[14:28:41] [INFO] Get product {0}
+[14:28:41] [INFO] Received {0} from client
+[14:28:41] [INFO] Get product {0}
+[14:28:41] [INFO] Received {0} from client
+[14:28:41] [INFO] Get product {0}
+[14:28:41] [INFO] Received {0} from client
+[14:28:41] [INFO] Get staff {0}
+[14:28:42] [INFO] Received {0} from client
+[14:28:42] [INFO] Received {0} from client
+[14:28:42] [INFO] {0} has logged in from {1}
+[14:28:42] [INFO] Received {0} from client
+[14:29:06] [INFO] Received {0} from client
+[14:29:16] [INFO] Received {0} from client
+[14:29:17] [INFO] Received {0} from client
+[14:29:18] [INFO] Received {0} from client
+[14:29:20] [INFO] Received {0} from client
+[14:29:20] [INFO] Purchase product {0}
+[14:29:20] [WARNING] {0} is below minimum stock level
+[14:29:20] [INFO] Purchase product {0}
+[14:29:20] [WARNING] {0} is below minimum stock level
+[14:29:22] [INFO] Received {0} from client
+[14:29:22] [INFO] Received {0} from client
+[14:29:22] [INFO] Received {0} from client
+[14:29:22] [INFO] Purchase product {0}
+[14:29:22] [WARNING] {0} is below minimum stock level
+[14:29:22] [INFO] Purchase product {0}
+[14:29:22] [WARNING] {0} is below minimum stock level
+[14:29:23] [INFO] Received {0} from client
+[14:29:23] [INFO] {0} has logged out
+[14:29:23] [INFO] Received {0} from client
+[14:29:23] [INFO] {0} has disconnected

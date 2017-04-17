@@ -630,7 +630,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                         n++;
                         String next = Integer.toString(n);
                         dc.setSetting("NEXT_PLU", next);
-                        for (int i = 1; i < lengthToAdd; i++) {
+                        lengthToAdd -= ref.length();
+                        for (int i = 1; i <= lengthToAdd; i++) {
                             ref = 0 + ref;
                         }
                         String barcode = upc + ref;

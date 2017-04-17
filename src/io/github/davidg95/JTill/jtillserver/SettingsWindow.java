@@ -390,7 +390,7 @@ public final class SettingsWindow extends javax.swing.JFrame {
             }
         });
 
-        chkApproveNew.setText("Approve new connections");
+        chkApproveNew.setText("New connections require approval");
 
         javax.swing.GroupLayout panelGeneralLayout = new javax.swing.GroupLayout(panelGeneral);
         panelGeneral.setLayout(panelGeneralLayout);

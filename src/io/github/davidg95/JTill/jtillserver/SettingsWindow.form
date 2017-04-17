@@ -581,7 +581,7 @@
         </Component>
         <Component class="javax.swing.JCheckBox" name="chkApproveNew">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Approve new connections"/>
+            <Property name="text" type="java.lang.String" value="New connections require approval"/>
           </Properties>
         </Component>
       </SubComponents>
