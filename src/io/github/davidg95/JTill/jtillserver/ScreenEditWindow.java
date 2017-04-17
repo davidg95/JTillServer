@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -70,6 +71,12 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         categoryCards = (CardLayout) panelProducts.getLayout();
         cardsButtonGroup = new ButtonGroup();
+        try {
+            String hex = dc.getSetting("TERMINAL_BACKGROUND");
+            btnBackground.setBackground(Color.decode(hex));
+        } catch (IOException ex) {
+            Logger.getLogger(ScreenEditWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -305,6 +312,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         panelProducts = new javax.swing.JPanel();
         panelScreens = new javax.swing.JPanel();
         btnNewScreen = new javax.swing.JButton();
+        btnBackground = new javax.swing.JButton();
 
         setTitle("Screen Editor");
 
@@ -340,14 +348,23 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             }
         });
 
+        btnBackground.setText("Background Color");
+        btnBackground.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackgroundActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnNewScreen)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnNewScreen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
                 .addComponent(panelEditor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -358,6 +375,8 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnNewScreen)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBackground)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(panelEditor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -368,7 +387,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
     private void btnNewScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewScreenActionPerformed
         String name = JOptionPane.showInputDialog(this, "Enter Name", "New Screen", JOptionPane.PLAIN_MESSAGE);
-        if(name == null){
+        if (name == null) {
             return;
         }
         if (!name.equals("")) {
@@ -383,9 +402,9 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                             int x = 1;
                             int y = 1;
                             for (int i = 0; i < 50; i++) {
-                                TillButton bu = dc.addButton(new TillButton("[SPACE]", 0, sc.getId(), 0, 1, 1, x, y));
+                                TillButton bu = dc.addButton(new TillButton("[SPACE]", 0, sc.getId(), 1, 1, 1, x, y));
                                 x++;
-                                if(x == 6){
+                                if (x == 6) {
                                     x = 1;
                                     y++;
                                 }
@@ -402,7 +421,22 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnNewScreenActionPerformed
 
+    private void btnBackgroundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackgroundActionPerformed
+        Color c = JColorChooser.showDialog(this, "Select color for terminal background", btnBackground.getBackground());
+        if(c == null){
+            return;
+        }
+        btnBackground.setBackground(c);
+        String hex = String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue());
+        try {
+            dc.setSetting("TERMINAL_BACKGROUND", hex);
+        } catch (IOException ex) {
+            Logger.getLogger(ScreenEditWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnBackgroundActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBackground;
     private javax.swing.JButton btnNewScreen;
     private javax.swing.JPanel panelEditor;
     private javax.swing.JPanel panelProducts;

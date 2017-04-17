@@ -35,10 +35,9 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         super(parent);
         this.dc = dc;
         initComponents();
-       // setLocationRelativeTo(parent);
         int x = (int) MouseInfo.getPointerInfo().getLocation().getX();
         int y = (int) MouseInfo.getPointerInfo().getLocation().getY();
-        this.setLocation(x, y);
+        this.setLocation(x - getWidth() / 2, y - getHeight() / 2);
         setModal(true);
         setTitle(button.getName());
         if (button.getName().equals("[SPACE]")) {
@@ -46,6 +45,35 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         }
         txtWidth.setText(button.getWidth() + "");
         txtHeight.setText(button.getHeight() + "");
+        txtItem.setText(button.getName());
+        switch (button.getColorValue()) {
+            case TillButton.BLUE:
+                radBlue.setSelected(true);
+                break;
+            case TillButton.RED:
+                radRed.setSelected(true);
+                break;
+            case TillButton.GREEN:
+                radGreen.setSelected(true);
+                break;
+            case TillButton.YELLOW:
+                radYellow.setSelected(true);
+                break;
+            case TillButton.ORANGE:
+                radOrange.setSelected(true);
+                break;
+            case TillButton.PURPLE:
+                radPurple.setSelected(true);
+                break;
+            case TillButton.WHITE:
+                radWhite.setSelected(true);
+                break;
+            case TillButton.BLACK:
+                radBlack.setSelected(true);
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -78,6 +106,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        colorGroup = new javax.swing.ButtonGroup();
         btnRemove = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
         btnChangeButton = new javax.swing.JButton();
@@ -85,6 +114,18 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         txtWidth = new javax.swing.JTextField();
         txtHeight = new javax.swing.JTextField();
+        txtItem = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        btnSave = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        radBlue = new javax.swing.JRadioButton();
+        radRed = new javax.swing.JRadioButton();
+        radGreen = new javax.swing.JRadioButton();
+        radYellow = new javax.swing.JRadioButton();
+        radOrange = new javax.swing.JRadioButton();
+        radPurple = new javax.swing.JRadioButton();
+        radWhite = new javax.swing.JRadioButton();
+        radBlack = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -112,11 +153,98 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
         jLabel1.setText("Width:");
 
-        jLabel2.setText("Height");
+        jLabel2.setText("Height:");
 
         txtWidth.setText("1");
 
         txtHeight.setText("1");
+
+        jLabel3.setText("Current:");
+
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Color"));
+
+        colorGroup.add(radBlue);
+        radBlue.setSelected(true);
+        radBlue.setText("Blue");
+        radBlue.setActionCommand("1");
+
+        colorGroup.add(radRed);
+        radRed.setText("Red");
+        radRed.setActionCommand("2");
+
+        colorGroup.add(radGreen);
+        radGreen.setText("Green");
+        radGreen.setActionCommand("3");
+
+        colorGroup.add(radYellow);
+        radYellow.setText("Yellow");
+        radYellow.setActionCommand("4");
+
+        colorGroup.add(radOrange);
+        radOrange.setText("Orange");
+        radOrange.setActionCommand("5");
+
+        colorGroup.add(radPurple);
+        radPurple.setText("Purple");
+        radPurple.setActionCommand("6");
+
+        colorGroup.add(radWhite);
+        radWhite.setText("White");
+        radWhite.setActionCommand("7");
+
+        colorGroup.add(radBlack);
+        radBlack.setText("Black");
+        radBlack.setActionCommand("8");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(radGreen)
+                    .addComponent(radYellow)
+                    .addComponent(radRed)
+                    .addComponent(radBlue))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(radBlack)
+                    .addComponent(radWhite)
+                    .addComponent(radOrange)
+                    .addComponent(radPurple))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(radBlue)
+                            .addComponent(radBlack))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(radRed)
+                            .addComponent(radWhite))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(radGreen)
+                            .addComponent(radPurple))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radYellow))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(radOrange)))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -124,38 +252,53 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnRemove, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
-                    .addComponent(btnClose, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnChangeButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtWidth, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
-                            .addComponent(txtHeight))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel2)))
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(txtWidth, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtItem, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnChangeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnRemove)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnChangeButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnClose)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnRemove)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)
+                            .addComponent(btnChangeButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(28, 28, 28)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel2)
+                                    .addComponent(btnClose)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel1)
+                                .addComponent(btnSave))))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -168,7 +311,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         button.setName("[SPACE]");
-        this.setVisible(false);
+        txtItem.setName("[SPACE]");
     }//GEN-LAST:event_btnRemoveActionPerformed
 
     private void btnChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeButtonActionPerformed
@@ -176,19 +319,54 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         if (i != null) {
             button.setItem(i.getId());
             button.setName(i.getName());
-            button.setWidth(Integer.parseInt(txtWidth.getText()));
-            button.setHeight(Integer.parseInt(txtHeight.getText()));
-            this.setVisible(false);
+            txtItem.setText(i.getName());
         }
     }//GEN-LAST:event_btnChangeButtonActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        button.setWidth(Integer.parseInt(txtWidth.getText()));
+        button.setHeight(Integer.parseInt(txtHeight.getText()));
+        int col = 0;
+        if (radBlue.isSelected()) {
+            col = TillButton.BLUE;
+        } else if (radRed.isSelected()) {
+            col = TillButton.RED;
+        } else if (radGreen.isSelected()) {
+            col = TillButton.GREEN;
+        } else if (radYellow.isSelected()) {
+            col = TillButton.YELLOW;
+        } else if (radOrange.isSelected()) {
+            col = TillButton.ORANGE;
+        } else if (radPurple.isSelected()) {
+            col = TillButton.PURPLE;
+        } else if (radWhite.isSelected()) {
+            col = TillButton.WHITE;
+        } else if (radBlack.isSelected()) {
+            col = TillButton.BLACK;
+        }
+        button.setColorValue(col);
+    }//GEN-LAST:event_btnSaveActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChangeButton;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnRemove;
+    private javax.swing.JButton btnSave;
+    private javax.swing.ButtonGroup colorGroup;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JRadioButton radBlack;
+    private javax.swing.JRadioButton radBlue;
+    private javax.swing.JRadioButton radGreen;
+    private javax.swing.JRadioButton radOrange;
+    private javax.swing.JRadioButton radPurple;
+    private javax.swing.JRadioButton radRed;
+    private javax.swing.JRadioButton radWhite;
+    private javax.swing.JRadioButton radYellow;
     private javax.swing.JTextField txtHeight;
+    private javax.swing.JTextField txtItem;
     private javax.swing.JTextField txtWidth;
     // End of variables declaration//GEN-END:variables
 }

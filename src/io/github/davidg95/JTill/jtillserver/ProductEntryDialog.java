@@ -34,6 +34,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private Department selectedDepartment;
     private Tax selectedTax;
 
+    private String nextBarcode;
+
     /**
      * Creates new form ProductEntryDialog.
      *
@@ -121,7 +123,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtComments = new javax.swing.JTextArea();
         btnAddProduct = new javax.swing.JButton();
-        btnClose = new javax.swing.JButton();
+        btnBack = new javax.swing.JButton();
         txtShortName = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
@@ -154,12 +156,12 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         jScrollPane2 = new javax.swing.JScrollPane();
         txtOpenComments = new javax.swing.JTextArea();
         btnAddOpen = new javax.swing.JButton();
-        btnClose3 = new javax.swing.JButton();
+        btnBack2 = new javax.swing.JButton();
         panBarcode = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txtPlu = new javax.swing.JTextField();
         btnEnter = new javax.swing.JButton();
-        btnClose2 = new javax.swing.JButton();
+        btnClose = new javax.swing.JButton();
         radNew = new javax.swing.JRadioButton();
         radCopy = new javax.swing.JRadioButton();
         radNewOpen = new javax.swing.JRadioButton();
@@ -188,17 +190,17 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         txtComments.setRows(5);
         jScrollPane1.setViewportView(txtComments);
 
-        btnAddProduct.setText("Add Product");
+        btnAddProduct.setText("Create");
         btnAddProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddProductActionPerformed(evt);
             }
         });
 
-        btnClose.setText("Close");
-        btnClose.addActionListener(new java.awt.event.ActionListener() {
+        btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCloseActionPerformed(evt);
+                btnBackActionPerformed(evt);
             }
         });
 
@@ -246,51 +248,50 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panProductLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnAddProduct))
-                    .addGroup(panProductLayout.createSequentialGroup()
-                        .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panProductLayout.createSequentialGroup()
-                                .addGap(16, 16, 16)
-                                .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel13)
-                                    .addComponent(jLabel14)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel8)
-                                    .addComponent(jLabel7)
-                                    .addComponent(jLabel12))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(panProductLayout.createSequentialGroup()
-                                        .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel9)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtCostPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(txtOrderCode, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(panProductLayout.createSequentialGroup()
-                                        .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel6)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtShortName, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(btnSelectDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnSelectCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnSelectTax, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(panProductLayout.createSequentialGroup()
-                                .addContainerGap()
+                        .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtCostPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panProductLayout.createSequentialGroup()
                                 .addComponent(jLabel10)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtMinStock, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel11)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtMaxStock, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 97, Short.MAX_VALUE)))
-                .addContainerGap())
+                                .addComponent(txtMaxStock, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panProductLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panProductLayout.createSequentialGroup()
+                            .addGap(16, 16, 16)
+                            .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel2)
+                                .addComponent(jLabel13)
+                                .addComponent(jLabel14)
+                                .addComponent(jLabel5)
+                                .addComponent(jLabel8)
+                                .addComponent(jLabel7)
+                                .addComponent(jLabel12))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(panProductLayout.createSequentialGroup()
+                                    .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLabel9))
+                                .addComponent(txtOrderCode, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(panProductLayout.createSequentialGroup()
+                                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLabel6)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtShortName, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnSelectDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnSelectCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnSelectTax, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         panProductLayout.setVerticalGroup(
             panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -331,12 +332,12 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
+                    .addComponent(jLabel5)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                 .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -386,10 +387,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             }
         });
 
-        btnClose3.setText("Close");
-        btnClose3.addActionListener(new java.awt.event.ActionListener() {
+        btnBack2.setText("Back");
+        btnBack2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClose3ActionPerformed(evt);
+                btnBack2ActionPerformed(evt);
             }
         });
 
@@ -401,36 +402,32 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panOpenProductLayout.createSequentialGroup()
-                        .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panOpenProductLayout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel16)
-                                    .addComponent(jLabel15)
-                                    .addComponent(jLabel17)
-                                    .addComponent(jLabel18))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(panOpenProductLayout.createSequentialGroup()
-                                        .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(btnOpenDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(btnOpenCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(btnOpenTax, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addComponent(jScrollPane2)))
-                            .addGroup(panOpenProductLayout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtOpenName, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtOpenShort, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(229, 229, 229))
+                        .addGap(10, 10, 10)
+                        .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel16)
+                            .addComponent(jLabel15)
+                            .addComponent(jLabel17)
+                            .addComponent(jLabel18))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                            .addComponent(btnOpenTax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnOpenCategory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnOpenDepartment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(panOpenProductLayout.createSequentialGroup()
-                        .addComponent(btnClose3, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtOpenName, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtOpenShort, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(panOpenProductLayout.createSequentialGroup()
+                        .addComponent(btnBack2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnAddOpen, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAddOpen, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
         );
         panOpenProductLayout.setVerticalGroup(
@@ -458,10 +455,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel18)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnAddOpen, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
-                    .addComponent(btnClose3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnBack2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -482,10 +479,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             }
         });
 
-        btnClose2.setText("Close");
-        btnClose2.addActionListener(new java.awt.event.ActionListener() {
+        btnClose.setText("Close");
+        btnClose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClose2ActionPerformed(evt);
+                btnCloseActionPerformed(evt);
             }
         });
 
@@ -511,12 +508,12 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         panBarcodeLayout.setHorizontalGroup(
             panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panBarcodeLayout.createSequentialGroup()
+                .addContainerGap(46, Short.MAX_VALUE)
                 .addGroup(panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panBarcodeLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnClose2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panBarcodeLayout.createSequentialGroup()
-                        .addGap(75, 75, 75)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panBarcodeLayout.createSequentialGroup()
+                        .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panBarcodeLayout.createSequentialGroup()
                         .addGroup(panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panBarcodeLayout.createSequentialGroup()
                                 .addGap(51, 51, 51)
@@ -534,13 +531,12 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                                         .addComponent(radNewOpen)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(radCopy)))
-                        .addGap(0, 79, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGap(39, 39, 39))))
         );
         panBarcodeLayout.setVerticalGroup(
             panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panBarcodeLayout.createSequentialGroup()
-                .addContainerGap(161, Short.MAX_VALUE)
+                .addContainerGap(116, Short.MAX_VALUE)
                 .addGroup(panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtPlu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -552,8 +548,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     .addComponent(radNewOpen))
                 .addGap(18, 18, 18)
                 .addComponent(btnEnter)
-                .addGap(117, 117, 117)
-                .addComponent(btnClose2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(98, 98, 98)
+                .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -587,6 +583,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         product = new Product(name, shortName, orderCode, category.getId(), dep.getId(), comments, tax.getId(), false, price, costPrice, 0, minStock, maxStock, 0);
         try {
             product = dc.addProductAndPlu(product, plu);
+            if (nextBarcode != null) {
+                dc.setSetting("NEXT_PLU", nextBarcode);
+                nextBarcode = null;
+            }
             JOptionPane.showMessageDialog(this, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
             resetPanels();
             CardLayout c = (CardLayout) jPanel1.getLayout();
@@ -597,9 +597,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btnAddProductActionPerformed
 
-    private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        this.setVisible(false);
-    }//GEN-LAST:event_btnCloseActionPerformed
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        CardLayout c = (CardLayout) jPanel1.getLayout();
+        c.show(jPanel1, "card2");
+    }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnSelectCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectCategoryActionPerformed
         Category c = CategorySelectDialog.showDialog(this, dc);
@@ -628,8 +629,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                         String ref = dc.getSetting("NEXT_PLU");
                         int n = Integer.parseInt(ref);
                         n++;
-                        String next = Integer.toString(n);
-                        dc.setSetting("NEXT_PLU", next);
+                        nextBarcode = Integer.toString(n);
                         lengthToAdd -= ref.length();
                         for (int i = 1; i <= lengthToAdd; i++) {
                             ref = 0 + ref;
@@ -690,13 +690,14 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         btnEnter.doClick();
     }//GEN-LAST:event_txtPluActionPerformed
 
-    private void btnClose2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClose2ActionPerformed
+    private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
         this.setVisible(false);
-    }//GEN-LAST:event_btnClose2ActionPerformed
+    }//GEN-LAST:event_btnCloseActionPerformed
 
-    private void btnClose3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClose3ActionPerformed
-        this.setVisible(false);
-    }//GEN-LAST:event_btnClose3ActionPerformed
+    private void btnBack2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBack2ActionPerformed
+        CardLayout c = (CardLayout) jPanel1.getLayout();
+        c.show(jPanel1, "card2");
+    }//GEN-LAST:event_btnBack2ActionPerformed
 
     private void btnOpenDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenDepartmentActionPerformed
         Department d = DepartmentSelectDialog.showDialog(this, dc);
@@ -733,6 +734,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             product = new Product(name, shortName, 0, category.getId(), dep.getId(), comments, tax.getId(), true);
             plu.setProduct(product.getId());
             product = dc.addProductAndPlu(product, plu);
+            dc.setSetting("NEXT_PLU", nextBarcode);
             JOptionPane.showMessageDialog(this, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
             resetPanels();
             CardLayout c = (CardLayout) jPanel1.getLayout();
@@ -750,9 +752,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddOpen;
     private javax.swing.JButton btnAddProduct;
+    private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnBack2;
     private javax.swing.JButton btnClose;
-    private javax.swing.JButton btnClose2;
-    private javax.swing.JButton btnClose3;
     private javax.swing.JButton btnEnter;
     private javax.swing.JButton btnOpenCategory;
     private javax.swing.JButton btnOpenDepartment;

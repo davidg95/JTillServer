@@ -1,39 +1,31 @@
-JTill log Mon Apr 17 14:42:23 BST 2017
-[14:42:23] [INFO] Connecting to database {0}
-[14:42:23] [INFO] The database does not exists, so it is getting created
-[14:42:23] [INFO] Creating tables
-[14:42:23] [INFO] Created tills table
-[14:42:23] [INFO] Created tax table
-[14:42:23] [INFO] Created categorys table
-[14:42:23] [INFO] Created departments table
-[14:42:23] [INFO] Created configs table
-[14:42:23] [INFO] Created sales table
-[14:42:23] [INFO] Created customers table
-[14:42:23] [INFO] Created products table
-[14:42:23] [INFO] Created plus table
-[14:42:23] [INFO] Created discounts table
-[14:42:23] [INFO] Created buckets table
-[14:42:23] [INFO] Create triggers table
-[14:42:24] [INFO] Created saleItems table
-[14:42:24] [INFO] Created staff table
-[14:42:24] [INFO] Created screens table
-[14:42:24] [INFO] Created buttons table
-[14:42:24] [INFO] Created waste reports table
-[14:42:24] [INFO] Created table waste reasons
-[14:42:24] [INFO] Created table waste items
-[14:42:24] [INFO] Created table suppliers
-[14:42:24] [INFO] Created table recevied items
-[14:42:24] [INFO] Created table clockonoff
-[14:42:24] [INFO] Add customer {0}
-[14:42:33] [INFO] Add staff {0}
-[14:42:33] [INFO] Starting Thread Pool Excecutor
-[14:42:33] [INFO] JTill Server local IP address is 192.168.1.65
-[14:42:33] [INFO] Server Socket running on port number 52341
-[14:42:33] [INFO] Ready to accept connections
-[14:42:36] [INFO] Login Staff {0}
-[14:42:36] [INFO] {0} has logged in
-[14:42:37] [INFO] Get all customers
-[14:42:37] [INFO] Get all customers
-[14:43:26] [INFO] Add customer {0}
-[14:43:26] [INFO] Get all customers
-[14:43:28] [INFO] Get all customers
+JTill log Mon Apr 17 16:59:09 BST 2017
+[16:59:10] [INFO] Connecting to database {0}
+[16:59:10] [INFO] Get staff count
+[16:59:10] [INFO] Starting Thread Pool Excecutor
+[16:59:10] [INFO] JTill Server local IP address is 192.168.1.65
+[16:59:10] [INFO] Server Socket running on port number 52341
+[16:59:10] [INFO] Ready to accept connections
+[16:59:12] [INFO] Login Staff {0}
+[16:59:12] [INFO] {0} has logged in
+[17:05:14] [INFO] {0} has connected
+[17:05:14] [INFO] Received {0} from client
+[17:05:14] [INFO] Received {0} from client
+[17:05:14] [INFO] Received {0} from client
+[17:05:14] [INFO] Received {0} from client
+[17:05:14] [INFO] Received {0} from client
+[17:05:14] [INFO] Received {0} from client
+[17:05:14] [INFO] Received {0} from client
+[17:05:14] [INFO] Received {0} from client
+[17:06:51] [INFO] Received {0} from client
+[17:06:51] [INFO] Get staff {0}
+[17:06:52] [INFO] Received {0} from client
+[17:06:52] [INFO] Received {0} from client
+[17:06:52] [INFO] {0} has logged in from {1}
+[17:06:52] [INFO] Received {0} from client
+[17:07:43] [INFO] Received {0} from client
+[17:07:43] [INFO] {0} has logged out
+[17:07:43] [INFO] Received {0} from client
+[17:07:43] [INFO] {0} has disconnected
+[17:07:49] [INFO] Stopping JTIll Server
+[17:07:49] [INFO] Saving properties
+[17:07:49] [INFO] Stopping
