@@ -72,6 +72,8 @@ public class GUI extends JFrame implements GUIInterface {
     private final Image icon; //The icon for the frame.
 
     private final Settings settings; //The settings object.
+    
+    private static final String HELP_TEXT = "Press F1 for help";
 
     /**
      * Creates new form GUI
@@ -269,7 +271,7 @@ public class GUI extends JFrame implements GUIInterface {
         if (staff != null) {
             lblUser.setText(staff.getName());
             itemLogin.setText("Log Out");
-            LOG.log(Level.INFO, "{0} has logged in", staff.getName());
+            LOG.log(Level.INFO, staff.getName() + " has logged in");
             isLoggedOn = true;
         } else {
             if (dc instanceof DBConnect) {
@@ -298,7 +300,7 @@ public class GUI extends JFrame implements GUIInterface {
         try {
             lblUser.setText("Not Logged In");
             dc.logout(staff);
-            LOG.log(Level.INFO, "{0} has logged out", staff.getName());
+            LOG.log(Level.INFO, staff.getName() + " has logged out");
         } catch (StaffNotFoundException ex) {
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
@@ -452,6 +454,14 @@ public class GUI extends JFrame implements GUIInterface {
         btnManageStock.setFocusable(false);
         btnManageStock.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnManageStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnManageStock.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnManageStockMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnManageStockMouseExited(evt);
+            }
+        });
         btnManageStock.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnManageStockActionPerformed(evt);
@@ -464,6 +474,14 @@ public class GUI extends JFrame implements GUIInterface {
         btnManageCustomers.setFocusable(false);
         btnManageCustomers.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnManageCustomers.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnManageCustomers.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnManageCustomersMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnManageCustomersMouseExited(evt);
+            }
+        });
         btnManageCustomers.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnManageCustomersActionPerformed(evt);
@@ -476,6 +494,14 @@ public class GUI extends JFrame implements GUIInterface {
         btnManageStaff.setFocusable(false);
         btnManageStaff.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnManageStaff.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnManageStaff.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnManageStaffMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnManageStaffMouseExited(evt);
+            }
+        });
         btnManageStaff.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnManageStaffActionPerformed(evt);
@@ -488,6 +514,14 @@ public class GUI extends JFrame implements GUIInterface {
         btnDiscounts.setFocusable(false);
         btnDiscounts.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnDiscounts.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDiscounts.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnDiscountsMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnDiscountsMouseExited(evt);
+            }
+        });
         btnDiscounts.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDiscountsActionPerformed(evt);
@@ -500,6 +534,14 @@ public class GUI extends JFrame implements GUIInterface {
         btnCategorys.setFocusable(false);
         btnCategorys.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnCategorys.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCategorys.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnCategorysMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnCategorysMouseExited(evt);
+            }
+        });
         btnCategorys.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCategorysActionPerformed(evt);
@@ -512,6 +554,14 @@ public class GUI extends JFrame implements GUIInterface {
         btnReports.setFocusable(false);
         btnReports.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnReports.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnReports.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnReportsMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnReportsMouseExited(evt);
+            }
+        });
         btnReports.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnReportsActionPerformed(evt);
@@ -524,6 +574,14 @@ public class GUI extends JFrame implements GUIInterface {
         btnScreens.setFocusable(false);
         btnScreens.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnScreens.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnScreens.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnScreensMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnScreensMouseExited(evt);
+            }
+        });
         btnScreens.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnScreensActionPerformed(evt);
@@ -536,6 +594,14 @@ public class GUI extends JFrame implements GUIInterface {
         btnSettings.setFocusable(false);
         btnSettings.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnSettings.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSettings.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnSettingsMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnSettingsMouseExited(evt);
+            }
+        });
         btnSettings.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSettingsActionPerformed(evt);
@@ -1132,6 +1198,70 @@ public class GUI extends JFrame implements GUIInterface {
     private void itemPluSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPluSettingsActionPerformed
         PluSettings.showWindow(dc, icon);
     }//GEN-LAST:event_itemPluSettingsActionPerformed
+
+    private void btnManageStockMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnManageStockMouseEntered
+        lblHelp.setText("Manage the stock inventory");
+    }//GEN-LAST:event_btnManageStockMouseEntered
+
+    private void btnManageStockMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnManageStockMouseExited
+        lblHelp.setText(HELP_TEXT);
+    }//GEN-LAST:event_btnManageStockMouseExited
+
+    private void btnManageCustomersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnManageCustomersMouseEntered
+        lblHelp.setText("Manage customers");
+    }//GEN-LAST:event_btnManageCustomersMouseEntered
+
+    private void btnManageCustomersMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnManageCustomersMouseExited
+        lblHelp.setText(HELP_TEXT);
+    }//GEN-LAST:event_btnManageCustomersMouseExited
+
+    private void btnManageStaffMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnManageStaffMouseEntered
+        lblHelp.setText("Manage staff");
+    }//GEN-LAST:event_btnManageStaffMouseEntered
+
+    private void btnManageStaffMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnManageStaffMouseExited
+        lblHelp.setText(HELP_TEXT);
+    }//GEN-LAST:event_btnManageStaffMouseExited
+
+    private void btnDiscountsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDiscountsMouseEntered
+        lblHelp.setText("Manage discounts");
+    }//GEN-LAST:event_btnDiscountsMouseEntered
+
+    private void btnDiscountsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDiscountsMouseExited
+        lblHelp.setText(HELP_TEXT);
+    }//GEN-LAST:event_btnDiscountsMouseExited
+
+    private void btnCategorysMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCategorysMouseEntered
+        lblHelp.setText("Manage categories");
+    }//GEN-LAST:event_btnCategorysMouseEntered
+
+    private void btnCategorysMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCategorysMouseExited
+        lblHelp.setText(HELP_TEXT);
+    }//GEN-LAST:event_btnCategorysMouseExited
+
+    private void btnReportsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReportsMouseEntered
+        lblHelp.setText("View reports");
+    }//GEN-LAST:event_btnReportsMouseEntered
+
+    private void btnReportsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReportsMouseExited
+        lblHelp.setText(HELP_TEXT);
+    }//GEN-LAST:event_btnReportsMouseExited
+
+    private void btnScreensMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnScreensMouseEntered
+        lblHelp.setText("Edit till screens");
+    }//GEN-LAST:event_btnScreensMouseEntered
+
+    private void btnScreensMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnScreensMouseExited
+        lblHelp.setText(HELP_TEXT);
+    }//GEN-LAST:event_btnScreensMouseExited
+
+    private void btnSettingsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSettingsMouseEntered
+        lblHelp.setText("Edit system settings");
+    }//GEN-LAST:event_btnSettingsMouseEntered
+
+    private void btnSettingsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSettingsMouseExited
+        lblHelp.setText(HELP_TEXT);
+    }//GEN-LAST:event_btnSettingsMouseExited
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;

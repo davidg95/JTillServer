@@ -79,6 +79,9 @@ public final class SettingsWindow extends javax.swing.JFrame {
             txtReceiptHeader.setText(dc.getSetting("RECEIPT_HEADER"));
             txtReceiptFooter.setText(dc.getSetting("RECEIPT_FOOTER"));
             chkApproveNew.setSelected(dc.getSetting("APPROVE_NEW_CONNECTIONS").equals("TRUE"));
+            chkAddress.setSelected(dc.getSetting("SHOW_ADDRESS_RECEIPT").equals("TRUE"));
+            chkStaff.setSelected(dc.getSetting("SHOW_STAFF_RECEIPT").equals("TRUE"));
+            chkTerminal.setSelected(dc.getSetting("SHOW_TERMINAL_RECEIPT").equals("TRUE"));
         } catch (IOException ex) {
 
         }
@@ -140,11 +143,16 @@ public final class SettingsWindow extends javax.swing.JFrame {
         txtReceiptHeader = new javax.swing.JTextField();
         txtReceiptFooter = new javax.swing.JTextField();
         btnReceiptSave = new javax.swing.JButton();
+        chkAddress = new javax.swing.JCheckBox();
+        chkStaff = new javax.swing.JCheckBox();
+        chkTerminal = new javax.swing.JCheckBox();
+        btnCompanyDetails2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JTill Settings");
 
         panelNetwork.setBorder(javax.swing.BorderFactory.createTitledBorder("Network Options"));
+        panelNetwork.setEnabled(false);
 
         jLabel1.setText("Port Number:");
         jLabel1.setEnabled(false);
@@ -461,27 +469,57 @@ public final class SettingsWindow extends javax.swing.JFrame {
             }
         });
 
+        chkAddress.setText("Show address");
+
+        chkStaff.setText("Show staff name");
+
+        chkTerminal.setText("Show terminal");
+
+        btnCompanyDetails2.setText("Company Details");
+        btnCompanyDetails2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCompanyDetails2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel16)
-                    .addComponent(jLabel17))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(btnReceiptSave)
-                        .addGap(0, 91, Short.MAX_VALUE))
-                    .addComponent(txtReceiptFooter)
-                    .addComponent(txtReceiptHeader)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel16)
+                            .addComponent(jLabel17))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(btnReceiptSave)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txtReceiptHeader, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtReceiptFooter))
+                                .addContainerGap())))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(chkAddress)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                                .addComponent(btnCompanyDetails2))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(chkTerminal)
+                                    .addComponent(chkStaff))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
                     .addComponent(txtReceiptHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -490,6 +528,14 @@ public final class SettingsWindow extends javax.swing.JFrame {
                     .addComponent(jLabel17)
                     .addComponent(txtReceiptFooter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkAddress)
+                    .addComponent(btnCompanyDetails2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chkStaff)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chkTerminal)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnReceiptSave))
         );
 
@@ -503,9 +549,9 @@ public final class SettingsWindow extends javax.swing.JFrame {
                     .addComponent(panelGeneral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelSecurity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(panelNetwork, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -583,6 +629,7 @@ public final class SettingsWindow extends javax.swing.JFrame {
             for (Component c : panelNetwork.getComponents()) {
                 c.setEnabled(false);
             }
+            panelNetwork.setEnabled(false);
             btnEditNetwork.setText("Edit Network Options");
             editNetwork = false;
             JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
@@ -590,6 +637,7 @@ public final class SettingsWindow extends javax.swing.JFrame {
             for (Component c : panelNetwork.getComponents()) {
                 c.setEnabled(true);
             }
+            panelNetwork.setEnabled(true);
             btnEditNetwork.setText("Save");
             editNetwork = true;
         }
@@ -615,6 +663,7 @@ public final class SettingsWindow extends javax.swing.JFrame {
                 for (Component c : panelDatabase.getComponents()) {
                     c.setEnabled(false);
                 }
+                panelDatabase.setEnabled(false);
                 btnEditDatabase.setText("Edit Database Options");
                 editDatabase = false;
                 JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
@@ -625,6 +674,7 @@ public final class SettingsWindow extends javax.swing.JFrame {
             for (Component c : panelDatabase.getComponents()) {
                 c.setEnabled(true);
             }
+            panelDatabase.setEnabled(true);
             btnEditDatabase.setText("Save");
             editDatabase = true;
         }
@@ -722,6 +772,9 @@ public final class SettingsWindow extends javax.swing.JFrame {
         try {
             dc.setSetting("RECEIPT_HEADER", txtReceiptHeader.getText());
             dc.setSetting("RECEIPT_FOOTER", txtReceiptFooter.getText());
+            dc.setSetting("SHOW_ADDRESS_RECEIPT", Boolean.toString(chkAddress.isSelected()));
+            dc.setSetting("SHOW_STAFF_RECEIPT", Boolean.toString(chkStaff.isSelected()));
+            dc.setSetting("SHOW_TERMINAL_RECEIPT", Boolean.toString(chkStaff.isSelected()));
         } catch (IOException ex) {
             Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -731,9 +784,14 @@ public final class SettingsWindow extends javax.swing.JFrame {
         CompanyDetailsDialog.showDialog(this);
     }//GEN-LAST:event_btnCompanyDetailsActionPerformed
 
+    private void btnCompanyDetails2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompanyDetails2ActionPerformed
+        CompanyDetailsDialog.showDialog(this);
+    }//GEN-LAST:event_btnCompanyDetails2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnCompanyDetails;
+    private javax.swing.JButton btnCompanyDetails2;
     private javax.swing.JButton btnDatabaseDefault;
     private javax.swing.JButton btnEditDatabase;
     private javax.swing.JButton btnEditNetwork;
@@ -742,9 +800,12 @@ public final class SettingsWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSaveCache;
     private javax.swing.JButton btnSaveSecurity;
+    private javax.swing.JCheckBox chkAddress;
     private javax.swing.JCheckBox chkApproveNew;
     private javax.swing.JCheckBox chkLogOut;
     private javax.swing.JCheckBox chkSendProducts;
+    private javax.swing.JCheckBox chkStaff;
+    private javax.swing.JCheckBox chkTerminal;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

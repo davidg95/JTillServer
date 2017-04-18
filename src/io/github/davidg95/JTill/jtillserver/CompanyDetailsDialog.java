@@ -33,7 +33,7 @@ public class CompanyDetailsDialog extends javax.swing.JDialog {
 
     private static CompanyDetailsDialog dialog;
 
-    private Properties properties;
+    private final Properties properties;
 
     private String name;
     private String address;

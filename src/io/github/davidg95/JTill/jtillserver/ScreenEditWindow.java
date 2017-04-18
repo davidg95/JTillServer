@@ -71,12 +71,12 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         categoryCards = (CardLayout) panelProducts.getLayout();
         cardsButtonGroup = new ButtonGroup();
-        try {
-            String hex = dc.getSetting("TERMINAL_BACKGROUND");
-            btnBackground.setBackground(Color.decode(hex));
-        } catch (IOException ex) {
-            Logger.getLogger(ScreenEditWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            String hex = dc.getSetting("TERMINAL_BACKGROUND");
+//            btnBackground.setBackground(Color.decode(hex));
+//        } catch (IOException ex) {
+//            Logger.getLogger(ScreenEditWindow.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     /**
