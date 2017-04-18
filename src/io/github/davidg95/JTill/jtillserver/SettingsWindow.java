@@ -748,7 +748,11 @@ public final class SettingsWindow extends javax.swing.JFrame {
             log.log(Level.SEVERE, null, ex);
         }
         try {
-            dc.setSetting("CURRENCY_SYMBOL", txtSymbol.getText());
+            if (txtSymbol.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No currency symbol set, will use last set symbol", "Settings", JOptionPane.WARNING_MESSAGE);
+            } else {
+                dc.setSetting("CURRENCY_SYMBOL", txtSymbol.getText());
+            }
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);
         }
@@ -757,10 +761,10 @@ public final class SettingsWindow extends javax.swing.JFrame {
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);
         }
-        try{
-            if(chkApproveNew.isSelected()){
+        try {
+            if (chkApproveNew.isSelected()) {
                 dc.setSetting("APPROVE_NEW_CONNECTIONS", "TRUE");
-            } else{
+            } else {
                 dc.setSetting("APPROVE_NEW_CONNECTIONS", "FALSE");
             }
         } catch (IOException ex) {

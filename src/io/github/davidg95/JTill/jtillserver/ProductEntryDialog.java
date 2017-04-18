@@ -641,7 +641,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                         }
                     }
                 } else {
-                    JOptionPane.showMessageDialog(this, "You have not specified a UPC Company Prefix. This must be done before generating your own barcodes.", "Generate Barcode", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "You have not specified a UPC Company Prefix. This must be done before generating your own barcodes. Go to Setup -> Plu Settings to do this.", "Generate Barcode", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             } else {
