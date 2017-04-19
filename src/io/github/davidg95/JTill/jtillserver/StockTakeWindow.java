@@ -249,7 +249,7 @@ public class StockTakeWindow extends javax.swing.JFrame {
         }
         if (Utilities.isNumber(val)) {
             int stock = Integer.parseInt(val);
-            if (stock == 0) {
+            if (stock < 0) {
                 return;
             }
             p.setStock(stock);

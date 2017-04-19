@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.image.Image;
 import javax.mail.MessagingException;
 
 /**
@@ -1819,7 +1820,7 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 List<Staff> staffList = dc.getAllStaff();
-                for(Staff s: staffList){
+                for (Staff s : staffList) {
                     s.setPassword(Encryptor.encrypt(s.getPassword()));
                 }
                 obOut.writeObject(staffList);
