@@ -5,6 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.TillSplashScreen;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Desktop;
 import java.awt.Image;
@@ -72,7 +73,7 @@ public class GUI extends JFrame implements GUIInterface {
     private final Image icon; //The icon for the frame.
 
     private final Settings settings; //The settings object.
-    
+
     private static final String HELP_TEXT = "Press F1 for help";
 
     /**
@@ -175,7 +176,7 @@ public class GUI extends JFrame implements GUIInterface {
                 DBConnect db = (DBConnect) dc;
                 TillSplashScreen.setLabel("Creating database...");
                 db.create(settings.getSetting("db_address") + "create=true;", settings.getSetting("db_username"), settings.getSetting("db_password"));
-                TillSplashScreen.setLabel("Creating tables...");
+                TillSplashScreen.setLabel("Populating database");
                 db.addCustomer(new Customer("NONE", "", "", "", "", "", "", "", "", "", "", 0, BigDecimal.ZERO));
                 Staff s = StaffDialog.showNewStaffDialog(this, db);
                 if (s == null) {
@@ -208,15 +209,15 @@ public class GUI extends JFrame implements GUIInterface {
         if (!remote) {
             try {
                 DBConnect db = (DBConnect) dc;
+                TillSplashScreen.setLabel("Connecting to database");
                 db.connect(settings.getSetting("db_address"), settings.getSetting("db_username"), settings.getSetting("db_password"));
-                TillSplashScreen.setLabel("Connected to database");
-                TillSplashScreen.addBar(40);
                 if (dc.getStaffCount() == 0) {
                     Staff s = StaffDialog.showNewStaffDialog(this, db);
                     if (s == null) {
                         System.exit(0);
                     }
                 }
+                TillSplashScreen.addBar(56);
             } catch (SQLException ex) {
                 initialSetup();
             } catch (IOException ex) {

@@ -5,6 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.TillSplashScreen;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.AWTException;
 import java.awt.GraphicsEnvironment;
@@ -73,7 +74,9 @@ public class TillServer {
         settings = Settings.getInstance();
         dc = new DBConnect();
         TillSplashScreen.setLabel("Loading configurations");
+        TillSplashScreen.addBar(5);
         settings.loadProperties();
+        TillSplashScreen.addBar(5);
         if (!GraphicsEnvironment.isHeadless()) {
             g = GUI.create(dc, false, icon);
             setSystemTray();
@@ -81,6 +84,7 @@ public class TillServer {
         try {
             TillSplashScreen.setLabel("Starting server socket");
             connThread = new ConnectionAcceptThread(dc);
+            TillSplashScreen.addBar(10);
         } catch (IOException ex) {
         }
     }
@@ -90,7 +94,7 @@ public class TillServer {
         if (connThread != null) {
             connThread.start();
         }
-        TillSplashScreen.addBar(50);
+        TillSplashScreen.addBar(24);
         TillSplashScreen.hideSplashScreen();
         g.setVisible(true);
         GUI.getInstance().updateLables();

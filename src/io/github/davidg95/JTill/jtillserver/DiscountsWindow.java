@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Component;
 import java.awt.Image;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -137,6 +138,11 @@ public class DiscountsWindow extends javax.swing.JFrame {
             spinStart.setValue(new Date());
             spinEnd.setValue(new Date());
             discount = null;
+            panelBuckets.setEnabled(false);
+            listBuckets.setEnabled(false);
+            for (Component c : panelBuckets.getComponents()) {
+                c.setEnabled(false);
+            }
         } else {
             this.discount = d;
             txtName.setText(d.getName());
@@ -162,6 +168,11 @@ public class DiscountsWindow extends javax.swing.JFrame {
             currentBucket = null;
             getBuckets();
             getTriggers();
+            panelBuckets.setEnabled(true);
+            listBuckets.setEnabled(true);
+            for (Component c : panelBuckets.getComponents()) {
+                c.setEnabled(true);
+            }
         }
     }
 
@@ -250,24 +261,24 @@ public class DiscountsWindow extends javax.swing.JFrame {
         spinStart = new javax.swing.JSpinner();
         jLabel6 = new javax.swing.JLabel();
         spinEnd = new javax.swing.JSpinner();
-        jPanel1 = new javax.swing.JPanel();
-        btnRemoveBucket = new javax.swing.JButton();
+        panelBuckets = new javax.swing.JPanel();
         btnAddBucket = new javax.swing.JButton();
+        btnRemoveBucket = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         listBuckets = new javax.swing.JList<>();
-        lblTotal = new javax.swing.JLabel();
         lblAtLeast = new javax.swing.JLabel();
         lblBuckets = new javax.swing.JTextField();
-        jPanel2 = new javax.swing.JPanel();
-        btnAddTrigger = new javax.swing.JButton();
-        btnRemoveTrigger = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        lblOfEach = new javax.swing.JLabel();
+        lblTotal = new javax.swing.JLabel();
+        panelTriggers = new javax.swing.JPanel();
         txtTriggers = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableTrig = new javax.swing.JTable();
         chkRequire = new javax.swing.JCheckBox();
         btnSaveBucket = new javax.swing.JButton();
+        btnAddTrigger = new javax.swing.JButton();
+        btnRemoveTrigger = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        lblOfEach = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Discounts");
@@ -395,22 +406,26 @@ public class DiscountsWindow extends javax.swing.JFrame {
         spinEnd.setModel(modelEnd);
         spinEnd.setEditor(new JSpinner.DateEditor(spinEnd, "dd/MM/yyyy"));
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Buckets"));
-
-        btnRemoveBucket.setText("Remove Bucket");
-        btnRemoveBucket.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveBucketActionPerformed(evt);
-            }
-        });
+        panelBuckets.setBorder(javax.swing.BorderFactory.createTitledBorder("Bucket Settings"));
+        panelBuckets.setEnabled(false);
 
         btnAddBucket.setText("Add Bucket");
+        btnAddBucket.setEnabled(false);
         btnAddBucket.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddBucketActionPerformed(evt);
             }
         });
 
+        btnRemoveBucket.setText("Remove Bucket");
+        btnRemoveBucket.setEnabled(false);
+        btnRemoveBucket.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveBucketActionPerformed(evt);
+            }
+        });
+
+        listBuckets.setEnabled(false);
         listBuckets.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 listBucketsMouseClicked(evt);
@@ -418,67 +433,19 @@ public class DiscountsWindow extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(listBuckets);
 
-        lblTotal.setText(" optional buckets to activate");
-
         lblAtLeast.setText("Require");
+        lblAtLeast.setEnabled(false);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(btnAddBucket, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnRemoveBucket))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(lblAtLeast)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(lblBuckets, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(lblTotal)))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAddBucket)
-                    .addComponent(btnRemoveBucket))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblBuckets, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblAtLeast)
-                    .addComponent(lblTotal))
-                .addContainerGap())
-        );
+        lblBuckets.setText("1");
+        lblBuckets.setEnabled(false);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Buckets Settings"));
+        lblTotal.setText(" optional buckets to activate");
+        lblTotal.setEnabled(false);
 
-        btnAddTrigger.setText("Add Product Trigger");
-        btnAddTrigger.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddTriggerActionPerformed(evt);
-            }
-        });
+        panelTriggers.setBorder(javax.swing.BorderFactory.createTitledBorder("Triggers"));
+        panelTriggers.setEnabled(false);
 
-        btnRemoveTrigger.setText("Remove Selected Trigger");
-        btnRemoveTrigger.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveTriggerActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setText("Require ");
-
-        lblOfEach.setText(" from this bucket");
+        txtTriggers.setEnabled(false);
 
         tableTrig.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -496,6 +463,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tableTrig.setEnabled(false);
         tableTrig.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableTrigMouseClicked(evt);
@@ -509,59 +477,121 @@ public class DiscountsWindow extends javax.swing.JFrame {
         }
 
         chkRequire.setText("Require this bucket");
+        chkRequire.setEnabled(false);
 
         btnSaveBucket.setText("Save");
+        btnSaveBucket.setEnabled(false);
         btnSaveBucket.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveBucketActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        btnAddTrigger.setText("Add Product Trigger");
+        btnAddTrigger.setEnabled(false);
+        btnAddTrigger.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddTriggerActionPerformed(evt);
+            }
+        });
+
+        btnRemoveTrigger.setText("Remove Selected Trigger");
+        btnRemoveTrigger.setEnabled(false);
+        btnRemoveTrigger.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveTriggerActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Require ");
+        jLabel3.setEnabled(false);
+
+        lblOfEach.setText(" from this bucket");
+        lblOfEach.setEnabled(false);
+
+        javax.swing.GroupLayout panelTriggersLayout = new javax.swing.GroupLayout(panelTriggers);
+        panelTriggers.setLayout(panelTriggersLayout);
+        panelTriggersLayout.setHorizontalGroup(
+            panelTriggersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelTriggersLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(panelTriggersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelTriggersLayout.createSequentialGroup()
+                        .addComponent(btnAddTrigger)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRemoveTrigger))
+                    .addGroup(panelTriggersLayout.createSequentialGroup()
                         .addComponent(chkRequire)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(43, 43, 43)
                         .addComponent(btnSaveBucket))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(btnAddTrigger)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnRemoveTrigger))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtTriggers, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblOfEach)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panelTriggersLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTriggers, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblOfEach)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        panelTriggersLayout.setVerticalGroup(
+            panelTriggersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelTriggersLayout.createSequentialGroup()
+                .addGroup(panelTriggersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAddTrigger)
                     .addComponent(btnRemoveTrigger))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(panelTriggersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtTriggers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblOfEach)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(panelTriggersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chkRequire)
-                    .addComponent(btnSaveBucket)))
+                    .addComponent(btnSaveBucket))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout panelBucketsLayout = new javax.swing.GroupLayout(panelBuckets);
+        panelBuckets.setLayout(panelBucketsLayout);
+        panelBucketsLayout.setHorizontalGroup(
+            panelBucketsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelBucketsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelBucketsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelBucketsLayout.createSequentialGroup()
+                        .addComponent(btnAddBucket, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRemoveBucket))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBucketsLayout.createSequentialGroup()
+                        .addComponent(lblAtLeast)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblBuckets, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblTotal)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelTriggers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panelBucketsLayout.setVerticalGroup(
+            panelBucketsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelBucketsLayout.createSequentialGroup()
+                .addGroup(panelBucketsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(panelTriggers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panelBucketsLayout.createSequentialGroup()
+                        .addGroup(panelBucketsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAddBucket)
+                            .addComponent(btnRemoveBucket))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelBucketsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblBuckets, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblAtLeast)
+                            .addComponent(lblTotal))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -603,11 +633,9 @@ public class DiscountsWindow extends javax.swing.JFrame {
                                 .addComponent(btnDelete)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnShowAll, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(161, 161, 161))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(panelBuckets, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -618,7 +646,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
                         .addComponent(btnSearch)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -646,26 +674,21 @@ public class DiscountsWindow extends javax.swing.JFrame {
                             .addComponent(jLabel6)
                             .addComponent(spinEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 699, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnSearch)
-                            .addComponent(btnClose)
-                            .addComponent(btnNew)
-                            .addComponent(btnSave)
-                            .addComponent(btnShowAll)
-                            .addComponent(btnDelete))))
+                        .addComponent(panelBuckets, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(147, 147, 147))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 597, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSearch)
+                    .addComponent(btnClose)
+                    .addComponent(btnNew)
+                    .addComponent(btnSave)
+                    .addComponent(btnShowAll)
+                    .addComponent(btnDelete))
                 .addContainerGap())
         );
 
@@ -691,7 +714,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
                     price = Double.parseDouble(txtMoney.getText());
                     action = Discount.MONEY_OFF;
                 }
-                int condition = Integer.parseInt(lblBuckets.getText());
+                int condition = 1;
                 if (name.equals("")) {
                     JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
                 } else if (percentage > 100 || percentage < 0) {
@@ -703,7 +726,11 @@ public class DiscountsWindow extends javax.swing.JFrame {
                     try {
                         Discount dis = dc.addDiscount(d);
                         showAllDiscounts();
-                        setCurrentDiscount(null);
+                        panelBuckets.setEnabled(true);
+                        listBuckets.setEnabled(true);
+                        for (Component c : panelBuckets.getComponents()) {
+                            c.setEnabled(true);
+                        }
                     } catch (SQLException | IOException ex) {
                         showError(ex);
                     }
@@ -711,6 +738,8 @@ public class DiscountsWindow extends javax.swing.JFrame {
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Product", JOptionPane.ERROR_MESSAGE);
             }
+        } else {
+            setCurrentDiscount(null);
         }
     }//GEN-LAST:event_btnNewActionPerformed
 
@@ -864,6 +893,10 @@ public class DiscountsWindow extends javax.swing.JFrame {
         txtTriggers.setText(currentBucket.getRequiredTriggers() + "");
         chkRequire.setSelected(currentBucket.isRequiredTrigger());
         getTriggers();
+        tableTrig.setEnabled(true);
+        for(Component c: panelTriggers.getComponents()){
+            c.setEnabled(true);
+        }
     }//GEN-LAST:event_listBucketsMouseClicked
 
     private void tableTrigMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableTrigMouseClicked
@@ -915,8 +948,6 @@ public class DiscountsWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -927,6 +958,8 @@ public class DiscountsWindow extends javax.swing.JFrame {
     private javax.swing.JLabel lblPercentage;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JList<String> listBuckets;
+    private javax.swing.JPanel panelBuckets;
+    private javax.swing.JPanel panelTriggers;
     private javax.swing.JSpinner spinEnd;
     private javax.swing.JSpinner spinStart;
     private javax.swing.JTable table;
