@@ -12,6 +12,7 @@ import java.awt.Frame;
 import java.awt.MouseInfo;
 import java.awt.Window;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 /**
  * ButtonOptionsDialog for editing a till button.
@@ -25,15 +26,22 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
     private final DataConnect dc;
 
+    private final int maxWidth;
+    private final int maxHeight;
+
     /**
      * Creates new form ButtonOptionDialog.
      *
      * @param parent the parent component.
      * @param dc the data connection.
+     * @param maxWidth the maximum width of the button.
+     * @param maxHeight the maximum height of the button.
      */
-    public ButtonOptionDialog(Window parent, DataConnect dc) {
+    public ButtonOptionDialog(Window parent, DataConnect dc, int maxWidth, int maxHeight) {
         super(parent);
         this.dc = dc;
+        this.maxWidth = maxWidth;
+        this.maxHeight = maxHeight;
         initComponents();
         int x = (int) MouseInfo.getPointerInfo().getLocation().getX();
         int y = (int) MouseInfo.getPointerInfo().getLocation().getY();
@@ -83,15 +91,17 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
      * @param parent the parent window.
      * @param b the button object.
      * @param dc the data connection.
+     * @param maxWidth the maximum width of the button.
+     * @param maxHeight the maximum height of the button.
      * @return the button with any changed applied.
      */
-    public static TillButton showDialog(Component parent, TillButton b, DataConnect dc) {
+    public static TillButton showDialog(Component parent, TillButton b, DataConnect dc, int maxWidth, int maxHeight) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
         button = b;
-        dialog = new ButtonOptionDialog(window, dc);
+        dialog = new ButtonOptionDialog(window, dc, maxWidth, maxHeight);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setVisible(true);
         return button;
@@ -156,8 +166,18 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         jLabel2.setText("Height:");
 
         txtWidth.setText("1");
+        txtWidth.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtWidthKeyReleased(evt);
+            }
+        });
 
         txtHeight.setText("1");
+        txtHeight.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtHeightKeyReleased(evt);
+            }
+        });
 
         jLabel3.setText("Current:");
 
@@ -255,9 +275,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtWidth)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(txtItem, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtHeight, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE))
+                    .addComponent(txtItem)
+                    .addComponent(txtHeight, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
                     .addComponent(btnSave, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -342,6 +361,36 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         }
         button.setColorValue(col);
     }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void txtWidthKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtWidthKeyReleased
+        if (Utilities.isNumber(txtWidth.getText())) {
+            int val = Integer.parseInt(txtWidth.getText());
+            if (val < 1 || val > maxWidth) {
+                JOptionPane.showMessageDialog(this, "This must be greater than 0 and less than " + maxWidth + ", which is the maximum width for this item", "Button", JOptionPane.ERROR_MESSAGE);
+                txtWidth.setSelectionStart(0);
+                txtWidth.setSelectionEnd(txtWidth.getText().length());
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "You must enter a number", "Button", JOptionPane.ERROR_MESSAGE);
+            txtWidth.setSelectionStart(0);
+            txtWidth.setSelectionEnd(txtWidth.getText().length());
+        }
+    }//GEN-LAST:event_txtWidthKeyReleased
+
+    private void txtHeightKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHeightKeyReleased
+        if (Utilities.isNumber(txtHeight.getText())) {
+            int val = Integer.parseInt(txtHeight.getText());
+            if (val < 1 || val > maxHeight) {
+                JOptionPane.showMessageDialog(this, "This must be greater than 0 and less than " + maxHeight + ", which is the maximum width for this item", "Button", JOptionPane.ERROR_MESSAGE);
+                txtHeight.setSelectionStart(0);
+                txtHeight.setSelectionEnd(txtHeight.getText().length());
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "You must enter a number", "Button", JOptionPane.ERROR_MESSAGE);
+            txtHeight.setSelectionStart(0);
+            txtHeight.setSelectionEnd(txtHeight.getText().length());
+        }
+    }//GEN-LAST:event_txtHeightKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChangeButton;

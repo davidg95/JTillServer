@@ -45,7 +45,7 @@ public class GUI extends JFrame implements GUIInterface {
 
     private static final Logger LOG = Logger.getGlobal();
 
-    private static GUI gui; //The GUI.
+    public static GUI gui; //The GUI.
 
     /**
      * Indicates whether severe messages should show.
@@ -60,7 +60,7 @@ public class GUI extends JFrame implements GUIInterface {
      */
     public static boolean SHOW_WARNING = true;
 
-    private final DataConnect dc; //The data connection.
+    public final DataConnect dc; //The data connection.
     private boolean isLoggedOn; //Boolean to indicate whether someone is logged on or not.
 
     public static Staff staff; //The current logged on staff.

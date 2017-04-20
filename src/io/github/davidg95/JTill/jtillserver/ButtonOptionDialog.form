@@ -38,10 +38,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="txtWidth" max="32767" attributes="0"/>
-                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                      <Component id="txtItem" alignment="0" max="32767" attributes="0"/>
-                      <Component id="txtHeight" pref="135" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="txtItem" alignment="0" max="32767" attributes="0"/>
+                  <Component id="txtHeight" alignment="1" pref="135" max="32767" attributes="0"/>
                   <Component id="btnSave" pref="135" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -134,11 +132,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="1"/>
       </Properties>
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtWidthKeyReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtHeight">
       <Properties>
         <Property name="text" type="java.lang.String" value="1"/>
       </Properties>
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtHeightKeyReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtItem">
     </Component>

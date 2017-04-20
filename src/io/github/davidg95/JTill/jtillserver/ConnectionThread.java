@@ -16,10 +16,10 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.image.Image;
 import javax.mail.MessagingException;
 
 /**
@@ -31,7 +31,7 @@ public class ConnectionThread extends Thread {
 
     private static final Logger LOG = Logger.getGlobal();
 
-    private final DataConnect dc;
+    private final DataConnect dc; //The main database connection.
 
     private ObjectInputStream obIn;
     private ObjectOutputStream obOut;
@@ -40,13 +40,12 @@ public class ConnectionThread extends Thread {
 
     private boolean conn_term = false;
 
-    private String site;
-    public Staff staff;
-    public Till till;
+    public Staff staff; //The staff member currently logged on.
+    public Till till; //The till that is using this connection.
 
     private ConnectionData currentData;
 
-    private final Semaphore sem;
+    private final Semaphore sem; //Semaphore for the output stream.
 
     /**
      * Constructor for Connection thread.
@@ -62,16 +61,6 @@ public class ConnectionThread extends Thread {
         sem = new Semaphore(1);
     }
 
-    public void sendLog(String message) throws IOException {
-        try {
-            sem.acquire();
-        } catch (InterruptedException ex) {
-            LOG.log(Level.SEVERE, null, ex);
-        }
-        obOut.writeObject(new ConnectionData("LOG", message));
-        sem.release();
-    }
-
     @Override
     public void run() {
         try {
@@ -79,21 +68,26 @@ public class ConnectionThread extends Thread {
             obOut = new ObjectOutputStream(socket.getOutputStream());
             obOut.flush();
 
-            site = (String) obIn.readObject();
+            ConnectionData firstCon = (ConnectionData) obIn.readObject();
 
-            if (!site.equals("NOPERM")) {
-
-                till = dc.connectTill(site);
-
-                if (till == null) {
-                    obOut.writeObject(ConnectionData.create("DISALLOW"));
-                    conn_term = true;
-                } else {
-                    obOut.writeObject(ConnectionData.create("ALLOW", till));
-                }
+            String site = (String) firstCon.getData();
+            UUID uuid = null;
+            if (firstCon.getData2() != null) {
+                uuid = (UUID) firstCon.getData2();
             }
 
-            LOG.log(Level.INFO, "{0} has connected", site);
+            till = dc.connectTill(site, uuid);
+
+            if (till == null) {
+                obOut.writeObject(ConnectionData.create("DISALLOW"));
+                socket.close();
+                ConnectionAcceptThread.removeConnection(this);
+                return;
+            } else {
+                obOut.writeObject(ConnectionData.create("ALLOW", till));
+            }
+
+            LOG.log(Level.INFO, till.getName() + " has connected");
 
             while (!conn_term) {
                 String input;
@@ -125,7 +119,7 @@ public class ConnectionThread extends Thread {
                 String inp[] = input.split(",");
                 final ConnectionData data = currentData.clone();
 
-                LOG.log(Level.INFO, "Received {0} from client", data.getFlag());
+                LOG.log(Level.INFO, "Received " + data.getFlag() + " from client", data.getFlag());
 
                 switch (inp[0]) {
                     case "NEWPRODUCT": { //Add a new product
@@ -1382,22 +1376,26 @@ public class ConnectionThread extends Thread {
                             try {
                                 dc.logout(staff);
                                 dc.tillLogout(staff);
-                                LOG.log(Level.INFO, "{0} has terminated their connection to the server", site);
+                                LOG.log(Level.INFO, till.getName() + " has terminated their connection to the server");
                             } catch (StaffNotFoundException ex) {
                             }
                         }
                         break;
                     }
                     default: {
-                        LOG.log(Level.WARNING, "An unknown flag {0} was received from {1}", new Object[]{inp[0], site});
+                        LOG.log(Level.WARNING, "An unknown flag " + data.getFlag() + " was received from " + till.getName());
                         break;
                     }
                 }
                 sem.release();
             }
-            LOG.log(Level.INFO, "{0} has disconnected", site);
+            LOG.log(Level.INFO, till.getName() + " has disconnected");
         } catch (IOException | ClassNotFoundException ex) {
-            LOG.log(Level.SEVERE, "There was an error with the conenction to " + site + ". The connection will be forecfully terminated", ex);
+            if (till == null) {
+                LOG.log(Level.SEVERE, "There was an error with the conenction to a client. Client information could not be retrieved. The connection will be forecfully terminated", ex);
+            } else {
+                LOG.log(Level.SEVERE, "There was an error with the conenction to " + till.getName() + ". The connection will be forecfully terminated", ex);
+            }
         } finally {
             try {
                 dc.disconnectTill(till);
@@ -1992,7 +1990,7 @@ public class ConnectionThread extends Thread {
                 password = Encryptor.decrypt(password);
                 Staff s = dc.login(username, password);
                 ConnectionThread.this.staff = s;
-                LOG.log(Level.INFO, "{0} has logged in", s.getName());
+                LOG.log(Level.INFO, s.getName() + " has logged in");
                 s.setPassword(Encryptor.encrypt(s.getPassword()));
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | LoginException ex) {
@@ -2014,7 +2012,7 @@ public class ConnectionThread extends Thread {
                 int id = (int) clone.getData();
                 Staff s = dc.tillLogin(id);
                 ConnectionThread.this.staff = s;
-                LOG.log(Level.INFO, "{0} has logged in from {1}", new Object[]{staff.getName(), site});
+                LOG.log(Level.INFO, staff.getName() + " has logged in from " + till.getName());
                 s.setPassword(Encryptor.encrypt(s.getPassword()));
                 obOut.writeObject(ConnectionData.create("SUCC", s));
             } catch (SQLException | LoginException ex) {
@@ -2035,7 +2033,7 @@ public class ConnectionThread extends Thread {
                 }
                 Staff s = (Staff) clone.getData();
                 dc.logout(s);
-                LOG.log(Level.INFO, "{0} has logged out", staff.getName());
+                LOG.log(Level.INFO, staff.getName() + " has logged out");
                 ConnectionThread.this.staff = null;
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (StaffNotFoundException ex) {
@@ -2056,7 +2054,7 @@ public class ConnectionThread extends Thread {
                 }
                 Staff s = (Staff) clone.getData();
                 dc.tillLogout(s);
-                LOG.log(Level.INFO, "{0} has logged out", staff.getName());
+                LOG.log(Level.INFO, staff.getName() + " has logged out");
                 ConnectionThread.this.staff = null;
                 obOut.writeObject(ConnectionData.create("SUCC"));
             } catch (StaffNotFoundException ex) {
@@ -2573,7 +2571,7 @@ public class ConnectionThread extends Thread {
                 return;
             }
             String message = (String) clone.getData();
-            dc.assisstance(staff.getName() + " on terminal " + site + " has requested assistance with message:\n" + message);
+            dc.assisstance(staff.getName() + " on terminal " + till.getName() + " has requested assistance with message:\n" + message);
             obOut.writeObject(ConnectionData.create("SUCC"));
 
         } catch (IOException ex) {
@@ -2736,12 +2734,13 @@ public class ConnectionThread extends Thread {
     private void connectTill(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
-            if (!(clone.getData() instanceof String)) {
-                obOut.writeObject(ConnectionData.create("FAIL", "A String must be received here"));
+            if (!(clone.getData() instanceof UUID)) {
+                obOut.writeObject(ConnectionData.create("FAIL", "A UUID must be received here"));
                 return;
             }
-            String t = (String) clone.getData();
-            Till ti = dc.connectTill(t);
+            String name = (String) clone.getData();
+            UUID uuid = (UUID) clone.getData2();
+            Till ti = dc.connectTill(name, uuid);
             obOut.writeObject(ConnectionData.create("CONNECT", ti));
 
         } catch (IOException ex) {

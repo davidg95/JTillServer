@@ -91,7 +91,12 @@ public class SaleDialog extends javax.swing.JDialog {
                 Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        lblTerminal.setText("Terminal: " + sale.getTerminal());
+        try {
+            final Till till = dc.getTill(sale.getTerminal());
+            lblTerminal.setText("Terminal: " + till.getName());
+        } catch (IOException | SQLException | TillNotFoundException ex) {
+            lblTerminal.setText("Terminal: " + sale.getTerminal());
+        }
         lblTotal.setText("Sale Total: £" + sale.getTotal());
 
         model.setRowCount(0);
