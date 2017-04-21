@@ -70,7 +70,7 @@ public class GUI extends JFrame implements GUIInterface {
 
     private final boolean remote;
 
-    private final Image icon; //The icon for the frame.
+    public final Image icon; //The icon for the frame.
 
     private final Settings settings; //The settings object.
 
@@ -437,6 +437,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemDepartments = new javax.swing.JMenuItem();
         itemTaxes = new javax.swing.JMenuItem();
         itemPluSettings = new javax.swing.JMenuItem();
+        itemLoyalty = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         itemDatabase = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
@@ -896,6 +897,14 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         menuSetup.add(itemPluSettings);
+
+        itemLoyalty.setText("Edit Loyalty Settings");
+        itemLoyalty.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemLoyaltyActionPerformed(evt);
+            }
+        });
+        menuSetup.add(itemLoyalty);
         menuSetup.add(jSeparator2);
 
         itemDatabase.setText("Database Settings");
@@ -1264,6 +1273,10 @@ public class GUI extends JFrame implements GUIInterface {
         lblHelp.setText(HELP_TEXT);
     }//GEN-LAST:event_btnSettingsMouseExited
 
+    private void itemLoyaltyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLoyaltyActionPerformed
+        LoyaltySettingsWindow.showWindow();
+    }//GEN-LAST:event_itemLoyaltyActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1287,6 +1300,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenuItem itemLabelPrinting;
     private javax.swing.JMenuItem itemLogin;
+    private javax.swing.JMenuItem itemLoyalty;
     private javax.swing.JMenuItem itemNewStaff;
     private javax.swing.JMenuItem itemPluSettings;
     private javax.swing.JMenuItem itemReasons;

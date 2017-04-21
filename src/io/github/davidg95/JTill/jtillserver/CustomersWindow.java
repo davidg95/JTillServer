@@ -302,6 +302,7 @@ public class CustomersWindow extends javax.swing.JFrame {
 
         jLabel11.setText("Notes:");
 
+        txtLoyalty.setEditable(false);
         txtLoyalty.setText("0");
 
         jLabel13.setText("Loyalty Points:");
@@ -310,6 +311,7 @@ public class CustomersWindow extends javax.swing.JFrame {
         txtNotes.setRows(5);
         jScrollPane2.setViewportView(txtNotes);
 
+        txtMoneyDue.setEditable(false);
         txtMoneyDue.setText("0.00");
 
         jLabel15.setText("Money Due:");

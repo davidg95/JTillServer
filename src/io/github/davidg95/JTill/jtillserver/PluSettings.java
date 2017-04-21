@@ -28,6 +28,14 @@ public class PluSettings extends javax.swing.JFrame {
         initComponents();
         setIconImage(icon);
         setTitle("PLU Settings");
+        init();
+    }
+
+    public static void showWindow(DataConnect dc, Image icon) {
+        new PluSettings(dc, icon).setVisible(true);
+    }
+    
+    private void init(){
         try {
             txtUPC.setText(dc.getSetting("UPC_PREFIX"));
             txtLength.setText(dc.getSetting("BARCODE_LENGTH"));
@@ -47,10 +55,6 @@ public class PluSettings extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(PluSettings.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public static void showWindow(DataConnect dc, Image icon) {
-        new PluSettings(dc, icon).setVisible(true);
     }
 
     private void saveUPC() {
@@ -110,6 +114,7 @@ public class PluSettings extends javax.swing.JFrame {
         txtLength = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtNext = new javax.swing.JTextField();
+        btnReset = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -136,6 +141,13 @@ public class PluSettings extends javax.swing.JFrame {
 
         txtNext.setEditable(false);
 
+        btnReset.setText("Reset");
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -157,8 +169,10 @@ public class PluSettings extends javax.swing.JFrame {
                             .addComponent(txtLength)
                             .addComponent(txtNext, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSave)
-                        .addGap(0, 85, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnReset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnSave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 81, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -178,8 +192,9 @@ public class PluSettings extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtNext, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                    .addComponent(txtNext, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReset))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                 .addComponent(btnClose)
                 .addContainerGap())
         );
@@ -208,8 +223,18 @@ public class PluSettings extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Settings saved", "Plu Settings", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnSaveActionPerformed
 
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
+        try {
+            dc.setSetting("NEXT_PLU", "0");
+            init();
+        } catch (IOException ex) {
+            Logger.getLogger(PluSettings.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnResetActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

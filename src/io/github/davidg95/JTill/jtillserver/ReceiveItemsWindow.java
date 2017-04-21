@@ -46,6 +46,7 @@ public final class ReceiveItemsWindow extends javax.swing.JFrame {
 
     /**
      * Creates new form ReceiveItemsWindow
+     *
      * @param dc the data connection.
      * @param icon the frame icon.
      */
@@ -65,17 +66,22 @@ public final class ReceiveItemsWindow extends javax.swing.JFrame {
 
     public static void showWindow(DataConnect dc, Image icon) {
         window = new ReceiveItemsWindow(dc, icon);
-        window.setVisible(true);
+        try {
+            List<Supplier> suppliers = dc.getAllSuppliers();
+            if (suppliers.isEmpty()) {
+                JOptionPane.showMessageDialog(window, "You must set up at least one supplier before receiving stock. Go to Setup -> Edit Suppliers to do this", "No Suppliers Set", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            window.setVisible(true);
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(window, "Error connecting to database", "Receive Stock", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void init() {
         cmbModel.removeAllElements();
         try {
             List<Supplier> suppliers = dc.getAllSuppliers();
-            if (suppliers.isEmpty()) {
-                setVisible(true);
-                JOptionPane.showMessageDialog(this, "You must set up at least one supplier before receiving stock. Go to Setup -> Edit Suppliers to do this", "No Suppliers Set", JOptionPane.WARNING_MESSAGE);
-            }
             suppliers.forEach((s) -> {
                 cmbModel.addElement(s);
             });
@@ -283,7 +289,7 @@ public final class ReceiveItemsWindow extends javax.swing.JFrame {
             if (product.getStock() + amount > product.getMaxStockLevel() && product.getMaxStockLevel() != 0) {
                 JOptionPane.showMessageDialog(this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product", "Stock", JOptionPane.WARNING_MESSAGE);
             }
-            if(amount == 0){
+            if (amount == 0) {
                 return;
             }
             product.setStock(amount);

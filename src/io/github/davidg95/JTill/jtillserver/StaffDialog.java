@@ -166,6 +166,11 @@ public class StaffDialog extends javax.swing.JDialog {
         jLabel6.setText("Wage:");
 
         txtWage.setText("0.00");
+        txtWage.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtWageFocusGained(evt);
+            }
+        });
         txtWage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtWageActionPerformed(evt);
@@ -256,7 +261,15 @@ public class StaffDialog extends javax.swing.JDialog {
         if (!editMode) {
             if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
                 String password = new String(txtPassword.getPassword());
+                if (!Utilities.isNumber(txtWage.getText())) {
+                    JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Staff", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 double wage = Double.parseDouble(txtWage.getText());
+                if (wage <= 0) {
+                    JOptionPane.showMessageDialog(this, "Wage must be greater than 0", "Create New Staff", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 staff = new Staff(name, position, username, password, wage);
                 try {
                     Staff s = dc.addStaff(staff);
@@ -290,6 +303,11 @@ public class StaffDialog extends javax.swing.JDialog {
     private void txtWageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtWageActionPerformed
         btnAdd.doClick();
     }//GEN-LAST:event_txtWageActionPerformed
+
+    private void txtWageFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtWageFocusGained
+        txtWage.setSelectionStart(0);
+        txtWage.setSelectionEnd(txtWage.getText().length());
+    }//GEN-LAST:event_txtWageFocusGained
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;

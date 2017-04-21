@@ -571,15 +571,52 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         String name = txtName.getText();
         String shortName = txtShortName.getText();
-        int orderCode = Integer.parseInt(txtOrderCode.getText());
+        String val = txtOrderCode.getText();
+        if (!Utilities.isNumber(val)) {
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int orderCode = Integer.parseInt(val);
         Category category = selectedCategory;
         Tax tax = selectedTax;
         Department dep = selectedDepartment;
         String comments = txtComments.getText();
+        if (!Utilities.isNumber(txtPrice.getText())) {
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         BigDecimal price = new BigDecimal(txtPrice.getText());
+        if (price.compareTo(BigDecimal.ZERO) < 0) {
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!Utilities.isNumber(txtCostPrice.getText())) {
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         BigDecimal costPrice = new BigDecimal(txtCostPrice.getText());
+        if (costPrice.compareTo(BigDecimal.ZERO) < 0) {
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!Utilities.isNumber(txtMinStock.getText())) {
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         int minStock = Integer.parseInt(txtMinStock.getText());
+        if (minStock < 0) {
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!Utilities.isNumber(txtMaxStock.getText())) {
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         int maxStock = Integer.parseInt(txtMaxStock.getText());
+        if (maxStock < 0) {
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         product = new Product(name, shortName, orderCode, category.getId(), dep.getId(), comments, tax.getId(), false, price, costPrice, 0, minStock, maxStock, 0);
         try {
             product = dc.addProductAndPlu(product, plu);
@@ -621,30 +658,34 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private void btnEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnterActionPerformed
         try {
             if (chkNext.isSelected()) {
-                String upc = dc.getSetting("UPC_PREFIX");
-                int length = Integer.parseInt(dc.getSetting("BARCODE_LENGTH"));
-                if (!upc.equals("")) {
+                String upc = dc.getSetting("UPC_PREFIX"); //Get the UPC Prefix
+                int length = Integer.parseInt(dc.getSetting("BARCODE_LENGTH")); //Get the barcode length
+                if (!upc.equals("")) { //Check that the UPC has been set
                     while (true) {
-                        int lengthToAdd = length - upc.length();
-                        String ref = dc.getSetting("NEXT_PLU");
+                        int lengthToAdd = length - upc.length(); //Work out how many more digits need added
+                        String ref = dc.getSetting("NEXT_PLU"); //Get the next PLU number
                         int n = Integer.parseInt(ref);
                         n++;
-                        nextBarcode = Integer.toString(n);
-                        lengthToAdd -= ref.length();
+                        nextBarcode = Integer.toString(n); // Increase it then convert it to a String
+                        lengthToAdd -= ref.length(); //Subtract the length to find out how many digits need added
                         for (int i = 1; i <= lengthToAdd; i++) {
-                            ref = 0 + ref;
+                            ref = 0 + ref; //Pad it out with zero's to make up the length
                         }
-                        String barcode = upc + ref;
-                        if (!dc.checkBarcode(barcode)) {
-                            plu = new Plu(barcode, 0);
-                            break;
+                        String barcode = upc + ref; //Join them all together
+                        if (!dc.checkBarcode(barcode)) { //Check the barcode is not already int use
+                            plu = new Plu(barcode, 0); //Create the new PLU
+                            break; //break from the while loop
+                        } else{
+                            dc.setSetting("NEXT_PLU", nextBarcode); //If it is in use, set the next plu and loop again
                         }
                     }
                 } else {
                     JOptionPane.showMessageDialog(this, "You have not specified a UPC Company Prefix. This must be done before generating your own barcodes. Go to Setup -> Plu Settings to do this.", "Generate Barcode", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+                //If excecution reaches here, it means an unsude PLU as been generated
             } else {
+                //Get the PLu from the user, check what they entered is valid
                 if (txtPlu.getText().equals("")) {
                     JOptionPane.showMessageDialog(this, "You must enter a barcode", "New Product", JOptionPane.WARNING_MESSAGE);
                     return;
@@ -661,18 +702,19 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 }
                 plu = new Plu(txtPlu.getText(), 0);
             }
-            if (radNew.isSelected()) {
+            //Check what kinda of product they want to create
+            if (radNew.isSelected()) { //Create a new standard product
                 txtPlu.setText("");
                 CardLayout c = (CardLayout) jPanel1.getLayout();
                 c.show(jPanel1, "card3");
                 txtName.requestFocus();
-            } else if (radNewOpen.isSelected()) {
+            } else if (radNewOpen.isSelected()) { //Create a new open price product
                 txtPlu.setText("");
                 CardLayout c = (CardLayout) jPanel1.getLayout();
                 c.show(jPanel1, "card4");
                 txtOpenName.requestFocus();
             } else {
-                Product toCopy = ProductSelectDialog.showDialog(this, dc);
+                Product toCopy = ProductSelectDialog.showDialog(this, dc); //Copy details from an existing product
                 if (toCopy != null) {
                     dc.addProductAndPlu(toCopy, plu);
                     JOptionPane.showMessageDialog(this, "New Plu created", "New Plu", JOptionPane.INFORMATION_MESSAGE);
@@ -691,7 +733,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_txtPluActionPerformed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        this.setVisible(false);
+        setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnBack2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBack2ActionPerformed

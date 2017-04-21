@@ -1,0 +1,331 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package io.github.davidg95.JTill.jtillserver;
+
+import io.github.davidg95.JTill.jtill.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+
+/**
+ *
+ * @author David
+ */
+public class LoyaltySettingsWindow extends javax.swing.JFrame {
+
+    private final DataConnect dc;
+
+    private final DefaultListModel model;
+    private final List<JTillObject> contents;
+
+    /**
+     * Creates new form LoyaltySettingsWindow
+     */
+    public LoyaltySettingsWindow() {
+        dc = GUI.gui.dc;
+        contents = new ArrayList<>();
+        initComponents();
+        setIconImage(GUI.gui.icon);
+        setTitle("Loyalty points settings");
+        model = new DefaultListModel();
+        list.setModel(model);
+        readFiles();
+        init();
+    }
+
+    public static void showWindow() {
+        new LoyaltySettingsWindow().setVisible(true);
+    }
+
+    private void init() {
+        model.setSize(0);
+        try {
+            txtSpent.setText(dc.getSetting("LOYALTY_VALUE"));
+            for (JTillObject o : contents) {
+                if (o instanceof Product) {
+                    model.addElement("Product: " + o);
+                } else if (o instanceof Department) {
+                    model.addElement("Department: " + o);
+                } else if (o instanceof Category) {
+                    model.addElement("Category: " + o);
+                }
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(LoyaltySettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void readFiles() {
+        try (Scanner inDep = new Scanner(new File("departments.loyalty"))) {
+            while (inDep.hasNext()) {
+                try {
+                    String line = inDep.nextLine();
+                    int id = Integer.parseInt(line);
+                    final Department d = dc.getDepartment(id);
+                    contents.add(d);
+                } catch (IOException | SQLException | JTillException ex) {
+                    Logger.getLogger(LoyaltySettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            try {
+                new File("departments.loyalty").createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(LoyaltySettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        try (Scanner inCat = new Scanner(new File("categorys.loyalty"))) {
+            while (inCat.hasNext()) {
+                try {
+                    String line = inCat.nextLine();
+                    int id = Integer.parseInt(line);
+                    final Category c = dc.getCategory(id);
+                    contents.add(c);
+                } catch (IOException | SQLException | CategoryNotFoundException ex) {
+                    Logger.getLogger(LoyaltySettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            try {
+                new File("categorys.loyalty").createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(LoyaltySettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        try (Scanner inPro = new Scanner(new File("products.loyalty"))) {
+            while (inPro.hasNext()) {
+                try {
+                    String line = inPro.nextLine();
+                    int id = Integer.parseInt(line);
+                    final Product p = dc.getProduct(id);
+                    contents.add(p);
+                } catch (IOException | ProductNotFoundException | SQLException ex) {
+                    Logger.getLogger(LoyaltySettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            try {
+                new File("products.loyalty").createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(LoyaltySettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    private void writeFile() {
+
+        final File fDep = new File("departments.loyalty");
+        final File fCat = new File("categories.loyalty");
+        final File fPro = new File("products.loyalty");
+
+        try {
+            if (!fDep.exists()) {
+                fDep.createNewFile();
+            }
+            if (!fCat.exists()) {
+                fCat.createNewFile();
+            }
+            if (!fPro.exists()) {
+                fPro.createNewFile();
+            }
+
+            final FileOutputStream dep = new FileOutputStream(fDep);
+            final FileOutputStream cat = new FileOutputStream(fCat);
+            final FileOutputStream pro = new FileOutputStream(fPro);
+
+            try {
+                for (JTillObject o : contents) {
+                    if (o instanceof Department) {
+                        dep.write((o.getId() + "\n").getBytes());
+                    } else if (o instanceof Category) {
+                        cat.write((o.getId() + "\n").getBytes());
+                    } else if (o instanceof Product) {
+                        pro.write((o.getId() + "\n").getBytes());
+                    }
+                }
+            } finally{
+                dep.close();
+                cat.close();
+                pro.close();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(LoyaltySettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        list = new javax.swing.JList<>();
+        addDCP = new javax.swing.JButton();
+        btnClose = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        txtSpent = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        btnSave = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jLabel1.setText("Earn loyalty points from the following:");
+
+        jScrollPane1.setViewportView(list);
+
+        addDCP.setText("Add D/C/P");
+        addDCP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addDCPActionPerformed(evt);
+            }
+        });
+
+        btnClose.setText("Close");
+        btnClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCloseActionPerformed(evt);
+            }
+        });
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Loyalty Settings")));
+
+        jLabel2.setText("One loyalty point for every ");
+
+        txtSpent.setText("0");
+
+        jLabel3.setText(" spent.");
+
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtSpent, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnSave))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtSpent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSave)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane1)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 11, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(addDCP)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnClose)))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(addDCP)
+                            .addComponent(btnClose)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        try {
+            dc.setSetting("LOYALTY_VALUE", txtSpent.getText());
+        } catch (IOException ex) {
+            Logger.getLogger(LoyaltySettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void addDCPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addDCPActionPerformed
+        LinkedList<Class<?>> filter = new LinkedList<>();
+        filter.add(Product.class);
+        filter.add(Category.class);
+        filter.add(Department.class);
+        JTillObject o = JTillObjectSelectDialog.showDialog(this, dc, "Select Department, Category or Product", filter);
+        contents.add(o);
+        writeFile();
+        init();
+    }//GEN-LAST:event_addDCPActionPerformed
+
+    private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
+        setVisible(false);
+    }//GEN-LAST:event_btnCloseActionPerformed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addDCP;
+    private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnSave;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JList<String> list;
+    private javax.swing.JTextField txtSpent;
+    // End of variables declaration//GEN-END:variables
+}

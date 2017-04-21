@@ -1,36 +1,9 @@
-JTill log Thu Apr 20 16:55:08 BST 2017
-[16:55:09] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[16:55:09] [INFO] Get staff count
-[16:55:09] [INFO] Starting Thread Pool Excecutor
-[16:55:09] [INFO] JTill Server local IP address is 192.168.1.65
-[16:55:09] [INFO] Server Socket running on port number 52341
-[16:55:09] [INFO] Ready to accept connections
-[16:55:12] [INFO] Login Staff dgrant
-[16:55:12] [INFO] David Grant has logged in
-[16:55:22] [INFO] DAVID-PC has connected
-[16:55:22] [INFO] Received GETSETTING from client
-[16:55:22] [INFO] Received GETSETTING from client
-[16:55:22] [INFO] Received GETSETTING from client
-[16:55:22] [INFO] Received GETSETTING from client
-[16:55:22] [INFO] Received GETVALIDDISCOUNTS from client
-[16:55:22] [INFO] Received GETALLSCREENS from client
-[16:55:22] [INFO] Received GETBUTTONSONSCREEN from client
-[16:55:22] [INFO] Received GETPRODUCT from client
-[16:55:22] [INFO] Get product 1
-[16:55:22] [INFO] Received GETPRODUCT from client
-[16:55:22] [INFO] Get product 2
-[16:55:23] [INFO] Received GETSTAFF from client
-[16:55:23] [INFO] Get staff 1
-[16:55:23] [INFO] Received CLOCKON from client
-[16:55:23] [INFO] Received TILLLOGIN from client
-[16:55:23] [INFO] David Grant has logged in from DAVID-PC
-[16:55:23] [INFO] Received RESUMESALE from client
-[16:55:24] [INFO] Received GETCATEGORY from client
-[16:55:24] [INFO] Received GETCATEGORY from client
-[16:55:25] [INFO] Received ADDSALE from client
-[16:55:26] [INFO] Purchase product 2
-[16:55:26] [WARNING] 2 is below minimum stock level
-[16:55:26] [INFO] Received GETSETTING from client
-[16:55:26] [INFO] Received GETSETTING from client
-[16:55:52] [WARNING] The connection to the terminal was shut down forcefully
-[16:55:52] [INFO] Logging staff out
+JTill log Fri Apr 21 16:46:52 BST 2017
+[16:46:52] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[16:46:52] [INFO] Get staff count
+[16:46:55] [INFO] Login Staff dgrant
+[16:46:55] [INFO] David Grant has logged in
+[16:46:57] [INFO] Get product 1
+[16:46:57] [INFO] Get product 6
+[16:46:57] [INFO] Get product 10
+[16:46:57] [INFO] Get product 16

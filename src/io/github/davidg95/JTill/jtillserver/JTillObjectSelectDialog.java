@@ -13,7 +13,10 @@ import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
@@ -28,8 +31,8 @@ public class JTillObjectSelectDialog extends javax.swing.JDialog {
     private static JTillObjectSelectDialog dialog;
     private static final Logger LOG = Logger.getGlobal();
     private static JTillObject object;
-    
-    private final Class<?> E;
+
+    private final Collection<Class<?>> filter;
 
     private final DataConnect dc;
     private List<JTillObject> objects;
@@ -41,7 +44,8 @@ public class JTillObjectSelectDialog extends javax.swing.JDialog {
     public JTillObjectSelectDialog(Window parent, DataConnect dc, String title, Class<?> E) {
         super(parent);
         this.dc = dc;
-        this.E = E;
+        filter = new LinkedList<Class<?>>();
+        filter.add(E);
         objects = new ArrayList<>();
         initComponents();
         setTitle(title);
@@ -51,10 +55,24 @@ public class JTillObjectSelectDialog extends javax.swing.JDialog {
         tblObjects.setModel(model);
         init();
     }
-    
-    public static JTillObject showDialog(Component parent, DataConnect dc, String title, Class<?> E){
+
+    public JTillObjectSelectDialog(Window parent, DataConnect dc, String title, Collection<Class<?>> filter) {
+        super(parent);
+        this.dc = dc;
+        this.filter = filter;
+        objects = new ArrayList<>();
+        initComponents();
+        setTitle(title);
+        setModal(true);
+        setLocationRelativeTo(parent);
+        model = (DefaultTableModel) tblObjects.getModel();
+        tblObjects.setModel(model);
+        init();
+    }
+
+    public static JTillObject showDialog(Component parent, DataConnect dc, String title, Class<?> E) {
         Window window = null;
-        if(parent instanceof Dialog || parent instanceof Frame){
+        if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
         dialog = new JTillObjectSelectDialog(window, dc, title, E);
@@ -64,24 +82,65 @@ public class JTillObjectSelectDialog extends javax.swing.JDialog {
         return object;
     }
 
+    public static JTillObject showDialog(Component parent, DataConnect dc, String title, Collection<Class<?>> filter) {
+        Window window = null;
+        if (parent instanceof Dialog || parent instanceof Frame) {
+            window = (Window) parent;
+        }
+        dialog = new JTillObjectSelectDialog(window, dc, title, filter);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        object = null;
+        dialog.setVisible(true);
+        return object;
+    }
+
     private void init() {
         try {
-            List<JTillObject> list = new ArrayList<>();
-            list.addAll(dc.getAllProducts());
-            list.addAll(dc.getAllCategorys());
-            list.addAll(dc.getAllCustomers());
-            list.addAll(dc.getAllTax());
-            list.addAll(dc.getAllSales());
-            list.addAll(dc.getAllStaff());
-            list.addAll(dc.getAllPlus());
-            list.addAll(dc.getAllDiscounts());
-            list.addAll(dc.getAllWasteItems());
-            list.addAll(dc.getAllWasteReasons());
-            list.addAll(dc.getAllWasteReports());
-            
-            list.stream().filter((j) -> (j.getClass() == E)).forEachOrdered((j) -> {
-                objects.add(j);
-            });
+            for (Class<?> E : filter) {
+                if (Product.class.equals(E)) {
+                    objects.addAll(dc.getAllProducts());
+                    continue;
+                }
+                if (Category.class.equals(E)) {
+                    objects.addAll(dc.getAllCategorys());
+                    continue;
+                }
+                if (Customer.class.equals(E)) {
+                    objects.addAll(dc.getAllCustomers());
+                    continue;
+                }
+                if (Tax.class.equals(E)) {
+                    objects.addAll(dc.getAllTax());
+                    continue;
+                }
+                if (Sale.class.equals(E)) {
+                    objects.addAll(dc.getAllSales());
+                    continue;
+                }
+                if (Staff.class.equals(E)) {
+                    objects.addAll(dc.getAllStaff());
+                    continue;
+                }
+                if (Plu.class.equals(E)) {
+                    objects.addAll(dc.getAllPlus());
+                    continue;
+                }
+                if (Discount.class.equals(E)) {
+                    objects.addAll(dc.getAllDiscounts());
+                    continue;
+                }
+                if (WasteItem.class.equals(E)) {
+                    objects.addAll(dc.getAllWasteItems());
+                    continue;
+                }
+                if (WasteReason.class.equals(E)) {
+                    objects.addAll(dc.getAllWasteReasons());
+                    continue;
+                }
+                if (WasteReport.class.equals(E)) {
+                    objects.addAll(dc.getAllWasteReports());
+                }
+            }
             reloadTable();
         } catch (IOException | SQLException ex) {
             LOG.log(Level.SEVERE, null, ex);
@@ -210,16 +269,16 @@ public class JTillObjectSelectDialog extends javax.swing.JDialog {
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         String terms = txtSearch.getText();
-        
-        if(terms.equals("")){
+
+        if (terms.equals("")) {
             init();
             return;
         }
-        
+
         List<JTillObject> newList = new ArrayList<>();
-        
-        for(JTillObject j: objects){
-            if(j.getName().toLowerCase().contains(terms.toLowerCase())){
+
+        for (JTillObject j : objects) {
+            if (j.getName().toLowerCase().contains(terms.toLowerCase())) {
                 newList.add(j);
             }
         }
@@ -233,7 +292,7 @@ public class JTillObjectSelectDialog extends javax.swing.JDialog {
 
     private void tblObjectsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblObjectsMouseClicked
         object = objects.get(tblObjects.getSelectedRow());
-        if(evt.getClickCount() == 2){
+        if (evt.getClickCount() == 2) {
             this.setVisible(false);
         }
     }//GEN-LAST:event_tblObjectsMouseClicked
