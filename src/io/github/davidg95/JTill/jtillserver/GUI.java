@@ -212,7 +212,7 @@ public class GUI extends JFrame implements GUIInterface {
                 TillSplashScreen.setLabel("Connecting to database");
                 db.connect(settings.getSetting("db_address"), settings.getSetting("db_username"), settings.getSetting("db_password"));
                 if (dc.getStaffCount() == 0) {
-                    Staff s = StaffDialog.showNewStaffDialog(this, db);
+                    Staff s = StaffDialog.showNewStaffDialog(this, db, true);
                     if (s == null) {
                         System.exit(0);
                     }

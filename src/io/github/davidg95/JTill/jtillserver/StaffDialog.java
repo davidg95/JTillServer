@@ -37,12 +37,17 @@ public class StaffDialog extends javax.swing.JDialog {
      *
      * @param parent the parent window.
      * @param dc the data connection.
+     * @param manager force the staff to be a manager.
      */
-    public StaffDialog(Window parent, DataConnect dc) {
+    public StaffDialog(Window parent, DataConnect dc, boolean manager) {
         super(parent);
         editMode = false;
         this.dc = dc;
         initComponents();
+        if(manager){
+            cmbPosition.setSelectedIndex(2);
+            cmbPosition.setEnabled(false);
+        }
         this.setLocationRelativeTo(parent);
         this.setModal(true);
     }
@@ -69,16 +74,20 @@ public class StaffDialog extends javax.swing.JDialog {
         this.setTitle("Staff Member " + staff.getName());
     }
 
-    public static Staff showNewStaffDialog(Component parent, DataConnect dc) {
+    public static Staff showNewStaffDialog(Component parent, DataConnect dc, boolean manager) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new StaffDialog(window, dc);
+        dialog = new StaffDialog(window, dc, manager);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         staff = null;
         dialog.setVisible(true);
         return staff;
+    }
+    
+    public static Staff showNewStaffDialog(Component parent, DataConnect dc) {
+        return showNewStaffDialog(parent, dc, false);
     }
 
     public static Staff showEditStaffDialog(Component parent, DataConnect dc, Staff s) {
