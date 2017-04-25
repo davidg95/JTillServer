@@ -523,7 +523,6 @@ public class WasteStockWindow extends javax.swing.JFrame {
                     mDialog.show();
                 }
             }
-            this.setVisible(false);
         } catch (IOException | SQLException | JTillException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }

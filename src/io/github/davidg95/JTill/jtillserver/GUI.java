@@ -8,6 +8,8 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.TillSplashScreen;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
@@ -16,6 +18,8 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -25,15 +29,23 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 /**
@@ -75,6 +87,9 @@ public class GUI extends JFrame implements GUIInterface {
     private final Settings settings; //The settings object.
 
     private static final String HELP_TEXT = "Press F1 for help";
+
+    private int warningCount;
+    private LinkedList<String> warningsList;
 
     /**
      * Creates new form GUI
@@ -125,6 +140,8 @@ public class GUI extends JFrame implements GUIInterface {
             public void keyReleased(KeyEvent e) {
             }
         });
+        warningsList = new LinkedList<>();
+        warningCount = 0;
     }
 
     /**
@@ -228,7 +245,7 @@ public class GUI extends JFrame implements GUIInterface {
     }
 
     public void setUpdateLabel(String text) {
-        lblUpdate.setText(text);
+        lblWarnings.setText(text);
     }
 
     public void increaceClientCount(String site) {
@@ -261,7 +278,10 @@ public class GUI extends JFrame implements GUIInterface {
 
     @Override
     public void logWarning(Object o) {
-        txtStockWarnings.append(o + "\n");
+//        txtStockWarnings.append(o + "\n");
+        warningsList.add(o.toString());
+        warningCount++;
+        lblWarnings.setText("Warnings: " + warningCount);
     }
 
     /**
@@ -394,23 +414,23 @@ public class GUI extends JFrame implements GUIInterface {
         btnReports = new javax.swing.JButton();
         btnScreens = new javax.swing.JButton();
         btnSettings = new javax.swing.JButton();
+        lblServerAddress = new javax.swing.JLabel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
+        lblPort = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         statusBar = new javax.swing.JPanel();
         lblHelp = new javax.swing.JLabel();
         lblUser = new javax.swing.JLabel();
-        lblUpdate = new javax.swing.JLabel();
+        lblWarnings = new javax.swing.JLabel();
         lblClients = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtLog = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
-        lblServerAddress = new javax.swing.JLabel();
-        lblPort = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtStockWarnings = new javax.swing.JTextArea();
-        jLabel3 = new javax.swing.JLabel();
         chkSevere = new javax.swing.JCheckBox();
         chkWarning = new javax.swing.JCheckBox();
         chkInfo = new javax.swing.JCheckBox();
+        internal = new javax.swing.JDesktopPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         itemLogin = new javax.swing.JMenuItem();
@@ -611,6 +631,24 @@ public class GUI extends JFrame implements GUIInterface {
         });
         jToolBar1.add(btnSettings);
 
+        lblServerAddress.setText("Local Server Address: 0.0.0.0");
+        jToolBar1.add(lblServerAddress);
+        jToolBar1.add(filler1);
+
+        lblPort.setText("Port number: 0");
+        jToolBar1.add(lblPort);
+
+        jButton1.setText("Show Test Message");
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton1);
+
         lblHelp.setText("Press F1 for help");
         lblHelp.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         lblHelp.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -627,7 +665,13 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
 
-        lblUpdate.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        lblWarnings.setText("Warnings: 0");
+        lblWarnings.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        lblWarnings.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblWarningsMouseClicked(evt);
+            }
+        });
 
         lblClients.setText("Connections: 0");
         lblClients.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -648,15 +692,15 @@ public class GUI extends JFrame implements GUIInterface {
                 .addGap(0, 0, 0)
                 .addComponent(lblUser, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lblUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblWarnings, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(lblClients, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE))
         );
         statusBarLayout.setVerticalGroup(
             statusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lblWarnings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblHelp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblClients, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -675,18 +719,6 @@ public class GUI extends JFrame implements GUIInterface {
         jScrollPane1.setViewportView(txtLog);
 
         jLabel2.setText("Event Log");
-
-        lblServerAddress.setText("Local Server Address: 0.0.0.0");
-
-        lblPort.setText("Port number: 0");
-
-        txtStockWarnings.setEditable(false);
-        txtStockWarnings.setColumns(20);
-        txtStockWarnings.setLineWrap(true);
-        txtStockWarnings.setRows(5);
-        jScrollPane2.setViewportView(txtStockWarnings);
-
-        jLabel3.setText("Stock Warnings-");
 
         chkSevere.setSelected(true);
         chkSevere.setText("Show severe");
@@ -711,6 +743,19 @@ public class GUI extends JFrame implements GUIInterface {
                 chkInfoActionPerformed(evt);
             }
         });
+
+        internal.setBackground(null);
+
+        javax.swing.GroupLayout internalLayout = new javax.swing.GroupLayout(internal);
+        internal.setLayout(internalLayout);
+        internalLayout.setHorizontalGroup(
+            internalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        internalLayout.setVerticalGroup(
+            internalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 364, Short.MAX_VALUE)
+        );
 
         menuFile.setText("File");
 
@@ -952,15 +997,6 @@ public class GUI extends JFrame implements GUIInterface {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblServerAddress)
-                            .addComponent(lblPort))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -969,22 +1005,18 @@ public class GUI extends JFrame implements GUIInterface {
                         .addComponent(chkWarning)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chkInfo)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
+            .addComponent(internal, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblServerAddress)
-                    .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblPort)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addComponent(internal)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(chkSevere)
@@ -1277,6 +1309,63 @@ public class GUI extends JFrame implements GUIInterface {
         LoyaltySettingsWindow.showWindow();
     }//GEN-LAST:event_itemLoyaltyActionPerformed
 
+    private void lblWarningsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblWarningsMouseClicked
+        if (evt.getClickCount() == 2) {
+            JPanel panel = new JPanel();
+            JTextArea warnings = new JTextArea();
+            for (String s : warningsList) {
+                warnings.append(s + "\n");
+            }
+            warnings.setEditable(true);
+            JButton clear = new JButton("Clear");
+            clear.addActionListener((ActionEvent e) -> {
+                warnings.setText("");
+                warningCount = 0;
+                warningsList.clear();
+                lblWarnings.setText("Warnings: " + warningCount);
+            });
+            JButton close = new JButton("Close");
+            panel.add(warnings);
+            panel.add(clear);
+            panel.add(close);
+            JOptionPane.showMessageDialog(this, panel, "Warnings", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_lblWarningsMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        JPanel panel = new JPanel();
+        JTextArea warnings = new JTextArea();
+        for (String s : warningsList) {
+            warnings.append(s + "\n");
+        }
+        warnings.setEditable(false);
+        warnings.setMaximumSize(new Dimension(300, 500));
+        warnings.setMinimumSize(new Dimension(300, 500));
+        JButton clear = new JButton("Clear");
+        clear.addActionListener((ActionEvent e) -> {
+            warnings.setText("");
+            warningCount = 0;
+            warningsList.clear();
+            lblWarnings.setText("Warnings: " + warningCount);
+        });
+        panel.add(warnings);
+        panel.add(clear);
+        JInternalFrame frame = new JInternalFrame();
+        frame.add(panel);
+        frame.setTitle("Warnings");
+        frame.setClosable(true);
+        frame.setMaximizable(true);
+        frame.setIconifiable(true);
+        frame.setSize(500, 300);
+        frame.setVisible(true);
+        internal.add(frame);
+        try {
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1289,6 +1378,8 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JCheckBox chkInfo;
     private javax.swing.JCheckBox chkSevere;
     private javax.swing.JCheckBox chkWarning;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.JDesktopPane internal;
     private javax.swing.JMenuItem itemAbout;
     private javax.swing.JMenuItem itemCategorys;
     private javax.swing.JMenuItem itemCreateNewProduct;
@@ -1315,28 +1406,26 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemTillScreens;
     private javax.swing.JMenuItem itemWasteReports;
     private javax.swing.JMenuItem itemWasteStock;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblClients;
     private javax.swing.JLabel lblHelp;
     private javax.swing.JLabel lblPort;
     private javax.swing.JLabel lblServerAddress;
-    private javax.swing.JLabel lblUpdate;
     private javax.swing.JLabel lblUser;
+    private javax.swing.JLabel lblWarnings;
     private javax.swing.JMenu menuFile;
     private javax.swing.JMenu menuSetup;
     private javax.swing.JMenu menuStock;
     private javax.swing.JPanel statusBar;
     private javax.swing.JTextArea txtLog;
-    private javax.swing.JTextArea txtStockWarnings;
     // End of variables declaration//GEN-END:variables
 
     @Override
