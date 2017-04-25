@@ -50,6 +50,7 @@ public final class ReportingWindow extends javax.swing.JFrame {
         setTitle("Sales reporting");
         btnStartDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(startDate));
         btnEndDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(endDate));
+        setLocationRelativeTo(null);
     }
 
     /**

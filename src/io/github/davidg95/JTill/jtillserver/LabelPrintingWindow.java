@@ -52,6 +52,7 @@ public class LabelPrintingWindow extends javax.swing.JFrame {
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
         model.setRowCount(0);
+        setLocationRelativeTo(null);
     }
 
     /**

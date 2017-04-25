@@ -13,8 +13,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import static java.awt.print.Printable.NO_SUCH_PAGE;
-import static java.awt.print.Printable.PAGE_EXISTS;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.IOException;
@@ -55,6 +53,7 @@ public class StaffClocking extends javax.swing.JFrame {
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
         clocked = 0;
+        super.setLocationRelativeTo(null);
     }
 
     public static void showWindow(DataConnect dc, Image icon) {
@@ -161,6 +160,7 @@ public class StaffClocking extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Staff Hours");
+        setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Filter"));
 

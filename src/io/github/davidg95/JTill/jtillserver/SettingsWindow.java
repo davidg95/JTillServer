@@ -40,6 +40,7 @@ public final class SettingsWindow extends javax.swing.JFrame {
         this.dc = dc;
         this.setIconImage(icon);
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     public static void showSettingsWindow(DataConnect dc, Image icon) {
@@ -672,7 +673,7 @@ public final class SettingsWindow extends javax.swing.JFrame {
             btnNetworkCancel.setEnabled(false);
             btnEditNetwork.setText("Edit Network Options");
             editNetwork = false;
-            JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.INFORMATION_MESSAGE);
         } else {
             for (Component c : panelNetwork.getComponents()) {
                 c.setEnabled(true);
@@ -708,7 +709,7 @@ public final class SettingsWindow extends javax.swing.JFrame {
                 btnEditDatabase.setText("Edit Database Options");
                 btnDatabaseCancel.setEnabled(false);
                 editDatabase = false;
-                JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException ex) {
                 log.log(Level.SEVERE, null, ex);
             }
