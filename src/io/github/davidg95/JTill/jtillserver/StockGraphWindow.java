@@ -90,7 +90,13 @@ public class StockGraphWindow extends JFrame {
             int pixlesPerStock = GRAPH_HEIGHT / maxStock;
             for (Product p : products) {
                 int h = p.getStock() * pixlesPerStock;
-                g.setColor(Color.BLUE);
+                if (p.getMinStockLevel() > 0 && (p.getStock() < p.getMinStockLevel())) {
+                    g.setColor(Color.ORANGE);
+                } else if (p.getStock() <= 0) {
+                    g.setColor(Color.RED);
+                } else {
+                    g.setColor(Color.BLUE);
+                }
                 g.fillRect(currentPos, GRAPH_HEIGHT - h, bar_width, h);
                 g.setColor(Color.BLACK);
                 g.drawString(p.getName(), currentPos + 2, GRAPH_HEIGHT + 20);

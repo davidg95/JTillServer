@@ -39,6 +39,7 @@ public class StaffSelectDialog extends javax.swing.JDialog {
         super(parent);
         this.dc = dc;
         initComponents();
+        setLocationRelativeTo(parent);
         setModal(true);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
@@ -53,7 +54,7 @@ public class StaffSelectDialog extends javax.swing.JDialog {
         }
         dialog = new StaffSelectDialog(window, dc);
         staff = null;
-        dialog.setVisible(true);;
+        dialog.setVisible(true);
         return staff;
     }
 

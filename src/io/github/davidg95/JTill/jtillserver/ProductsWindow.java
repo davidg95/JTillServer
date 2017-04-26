@@ -144,18 +144,6 @@ public class ProductsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Method to call the EditProduct dialog on a product.
-     */
-    private void editProduct() {
-        int selectedRow = tableProducts.getSelectedRow();
-        if (selectedRow != -1) {
-            Product p = currentTableContents.get(selectedRow);
-            ProductDialog.showEditProductDialog(this, dc, p);
-            updateTable();
-        }
-    }
-
-    /**
      * Method to set the fields with a current product,
      *
      * @param p the product to show.
@@ -794,12 +782,8 @@ public class ProductsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNewProductActionPerformed
 
     private void tableProductsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProductsMousePressed
-        if (evt.getClickCount() == 2) {
-            editProduct();
-        } else if (evt.getClickCount() == 1) {
-            Product p = currentTableContents.get(tableProducts.getSelectedRow());
-            setCurrentProduct(p);
-        }
+        Product p = currentTableContents.get(tableProducts.getSelectedRow());
+        setCurrentProduct(p);
     }//GEN-LAST:event_tableProductsMousePressed
 
     private void btnShowCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowCategorysActionPerformed

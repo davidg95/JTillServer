@@ -34,9 +34,11 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
@@ -278,7 +280,6 @@ public class GUI extends JFrame implements GUIInterface {
 
     @Override
     public void logWarning(Object o) {
-//        txtStockWarnings.append(o + "\n");
         warningsList.add(o.toString());
         warningCount++;
         lblWarnings.setText("Warnings: " + warningCount);
@@ -417,7 +418,6 @@ public class GUI extends JFrame implements GUIInterface {
         lblServerAddress = new javax.swing.JLabel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
         lblPort = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         statusBar = new javax.swing.JPanel();
         lblHelp = new javax.swing.JLabel();
         lblUser = new javax.swing.JLabel();
@@ -637,17 +637,6 @@ public class GUI extends JFrame implements GUIInterface {
 
         lblPort.setText("Port number: 0");
         jToolBar1.add(lblPort);
-
-        jButton1.setText("Show Test Message");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton1);
 
         lblHelp.setText("Press F1 for help");
         lblHelp.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -1311,12 +1300,15 @@ public class GUI extends JFrame implements GUIInterface {
 
     private void lblWarningsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblWarningsMouseClicked
         if (evt.getClickCount() == 2) {
+            JDialog dialog = new JDialog(this);
             JPanel panel = new JPanel();
             JTextArea warnings = new JTextArea();
+            warnings.setRows(23);
+            warnings.setColumns(95);
             for (String s : warningsList) {
                 warnings.append(s + "\n");
             }
-            warnings.setEditable(true);
+            warnings.setEditable(false);
             JButton clear = new JButton("Clear");
             clear.addActionListener((ActionEvent e) -> {
                 warnings.setText("");
@@ -1325,46 +1317,23 @@ public class GUI extends JFrame implements GUIInterface {
                 lblWarnings.setText("Warnings: " + warningCount);
             });
             JButton close = new JButton("Close");
+            close.addActionListener((ActionEvent e) ->{
+                dialog.setVisible(false);
+            });
             panel.add(warnings);
             panel.add(clear);
             panel.add(close);
-            JOptionPane.showMessageDialog(this, panel, "Warnings", JOptionPane.WARNING_MESSAGE);
+            panel.setSize(800, 500);
+            dialog.setModal(true);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            dialog.setTitle("Warnings");
+            dialog.setResizable(false);
+            dialog.setSize(panel.getSize());
+            dialog.setLocationRelativeTo(this);
+            dialog.add(panel);
+            dialog.setVisible(true);
         }
     }//GEN-LAST:event_lblWarningsMouseClicked
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JPanel panel = new JPanel();
-        JTextArea warnings = new JTextArea();
-        for (String s : warningsList) {
-            warnings.append(s + "\n");
-        }
-        warnings.setEditable(false);
-        warnings.setMaximumSize(new Dimension(300, 500));
-        warnings.setMinimumSize(new Dimension(300, 500));
-        JButton clear = new JButton("Clear");
-        clear.addActionListener((ActionEvent e) -> {
-            warnings.setText("");
-            warningCount = 0;
-            warningsList.clear();
-            lblWarnings.setText("Warnings: " + warningCount);
-        });
-        panel.add(warnings);
-        panel.add(clear);
-        JInternalFrame frame = new JInternalFrame();
-        frame.add(panel);
-        frame.setTitle("Warnings");
-        frame.setClosable(true);
-        frame.setMaximizable(true);
-        frame.setIconifiable(true);
-        frame.setSize(500, 300);
-        frame.setVisible(true);
-        internal.add(frame);
-        try {
-            frame.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
@@ -1406,7 +1375,6 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemTillScreens;
     private javax.swing.JMenuItem itemWasteReports;
     private javax.swing.JMenuItem itemWasteStock;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;

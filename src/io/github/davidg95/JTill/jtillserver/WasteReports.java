@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
-import org.jdatepicker.JDatePicker;
 
 /**
  *
@@ -43,14 +42,12 @@ public class WasteReports extends javax.swing.JFrame {
     private WasteReason wasteReason;
     private Date date;
 
-    private JDatePicker picker;
-
     private static final int CONTAINING = 0;
     private static final int REASON = 1;
     private static final int GREATER = 2;
     private static final int LESS = 3;
     private static final int DAY = 4;
-
+    
     /**
      * Creates new form WasteReports
      */

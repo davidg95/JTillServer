@@ -8,6 +8,7 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -15,8 +16,6 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Enumeration;
@@ -26,8 +25,6 @@ import java.util.logging.Logger;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -74,12 +71,6 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         categoryCards = (CardLayout) panelProducts.getLayout();
         cardsButtonGroup = new ButtonGroup();
-//        try {
-//            String hex = dc.getSetting("TERMINAL_BACKGROUND");
-//            btnBackground.setBackground(Color.decode(hex));
-//        } catch (IOException ex) {
-//            Logger.getLogger(ScreenEditWindow.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 
     /**
@@ -113,7 +104,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 addScreenButton(s);
             }
 
-            for (int i = screens.size() - 1; i < 9; i++) {
+            for (int i = screens.size(); i < 8; i++) {
                 JPanel panel = new JPanel();
                 panel.setBackground(Color.WHITE);
                 panelScreens.add(panel);
@@ -205,6 +196,8 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 if (b.getColorValue() != 0) {
                     pButton.setBackground(new Color(b.getColorValue()));
                 }
+                pButton.setMinimumSize(new Dimension(0,0));
+                pButton.setMaximumSize(new Dimension(panel.getWidth()/this.BUTTONS_GRID_X, panel.getHeight()/this.BUTTONS_GRID_Y));
                 GridBagConstraints gbc = new GridBagConstraints();
                 gbc.gridx = b.getX() - 1;
                 gbc.gridy = b.getY() - 1;
@@ -317,8 +310,12 @@ public class ScreenEditWindow extends javax.swing.JFrame {
 
         setTitle("Screen Editor");
 
+        panelEditor.setBorder(javax.swing.BorderFactory.createTitledBorder("Editor"));
+
+        panelProducts.setBorder(javax.swing.BorderFactory.createTitledBorder("Buttons"));
         panelProducts.setLayout(new java.awt.CardLayout());
 
+        panelScreens.setBorder(javax.swing.BorderFactory.createTitledBorder("Screens"));
         panelScreens.setLayout(new java.awt.CardLayout());
 
         javax.swing.GroupLayout panelEditorLayout = new javax.swing.GroupLayout(panelEditor);
@@ -328,8 +325,8 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             .addGroup(panelEditorLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, 844, Short.MAX_VALUE)
-                    .addComponent(panelScreens, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelScreens, javax.swing.GroupLayout.DEFAULT_SIZE, 1145, Short.MAX_VALUE))
                 .addContainerGap())
         );
         panelEditorLayout.setVerticalGroup(
@@ -338,7 +335,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(panelScreens, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
+                .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -356,7 +353,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnNewScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
                 .addComponent(panelEditor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -368,8 +365,9 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnNewScreen)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(panelEditor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(panelEditor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
 
         pack();
