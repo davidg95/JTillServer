@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UnsupportedLookAndFeelException;
 
 /**
+ * Main starting class.
  *
  * @author 1301480
  */
@@ -68,6 +69,9 @@ public class TillServer {
         new TillServer().start();
     }
 
+    /**
+     * Initialise the server.
+     */
     public TillServer() {
         TillSplashScreen.showSplashScreen();
         icon = new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/tillIcon.png")).getImage();
@@ -89,6 +93,9 @@ public class TillServer {
         }
     }
 
+    /**
+     * Start the server.
+     */
     public void start() {
         g.databaseLogin();
         if (connThread != null) {

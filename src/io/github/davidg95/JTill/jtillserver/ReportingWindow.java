@@ -200,6 +200,8 @@ public final class ReportingWindow extends javax.swing.JFrame {
         txtSales = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         txtTax = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        txtNet = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -337,6 +339,11 @@ public final class ReportingWindow extends javax.swing.JFrame {
         txtTax.setEditable(false);
         txtTax.setText("£0.00");
 
+        jLabel8.setText("Net Sales:");
+
+        txtNet.setEditable(false);
+        txtNet.setText("£0.00");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -351,10 +358,14 @@ public final class ReportingWindow extends javax.swing.JFrame {
                     .addComponent(txtItems)
                     .addComponent(txtSales, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel7)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtTax, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(402, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtTax, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
+                    .addComponent(txtNet))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -368,7 +379,9 @@ public final class ReportingWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(txtSales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(txtNet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -446,6 +459,7 @@ public final class ReportingWindow extends javax.swing.JFrame {
             txtItems.setText(itemsSold + "");
             txtSales.setText("£" + new DecimalFormat("0.00").format(sales));
             txtTax.setText("£" + new DecimalFormat("0.00").format(tax));
+            txtNet.setText("£" + new DecimalFormat("0.00").format(sales.subtract(tax)));
         } catch (IOException | SQLException | ProductNotFoundException | TaxNotFoundException | JTillException ex) {
             Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -482,11 +496,13 @@ public final class ReportingWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
     private javax.swing.JTextField txtItems;
+    private javax.swing.JTextField txtNet;
     private javax.swing.JTextField txtSales;
     private javax.swing.JTextField txtTax;
     // End of variables declaration//GEN-END:variables

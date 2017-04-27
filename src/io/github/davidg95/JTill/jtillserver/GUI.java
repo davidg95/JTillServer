@@ -1296,9 +1296,9 @@ public class GUI extends JFrame implements GUIInterface {
             JTextArea warnings = new JTextArea();
             warnings.setRows(23);
             warnings.setColumns(95);
-            for (String s : warningsList) {
+            warningsList.forEach((s) -> {
                 warnings.append(s + "\n");
-            }
+            });
             warnings.setEditable(false);
             JButton clear = new JButton("Clear");
             clear.addActionListener((ActionEvent e) -> {
