@@ -18,9 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 /**
  *
@@ -33,8 +31,6 @@ public class TillDialog extends javax.swing.JDialog {
     private Till till;
     private final DataConnect dc;
 
-//    private final DefaultTableModel model; //The model for the table.
-//    private List<Sale> currentTableContents; //The current table contents.
     /**
      * Creates new form TillDialog
      *
@@ -69,8 +65,6 @@ public class TillDialog extends javax.swing.JDialog {
                 }
             }
         }
-//        model = (DefaultTableModel) table.getModel();
-//        showAllSales();
     }
 
     public static void showDialog(Component parent, Till till) {
@@ -80,27 +74,6 @@ public class TillDialog extends javax.swing.JDialog {
         }
         dialog = new TillDialog(window, till);
         dialog.setVisible(true);
-    }
-
-    /**
-     * Sets the table to the contents of the <code>currentTableContents</code>
-     * list.
-     */
-    private void updateTable() {
-//        model.setRowCount(0);
-//
-//        currentTableContents.stream().map((s) -> new Object[]{s.getId(), s.getTotal(), s.getTotalItemCount(), s.getDate().toString()}).forEachOrdered((r) -> {
-//            model.addRow(r);
-//        });
-//
-//        table.setModel(model);
-    }
-
-    /**
-     * Shows all sales in the database.
-     */
-    private void showAllSales() {
-
     }
 
     /**
@@ -280,7 +253,23 @@ public class TillDialog extends javax.swing.JDialog {
                         + "\nValue counted: £" + report.declared.toString()
                         + "\nActual takings: £" + report.actualTakings.toString()
                         + "\nDifference: £" + report.difference.toString();
-                dc.sendEmail(message);
+                final ModalDialog mDialog = new ModalDialog(this, "Email", "Emailing...");
+                final Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            dc.sendEmail(message);
+                            mDialog.hide();
+                            JOptionPane.showMessageDialog(TillDialog.this, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (IOException ex) {
+                            mDialog.hide();
+                            JOptionPane.showMessageDialog(TillDialog.this, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                };
+                final Thread thread = new Thread(run);
+                thread.start();
+                mDialog.show();
             }
         } catch (IOException | SQLException | TillNotFoundException ex) {
             Logger.getLogger(TillDialog.class.getName()).log(Level.SEVERE, null, ex);
