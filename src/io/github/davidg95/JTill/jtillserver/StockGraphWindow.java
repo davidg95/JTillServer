@@ -78,6 +78,11 @@ public class StockGraphWindow extends JFrame {
 
         @Override
         public void paintComponent(Graphics g) {
+            for (int i = 0; i < products.size(); i++) {
+                if (products.get(i).isOpen()) {
+                    products.remove(i);
+                }
+            }
             no_bars = products.size();
             bar_width = GRAPH_WIDTH / no_bars;
             int maxStock = 0;
@@ -88,6 +93,11 @@ public class StockGraphWindow extends JFrame {
                 }
             }
             int pixlesPerStock = GRAPH_HEIGHT / maxStock;
+            g.setColor(Color.BLACK);
+            g.drawRect(0, 0, GRAPH_WIDTH, GRAPH_HEIGHT);
+            g.drawString("-" + maxStock, GRAPH_WIDTH, 10);
+            g.drawString("-" + (maxStock / 2), GRAPH_WIDTH, GRAPH_HEIGHT / 2);
+            g.drawLine(0, GRAPH_HEIGHT / 2, GRAPH_WIDTH, GRAPH_HEIGHT / 2);
             for (Product p : products) {
                 int h = p.getStock() * pixlesPerStock;
                 if (p.getMinStockLevel() > 0 && (p.getStock() < p.getMinStockLevel())) {
@@ -97,16 +107,12 @@ public class StockGraphWindow extends JFrame {
                 } else {
                     g.setColor(Color.BLUE);
                 }
-                g.fillRect(currentPos, GRAPH_HEIGHT - h, bar_width, h);
+                g.fillRect(currentPos, GRAPH_HEIGHT - h, bar_width - 2, h);
                 g.setColor(Color.BLACK);
                 g.drawString(p.getName(), currentPos + 2, GRAPH_HEIGHT + 20);
                 g.drawString("" + p.getStock(), currentPos + 2, GRAPH_HEIGHT + 40);
                 currentPos += bar_width;
             }
-            g.setColor(Color.BLACK);
-            g.drawRect(0, 0, GRAPH_WIDTH, GRAPH_HEIGHT);
-            g.drawString("-" + maxStock, GRAPH_WIDTH, 10);
-            g.drawString("-" + (maxStock / 2), GRAPH_WIDTH, GRAPH_HEIGHT / 2);
         }
 
         public void addProduct(Product p) {

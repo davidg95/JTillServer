@@ -1,39 +1,12 @@
-JTill log Wed Apr 26 17:04:02 BST 2017
-[17:04:02] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[17:04:03] [INFO] Get staff count
-[17:04:03] [INFO] Starting Thread Pool Excecutor
-[17:04:03] [INFO] JTill Server local IP address is 192.168.1.65
-[17:04:03] [INFO] Server Socket running on port number 52341
-[17:04:03] [INFO] Ready to accept connections
-[17:04:05] [INFO] Login Staff dgrant
-[17:04:05] [INFO] David Grant has logged in
-[17:05:07] [INFO] Get product 4
-[17:05:07] [INFO] Product 4 updated
-[17:05:07] [INFO] Get product 5
-[17:05:07] [INFO] Product 5 updated
-[17:05:07] [INFO] Get product 6
-[17:05:07] [INFO] Product 6 updated
-[17:05:07] [INFO] Get product 7
-[17:05:07] [INFO] Product 7 updated
-[17:05:07] [INFO] Get product 8
-[17:05:07] [INFO] Product 8 updated
-[17:05:07] [INFO] Get product 9
-[17:05:07] [INFO] Product 9 updated
-[17:05:07] [INFO] Get product 13
-[17:05:07] [INFO] Product 13 updated
-[17:05:19] [INFO] Get product 4
-[17:05:19] [INFO] Product 4 updated
-[17:05:51] [INFO] Get product 4
-[17:05:51] [INFO] Product 4 updated
-[17:05:51] [INFO] Get product 5
-[17:05:51] [INFO] Product 5 updated
-[17:05:51] [INFO] Get product 6
-[17:05:51] [INFO] Product 6 updated
-[17:05:51] [INFO] Get product 7
-[17:05:51] [INFO] Product 7 updated
-[17:05:51] [INFO] Get product 8
-[17:05:51] [INFO] Product 8 updated
-[17:05:51] [INFO] Get product 9
-[17:05:51] [INFO] Product 9 updated
-[17:05:51] [INFO] Get product 13
-[17:05:51] [INFO] Product 13 updated
+JTill log Thu Apr 27 16:08:08 BST 2017
+[16:08:08] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[16:08:08] [INFO] Get staff count
+[16:08:08] [INFO] Starting Thread Pool Excecutor
+[16:08:08] [INFO] JTill Server local IP address is 192.168.1.65
+[16:08:08] [INFO] Server Socket running on port number 52341
+[16:08:08] [INFO] Ready to accept connections
+[16:08:11] [INFO] Login Staff dgrant
+[16:08:11] [INFO] David Grant has logged in
+[16:08:35] [INFO] Stopping JTIll Server
+[16:08:35] [INFO] Saving properties
+[16:08:35] [INFO] Stopping

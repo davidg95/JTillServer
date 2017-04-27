@@ -164,6 +164,7 @@ public final class CategorysWindow extends javax.swing.JFrame {
             }
             spinAge.setValue(c.getMinAge());
         }
+        txtName.requestFocus();
     }
 
     /**

@@ -8,8 +8,6 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.TillSplashScreen;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
@@ -18,8 +16,6 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
-import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -34,20 +30,15 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 /**
@@ -75,8 +66,8 @@ public class GUI extends JFrame implements GUIInterface {
     public static boolean SHOW_WARNING = true;
 
     public final DataConnect dc; //The data connection.
-    private boolean isLoggedOn; //Boolean to indicate whether someone is logged on or not.
 
+    private boolean isLoggedOn; //Boolean to indicate whether someone is logged on or not.
     public static Staff staff; //The current logged on staff.
 
     public int clientCounter = 0;
@@ -102,7 +93,7 @@ public class GUI extends JFrame implements GUIInterface {
      */
     public GUI(DataConnect dataConnect, boolean remote, Image icon) {
         try {
-            javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel"); //Set the look and feel.
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -1317,7 +1308,7 @@ public class GUI extends JFrame implements GUIInterface {
                 lblWarnings.setText("Warnings: " + warningCount);
             });
             JButton close = new JButton("Close");
-            close.addActionListener((ActionEvent e) ->{
+            close.addActionListener((ActionEvent e) -> {
                 dialog.setVisible(false);
             });
             panel.add(warnings);

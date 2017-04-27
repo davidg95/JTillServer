@@ -19,10 +19,12 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -38,8 +40,13 @@ public final class ReportingWindow extends javax.swing.JFrame {
     private Date startDate = new Date();
     private Date endDate = new Date();
 
+    //Table
+    private final DefaultTableModel model;
+    private List<SaleItem> items;
+
     /**
      * Creates new form ReportingWindow
+     *
      * @param dc the data connection.
      * @param icon the frame icon.
      */
@@ -51,6 +58,22 @@ public final class ReportingWindow extends javax.swing.JFrame {
         btnStartDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(startDate));
         btnEndDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(endDate));
         setLocationRelativeTo(null);
+        items = new ArrayList<>();
+        model = (DefaultTableModel) table.getModel();
+        table.setModel(model);
+        updateTable();
+    }
+
+    public void updateTable() {
+        model.setRowCount(0);
+        for (SaleItem i : items) {
+            try {
+                final Product p = dc.getProduct(i.getItem());
+                model.addRow(new Object[]{i.getId(), p.getName(), i.getQuantity(), i.getPrice()});
+            } catch (IOException | ProductNotFoundException | SQLException ex) {
+                Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     /**
@@ -167,16 +190,16 @@ public final class ReportingWindow extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         btnStartDate = new javax.swing.JButton();
         btnEndDate = new javax.swing.JButton();
-        chkBoth = new javax.swing.JCheckBox();
         btnGenerate = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        table = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        txtItemsSold = new javax.swing.JTextField();
+        txtItems = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        txtTotalSales = new javax.swing.JTextField();
+        txtSales = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        txtTotalTax = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
-        txtTotalTransactions = new javax.swing.JTextField();
+        txtTax = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -218,7 +241,12 @@ public final class ReportingWindow extends javax.swing.JFrame {
             }
         });
 
-        chkBoth.setText("Items must belong to both");
+        btnGenerate.setText("Generate Report");
+        btnGenerate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerateActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -230,21 +258,20 @@ public final class ReportingWindow extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(chkBoth)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnDep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnCat, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnStartDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnEndDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnDep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnCat, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnStartDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnEndDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(89, 89, 89)
+                .addComponent(btnGenerate, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(101, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -261,55 +288,100 @@ public final class ReportingWindow extends javax.swing.JFrame {
                         .addComponent(btnCat))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel4)
-                        .addComponent(btnEndDate)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(chkBoth)
-                .addGap(0, 20, Short.MAX_VALUE))
+                        .addComponent(btnEndDate))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnGenerate)
+                .addContainerGap())
         );
 
-        btnGenerate.setText("Generate Report");
-        btnGenerate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGenerateActionPerformed(evt);
+        table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "ID", "Name", "Quantity", "Total Value"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
+        jScrollPane1.setViewportView(table);
+        if (table.getColumnModel().getColumnCount() > 0) {
+            table.getColumnModel().getColumn(0).setResizable(false);
+            table.getColumnModel().getColumn(1).setResizable(false);
+            table.getColumnModel().getColumn(2).setResizable(false);
+        }
 
-        jLabel5.setText("Items Sold:");
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Breakdown"));
+
+        jLabel5.setText("Total Items Sold:");
+
+        txtItems.setEditable(false);
 
         jLabel6.setText("Total Sales:");
 
-        jLabel7.setText("Total Tax:");
+        txtSales.setEditable(false);
+        txtSales.setText("£0.00");
 
-        jLabel8.setText("Total Transactions:");
+        jLabel7.setText("Tax Payable:");
+
+        txtTax.setEditable(false);
+        txtTax.setText("£0.00");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtItems)
+                    .addComponent(txtSales, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtTax, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(402, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtItems, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(txtTax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtSales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(291, 291, 291)
-                                .addComponent(btnGenerate, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel6)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel7))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtTotalTax, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
-                                    .addComponent(txtTotalSales)
-                                    .addComponent(txtItemsSold))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtTotalTransactions, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 288, Short.MAX_VALUE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -318,22 +390,10 @@ public final class ReportingWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(txtItemsSold, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8)
-                    .addComponent(txtTotalTransactions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtTotalSales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(txtTotalTax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
-                .addComponent(btnGenerate)
-                .addGap(75, 75, 75))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -343,7 +403,7 @@ public final class ReportingWindow extends javax.swing.JFrame {
         dep = DepartmentSelectDialog.showDialog(this, dc);
         if (dep != null) {
             btnDep.setText(dep.getName());
-        } else{
+        } else {
             btnDep.setText("All");
         }
     }//GEN-LAST:event_btnDepActionPerformed
@@ -352,55 +412,27 @@ public final class ReportingWindow extends javax.swing.JFrame {
         cat = CategorySelectDialog.showDialog(this, dc);
         if (cat != null) {
             btnCat.setText(cat.getName());
-        } else{
+        } else {
             btnCat.setText("All");
         }
     }//GEN-LAST:event_btnCatActionPerformed
 
     private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
         try {
-//            List<SaleItem> items = dc.getAllSaleItems();
-//            List<SaleItem> fil = new ArrayList<>();
-//            List<SaleItem> fil2 = new ArrayList<>();
-//            String deps = "All";
-//            if (dep != null) {
-//                deps = dep.getName();
-//            }
-//            String cats = "All";
-//            if (cat != null) {
-//                cats = cat.getName();
-//            }
-//            for (SaleItem i : items) {
-//                if (cat != null) {
-//                    if (i.getType() == SaleItem.PRODUCT) {
-//                        Product p = dc.getProduct(i.getItem());
-//                        if (p.getCategory() == cat.getId()) {
-//                            fil.add(i);
-//                        }
-//                    }
-//                } else {
-//                    fil.add(i);
-//                }
-//            }
-//            for (SaleItem i : fil) {
-//                if (dep != null) {
-//                    if (i.getType() == SaleItem.PRODUCT) {
-//                        Product p = dc.getProduct(i.getItem());
-//                        if (p.getDepartment() == dep.getId()) {
-//                            fil2.add(i);
-//                        }
-//                    }
-//                } else {
-//                    fil2.add(i);
-//                }
-//            }
-            List<SaleItem> fil2 = dc.searchSaleItems(dep.getId(), cat.getId(), chkBoth.isSelected(), startDate, endDate);
+            int depid = -1;
+            int catid = -1;
+            if (dep != null) {
+                depid = dep.getId();
+            }
+            if (cat != null) {
+                catid = cat.getId();
+            }
+            items = dc.searchSaleItems(depid, catid, startDate, endDate);
             int itemsSold = 0;
             BigDecimal sales = BigDecimal.ZERO;
             BigDecimal tax = BigDecimal.ZERO;
-            int transactions;
 
-            for (SaleItem i : fil2) {
+            for (SaleItem i : items) {
                 if (i.getType() == SaleItem.PRODUCT) {
                     itemsSold += i.getQuantity();
                     sales = sales.add(i.getPrice().multiply(new BigDecimal(i.getQuantity())));
@@ -410,14 +442,10 @@ public final class ReportingWindow extends javax.swing.JFrame {
                     tax = tax.add(i.getPrice().multiply(new BigDecimal(i.getQuantity()).multiply(new BigDecimal(taxP))));
                 }
             }
-            transactions = dc.getAllSales().size();
-            txtItemsSold.setText(itemsSold + "");
-            txtTotalSales.setText("£" + new DecimalFormat("0.00").format(sales));
-            txtTotalTax.setText("£" + new DecimalFormat("0.00").format(tax));
-            txtTotalTransactions.setText(transactions + "");
-
-//            ReportPrinter p = new ReportPrinter(fil2, deps, cats);
-//            p.printReport();
+            updateTable();
+            txtItems.setText(itemsSold + "");
+            txtSales.setText("£" + new DecimalFormat("0.00").format(sales));
+            txtTax.setText("£" + new DecimalFormat("0.00").format(tax));
         } catch (IOException | SQLException | ProductNotFoundException | TaxNotFoundException | JTillException ex) {
             Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -447,7 +475,6 @@ public final class ReportingWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnEndDate;
     private javax.swing.JButton btnGenerate;
     private javax.swing.JButton btnStartDate;
-    private javax.swing.JCheckBox chkBoth;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -455,11 +482,12 @@ public final class ReportingWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField txtItemsSold;
-    private javax.swing.JTextField txtTotalSales;
-    private javax.swing.JTextField txtTotalTax;
-    private javax.swing.JTextField txtTotalTransactions;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable table;
+    private javax.swing.JTextField txtItems;
+    private javax.swing.JTextField txtSales;
+    private javax.swing.JTextField txtTax;
     // End of variables declaration//GEN-END:variables
 }

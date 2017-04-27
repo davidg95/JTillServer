@@ -35,7 +35,6 @@ public class TillDialog extends javax.swing.JDialog {
 
 //    private final DefaultTableModel model; //The model for the table.
 //    private List<Sale> currentTableContents; //The current table contents.
-
     /**
      * Creates new form TillDialog
      *
@@ -238,52 +237,49 @@ public class TillDialog extends javax.swing.JDialog {
 
     private void btnCashupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCashupActionPerformed
         try {
-            BigDecimal takings = dc.getTillTakings(till.getId());
-            if(takings.compareTo(BigDecimal.ZERO) < 0){
+            TillReport report = new TillReport();
+            report.actualTakings = dc.getTillTakings(till.getId());
+            if (report.actualTakings.compareTo(BigDecimal.ZERO) <= 0) {
                 JOptionPane.showMessageDialog(this, "That till currently has no declared takings", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
                 return;
             }
-            takings = takings.setScale(2);
+            report.actualTakings = report.actualTakings.setScale(2);
             String strVal = JOptionPane.showInputDialog(this, "Enter value of money counted", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
-            if(strVal == null || strVal.equals("")){
+            if (strVal == null || strVal.equals("")) {
                 return;
             }
-            if(!Utilities.isNumber(strVal)){
+            if (!Utilities.isNumber(strVal)) {
                 JOptionPane.showMessageDialog(this, "You must enter a number greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            BigDecimal valueCounted = new BigDecimal(strVal);
-            valueCounted = valueCounted.setScale(2);
-            BigDecimal difference = valueCounted.subtract(takings);
-            difference = difference.setScale(2);
+            report.declared = new BigDecimal(strVal);
+            report.declared = report.declared.setScale(2);
+            report.difference = report.declared.subtract(report.actualTakings);
+            report.difference = report.difference.setScale(2);
             DecimalFormat df;
-            if (takings.compareTo(BigDecimal.ONE) >= 1) {
+            if (report.actualTakings.compareTo(BigDecimal.ONE) >= 1) {
                 df = new DecimalFormat("#.00");
             } else {
                 df = new DecimalFormat("0.00");
             }
-            
+            DecimalFormat df2;
+            if (report.difference.compareTo(BigDecimal.ONE) >= 1) {
+                df2 = new DecimalFormat("#.00");
+            } else {
+                df2 = new DecimalFormat("0.00");
+            }
+            report.averageSpend = report.actualTakings.divide(new BigDecimal(1));
             till = dc.getTill(till.getId());
             txtUncashedTakings.setText("£" + till.getUncashedTakings());
-            
-            JPanel panel = new JPanel();
-            JLabel declared = new JLabel("Declared: £" + valueCounted);
-            JLabel takingsLabel = new JLabel("Takings: £" + df.format(takings.doubleValue()));
-            if (difference.compareTo(BigDecimal.ONE) >= 1) {
-                df = new DecimalFormat("#.00");
-            } else {
-                df = new DecimalFormat("0.00");
-            }
-            JLabel differenceLabel = new JLabel("Difference: £" + df.format(difference.doubleValue()));
-            panel.add(declared);
-            panel.add(takingsLabel);
-            panel.add(differenceLabel);
-            JOptionPane.showMessageDialog(this, panel, "Cash up till " + till.getName(), JOptionPane.INFORMATION_MESSAGE);
-            if (JOptionPane.showConfirmDialog(this, "Do you want the report emailed?" ,"Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            report.tax = BigDecimal.ZERO;
+
+            TillReportDialog.showDialog(this, report);
+
+            if (JOptionPane.showConfirmDialog(this, "Do you want the report emailed?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 String message = "Cashup for terminal " + till.getName()
-                        + "\nValue counted: £" + valueCounted.toString()
-                        + "\nActual takings: £" + takings.toString()
-                        + "\nDifference: £" + difference.toString();
+                        + "\nValue counted: £" + report.declared.toString()
+                        + "\nActual takings: £" + report.actualTakings.toString()
+                        + "\nDifference: £" + report.difference.toString();
                 dc.sendEmail(message);
             }
         } catch (IOException | SQLException | TillNotFoundException ex) {
