@@ -1,92 +1,12 @@
-JTill log Fri Apr 28 16:21:51 BST 2017
-[16:21:51] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[16:21:52] [INFO] Get staff count
-[16:21:52] [INFO] Starting Thread Pool Excecutor
-[16:21:52] [INFO] JTill Server local IP address is 192.168.1.65
-[16:21:52] [INFO] Server Socket running on port number 52341
-[16:21:52] [INFO] Ready to accept connections
-[16:21:58] [INFO] DAVID-PC has connected
-[16:21:58] [INFO] Received GETSETTING from client
-[16:21:58] [INFO] Received GETSETTING from client
-[16:21:58] [INFO] Received GETSETTING from client
-[16:21:58] [INFO] Received GETSETTING from client
-[16:21:58] [INFO] Received GETVALIDDISCOUNTS from client
-[16:21:58] [INFO] Received GETDISCOUNTBUCKETS from client
-[16:21:58] [INFO] Received GETBUCKETTRIGGERES from client
-[16:21:58] [INFO] Received GETALLSCREENS from client
-[16:21:58] [INFO] Received GETBUTTONSONSCREEN from client
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 1
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 2
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 3
-[16:21:58] [INFO] Received GETBUTTONSONSCREEN from client
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 4
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 5
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 6
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 10
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 3
-[16:21:58] [INFO] Received GETBUTTONSONSCREEN from client
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 7
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 13
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 14
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 11
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 3
-[16:21:58] [INFO] Received GETBUTTONSONSCREEN from client
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 8
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 9
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 12
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 3
-[16:21:58] [INFO] Received GETBUTTONSONSCREEN from client
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 15
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 16
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 17
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 20
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 19
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 21
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 22
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 18
-[16:21:58] [INFO] Received GETPRODUCT from client
-[16:21:58] [INFO] Get product 3
-[16:21:59] [INFO] Received GETSTAFF from client
-[16:21:59] [INFO] Get staff 1
-[16:21:59] [INFO] Received CLOCKON from client
-[16:21:59] [INFO] Received TILLLOGIN from client
-[16:21:59] [INFO] David Grant has logged in from DAVID-PC
-[16:21:59] [INFO] Received RESUMESALE from client
-[16:22:01] [INFO] Received GETCATEGORY from client
-[16:22:02] [INFO] Received GETCATEGORY from client
-[16:22:05] [INFO] Received ADDSALE from client
-[16:22:05] [INFO] Get product 1
-[16:22:05] [INFO] Get product 2
-[16:22:05] [INFO] Received GETSETTING from client
-[16:22:05] [INFO] Received GETSETTING from client
-[16:22:06] [INFO] Received TILLLOGOUT from client
-[16:22:06] [INFO] David Grant has logged out
-[16:22:06] [INFO] Received CONNTERM from client
-[16:22:06] [INFO] DAVID-PC has disconnected
-[16:22:12] [INFO] Login Staff dgrant
-[16:22:12] [INFO] David Grant has logged in
+JTill log Fri Apr 28 16:52:06 BST 2017
+[16:52:06] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[16:52:07] [INFO] Get staff count
+[16:52:07] [INFO] Starting Thread Pool Excecutor
+[16:52:07] [INFO] JTill Server local IP address is 192.168.1.65
+[16:52:07] [INFO] Server Socket running on port number 52341
+[16:52:07] [INFO] Ready to accept connections
+[16:52:10] [INFO] Login Staff dgrant
+[16:52:10] [INFO] David Grant has logged in
+[16:52:21] [INFO] Stopping JTIll Server
+[16:52:21] [INFO] Saving properties
+[16:52:21] [INFO] Stopping

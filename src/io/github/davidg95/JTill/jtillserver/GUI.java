@@ -1080,7 +1080,26 @@ public class GUI extends JFrame implements GUIInterface {
 
     private void lblUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblUserMouseClicked
         if (evt.getClickCount() == 2) {
-            JOptionPane.showMessageDialog(this, staff, staff.getName(), JOptionPane.PLAIN_MESSAGE);
+            String position = "";
+            switch (staff.getPosition()) {
+                case Staff.ASSISSTANT: {
+                    position = "Assisstant";
+                    break;
+                }
+                case Staff.SUPERVISOR: {
+                    position = "Supervisor";
+                    break;
+                }
+                case Staff.MANAGER: {
+                    position = "Manager";
+                    break;
+                }
+                case Staff.AREA_MANAGER: {
+                    position = "Area Manager";
+                    break;
+                }
+            }
+            JOptionPane.showMessageDialog(this, "ID: " + staff.getName() + "\nName: " + staff.getName() + "\nPosition: " + position, staff.getName(), JOptionPane.PLAIN_MESSAGE);
         }
     }//GEN-LAST:event_lblUserMouseClicked
 
