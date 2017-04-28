@@ -5,17 +5,54 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.*;
+import java.awt.Image;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author David
  */
 public class TillWindow extends javax.swing.JFrame {
 
+    private final DataConnect dc;
+    private final DefaultTableModel model;
+    private List<Till> contents;
+
     /**
      * Creates new form TillWindow
      */
-    public TillWindow() {
+    public TillWindow(DataConnect dc, Image icon) {
+        this.dc = dc;
         initComponents();
+        setIconImage(icon);
+        model = (DefaultTableModel) table.getModel();
+        table.setModel(model);
+        getAllTills();
+    }
+
+    public static void showWindow(DataConnect dc, Image icon) {
+        new TillWindow(dc, icon).setVisible(true);
+    }
+
+    private void getAllTills() {
+        try {
+            contents = dc.getAllTills();
+            model.setRowCount(0);
+            for (Till t : contents) {
+                model.addRow(new Object[]{t.getId(), t.getName(), t.getUncashedTakings()});
+            }
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error loading form", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -29,15 +66,17 @@ public class TillWindow extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
+        btnClose = new javax.swing.JButton();
+        btnView = new javax.swing.JButton();
+        btnViewSales = new javax.swing.JButton();
+        btnCashup = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Tills");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "ID", "Terminal Name", "Uncashed Takings"
@@ -58,13 +97,50 @@ public class TillWindow extends javax.swing.JFrame {
             table.getColumnModel().getColumn(2).setResizable(false);
         }
 
+        btnClose.setText("Close");
+        btnClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCloseActionPerformed(evt);
+            }
+        });
+
+        btnView.setText("View");
+        btnView.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewActionPerformed(evt);
+            }
+        });
+
+        btnViewSales.setText("View Sales");
+        btnViewSales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewSalesActionPerformed(evt);
+            }
+        });
+
+        btnCashup.setText("Cash Up");
+        btnCashup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCashupActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(313, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnView)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnViewSales)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCashup)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnClose)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -72,13 +148,113 @@ public class TillWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(147, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClose)
+                    .addComponent(btnView)
+                    .addComponent(btnViewSales)
+                    .addComponent(btnCashup))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
+        setVisible(false);
+    }//GEN-LAST:event_btnCloseActionPerformed
+
+    private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
+        int index = table.getSelectedRow();
+        Till t = contents.get(index);
+        TillDialog.showDialog(this, t);
+    }//GEN-LAST:event_btnViewActionPerformed
+
+    private void btnCashupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCashupActionPerformed
+        int index = table.getSelectedRow();
+        Till till = contents.get(index);
+        if(till.getUncashedTakings().doubleValue() <= 0){
+            JOptionPane.showMessageDialog(this, "No uncashed sales", "Till", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (JOptionPane.showConfirmDialog(this, "Cash up till " + till.getName() + "?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+            return;
+        }
+        try {
+            TillReport report = new TillReport();
+            report.actualTakings = dc.getTillTakings(till.getId());
+            if (report.actualTakings.compareTo(BigDecimal.ZERO) <= 0) {
+                JOptionPane.showMessageDialog(this, "That till currently has no declared takings", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
+                return;
+            }
+            report.actualTakings = report.actualTakings.setScale(2);
+            String strVal = JOptionPane.showInputDialog(this, "Enter value of money counted", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
+            if (strVal == null || strVal.equals("")) {
+                return;
+            }
+            if (!Utilities.isNumber(strVal)) {
+                JOptionPane.showMessageDialog(this, "You must enter a number greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            report.declared = new BigDecimal(strVal);
+            report.declared = report.declared.setScale(2);
+            report.difference = report.declared.subtract(report.actualTakings);
+            report.difference = report.difference.setScale(2);
+            DecimalFormat df;
+            if (report.actualTakings.compareTo(BigDecimal.ONE) >= 1) {
+                df = new DecimalFormat("#.00");
+            } else {
+                df = new DecimalFormat("0.00");
+            }
+            DecimalFormat df2;
+            if (report.difference.compareTo(BigDecimal.ONE) >= 1) {
+                df2 = new DecimalFormat("#.00");
+            } else {
+                df2 = new DecimalFormat("0.00");
+            }
+            report.averageSpend = report.actualTakings.divide(new BigDecimal(1));
+            till = dc.getTill(till.getId());
+            report.tax = BigDecimal.ZERO;
+
+            TillReportDialog.showDialog(this, report);
+
+            if (JOptionPane.showConfirmDialog(this, "Do you want the report emailed?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                String message = "Cashup for terminal " + till.getName()
+                        + "\nValue counted: £" + report.declared.toString()
+                        + "\nActual takings: £" + report.actualTakings.toString()
+                        + "\nDifference: £" + report.difference.toString();
+                final ModalDialog mDialog = new ModalDialog(this, "Email", "Emailing...");
+                final Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            dc.sendEmail(message);
+                            mDialog.hide();
+                            JOptionPane.showMessageDialog(TillWindow.this, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (IOException ex) {
+                            mDialog.hide();
+                            JOptionPane.showMessageDialog(TillWindow.this, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                };
+                final Thread thread = new Thread(run);
+                thread.start();
+                mDialog.show();
+            }
+        } catch (IOException | SQLException | TillNotFoundException ex) {
+            Logger.getLogger(TillWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnCashupActionPerformed
+
+    private void btnViewSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewSalesActionPerformed
+        
+    }//GEN-LAST:event_btnViewSalesActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCashup;
+    private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnView;
+    private javax.swing.JButton btnViewSales;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables

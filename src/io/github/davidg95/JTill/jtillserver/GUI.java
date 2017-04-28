@@ -455,6 +455,7 @@ public class GUI extends JFrame implements GUIInterface {
         jMenuItem1 = new javax.swing.JMenuItem();
         itemLabelPrinting = new javax.swing.JMenuItem();
         itemStaffClocking = new javax.swing.JMenuItem();
+        itemTerminals = new javax.swing.JMenuItem();
 
         setTitle("JTill Server");
 
@@ -964,6 +965,14 @@ public class GUI extends JFrame implements GUIInterface {
         });
         jMenu1.add(itemStaffClocking);
 
+        itemTerminals.setText("Terminals");
+        itemTerminals.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemTerminalsActionPerformed(evt);
+            }
+        });
+        jMenu1.add(itemTerminals);
+
         jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
@@ -1326,6 +1335,10 @@ public class GUI extends JFrame implements GUIInterface {
         }
     }//GEN-LAST:event_lblWarningsMouseClicked
 
+    private void itemTerminalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTerminalsActionPerformed
+        TillWindow.showWindow(dc, icon);
+    }//GEN-LAST:event_itemTerminalsActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1363,6 +1376,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemStockTake;
     private javax.swing.JMenuItem itemSuppliers;
     private javax.swing.JMenuItem itemTaxes;
+    private javax.swing.JMenuItem itemTerminals;
     private javax.swing.JMenuItem itemTillScreens;
     private javax.swing.JMenuItem itemWasteReports;
     private javax.swing.JMenuItem itemWasteStock;

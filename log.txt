@@ -1,134 +1,92 @@
-JTill log Thu Apr 27 17:01:37 BST 2017
-[17:01:37] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[17:01:37] [INFO] Get staff count
-[17:01:38] [INFO] Starting Thread Pool Excecutor
-[17:01:38] [INFO] JTill Server local IP address is 192.168.1.65
-[17:01:38] [INFO] Server Socket running on port number 52341
-[17:01:38] [INFO] Ready to accept connections
-[17:01:42] [INFO] Login Staff dgrant
-[17:01:42] [INFO] David Grant has logged in
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 5
-[17:02:04] [INFO] Get product 6
-[17:02:04] [INFO] Get product 1
-[17:02:04] [INFO] Get product 2
-[17:02:04] [INFO] Get product 8
-[17:02:04] [INFO] Get product 9
-[17:02:04] [INFO] Get product 1
-[17:02:04] [INFO] Get product 3
-[17:02:04] [INFO] Get product 8
-[17:02:04] [INFO] Get product 3
-[17:02:04] [INFO] Get product 3
-[17:02:04] [INFO] Get product 1
-[17:02:04] [INFO] Get product 2
-[17:02:04] [INFO] Get product 13
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 8
-[17:02:04] [INFO] Get product 9
-[17:02:04] [INFO] Get product 1
-[17:02:04] [INFO] Get product 3
-[17:02:04] [INFO] Get product 13
-[17:02:04] [INFO] Get product 1
-[17:02:04] [INFO] Get product 2
-[17:02:04] [INFO] Get product 1
-[17:02:04] [INFO] Get product 7
-[17:02:04] [INFO] Get product 10
-[17:02:04] [INFO] Get product 1
-[17:02:04] [INFO] Get product 2
-[17:02:04] [INFO] Get product 7
-[17:02:04] [INFO] Get product 13
-[17:02:04] [INFO] Get product 8
-[17:02:04] [INFO] Get product 9
-[17:02:04] [INFO] Get product 3
-[17:02:04] [INFO] Get product 5
-[17:02:04] [INFO] Get product 6
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 6
-[17:02:04] [INFO] Get product 5
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 6
-[17:02:04] [INFO] Get product 5
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 14
-[17:02:04] [INFO] Get product 13
-[17:02:04] [INFO] Get product 3
-[17:02:04] [INFO] Get product 15
-[17:02:04] [INFO] Get product 16
-[17:02:04] [INFO] Get product 17
-[17:02:04] [INFO] Get product 20
-[17:02:04] [INFO] Get product 19
-[17:02:04] [INFO] Get product 21
-[17:02:04] [INFO] Get product 22
-[17:02:04] [INFO] Get product 3
-[17:02:04] [INFO] Get product 7
-[17:02:04] [INFO] Get product 7
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 2
-[17:02:04] [INFO] Get product 2
-[17:02:04] [INFO] Get product 2
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 5
-[17:02:04] [INFO] Get product 6
-[17:02:04] [INFO] Get product 1
-[17:02:04] [INFO] Get product 2
-[17:02:04] [INFO] Get product 8
-[17:02:04] [INFO] Get product 9
-[17:02:04] [INFO] Get product 1
-[17:02:04] [INFO] Get product 3
-[17:02:04] [INFO] Get product 8
-[17:02:04] [INFO] Get product 3
-[17:02:04] [INFO] Get product 3
-[17:02:04] [INFO] Get product 1
-[17:02:04] [INFO] Get product 2
-[17:02:04] [INFO] Get product 13
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 8
-[17:02:04] [INFO] Get product 9
-[17:02:04] [INFO] Get product 1
-[17:02:04] [INFO] Get product 3
-[17:02:04] [INFO] Get product 13
-[17:02:04] [INFO] Get product 1
-[17:02:04] [INFO] Get product 2
-[17:02:04] [INFO] Get product 1
-[17:02:04] [INFO] Get product 7
-[17:02:04] [INFO] Get product 10
-[17:02:04] [INFO] Get product 1
-[17:02:04] [INFO] Get product 2
-[17:02:04] [INFO] Get product 7
-[17:02:04] [INFO] Get product 13
-[17:02:04] [INFO] Get product 8
-[17:02:04] [INFO] Get product 9
-[17:02:04] [INFO] Get product 3
-[17:02:04] [INFO] Get product 5
-[17:02:04] [INFO] Get product 6
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 6
-[17:02:04] [INFO] Get product 5
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 6
-[17:02:04] [INFO] Get product 5
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 14
-[17:02:04] [INFO] Get product 13
-[17:02:04] [INFO] Get product 3
-[17:02:04] [INFO] Get product 15
-[17:02:04] [INFO] Get product 16
-[17:02:04] [INFO] Get product 17
-[17:02:04] [INFO] Get product 20
-[17:02:04] [INFO] Get product 19
-[17:02:04] [INFO] Get product 21
-[17:02:04] [INFO] Get product 22
-[17:02:04] [INFO] Get product 3
-[17:02:04] [INFO] Get product 7
-[17:02:04] [INFO] Get product 7
-[17:02:04] [INFO] Get product 4
-[17:02:04] [INFO] Get product 2
-[17:02:04] [INFO] Get product 2
-[17:02:04] [INFO] Get product 2
-[17:03:25] [INFO] Stopping JTIll Server
-[17:03:25] [INFO] Saving properties
-[17:03:25] [INFO] Stopping
+JTill log Fri Apr 28 15:54:33 BST 2017
+[15:54:34] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[15:54:34] [INFO] Get staff count
+[15:54:34] [INFO] Starting Thread Pool Excecutor
+[15:54:34] [INFO] JTill Server local IP address is 192.168.1.65
+[15:54:34] [INFO] Server Socket running on port number 52341
+[15:54:34] [INFO] Ready to accept connections
+[15:54:39] [INFO] Login Staff dgrant
+[15:54:39] [INFO] David Grant has logged in
+[15:54:50] [INFO] DAVID-PC has connected
+[15:54:50] [INFO] Received GETSETTING from client
+[15:54:50] [INFO] Received GETSETTING from client
+[15:54:50] [INFO] Received GETSETTING from client
+[15:54:50] [INFO] Received GETSETTING from client
+[15:54:50] [INFO] Received GETVALIDDISCOUNTS from client
+[15:54:50] [INFO] Received GETDISCOUNTBUCKETS from client
+[15:54:50] [INFO] Received GETBUCKETTRIGGERES from client
+[15:54:50] [INFO] Received GETALLSCREENS from client
+[15:54:50] [INFO] Received GETBUTTONSONSCREEN from client
+[15:54:50] [INFO] Received GETPRODUCT from client
+[15:54:50] [INFO] Get product 1
+[15:54:50] [INFO] Received GETPRODUCT from client
+[15:54:50] [INFO] Get product 2
+[15:54:50] [INFO] Received GETPRODUCT from client
+[15:54:50] [INFO] Get product 3
+[15:54:50] [INFO] Received GETBUTTONSONSCREEN from client
+[15:54:50] [INFO] Received GETPRODUCT from client
+[15:54:50] [INFO] Get product 4
+[15:54:50] [INFO] Received GETPRODUCT from client
+[15:54:50] [INFO] Get product 5
+[15:54:50] [INFO] Received GETPRODUCT from client
+[15:54:50] [INFO] Get product 6
+[15:54:50] [INFO] Received GETPRODUCT from client
+[15:54:50] [INFO] Get product 10
+[15:54:50] [INFO] Received GETPRODUCT from client
+[15:54:50] [INFO] Get product 3
+[15:54:50] [INFO] Received GETBUTTONSONSCREEN from client
+[15:54:50] [INFO] Received GETPRODUCT from client
+[15:54:50] [INFO] Get product 7
+[15:54:50] [INFO] Received GETPRODUCT from client
+[15:54:50] [INFO] Get product 13
+[15:54:50] [INFO] Received GETPRODUCT from client
+[15:54:50] [INFO] Get product 14
+[15:54:50] [INFO] Received GETPRODUCT from client
+[15:54:50] [INFO] Get product 11
+[15:54:50] [INFO] Received GETPRODUCT from client
+[15:54:50] [INFO] Get product 3
+[15:54:50] [INFO] Received GETBUTTONSONSCREEN from client
+[15:54:51] [INFO] Received GETPRODUCT from client
+[15:54:51] [INFO] Get product 8
+[15:54:51] [INFO] Received GETPRODUCT from client
+[15:54:51] [INFO] Get product 9
+[15:54:51] [INFO] Received GETPRODUCT from client
+[15:54:51] [INFO] Get product 12
+[15:54:51] [INFO] Received GETPRODUCT from client
+[15:54:51] [INFO] Get product 3
+[15:54:51] [INFO] Received GETBUTTONSONSCREEN from client
+[15:54:51] [INFO] Received GETPRODUCT from client
+[15:54:51] [INFO] Get product 15
+[15:54:51] [INFO] Received GETPRODUCT from client
+[15:54:51] [INFO] Get product 16
+[15:54:51] [INFO] Received GETPRODUCT from client
+[15:54:51] [INFO] Get product 17
+[15:54:51] [INFO] Received GETPRODUCT from client
+[15:54:51] [INFO] Get product 20
+[15:54:51] [INFO] Received GETPRODUCT from client
+[15:54:51] [INFO] Get product 19
+[15:54:51] [INFO] Received GETPRODUCT from client
+[15:54:51] [INFO] Get product 21
+[15:54:51] [INFO] Received GETPRODUCT from client
+[15:54:51] [INFO] Get product 22
+[15:54:51] [INFO] Received GETPRODUCT from client
+[15:54:51] [INFO] Get product 18
+[15:54:51] [INFO] Received GETPRODUCT from client
+[15:54:51] [INFO] Get product 3
+[15:54:51] [INFO] Received GETSTAFF from client
+[15:54:51] [INFO] Get staff 1
+[15:54:51] [INFO] Received CLOCKON from client
+[15:54:51] [INFO] Received TILLLOGIN from client
+[15:54:51] [INFO] David Grant has logged in from DAVID-PC
+[15:54:51] [INFO] Received RESUMESALE from client
+[15:54:52] [INFO] Received GETCATEGORY from client
+[15:54:53] [INFO] Received GETCATEGORY from client
+[15:54:55] [INFO] Received ADDSALE from client
+[15:54:55] [INFO] Get product 1
+[15:54:55] [INFO] Get product 2
+[15:54:55] [INFO] Received GETSETTING from client
+[15:54:55] [INFO] Received GETSETTING from client
+[15:54:56] [INFO] Received TILLLOGOUT from client
+[15:54:56] [INFO] David Grant has logged out
+[15:54:56] [INFO] Received CONNTERM from client
+[15:54:56] [INFO] DAVID-PC has disconnected
