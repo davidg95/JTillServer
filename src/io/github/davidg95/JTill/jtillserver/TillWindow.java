@@ -68,7 +68,6 @@ public class TillWindow extends javax.swing.JFrame {
         table = new javax.swing.JTable();
         btnClose = new javax.swing.JButton();
         btnView = new javax.swing.JButton();
-        btnViewSales = new javax.swing.JButton();
         btnCashup = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -111,13 +110,6 @@ public class TillWindow extends javax.swing.JFrame {
             }
         });
 
-        btnViewSales.setText("View Sales");
-        btnViewSales.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnViewSalesActionPerformed(evt);
-            }
-        });
-
         btnCashup.setText("Cash Up");
         btnCashup.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -132,11 +124,9 @@ public class TillWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnView)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnViewSales)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCashup)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -152,7 +142,6 @@ public class TillWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
                     .addComponent(btnView)
-                    .addComponent(btnViewSales)
                     .addComponent(btnCashup))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -166,14 +155,20 @@ public class TillWindow extends javax.swing.JFrame {
 
     private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
         int index = table.getSelectedRow();
+        if (index == -1) {
+            return;
+        }
         Till t = contents.get(index);
         TillDialog.showDialog(this, t);
     }//GEN-LAST:event_btnViewActionPerformed
 
     private void btnCashupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCashupActionPerformed
         int index = table.getSelectedRow();
+        if (index == -1) {
+            return;
+        }
         Till till = contents.get(index);
-        if(till.getUncashedTakings().doubleValue() <= 0){
+        if (till.getUncashedTakings().doubleValue() <= 0) {
             JOptionPane.showMessageDialog(this, "No uncashed sales", "Till", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -246,15 +241,10 @@ public class TillWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnCashupActionPerformed
 
-    private void btnViewSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewSalesActionPerformed
-        
-    }//GEN-LAST:event_btnViewSalesActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCashup;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnView;
-    private javax.swing.JButton btnViewSales;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
