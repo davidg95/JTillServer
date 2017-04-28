@@ -87,6 +87,17 @@ public class TillDialog extends javax.swing.JDialog {
         try {
             contents = dc.getTerminalSales(till.getId(), true);
             model.setRowCount(0);
+            try {
+                List<Sale> sales = dc.getUncachedTillSales(till.getId());
+                BigDecimal unCashed = BigDecimal.ZERO;
+                for (Sale s : sales) {
+                    unCashed = unCashed.add(s.getTotal());
+                }
+                till.setUncashedTakings(unCashed);
+                txtUncashedTakings.setText("£" + till.getUncashedTakings());
+            } catch (JTillException ex) {
+                Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
             for (Sale s : contents) {
                 model.addRow(new Object[]{s.getDate(), s.getTotalItemCount(), s.getTotal()});
             }
@@ -294,7 +305,7 @@ public class TillDialog extends javax.swing.JDialog {
             till = dc.getTill(till.getId());
             txtUncashedTakings.setText("£" + till.getUncashedTakings());
             report.tax = BigDecimal.ZERO;
-            
+
             model.setRowCount(0);
 
             TillReportDialog.showDialog(this, report);

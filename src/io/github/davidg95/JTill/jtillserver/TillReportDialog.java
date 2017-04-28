@@ -31,6 +31,7 @@ public class TillReportDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setTitle("Till Report");
         declared.setText("£" + report.declared);
         actual.setText("£" + report.actualTakings);
         diff.setText("£" + report.difference);
