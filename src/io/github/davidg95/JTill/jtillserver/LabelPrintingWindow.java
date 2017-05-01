@@ -9,6 +9,8 @@ import io.github.davidg95.JTill.jtill.*;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
@@ -24,7 +26,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -83,7 +88,7 @@ public class LabelPrintingWindow extends javax.swing.JFrame {
     public class Label {
 
         private final Product p; //The product to print.
-        private final int amount; //The amount of the label to print.
+        private int amount; //The amount of the label to print.
 
         /**
          * Create a new label.
@@ -112,6 +117,11 @@ public class LabelPrintingWindow extends javax.swing.JFrame {
             } catch (IOException | JTillException ex) {
                 Logger.getLogger(LabelPrintingWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+
+        @Override
+        public String toString() {
+            return "Item: " + p.getName() + " Quantity: " + amount;
         }
     }
 
@@ -205,6 +215,11 @@ public class LabelPrintingWindow extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(table);
@@ -368,6 +383,35 @@ public class LabelPrintingWindow extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnPrintActionPerformed
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        final int index = table.getSelectedRow();
+        if (SwingUtilities.isLeftMouseButton(evt)) {
+            if (evt.getClickCount() == 2) {
+                if (index == -1) {
+                    return;
+                }
+                Label l = labels.get(index);
+                if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this item?\n" + l, "Remove Label", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    model.removeRow(index);
+                    labels.remove(index);
+                }
+            }
+        } else if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu m = new JPopupMenu();
+            JMenuItem i = new JMenuItem("Change Quantity");
+            final int quantity = labels.get(index).amount;
+            i.addActionListener((ActionEvent e) -> {
+                int val = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter quantity to print", quantity));
+                if (val > 0) {
+                    labels.get(index).amount = val;
+                    updateTable();
+                }
+            });
+            m.add(i);
+            m.show(table, evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_tableMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProduct;
