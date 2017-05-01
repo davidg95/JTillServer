@@ -185,15 +185,6 @@ public class ConnectionThread extends Thread {
                         }.start();
                         break;
                     }
-                    case "GETPRODUCTSDISCOUNT": { //Gets all discounts for a product
-                        new Thread(inp[0]) {
-                            @Override
-                            public void run() {
-                                getProductsDiscount(data);
-                            }
-                        }.start();
-                        break;
-                    }
                     case "GETALLPRODUCTS": { //Get all products
                         new Thread(inp[0]) {
                             @Override
@@ -1556,25 +1547,6 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    private void getProductsDiscount(ConnectionData data) {
-        try {
-            try {
-                ConnectionData clone = data.clone();
-                if (!(clone.getData() instanceof Product)) {
-                    obOut.writeObject(ConnectionData.create("FAIL", "A Product must be received here"));
-                    return;
-                }
-                Product p = (Product) clone.getData();
-                List<Discount> discounts = dc.getProductsDiscount(p);
-                obOut.writeObject(ConnectionData.create("SUCC", discounts));
-            } catch (SQLException ex) {
-                obOut.writeObject(ConnectionData.create("FAIL", ex));
-            }
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, null, e);
-        }
-    }
-
     private void getAllProducts() {
         try {
             try {
@@ -1818,9 +1790,9 @@ public class ConnectionThread extends Thread {
         try {
             try {
                 List<Staff> staffList = dc.getAllStaff();
-                for (Staff s : staffList) {
+                staffList.forEach((s) -> {
                     s.setPassword(Encryptor.encrypt(s.getPassword()));
-                }
+                });
                 obOut.writeObject(staffList);
             } catch (SQLException ex) {
                 obOut.writeObject(ex);
