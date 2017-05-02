@@ -328,6 +328,7 @@ public final class ReportingWindow extends javax.swing.JFrame {
         jLabel5.setText("Total Items Sold:");
 
         txtItems.setEditable(false);
+        txtItems.setText("0");
 
         jLabel6.setText("Total Sales:");
 

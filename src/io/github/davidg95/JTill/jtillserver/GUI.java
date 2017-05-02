@@ -426,6 +426,7 @@ public class GUI extends JFrame implements GUIInterface {
         menuFile = new javax.swing.JMenu();
         itemLogin = new javax.swing.JMenuItem();
         itemServerOptions = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         itemAbout = new javax.swing.JMenuItem();
         itemExit = new javax.swing.JMenuItem();
         menuStock = new javax.swing.JMenu();
@@ -433,7 +434,6 @@ public class GUI extends JFrame implements GUIInterface {
         itemStock = new javax.swing.JMenuItem();
         itemReceive = new javax.swing.JMenuItem();
         itemWasteStock = new javax.swing.JMenuItem();
-        itemWasteReports = new javax.swing.JMenuItem();
         itemEnquiry = new javax.swing.JMenuItem();
         itemStockTake = new javax.swing.JMenuItem();
         menuSetup = new javax.swing.JMenu();
@@ -456,6 +456,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemLabelPrinting = new javax.swing.JMenuItem();
         itemStaffClocking = new javax.swing.JMenuItem();
         itemTerminals = new javax.swing.JMenuItem();
+        itemWasteReports = new javax.swing.JMenuItem();
 
         setTitle("JTill Server");
 
@@ -740,6 +741,7 @@ public class GUI extends JFrame implements GUIInterface {
 
         menuFile.setText("File");
 
+        itemLogin.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
         itemLogin.setText("Log in");
         itemLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -748,6 +750,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuFile.add(itemLogin);
 
+        itemServerOptions.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         itemServerOptions.setText("Server Options");
         itemServerOptions.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -755,6 +758,14 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         menuFile.add(itemServerOptions);
+
+        jMenuItem2.setText("Check Database");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        menuFile.add(jMenuItem2);
 
         itemAbout.setText("About");
         itemAbout.addActionListener(new java.awt.event.ActionListener() {
@@ -776,6 +787,7 @@ public class GUI extends JFrame implements GUIInterface {
 
         menuStock.setText("Stock");
 
+        itemCreateNewProduct.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
         itemCreateNewProduct.setText("Create New Product");
         itemCreateNewProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -784,6 +796,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuStock.add(itemCreateNewProduct);
 
+        itemStock.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.CTRL_MASK));
         itemStock.setText("Manage Stock");
         itemStock.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -792,6 +805,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuStock.add(itemStock);
 
+        itemReceive.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
         itemReceive.setText("Receive Stock");
         itemReceive.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -800,6 +814,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuStock.add(itemReceive);
 
+        itemWasteStock.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
         itemWasteStock.setText("Waste Stock");
         itemWasteStock.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -808,14 +823,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuStock.add(itemWasteStock);
 
-        itemWasteReports.setText("Waste Reports");
-        itemWasteReports.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemWasteReportsActionPerformed(evt);
-            }
-        });
-        menuStock.add(itemWasteReports);
-
+        itemEnquiry.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
         itemEnquiry.setText("Product Enquiry");
         itemEnquiry.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -824,6 +832,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuStock.add(itemEnquiry);
 
+        itemStockTake.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_MASK));
         itemStockTake.setText("Stock Take");
         itemStockTake.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -972,6 +981,14 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         jMenu1.add(itemTerminals);
+
+        itemWasteReports.setText("Waste Reports");
+        itemWasteReports.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemWasteReportsActionPerformed(evt);
+            }
+        });
+        jMenu1.add(itemWasteReports);
 
         jMenuBar1.add(jMenu1);
 
@@ -1319,44 +1336,33 @@ public class GUI extends JFrame implements GUIInterface {
 
     private void lblWarningsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblWarningsMouseClicked
         if (evt.getClickCount() == 2) {
-            JDialog dialog = new JDialog(this);
-            JPanel panel = new JPanel();
-            JTextArea warnings = new JTextArea();
-            warnings.setRows(23);
-            warnings.setColumns(95);
-            warningsList.forEach((s) -> {
-                warnings.append(s + "\n");
-            });
-            warnings.setEditable(false);
-            JButton clear = new JButton("Clear");
-            clear.addActionListener((ActionEvent e) -> {
-                warnings.setText("");
-                warningCount = 0;
-                warningsList.clear();
-                lblWarnings.setText("Warnings: " + warningCount);
-            });
-            JButton close = new JButton("Close");
-            close.addActionListener((ActionEvent e) -> {
-                dialog.setVisible(false);
-            });
-            panel.add(warnings);
-            panel.add(clear);
-            panel.add(close);
-            panel.setSize(800, 500);
-            dialog.setModal(true);
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setTitle("Warnings");
-            dialog.setResizable(false);
-            dialog.setSize(panel.getSize());
-            dialog.setLocationRelativeTo(this);
-            dialog.add(panel);
-            dialog.setVisible(true);
+            WarningDialog.showDialog(this, warningsList);
         }
     }//GEN-LAST:event_lblWarningsMouseClicked
 
     private void itemTerminalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTerminalsActionPerformed
         TillWindow.showWindow(dc, icon);
     }//GEN-LAST:event_itemTerminalsActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        final ModalDialog mDialog = new ModalDialog(this, "Database Check", "Checking database integrity...");
+        final Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ((DBConnect) dc).integrityCheck();
+                    mDialog.hide();
+                    JOptionPane.showMessageDialog(GUI.this, "Check complete", "Database Check", JOptionPane.INFORMATION_MESSAGE);
+                } catch (SQLException ex) {
+                    mDialog.hide();
+                    JOptionPane.showMessageDialog(GUI.this, ex, "Database Check", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        };
+        Thread thread = new Thread(run);
+        thread.start();
+        mDialog.show();
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
@@ -1404,6 +1410,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JToolBar jToolBar1;

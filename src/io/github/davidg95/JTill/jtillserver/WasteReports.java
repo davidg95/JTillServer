@@ -14,6 +14,7 @@ import java.awt.Image;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,7 +48,7 @@ public class WasteReports extends javax.swing.JFrame {
     private static final int GREATER = 2;
     private static final int LESS = 3;
     private static final int DAY = 4;
-    
+
     /**
      * Creates new form WasteReports
      */
@@ -76,11 +77,11 @@ public class WasteReports extends javax.swing.JFrame {
         model.setRowCount(0);
         BigDecimal val = BigDecimal.ZERO;
         for (WasteReport wr : wasteReports) {
-            Object[] row = new Object[]{wr.getId(), wr.getTotalValue(), wr.getDate()};
+            Object[] row = new Object[]{wr.getId(), new DecimalFormat("#.00").format(wr.getTotalValue()), wr.getDate()};
             model.addRow(row);
             val = val.add(wr.getTotalValue());
         }
-        lblValue.setText("Total Value: £" + val);
+        lblValue.setText("Total Value: £" + new DecimalFormat("#.00").format(val));
     }
 
     /**

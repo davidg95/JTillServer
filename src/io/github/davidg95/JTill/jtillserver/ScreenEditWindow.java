@@ -48,6 +48,9 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     private Screen currentScreen; //The current selected screen.
     private TillButton currentButton; //The current selected button.
     private List<TillButton> currentButtons; //The current buttons.
+    
+    //Progress bar stuff
+    private int amount;
 
     /**
      * The amount of buttons each screen has horizontally.
@@ -98,6 +101,8 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     public synchronized void setButtons() {
         try {
             List<Screen> screens = dc.getAllScreens(); //Get all the screens on the server.
+            amount = dc.getAllButtons().size();
+            bar.setMaximum(amount);
             panelScreens.removeAll();
             panelScreens.setLayout(new GridLayout(2, 4));
             for (Screen s : screens) {
@@ -126,6 +131,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         } catch (SQLException | IOException ex) {
             showError(ex);
         }
+        bar.setValue(0);
     }
 
     /**
@@ -196,8 +202,8 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 if (b.getColorValue() != 0) {
                     pButton.setBackground(new Color(b.getColorValue()));
                 }
-                pButton.setMinimumSize(new Dimension(0,0));
-                pButton.setMaximumSize(new Dimension(panel.getWidth()/this.BUTTONS_GRID_X, panel.getHeight()/this.BUTTONS_GRID_Y));
+                pButton.setMinimumSize(new Dimension(0, 0));
+                pButton.setMaximumSize(new Dimension(panel.getWidth() / this.BUTTONS_GRID_X, panel.getHeight() / this.BUTTONS_GRID_Y));
                 GridBagConstraints gbc = new GridBagConstraints();
                 gbc.gridx = b.getX() - 1;
                 gbc.gridy = b.getY() - 1;
@@ -246,6 +252,8 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                     });
                     panel.add(pButton, gbc); //Add the button to the panel.
                 }
+                bar.setValue(bar.getValue() + 1);
+                bar.repaint();
             }
             panelProducts.add(panel, s.getName()); //Add the screen panel to the container panel for all screens.
             panelScreens.add(cButton); //Add the screens toggle button.
@@ -273,7 +281,12 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 showError(ex);
             }
         }
-        setButtons(); //This will update the view to reflect any changes
+        new Thread() {
+            @Override
+            public void run() {
+                setButtons(); //This will update the view to reflect any changes
+            }
+        }.start();
     }
 
     private void showError(Exception e) {
@@ -307,6 +320,8 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         panelProducts = new javax.swing.JPanel();
         panelScreens = new javax.swing.JPanel();
         btnNewScreen = new javax.swing.JButton();
+        bar = new javax.swing.JProgressBar();
+        btnClose = new javax.swing.JButton();
 
         setTitle("Screen Editor");
 
@@ -335,7 +350,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(panelScreens, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
+                .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -346,15 +361,27 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             }
         });
 
+        btnClose.setText("Close");
+        btnClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCloseActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnNewScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
-                .addComponent(panelEditor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(bar, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnClose))
+                    .addComponent(panelEditor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -365,9 +392,12 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnNewScreen)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(panelEditor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())))
+                    .addComponent(panelEditor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnClose)
+                    .addComponent(bar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         pack();
@@ -417,7 +447,13 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnNewScreenActionPerformed
 
+    private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
+        setVisible(false);
+    }//GEN-LAST:event_btnCloseActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JProgressBar bar;
+    private javax.swing.JButton btnClose;
     private javax.swing.JButton btnNewScreen;
     private javax.swing.JPanel panelEditor;
     private javax.swing.JPanel panelProducts;

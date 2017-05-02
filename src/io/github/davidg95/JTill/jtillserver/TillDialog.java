@@ -52,7 +52,10 @@ public class TillDialog extends javax.swing.JDialog {
         txtID.setText("" + till.getId());
         txtUUID.setText(till.getUuid().toString());
         txtName.setText(till.getName());
-        txtUncashedTakings.setText("£" + till.getUncashedTakings());
+        txtUncashedTakings.setText("£" + new DecimalFormat("#.00").format(till.getUncashedTakings()));
+        if (till.getUncashedTakings().compareTo(BigDecimal.ZERO) == 0) {
+            txtUncashedTakings.setText("£0.00");
+        }
         if (t.getLastContact() == null) {
             txtLastContact.setText("None");
         } else {
@@ -94,7 +97,10 @@ public class TillDialog extends javax.swing.JDialog {
                     unCashed = unCashed.add(s.getTotal());
                 }
                 till.setUncashedTakings(unCashed);
-                txtUncashedTakings.setText("£" + till.getUncashedTakings());
+                txtUncashedTakings.setText("£" + new DecimalFormat("#.00").format(till.getUncashedTakings()));
+                if (till.getUncashedTakings().compareTo(BigDecimal.ZERO) == 0) {
+                    txtUncashedTakings.setText("£0.00");
+                }
             } catch (JTillException ex) {
                 Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);
             }

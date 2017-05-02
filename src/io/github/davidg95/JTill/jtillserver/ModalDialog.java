@@ -29,6 +29,7 @@ public class ModalDialog {
     private final String title; //The title of the window.
     private String text; //The text on the message label.
     private PrinterJob job; //The printer job (if any) associated with this message.
+    private boolean hidden;
 
     /**
      * Constructor which creates the dialog.
@@ -40,6 +41,7 @@ public class ModalDialog {
     public ModalDialog(Component parent, String title, String text) {
         this.title = title;
         this.text = text;
+        this.hidden = false;
         init();
         dialog.setLocationRelativeTo(parent);
     }
@@ -57,9 +59,10 @@ public class ModalDialog {
     public ModalDialog(Component parent, String title, String text, PrinterJob job) {
         this(parent, title, text);
         this.job = job;
+        this.hidden = false;
         JButton button = new JButton("Cancel");
         button.addActionListener((ActionEvent e) -> {
-            job.cancel();
+            this.job.cancel();
         });
         panel.add(button);
         dialog.setMinimumSize(new Dimension(100, 100));
@@ -95,13 +98,16 @@ public class ModalDialog {
      * Method to show the dialog.
      */
     public void show() {
-        dialog.setVisible(true);
+        if (!hidden) {
+            dialog.setVisible(true);
+        }
     }
 
     /**
      * Method to hide the dialog.
      */
     public void hide() {
+        this.hidden = true;
         dialog.setVisible(false);
     }
 

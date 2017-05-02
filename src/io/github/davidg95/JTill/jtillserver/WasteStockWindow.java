@@ -22,6 +22,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -123,7 +124,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
         setIconImage(icon);
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
-        lblValue.setText("Total Value: £" + wr.getTotalValue());
+        lblValue.setText("Total Value: £" + new DecimalFormat("#.00").format(wr.getTotalValue()));
         setTable();
         cmbModel = (DefaultComboBoxModel) cmbReason.getModel();
         cmbReason.setModel(cmbModel);
@@ -438,7 +439,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
         product = (Product) product.clone();
 
         String str = JOptionPane.showInputDialog(this, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
-        
+
         if (str == null || str.isEmpty()) {
             return;
         }
@@ -460,7 +461,7 @@ public class WasteStockWindow extends javax.swing.JFrame {
             for (WasteItem w : wasteItems) {
                 val = val.add(w.getProduct().getPrice().setScale(2).multiply(new BigDecimal(w.getQuantity())));
             }
-            lblValue.setText("Total Value: £" + val);
+            lblValue.setText("Total Value: £" + new DecimalFormat("#.00").format(val));
             model.addRow(new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), amount, product.getPrice().multiply(new BigDecimal(wi.getQuantity())), wi.getReason()});
         } else {
             JOptionPane.showMessageDialog(this, "You must enter a number", "Waste Stock", JOptionPane.ERROR_MESSAGE);
