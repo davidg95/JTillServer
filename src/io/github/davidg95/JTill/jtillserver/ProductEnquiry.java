@@ -126,8 +126,6 @@ public final class ProductEnquiry extends javax.swing.JFrame {
                 g2.drawString("Total value wasted: £" + vw, x, y);
             } catch (IOException | SQLException | JTillException ex) {
                 JOptionPane.showMessageDialog(ProductEnquiry.this, "Page could not be printed in full");
-            } catch (CategoryNotFoundException ex) {
-                Logger.getLogger(ProductEnquiry.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             return PAGE_EXISTS;
@@ -533,7 +531,7 @@ public final class ProductEnquiry extends javax.swing.JFrame {
                 bMargin = bMargin.setScale(2, RoundingMode.HALF_UP);
                 txtMarginToDate.setText(bMargin.toString());
             }
-        } catch (IOException | JTillException | SQLException | CategoryNotFoundException ex) {
+        } catch (IOException | JTillException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex);
         }
     }//GEN-LAST:event_btnProductSelectActionPerformed

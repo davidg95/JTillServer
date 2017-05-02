@@ -58,7 +58,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             btnSelectCategory.setText(selectedCategory.getName());
             btnSelectTax.setText(selectedTax.getName());
             btnSelectDepartment.setText(selectedDepartment.getName());
-        } catch (IOException | SQLException | JTillException | TaxNotFoundException | CategoryNotFoundException ex) {
+        } catch (IOException | SQLException | JTillException ex) {
             Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
         CardLayout c = (CardLayout) jPanel1.getLayout();
@@ -78,7 +78,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             selectedCategory = dc.getCategory(1);
             selectedTax = dc.getTax(1);
             selectedDepartment = dc.getDepartment(1);
-        } catch (IOException | SQLException | JTillException | TaxNotFoundException | CategoryNotFoundException ex) {
+        } catch (IOException | SQLException | JTillException ex) {
             Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -675,7 +675,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                         if (!dc.checkBarcode(barcode)) { //Check the barcode is not already int use
                             plu = new Plu(barcode, 0); //Create the new PLU
                             break; //break from the while loop
-                        } else{
+                        } else {
                             dc.setSetting("NEXT_PLU", nextBarcode); //If it is in use, set the next plu and loop again
                         }
                     }
@@ -776,7 +776,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             product = new Product(name, shortName, 0, category.getId(), dep.getId(), comments, tax.getId(), true);
             plu.setProduct(product.getId());
             product = dc.addProductAndPlu(product, plu);
-            dc.setSetting("NEXT_PLU", nextBarcode);
+            if (chkNext.isSelected()) {
+                dc.setSetting("NEXT_PLU", nextBarcode);
+            }
             JOptionPane.showMessageDialog(this, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
             resetPanels();
             CardLayout c = (CardLayout) jPanel1.getLayout();

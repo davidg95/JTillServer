@@ -460,7 +460,7 @@ public final class ReportingWindow extends javax.swing.JFrame {
             txtSales.setText("£" + new DecimalFormat("0.00").format(sales));
             txtTax.setText("£" + new DecimalFormat("0.00").format(tax));
             txtNet.setText("£" + new DecimalFormat("0.00").format(sales.subtract(tax)));
-        } catch (IOException | SQLException | ProductNotFoundException | TaxNotFoundException | JTillException ex) {
+        } catch (IOException | SQLException | ProductNotFoundException | JTillException ex) {
             Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnGenerateActionPerformed

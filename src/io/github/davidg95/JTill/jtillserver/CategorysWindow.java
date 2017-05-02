@@ -496,7 +496,7 @@ public final class CategorysWindow extends javax.swing.JFrame {
 
                 try {
                     dc.updateCategory(category);
-                } catch (SQLException | CategoryNotFoundException | IOException ex) {
+                } catch (SQLException | JTillException | IOException ex) {
                     showError(ex);
                 }
 
@@ -520,7 +520,7 @@ public final class CategorysWindow extends javax.swing.JFrame {
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dc.removeCategory(currentTableContents.get(index).getId());
-                } catch (SQLException | CategoryNotFoundException | IOException ex) {
+                } catch (SQLException | JTillException | IOException ex) {
                     showError(ex);
                 }
                 showAllCategorys();

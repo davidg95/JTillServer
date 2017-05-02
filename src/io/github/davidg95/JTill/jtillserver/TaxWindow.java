@@ -326,7 +326,7 @@ public class TaxWindow extends javax.swing.JFrame {
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dbConn.removeTax(currentTableContents.get(index).getId());
-                } catch (IOException | SQLException | TaxNotFoundException ex) {
+                } catch (IOException | SQLException | JTillException ex) {
                     showError(ex);
                 }
                 showAllTaxes();

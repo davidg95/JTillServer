@@ -95,7 +95,7 @@ public class LoyaltySettingsWindow extends javax.swing.JFrame {
                     int id = Integer.parseInt(line);
                     final Category c = dc.getCategory(id);
                     contents.add(c);
-                } catch (IOException | SQLException | CategoryNotFoundException ex) {
+                } catch (IOException | SQLException | JTillException ex) {
                     Logger.getLogger(LoyaltySettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }

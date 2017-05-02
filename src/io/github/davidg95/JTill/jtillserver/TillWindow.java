@@ -241,7 +241,7 @@ public class TillWindow extends javax.swing.JFrame {
                 thread.start();
                 mDialog.show();
             }
-        } catch (IOException | SQLException | TillNotFoundException ex) {
+        } catch (IOException | SQLException | JTillException ex) {
             Logger.getLogger(TillWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnCashupActionPerformed

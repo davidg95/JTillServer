@@ -263,13 +263,13 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             try {
                 currentButton.setName("[SPACE]");
                 dc.updateButton(currentButton);
-            } catch (IOException | SQLException | ButtonNotFoundException ex) {
+            } catch (IOException | SQLException | JTillException ex) {
                 showError(ex);
             }
         } else { //If it is not null then it is being edited or nothing has happening to it
             try {
                 dc.updateButton(currentButton); //This will update the ucrrent button in the database
-            } catch (IOException | SQLException | ButtonNotFoundException ex) {
+            } catch (IOException | SQLException | JTillException ex) {
                 showError(ex);
             }
         }

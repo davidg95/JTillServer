@@ -333,7 +333,7 @@ public class TillDialog extends javax.swing.JDialog {
                 thread.start();
                 mDialog.show();
             }
-        } catch (IOException | SQLException | TillNotFoundException ex) {
+        } catch (IOException | SQLException | JTillException ex) {
             Logger.getLogger(TillDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnCashupActionPerformed

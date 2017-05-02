@@ -94,7 +94,7 @@ public class SaleDialog extends javax.swing.JDialog {
         try {
             final Till till = dc.getTill(sale.getTerminal());
             lblTerminal.setText("Terminal: " + till.getName());
-        } catch (IOException | SQLException | TillNotFoundException ex) {
+        } catch (IOException | SQLException | JTillException ex) {
             lblTerminal.setText("Terminal: " + sale.getTerminal());
         }
         lblTotal.setText("Sale Total: £" + sale.getTotal());

@@ -59,7 +59,7 @@ public class ProductDialog extends javax.swing.JDialog {
             selectedDepartment = dc.getDepartment(1);
             btnSelectCategory.setText(selectedCategory.getName());
             btnSelectTax.setText(selectedTax.getName());
-        } catch (IOException | SQLException | TaxNotFoundException | CategoryNotFoundException | JTillException ex) {
+        } catch (IOException | SQLException | JTillException ex) {
             log.log(Level.WARNING, null, ex);
         }
         this.editMode = false;
@@ -98,7 +98,7 @@ public class ProductDialog extends javax.swing.JDialog {
             btnSelectDepartment.setText(d.getName());
             btnAddProduct.setText("Save Changes");
             setTitle("Edit Product " + p.getName());
-        } catch (IOException | JTillException | SQLException | CategoryNotFoundException | TaxNotFoundException ex) {
+        } catch (IOException | SQLException | JTillException ex) {
             showError(ex);
         }
     }
