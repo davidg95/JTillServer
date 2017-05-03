@@ -280,7 +280,16 @@ public class TaxWindow extends javax.swing.JFrame {
             Tax t;
             try {
                 String name = txtName.getText();
-                double value = Double.parseDouble(txtValue.getText());
+                String val = txtValue.getText();
+                if(val.length() == 0){
+                    JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Tax", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if(!Utilities.isNumber(val)){
+                    JOptionPane.showMessageDialog(this, "Must enter a number for value", "New Tax", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                double value = Double.parseDouble(val);
                 if (name.equals("")) {
                     JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Tax", JOptionPane.ERROR_MESSAGE);
                 } else {

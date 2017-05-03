@@ -7,6 +7,7 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.DataConnect;
 import io.github.davidg95.JTill.jtill.Product;
+import io.github.davidg95.JTill.jtill.Utilities;
 import io.github.davidg95.JTill.jtill.WasteItem;
 import io.github.davidg95.JTill.jtill.WasteReason;
 import io.github.davidg95.JTill.jtill.WasteReport;
@@ -22,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -260,11 +262,13 @@ public class WasteReports extends javax.swing.JFrame {
                             }
                         }
                     }
+                } else{
+                    JOptionPane.showMessageDialog(this, "A product must be selected", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
             }
             case REASON: {
-                if (this.wasteReason != null) {
+                if (wasteReason != null) {
                     for (WasteReport wr : wasteReports) {
                         for (WasteItem wi : wr.getItems()) {
                             if (wi.getReason() == wasteReason.getId()) {
@@ -273,11 +277,26 @@ public class WasteReports extends javax.swing.JFrame {
                             }
                         }
                     }
+                } else{
+                    JOptionPane.showMessageDialog(this, "A reason must be selected", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
             }
             case GREATER: {
-                BigDecimal value = new BigDecimal(txtSearch.getText());
+                String val = txtSearch.getText();
+                if(val.length() == 0){
+                    JOptionPane.showMessageDialog(this, "A value must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if(!Utilities.isNumber(val)){
+                    JOptionPane.showMessageDialog(this, "A number must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                BigDecimal value = new BigDecimal(val);
+                if(value.compareTo(BigDecimal.ZERO) < 0){
+                    JOptionPane.showMessageDialog(this, "Negative values not allowed", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 for (WasteReport wr : wasteReports) {
                     if (value.compareTo(wr.getTotalValue()) <= 0) {
                         newList.add(wr);
@@ -286,7 +305,20 @@ public class WasteReports extends javax.swing.JFrame {
                 break;
             }
             case LESS: {
-                BigDecimal value = new BigDecimal(txtSearch.getText());
+                String val = txtSearch.getText();
+                if(val.length() == 0){
+                    JOptionPane.showMessageDialog(this, "A value must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if(!Utilities.isNumber(val)){
+                    JOptionPane.showMessageDialog(this, "A number must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                BigDecimal value = new BigDecimal(val);
+                if(value.compareTo(BigDecimal.ZERO) < 0){
+                    JOptionPane.showMessageDialog(this, "Negative values not allowed", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 for (WasteReport wr : wasteReports) {
                     if (value.compareTo(wr.getTotalValue()) >= 0) {
                         newList.add(wr);

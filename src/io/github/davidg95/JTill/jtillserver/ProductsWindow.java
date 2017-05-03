@@ -745,6 +745,10 @@ public class ProductsWindow extends javax.swing.JFrame {
     private void btnSaveChangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesActionPerformed
         String name = txtName.getText();
         String shortName = txtShortName.getText();
+        if(name.length() == 0 || shortName.length() == 0){
+            JOptionPane.showMessageDialog(this, "Must enter a product name", "Save Changes", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         Category category = null;
         if (!categorys.isEmpty()) {
             category = categorys.get(cmbCategory.getSelectedIndex());
@@ -765,11 +769,24 @@ public class ProductsWindow extends javax.swing.JFrame {
             product.setTax(tax.getId());
             product.setComments(comments);
         } else {
-            BigDecimal price = new BigDecimal(txtPrice.getText());
-            BigDecimal costPrice = new BigDecimal(txtCostPrice.getText());
-            int stock = Integer.parseInt(txtStock.getText());
-            int minStock = Integer.parseInt(txtMinStock.getText());
-            int maxStock = Integer.parseInt(txtMaxStock.getText());
+            String pr = txtPrice.getText();
+            String costPr = txtCostPrice.getText();
+            if(!Utilities.isNumber(pr) || !Utilities.isNumber(costPr)){
+                JOptionPane.showMessageDialog(this, "Must enter a number for price and cost price", "Save Changes", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            BigDecimal price = new BigDecimal(pr);
+            BigDecimal costPrice = new BigDecimal(costPr);
+            String st = txtStock.getText();
+            String minSt = txtMinStock.getText();
+            String maxSt = txtMaxStock.getText();
+            if(!Utilities.isNumber(st) || !Utilities.isNumber(minSt) || !Utilities.isNumber(maxSt)){
+                JOptionPane.showMessageDialog(this, "Must enter a number for stock levels", "Save Changes", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int stock = Integer.parseInt(st);
+            int minStock = Integer.parseInt(minSt);
+            int maxStock = Integer.parseInt(maxSt);
             product.setLongName(name);
             product.setName(shortName);
             product.setCategory(category.getId());

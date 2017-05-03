@@ -249,7 +249,8 @@ public class StockTakeWindow extends javax.swing.JFrame {
         }
         if (Utilities.isNumber(val)) {
             int stock = Integer.parseInt(val);
-            if (stock < 0) {
+            if (stock <= 0) {
+                JOptionPane.showMessageDialog(this, "Value must be zero or greater", "Stock Take", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             p.setStock(stock);

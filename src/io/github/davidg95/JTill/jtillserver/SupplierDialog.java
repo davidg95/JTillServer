@@ -172,6 +172,14 @@ public class SupplierDialog extends javax.swing.JDialog {
         String name = txtName.getText();
         String address = txtAddress.getText();
         String phone = txtNumber.getText();
+        if(name.length() == 0 || address.length() == 0 || phone.length() == 0){
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out", "New Supplier", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if(!Utilities.isNumber(phone)){
+            JOptionPane.showMessageDialog(this, "Letter not allowed in phone number", "New supplier", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         if (s == null) {
             Supplier sup = new Supplier(name, address, phone);
             try {

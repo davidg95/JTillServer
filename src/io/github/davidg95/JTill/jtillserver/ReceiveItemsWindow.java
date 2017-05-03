@@ -285,6 +285,10 @@ public final class ReceiveItemsWindow extends javax.swing.JFrame {
 
         if (Utilities.isNumber(str)) {
             int amount = Integer.parseInt(str);
+            if(amount <= 0){
+                JOptionPane.showMessageDialog(this, "Value must be greater than zero", "Receive Items", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             if (product.getStock() + amount > product.getMaxStockLevel() && product.getMaxStockLevel() != 0) {
                 JOptionPane.showMessageDialog(this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product", "Stock", JOptionPane.WARNING_MESSAGE);
             }

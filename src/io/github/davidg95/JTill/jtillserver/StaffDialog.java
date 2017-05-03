@@ -44,7 +44,7 @@ public class StaffDialog extends javax.swing.JDialog {
         editMode = false;
         this.dc = dc;
         initComponents();
-        if(manager){
+        if (manager) {
             cmbPosition.setSelectedIndex(2);
             cmbPosition.setEnabled(false);
         }
@@ -85,7 +85,7 @@ public class StaffDialog extends javax.swing.JDialog {
         dialog.setVisible(true);
         return staff;
     }
-    
+
     public static Staff showNewStaffDialog(Component parent, DataConnect dc) {
         return showNewStaffDialog(parent, dc, false);
     }
@@ -258,6 +258,13 @@ public class StaffDialog extends javax.swing.JDialog {
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         String name = txtName.getText();
         String username = txtUsername.getText();
+        int position = cmbPosition.getSelectedIndex() + 1;
+        String password = new String(txtPassword.getPassword());
+        String confirmPassword = new String(txtPasswordConfirm.getPassword());
+        if(name.length() == 0 || username.length() == 0 || password.length() == 0 || confirmPassword.length() == 0){
+            JOptionPane.showMessageDialog(this, "Fill out all fields", "New Staf", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         try {
             if (dc.checkUsername(username)) {
                 JOptionPane.showMessageDialog(this, "Username already in use", "New Staff", JOptionPane.ERROR_MESSAGE);
@@ -266,10 +273,8 @@ public class StaffDialog extends javax.swing.JDialog {
         } catch (IOException | SQLException ex) {
             log.log(Level.SEVERE, null, ex);
         }
-        int position = cmbPosition.getSelectedIndex() + 1;
         if (!editMode) {
-            if (new String(txtPassword.getPassword()).equals(new String(txtPasswordConfirm.getPassword()))) {
-                String password = new String(txtPassword.getPassword());
+            if (new String(txtPassword.getPassword()).equals(confirmPassword)) {
                 if (!Utilities.isNumber(txtWage.getText())) {
                     JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Staff", JOptionPane.ERROR_MESSAGE);
                     return;

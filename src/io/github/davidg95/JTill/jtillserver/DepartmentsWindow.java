@@ -141,7 +141,11 @@ public class DepartmentsWindow extends javax.swing.JFrame {
     private void btnNewDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewDepartmentActionPerformed
         String name = JOptionPane.showInputDialog(this, "Enter name for new department", "New Department", JOptionPane.PLAIN_MESSAGE);
 
+        if(name == null){
+            return;
+        }
         if (name.equals("")) {
+            JOptionPane.showMessageDialog(this, "Cannot have a null value", "New Department", JOptionPane.ERROR_MESSAGE);
             return;
         }
 

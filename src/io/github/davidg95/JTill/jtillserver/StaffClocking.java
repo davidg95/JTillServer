@@ -379,10 +379,19 @@ public class StaffClocking extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnCalculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateActionPerformed
-        if (txtRate.getText().equals("")) {
-            return;
+        String val = txtRate.getText();
+        double rate = staff.getWage();
+        if (val.length() != 0) {
+            if(!Utilities.isNumber(val)){
+                JOptionPane.showMessageDialog(this, "Must enter either a numerical value for rate or leave it blank to use the default wage", "Hours", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            rate = Double.parseDouble(val);
+            if(rate <= 0){
+                JOptionPane.showMessageDialog(this, "Rate must be greater than zero", "Hours", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         }
-        double rate = Double.parseDouble(txtRate.getText());
         double wage = clocked * rate;
         BigDecimal bWage = new BigDecimal(wage).setScale(2, RoundingMode.HALF_UP);
         txtWage.setText("£" + bWage);

@@ -444,6 +444,8 @@ public class ScreenEditWindow extends javax.swing.JFrame {
             } else {
                 JOptionPane.showMessageDialog(this, "Name already in use", "New Screen", JOptionPane.ERROR_MESSAGE);
             }
+        } else{
+            JOptionPane.showMessageDialog(this, "Must enter a value", "New Screen", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnNewScreenActionPerformed
 

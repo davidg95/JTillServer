@@ -380,12 +380,28 @@ public class StaffWindow extends javax.swing.JFrame {
         String name = txtName.getText();
         String username = txtUsername.getText();
         int position = cmbPosition.getSelectedIndex() + 1;
-        double wage = Double.parseDouble(txtWage.getText());
-        staff.setName(name);
-        staff.setUsername(username);
-        staff.setPosition(position);
-        staff.setWage(wage);
+        String w = txtWage.getText();
+        if (!Utilities.isNumber(w) || name.length() == 0 || username.length() == 0) {
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Save Changes", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        double wage = Double.parseDouble(w);
+        if(wage <= 0){
+            JOptionPane.showMessageDialog(this, "Wage must be greater than 0", "Save Changes", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         try {
+            staff.setName(name);
+            String lastUsername = staff.getUsername();
+            if(!lastUsername.equals(username)){
+                if (dc.checkUsername(username)) {
+                JOptionPane.showMessageDialog(this, "Username is already in use", "Save Changes", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            }
+            staff.setUsername(username);
+            staff.setPosition(position);
+            staff.setWage(wage);
             dc.updateStaff(staff);
         } catch (SQLException | StaffNotFoundException | IOException ex) {
             showError(ex);

@@ -751,8 +751,9 @@ public class DiscountsWindow extends javax.swing.JFrame {
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         try {
             String name = txtName.getText();
-            if (name == null) {
+            if (name == null || name.length() == 0) {
                 JOptionPane.showMessageDialog(this, "Fill out all required fields", "Discount", JOptionPane.ERROR_MESSAGE);
+                txtName.setText(discount.getName());
             } else {
                 discount.setType(name);
                 if (discount.getAction() == Discount.PERCENTAGE_OFF) {
@@ -825,8 +826,17 @@ public class DiscountsWindow extends javax.swing.JFrame {
 
     private void btnAddTriggerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTriggerActionPerformed
         Product p = ProductSelectDialog.showDialog(this, dc);
-        int value = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter amount required", "Trigger", JOptionPane.INFORMATION_MESSAGE));
         if (p == null) {
+            return;
+        }
+        String val = JOptionPane.showInputDialog(this, "Enter amount required", "Trigger", JOptionPane.INFORMATION_MESSAGE);
+        if(!Utilities.isNumber(val)){
+            JOptionPane.showMessageDialog(this, "Must enter a number", "New Trigger", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int value = Integer.parseInt(val);
+        if(value <= 0){
+            JOptionPane.showMessageDialog(this, "Must enter a value greater than zero", "New Trigger", JOptionPane.ERROR_MESSAGE);
             return;
         }
         Trigger t = new Trigger(currentBucket.getId(), p.getId(), value);
@@ -914,6 +924,16 @@ public class DiscountsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRemoveBucketActionPerformed
 
     private void btnSaveBucketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveBucketActionPerformed
+        String val = txtTriggers.getText();
+        if(!Utilities.isNumber(val)){
+            JOptionPane.showMessageDialog(this, "Must enter a number for triggers", "Triggers", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int value = Integer.parseInt(val);
+        if(value <= 0){
+            JOptionPane.showMessageDialog(this, "Must enter a value greater than zero", "Triggers", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         currentBucket.setRequiredTriggers(Integer.parseInt(txtTriggers.getText()));
         currentBucket.setRequiredTrigger(chkRequire.isSelected());
         try {

@@ -18,6 +18,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -318,8 +319,21 @@ public class LoyaltySettingsWindow extends javax.swing.JFrame {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         try {
+            String val = txtSpent.getText();
+            String spendVal = txtSpendValue.getText();
+            if(val.length() == 0 || !Utilities.isNumber(val) || spendVal.length() == 0 || !Utilities.isNumber(spendVal)){
+                JOptionPane.showMessageDialog(this, "A number must be entered", "Loyalty Settings", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int value = Integer.parseInt(val);
+            int spendValue = Integer.parseInt(spendVal);
+            if(value < 0 || spendValue < 0){
+                JOptionPane.showMessageDialog(this, "Negatives are not allowed", "Loyalty Settings", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             dc.setSetting("LOYALTY_VALUE", txtSpent.getText());
             dc.setSetting("LOYALTY_SPEND_VALUE", txtSpendValue.getText());
+            JOptionPane.showMessageDialog(this, "Loyalty settings saved", "Loyalty Settings", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             Logger.getLogger(LoyaltySettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }

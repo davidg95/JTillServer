@@ -147,7 +147,11 @@ public class WasteReasonDialog extends javax.swing.JDialog {
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
         String reason = JOptionPane.showInputDialog(this, "Enter new waste reason", "New Reason", JOptionPane.PLAIN_MESSAGE);
 
+        if(reason == null){
+            return;
+        }
         if (reason.equals("")) {
+            JOptionPane.showMessageDialog(this, "A value must be entered", "New Waste Reason", JOptionPane.ERROR_MESSAGE);
             return;
         }
 

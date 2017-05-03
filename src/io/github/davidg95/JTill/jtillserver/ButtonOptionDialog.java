@@ -339,8 +339,24 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnChangeButtonActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        button.setWidth(Integer.parseInt(txtWidth.getText()));
-        button.setHeight(Integer.parseInt(txtHeight.getText()));
+        String w = txtWidth.getText();
+        String h = txtHeight.getText();
+        if(w.length() == 0 || h.length() == 0){
+            JOptionPane.showMessageDialog(this, "Must enter a value for width and height", "Button Options", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if(!Utilities.isNumber(w) || !Utilities.isNumber(h)){
+            JOptionPane.showMessageDialog(this, "A number must be entered", "Button Options", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int width = Integer.parseInt(w);
+        int height = Integer.parseInt(h);
+        if(width <= 0 || height <= 0){
+            JOptionPane.showMessageDialog(this, "Width and height must be greater than zero", "Button Options", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        button.setWidth(width);
+        button.setHeight(height);
         int col = 0;
         if (radBlue.isSelected()) {
             col = TillButton.BLUE;
@@ -360,6 +376,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             col = TillButton.BLACK;
         }
         button.setColorValue(col);
+        JOptionPane.showMessageDialog(this, "Size and color saved", "Button Options", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void txtWidthKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtWidthKeyReleased

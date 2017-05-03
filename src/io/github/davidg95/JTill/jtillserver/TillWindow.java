@@ -172,15 +172,16 @@ public class TillWindow extends javax.swing.JFrame {
         if (index == -1) {
             return;
         }
-        Till till = contents.get(index);
-        if (till.getUncashedTakings().doubleValue() <= 0) {
-            JOptionPane.showMessageDialog(this, "No uncashed sales", "Till", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        if (JOptionPane.showConfirmDialog(this, "Cash up till " + till.getName() + "?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
-            return;
-        }
         try {
+            Till till = contents.get(index);
+            till.setUncashedTakings(dc.getTillTakings(till.getId()));
+            if (till.getUncashedTakings().doubleValue() <= 0) {
+                JOptionPane.showMessageDialog(this, "No uncashed sales", "Till", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (JOptionPane.showConfirmDialog(this, "Cash up till " + till.getName() + "?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+                return;
+            }
             TillReport report = new TillReport();
             report.actualTakings = dc.getTillTakings(till.getId());
             if (report.actualTakings.compareTo(BigDecimal.ZERO) <= 0) {
@@ -189,11 +190,20 @@ public class TillWindow extends javax.swing.JFrame {
             }
             report.actualTakings = report.actualTakings.setScale(2);
             String strVal = JOptionPane.showInputDialog(this, "Enter value of money counted", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
-            if (strVal == null || strVal.equals("")) {
+            if (strVal == null ){
+                return;
+            }
+            if(strVal.equals("")) {
+                JOptionPane.showMessageDialog(this, "A Value must be entered", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if (!Utilities.isNumber(strVal)) {
                 JOptionPane.showMessageDialog(this, "You must enter a number greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            double value = Double.parseDouble(strVal);
+            if(value <= 0){
+                JOptionPane.showMessageDialog(this, "You must enter a value greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
                 return;
             }
             report.declared = new BigDecimal(strVal);
@@ -215,6 +225,8 @@ public class TillWindow extends javax.swing.JFrame {
             report.averageSpend = report.actualTakings.divide(new BigDecimal(1));
             till = dc.getTill(till.getId());
             report.tax = BigDecimal.ZERO;
+            
+            dc.cashUncashedSales(till.getId());
 
             TillReportDialog.showDialog(this, report);
 

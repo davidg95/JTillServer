@@ -1,13 +1,316 @@
-JTill log Tue May 02 17:10:26 BST 2017
-[17:10:26] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[17:10:27] [INFO] Get staff count
-[17:10:27] [INFO] Starting Thread Pool Excecutor
-[17:10:27] [INFO] JTill Server local IP address is 192.168.1.65
-[17:10:27] [INFO] Server Socket running on port number 52341
-[17:10:27] [INFO] Ready to accept connections
-[17:10:30] [INFO] Login Staff dgrant
-[17:10:30] [INFO] David Grant has logged in
-[17:10:35] [INFO] Get product 15
-[17:10:46] [INFO] Stopping JTIll Server
-[17:10:46] [INFO] Saving properties
-[17:10:46] [INFO] Stopping
+JTill log Wed May 03 12:53:59 BST 2017
+[12:53:59] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[12:54:01] [INFO] Get staff count
+[12:54:02] [INFO] Starting Thread Pool Excecutor
+[12:54:02] [INFO] JTill Server local IP address is 192.168.1.11
+[12:54:02] [INFO] Server Socket running on port number 52341
+[12:54:02] [INFO] Ready to accept connections
+[12:54:17] [INFO] DAVID-PC has connected
+[12:54:17] [INFO] Received GETSETTING from client
+[12:54:17] [INFO] Received GETSETTING from client
+[12:54:17] [INFO] Received GETSETTING from client
+[12:54:17] [INFO] Received GETSETTING from client
+[12:54:17] [INFO] Received GETVALIDDISCOUNTS from client
+[12:54:17] [INFO] Received GETDISCOUNTBUCKETS from client
+[12:54:17] [INFO] Received GETBUCKETTRIGGERES from client
+[12:54:18] [INFO] Received GETALLSCREENS from client
+[12:54:18] [INFO] Received GETBUTTONSONSCREEN from client
+[12:54:18] [INFO] Received GETPRODUCT from client
+[12:54:18] [INFO] Get product 2
+[12:54:18] [INFO] Received GETPRODUCT from client
+[12:54:18] [INFO] Get product 13
+[12:54:18] [INFO] Received GETPRODUCT from client
+[12:54:18] [INFO] Get product 14
+[12:54:18] [INFO] Received GETBUTTONSONSCREEN from client
+[12:54:18] [INFO] Received GETPRODUCT from client
+[12:54:18] [INFO] Get product 16
+[12:54:18] [INFO] Received GETPRODUCT from client
+[12:54:18] [INFO] Get product 17
+[12:54:18] [INFO] Received GETPRODUCT from client
+[12:54:18] [INFO] Get product 18
+[12:54:18] [INFO] Received GETPRODUCT from client
+[12:54:18] [INFO] Get product 19
+[12:54:18] [INFO] Received GETPRODUCT from client
+[12:54:18] [INFO] Get product 14
+[12:54:18] [INFO] Received GETBUTTONSONSCREEN from client
+[12:54:18] [INFO] Received GETPRODUCT from client
+[12:54:18] [INFO] Get product 15
+[12:54:18] [INFO] Received GETPRODUCT from client
+[12:54:18] [INFO] Get product 15
+[12:54:18] [INFO] Received GETPRODUCT from client
+[12:54:18] [INFO] Get product 14
+[12:56:47] [INFO] Received GETSTAFF from client
+[12:56:47] [INFO] Get staff 1
+[12:56:49] [INFO] Received CLOCKON from client
+[12:56:57] [INFO] Received GETSTAFF from client
+[12:56:57] [INFO] Get staff 7521
+[12:57:11] [INFO] Received GETSTAFF from client
+[12:57:11] [INFO] Get staff 5
+[12:57:37] [INFO] Received TILLLOGIN from client
+[12:57:37] [INFO] David Grant has logged in from DAVID-PC
+[12:57:37] [INFO] Received RESUMESALE from client
+[12:57:39] [INFO] Received GETCATEGORY from client
+[12:57:40] [INFO] Received GETCATEGORY from client
+[12:57:42] [INFO] Received GETCATEGORY from client
+[12:58:07] [INFO] Received GETPRODUCTBARCODE from client
+[12:58:07] [INFO] Get Product sadfsdfsdf
+[13:08:30] [INFO] Received GETPRODUCTBARCODE from client
+[13:08:30] [INFO] Get Product sdfsdf
+[13:08:42] [INFO] Received GETPRODUCTBARCODE from client
+[13:08:42] [INFO] Get Product 
+[13:14:56] [INFO] Received GETPRODUCTBARCODE from client
+[13:14:56] [INFO] Get Product 345345345
+[13:14:59] [INFO] Received PRODUCTLOOKUP from client
+[13:15:06] [INFO] Received PRODUCTLOOKUP from client
+[13:15:52] [INFO] Received ASSISSTANCE from client
+[13:16:00] [INFO] Received ASSISSTANCE from client
+[13:19:39] [INFO] Received GETALLDISCOUNTS from client
+[13:19:40] [INFO] Get all discounts
+[13:19:40] [INFO] Received GETALLDISCOUNTS from client
+[13:19:40] [INFO] Get all discounts
+[13:19:40] [INFO] Received GETALLDISCOUNTS from client
+[13:19:41] [INFO] Get all discounts
+[13:20:16] [INFO] Received TILLLOGOUT from client
+[13:20:16] [INFO] David Grant has logged out
+[13:22:03] [INFO] Received TILLLOGOUT from client
+[13:42:00] [INFO] Received TILLLOGOUT from client
+[13:42:01] [INFO] Received CONNTERM from client
+[13:42:01] [INFO] DAVID-PC has disconnected
+[13:42:21] [INFO] DAVID-PC has connected
+[13:42:21] [INFO] Received GETSETTING from client
+[13:42:21] [INFO] Received GETSETTING from client
+[13:42:21] [INFO] Received GETSETTING from client
+[13:42:21] [INFO] Received GETSETTING from client
+[13:42:21] [INFO] Received GETVALIDDISCOUNTS from client
+[13:42:21] [INFO] Received GETDISCOUNTBUCKETS from client
+[13:42:21] [INFO] Received GETBUCKETTRIGGERES from client
+[13:42:21] [INFO] Received GETALLSCREENS from client
+[13:42:21] [INFO] Received GETBUTTONSONSCREEN from client
+[13:42:21] [INFO] Received GETPRODUCT from client
+[13:42:21] [INFO] Get product 2
+[13:42:21] [INFO] Received GETPRODUCT from client
+[13:42:21] [INFO] Get product 13
+[13:42:21] [INFO] Received GETPRODUCT from client
+[13:42:21] [INFO] Get product 14
+[13:42:21] [INFO] Received GETBUTTONSONSCREEN from client
+[13:42:21] [INFO] Received GETPRODUCT from client
+[13:42:21] [INFO] Get product 16
+[13:42:21] [INFO] Received GETPRODUCT from client
+[13:42:21] [INFO] Get product 17
+[13:42:21] [INFO] Received GETPRODUCT from client
+[13:42:21] [INFO] Get product 18
+[13:42:21] [INFO] Received GETPRODUCT from client
+[13:42:21] [INFO] Get product 19
+[13:42:21] [INFO] Received GETPRODUCT from client
+[13:42:21] [INFO] Get product 14
+[13:42:21] [INFO] Received GETBUTTONSONSCREEN from client
+[13:42:22] [INFO] Received GETPRODUCT from client
+[13:42:22] [INFO] Get product 15
+[13:42:22] [INFO] Received GETPRODUCT from client
+[13:42:22] [INFO] Get product 15
+[13:42:22] [INFO] Received GETPRODUCT from client
+[13:42:22] [INFO] Get product 14
+[13:43:32] [INFO] Login Staff dgrant
+[13:43:32] [INFO] David Grant has logged in
+[13:44:00] [INFO] Get all staff
+[13:44:00] [INFO] Get all staff
+[13:44:50] [INFO] Add staff 0
+[13:44:50] [INFO] Get all staff
+[13:45:05] [INFO] David Grant has logged out
+[13:45:14] [INFO] Login Staff andypandy123
+[13:45:14] [INFO] Andrew has logged in
+[13:48:18] [INFO] Get all discounts
+[13:49:51] [INFO] Received CONNTERM from client
+[13:49:51] [INFO] DAVID-PC has disconnected
+[13:49:59] [INFO] DAVID-PC has connected
+[13:49:59] [INFO] Received GETSETTING from client
+[13:49:59] [INFO] Received GETSETTING from client
+[13:49:59] [INFO] Received GETSETTING from client
+[13:49:59] [INFO] Received GETSETTING from client
+[13:49:59] [INFO] Received GETVALIDDISCOUNTS from client
+[13:49:59] [INFO] Received GETDISCOUNTBUCKETS from client
+[13:49:59] [INFO] Received GETBUCKETTRIGGERES from client
+[13:49:59] [INFO] Received GETALLSCREENS from client
+[13:49:59] [INFO] Received GETBUTTONSONSCREEN from client
+[13:50:00] [INFO] Received GETPRODUCT from client
+[13:50:00] [INFO] Get product 2
+[13:50:00] [INFO] Received GETPRODUCT from client
+[13:50:00] [INFO] Get product 13
+[13:50:00] [INFO] Received GETPRODUCT from client
+[13:50:00] [INFO] Get product 20
+[13:50:00] [INFO] Received GETPRODUCT from client
+[13:50:00] [INFO] Get product 14
+[13:50:00] [INFO] Received GETBUTTONSONSCREEN from client
+[13:50:00] [INFO] Received GETPRODUCT from client
+[13:50:00] [INFO] Get product 16
+[13:50:00] [INFO] Received GETPRODUCT from client
+[13:50:00] [INFO] Get product 17
+[13:50:00] [INFO] Received GETPRODUCT from client
+[13:50:00] [INFO] Get product 18
+[13:50:00] [INFO] Received GETPRODUCT from client
+[13:50:00] [INFO] Get product 19
+[13:50:00] [INFO] Received GETPRODUCT from client
+[13:50:00] [INFO] Get product 14
+[13:50:00] [INFO] Received GETBUTTONSONSCREEN from client
+[13:50:00] [INFO] Received GETPRODUCT from client
+[13:50:00] [INFO] Get product 15
+[13:50:00] [INFO] Received GETPRODUCT from client
+[13:50:00] [INFO] Get product 15
+[13:50:00] [INFO] Received GETPRODUCT from client
+[13:50:00] [INFO] Get product 14
+[13:50:19] [INFO] Get all staff
+[13:50:27] [INFO] Received GETSTAFF from client
+[13:50:27] [INFO] Get staff 4
+[13:50:27] [INFO] Received CLOCKON from client
+[13:50:29] [INFO] Received TILLLOGIN from client
+[13:50:29] [INFO] Andrew has logged in from DAVID-PC
+[13:50:29] [INFO] Received RESUMESALE from client
+[13:50:35] [INFO] Received GETCATEGORY from client
+[13:50:39] [INFO] Received GETCATEGORY from client
+[13:50:56] [INFO] Received ADDSALE from client
+[13:50:56] [INFO] Get product 20
+[13:50:56] [INFO] Purchase product 20
+[13:50:56] [WARNING] 20 is below minimum stock level
+[13:50:56] [INFO] Get product 14
+[13:50:56] [INFO] Purchase product 14
+[13:50:56] [WARNING] 14 is below minimum stock level
+[13:50:56] [INFO] Received GETSETTING from client
+[13:50:56] [INFO] Received GETSETTING from client
+[13:51:08] [INFO] Received GETCATEGORY from client
+[13:51:15] [INFO] Received GETCATEGORY from client
+[13:51:27] [INFO] Received GETCATEGORY from client
+[13:51:33] [INFO] Received GETCATEGORY from client
+[13:51:44] [INFO] Received GETCATEGORY from client
+[13:51:47] [INFO] Received GETCATEGORY from client
+[13:52:17] [INFO] Received GETCATEGORY from client
+[13:52:36] [INFO] Received GETCATEGORY from client
+[13:52:56] [INFO] Received ADDSALE from client
+[13:52:56] [INFO] Get product 20
+[13:52:56] [INFO] Purchase product 20
+[13:52:56] [WARNING] 20 is below minimum stock level
+[13:52:56] [INFO] Get product 13
+[13:52:56] [INFO] Get product 13
+[13:52:56] [INFO] Received GETSETTING from client
+[13:52:56] [INFO] Received GETSETTING from client
+[13:53:26] [INFO] Received ADDSALE from client
+[13:53:26] [INFO] Get product 20
+[13:53:26] [INFO] Purchase product 20
+[13:53:26] [WARNING] 20 is below minimum stock level
+[13:53:26] [INFO] Received GETSETTING from client
+[13:53:26] [INFO] Received GETSETTING from client
+[13:57:28] [INFO] Received TILLLOGOUT from client
+[13:57:28] [INFO] Andrew has logged out
+[13:57:29] [INFO] Received CONNTERM from client
+[13:57:29] [INFO] DAVID-PC has disconnected
+[13:57:38] [INFO] DAVID-PC has connected
+[13:57:38] [INFO] Received GETSETTING from client
+[13:57:38] [INFO] Received GETSETTING from client
+[13:57:38] [INFO] Received GETSETTING from client
+[13:57:38] [INFO] Received GETSETTING from client
+[13:57:38] [INFO] Received GETVALIDDISCOUNTS from client
+[13:57:39] [INFO] Received GETDISCOUNTBUCKETS from client
+[13:57:39] [INFO] Received GETBUCKETTRIGGERES from client
+[13:57:39] [INFO] Received GETALLSCREENS from client
+[13:57:39] [INFO] Received GETBUTTONSONSCREEN from client
+[13:57:39] [INFO] Received GETPRODUCT from client
+[13:57:39] [INFO] Get product 2
+[13:57:39] [INFO] Received GETPRODUCT from client
+[13:57:39] [INFO] Get product 13
+[13:57:39] [INFO] Received GETPRODUCT from client
+[13:57:39] [INFO] Get product 20
+[13:57:39] [INFO] Received GETPRODUCT from client
+[13:57:39] [INFO] Get product 14
+[13:57:39] [INFO] Received GETBUTTONSONSCREEN from client
+[13:57:39] [INFO] Received GETPRODUCT from client
+[13:57:39] [INFO] Get product 16
+[13:57:39] [INFO] Received GETPRODUCT from client
+[13:57:39] [INFO] Get product 17
+[13:57:39] [INFO] Received GETPRODUCT from client
+[13:57:39] [INFO] Get product 18
+[13:57:39] [INFO] Received GETPRODUCT from client
+[13:57:39] [INFO] Get product 19
+[13:57:39] [INFO] Received GETPRODUCT from client
+[13:57:39] [INFO] Get product 14
+[13:57:39] [INFO] Received GETBUTTONSONSCREEN from client
+[13:57:39] [INFO] Received GETPRODUCT from client
+[13:57:39] [INFO] Get product 15
+[13:57:39] [INFO] Received GETPRODUCT from client
+[13:57:39] [INFO] Get product 15
+[13:57:39] [INFO] Received GETPRODUCT from client
+[13:57:39] [INFO] Get product 14
+[13:57:40] [INFO] Received GETSTAFF from client
+[13:57:40] [INFO] Get staff 1
+[13:57:41] [INFO] Received CLOCKON from client
+[13:57:42] [INFO] Received TILLLOGIN from client
+[13:57:42] [INFO] David Grant has logged in from DAVID-PC
+[13:57:42] [INFO] Received RESUMESALE from client
+[13:57:50] [INFO] Received TILLLOGOUT from client
+[13:57:50] [INFO] David Grant has logged out
+[13:57:51] [INFO] Received CONNTERM from client
+[13:57:51] [INFO] DAVID-PC has disconnected
+[14:21:58] [INFO] DAVID-PC has connected
+[14:21:58] [INFO] Received GETSETTING from client
+[14:21:58] [INFO] Received GETSETTING from client
+[14:21:58] [INFO] Received GETSETTING from client
+[14:21:58] [INFO] Received GETSETTING from client
+[14:21:58] [INFO] Received GETVALIDDISCOUNTS from client
+[14:21:59] [INFO] Received GETDISCOUNTBUCKETS from client
+[14:21:59] [INFO] Received GETBUCKETTRIGGERES from client
+[14:21:59] [INFO] Received GETALLSCREENS from client
+[14:21:59] [INFO] Received GETBUTTONSONSCREEN from client
+[14:21:59] [INFO] Received GETPRODUCT from client
+[14:21:59] [INFO] Get product 2
+[14:21:59] [INFO] Received GETPRODUCT from client
+[14:21:59] [INFO] Get product 13
+[14:21:59] [INFO] Received GETPRODUCT from client
+[14:21:59] [INFO] Get product 20
+[14:21:59] [INFO] Received GETPRODUCT from client
+[14:21:59] [INFO] Get product 14
+[14:21:59] [INFO] Received GETBUTTONSONSCREEN from client
+[14:21:59] [INFO] Received GETPRODUCT from client
+[14:21:59] [INFO] Get product 16
+[14:21:59] [INFO] Received GETPRODUCT from client
+[14:21:59] [INFO] Get product 17
+[14:21:59] [INFO] Received GETPRODUCT from client
+[14:21:59] [INFO] Get product 18
+[14:21:59] [INFO] Received GETPRODUCT from client
+[14:21:59] [INFO] Get product 19
+[14:21:59] [INFO] Received GETPRODUCT from client
+[14:21:59] [INFO] Get product 14
+[14:21:59] [INFO] Received GETBUTTONSONSCREEN from client
+[14:21:59] [INFO] Received GETPRODUCT from client
+[14:21:59] [INFO] Get product 15
+[14:21:59] [INFO] Received GETPRODUCT from client
+[14:21:59] [INFO] Get product 15
+[14:21:59] [INFO] Received GETPRODUCT from client
+[14:21:59] [INFO] Get product 14
+[14:22:00] [INFO] Received GETSTAFF from client
+[14:22:00] [INFO] Get staff 1
+[14:22:00] [INFO] Received CLOCKON from client
+[14:22:00] [INFO] Received TILLLOGIN from client
+[14:22:00] [INFO] David Grant has logged in from DAVID-PC
+[14:22:00] [INFO] Received RESUMESALE from client
+[14:26:42] [INFO] Get all staff
+[14:27:05] [INFO] Received GETCATEGORY from client
+[14:27:24] [INFO] Received GETCATEGORY from client
+[14:27:24] [INFO] Received GETCATEGORY from client
+[14:27:24] [INFO] Received GETCATEGORY from client
+[14:27:26] [INFO] Received ADDSALE from client
+[14:27:26] [INFO] Get product 20
+[14:27:26] [INFO] Purchase product 20
+[14:27:26] [WARNING] 20 is below minimum stock level
+[14:27:26] [INFO] Get product 17
+[14:27:26] [INFO] Purchase product 17
+[14:27:26] [WARNING] 17 is below minimum stock level
+[14:27:26] [INFO] Get product 18
+[14:27:26] [INFO] Purchase product 18
+[14:27:26] [WARNING] 18 is below minimum stock level
+[14:27:26] [INFO] Get product 16
+[14:27:26] [INFO] Purchase product 16
+[14:27:26] [WARNING] 16 is below minimum stock level
+[14:27:26] [INFO] Received GETSETTING from client
+[14:27:26] [INFO] Received GETSETTING from client
+[14:27:29] [INFO] Received TILLLOGOUT from client
+[14:27:29] [INFO] David Grant has logged out
+[14:27:36] [INFO] Received CONNTERM from client
+[14:27:36] [INFO] DAVID-PC has disconnected

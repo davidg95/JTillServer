@@ -650,18 +650,31 @@ public final class SettingsWindow extends javax.swing.JFrame {
 
     private void btnEditNetworkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditNetworkActionPerformed
         if (editNetwork) {
-            int port = Integer.parseInt(txtPort.getText());
-            int max = Integer.parseInt(txtMaxConn.getText());
-            int queue = Integer.parseInt(txtMaxQueued.getText());
+            String portVal = txtPort.getText();
+            String maxVal = txtMaxConn.getText();
+            String queueVal = txtMaxQueued.getText();
+            if(portVal.length() == 0 || maxVal.length() == 0 || queueVal.length() == 0){
+                JOptionPane.showMessageDialog(this, "Must enter value for network settings", "Network Options", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if(!Utilities.isNumber(portVal) || !Utilities.isNumber(maxVal) || !Utilities.isNumber(queueVal)){
+                JOptionPane.showMessageDialog(this, "Must enter numerical values for network settings", "Network Options", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int port = Integer.parseInt(portVal);
+            int max = Integer.parseInt(maxVal);
+            int queue = Integer.parseInt(queueVal);
             if (port < 0 || port > 65535) {
                 JOptionPane.showMessageDialog(this, "Please enter a port value between 0 and 65535", "Server Options", JOptionPane.PLAIN_MESSAGE);
+                return;
             } else if (max < 0 || queue < 0) {
                 JOptionPane.showMessageDialog(this, "Please enter a value greater than 0", "Server Options", JOptionPane.PLAIN_MESSAGE);
+                return;
             } else {
                 try {
-                    dc.setSetting("port", Integer.toString(port));
-                    dc.setSetting("max_conn", Integer.toString(max));
-                    dc.setSetting("max_queue", Integer.toString(queue));
+                    dc.setSetting("port", portVal);
+                    dc.setSetting("max_conn", maxVal);
+                    dc.setSetting("max_queue", queueVal);
                 } catch (IOException ex) {
                     log.log(Level.SEVERE, null, ex);
                 }
@@ -699,6 +712,10 @@ public final class SettingsWindow extends javax.swing.JFrame {
                 String address = txtAddress.getText();
                 String username = txtUsername.getText();
                 String password = new String(txtPassword.getPassword());
+                if(address.length() == 0 || username.length() == 0 || password.length() == 0){
+                    JOptionPane.showMessageDialog(this, "Must enter values for database options", "Database Settings", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 dc.setSetting("db_address", address);
                 dc.setSetting("db_username", username);
                 dc.setSetting("db_password", password);

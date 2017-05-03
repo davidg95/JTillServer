@@ -42,8 +42,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      *
      * @param parent the parent component.
      * @param dc the data source.
-     * @param showOpen indicated whether open price products should show.
-     * new product if a barcode is not found.
+     * @param showOpen indicated whether open price products should show. new
+     * product if a barcode is not found.
      */
     public ProductSelectDialog(Window parent, DataConnect dc, boolean showOpen) {
         super(parent);
@@ -273,7 +273,10 @@ public class ProductSelectDialog extends javax.swing.JDialog {
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         String search = txtSearch.getText();
-
+        
+        if(search.length() == 0){
+            return;
+        }
         List<Product> newList = new ArrayList<>();
 
         for (Product p : currentTableContents) {
@@ -286,6 +289,10 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                 }
             } else {
                 try {
+                    if (!Utilities.isNumber(search)) {
+                        JOptionPane.showMessageDialog(this, "Barcode must be a number", "Search", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     final Plu plu = dc.getPluByProduct(p.getId());
                     if (plu.getCode().equals(search)) {
                         newList.add(p);

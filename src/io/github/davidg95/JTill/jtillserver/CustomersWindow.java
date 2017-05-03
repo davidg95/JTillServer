@@ -568,6 +568,24 @@ public class CustomersWindow extends javax.swing.JFrame {
                 if (name.equals("")) {
                     JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Customer", JOptionPane.ERROR_MESSAGE);
                 } else {
+                    if (phone.length() > 0) {
+                        if (!Utilities.isNumber(phone)) {
+                            JOptionPane.showMessageDialog(this, "Phone numbers must not contain letters or symbols", "New Customer", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                    }
+                    if (mobile.length() > 0) {
+                        if (!Utilities.isNumber(mobile)) {
+                            JOptionPane.showMessageDialog(this, "Phone numbers must not contain letters or symbols", "New Customer", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                    }
+                    if (email.length() > 0) {
+                        if (!Utilities.isEmail(email)) {
+                            JOptionPane.showMessageDialog(this, "Email is not valid", "New Customer", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                    }
                     c = new Customer(name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, loyalty, moneyDue);
                     try {
                         Customer cu = dc.addCustomer(c);
@@ -601,6 +619,29 @@ public class CustomersWindow extends javax.swing.JFrame {
         String county = txtCounty.getText();
         String country = txtCountry.getText();
         String postcode = txtPostcode.getText();
+
+        if (name.length() == 0) {
+            JOptionPane.showMessageDialog(this, "Must enter a name", "Save Changes", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (phone.length() > 0) {
+            if (!Utilities.isNumber(phone)) {
+                JOptionPane.showMessageDialog(this, "Phone numbers must not contain letters or symbols", "Save Changes", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        if (mobile.length() > 0) {
+            if (!Utilities.isNumber(mobile)) {
+                JOptionPane.showMessageDialog(this, "Phone numbers must not contain letters or symbols", "Save Changes", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        if (email.length() > 0) {
+            if (!Utilities.isEmail(email)) {
+                JOptionPane.showMessageDialog(this, "Email is not valid", "Save Changes", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
 
         customer.setName(name);
         customer.setPhone(phone);
