@@ -6,7 +6,9 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import static io.github.davidg95.JTill.jtillserver.SettingsWindow.frame;
 import java.awt.Image;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -14,6 +16,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -23,7 +28,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public final class CategorysWindow extends javax.swing.JFrame {
+public final class CategorysWindow extends javax.swing.JInternalFrame {
 
     public static CategorysWindow frame;
 
@@ -35,12 +40,17 @@ public final class CategorysWindow extends javax.swing.JFrame {
 
     /**
      * Creates new form CategoryWindow
+     *
      * @param dc the data connection.
      * @param icon the frame icon.
      */
     public CategorysWindow(DataConnect dc, Image icon) {
         this.dc = dc;
-        this.setIconImage(icon);
+//        this.setIconImage(icon);
+        super.setMaximizable(true);
+        super.setIconifiable(true);
+        super.setClosable(true);
+        super.setFrameIcon(new ImageIcon(icon));
         initComponents();
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
@@ -57,11 +67,21 @@ public final class CategorysWindow extends javax.swing.JFrame {
     public static void showCategoryWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new CategorysWindow(dc, icon);
-            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            GUI.gui.internal.add(frame);
         }
-        update();
-        frame.setCurrentCategory(null);
-        frame.setVisible(true);
+        if (frame.isVisible()) {
+            frame.toFront();
+        } else {
+            update();
+            frame.setCurrentCategory(null);
+            frame.setVisible(true);
+        }
+        try {
+            frame.setIcon(false);
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -209,6 +229,7 @@ public final class CategorysWindow extends javax.swing.JFrame {
         lblStart = new javax.swing.JLabel();
         lblEnd = new javax.swing.JLabel();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Categorys");
 
         table.setModel(new javax.swing.table.DefaultTableModel(

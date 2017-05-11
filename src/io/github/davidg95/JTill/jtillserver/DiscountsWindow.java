@@ -8,6 +8,7 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Image;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -18,8 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
@@ -30,7 +30,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class DiscountsWindow extends javax.swing.JFrame {
+public class DiscountsWindow extends javax.swing.JInternalFrame {
 
     public static DiscountsWindow frame;
 
@@ -54,7 +54,11 @@ public class DiscountsWindow extends javax.swing.JFrame {
      */
     public DiscountsWindow(DataConnect dc, Image icon) {
         this.dc = dc;
-        this.setIconImage(icon);
+//        this.setIconImage(icon);
+        super.setMaximizable(true);
+        super.setIconifiable(true);
+        super.setClosable(true);
+        super.setFrameIcon(new ImageIcon(icon));
         initComponents();
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
@@ -75,11 +79,23 @@ public class DiscountsWindow extends javax.swing.JFrame {
      * @param dc the data source.
      */
     public static void showDiscountListWindow(DataConnect dc, Image icon) {
-        frame = new DiscountsWindow(dc, icon);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        update();
-        frame.setCurrentDiscount(null);
-        frame.setVisible(true);
+        if (frame == null) {
+            frame = new DiscountsWindow(dc, icon);
+            GUI.gui.internal.add(frame);
+        }
+        if (frame.isVisible()) {
+            frame.toFront();
+        } else {
+            update();
+            frame.setCurrentDiscount(null);
+            frame.setVisible(true);
+        }
+        try {
+            frame.setIcon(false);
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -280,7 +296,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         lblOfEach = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Discounts");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
@@ -825,28 +841,35 @@ public class DiscountsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_txtSearchActionPerformed
 
     private void btnAddTriggerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTriggerActionPerformed
-        Product p = ProductSelectDialog.showDialog(this, dc);
-        if (p == null) {
-            return;
-        }
-        String val = JOptionPane.showInputDialog(this, "Enter amount required", "Trigger", JOptionPane.INFORMATION_MESSAGE);
-        if(!Utilities.isNumber(val)){
-            JOptionPane.showMessageDialog(this, "Must enter a number", "New Trigger", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        int value = Integer.parseInt(val);
-        if(value <= 0){
-            JOptionPane.showMessageDialog(this, "Must enter a value greater than zero", "New Trigger", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        Trigger t = new Trigger(currentBucket.getId(), p.getId(), value);
-        try {
-            dc.addTrigger(t);
-            currentTriggerContents.add(t);
-            updateTriggerTable();
-        } catch (IOException | SQLException ex) {
-            showError(ex);
-        }
+        final Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                Product p = ProductSelectDialog.showDialog(dc);
+                if (p == null) {
+                    return;
+                }
+                String val = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter amount required", "Trigger", JOptionPane.INFORMATION_MESSAGE);
+                if (!Utilities.isNumber(val)) {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must enter a number", "New Trigger", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                int value = Integer.parseInt(val);
+                if (value <= 0) {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must enter a value greater than zero", "New Trigger", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                Trigger t = new Trigger(currentBucket.getId(), p.getId(), value);
+                try {
+                    dc.addTrigger(t);
+                    currentTriggerContents.add(t);
+                    updateTriggerTable();
+                } catch (IOException | SQLException ex) {
+                    showError(ex);
+                }
+            }
+        };
+        final Thread thread = new Thread(run);
+        thread.start();
     }//GEN-LAST:event_btnAddTriggerActionPerformed
 
     private void btnRemoveTriggerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveTriggerActionPerformed
@@ -899,7 +922,7 @@ public class DiscountsWindow extends javax.swing.JFrame {
         chkRequire.setSelected(currentBucket.isRequiredTrigger());
         getTriggers();
         tableTrig.setEnabled(true);
-        for(Component c: panelTriggers.getComponents()){
+        for (Component c : panelTriggers.getComponents()) {
             c.setEnabled(true);
         }
     }//GEN-LAST:event_listBucketsMouseClicked
@@ -925,12 +948,12 @@ public class DiscountsWindow extends javax.swing.JFrame {
 
     private void btnSaveBucketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveBucketActionPerformed
         String val = txtTriggers.getText();
-        if(!Utilities.isNumber(val)){
+        if (!Utilities.isNumber(val)) {
             JOptionPane.showMessageDialog(this, "Must enter a number for triggers", "Triggers", JOptionPane.ERROR_MESSAGE);
             return;
         }
         int value = Integer.parseInt(val);
-        if(value <= 0){
+        if (value <= 0) {
             JOptionPane.showMessageDialog(this, "Must enter a value greater than zero", "Triggers", JOptionPane.ERROR_MESSAGE);
             return;
         }

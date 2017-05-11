@@ -8,6 +8,10 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,10 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -29,7 +38,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class ProductsWindow extends javax.swing.JFrame {
+public class ProductsWindow extends javax.swing.JInternalFrame {
 
     public static ProductsWindow frame;
 
@@ -49,6 +58,9 @@ public class ProductsWindow extends javax.swing.JFrame {
 
     private final Image icon;
 
+    private Category searchC;
+    private Department searchD;
+
     /**
      * Creates new form ProductsWindow
      *
@@ -57,9 +69,13 @@ public class ProductsWindow extends javax.swing.JFrame {
     public ProductsWindow(DataConnect dc, Image icon) {
         this.dc = dc;
         this.icon = icon;
-        this.setIconImage(icon);
+//        this.setIconImage(icon);
         initComponents();
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        super.setFrameIcon(new ImageIcon(icon));
+        super.setMaximizable(true);
+        super.setIconifiable(true);
+        super.setClosable(true);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) tableProducts.getModel();
         showAllProducts();
@@ -75,11 +91,21 @@ public class ProductsWindow extends javax.swing.JFrame {
     public static void showProductsListWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new ProductsWindow(dc, icon);
-            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            GUI.gui.internal.add(frame);
         }
-        update();
-        frame.setCurrentProduct(null);
-        frame.setVisible(true);
+        if (frame.isVisible()) {
+            frame.toFront();
+        } else {
+            update();
+            frame.setCurrentProduct(null);
+            frame.setVisible(true);
+        }
+        try {
+            frame.setIcon(false);
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -323,7 +349,9 @@ public class ProductsWindow extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         txtPrice = new javax.swing.JTextField();
+        btnAdvanced = new javax.swing.JButton();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Stock Managment");
 
         tableProducts.setModel(new javax.swing.table.DefaultTableModel(
@@ -633,6 +661,13 @@ public class ProductsWindow extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        btnAdvanced.setText("Advanced");
+        btnAdvanced.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdvancedActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -673,7 +708,9 @@ public class ProductsWindow extends javax.swing.JFrame {
                         .addComponent(radCode)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 283, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAdvanced)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 196, Short.MAX_VALUE)
                         .addComponent(btnClose))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
@@ -709,7 +746,8 @@ public class ProductsWindow extends javax.swing.JFrame {
                     .addComponent(radName)
                     .addComponent(radBarcode)
                     .addComponent(radCode)
-                    .addComponent(btnSearch))
+                    .addComponent(btnSearch)
+                    .addComponent(btnAdvanced))
                 .addGap(6, 6, 6))
         );
 
@@ -717,7 +755,7 @@ public class ProductsWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        this.dispose();
+        this.hide();
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnShowAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowAllActionPerformed
@@ -745,7 +783,7 @@ public class ProductsWindow extends javax.swing.JFrame {
     private void btnSaveChangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesActionPerformed
         String name = txtName.getText();
         String shortName = txtShortName.getText();
-        if(name.length() == 0 || shortName.length() == 0){
+        if (name.length() == 0 || shortName.length() == 0) {
             JOptionPane.showMessageDialog(this, "Must enter a product name", "Save Changes", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -771,7 +809,7 @@ public class ProductsWindow extends javax.swing.JFrame {
         } else {
             String pr = txtPrice.getText();
             String costPr = txtCostPrice.getText();
-            if(!Utilities.isNumber(pr) || !Utilities.isNumber(costPr)){
+            if (!Utilities.isNumber(pr) || !Utilities.isNumber(costPr)) {
                 JOptionPane.showMessageDialog(this, "Must enter a number for price and cost price", "Save Changes", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -780,7 +818,7 @@ public class ProductsWindow extends javax.swing.JFrame {
             String st = txtStock.getText();
             String minSt = txtMinStock.getText();
             String maxSt = txtMaxStock.getText();
-            if(!Utilities.isNumber(st) || !Utilities.isNumber(minSt) || !Utilities.isNumber(maxSt)){
+            if (!Utilities.isNumber(st) || !Utilities.isNumber(minSt) || !Utilities.isNumber(maxSt)) {
                 JOptionPane.showMessageDialog(this, "Must enter a number for stock levels", "Save Changes", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -895,7 +933,7 @@ public class ProductsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnReceiveStockActionPerformed
 
     private void btnWasteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWasteStockActionPerformed
-        WasteStockWindow.showWindow(dc, icon);
+        WasteStockWindow.showWindow(dc);
     }//GEN-LAST:event_btnWasteStockActionPerformed
 
     private void btnChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChartActionPerformed
@@ -947,7 +985,91 @@ public class ProductsWindow extends javax.swing.JFrame {
         DepartmentsWindow.showWindow(dc, icon);
     }//GEN-LAST:event_btnDepartmentsActionPerformed
 
+    private void btnAdvancedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdvancedActionPerformed
+        final JLabel label = new JLabel("Select Category: ");
+
+        final JTextField field = new JTextField();
+
+        final JRadioButton b1 = new JRadioButton("Category");
+        b1.addActionListener((ActionEvent e) -> {
+            label.setText("Select Category: ");
+            field.setText("");
+            searchC = null;
+            searchD = null;
+        });
+        final JRadioButton b2 = new JRadioButton("Department");
+        b2.addActionListener((ActionEvent e) -> {
+            label.setText("Select Department: ");
+            field.setText("");
+            searchC = null;
+            searchD = null;
+        });
+        final ButtonGroup bg = new ButtonGroup();
+        bg.add(b1);
+        bg.add(b2);
+        field.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (b1.isSelected()) {
+                    searchFieldClick(1, field);
+                } else {
+                    searchFieldClick(2, field);
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+
+        });
+
+        final JPanel panel = new JPanel();
+        panel.add(b1);
+        panel.add(b2);
+        panel.add(label);
+        panel.add(field);
+        b1.setSelected(true);
+        JOptionPane.showInternalMessageDialog(GUI.gui.internal, panel, "Advanced Search", JOptionPane.PLAIN_MESSAGE);
+        try {
+            List<Product> results = dc.getProductsAdvanced("WHERE " + (b1.isSelected() ? "CATEGORY_ID=" + searchC.getId() : "DEPARTMENT_ID=" + searchD.getId()));
+            if(results.isEmpty()){
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No results", "Product Search", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            currentTableContents = results;
+            updateTable();
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(ProductsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnAdvancedActionPerformed
+
+    private void searchFieldClick(int opt, JTextField f) {
+        if (opt == 1) {
+            searchC = CategorySelectDialog.showDialog(this, dc);
+            if (searchC != null) {
+                f.setText(searchC.getName());
+            }
+        } else {
+            searchD = DepartmentSelectDialog.showDialog(this, dc);
+            if (searchD != null) {
+                f.setText(searchD.getName());
+            }
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdvanced;
     private javax.swing.JButton btnCSV;
     private javax.swing.JButton btnChart;
     private javax.swing.JButton btnClose;

@@ -5,52 +5,55 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.Window;
+import java.beans.PropertyVetoException;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 
 /**
  *
  * @author David
  */
-public class WarningDialog extends javax.swing.JDialog {
+public class WarningDialog extends javax.swing.JInternalFrame {
 
-    private static JDialog dialog;
+    private static WarningDialog dialog;
 
     private final LinkedList<String> warnings;
 
     /**
      * Creates new form WarningDialog
      *
-     * @param parent the parent component of this dialog.
      * @param warnings the list of warnings to display.
      */
-    public WarningDialog(Window parent, LinkedList<String> warnings) {
-        super(parent);
+    public WarningDialog(LinkedList<String> warnings) {
+        super();
         this.warnings = warnings;
         initComponents();
-        setModal(true);
-        setLocationRelativeTo(parent);
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        super.setClosable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         setList();
     }
 
     /**
      * Shows the warnings list dialog.
      *
-     * @param parent the parent component of this dialog.
      * @param warnings the list of warnings to show.
      */
-    public static void showDialog(Component parent, LinkedList<String> warnings) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
+    public static void showDialog(LinkedList<String> warnings) {
+        if (dialog == null) {
+            dialog = new WarningDialog(warnings);
+            GUI.gui.internal.add(dialog);
         }
-        dialog = new WarningDialog(window, warnings);
         dialog.setVisible(true);
+        try {
+            dialog.setSelected(true);
+            dialog.setIcon(false);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(WarningDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void setList() {

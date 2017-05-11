@@ -7,12 +7,15 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFrame;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -21,7 +24,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class CustomersWindow extends javax.swing.JFrame {
+public class CustomersWindow extends javax.swing.JInternalFrame {
 
     public static CustomersWindow frame;
 
@@ -37,7 +40,11 @@ public class CustomersWindow extends javax.swing.JFrame {
      */
     public CustomersWindow(DataConnect dc, Image icon) {
         this.dc = dc;
-        this.setIconImage(icon);
+//        this.setIconImage(icon);
+        super.setMaximizable(true);
+        super.setIconifiable(true);
+        super.setClosable(true);
+        super.setFrameIcon(new ImageIcon(icon));
         initComponents();
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
@@ -54,11 +61,21 @@ public class CustomersWindow extends javax.swing.JFrame {
     public static void showCustomersListWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new CustomersWindow(dc, icon);
-            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            GUI.gui.internal.add(frame);
         }
-        update();
-        frame.setCurrentCustomer(null);
-        frame.setVisible(true);
+        if (frame.isVisible()) {
+            frame.toFront();
+        } else {
+            update();
+            frame.setCurrentCustomer(null);
+            frame.setVisible(true);
+        }
+        try {
+            frame.setIcon(false);
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -218,7 +235,9 @@ public class CustomersWindow extends javax.swing.JFrame {
         radID = new javax.swing.JRadioButton();
         btnSearch = new javax.swing.JButton();
         btnTakePayment = new javax.swing.JButton();
+        btnOwe = new javax.swing.JButton();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Manage Customers");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
@@ -476,6 +495,13 @@ public class CustomersWindow extends javax.swing.JFrame {
             }
         });
 
+        btnOwe.setText("Show Customer Who Owe Money");
+        btnOwe.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOweActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -497,7 +523,10 @@ public class CustomersWindow extends javax.swing.JFrame {
                                 .addComponent(btnRemove))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnOwe)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
@@ -520,7 +549,7 @@ public class CustomersWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -532,6 +561,8 @@ public class CustomersWindow extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnShowAll)
                             .addComponent(btnTakePayment))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnOwe)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -761,9 +792,25 @@ public class CustomersWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnTakePaymentActionPerformed
 
+    private void btnOweActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOweActionPerformed
+        ArrayList<Customer> newList = new ArrayList<>();
+        for (Customer c : currentTableContents) {
+            if (c.getMoneyDue().compareTo(BigDecimal.ZERO) > 0) {
+                newList.add(c);
+            }
+        }
+        if (newList.isEmpty()) {
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No results", "Customers", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        currentTableContents = newList;
+        updateTable();
+    }//GEN-LAST:event_btnOweActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnOwe;
     private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;

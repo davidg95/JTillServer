@@ -30,15 +30,11 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 /**
@@ -75,7 +71,7 @@ public class GUI extends JFrame implements GUIInterface {
 
     private final boolean remote;
 
-    public final Image icon; //The icon for the frame.
+    public static Image icon; //The icon for the frame.
 
     private final Settings settings; //The settings object.
 
@@ -222,9 +218,27 @@ public class GUI extends JFrame implements GUIInterface {
                 TillSplashScreen.setLabel("Connecting to database");
                 db.connect(settings.getSetting("db_address"), settings.getSetting("db_username"), settings.getSetting("db_password"));
                 if (dc.getStaffCount() == 0) {
-                    Staff s = StaffDialog.showNewStaffDialog(this, db, true);
-                    if (s == null) {
-                        System.exit(0);
+//                    final Runnable run = new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Staff s = StaffDialog.showNewStaffDialog(db, true);
+//                            if (s == null) {
+//                                System.exit(0);
+//                            }
+//                        }
+//                    };
+//                    final Thread thread = new Thread(run);
+//                    thread.start();
+//                    try {
+//                        thread.join();
+//                    } catch (InterruptedException ex) {
+//                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+                    Staff s = new Staff("JTill Admin", Staff.MANAGER, "admin", "jtill", 0.01);
+                    try {
+                        s = dc.addStaff(s);
+                    } catch (SQLException | IOException ex) {
+                        JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
                 TillSplashScreen.addBar(56);
@@ -406,6 +420,7 @@ public class GUI extends JFrame implements GUIInterface {
         btnReports = new javax.swing.JButton();
         btnScreens = new javax.swing.JButton();
         btnSettings = new javax.swing.JButton();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
         lblServerAddress = new javax.swing.JLabel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
         lblPort = new javax.swing.JLabel();
@@ -428,6 +443,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemServerOptions = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         itemAbout = new javax.swing.JMenuItem();
+        itemUpdate = new javax.swing.JMenuItem();
         itemExit = new javax.swing.JMenuItem();
         menuStock = new javax.swing.JMenu();
         itemCreateNewProduct = new javax.swing.JMenuItem();
@@ -449,16 +465,17 @@ public class GUI extends JFrame implements GUIInterface {
         itemTaxes = new javax.swing.JMenuItem();
         itemPluSettings = new javax.swing.JMenuItem();
         itemLoyalty = new javax.swing.JMenuItem();
-        jSeparator2 = new javax.swing.JPopupMenu.Separator();
         itemDatabase = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        itemSalesList = new javax.swing.JMenuItem();
         itemLabelPrinting = new javax.swing.JMenuItem();
         itemStaffClocking = new javax.swing.JMenuItem();
         itemTerminals = new javax.swing.JMenuItem();
         itemWasteReports = new javax.swing.JMenuItem();
 
         setTitle("JTill Server");
+        setIconImage(GUI.icon);
 
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
@@ -623,6 +640,7 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         jToolBar1.add(btnSettings);
+        jToolBar1.add(filler2);
 
         lblServerAddress.setText("Local Server Address: 0.0.0.0");
         jToolBar1.add(lblServerAddress);
@@ -678,7 +696,7 @@ public class GUI extends JFrame implements GUIInterface {
                 .addGap(0, 0, 0)
                 .addComponent(lblClients, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE))
         );
         statusBarLayout.setVerticalGroup(
             statusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -736,7 +754,7 @@ public class GUI extends JFrame implements GUIInterface {
         );
         internalLayout.setVerticalGroup(
             internalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 364, Short.MAX_VALUE)
+            .addGap(0, 375, Short.MAX_VALUE)
         );
 
         menuFile.setText("File");
@@ -774,6 +792,14 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         menuFile.add(itemAbout);
+
+        itemUpdate.setText("Check For Update");
+        itemUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemUpdateActionPerformed(evt);
+            }
+        });
+        menuFile.add(itemUpdate);
 
         itemExit.setText("Exit");
         itemExit.addActionListener(new java.awt.event.ActionListener() {
@@ -940,7 +966,6 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         menuSetup.add(itemLoyalty);
-        menuSetup.add(jSeparator2);
 
         itemDatabase.setText("Database Settings");
         itemDatabase.setEnabled(false);
@@ -957,6 +982,14 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         jMenu1.add(jMenuItem1);
+
+        itemSalesList.setText("Sales List");
+        itemSalesList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemSalesListActionPerformed(evt);
+            }
+        });
+        jMenu1.add(itemSalesList);
 
         itemLabelPrinting.setText("Label Printing");
         itemLabelPrinting.addActionListener(new java.awt.event.ActionListener() {
@@ -1091,7 +1124,7 @@ public class GUI extends JFrame implements GUIInterface {
 
     private void lblClientsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblClientsMouseClicked
         if (evt.getClickCount() == 2) {
-            ConnectionsDialog.showConnectionsDialog(this, dc);
+            ConnectionsDialog.showConnectionsDialog(dc);
         }
     }//GEN-LAST:event_lblClientsMouseClicked
 
@@ -1116,7 +1149,7 @@ public class GUI extends JFrame implements GUIInterface {
                     break;
                 }
             }
-            JOptionPane.showMessageDialog(this, "ID: " + staff.getName() + "\nName: " + staff.getName() + "\nPosition: " + position, staff.getName(), JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "ID: " + staff.getName() + "\nName: " + staff.getName() + "\nPosition: " + position, staff.getName(), JOptionPane.PLAIN_MESSAGE);
         }
     }//GEN-LAST:event_lblUserMouseClicked
 
@@ -1158,7 +1191,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemAboutActionPerformed
 
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
-        SalesWindow.showSalesWindow(dc, icon);
+        ReportingWindow.showWindow(dc, icon);
     }//GEN-LAST:event_btnReportsActionPerformed
 
     private void btnSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsActionPerformed
@@ -1174,7 +1207,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemReceiveActionPerformed
 
     private void itemWasteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemWasteStockActionPerformed
-        WasteStockWindow.showWindow(dc, icon);
+        WasteStockWindow.showWindow(dc);
     }//GEN-LAST:event_itemWasteStockActionPerformed
 
     private void chkSevereActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkSevereActionPerformed
@@ -1190,11 +1223,11 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_chkInfoActionPerformed
 
     private void itemWasteReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemWasteReportsActionPerformed
-        WasteReports.showWindow(dc, icon);
+        WasteReports.showWindow(dc);
     }//GEN-LAST:event_itemWasteReportsActionPerformed
 
     private void itemReasonsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReasonsActionPerformed
-        WasteReasonDialog.showDialog(this, dc);
+        WasteReasonDialog.showDialog(dc, icon);
     }//GEN-LAST:event_itemReasonsActionPerformed
 
     private void itemTillScreensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTillScreensActionPerformed
@@ -1255,15 +1288,15 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemNewStaffActionPerformed
 
     private void itemStaffClockingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffClockingActionPerformed
-        StaffClocking.showWindow(dc, icon);
+        StaffClocking.showWindow(dc);
     }//GEN-LAST:event_itemStaffClockingActionPerformed
 
     private void itemStockTakeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStockTakeActionPerformed
-        StockTakeWindow.showWindow(dc, icon);
+        StockTakeWindow.showWindow(dc);
     }//GEN-LAST:event_itemStockTakeActionPerformed
 
     private void itemPluSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPluSettingsActionPerformed
-        PluSettings.showWindow(dc, icon);
+        PluSettings.showWindow(dc);
     }//GEN-LAST:event_itemPluSettingsActionPerformed
 
     private void btnManageStockMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnManageStockMouseEntered
@@ -1331,17 +1364,17 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnSettingsMouseExited
 
     private void itemLoyaltyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLoyaltyActionPerformed
-        LoyaltySettingsWindow.showWindow();
+        LoyaltySettingsWindow.showWindow(icon);
     }//GEN-LAST:event_itemLoyaltyActionPerformed
 
     private void lblWarningsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblWarningsMouseClicked
         if (evt.getClickCount() == 2) {
-            WarningDialog.showDialog(this, warningsList);
+            WarningDialog.showDialog(warningsList);
         }
     }//GEN-LAST:event_lblWarningsMouseClicked
 
     private void itemTerminalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTerminalsActionPerformed
-        TillWindow.showWindow(dc, icon);
+        TillWindow.showWindow(dc);
     }//GEN-LAST:event_itemTerminalsActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -1352,10 +1385,10 @@ public class GUI extends JFrame implements GUIInterface {
                 try {
                     ((DBConnect) dc).integrityCheck();
                     mDialog.hide();
-                    JOptionPane.showMessageDialog(GUI.this, "Check complete", "Database Check", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Check complete. No Issues.", "Database Check", JOptionPane.INFORMATION_MESSAGE);
                 } catch (SQLException ex) {
                     mDialog.hide();
-                    JOptionPane.showMessageDialog(GUI.this, ex, "Database Check", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Database Check", JOptionPane.ERROR_MESSAGE);
                 }
             }
         };
@@ -1363,6 +1396,28 @@ public class GUI extends JFrame implements GUIInterface {
         thread.start();
         mDialog.show();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void itemUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemUpdateActionPerformed
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String latest = UpdateChecker.checkForUpdate();
+                    if (!latest.equals("v0.0.1")) {
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Version " + latest + " avaliable", "Update", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You are currently at the latest version", "Update", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Error communicating with server", "Update", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        }.start();
+    }//GEN-LAST:event_itemUpdateActionPerformed
+
+    private void itemSalesListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSalesListActionPerformed
+        SalesWindow.showSalesWindow(dc, icon);
+    }//GEN-LAST:event_itemSalesListActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
@@ -1377,7 +1432,8 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JCheckBox chkSevere;
     private javax.swing.JCheckBox chkWarning;
     private javax.swing.Box.Filler filler1;
-    private javax.swing.JDesktopPane internal;
+    private javax.swing.Box.Filler filler2;
+    public javax.swing.JDesktopPane internal;
     private javax.swing.JMenuItem itemAbout;
     private javax.swing.JMenuItem itemCategorys;
     private javax.swing.JMenuItem itemCreateNewProduct;
@@ -1394,6 +1450,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemPluSettings;
     private javax.swing.JMenuItem itemReasons;
     private javax.swing.JMenuItem itemReceive;
+    private javax.swing.JMenuItem itemSalesList;
     private javax.swing.JMenuItem itemServerOptions;
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStaffClocking;
@@ -1403,6 +1460,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemTaxes;
     private javax.swing.JMenuItem itemTerminals;
     private javax.swing.JMenuItem itemTillScreens;
+    private javax.swing.JMenuItem itemUpdate;
     private javax.swing.JMenuItem itemWasteReports;
     private javax.swing.JMenuItem itemWasteStock;
     private javax.swing.JLabel jLabel1;
@@ -1412,7 +1470,6 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblClients;
     private javax.swing.JLabel lblHelp;

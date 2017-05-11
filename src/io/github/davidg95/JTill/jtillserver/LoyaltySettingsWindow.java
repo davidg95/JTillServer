@@ -6,6 +6,8 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Image;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -18,13 +20,16 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author David
  */
-public class LoyaltySettingsWindow extends javax.swing.JFrame {
+public class LoyaltySettingsWindow extends javax.swing.JInternalFrame {
+
+    private static LoyaltySettingsWindow window;
 
     private final DataConnect dc;
 
@@ -34,11 +39,14 @@ public class LoyaltySettingsWindow extends javax.swing.JFrame {
     /**
      * Creates new form LoyaltySettingsWindow
      */
-    public LoyaltySettingsWindow() {
+    public LoyaltySettingsWindow(Image icon) {
         dc = GUI.gui.dc;
         contents = new ArrayList<>();
         initComponents();
-        setIconImage(GUI.gui.icon);
+//        setIconImage(GUI.gui.icon);
+        super.setClosable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(icon));
         setTitle("Loyalty points settings");
         model = new DefaultListModel();
         list.setModel(model);
@@ -46,8 +54,18 @@ public class LoyaltySettingsWindow extends javax.swing.JFrame {
         init();
     }
 
-    public static void showWindow() {
-        new LoyaltySettingsWindow().setVisible(true);
+    public static void showWindow(Image icon) {
+        if (window == null) {
+            window = new LoyaltySettingsWindow(icon);
+            GUI.gui.internal.add(window);
+        }
+        window.setVisible(true);
+        try {
+            window.setIcon(false);
+            window.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(LoyaltySettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void init() {
@@ -159,7 +177,7 @@ public class LoyaltySettingsWindow extends javax.swing.JFrame {
                         pro.write((o.getId() + "\n").getBytes());
                     }
                 }
-            } finally{
+            } finally {
                 dep.close();
                 cat.close();
                 pro.close();
@@ -192,7 +210,7 @@ public class LoyaltySettingsWindow extends javax.swing.JFrame {
         txtSpendValue = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
         jLabel1.setText("Earn loyalty points from the following:");
 
@@ -321,13 +339,13 @@ public class LoyaltySettingsWindow extends javax.swing.JFrame {
         try {
             String val = txtSpent.getText();
             String spendVal = txtSpendValue.getText();
-            if(val.length() == 0 || !Utilities.isNumber(val) || spendVal.length() == 0 || !Utilities.isNumber(spendVal)){
+            if (val.length() == 0 || !Utilities.isNumber(val) || spendVal.length() == 0 || !Utilities.isNumber(spendVal)) {
                 JOptionPane.showMessageDialog(this, "A number must be entered", "Loyalty Settings", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int value = Integer.parseInt(val);
             int spendValue = Integer.parseInt(spendVal);
-            if(value < 0 || spendValue < 0){
+            if (value < 0 || spendValue < 0) {
                 JOptionPane.showMessageDialog(this, "Negatives are not allowed", "Loyalty Settings", JOptionPane.ERROR_MESSAGE);
                 return;
             }

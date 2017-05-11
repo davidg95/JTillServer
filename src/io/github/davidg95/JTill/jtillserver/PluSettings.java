@@ -7,35 +7,52 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author David
  */
-public class PluSettings extends javax.swing.JFrame {
+public class PluSettings extends javax.swing.JInternalFrame {
+
+    private static PluSettings window;
 
     private final DataConnect dc;
 
     /**
      * Creates new form PluSettings
      */
-    public PluSettings(DataConnect dc, Image icon) {
+    public PluSettings(DataConnect dc) {
         this.dc = dc;
         initComponents();
-        setIconImage(icon);
+//        setIconImage(icon);
+        super.setClosable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         setTitle("PLU Settings");
         init();
     }
 
-    public static void showWindow(DataConnect dc, Image icon) {
-        new PluSettings(dc, icon).setVisible(true);
+    public static void showWindow(DataConnect dc) {
+        if (window == null) {
+            window = new PluSettings(dc);
+            GUI.gui.internal.add(window);
+        }
+        window.setVisible(true);
+        try {
+            window.setIcon(false);
+            window.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(PluSettings.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    
-    private void init(){
+
+    private void init() {
         try {
             txtUPC.setText(dc.getSetting("UPC_PREFIX"));
             txtLength.setText(dc.getSetting("BARCODE_LENGTH"));
@@ -116,8 +133,7 @@ public class PluSettings extends javax.swing.JFrame {
         txtNext = new javax.swing.JTextField();
         btnReset = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
         jLabel1.setText("UPC Company Prefix:");
 
@@ -213,8 +229,8 @@ public class PluSettings extends javax.swing.JFrame {
             return;
         }
         int barcodeLength = Integer.parseInt(txtLength.getText());
-        
-        if(barcodeLength <= prefixLength){
+
+        if (barcodeLength <= prefixLength) {
             JOptionPane.showMessageDialog(this, "Your barcode length must be greater than your UPC Prefix length", "Plu settings", JOptionPane.ERROR_MESSAGE);
             return;
         }

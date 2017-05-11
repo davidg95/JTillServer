@@ -7,11 +7,13 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -19,8 +21,8 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class DepartmentsWindow extends javax.swing.JFrame {
-    
+public class DepartmentsWindow extends javax.swing.JInternalFrame {
+
     private static DepartmentsWindow window;
 
     private final DataConnect dc;
@@ -33,15 +35,28 @@ public class DepartmentsWindow extends javax.swing.JFrame {
      */
     public DepartmentsWindow(DataConnect dc, Image icon) {
         this.dc = dc;
-        this.setIconImage(icon);
+//        this.setIconImage(icon);
+        super.setClosable(true);
+        super.setMaximizable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(icon));
         initComponents();
         model = (DefaultTableModel) tblDep.getModel();
         updateTable();
     }
-    
-    public static void showWindow(DataConnect dc, Image icon){
-        window = new DepartmentsWindow(dc, icon);
+
+    public static void showWindow(DataConnect dc, Image icon) {
+        if (window == null) {
+            window = new DepartmentsWindow(dc, icon);
+            GUI.gui.internal.add(window);
+        }
         window.setVisible(true);
+        try {
+            window.setIcon(false);
+            window.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(DepartmentsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void updateTable() {
@@ -70,7 +85,7 @@ public class DepartmentsWindow extends javax.swing.JFrame {
         tblDep = new javax.swing.JTable();
         btnNewDepartment = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Edit Departments");
 
         tblDep.setModel(new javax.swing.table.DefaultTableModel(
@@ -139,13 +154,13 @@ public class DepartmentsWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewDepartmentActionPerformed
-        String name = JOptionPane.showInputDialog(this, "Enter name for new department", "New Department", JOptionPane.PLAIN_MESSAGE);
+        String name = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter name for new department", "New Department", JOptionPane.PLAIN_MESSAGE);
 
-        if(name == null){
+        if (name == null) {
             return;
         }
         if (name.equals("")) {
-            JOptionPane.showMessageDialog(this, "Cannot have a null value", "New Department", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Cannot have a null value", "New Department", JOptionPane.ERROR_MESSAGE);
             return;
         }
 

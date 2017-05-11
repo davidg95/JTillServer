@@ -7,11 +7,14 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFrame;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -19,7 +22,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class TaxWindow extends javax.swing.JFrame {
+public class TaxWindow extends javax.swing.JInternalFrame {
 
     public static TaxWindow frame;
 
@@ -34,7 +37,11 @@ public class TaxWindow extends javax.swing.JFrame {
      */
     public TaxWindow(DataConnect dc, Image icon) {
         dbConn = dc;
-        this.setIconImage(icon);
+//        this.setIconImage(icon);
+        super.setClosable(true);
+        super.setMaximizable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(icon));
         initComponents();
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
@@ -44,11 +51,17 @@ public class TaxWindow extends javax.swing.JFrame {
     public static void showTaxWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new TaxWindow(dc, icon);
-            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            GUI.gui.internal.add(frame);
         }
         update();
         frame.setCurrentTax(null);
         frame.setVisible(true);
+        try {
+        frame.setIcon(false);
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(TaxWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static void update() {
@@ -117,6 +130,7 @@ public class TaxWindow extends javax.swing.JFrame {
         txtSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Tax");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
@@ -281,11 +295,11 @@ public class TaxWindow extends javax.swing.JFrame {
             try {
                 String name = txtName.getText();
                 String val = txtValue.getText();
-                if(val.length() == 0){
+                if (val.length() == 0) {
                     JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Tax", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if(!Utilities.isNumber(val)){
+                if (!Utilities.isNumber(val)) {
                     JOptionPane.showMessageDialog(this, "Must enter a number for value", "New Tax", JOptionPane.ERROR_MESSAGE);
                     return;
                 }

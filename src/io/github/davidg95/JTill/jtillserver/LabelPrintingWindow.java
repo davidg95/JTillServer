@@ -10,11 +10,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,10 +26,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -36,7 +43,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class LabelPrintingWindow extends javax.swing.JFrame {
+public class LabelPrintingWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
 
@@ -53,11 +60,14 @@ public class LabelPrintingWindow extends javax.swing.JFrame {
         this.dc = dc;
         amount = 0;
         initComponents();
-        setIconImage(icon);
+        super.setClosable(true);
+        super.setMaximizable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
         model.setRowCount(0);
-        setLocationRelativeTo(null);
+        init();
     }
 
     /**
@@ -67,7 +77,38 @@ public class LabelPrintingWindow extends javax.swing.JFrame {
      * @param icon the icon for the window.
      */
     public static void showWindow(DataConnect dc, Image icon) {
-        new LabelPrintingWindow(dc, icon).setVisible(true);
+        LabelPrintingWindow window = new LabelPrintingWindow(dc, icon);
+        GUI.gui.internal.add(window);
+        window.setVisible(true);
+        try {
+            window.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(LabelPrintingWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void init(){
+        InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap am = table.getActionMap();
+
+        KeyStroke enterKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+
+        im.put(enterKey, "Action.enter");
+        am.put("Action.enter", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                final int index = table.getSelectedRow();
+                final Label l = labels.get(index);
+                if (index == -1) {
+                    return;
+                }
+                if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Are you sure you want to remove this item?\n" + l, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    model.removeRow(index);
+                    labels.remove(index);
+                    updateTable();
+                }
+            }
+        });
     }
 
     /**
@@ -75,9 +116,16 @@ public class LabelPrintingWindow extends javax.swing.JFrame {
      */
     private void updateTable() {
         model.setRowCount(0);
+        int amount = 0;
         for (Label l : labels) {
+            amount += l.amount;
             Object[] row = new Object[]{l.p.getName(), l.amount};
             model.addRow(row);
+        }
+        if(amount > 0){
+            btnPrint.setEnabled(true);
+        } else{
+            btnPrint.setEnabled(false);
         }
         lblAmount.setText("Lables to print: " + amount);
     }
@@ -236,6 +284,7 @@ public class LabelPrintingWindow extends javax.swing.JFrame {
         });
 
         btnPrint.setText("Print");
+        btnPrint.setEnabled(false);
         btnPrint.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPrintActionPerformed(evt);
@@ -301,15 +350,22 @@ public class LabelPrintingWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        Product p = ProductSelectDialog.showDialog(this, dc);
+        final Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                Product p = ProductSelectDialog.showDialog(dc);
 
-        if (p == null) {
-            return;
-        }
+                if (p == null) {
+                    return;
+                }
 
-        labels.add(new Label(p, 1));
-        amount++;
-        updateTable();
+                labels.add(new Label(p, 1));
+                amount++;
+                updateTable();
+            }
+        };
+        final Thread thread = new Thread(run);
+        thread.start();
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCSVActionPerformed
@@ -333,27 +389,26 @@ public class LabelPrintingWindow extends javax.swing.JFrame {
                         String[] item = line.split(",");
 
                         if (item.length != 2) {
-                            JOptionPane.showMessageDialog(this, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
                             return;
                         }
 
                         Product product = dc.getProductByBarcode(item[0]);
                         int a = Integer.parseInt(item[1]);
                         Label label = new Label(product, a);
-                        amount += a;
                         labels.add(label);
                     } catch (ProductNotFoundException ex) {
                         errors = true;
                     }
                 }
                 if (errors) {
-                    JOptionPane.showMessageDialog(this, "Not all products could be found", "Labels", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all products could be found", "Labels", JOptionPane.ERROR_MESSAGE);
                 }
                 updateTable();
             } catch (FileNotFoundException ex) {
-                JOptionPane.showMessageDialog(this, "The file could not be found", "Open File", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "The file could not be found", "Open File", JOptionPane.ERROR_MESSAGE);
             } catch (IOException | SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnCSVActionPerformed
@@ -371,7 +426,7 @@ public class LabelPrintingWindow extends javax.swing.JFrame {
                         job.print();
                     } catch (PrinterException ex) {
                         mDialog.hide();
-                        JOptionPane.showMessageDialog(LabelPrintingWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
                     } finally {
                         mDialog.hide();
                     }
@@ -380,7 +435,7 @@ public class LabelPrintingWindow extends javax.swing.JFrame {
             Thread th = new Thread(runnable);
             th.start();
             mDialog.show();
-            JOptionPane.showMessageDialog(this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnPrintActionPerformed
 
@@ -388,27 +443,50 @@ public class LabelPrintingWindow extends javax.swing.JFrame {
         final int index = table.getSelectedRow();
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
-                if (index == -1) {
+                String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter quantity to print", "Quantity", JOptionPane.PLAIN_MESSAGE);
+                if (!Utilities.isNumber(input)) {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "A number must be entered", "Quantity", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                Label l = labels.get(index);
-                if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this item?\n" + l, "Remove Label", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    model.removeRow(index);
-                    labels.remove(index);
+                int val = Integer.parseInt(input);
+                if (val > 0) {
+                    labels.get(index).amount = val;
+                    updateTable();
+                } else {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must be a value greater than zero", "Quantity", JOptionPane.WARNING_MESSAGE);
                 }
             }
         } else if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu m = new JPopupMenu();
             JMenuItem i = new JMenuItem("Change Quantity");
-            final int quantity = labels.get(index).amount;
+            JMenuItem i2 = new JMenuItem("Remove Label");
             i.addActionListener((ActionEvent e) -> {
-                int val = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter quantity to print", quantity));
+                String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter quantity to print", "Quantity", JOptionPane.PLAIN_MESSAGE);
+                if (!Utilities.isNumber(input)) {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "A number must be entered", "Quantity", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                int val = Integer.parseInt(input);
                 if (val > 0) {
                     labels.get(index).amount = val;
+                    updateTable();
+                } else {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must be a value greater than zero", "Quantity", JOptionPane.WARNING_MESSAGE);
+                }
+            });
+            i2.addActionListener((ActionEvent e) -> {
+                if (index == -1) {
+                    return;
+                }
+                Label l = labels.get(index);
+                if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Are you sure you want to remove this item?\n" + l, "Remove Label", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    model.removeRow(index);
+                    labels.remove(index);
                     updateTable();
                 }
             });
             m.add(i);
+            m.add(i2);
             m.show(table, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tableMouseClicked

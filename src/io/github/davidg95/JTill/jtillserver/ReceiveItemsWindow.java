@@ -8,7 +8,9 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
+import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,18 +18,25 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JTable;
 import javax.swing.JTable.PrintMode;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -35,9 +44,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author david
  */
-public final class ReceiveItemsWindow extends javax.swing.JFrame {
-
-    private static ReceiveItemsWindow window;
+public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
     private final List<Product> products;
@@ -55,7 +62,11 @@ public final class ReceiveItemsWindow extends javax.swing.JFrame {
         this.products = new ArrayList<>();
         initComponents();
         setTitle("Receive Stock");
-        setIconImage(icon);
+//        setIconImage(icon);
+        super.setClosable(true);
+        super.setMaximizable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(icon));
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
         model.setRowCount(0);
@@ -65,7 +76,8 @@ public final class ReceiveItemsWindow extends javax.swing.JFrame {
     }
 
     public static void showWindow(DataConnect dc, Image icon) {
-        window = new ReceiveItemsWindow(dc, icon);
+        ReceiveItemsWindow window = new ReceiveItemsWindow(dc, icon);
+        GUI.gui.internal.add(window);
         try {
             List<Supplier> suppliers = dc.getAllSuppliers();
             if (suppliers.isEmpty()) {
@@ -73,8 +85,12 @@ public final class ReceiveItemsWindow extends javax.swing.JFrame {
                 return;
             }
             window.setVisible(true);
+            window.setIcon(false);
+            window.setSelected(true);
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(window, "Error connecting to database", "Receive Stock", JOptionPane.ERROR_MESSAGE);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(ReceiveItemsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -87,6 +103,52 @@ public final class ReceiveItemsWindow extends javax.swing.JFrame {
             });
         } catch (IOException | SQLException ex) {
             Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        InputMap im = tblProducts.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap am = tblProducts.getActionMap();
+
+        KeyStroke enterKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+
+        im.put(enterKey, "Action.enter");
+        am.put("Action.enter", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                final int index = tblProducts.getSelectedRow();
+                final Product p = products.get(index);
+                if (index == -1) {
+                    return;
+                }
+                if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Are you sure you want to remove this item?\n" + p, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    model.removeRow(index);
+                    products.remove(index);
+                }
+                updateTable();
+            }
+        });
+    }
+
+    private void updateTable() {
+        model.setRowCount(0);
+        BigDecimal val = BigDecimal.ZERO;
+        val.setScale(2);
+        for (Product pr : products) {
+            try {
+                final Plu p = dc.getPluByProduct(pr.getId());
+                model.addRow(new Object[]{pr.getId(), pr.getName(), p.getCode(), pr.getStock()});
+                val = val.add(pr.getPrice().multiply(new BigDecimal(pr.getStock())));
+            } catch (IOException | JTillException ex) {
+                Logger.getLogger(ReceiveItemsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if (val == BigDecimal.ZERO) {
+            lblValue.setText("Total Value: £0.00");
+        } else {
+            lblValue.setText("Total Value: £" + new DecimalFormat("#.00").format(val));
+        }
+        if(products.isEmpty()){
+            btnReceive.setEnabled(false);
+        } else{
+            btnReceive.setEnabled(true);
         }
     }
 
@@ -109,14 +171,9 @@ public final class ReceiveItemsWindow extends javax.swing.JFrame {
         cmbSuppliers = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
         tblProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "ID", "Product", "Barcode", "Stock In"
@@ -151,6 +208,7 @@ public final class ReceiveItemsWindow extends javax.swing.JFrame {
         }
 
         btnReceive.setText("Receive");
+        btnReceive.setEnabled(false);
         btnReceive.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnReceiveActionPerformed(evt);
@@ -252,6 +310,7 @@ public final class ReceiveItemsWindow extends javax.swing.JFrame {
         lblValue.setText("Total: £0.00");
         model.setRowCount(0);
         products.clear();
+        btnReceive.setEnabled(false);
         JOptionPane.showMessageDialog(this, "All items have been received", "Received", JOptionPane.INFORMATION_MESSAGE);
         if (JOptionPane.showConfirmDialog(this, "Do you want to print the report?", "Print", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             try {
@@ -269,77 +328,94 @@ public final class ReceiveItemsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnReceiveActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        Product product = ProductSelectDialog.showDialog(this, dc, false);
+        final Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                Product product = ProductSelectDialog.showDialog(dc, false);
 
-        if (product == null) {
-            return;
-        }
+                if (product == null) {
+                    return;
+                }
 
-        product = (Product) product.clone();
+                product = (Product) product.clone();
 
-        String str = JOptionPane.showInputDialog(this, "Enter amount to receive", "Receive Stock", JOptionPane.INFORMATION_MESSAGE);
+                String str = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter amount to receive", "Receive Stock", JOptionPane.INFORMATION_MESSAGE);
 
-        if (str == null || str.isEmpty()) {
-            return;
-        }
+                if (str == null || str.isEmpty()) {
+                    return;
+                }
 
-        if (Utilities.isNumber(str)) {
-            int amount = Integer.parseInt(str);
-            if(amount <= 0){
-                JOptionPane.showMessageDialog(this, "Value must be greater than zero", "Receive Items", JOptionPane.ERROR_MESSAGE);
-                return;
+                if (Utilities.isNumber(str)) {
+                    int amount = Integer.parseInt(str);
+                    if (amount <= 0) {
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Value must be greater than zero", "Receive Items", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    if (product.getStock() + amount > product.getMaxStockLevel() && product.getMaxStockLevel() != 0) {
+                        JOptionPane.showMessageDialog(ReceiveItemsWindow.this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product", "Stock", JOptionPane.WARNING_MESSAGE);
+                    }
+                    if (amount == 0) {
+                        return;
+                    }
+                    product.setStock(amount);
+
+                    products.add(product);
+                    updateTable();
+                } else {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
+                }
             }
-            if (product.getStock() + amount > product.getMaxStockLevel() && product.getMaxStockLevel() != 0) {
-                JOptionPane.showMessageDialog(this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product", "Stock", JOptionPane.WARNING_MESSAGE);
-            }
-            if (amount == 0) {
-                return;
-            }
-            product.setStock(amount);
-
-            products.add(product);
-            BigDecimal val = BigDecimal.ZERO;
-            val.setScale(2);
-            for (Product p : products) {
-                val = val.add(p.getPrice().multiply(new BigDecimal(p.getStock())));
-            }
-            lblValue.setText("Total Value: £" + val);
-            try {
-                final Plu plu = dc.getPluByProduct(product.getId());
-                model.addRow(new Object[]{product.getId(), product.getName(), plu.getCode(), product.getStock()});
-            } catch (IOException | JTillException ex) {
-                JOptionPane.showMessageDialog(this, ex);
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
-        }
+        };
+        final Thread thread = new Thread(run);
+        thread.start();
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void tblProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductsMouseClicked
+        final int row = tblProducts.getSelectedRow();
+        final Product product = products.get(row);
         if (evt.getClickCount() == 2) {
-            int row = tblProducts.getSelectedRow();
-            Product p = products.get(row);
-            if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this line?\n" + p.getLongName(), "Remove", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                products.remove(row);
-                model.removeRow(row);
-            }
+            if (evt.getClickCount() == 2) {
+                    String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
+                    if (!Utilities.isNumber(input)) {
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "A number must be entered", "Receive Items", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    int val = Integer.parseInt(input);
+                    if (val > 0) {
+                        product.setStock(val);
+                        updateTable();
+                    } else {
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
         }
-
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
+            JMenuItem it = new JMenuItem("Change Quantity");
             JMenuItem item = new JMenuItem("Remove");
-            item.addActionListener((ActionEvent e) -> {
-                if (JOptionPane.showConfirmDialog(this, "Remove this item?", "Remove Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    products.remove(tblProducts.getSelectedRow());
-                    BigDecimal val = BigDecimal.ZERO;
-                    val.setScale(2);
-                    for (Product p : products) {
-                        val = val.add(p.getPrice().multiply(new BigDecimal(p.getStock())));
+            it.addActionListener((ActionEvent e) -> {
+                if (evt.getClickCount() == 2) {
+                    String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
+                    if (!Utilities.isNumber(input)) {
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "A number must be entered", "Receive Items", JOptionPane.ERROR_MESSAGE);
+                        return;
                     }
-                    lblValue.setText("Total Value: £" + val);
-                    model.removeRow(tblProducts.getSelectedRow());
+                    int val = Integer.parseInt(input);
+                    if (val > 0) {
+                        product.setStock(val);
+                        updateTable();
+                    } else {
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
+                    }
                 }
             });
+            item.addActionListener((ActionEvent e) -> {
+                if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Remove this item?", "Remove Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    products.remove(tblProducts.getSelectedRow());
+                    updateTable();
+                }
+            });
+            menu.add(it);
             menu.add(item);
             menu.show(tblProducts, evt.getX(), evt.getY());
         }
@@ -365,7 +441,7 @@ public final class ReceiveItemsWindow extends javax.swing.JFrame {
                     String[] items = line.split(",");
 
                     if (items.length != 2) {
-                        JOptionPane.showMessageDialog(this, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
 
@@ -386,18 +462,18 @@ public final class ReceiveItemsWindow extends javax.swing.JFrame {
                             JOptionPane.showMessageDialog(this, ex);
                         }
                     } catch (ProductNotFoundException ex) {
-                        if (JOptionPane.showConfirmDialog(this, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                             Plu p = new Plu(barcode, 0);
                             product = ProductDialog.showNewProductDialog(this, dc, p, quantity);
                             p.setProduct(product.getId());
-                            JOptionPane.showMessageDialog(this, product.getLongName() + " has now been added to the system with given stock level, there is no need to receive it here.", "Added", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showInternalMessageDialog(GUI.gui.internal, product.getLongName() + " has now been added to the system with given stock level, there is no need to receive it here.", "Added", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 }
             } catch (FileNotFoundException ex) {
-                JOptionPane.showMessageDialog(this, ex, "File Not Found", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "File Not Found", JOptionPane.ERROR_MESSAGE);
             } catch (IOException | SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnAddCSVActionPerformed

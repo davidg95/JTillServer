@@ -6,12 +6,11 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Frame;
 import java.awt.MouseInfo;
-import java.awt.Window;
-import javax.swing.JDialog;
+import java.beans.PropertyVetoException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,34 +18,35 @@ import javax.swing.JOptionPane;
  *
  * @author David
  */
-public final class ButtonOptionDialog extends javax.swing.JDialog {
+public final class ButtonOptionDialog extends javax.swing.JInternalFrame {
 
-    private static JDialog dialog;
     private static TillButton button;
 
     private final DataConnect dc;
 
     private final int maxWidth;
     private final int maxHeight;
+    
+    private boolean closedFlag;
 
     /**
      * Creates new form ButtonOptionDialog.
      *
-     * @param parent the parent component.
      * @param dc the data connection.
      * @param maxWidth the maximum width of the button.
      * @param maxHeight the maximum height of the button.
      */
-    public ButtonOptionDialog(Window parent, DataConnect dc, int maxWidth, int maxHeight) {
-        super(parent);
+    public ButtonOptionDialog(DataConnect dc, int maxWidth, int maxHeight) {
+        super();
         this.dc = dc;
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
+        closedFlag = false;
         initComponents();
         int x = (int) MouseInfo.getPointerInfo().getLocation().getX();
         int y = (int) MouseInfo.getPointerInfo().getLocation().getY();
         this.setLocation(x - getWidth() / 2, y - getHeight() / 2);
-        setModal(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         setTitle(button.getName());
         if (button.getName().equals("[SPACE]")) {
             btnRemove.setEnabled(false);
@@ -88,22 +88,36 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
      * Shows the ButtonOptionsDialog. Returns null if remove button was
      * selected, otherwise it will return an updated button object.
      *
-     * @param parent the parent window.
      * @param b the button object.
      * @param dc the data connection.
      * @param maxWidth the maximum width of the button.
      * @param maxHeight the maximum height of the button.
      * @return the button with any changed applied.
      */
-    public static TillButton showDialog(Component parent, TillButton b, DataConnect dc, int maxWidth, int maxHeight) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
+    public static TillButton showDialog(TillButton b, DataConnect dc, int maxWidth, int maxHeight) {
         button = b;
-        dialog = new ButtonOptionDialog(window, dc, maxWidth, maxHeight);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.setVisible(true);
+        ButtonOptionDialog dialog = new ButtonOptionDialog(dc, maxWidth, maxHeight);
+        GUI.gui.internal.add(dialog);
+        final Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                dialog.setVisible(true);
+                try {
+                    dialog.setSelected(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.getLogger(ButtonOptionDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        final Thread thread = new Thread(run);
+        thread.start();
+        while(!dialog.closedFlag){
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ButtonOptionDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return button;
     }
 
@@ -321,6 +335,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
+        closedFlag = true;
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 
@@ -341,17 +356,17 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         String w = txtWidth.getText();
         String h = txtHeight.getText();
-        if(w.length() == 0 || h.length() == 0){
+        if (w.length() == 0 || h.length() == 0) {
             JOptionPane.showMessageDialog(this, "Must enter a value for width and height", "Button Options", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if(!Utilities.isNumber(w) || !Utilities.isNumber(h)){
+        if (!Utilities.isNumber(w) || !Utilities.isNumber(h)) {
             JOptionPane.showMessageDialog(this, "A number must be entered", "Button Options", JOptionPane.ERROR_MESSAGE);
             return;
         }
         int width = Integer.parseInt(w);
         int height = Integer.parseInt(h);
-        if(width <= 0 || height <= 0){
+        if (width <= 0 || height <= 0) {
             JOptionPane.showMessageDialog(this, "Width and height must be greater than zero", "Button Options", JOptionPane.ERROR_MESSAGE);
             return;
         }

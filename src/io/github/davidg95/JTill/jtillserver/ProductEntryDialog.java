@@ -13,11 +13,13 @@ import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Window;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -25,7 +27,7 @@ import javax.swing.JOptionPane;
  *
  * @author David
  */
-public final class ProductEntryDialog extends javax.swing.JDialog {
+public final class ProductEntryDialog extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
     private Plu plu;
@@ -44,13 +46,16 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
      * @param icon the frame icon.
      */
     public ProductEntryDialog(Window parent, DataConnect dc, Image icon) {
-        super(parent);
+        super();
         this.dc = dc;
         initComponents();
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        setModal(true);
-        setIconImage(icon);
-        setLocationRelativeTo(parent);
+//        setModal(true);
+//        setIconImage(icon);
+//        setLocationRelativeTo(parent);
+        super.setClosable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(icon));
         try {
             selectedCategory = dc.getCategory(1);
             selectedTax = dc.getTax(1);
@@ -70,7 +75,15 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        new ProductEntryDialog(window, dc, icon).setVisible(true);
+        ProductEntryDialog dialog = new ProductEntryDialog(window, dc, icon);
+        GUI.gui.internal.add(dialog);
+        dialog.setVisible(true);
+        try {
+            dialog.setIcon(false);
+            dialog.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void resetPanels() {
@@ -573,7 +586,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         String shortName = txtShortName.getText();
         String val = txtOrderCode.getText();
         if (!Utilities.isNumber(val)) {
-            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         int orderCode = Integer.parseInt(val);
@@ -582,39 +595,39 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         Department dep = selectedDepartment;
         String comments = txtComments.getText();
         if (!Utilities.isNumber(txtPrice.getText())) {
-            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         BigDecimal price = new BigDecimal(txtPrice.getText());
         if (price.compareTo(BigDecimal.ZERO) < 0) {
-            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (!Utilities.isNumber(txtCostPrice.getText())) {
-            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         BigDecimal costPrice = new BigDecimal(txtCostPrice.getText());
         if (costPrice.compareTo(BigDecimal.ZERO) < 0) {
-            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (!Utilities.isNumber(txtMinStock.getText())) {
-            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         int minStock = Integer.parseInt(txtMinStock.getText());
         if (minStock < 0) {
-            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (!Utilities.isNumber(txtMaxStock.getText())) {
-            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         int maxStock = Integer.parseInt(txtMaxStock.getText());
         if (maxStock < 0) {
-            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         product = new Product(name, shortName, orderCode, category.getId(), dep.getId(), comments, tax.getId(), false, price, costPrice, 0, minStock, maxStock, 0);
@@ -624,13 +637,13 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 dc.setSetting("NEXT_PLU", nextBarcode);
                 nextBarcode = null;
             }
-            JOptionPane.showMessageDialog(this, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
             resetPanels();
             CardLayout c = (CardLayout) jPanel1.getLayout();
             c.show(jPanel1, "card2");
             txtPlu.requestFocus();
         } catch (HeadlessException | IOException | NumberFormatException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddProductActionPerformed
 
@@ -680,24 +693,24 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                         }
                     }
                 } else {
-                    JOptionPane.showMessageDialog(this, "You have not specified a UPC Company Prefix. This must be done before generating your own barcodes. Go to Setup -> Plu Settings to do this.", "Generate Barcode", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You have not specified a UPC Company Prefix. This must be done before generating your own barcodes. Go to Setup -> Plu Settings to do this.", "Generate Barcode", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 //If excecution reaches here, it means an unsude PLU as been generated
             } else {
                 //Get the PLu from the user, check what they entered is valid
                 if (txtPlu.getText().equals("")) {
-                    JOptionPane.showMessageDialog(this, "You must enter a barcode", "New Product", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You must enter a barcode", "New Product", JOptionPane.WARNING_MESSAGE);
                     return;
                 } else if (txtPlu.getText().length() < 8 || txtPlu.getText().length() > 15) {
-                    JOptionPane.showMessageDialog(this, "Barcodes must be between 8 and 15 characters long", "New Product", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Barcodes must be between 8 and 15 characters long", "New Product", JOptionPane.WARNING_MESSAGE);
                     return;
                 } else if (!txtPlu.getText().matches("[0-9]+")) {
-                    JOptionPane.showMessageDialog(this, "Must only contain numbers", "New Product", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must only contain numbers", "New Product", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 if (dc.checkBarcode(txtPlu.getText())) {
-                    JOptionPane.showMessageDialog(this, "Barcode is already in use", "Barcode in use", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Barcode is already in use", "Barcode in use", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 plu = new Plu(txtPlu.getText(), 0);
@@ -714,14 +727,27 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 c.show(jPanel1, "card4");
                 txtOpenName.requestFocus();
             } else {
-                Product toCopy = ProductSelectDialog.showDialog(this, dc); //Copy details from an existing product
-                if (toCopy != null) {
-                    dc.addProductAndPlu(toCopy, plu);
-                    JOptionPane.showMessageDialog(this, "New Plu created", "New Plu", JOptionPane.INFORMATION_MESSAGE);
-                    txtPlu.setText("");
-                    radNew.setSelected(true);
-                    txtPlu.requestFocus();
-                }
+                final Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        Product toCopy = ProductSelectDialog.showDialog(dc); //Copy details from an existing product
+                        if (toCopy != null) {
+                            try {
+                                dc.addProductAndPlu(toCopy, plu);
+                                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "New Plu created", "New Plu", JOptionPane.INFORMATION_MESSAGE);
+                                txtPlu.setText("");
+                                radNew.setSelected(true);
+                                txtPlu.requestFocus();
+                            } catch (IOException ex) {
+                                Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (SQLException ex) {
+                                Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    }
+                };
+                final Thread thread = new Thread(run);
+                thread.start();
             }
         } catch (IOException | SQLException ex) {
             Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
@@ -773,19 +799,23 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         Department dep = selectedDepartment;
         String comments = txtOpenComments.getText();
         try {
+            if (name.length() == 0 || shortName.length() == 0) {
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "All fields must be filled out", "Create Product", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             product = new Product(name, shortName, 0, category.getId(), dep.getId(), comments, tax.getId(), true);
             plu.setProduct(product.getId());
             product = dc.addProductAndPlu(product, plu);
             if (chkNext.isSelected()) {
                 dc.setSetting("NEXT_PLU", nextBarcode);
             }
-            JOptionPane.showMessageDialog(this, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
             resetPanels();
             CardLayout c = (CardLayout) jPanel1.getLayout();
             c.show(jPanel1, "card2");
             txtPlu.requestFocus();
         } catch (HeadlessException | IOException | NumberFormatException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddOpenActionPerformed
 

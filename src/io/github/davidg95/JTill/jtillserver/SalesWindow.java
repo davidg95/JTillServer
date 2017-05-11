@@ -7,13 +7,17 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.swing.JFrame;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -22,7 +26,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author 1301480
  */
-public class SalesWindow extends javax.swing.JFrame {
+public class SalesWindow extends javax.swing.JInternalFrame {
 
     private static SalesWindow frame; //The frame.
 
@@ -42,7 +46,10 @@ public class SalesWindow extends javax.swing.JFrame {
      */
     public SalesWindow(DataConnect dc, Image icon) {
         this.dc = dc;
-        init(icon);
+        super.setMaximizable(true);
+        super.setIconifiable(true);
+        super.setClosable(true);
+        super.setFrameIcon(new ImageIcon(icon));
         initComponents();
         model = (DefaultTableModel) tableSales.getModel();
     }
@@ -56,21 +63,26 @@ public class SalesWindow extends javax.swing.JFrame {
     public static void showSalesWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new SalesWindow(dc, icon);
-            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            GUI.gui.internal.add(frame);
         }
-        update();
-        frame.setVisible(true);
+        if (frame.isVisible()) {
+            frame.toFront();
+        } else {
+            update();
+            frame.setVisible(true);
+        }
+        try {
+            frame.setIcon(false);
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static void update() {
         if (frame != null) {
             frame.showAllSales();
         }
-    }
-
-    private void init(Image icon) {
-        this.setIconImage(icon);
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
     /**
@@ -80,7 +92,7 @@ public class SalesWindow extends javax.swing.JFrame {
     private void updateTable() {
         model.setRowCount(0);
 
-        currentTableContents.stream().map((s) -> new Object[]{s.getId(), s.getTotal(), s.getTotalItemCount(), s.getDate().toString()}).forEachOrdered((r) -> {
+        currentTableContents.stream().map((s) -> new Object[]{s.getId(), new DecimalFormat("#.00").format(s.getTotal()), s.getTotalItemCount(), s.getDate().toString()}).forEachOrdered((r) -> {
             model.addRow(r);
         });
 
@@ -123,6 +135,7 @@ public class SalesWindow extends javax.swing.JFrame {
         txtEndDate = new javax.swing.JTextField();
         btnAddFilter = new javax.swing.JButton();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Sales");
 
         tableSales.setModel(new javax.swing.table.DefaultTableModel(
@@ -273,7 +286,7 @@ public class SalesWindow extends javax.swing.JFrame {
 
     private void tableSalesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableSalesMouseClicked
         if (evt.getClickCount() == 2) {
-            SaleDialog.showSaleDialog(this, currentTableContents.get(tableSales.getSelectedRow()), dc);
+            SaleDialog.showSaleDialog(currentTableContents.get(tableSales.getSelectedRow()), dc);
         }
     }//GEN-LAST:event_tableSalesMouseClicked
 

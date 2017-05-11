@@ -9,11 +9,14 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.print.PrinterJob;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 
 /**
  * Class which shows a modal dialog that can be used for showing progress.
@@ -22,7 +25,7 @@ import javax.swing.SwingUtilities;
  */
 public class ModalDialog {
 
-    private JDialog dialog; //The dialog.
+    private JInternalFrame dialog; //The dialog.
     private JPanel panel; //The panel for the components.
     private JLabel label; //The message label.
 
@@ -43,7 +46,6 @@ public class ModalDialog {
         this.text = text;
         this.hidden = false;
         init();
-        dialog.setLocationRelativeTo(parent);
     }
 
     /**
@@ -71,14 +73,16 @@ public class ModalDialog {
     private void init() {
         panel = new JPanel();
         label = new JLabel(text);
+        Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         panel.add(label);
-        dialog = new JDialog();
-        dialog.setLocationRelativeTo(null);
+        panel.setBorder(padding);
+        dialog = new JInternalFrame();
+        GUI.gui.internal.add(dialog);
         dialog.setResizable(false);
         dialog.setTitle(title);
-        dialog.add(panel);
-        dialog.setModal(true);
-        dialog.setMinimumSize(new Dimension(100, 70));
+        dialog.setContentPane(panel);
+        dialog.pack();
+        dialog.setLocation((GUI.gui.internal.getSize().width/2) - dialog.getSize().width/2, (GUI.gui.internal.getSize().height/2) - dialog.getSize().height/2);
     }
 
     /**

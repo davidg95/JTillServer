@@ -14,19 +14,21 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author David
  */
-public final class ProductEnquiry extends javax.swing.JFrame {
+public final class ProductEnquiry extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
     private Product product;
@@ -38,13 +40,17 @@ public final class ProductEnquiry extends javax.swing.JFrame {
 
     /**
      * Creates new form ProductEnquiry
+     *
      * @param dc the data connection.
      * @param icon the frame icon.
      */
     public ProductEnquiry(DataConnect dc, Image icon) {
         this.dc = dc;
         initComponents();
-        setIconImage(icon);
+//        setIconImage(icon);
+        super.setClosable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(icon));
     }
 
     /**
@@ -54,7 +60,15 @@ public final class ProductEnquiry extends javax.swing.JFrame {
      * @param icon the icon for the window.
      */
     public static void showWindow(DataConnect dc, Image icon) {
-        new ProductEnquiry(dc, icon).setVisible(true);
+        ProductEnquiry window = new ProductEnquiry(dc, icon);
+        GUI.gui.internal.add(window);
+        window.setVisible(true);
+        try {
+            window.setIcon(false);
+            window.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(ProductEnquiry.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public class ProductEnquiryPrintout implements Printable {
@@ -469,71 +483,78 @@ public final class ProductEnquiry extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnProductSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductSelectActionPerformed
-        try {
-            product = ProductSelectDialog.showDialog(this, dc);
-            if (product == null) {
-                return;
+        final Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    product = ProductSelectDialog.showDialog(dc);
+                    if (product == null) {
+                        return;
+                    }
+                    final Plu plu = dc.getPluByProduct(product.getId());
+                    final Department dep = dc.getDepartment(product.getDepartment());
+                    final Category cat = dc.getCategory(product.getCategory());
+                    try {
+                        totalSold = dc.getTotalSoldOfItem(product.getId());
+                        valueSold = dc.getTotalValueSold(product.getId());
+                    } catch (ProductNotFoundException ex) {
+                        totalSold = 0;
+                        valueSold = BigDecimal.ZERO;
+                    }
+                    try {
+                        totalWasted = dc.getTotalWastedOfItem(product.getId());
+                        valueWasted = dc.getValueWastedOfItem(product.getId());
+                    } catch (ProductNotFoundException ex) {
+                        totalWasted = 0;
+                        valueWasted = BigDecimal.ZERO;
+                    }
+                    try {
+                        totalSpent = dc.getValueSpentOnItem(product.getId());
+                    } catch (ProductNotFoundException ex) {
+                        totalSpent = BigDecimal.ZERO;
+                    }
+                    txtProduct.setText(product.getId() + "");
+                    txtPlu.setText(plu.getCode());
+                    if (product.getOrder_code() == 0) {
+                        txtOrderCode.setText("N/A");
+                    } else {
+                        txtOrderCode.setText(product.getOrder_code() + "");
+                    }
+                    txtName.setText(product.getLongName());
+                    txtShortName.setText(product.getName());
+                    txtDep.setText(dep.getName());
+                    txtCat.setText(cat.getName());
+                    txtStock.setText(product.getStock() + "");
+                    txtMinStock.setText(product.getMinStockLevel() + "");
+                    txtMaxStock.setText(product.getMaxStockLevel() + "");
+                    txtSold.setText(totalSold + "");
+                    txtValSold.setText("£" + valueSold.toString());
+                    txtWaste.setText(totalWasted + "");
+                    txtValWaste.setText("£" + valueWasted.toString());
+                    txtPrice.setText("£" + product.getPrice());
+                    txtCostPrice.setText("£" + product.getCostPrice());
+                    double expectedMargin = (product.getCostPrice().doubleValue() / product.getPrice().doubleValue()) * 100;
+                    BigDecimal bExpectedMargin = new BigDecimal(expectedMargin);
+                    bExpectedMargin = bExpectedMargin.setScale(2, RoundingMode.HALF_UP);
+                    txtExpectedMargin.setText(bExpectedMargin.toString());
+                    txtProfit.setText("£" + valueSold.subtract(totalSpent));
+                    double margin = (totalSpent.doubleValue() / valueSold.doubleValue()) * 100;
+                    if (Double.isNaN(margin)) {
+                        txtMarginToDate.setText("---");
+                    } else if (Double.isInfinite(margin)) {
+                        txtMarginToDate.setText("INFINITE");
+                    } else {
+                        BigDecimal bMargin = new BigDecimal(margin);
+                        bMargin = bMargin.setScale(2, RoundingMode.HALF_UP);
+                        txtMarginToDate.setText(bMargin.toString());
+                    }
+                } catch (IOException | JTillException | SQLException ex) {
+                    JOptionPane.showMessageDialog(ProductEnquiry.this, ex);
+                }
             }
-            final Plu plu = dc.getPluByProduct(product.getId());
-            final Department dep = dc.getDepartment(product.getDepartment());
-            final Category cat = dc.getCategory(product.getCategory());
-            try {
-                totalSold = dc.getTotalSoldOfItem(product.getId());
-                valueSold = dc.getTotalValueSold(product.getId());
-            } catch (ProductNotFoundException ex) {
-                totalSold = 0;
-                valueSold = BigDecimal.ZERO;
-            }
-            try {
-                totalWasted = dc.getTotalWastedOfItem(product.getId());
-                valueWasted = dc.getValueWastedOfItem(product.getId());
-            } catch (ProductNotFoundException ex) {
-                totalWasted = 0;
-                valueWasted = BigDecimal.ZERO;
-            }
-            try {
-                totalSpent = dc.getValueSpentOnItem(product.getId());
-            } catch (ProductNotFoundException ex) {
-                totalSpent = BigDecimal.ZERO;
-            }
-            txtProduct.setText(product.getId() + "");
-            txtPlu.setText(plu.getCode());
-            if (product.getOrder_code() == 0) {
-                txtOrderCode.setText("N/A");
-            } else {
-                txtOrderCode.setText(product.getOrder_code() + "");
-            }
-            txtName.setText(product.getLongName());
-            txtShortName.setText(product.getName());
-            txtDep.setText(dep.getName());
-            txtCat.setText(cat.getName());
-            txtStock.setText(product.getStock() + "");
-            txtMinStock.setText(product.getMinStockLevel() + "");
-            txtMaxStock.setText(product.getMaxStockLevel() + "");
-            txtSold.setText(totalSold + "");
-            txtValSold.setText("£" + valueSold.toString());
-            txtWaste.setText(totalWasted + "");
-            txtValWaste.setText("£" + valueWasted.toString());
-            txtPrice.setText("£" + product.getPrice());
-            txtCostPrice.setText("£" + product.getCostPrice());
-            double expectedMargin = (product.getCostPrice().doubleValue() / product.getPrice().doubleValue()) * 100;
-            BigDecimal  bExpectedMargin = new BigDecimal(expectedMargin);
-            bExpectedMargin = bExpectedMargin.setScale(2, RoundingMode.HALF_UP);
-            txtExpectedMargin.setText(bExpectedMargin.toString());
-            txtProfit.setText("£" + valueSold.subtract(totalSpent));
-            double margin = (totalSpent.doubleValue() / valueSold.doubleValue()) * 100;
-            if (Double.isNaN(margin)) {
-                txtMarginToDate.setText("---");
-            } else if(Double.isInfinite(margin)){
-                txtMarginToDate.setText("INFINITE");
-            } else {
-                BigDecimal bMargin = new BigDecimal(margin);
-                bMargin = bMargin.setScale(2, RoundingMode.HALF_UP);
-                txtMarginToDate.setText(bMargin.toString());
-            }
-        } catch (IOException | JTillException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex);
-        }
+        };
+        final Thread thread = new Thread(run);
+        thread.start();
     }//GEN-LAST:event_btnProductSelectActionPerformed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed

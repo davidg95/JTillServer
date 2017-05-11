@@ -6,25 +6,25 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.Window;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JDialog;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author David
  */
-public class StaffSelectDialog extends javax.swing.JDialog {
+public class StaffSelectDialog extends javax.swing.JInternalFrame {
 
-    private static JDialog dialog;
     private static Staff staff;
 
     private final DataConnect dc;
@@ -32,29 +32,85 @@ public class StaffSelectDialog extends javax.swing.JDialog {
     private final DefaultTableModel model;
     private List<Staff> currentTableContents;
 
+    private boolean closedFlag;
+
     /**
      * Creates new form StaffSelectDialog
      */
-    public StaffSelectDialog(Window parent, DataConnect dc) {
-        super(parent);
+    public StaffSelectDialog(DataConnect dc) {
+        super();
         this.dc = dc;
+        closedFlag = false;
         initComponents();
-        setLocationRelativeTo(parent);
-        setModal(true);
+        super.setClosable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         showAllStaff();
+        this.addInternalFrameListener(new InternalFrameListener() {
+            @Override
+            public void internalFrameOpened(InternalFrameEvent e) {
+
+            }
+
+            @Override
+            public void internalFrameClosing(InternalFrameEvent e) {
+                closedFlag = true;
+            }
+
+            @Override
+            public void internalFrameClosed(InternalFrameEvent e) {
+
+            }
+
+            @Override
+            public void internalFrameIconified(InternalFrameEvent e) {
+
+            }
+
+            @Override
+            public void internalFrameDeiconified(InternalFrameEvent e) {
+
+            }
+
+            @Override
+            public void internalFrameActivated(InternalFrameEvent e) {
+
+            }
+
+            @Override
+            public void internalFrameDeactivated(InternalFrameEvent e) {
+
+            }
+        });
         txtSearch.requestFocus();
     }
 
-    public static Staff showDialog(Component parent, DataConnect dc) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
-        dialog = new StaffSelectDialog(window, dc);
+    public static Staff showDialog(DataConnect dc) {
+        final StaffSelectDialog dialog = new StaffSelectDialog(dc);
+        GUI.gui.internal.add(dialog);
         staff = null;
-        dialog.setVisible(true);
+        final Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                dialog.setVisible(true);
+                try {
+                    dialog.setSelected(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.getLogger(StaffSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        final Thread thread = new Thread(run);
+        thread.start();
+        while (!dialog.closedFlag) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(StaffSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return staff;
     }
 
@@ -112,7 +168,6 @@ public class StaffSelectDialog extends javax.swing.JDialog {
         radName = new javax.swing.JRadioButton();
         radBarcode = new javax.swing.JRadioButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Select Staff");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
@@ -188,9 +243,9 @@ public class StaffSelectDialog extends javax.swing.JDialog {
                         .addComponent(radName)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(radBarcode)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSearch)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
         );
@@ -216,11 +271,13 @@ public class StaffSelectDialog extends javax.swing.JDialog {
     private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
         staff = currentTableContents.get(table.getSelectedRow());
         if (evt.getClickCount() == 2) {
+            closedFlag = true;
             this.setVisible(false);
         }
     }//GEN-LAST:event_tableMousePressed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
+        closedFlag = true;
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 

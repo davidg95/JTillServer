@@ -7,21 +7,23 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author 1301480
  */
-public class StaffWindow extends javax.swing.JFrame {
+public class StaffWindow extends javax.swing.JInternalFrame {
 
     private final Logger log = Logger.getGlobal();
 
@@ -39,7 +41,11 @@ public class StaffWindow extends javax.swing.JFrame {
      */
     public StaffWindow(DataConnect dc, Image icon) {
         this.dc = dc;
-        this.setIconImage(icon);
+//        this.setIconImage(icon);
+        super.setMaximizable(true);
+        super.setIconifiable(true);
+        super.setClosable(true);
+        super.setFrameIcon(new ImageIcon(icon));
         initComponents();
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) tableStaff.getModel();
@@ -49,12 +55,22 @@ public class StaffWindow extends javax.swing.JFrame {
     public static void showStaffListWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new StaffWindow(dc, icon);
-            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            GUI.gui.internal.add(frame);
         }
-        update();
-        frame.setCurrentStaff(null);
-        frame.setVisible(true);
-        frame.showInit();
+        if (frame.isVisible()) {
+            frame.toFront();
+        } else {
+            update();
+            frame.setCurrentStaff(null);
+            frame.setVisible(true);
+            frame.showInit();
+        }
+        try {
+            frame.setIcon(false);
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static void update() {
@@ -103,12 +119,14 @@ public class StaffWindow extends javax.swing.JFrame {
     }
 
     private void editStaff() {
-        int selectedRow = tableStaff.getSelectedRow();
-        if (selectedRow != -1) {
-            Staff s = currentTableContents.get(selectedRow);
-            StaffDialog.showEditStaffDialog(this, dc, s);
-            updateTable();
-        }
+        SwingUtilities.invokeLater(() -> {
+            int selectedRow = tableStaff.getSelectedRow();
+            if (selectedRow != -1) {
+                Staff s = currentTableContents.get(selectedRow);
+                StaffDialog.showEditStaffDialog(this, dc, s);
+                updateTable();
+            }
+        });
     }
 
     private void setCurrentStaff(Staff s) {
@@ -166,6 +184,7 @@ public class StaffWindow extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         txtWage = new javax.swing.JTextField();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Manage Staff");
 
         tableStaff.setModel(new javax.swing.table.DefaultTableModel(
@@ -386,18 +405,18 @@ public class StaffWindow extends javax.swing.JFrame {
             return;
         }
         double wage = Double.parseDouble(w);
-        if(wage <= 0){
+        if (wage <= 0) {
             JOptionPane.showMessageDialog(this, "Wage must be greater than 0", "Save Changes", JOptionPane.ERROR_MESSAGE);
             return;
         }
         try {
             staff.setName(name);
             String lastUsername = staff.getUsername();
-            if(!lastUsername.equals(username)){
+            if (!lastUsername.equals(username)) {
                 if (dc.checkUsername(username)) {
-                JOptionPane.showMessageDialog(this, "Username is already in use", "Save Changes", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+                    JOptionPane.showMessageDialog(this, "Username is already in use", "Save Changes", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             }
             staff.setUsername(username);
             staff.setPosition(position);
@@ -501,14 +520,14 @@ public class StaffWindow extends javax.swing.JFrame {
                     staff.setPassword(password);
                     try {
                         dc.updateStaff(staff);
-                        JOptionPane.showMessageDialog(this, "Password successfully changed", "Password", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Password successfully changed", "Password", JOptionPane.INFORMATION_MESSAGE);
                     } catch (IOException | StaffNotFoundException | SQLException ex) {
                         showError(ex);
                     }
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(this, "You cannot change users passwords", "Password", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You cannot change users passwords", "Password", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnPasswordActionPerformed
 

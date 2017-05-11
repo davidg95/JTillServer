@@ -12,6 +12,7 @@ import io.github.davidg95.JTill.jtill.WasteItem;
 import io.github.davidg95.JTill.jtill.WasteReason;
 import io.github.davidg95.JTill.jtill.WasteReport;
 import java.awt.Image;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -23,6 +24,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -30,7 +33,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class WasteReports extends javax.swing.JFrame {
+public class WasteReports extends javax.swing.JInternalFrame {
 
     private final Logger log = Logger.getGlobal();
 
@@ -39,7 +42,6 @@ public class WasteReports extends javax.swing.JFrame {
     private final DataConnect dc;
     private List<WasteReport> wasteReports;
     private DefaultTableModel model;
-    private final Image icon;
 
     private Product p;
     private WasteReason wasteReason;
@@ -54,12 +56,13 @@ public class WasteReports extends javax.swing.JFrame {
     /**
      * Creates new form WasteReports
      */
-    public WasteReports(DataConnect dc, Image icon) {
+    public WasteReports(DataConnect dc) {
         this.dc = dc;
-        this.icon = icon;
         initComponents();
         setTitle("Waste Reports");
-        setIconImage(icon);
+        super.setClosable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         model = (DefaultTableModel) tblReports.getModel();
         tblReports.setModel(model);
         try {
@@ -70,9 +73,18 @@ public class WasteReports extends javax.swing.JFrame {
         }
     }
 
-    public static void showWindow(DataConnect dc, Image icon) {
-        window = new WasteReports(dc, icon);
+    public static void showWindow(DataConnect dc) {
+        if (window == null) {
+            window = new WasteReports(dc);
+            GUI.gui.internal.add(window);
+        }
         window.setVisible(true);
+        try {
+            window.setSelected(true);
+            window.setIcon(false);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(WasteReports.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void reloadTable() {
@@ -241,7 +253,7 @@ public class WasteReports extends javax.swing.JFrame {
         if (evt.getClickCount() == 2) {
             if (index != -1) {
                 WasteReport wr = wasteReports.get(index);
-                WasteStockWindow.showWindow(dc, wr, icon);
+                WasteStockWindow.showWindow(dc, wr);
             }
         }
     }//GEN-LAST:event_tblReportsMouseClicked
@@ -262,7 +274,7 @@ public class WasteReports extends javax.swing.JFrame {
                             }
                         }
                     }
-                } else{
+                } else {
                     JOptionPane.showMessageDialog(this, "A product must be selected", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
@@ -277,23 +289,23 @@ public class WasteReports extends javax.swing.JFrame {
                             }
                         }
                     }
-                } else{
+                } else {
                     JOptionPane.showMessageDialog(this, "A reason must be selected", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
             }
             case GREATER: {
                 String val = txtSearch.getText();
-                if(val.length() == 0){
+                if (val.length() == 0) {
                     JOptionPane.showMessageDialog(this, "A value must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if(!Utilities.isNumber(val)){
+                if (!Utilities.isNumber(val)) {
                     JOptionPane.showMessageDialog(this, "A number must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 BigDecimal value = new BigDecimal(val);
-                if(value.compareTo(BigDecimal.ZERO) < 0){
+                if (value.compareTo(BigDecimal.ZERO) < 0) {
                     JOptionPane.showMessageDialog(this, "Negative values not allowed", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -306,16 +318,16 @@ public class WasteReports extends javax.swing.JFrame {
             }
             case LESS: {
                 String val = txtSearch.getText();
-                if(val.length() == 0){
+                if (val.length() == 0) {
                     JOptionPane.showMessageDialog(this, "A value must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if(!Utilities.isNumber(val)){
+                if (!Utilities.isNumber(val)) {
                     JOptionPane.showMessageDialog(this, "A number must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 BigDecimal value = new BigDecimal(val);
-                if(value.compareTo(BigDecimal.ZERO) < 0){
+                if (value.compareTo(BigDecimal.ZERO) < 0) {
                     JOptionPane.showMessageDialog(this, "Negative values not allowed", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -349,7 +361,7 @@ public class WasteReports extends javax.swing.JFrame {
         wasteReports = newList;
         reloadTable();
         if (wasteReports.size() == 1) {
-            WasteStockWindow.showWindow(dc, wasteReports.get(0), icon);
+            WasteStockWindow.showWindow(dc, wasteReports.get(0));
         }
     }//GEN-LAST:event_btnSearchActionPerformed
 

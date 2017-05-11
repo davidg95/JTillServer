@@ -19,6 +19,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterAbortException;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -36,6 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.mail.MessagingException;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -44,9 +46,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class SaleDialog extends javax.swing.JDialog {
-
-    private static JDialog dialog;
+public class SaleDialog extends javax.swing.JInternalFrame {
 
     private final Sale sale;
     private final DataConnect dc;
@@ -56,26 +56,28 @@ public class SaleDialog extends javax.swing.JDialog {
     /**
      * Creates new form SaleDialog
      */
-    public SaleDialog(Window parent, Sale sale, DataConnect dc) {
-        super(parent);
+    public SaleDialog(Sale sale, DataConnect dc) {
+        super();
         this.sale = sale;
         this.dc = dc;
         initComponents();
+        super.setClosable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         model = (DefaultTableModel) tableItems.getModel();
-        setLocationRelativeTo(parent);
-        setModal(true);
         setTitle("Sale " + sale.getId());
         init();
     }
 
-    public static void showSaleDialog(Component parent, Sale sale, DataConnect dc) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
-        dialog = new SaleDialog(window, sale, dc);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    public static void showSaleDialog(Sale sale, DataConnect dc) {
+        SaleDialog dialog = new SaleDialog(sale, dc);
+        GUI.gui.internal.add(dialog);
         dialog.setVisible(true);
+        try {
+            dialog.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void init() {
@@ -383,15 +385,15 @@ public class SaleDialog extends javax.swing.JDialog {
     private void btnEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmailActionPerformed
         String email;
         try {
-            if (sale.getCustomer() != 0) {
+            if (sale.getCustomer() != 1) {
                 final Customer c = dc.getCustomer(sale.getCustomer());
                 email = c.getEmail();
                 if (email == null) {
-                    email = JOptionPane.showInputDialog(this, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
+                    email = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
                 }
 
             } else {
-                email = JOptionPane.showInputDialog(this, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
+                email = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
             }
             if (email == null) {
                 return;
@@ -404,10 +406,10 @@ public class SaleDialog extends javax.swing.JDialog {
                     try {
                         dc.emailReceipt(fEmail, sale);
                         mDialog.hide();
-                        JOptionPane.showMessageDialog(SaleDialog.this, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);
                     } catch (IOException | MessagingException ex) {
                         mDialog.hide();
-                        JOptionPane.showMessageDialog(SaleDialog.this, "Error sending email", "Email Receipt", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Error sending email", "Email Receipt", JOptionPane.ERROR_MESSAGE);
                     } finally {
                         mDialog.hide();
                     }

@@ -6,28 +6,24 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.Window;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractListModel;
-import javax.swing.JDialog;
+import javax.swing.ImageIcon;
 
 /**
  * Dialog which shows all current connected clients.
  *
  * @author David
  */
-public class ConnectionsDialog extends javax.swing.JDialog {
+public class ConnectionsDialog extends javax.swing.JInternalFrame {
 
-    private static JDialog dialog;
+    private static ConnectionsDialog dialog;
 
     private final DataConnect dc;
     private MyListModel model;
@@ -35,32 +31,35 @@ public class ConnectionsDialog extends javax.swing.JDialog {
     /**
      * Creates new form ConnectionsDialog
      *
-     * @param parent the parent component.
      * @param dc the data connection.
      */
-    public ConnectionsDialog(Window parent, DataConnect dc) {
-        super(parent);
+    public ConnectionsDialog(DataConnect dc) {
+        super();
         this.dc = dc;
         initComponents();
-        this.setLocationRelativeTo(parent);
-        this.setModal(true);
+        super.setClosable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         setList();
     }
 
     /**
      * Method to show the connections dialog.
      *
-     * @param parent the parent window.
      * @param dc the data connection.
      */
-    public static void showConnectionsDialog(Component parent, DataConnect dc) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
+    public static void showConnectionsDialog(DataConnect dc) {
+        if (dialog == null) {
+            dialog = new ConnectionsDialog(dc);
+            GUI.gui.internal.add(dialog);
         }
-        dialog = new ConnectionsDialog(window, dc);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setVisible(true);
+        try {
+            dialog.setSelected(true);
+            dialog.setIcon(false);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private class MyListModel extends AbstractListModel {

@@ -15,6 +15,7 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -25,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -32,7 +34,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class StaffClocking extends javax.swing.JFrame {
+public class StaffClocking extends javax.swing.JInternalFrame {
 
     private Staff staff;
     private final DataConnect dc;
@@ -45,19 +47,27 @@ public class StaffClocking extends javax.swing.JFrame {
     /**
      * Creates new form StaffClocking
      */
-    public StaffClocking(DataConnect dc, Image icon) {
+    public StaffClocking(DataConnect dc) {
         this.dc = dc;
         initComponents();
-        setIconImage(icon);
+        super.setClosable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
         clocked = 0;
-        super.setLocationRelativeTo(null);
     }
 
-    public static void showWindow(DataConnect dc, Image icon) {
-        new StaffClocking(dc, icon).setVisible(true);
+    public static void showWindow(DataConnect dc) {
+        StaffClocking window = new StaffClocking(dc);
+        GUI.gui.internal.add(window);
+        window.setVisible(true);
+        try {
+            window.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(StaffClocking.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void setTable() {
@@ -339,55 +349,62 @@ public class StaffClocking extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        staff = StaffSelectDialog.showDialog(this, dc);
-        if (staff == null) {
-            return;
-        }
-        txtStaff.setText(staff.toString());
-        try {
-            currentTableContents = dc.getAllClocks(staff.getId());
-            clocked = 0;
-            long on = 0;
-            int last = -1;
-            for (ClockItem i : currentTableContents) {
-                if (i.getType() == ClockItem.CLOCK_ON) {
-                    if (last != ClockItem.CLOCK_ON) {
-                        last = ClockItem.CLOCK_ON;
-                        on = i.getTime().getTime();
+        final Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                staff = StaffSelectDialog.showDialog(dc);
+                if (staff == null) {
+                    return;
+                }
+                txtStaff.setText(staff.toString());
+                try {
+                    currentTableContents = dc.getAllClocks(staff.getId());
+                    clocked = 0;
+                    long on = 0;
+                    int last = -1;
+                    for (ClockItem i : currentTableContents) {
+                        if (i.getType() == ClockItem.CLOCK_ON) {
+                            if (last != ClockItem.CLOCK_ON) {
+                                last = ClockItem.CLOCK_ON;
+                                on = i.getTime().getTime();
+                            }
+                        } else {
+                            if (on != 0) {
+                                long off = i.getTime().getTime();
+                                double duration = off - on;
+                                double minutes = (duration / 1000) / 60;
+                                double hours = minutes / 60;
+                                clocked += hours;
+                                last = ClockItem.CLOCK_OFF;
+                            }
+                        }
                     }
-                } else {
-                    if (on != 0) {
-                        long off = i.getTime().getTime();
-                        double duration = off - on;
-                        double minutes = (duration / 1000) / 60;
-                        double hours = minutes / 60;
-                        clocked += hours;
-                        last = ClockItem.CLOCK_OFF;
+                    BigDecimal bClocked = new BigDecimal(clocked).setScale(2, RoundingMode.HALF_UP);
+                    txtHours.setText(bClocked + "");
+                    txtRate.setText(staff.getWage() + "");
+                    setTable();
+                    for (Component comp : calPanel.getComponents()) {
+                        comp.setEnabled(true);
                     }
+                } catch (IOException | SQLException | StaffNotFoundException ex) {
+                    Logger.getLogger(StaffClocking.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            BigDecimal bClocked = new BigDecimal(clocked).setScale(2, RoundingMode.HALF_UP);
-            txtHours.setText(bClocked + "");
-            txtRate.setText(staff.getWage() + "");
-            setTable();
-            for (Component comp : calPanel.getComponents()) {
-                comp.setEnabled(true);
-            }
-        } catch (IOException | SQLException | StaffNotFoundException ex) {
-            Logger.getLogger(StaffClocking.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        };
+        final Thread thread = new Thread(run);
+        thread.start();
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnCalculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateActionPerformed
         String val = txtRate.getText();
         double rate = staff.getWage();
         if (val.length() != 0) {
-            if(!Utilities.isNumber(val)){
+            if (!Utilities.isNumber(val)) {
                 JOptionPane.showMessageDialog(this, "Must enter either a numerical value for rate or leave it blank to use the default wage", "Hours", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             rate = Double.parseDouble(val);
-            if(rate <= 0){
+            if (rate <= 0) {
                 JOptionPane.showMessageDialog(this, "Rate must be greater than zero", "Hours", JOptionPane.ERROR_MESSAGE);
                 return;
             }

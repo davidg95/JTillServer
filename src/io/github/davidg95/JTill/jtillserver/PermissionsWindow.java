@@ -6,10 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.Window;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.event.TreeModelListener;
@@ -30,7 +28,7 @@ import javax.swing.tree.TreePath;
  *
  * @author David
  */
-public class PermissionsWindow extends javax.swing.JDialog {
+public class PermissionsWindow extends javax.swing.JInternalFrame {
 
     private final Logger log = Logger.getGlobal();
 
@@ -47,8 +45,8 @@ public class PermissionsWindow extends javax.swing.JDialog {
     /**
      * Creates new form PermissionsWindow
      */
-    public PermissionsWindow(Window parent, DataConnect dc) {
-        super(parent);
+    public PermissionsWindow(DataConnect dc) {
+        super();
         this.dc = dc;
         try {
             settings = dc.getSettingsInstance();
@@ -56,20 +54,28 @@ public class PermissionsWindow extends javax.swing.JDialog {
             log.log(Level.SEVERE, null, ex);
         }
         initComponents();
-        setLocationRelativeTo(parent);
-        setModal(true);
+//        setLocationRelativeTo(parent);
+//        setModal(true);
+        super.setClosable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         setTitle("Permissions");
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         init();
     }
 
-    public static void showDialog(Component parent, DataConnect dc) {
-        Window window = null;
-        if (parent instanceof Frame || parent instanceof Dialog) {
-            window = (Window) parent;
+    public static void showDialog(DataConnect dc) {
+        if (dialog == null) {
+            dialog = new PermissionsWindow(dc);
+            GUI.gui.internal.add(dialog);
         }
-        dialog = new PermissionsWindow(window, dc);
         dialog.setVisible(true);
+        try {
+            dialog.setIcon(false);
+            dialog.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(PermissionsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void init() {

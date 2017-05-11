@@ -5,8 +5,11 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import com.sun.glass.events.KeyEvent;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,34 +20,79 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JTable;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author David
  */
-public class StockTakeWindow extends javax.swing.JFrame {
+public class StockTakeWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
-    private List<Product> currentTableContents;
+    private final List<Product> currentTableContents;
     private final DefaultTableModel model;
 
     /**
      * Creates new form StockTakeWindow
      */
-    public StockTakeWindow(DataConnect dc, Image icon) {
+    public StockTakeWindow(DataConnect dc) {
         this.dc = dc;
         initComponents();
-        setIconImage(icon);
+//        setIconImage(icon);
+        super.setClosable(true);
+        super.setMaximizable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
+        init();
     }
 
-    public static void showWindow(DataConnect dc, Image icon) {
-        new StockTakeWindow(dc, icon).setVisible(true);
+    public static void showWindow(DataConnect dc) {
+        StockTakeWindow window = new StockTakeWindow(dc);
+        GUI.gui.internal.add(window);
+        window.setVisible(true);
+        try {
+            window.setIcon(false);
+            window.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(StockTakeWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void init() {
+        InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap am = table.getActionMap();
+
+        KeyStroke enterKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+
+        im.put(enterKey, "Action.enter");
+        am.put("Action.enter", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                final int index = table.getSelectedRow();
+                final Product p = currentTableContents.get(index);
+                if (index == -1) {
+                    return;
+                }
+                if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Are you sure you want to remove this item?\n" + p, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    currentTableContents.remove(index);
+                    updateTable();
+                }
+            }
+        });
     }
 
     public void updateTable() {
@@ -57,6 +105,11 @@ public class StockTakeWindow extends javax.swing.JFrame {
             } catch (IOException | JTillException ex) {
                 Logger.getLogger(StockTakeWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+        if (currentTableContents.isEmpty()) {
+            btnSubmit.setEnabled(false);
+        } else {
+            btnSubmit.setEnabled(true);
         }
     }
 
@@ -76,6 +129,15 @@ public class StockTakeWindow extends javax.swing.JFrame {
     public void addRow(Product p) {
         currentTableContents.add(p);
         updateTable();
+    }
+
+    private Product checkProductAlreadyExists(Product p) {
+        for (Product pr : currentTableContents) {
+            if (pr.equals(p)) {
+                return pr;
+            }
+        }
+        return null;
     }
 
     /**
@@ -100,7 +162,6 @@ public class StockTakeWindow extends javax.swing.JFrame {
         btnAddCSV = new javax.swing.JButton();
         btnSubmit = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Stock Take");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
@@ -124,6 +185,11 @@ public class StockTakeWindow extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(table);
@@ -178,6 +244,7 @@ public class StockTakeWindow extends javax.swing.JFrame {
         });
 
         btnSubmit.setText("Submit");
+        btnSubmit.setEnabled(false);
         btnSubmit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSubmitActionPerformed(evt);
@@ -239,25 +306,49 @@ public class StockTakeWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        Product p = ProductSelectDialog.showDialog(this, dc, false);
-        if (p == null) {
-            return;
-        }
-        String val = JOptionPane.showInputDialog(this, "Enter new stock level", "Enter stock level", JOptionPane.PLAIN_MESSAGE);
-        if (val == null || val.isEmpty()) {
-            return;
-        }
-        if (Utilities.isNumber(val)) {
-            int stock = Integer.parseInt(val);
-            if (stock <= 0) {
-                JOptionPane.showMessageDialog(this, "Value must be zero or greater", "Stock Take", JOptionPane.ERROR_MESSAGE);
-                return;
+        final Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                Product p = ProductSelectDialog.showDialog(dc, false);
+                Product pr = checkProductAlreadyExists(p);
+                if (pr != null) {
+                    String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter new quantity", "Stock Take", JOptionPane.PLAIN_MESSAGE);
+                    if (!Utilities.isNumber(input)) {
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must enter a number", "Stock Take", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    int val = Integer.parseInt(input);
+                    if (val > 0) {
+                        pr.setStock(val);
+                        updateTable();
+                        return;
+                    } else {
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must enter a value greater than zero", "Stock Take", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                }
+                if (p == null) {
+                    return;
+                }
+                String val = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter new stock level", "Enter stock level", JOptionPane.PLAIN_MESSAGE);
+                if (val == null || val.isEmpty()) {
+                    return;
+                }
+                if (Utilities.isNumber(val)) {
+                    int stock = Integer.parseInt(val);
+                    if (stock <= 0) {
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Value must be zero or greater", "Stock Take", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    p.setStock(stock);
+                    addRow(p);
+                } else {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You must enter a number", "Stock Take", JOptionPane.ERROR_MESSAGE);
+                }
             }
-            p.setStock(stock);
-            addRow(p);
-        } else {
-            JOptionPane.showMessageDialog(this, "You must enter a number", "Stock Take", JOptionPane.ERROR_MESSAGE);
-        }
+        };
+        final Thread thread = new Thread(run);
+        thread.start();
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnAddCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCSVActionPerformed
@@ -281,7 +372,7 @@ public class StockTakeWindow extends javax.swing.JFrame {
                     String[] items = line.split(",");
 
                     if (items.length != 2) {
-                        JOptionPane.showMessageDialog(this, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
 
@@ -301,12 +392,12 @@ public class StockTakeWindow extends javax.swing.JFrame {
                 }
                 updateTable();
                 if (nFound > 0) {
-                    JOptionPane.showMessageDialog(this, nFound + " barcodes could not be found", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, nFound + " barcodes could not be found", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (FileNotFoundException ex) {
-                JOptionPane.showMessageDialog(this, ex, "File Not Found", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "File Not Found", JOptionPane.ERROR_MESSAGE);
             } catch (IOException | SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnAddCSVActionPerformed
@@ -315,7 +406,7 @@ public class StockTakeWindow extends javax.swing.JFrame {
         if (currentTableContents.isEmpty()) {
             return;
         }
-        if (JOptionPane.showConfirmDialog(this, "Are you sure you want to submit this stock take?", "Stock Take", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Are you sure you want to submit this stock take?", "Stock Take", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             for (Product p : currentTableContents) {
                 try {
                     dc.updateProduct(p);
@@ -325,7 +416,7 @@ public class StockTakeWindow extends javax.swing.JFrame {
             }
             currentTableContents.clear();
             updateTable();
-            JOptionPane.showMessageDialog(this, "Stock take submitted", "Complete", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Stock take submitted", "Complete", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnSubmitActionPerformed
 
@@ -363,6 +454,57 @@ public class StockTakeWindow extends javax.swing.JFrame {
         txtSearch.setSelectionStart(0);
         txtSearch.setSelectionEnd(txtSearch.getText().length());
     }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        final int index = table.getSelectedRow();
+        final Product p = currentTableContents.get(index);
+        if (SwingUtilities.isLeftMouseButton(evt)) {
+            if (evt.getClickCount() == 2) {
+                String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter new quantity", "Stock Take", JOptionPane.PLAIN_MESSAGE);
+                if (!Utilities.isNumber(input)) {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "A number must be entered", "Stock Take", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                int val = Integer.parseInt(input);
+                if (val > 0) {
+                    p.setStock(val);
+                    updateTable();
+                } else {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must be a value greater than zero", "Stock Take", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        } else if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu m = new JPopupMenu();
+            JMenuItem i = new JMenuItem("Change Quantity");
+            JMenuItem i2 = new JMenuItem("Remove Item");
+            i.addActionListener((ActionEvent e) -> {
+                String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter new quantity", "Stock Take", JOptionPane.PLAIN_MESSAGE);
+                if (!Utilities.isNumber(input)) {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "A number must be entered", "Stock Take", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                int val = Integer.parseInt(input);
+                if (val > 0) {
+                    p.setStock(val);
+                    updateTable();
+                } else {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must be a value greater than zero", "Stock Take", JOptionPane.WARNING_MESSAGE);
+                }
+            });
+            i2.addActionListener((ActionEvent e) -> {
+                if (index == -1) {
+                    return;
+                }
+                if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Are you sure you want to remove this item?\n" + p, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    model.removeRow(index);
+                    currentTableContents.remove(index);
+                }
+            });
+            m.add(i);
+            m.add(i2);
+            m.show(table, evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_tableMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddCSV;

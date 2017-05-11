@@ -7,6 +7,7 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -14,6 +15,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -21,7 +23,9 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class TillWindow extends javax.swing.JFrame {
+public class TillWindow extends javax.swing.JInternalFrame {
+
+    private static TillWindow window;
 
     private final DataConnect dc;
     private final DefaultTableModel model;
@@ -30,17 +34,29 @@ public class TillWindow extends javax.swing.JFrame {
     /**
      * Creates new form TillWindow
      */
-    public TillWindow(DataConnect dc, Image icon) {
+    public TillWindow(DataConnect dc) {
         this.dc = dc;
         initComponents();
-        setIconImage(icon);
+        super.setClosable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
         getAllTills();
     }
 
-    public static void showWindow(DataConnect dc, Image icon) {
-        new TillWindow(dc, icon).setVisible(true);
+    public static void showWindow(DataConnect dc) {
+        if (window == null) {
+            window = new TillWindow(dc);
+            GUI.gui.internal.add(window);
+        }
+        window.setVisible(true);
+        try {
+            window.setSelected(true);
+            window.setIcon(false);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(TillWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void getAllTills() {
@@ -190,10 +206,10 @@ public class TillWindow extends javax.swing.JFrame {
             }
             report.actualTakings = report.actualTakings.setScale(2);
             String strVal = JOptionPane.showInputDialog(this, "Enter value of money counted", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
-            if (strVal == null ){
+            if (strVal == null) {
                 return;
             }
-            if(strVal.equals("")) {
+            if (strVal.equals("")) {
                 JOptionPane.showMessageDialog(this, "A Value must be entered", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -202,7 +218,7 @@ public class TillWindow extends javax.swing.JFrame {
                 return;
             }
             double value = Double.parseDouble(strVal);
-            if(value <= 0){
+            if (value <= 0) {
                 JOptionPane.showMessageDialog(this, "You must enter a value greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -225,7 +241,7 @@ public class TillWindow extends javax.swing.JFrame {
             report.averageSpend = report.actualTakings.divide(new BigDecimal(1));
             till = dc.getTill(till.getId());
             report.tax = BigDecimal.ZERO;
-            
+
             dc.cashUncashedSales(till.getId());
 
             TillReportDialog.showDialog(this, report);

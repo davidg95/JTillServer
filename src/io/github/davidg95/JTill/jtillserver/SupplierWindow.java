@@ -7,18 +7,20 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 
 /**
  *
  * @author David
  */
-public class SupplierWindow extends javax.swing.JFrame {
+public class SupplierWindow extends javax.swing.JInternalFrame {
 
     private static SupplierWindow window;
 
@@ -32,9 +34,12 @@ public class SupplierWindow extends javax.swing.JFrame {
     public SupplierWindow(DataConnect dc, Image icon) {
         this.dc = dc;
         initComponents();
-        this.setIconImage(icon);
+//        this.setIconImage(icon);
+        super.setClosable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(icon));
         setTitle("Suppliers");
-        setLocationRelativeTo(null);
+//        setLocationRelativeTo(null);
         model = new DefaultListModel();
         try {
             currentTableContents = dc.getAllSuppliers();
@@ -46,8 +51,17 @@ public class SupplierWindow extends javax.swing.JFrame {
     }
 
     public static void showWindow(DataConnect dc, Image icon) {
-        window = new SupplierWindow(dc, icon);
+        if (window == null) {
+            window = new SupplierWindow(dc, icon);
+            GUI.gui.internal.add(window);
+        }
         window.setVisible(true);
+        try {
+        window.setIcon(false);
+            window.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(SupplierWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void setList() {
@@ -71,8 +85,7 @@ public class SupplierWindow extends javax.swing.JFrame {
         btnAdd = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
         lstSuppliers.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };

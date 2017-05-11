@@ -10,6 +10,7 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -25,9 +28,9 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class ProductSelectDialog extends javax.swing.JDialog {
+public class ProductSelectDialog extends javax.swing.JInternalFrame {
 
-    private static JDialog dialog;
+//    private static JDialog dialog;
     private static Product product;
 
     private final DataConnect dc;
@@ -37,6 +40,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
 
     private final boolean showOpen;
 
+    protected boolean closedFlag;
+
     /**
      * Creates new form ProductSelectDialog
      *
@@ -45,48 +50,105 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * @param showOpen indicated whether open price products should show. new
      * product if a barcode is not found.
      */
-    public ProductSelectDialog(Window parent, DataConnect dc, boolean showOpen) {
-        super(parent);
+    public ProductSelectDialog(DataConnect dc, boolean showOpen) {
+        super();
         this.dc = dc;
         this.showOpen = showOpen;
+        closedFlag = false;
         initComponents();
-        setLocationRelativeTo(parent);
-        setModal(true);
+//        setLocationRelativeTo(parent);
+//        setModal(true);
+        super.setClosable(true);
+        super.setIconifiable(true);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         showAllProducts();
+        this.addInternalFrameListener(new InternalFrameListener() {
+            @Override
+            public void internalFrameOpened(InternalFrameEvent e) {
+
+            }
+
+            @Override
+            public void internalFrameClosing(InternalFrameEvent e) {
+                closedFlag = true;
+            }
+
+            @Override
+            public void internalFrameClosed(InternalFrameEvent e) {
+
+            }
+
+            @Override
+            public void internalFrameIconified(InternalFrameEvent e) {
+
+            }
+
+            @Override
+            public void internalFrameDeiconified(InternalFrameEvent e) {
+
+            }
+
+            @Override
+            public void internalFrameActivated(InternalFrameEvent e) {
+
+            }
+
+            @Override
+            public void internalFrameDeactivated(InternalFrameEvent e) {
+
+            }
+        });
         txtSearch.requestFocus();
     }
 
     /**
      * Method to show the product select dialog.
      *
-     * @param parent the parent component.
      * @param dc the data source.
      * @param showOpen indicates whether open products should show or not.
      * @return the product selected by the user.
      */
-    public static Product showDialog(Component parent, DataConnect dc, boolean showOpen) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
-        dialog = new ProductSelectDialog(window, dc, showOpen);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    public static Product showDialog(DataConnect dc, boolean showOpen) {
+//        Window window = null;
+//        if (parent instanceof Dialog || parent instanceof Frame) {
+//            window = (Window) parent;
+//        }
+        final ProductSelectDialog dialog = new ProductSelectDialog(dc, showOpen);
         product = null;
-        dialog.setVisible(true);
+        GUI.gui.internal.add(dialog);
+        final Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                dialog.setVisible(true);
+                try {
+                    dialog.setIcon(false);
+                    dialog.setSelected(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.getLogger(ProductSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        final Thread thread = new Thread(run);
+        thread.start();
+        while (!dialog.closedFlag) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ProductSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return product;
     }
 
     /**
      * Method to show the product select dialog.
      *
-     * @param parent the parent component.
      * @param dc the data source.
      * @return the product selected by the user.
      */
-    public static Product showDialog(Component parent, DataConnect dc) {
-        return showDialog(parent, dc, true);
+    public static Product showDialog(DataConnect dc) {
+        return showDialog(dc, true);
     }
 
     /**
@@ -131,7 +193,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * @param e the exception to show.
      */
     private void showError(Exception e) {
-        JOptionPane.showMessageDialog(this, e, "Products", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showInternalMessageDialog(GUI.gui.internal, e, "Products", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -152,8 +214,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         btnSearch = new javax.swing.JButton();
         radName = new javax.swing.JRadioButton();
         radBarcode = new javax.swing.JRadioButton();
+        btnSelect = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Select Product");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
@@ -178,7 +240,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             table.getColumnModel().getColumn(1).setResizable(false);
         }
 
-        btnClose.setText("Close");
+        btnClose.setText("Cancel");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCloseActionPerformed(evt);
@@ -217,6 +279,14 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             }
         });
 
+        btnSelect.setText("Select");
+        btnSelect.setEnabled(false);
+        btnSelect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSelectActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -224,7 +294,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -232,20 +303,19 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                         .addComponent(radName)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(radBarcode)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSearch)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClose))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(btnSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSelect)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnClose)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
@@ -253,7 +323,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                     .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSearch)
                     .addComponent(radName)
-                    .addComponent(radBarcode))
+                    .addComponent(radBarcode)
+                    .addComponent(btnSelect))
                 .addContainerGap())
         );
 
@@ -261,20 +332,24 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
+        product = null;
+        closedFlag = true;
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
         product = currentTableContents.get(table.getSelectedRow());
+        btnSelect.setEnabled(true);
         if (evt.getClickCount() == 2) {
+            closedFlag = true;
             this.setVisible(false);
         }
     }//GEN-LAST:event_tableMousePressed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         String search = txtSearch.getText();
-        
-        if(search.length() == 0){
+
+        if (search.length() == 0) {
             return;
         }
         List<Product> newList = new ArrayList<>();
@@ -290,7 +365,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             } else {
                 try {
                     if (!Utilities.isNumber(search)) {
-                        JOptionPane.showMessageDialog(this, "Barcode must be a number", "Search", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Barcode must be a number", "Search", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     final Plu plu = dc.getPluByProduct(p.getId());
@@ -305,7 +380,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         if (newList.isEmpty()) {
             txtSearch.setSelectionStart(0);
             txtSearch.setSelectionEnd(txtSearch.getText().length());
-            JOptionPane.showMessageDialog(this, "No Results", "Search", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No Results", "Search", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
         currentTableContents = newList;
@@ -328,9 +403,15 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         txtSearch.requestFocus();
     }//GEN-LAST:event_radBarcodeActionPerformed
 
+    private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
+        closedFlag = true;
+        setVisible(false);
+    }//GEN-LAST:event_btnSelectActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnSelect;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JRadioButton radBarcode;

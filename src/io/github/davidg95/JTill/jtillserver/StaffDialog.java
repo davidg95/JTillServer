@@ -23,14 +23,14 @@ import javax.swing.JOptionPane;
  */
 public class StaffDialog extends javax.swing.JDialog {
 
-    private final Logger log = Logger.getGlobal();
+    private static final Logger LOG = Logger.getGlobal();
 
     private static JDialog dialog;
     private static Staff staff;
 
-    private DataConnect dc;
+    private final DataConnect dc;
     private Staff s;
-    private boolean editMode;
+    private final boolean editMode;
 
     /**
      * Creates new form StaffDialog
@@ -78,11 +78,11 @@ public class StaffDialog extends javax.swing.JDialog {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
-        }
+    }
         dialog = new StaffDialog(window, dc, manager);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         staff = null;
-        dialog.setVisible(true);
+                dialog.setVisible(true);
         return staff;
     }
 
@@ -98,7 +98,7 @@ public class StaffDialog extends javax.swing.JDialog {
         dialog = new StaffDialog(window, dc, s);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         staff = s;
-        dialog.setVisible(true);
+                dialog.setVisible(true);
         return staff;
     }
 
@@ -271,7 +271,7 @@ public class StaffDialog extends javax.swing.JDialog {
                 return;
             }
         } catch (IOException | SQLException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
         if (!editMode) {
             if (new String(txtPassword.getPassword()).equals(confirmPassword)) {

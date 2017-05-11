@@ -14,6 +14,7 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -24,13 +25,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author David
  */
-public final class ReportingWindow extends javax.swing.JFrame {
+public final class ReportingWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
 
@@ -53,11 +57,13 @@ public final class ReportingWindow extends javax.swing.JFrame {
     public ReportingWindow(DataConnect dc, Image icon) {
         this.dc = dc;
         initComponents();
-        setIconImage(icon);
+        super.setClosable(true);
+        super.setMaximizable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         setTitle("Sales reporting");
         btnStartDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(startDate));
         btnEndDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(endDate));
-        setLocationRelativeTo(null);
         items = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
@@ -69,7 +75,7 @@ public final class ReportingWindow extends javax.swing.JFrame {
         for (SaleItem i : items) {
             try {
                 final Product p = dc.getProduct(i.getItem());
-                model.addRow(new Object[]{i.getId(), p.getName(), i.getQuantity(), i.getPrice()});
+                model.addRow(new Object[]{i.getId(), p.getName(), i.getQuantity(), new DecimalFormat("#.00").format(i.getPrice())});
             } catch (IOException | ProductNotFoundException | SQLException ex) {
                 Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -83,7 +89,14 @@ public final class ReportingWindow extends javax.swing.JFrame {
      * @param icon the icon for the window.
      */
     public static void showWindow(DataConnect dc, Image icon) {
-        new ReportingWindow(dc, icon).setVisible(true);
+        ReportingWindow window = new ReportingWindow(dc, icon);
+        GUI.gui.internal.add(window);
+        window.setVisible(true);
+        try {
+            window.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public class ReportPrinter implements Printable {
@@ -203,8 +216,6 @@ public final class ReportingWindow extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         txtNet = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Search By"));
 
         jLabel1.setText("Department:");
@@ -271,9 +282,9 @@ public final class ReportingWindow extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnStartDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnEndDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(89, 89, 89)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnGenerate, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(101, Short.MAX_VALUE))
+                .addContainerGap(184, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -290,11 +301,9 @@ public final class ReportingWindow extends javax.swing.JFrame {
                         .addComponent(btnCat))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel4)
-                        .addComponent(btnEndDate))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnGenerate)
-                .addContainerGap())
+                        .addComponent(btnEndDate)))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(btnGenerate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         table.setModel(new javax.swing.table.DefaultTableModel(
@@ -314,6 +323,11 @@ public final class ReportingWindow extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(table);
@@ -404,10 +418,10 @@ public final class ReportingWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -446,6 +460,11 @@ public final class ReportingWindow extends javax.swing.JFrame {
             BigDecimal sales = BigDecimal.ZERO;
             BigDecimal tax = BigDecimal.ZERO;
 
+            if (items.isEmpty()) {
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No results", "Sales Reporting", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
             for (SaleItem i : items) {
                 if (i.getType() == SaleItem.PRODUCT) {
                     itemsSold += i.getQuantity();
@@ -483,6 +502,20 @@ public final class ReportingWindow extends javax.swing.JFrame {
         }
         btnEndDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(endDate));
     }//GEN-LAST:event_btnEndDateActionPerformed
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        if (SwingUtilities.isLeftMouseButton(evt)) {
+            if (evt.getClickCount() == 2) {
+                SaleItem item = items.get(table.getSelectedRow());
+                try {
+                    final Sale sale = dc.getSale(item.getSale());
+                    SaleDialog.showSaleDialog(sale, dc);
+                } catch (IOException | SQLException | JTillException ex) {
+                    Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }//GEN-LAST:event_tableMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCat;

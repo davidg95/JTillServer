@@ -6,24 +6,22 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.Window;
+import java.awt.Image;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
-import javax.swing.JDialog;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author David
  */
-public class WasteReasonDialog extends javax.swing.JDialog {
+public class WasteReasonDialog extends javax.swing.JInternalFrame {
 
     private static WasteReasonDialog dialog;
     private static final Logger LOG = Logger.getGlobal();
@@ -35,26 +33,33 @@ public class WasteReasonDialog extends javax.swing.JDialog {
     /**
      * Creates new form WasteReasonDialog
      */
-    public WasteReasonDialog(Window parent, DataConnect dc) {
-        super(parent);
+    public WasteReasonDialog(DataConnect dc, Image icon) {
+        super();
         this.dc = dc;
         initComponents();
         setTitle("Waste Reasons");
-        setModal(true);
-        setLocationRelativeTo(parent);
+//        setModal(true);
+//        setLocationRelativeTo(parent);
+        super.setClosable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(icon));
         model = new DefaultListModel();
         lstItems.setModel(model);
         init();
     }
-    
-    public static void showDialog(Component parent, DataConnect dc){
-        Window window = null;
-        if(parent instanceof Dialog || parent instanceof Frame){
-            window = (Window) parent;
+
+    public static void showDialog(DataConnect dc, Image icon) {
+        if (dialog == null) {
+            dialog = new WasteReasonDialog(dc, icon);
+            GUI.gui.internal.add(dialog);
         }
-        dialog = new WasteReasonDialog(window, dc);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setVisible(true);
+        try {
+            dialog.setIcon(false);
+            dialog.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(WasteReasonDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void init() {
@@ -88,7 +93,7 @@ public class WasteReasonDialog extends javax.swing.JDialog {
         btnClose = new javax.swing.JButton();
         btnNew = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
         lstItems.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -147,7 +152,7 @@ public class WasteReasonDialog extends javax.swing.JDialog {
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
         String reason = JOptionPane.showInputDialog(this, "Enter new waste reason", "New Reason", JOptionPane.PLAIN_MESSAGE);
 
-        if(reason == null){
+        if (reason == null) {
             return;
         }
         if (reason.equals("")) {

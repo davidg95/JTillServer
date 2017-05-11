@@ -16,6 +16,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Enumeration;
@@ -24,8 +25,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -34,7 +35,7 @@ import javax.swing.JToggleButton;
  *
  * @author David
  */
-public class ScreenEditWindow extends javax.swing.JFrame {
+public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
     private final Logger LOG = Logger.getGlobal();
 
@@ -48,7 +49,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     private Screen currentScreen; //The current selected screen.
     private TillButton currentButton; //The current selected button.
     private List<TillButton> currentButtons; //The current buttons.
-    
+
     //Progress bar stuff
     private int amount;
 
@@ -69,9 +70,12 @@ public class ScreenEditWindow extends javax.swing.JFrame {
      */
     public ScreenEditWindow(DataConnect dc, Image icon) {
         this.dc = dc;
-        this.setIconImage(icon);
+//        this.setIconImage(icon);
+        super.setMaximizable(true);
+        super.setIconifiable(true);
+        super.setClosable(true);
+        super.setFrameIcon(new ImageIcon(icon));
         initComponents();
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
         categoryCards = (CardLayout) panelProducts.getLayout();
         cardsButtonGroup = new ButtonGroup();
     }
@@ -85,10 +89,20 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     public static void showScreenEditWindow(DataConnect dc, Image icon) {
         if (frame == null) {
             frame = new ScreenEditWindow(dc, icon);
-            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            GUI.gui.internal.add(frame);
         }
-        update();
-        frame.setVisible(true);
+        if (frame.isVisible()) {
+            frame.toFront();
+        } else {
+            update();
+            frame.setVisible(true);
+        }
+        try {
+            frame.setIcon(false);
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static void update() {
@@ -266,27 +280,34 @@ public class ScreenEditWindow extends javax.swing.JFrame {
      * Method to show the buttons options dialog for a particular button.
      */
     private void showButtonOptions() {
-        currentButton = ButtonOptionDialog.showDialog(this, currentButton, dc, 5 - currentButton.getX() + 1, 10 - currentButton.getY() + 1);
-        if (currentButton == null) { //If it is null then the button is getting removed.
-            try {
-                currentButton.setName("[SPACE]");
-                dc.updateButton(currentButton);
-            } catch (IOException | SQLException | JTillException ex) {
-                showError(ex);
-            }
-        } else { //If it is not null then it is being edited or nothing has happening to it
-            try {
-                dc.updateButton(currentButton); //This will update the ucrrent button in the database
-            } catch (IOException | SQLException | JTillException ex) {
-                showError(ex);
-            }
-        }
-        new Thread() {
+        final Runnable run = new Runnable() {
             @Override
             public void run() {
-                setButtons(); //This will update the view to reflect any changes
+                currentButton = ButtonOptionDialog.showDialog(currentButton, dc, 5 - currentButton.getX() + 1, 10 - currentButton.getY() + 1);
+                if (currentButton == null) { //If it is null then the button is getting removed.
+                    try {
+                        currentButton.setName("[SPACE]");
+                        dc.updateButton(currentButton);
+                    } catch (IOException | SQLException | JTillException ex) {
+                        showError(ex);
+                    }
+                } else { //If it is not null then it is being edited or nothing has happening to it
+                    try {
+                        dc.updateButton(currentButton); //This will update the ucrrent button in the database
+                    } catch (IOException | SQLException | JTillException ex) {
+                        showError(ex);
+                    }
+                }
+                new Thread() {
+                    @Override
+                    public void run() {
+                        setButtons(); //This will update the view to reflect any changes
+                    }
+                }.start();
             }
-        }.start();
+        };
+        final Thread thread = new Thread(run);
+        thread.start();
     }
 
     private void showError(Exception e) {
@@ -323,6 +344,7 @@ public class ScreenEditWindow extends javax.swing.JFrame {
         bar = new javax.swing.JProgressBar();
         btnClose = new javax.swing.JButton();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Screen Editor");
 
         panelEditor.setBorder(javax.swing.BorderFactory.createTitledBorder("Editor"));
@@ -406,13 +428,13 @@ public class ScreenEditWindow extends javax.swing.JFrame {
     private void btnNewScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewScreenActionPerformed
         try {
             if (dc.getAllScreens().size() >= 8) {
-                JOptionPane.showMessageDialog(this, "Screen limit has been reached", "New Screen", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Screen limit has been reached", "New Screen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         } catch (IOException | SQLException ex) {
             Logger.getLogger(ScreenEditWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String name = JOptionPane.showInputDialog(this, "Enter Name", "New Screen", JOptionPane.PLAIN_MESSAGE);
+        String name = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter Name", "New Screen", JOptionPane.PLAIN_MESSAGE);
         if (name == null) {
             return;
         }
@@ -442,10 +464,10 @@ public class ScreenEditWindow extends javax.swing.JFrame {
                     }
                 }.start();
             } else {
-                JOptionPane.showMessageDialog(this, "Name already in use", "New Screen", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Name already in use", "New Screen", JOptionPane.ERROR_MESSAGE);
             }
-        } else{
-            JOptionPane.showMessageDialog(this, "Must enter a value", "New Screen", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must enter a value", "New Screen", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnNewScreenActionPerformed
 
