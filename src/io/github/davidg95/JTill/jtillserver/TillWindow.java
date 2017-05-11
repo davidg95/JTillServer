@@ -6,7 +6,6 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Image;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -64,7 +63,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
             contents = dc.getAllTills();
             model.setRowCount(0);
             for (Till t : contents) {
-                model.addRow(new Object[]{t.getId(), t.getName(), t.getUncashedTakings()});
+                model.addRow(new Object[]{t.getId(), t.getName(), new DecimalFormat("#.00").format(t.getUncashedTakings())});
             }
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, "Error loading form", "Error", JOptionPane.ERROR_MESSAGE);

@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.InetAddress;
+import java.net.URI;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -1404,12 +1405,14 @@ public class GUI extends JFrame implements GUIInterface {
                 try {
                     String latest = UpdateChecker.checkForUpdate();
                     if (!latest.equals("v0.0.1")) {
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Version " + latest + " avaliable", "Update", JOptionPane.INFORMATION_MESSAGE);
+                        if(JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Version " + latest + " avaliable. Go to download page?", "Update", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+                            Desktop.getDesktop().browse(new URI(UpdateChecker.SERVER_UPDATE_DOWNLOAD));
+                        }
                     } else {
                         JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You are currently at the latest version", "Update", JOptionPane.INFORMATION_MESSAGE);
                     }
                 } catch (Exception ex) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Error communicating with server", "Update", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Error checking for update", "Update", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         }.start();

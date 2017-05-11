@@ -1,49 +1,12 @@
-JTill log Wed May 10 17:05:40 BST 2017
-[17:05:40] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[17:05:40] [INFO] Get staff count
-[17:05:40] [INFO] Starting Thread Pool Excecutor
-[17:05:40] [INFO] JTill Server local IP address is 192.168.1.65
-[17:05:40] [INFO] Server Socket running on port number 52341
-[17:05:40] [INFO] Ready to accept connections
-[17:05:43] [INFO] Login Staff dgrant
-[17:05:43] [INFO] David Grant has logged in
-[17:05:45] [INFO] Get product 2
-[17:05:45] [INFO] Get product 2
-[17:05:46] [INFO] Get customer 1
-[17:05:46] [INFO] Get product 2
-[17:05:52] [INFO] Get product 2
-[17:05:52] [INFO] Get product 2
-[17:05:53] [INFO] Get product 2
-[17:05:53] [INFO] Get product 2
-[17:05:53] [INFO] Get product 2
-[17:05:53] [INFO] Get product 2
-[17:05:53] [INFO] Get product 2
-[17:05:53] [INFO] Get product 2
-[17:05:53] [INFO] Get product 2
-[17:05:53] [INFO] Get product 2
-[17:05:53] [INFO] Get product 2
-[17:05:53] [INFO] Get product 2
-[17:05:54] [INFO] Get product 2
-[17:05:54] [INFO] Get product 2
-[17:05:54] [INFO] Get product 2
-[17:05:54] [INFO] Get product 2
-[17:05:54] [INFO] Get product 2
-[17:05:54] [INFO] Get product 2
-[17:05:54] [INFO] Get product 2
-[17:05:54] [INFO] Get product 2
-[17:05:54] [INFO] Get product 2
-[17:05:54] [INFO] Get product 2
-[17:05:54] [INFO] Get product 2
-[17:05:54] [INFO] Get product 2
-[17:05:55] [INFO] Get product 2
-[17:05:55] [INFO] Get product 2
-[17:05:55] [INFO] Get product 2
-[17:05:55] [INFO] Get product 2
-[17:05:55] [INFO] Get product 2
-[17:05:55] [INFO] Get product 2
-[17:05:55] [INFO] Get product 2
-[17:05:55] [INFO] Get product 2
-[17:05:56] [INFO] Get product 2
-[17:05:56] [INFO] Get product 2
-[17:05:56] [INFO] Get product 2
-[17:05:56] [INFO] Get product 2
+JTill log Thu May 11 16:38:29 BST 2017
+[16:38:29] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[16:38:29] [INFO] Get staff count
+[16:38:29] [INFO] Starting Thread Pool Excecutor
+[16:38:29] [INFO] JTill Server local IP address is 192.168.1.65
+[16:38:29] [INFO] Server Socket running on port number 52341
+[16:38:29] [INFO] Ready to accept connections
+[16:38:31] [INFO] Login Staff dgrant
+[16:38:31] [INFO] David Grant has logged in
+[16:39:38] [INFO] Stopping JTIll Server
+[16:39:38] [INFO] Saving properties
+[16:39:38] [INFO] Stopping
