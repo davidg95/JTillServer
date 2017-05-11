@@ -28,7 +28,7 @@ import javax.swing.event.ListDataListener;
  */
 public final class SettingsWindow extends javax.swing.JInternalFrame {
 
-    private final Logger log = Logger.getGlobal();
+    private static final Logger LOG = Logger.getGlobal();
 
     public static SettingsWindow frame;
 
@@ -171,6 +171,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             chkStaff.setSelected(dc.getSetting("SHOW_STAFF_RECEIPT").equals("true"));
             chkTerminal.setSelected(dc.getSetting("SHOW_TERMINAL_RECEIPT").equals("true"));
             chkEmailPrompt.setSelected(dc.getSetting("PROMPT_EMAIL_RECEIPT", "false").equals("true"));
+            chkUpdate.setSelected(dc.getSetting("UPDATE_STARTUP", "true").equals("true"));
         } catch (IOException ex) {
 
         }
@@ -230,6 +231,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         jLabel7 = new javax.swing.JLabel();
         cmbLaf = new javax.swing.JComboBox<>();
         btnSetLAF = new javax.swing.JButton();
+        chkUpdate = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
@@ -524,6 +526,8 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        chkUpdate.setText("Check for updates on startup");
+
         javax.swing.GroupLayout panelGeneralLayout = new javax.swing.GroupLayout(panelGeneral);
         panelGeneral.setLayout(panelGeneralLayout);
         panelGeneralLayout.setHorizontalGroup(
@@ -547,9 +551,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                                 .addComponent(jLabel13)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(spinSaleCache, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panelGeneralLayout.createSequentialGroup()
-                                .addGap(112, 112, 112)
-                                .addComponent(btnSaveCache))
+                            .addComponent(chkUpdate)
                             .addComponent(chkApproveNew)
                             .addComponent(btnCompanyDetails)
                             .addGroup(panelGeneralLayout.createSequentialGroup()
@@ -560,6 +562,10 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                                 .addComponent(btnSetLAF)))
                         .addGap(0, 27, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(panelGeneralLayout.createSequentialGroup()
+                .addGap(128, 128, 128)
+                .addComponent(btnSaveCache)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelGeneralLayout.setVerticalGroup(
             panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -570,7 +576,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 .addComponent(chkSendProducts)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chkEmailPrompt)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
                     .addComponent(spinSaleCache, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -587,7 +593,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                     .addComponent(jLabel7)
                     .addComponent(cmbLaf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSetLAF))
-                .addGap(19, 19, 19)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chkUpdate)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSaveCache)
                 .addContainerGap())
         );
@@ -697,45 +705,39 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(panelSecurity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(panelNetwork, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(panelDatabase, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(btnEditNetwork)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnNetworkCancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(btnEditDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnDatabaseCancel)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnPermissions)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClose))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(panelSecurity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(panelNetwork, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(panelDatabase, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(btnEditNetwork)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnNetworkCancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnEditDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnDatabaseCancel)))))
+                        .addComponent(btnClose)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(panelSecurity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(panelGeneral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(panelNetwork, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -747,12 +749,18 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnEditDatabase)
                             .addComponent(btnDatabaseCancel))
-                        .addGap(5, 5, 5)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnClose)
-                    .addComponent(btnPermissions, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(34, 34, 34))
+                        .addGap(16, 16, 16)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnClose)
+                            .addComponent(btnPermissions, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(34, 34, 34))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(panelSecurity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
@@ -786,7 +794,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                     dc.setSetting("max_conn", maxVal);
                     dc.setSetting("max_queue", queueVal);
                 } catch (IOException ex) {
-                    log.log(Level.SEVERE, null, ex);
+                    LOG.log(Level.SEVERE, null, ex);
                 }
             }
             for (Component c : panelNetwork.getComponents()) {
@@ -838,7 +846,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 editDatabase = false;
                 JOptionPane.showMessageDialog(this, "Changes will take place next time server restarts", "Server Options", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException ex) {
-                log.log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, null, ex);
             }
         } else {
             for (Component c : panelDatabase.getComponents()) {
@@ -860,13 +868,13 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             }
             JOptionPane.showMessageDialog(this, "Security settings have been saved", "Security Settings", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "Error saving security settings, changes have been rolled back", "Security Settings", JOptionPane.ERROR_MESSAGE);
             try {
                 boolean old = dc.getSetting("AUTO_LOGOUT").equals("TRUE");
                 chkLogOut.setSelected(old);
             } catch (IOException ex1) {
-                log.log(Level.SEVERE, null, ex1);
+                LOG.log(Level.SEVERE, null, ex1);
             }
         }
     }//GEN-LAST:event_btnSaveSecurityActionPerformed
@@ -877,7 +885,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             txtUsername.setText(dc.getSetting("db_username"));
             txtPassword.setText(dc.getSetting("db_password"));
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnDatabaseDefaultActionPerformed
 
@@ -900,7 +908,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             }
             PermissionsWindow.showDialog(dc);
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnPermissionsActionPerformed
 
@@ -910,21 +918,21 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             try {
                 dc.setSetting("SEND_PRODUCTS_START", "TRUE");
             } catch (IOException ex) {
-                log.log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, null, ex);
                 error = true;
             }
         } else {
             try {
                 dc.setSetting("SEND_PRODUCTS_START", "FALSE");
             } catch (IOException ex) {
-                log.log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, null, ex);
                 error = true;
             }
         }
         try {
             dc.setSetting("MAX_CACHE_SALES", "" + (int) spinSaleCache.getValue());
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
             error = true;
         }
         try {
@@ -934,13 +942,13 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 dc.setSetting("CURRENCY_SYMBOL", txtSymbol.getText());
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
             error = true;
         }
         try {
             dc.setSetting("SITE_NAME", txtSiteName.getText());
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
             error = true;
         }
         try {
@@ -950,11 +958,16 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 dc.setSetting("APPROVE_NEW_CONNECTIONS", "FALSE");
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
             error = true;
         }
         try {
             dc.setSetting("PROMPT_EMAIL_RECEIPT", Boolean.toString(chkEmailPrompt.isSelected()));
+        } catch (IOException ex) {
+            error = true;
+        }
+        try {
+            dc.setSetting("UPDATE_STARTUP", Boolean.toString(chkUpdate.isSelected()));
         } catch (IOException ex) {
             error = true;
         }
@@ -974,8 +987,10 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             dc.setSetting("SHOW_STAFF_RECEIPT", Boolean.toString(chkStaff.isSelected()));
             dc.setSetting("SHOW_TERMINAL_RECEIPT", Boolean.toString(chkStaff.isSelected()));
             JOptionPane.showMessageDialog(this, "Receipt settings saved", "Receipt Settings", JOptionPane.INFORMATION_MESSAGE);
+
         } catch (IOException ex) {
-            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SettingsWindow.class
+                    .getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "Error saving settings", "Receipt Settings", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnReceiptSaveActionPerformed
@@ -998,9 +1013,11 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 if ("".equals(i) || "".equals(j) || "".equals(k)) {
                     JOptionPane.showMessageDialog(this, "You have not specified any mail server settings, this must be done before you can send emails", "Email", JOptionPane.ERROR_MESSAGE);
                     chkEmailPrompt.setSelected(false);
+
                 }
             } catch (IOException ex) {
-                Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SettingsWindow.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_chkEmailPromptActionPerformed
@@ -1015,9 +1032,11 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 if ("".equals(i) || "".equals(j) || "".equals(k)) {
                     JOptionPane.showMessageDialog(this, "You have not specified any mail server settings, this must be done before you can send emails", "Email", JOptionPane.ERROR_MESSAGE);
                     chkEmailPrompt.setSelected(false);
+
                 }
             } catch (IOException ex) {
-                Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SettingsWindow.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_chkEmailPromptMouseClicked
@@ -1034,8 +1053,10 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             btnNetworkCancel.setEnabled(false);
             btnEditNetwork.setText("Edit Network Options");
             editNetwork = false;
+
         } catch (IOException ex) {
-            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SettingsWindow.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnNetworkCancelActionPerformed
 
@@ -1051,8 +1072,10 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             btnEditDatabase.setText("Edit Database Options");
             btnDatabaseCancel.setEnabled(false);
             editDatabase = false;
+
         } catch (IOException ex) {
-            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SettingsWindow.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnDatabaseCancelActionPerformed
 
@@ -1066,8 +1089,10 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                     try {
                         UIManager.setLookAndFeel(lafi.getClassName());
                         SwingUtilities.updateComponentTreeUI(GUI.gui);
+
                     } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                        Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SettingsWindow.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
                 });
             }
@@ -1096,6 +1121,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JCheckBox chkSendProducts;
     private javax.swing.JCheckBox chkStaff;
     private javax.swing.JCheckBox chkTerminal;
+    private javax.swing.JCheckBox chkUpdate;
     private javax.swing.JComboBox<String> cmbLaf;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;

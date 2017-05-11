@@ -52,6 +52,8 @@ public class TillServer {
     public static SystemTray tray;
 
     private Settings settings;
+    
+    public static final String VERSION = "v0.0.1";
 
     /**
      * @param args the command line arguments
@@ -105,6 +107,7 @@ public class TillServer {
         TillSplashScreen.hideSplashScreen();
         g.setVisible(true);
         GUI.getInstance().updateLables();
+        g.checkUpdate();
         g.login();
     }
 

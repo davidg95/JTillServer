@@ -291,6 +291,19 @@ public class GUI extends JFrame implements GUIInterface {
         lblWarnings.setText("Warnings: " + warningCount);
     }
 
+    public void checkUpdate() {
+        try {
+            String latest = UpdateChecker.checkForUpdate();
+            if (!latest.equals(TillServer.VERSION)) {
+                if (JOptionPane.showConfirmDialog(this, "Version " + latest + " avaliable. Download now?", "Update", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    Desktop.getDesktop().browse(new URI(UpdateChecker.SERVER_UPDATE_DOWNLOAD));
+                }
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error checking for update", "Update", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
     /**
      * Method to log a member of staff in to the server.
      */
@@ -1404,8 +1417,8 @@ public class GUI extends JFrame implements GUIInterface {
             public void run() {
                 try {
                     String latest = UpdateChecker.checkForUpdate();
-                    if (!latest.equals("v0.0.1")) {
-                        if(JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Version " + latest + " avaliable. Go to download page?", "Update", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+                    if (!latest.equals(TillServer.VERSION)) {
+                        if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Version " + latest + " avaliable. Download now?", "Update", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                             Desktop.getDesktop().browse(new URI(UpdateChecker.SERVER_UPDATE_DOWNLOAD));
                         }
                     } else {
