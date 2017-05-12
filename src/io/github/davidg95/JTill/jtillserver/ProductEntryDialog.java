@@ -50,9 +50,6 @@ public final class ProductEntryDialog extends javax.swing.JInternalFrame {
         this.dc = dc;
         initComponents();
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//        setModal(true);
-//        setIconImage(icon);
-//        setLocationRelativeTo(parent);
         super.setClosable(true);
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(icon));
@@ -738,6 +735,7 @@ public final class ProductEntryDialog extends javax.swing.JInternalFrame {
                     public void run() {
                         Product toCopy = ProductSelectDialog.showDialog(); //Copy details from an existing product
                         if (toCopy != null) {
+                            toCopy.setStock(0);
                             try {
                                 dc.addProductAndPlu(toCopy, plu);
                                 JOptionPane.showInternalMessageDialog(GUI.gui.internal, "New Plu created", "New Plu", JOptionPane.INFORMATION_MESSAGE);

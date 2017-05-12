@@ -6,12 +6,10 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import java.beans.PropertyVetoException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 
 /**
  *
