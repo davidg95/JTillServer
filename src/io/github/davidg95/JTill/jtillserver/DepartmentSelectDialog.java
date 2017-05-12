@@ -6,26 +6,21 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.Window;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author David
  */
-public class DepartmentSelectDialog extends javax.swing.JDialog {
+public class DepartmentSelectDialog extends javax.swing.JInternalFrame {
 
-    private static JDialog dialog;
     private static Department department;
 
     private final DataConnect dc;
@@ -36,25 +31,34 @@ public class DepartmentSelectDialog extends javax.swing.JDialog {
     /**
      * Creates new form DepartmentSelectDialog
      */
-    public DepartmentSelectDialog(Window parent, DataConnect dc) {
-        super(parent);
-        this.dc = dc;
+    public DepartmentSelectDialog() {
+        super();
+        this.dc = GUI.gui.dc;
         initComponents();
-        setLocationRelativeTo(parent);
-        setModal(true);
+        super.setClosable(true);
+        super.setIconifiable(true);
         ctc = new ArrayList<>();
         model = (DefaultTableModel) tblDep.getModel();
         showAllDepartments();
     }
 
-    public static Department showDialog(Component parent, DataConnect dc) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
-        dialog = new DepartmentSelectDialog(window, dc);
+    public static Department showDialog() {
+        final DepartmentSelectDialog dialog = new DepartmentSelectDialog();
         department = null;
+        GUI.gui.internal.add(dialog);
         dialog.setVisible(true);
+        try {
+            dialog.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(DepartmentSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        while (dialog.isVisible()) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DepartmentSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return department;
     }
 

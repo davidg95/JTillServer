@@ -5,31 +5,31 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.Window;
+import java.beans.PropertyVetoException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 /**
  *
  * @author David
  */
-public class TillReportDialog extends javax.swing.JDialog {
-
-    private static TillReportDialog dialog;
+public class TillReportDialog extends javax.swing.JInternalFrame {
 
     private final TillReport report;
 
     /**
      * Creates new form TillReportDialog
      */
-    public TillReportDialog(Window parent, TillReport report) {
-        super(parent);
+    public TillReportDialog(TillReport report) {
+        super();
         this.report = report;
         initComponents();
-        setLocationRelativeTo(parent);
-        setModal(true);
+        super.setClosable(true);
+        super.setIconifiable(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setTitle("Till Report");
         declared.setText("£" + report.declared);
@@ -40,13 +40,25 @@ public class TillReportDialog extends javax.swing.JDialog {
         tax.setText("£" + report.tax);
     }
 
-    public static void showDialog(Component parent, TillReport report) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
-        dialog = new TillReportDialog(window, report);
-        dialog.setVisible(true);
+    public static void showDialog(TillReport report) {
+        final TillReportDialog dialog = new TillReportDialog(report);
+        GUI.gui.internal.add(dialog);
+        dialog.setLocation((GUI.gui.internal.getWidth() / 2) - (dialog.getWidth() / 2), (GUI.gui.internal.getHeight() / 2) - (dialog.getHeight() / 2));
+        SwingUtilities.invokeLater(() -> {
+            dialog.setVisible(true);
+            try {
+                dialog.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(TillReportDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            while (dialog.isVisible()) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(TillReportDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
     }
 
     /**

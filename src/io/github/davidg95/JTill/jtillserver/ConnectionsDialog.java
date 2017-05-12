@@ -176,7 +176,7 @@ public class ConnectionsDialog extends javax.swing.JInternalFrame {
                 } catch (JTillException ex) {
                     Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                TillDialog.showDialog(this, t);
+                TillDialog.showDialog(t);
             } catch (IOException | SQLException ex) {
                 Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);
             }

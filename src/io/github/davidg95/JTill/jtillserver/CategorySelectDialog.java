@@ -10,10 +10,13 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -23,28 +26,24 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public final class CategorySelectDialog extends javax.swing.JDialog {
+public final class CategorySelectDialog extends javax.swing.JInternalFrame {
 
-    private static JDialog dialog;
     private static Category category;
 
-    private final DataConnect dbConn;
+    private final DataConnect dc;
 
     private final DefaultTableModel model;
     private List<Category> currentTableContents;
 
     /**
      * Creates new form CategorySelectDialog
-     *
-     * @param parent the parent component.
-     * @param dc reference to the data connection.
      */
-    public CategorySelectDialog(Window parent, DataConnect dc) {
-        super(parent);
-        dbConn = dc;
+    public CategorySelectDialog() {
+        super();
+        this.dc = GUI.gui.dc;
         initComponents();
-        setLocationRelativeTo(parent);
-        setModal(true);
+        super.setClosable(true);
+        super.setIconifiable(true);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         showAllCategorys();
@@ -54,19 +53,26 @@ public final class CategorySelectDialog extends javax.swing.JDialog {
      * Shows the category select dialog. Returns the category selected by the
      * user.
      *
-     * @param parent the parent window.
-     * @param dc the pointer to the data connection class.
      * @return the category that was selected by the user.
      */
-    public static Category showDialog(Component parent, DataConnect dc) {
-        Window window = null;
-        if (parent instanceof Frame || parent instanceof Dialog) {
-            window = (Window) parent;
-        }
-        dialog = new CategorySelectDialog(window, dc);
+    public static Category showDialog() {
+        final CategorySelectDialog dialog = new CategorySelectDialog();
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         category = null;
+        GUI.gui.internal.add(dialog);
         dialog.setVisible(true);
+        try {
+            dialog.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(CategorySelectDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        while (dialog.isVisible()) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CategorySelectDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return category;
     }
 
@@ -90,7 +96,7 @@ public final class CategorySelectDialog extends javax.swing.JDialog {
      */
     private void showAllCategorys() {
         try {
-            currentTableContents = dbConn.getAllCategorys();
+            currentTableContents = dc.getAllCategorys();
             updateTable();
         } catch (SQLException | IOException ex) {
             showError(ex);
@@ -276,7 +282,7 @@ public final class CategorySelectDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        if(table.getSelectedRow() != -1){
+        if (table.getSelectedRow() != -1) {
             category = currentTableContents.get(table.getSelectedRow());
         }
         this.setVisible(false);

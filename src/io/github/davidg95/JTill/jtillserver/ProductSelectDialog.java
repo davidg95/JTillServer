@@ -6,10 +6,6 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.Window;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -17,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
@@ -29,8 +24,7 @@ import javax.swing.table.DefaultTableModel;
  * @author David
  */
 public class ProductSelectDialog extends javax.swing.JInternalFrame {
-
-//    private static JDialog dialog;
+    
     private static Product product;
 
     private final DataConnect dc;
@@ -45,19 +39,15 @@ public class ProductSelectDialog extends javax.swing.JInternalFrame {
     /**
      * Creates new form ProductSelectDialog
      *
-     * @param parent the parent component.
-     * @param dc the data source.
      * @param showOpen indicated whether open price products should show. new
      * product if a barcode is not found.
      */
-    public ProductSelectDialog(DataConnect dc, boolean showOpen) {
+    public ProductSelectDialog(boolean showOpen) {
         super();
-        this.dc = dc;
+        this.dc = GUI.gui.dc;
         this.showOpen = showOpen;
         closedFlag = false;
         initComponents();
-//        setLocationRelativeTo(parent);
-//        setModal(true);
         super.setClosable(true);
         super.setIconifiable(true);
         currentTableContents = new ArrayList<>();
@@ -105,16 +95,11 @@ public class ProductSelectDialog extends javax.swing.JInternalFrame {
     /**
      * Method to show the product select dialog.
      *
-     * @param dc the data source.
      * @param showOpen indicates whether open products should show or not.
      * @return the product selected by the user.
      */
-    public static Product showDialog(DataConnect dc, boolean showOpen) {
-//        Window window = null;
-//        if (parent instanceof Dialog || parent instanceof Frame) {
-//            window = (Window) parent;
-//        }
-        final ProductSelectDialog dialog = new ProductSelectDialog(dc, showOpen);
+    public static Product showDialog(boolean showOpen) {
+        final ProductSelectDialog dialog = new ProductSelectDialog(showOpen);
         product = null;
         GUI.gui.internal.add(dialog);
         final Runnable run = new Runnable() {
@@ -144,11 +129,10 @@ public class ProductSelectDialog extends javax.swing.JInternalFrame {
     /**
      * Method to show the product select dialog.
      *
-     * @param dc the data source.
      * @return the product selected by the user.
      */
-    public static Product showDialog(DataConnect dc) {
-        return showDialog(dc, true);
+    public static Product showDialog() {
+        return showDialog(true);
     }
 
     /**

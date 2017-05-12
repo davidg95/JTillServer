@@ -574,11 +574,13 @@ public final class ProductEntryDialog extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSelectDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectDepartmentActionPerformed
-        Department d = DepartmentSelectDialog.showDialog(this, dc);
-        if (d != null) {
-            selectedDepartment = d;
-            btnSelectDepartment.setText(selectedDepartment.getName());
-        }
+        new Thread(() -> {
+            Department d = DepartmentSelectDialog.showDialog();
+            if (d != null) {
+                selectedDepartment = d;
+                btnSelectDepartment.setText(selectedDepartment.getName());
+            }
+        }).start();
     }//GEN-LAST:event_btnSelectDepartmentActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
@@ -653,19 +655,23 @@ public final class ProductEntryDialog extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnSelectCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectCategoryActionPerformed
-        Category c = CategorySelectDialog.showDialog(this, dc);
-        if (c != null) {
-            selectedCategory = c;
-            btnSelectCategory.setText(selectedCategory.getName());
-        }
+        new Thread(() -> {
+            Category c = CategorySelectDialog.showDialog();
+            if (c != null) {
+                selectedCategory = c;
+                btnSelectCategory.setText(selectedCategory.getName());
+            }
+        }).start();
     }//GEN-LAST:event_btnSelectCategoryActionPerformed
 
     private void btnSelectTaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectTaxActionPerformed
-        Tax t = TaxSelectDialog.showDialog(this, dc);
-        if (t != null) {
-            selectedTax = t;
-            btnSelectTax.setText(selectedTax.getName());
-        }
+        new Thread(() -> {
+            Tax t = TaxSelectDialog.showDialog();
+            if (t != null) {
+                selectedTax = t;
+                btnSelectTax.setText(selectedTax.getName());
+            }
+        }).start();
     }//GEN-LAST:event_btnSelectTaxActionPerformed
 
     private void btnEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnterActionPerformed
@@ -730,7 +736,7 @@ public final class ProductEntryDialog extends javax.swing.JInternalFrame {
                 final Runnable run = new Runnable() {
                     @Override
                     public void run() {
-                        Product toCopy = ProductSelectDialog.showDialog(dc); //Copy details from an existing product
+                        Product toCopy = ProductSelectDialog.showDialog(); //Copy details from an existing product
                         if (toCopy != null) {
                             try {
                                 dc.addProductAndPlu(toCopy, plu);
@@ -768,27 +774,33 @@ public final class ProductEntryDialog extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnBack2ActionPerformed
 
     private void btnOpenDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenDepartmentActionPerformed
-        Department d = DepartmentSelectDialog.showDialog(this, dc);
-        if (d != null) {
-            selectedDepartment = d;
-            btnOpenDepartment.setText(selectedDepartment.getName());
-        }
+        new Thread(() -> {
+            Department d = DepartmentSelectDialog.showDialog();
+            if (d != null) {
+                selectedDepartment = d;
+                btnOpenDepartment.setText(selectedDepartment.getName());
+            }
+        }).start();
     }//GEN-LAST:event_btnOpenDepartmentActionPerformed
 
     private void btnOpenCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenCategoryActionPerformed
-        Category c = CategorySelectDialog.showDialog(this, dc);
-        if (c != null) {
-            selectedCategory = c;
-            btnOpenCategory.setText(selectedCategory.getName());
-        }
+        new Thread(() -> {
+            Category c = CategorySelectDialog.showDialog();
+            if (c != null) {
+                selectedCategory = c;
+                btnOpenCategory.setText(selectedCategory.getName());
+            }
+        }).start();
     }//GEN-LAST:event_btnOpenCategoryActionPerformed
 
     private void btnOpenTaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenTaxActionPerformed
-        Tax t = TaxSelectDialog.showDialog(this, dc);
-        if (t != null) {
-            selectedTax = t;
-            btnOpenTax.setText(selectedTax.getName());
-        }
+        new Thread(() -> {
+            Tax t = TaxSelectDialog.showDialog();
+            if (t != null) {
+                selectedTax = t;
+                btnOpenTax.setText(selectedTax.getName());
+            }
+        }).start();
     }//GEN-LAST:event_btnOpenTaxActionPerformed
 
     private void btnAddOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOpenActionPerformed

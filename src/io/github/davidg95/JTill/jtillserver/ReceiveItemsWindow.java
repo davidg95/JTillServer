@@ -331,7 +331,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         final Runnable run = new Runnable() {
             @Override
             public void run() {
-                Product product = ProductSelectDialog.showDialog(dc, false);
+                Product product = ProductSelectDialog.showDialog(false);
 
                 if (product == null) {
                     return;

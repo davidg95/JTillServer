@@ -179,7 +179,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
             return;
         }
         Till t = contents.get(index);
-        TillDialog.showDialog(this, t);
+        TillDialog.showDialog(t);
     }//GEN-LAST:event_btnViewActionPerformed
 
     private void btnCashupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCashupActionPerformed
@@ -191,34 +191,34 @@ public class TillWindow extends javax.swing.JInternalFrame {
             Till till = contents.get(index);
             till.setUncashedTakings(dc.getTillTakings(till.getId()));
             if (till.getUncashedTakings().doubleValue() <= 0) {
-                JOptionPane.showMessageDialog(this, "No uncashed sales", "Till", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No uncashed sales", "Till", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if (JOptionPane.showConfirmDialog(this, "Cash up till " + till.getName() + "?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+            if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Cash up till " + till.getName() + "?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                 return;
             }
             TillReport report = new TillReport();
             report.actualTakings = dc.getTillTakings(till.getId());
             if (report.actualTakings.compareTo(BigDecimal.ZERO) <= 0) {
-                JOptionPane.showMessageDialog(this, "That till currently has no declared takings", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "That till currently has no declared takings", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
                 return;
             }
             report.actualTakings = report.actualTakings.setScale(2);
-            String strVal = JOptionPane.showInputDialog(this, "Enter value of money counted", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
+            String strVal = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter value of money counted", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
             if (strVal == null) {
                 return;
             }
             if (strVal.equals("")) {
-                JOptionPane.showMessageDialog(this, "A Value must be entered", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "A Value must be entered", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if (!Utilities.isNumber(strVal)) {
-                JOptionPane.showMessageDialog(this, "You must enter a number greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You must enter a number greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
                 return;
             }
             double value = Double.parseDouble(strVal);
             if (value <= 0) {
-                JOptionPane.showMessageDialog(this, "You must enter a value greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You must enter a value greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
                 return;
             }
             report.declared = new BigDecimal(strVal);
@@ -243,9 +243,9 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
             dc.cashUncashedSales(till.getId());
 
-            TillReportDialog.showDialog(this, report);
+            TillReportDialog.showDialog(report);
 
-            if (JOptionPane.showConfirmDialog(this, "Do you want the report emailed?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Do you want the report emailed?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 String message = "Cashup for terminal " + till.getName()
                         + "\nValue counted: £" + report.declared.toString()
                         + "\nActual takings: £" + report.actualTakings.toString()
@@ -257,10 +257,10 @@ public class TillWindow extends javax.swing.JInternalFrame {
                         try {
                             dc.sendEmail(message);
                             mDialog.hide();
-                            JOptionPane.showMessageDialog(TillWindow.this, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
                         } catch (IOException ex) {
                             mDialog.hide();
-                            JOptionPane.showMessageDialog(TillWindow.this, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 };
@@ -277,7 +277,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
         if (evt.getClickCount() == 2) {
             int index = table.getSelectedRow();
             Till t = contents.get(index);
-            TillDialog.showDialog(this, t);
+            TillDialog.showDialog(t);
         }
     }//GEN-LAST:event_tableMouseClicked
 

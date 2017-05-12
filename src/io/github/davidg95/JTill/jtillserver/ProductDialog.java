@@ -441,18 +441,24 @@ public class ProductDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_chkOpenActionPerformed
 
     private void btnSelectCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectCategoryActionPerformed
-        selectedCategory = CategorySelectDialog.showDialog(this, dc);
-        btnSelectCategory.setText(selectedCategory.getName());
+        new Thread(() -> {
+            selectedCategory = CategorySelectDialog.showDialog();
+            btnSelectCategory.setText(selectedCategory.getName());
+        }).start();
     }//GEN-LAST:event_btnSelectCategoryActionPerformed
 
     private void btnSelectTaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectTaxActionPerformed
-        selectedTax = TaxSelectDialog.showDialog(this, dc);
-        btnSelectTax.setText(selectedTax.getName());
+        new Thread(() -> {
+            selectedTax = TaxSelectDialog.showDialog();
+            btnSelectTax.setText(selectedTax.getName());
+        }).start();
     }//GEN-LAST:event_btnSelectTaxActionPerformed
 
     private void btnSelectDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectDepartmentActionPerformed
-        selectedDepartment = DepartmentSelectDialog.showDialog(this, dc);
-        btnSelectDepartment.setText(selectedDepartment.getName());
+        new Thread(() -> {
+            selectedDepartment = DepartmentSelectDialog.showDialog();
+            btnSelectDepartment.setText(selectedDepartment.getName());
+        }).start();
     }//GEN-LAST:event_btnSelectDepartmentActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

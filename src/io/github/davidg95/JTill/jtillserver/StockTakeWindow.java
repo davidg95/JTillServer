@@ -7,7 +7,6 @@ package io.github.davidg95.JTill.jtillserver;
 
 import com.sun.glass.events.KeyEvent;
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
@@ -309,7 +308,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
         final Runnable run = new Runnable() {
             @Override
             public void run() {
-                Product p = ProductSelectDialog.showDialog(dc, false);
+                Product p = ProductSelectDialog.showDialog(false);
                 Product pr = checkProductAlreadyExists(p);
                 if (pr != null) {
                     String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter new quantity", "Stock Take", JOptionPane.PLAIN_MESSAGE);

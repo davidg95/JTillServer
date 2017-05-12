@@ -109,6 +109,15 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }
 
     /**
+     * Get the instance of the window.
+     *
+     * @return the window instance.
+     */
+    public static ProductsWindow getWindow() {
+        return frame;
+    }
+
+    /**
      * Method to update the contents of the window if a change has been made
      * from another class.
      */
@@ -1044,7 +1053,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         JOptionPane.showInternalMessageDialog(GUI.gui.internal, panel, "Advanced Search", JOptionPane.PLAIN_MESSAGE);
         try {
             List<Product> results = dc.getProductsAdvanced("WHERE " + (b1.isSelected() ? "CATEGORY_ID=" + searchC.getId() : "DEPARTMENT_ID=" + searchD.getId()));
-            if(results.isEmpty()){
+            if (results.isEmpty()) {
                 JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No results", "Product Search", JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
@@ -1056,17 +1065,19 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnAdvancedActionPerformed
 
     private void searchFieldClick(int opt, JTextField f) {
-        if (opt == 1) {
-            searchC = CategorySelectDialog.showDialog(this, dc);
-            if (searchC != null) {
-                f.setText(searchC.getName());
+        new Thread(() -> {
+            if (opt == 1) {
+                searchC = CategorySelectDialog.showDialog();
+                if (searchC != null) {
+                    f.setText(searchC.getName());
+                }
+            } else {
+                searchD = DepartmentSelectDialog.showDialog();
+                if (searchD != null) {
+                    f.setText(searchD.getName());
+                }
             }
-        } else {
-            searchD = DepartmentSelectDialog.showDialog(this, dc);
-            if (searchD != null) {
-                f.setText(searchD.getName());
-            }
-        }
+        }).start();
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdvanced;

@@ -9,7 +9,6 @@ import io.github.davidg95.JTill.jtill.*;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PageFormat;
@@ -509,7 +508,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         final Runnable run = new Runnable() {
             @Override
             public void run() {
-                Product product = ProductSelectDialog.showDialog(dc, false);
+                Product product = ProductSelectDialog.showDialog(false);
 
                 if (product == null) {
                     return;

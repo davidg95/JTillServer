@@ -10,6 +10,7 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,11 +24,10 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class TaxSelectDialog extends javax.swing.JDialog {
+public class TaxSelectDialog extends javax.swing.JInternalFrame {
 
-    private final Logger log = Logger.getGlobal();
+    private final Logger LOG = Logger.getGlobal();
 
-    private static JDialog dialog;
     private static Tax tax;
 
     private final DataConnect dc;
@@ -37,14 +37,14 @@ public class TaxSelectDialog extends javax.swing.JDialog {
     /**
      * Creates new form TaxSelectDialog
      */
-    public TaxSelectDialog(Window parent, DataConnect dc) {
-        super(parent);
+    public TaxSelectDialog() {
+        super();
         taxes = new ArrayList<>();
-        this.dc = dc;
+        this.dc = GUI.gui.dc;
         initComponents();
         setTitle("Taxes");
-        setModal(true);
-        setLocationRelativeTo(parent);
+        super.setClosable(true);
+        super.setIconifiable(true);
         model = (DefaultTableModel) tblTax.getModel();
         init();
     }
@@ -52,18 +52,26 @@ public class TaxSelectDialog extends javax.swing.JDialog {
     /**
      * Method to show the dialog for selecting a tax.
      *
-     * @param parent the parent window.
-     * @param dc the data connection.
      * @return the tax that was selected.
      */
-    public static Tax showDialog(Component parent, DataConnect dc) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
-        dialog = new TaxSelectDialog(window, dc);
+    public static Tax showDialog() {
+        final TaxSelectDialog dialog = new TaxSelectDialog();
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        GUI.gui.internal.add(dialog);
         dialog.setVisible(true);
+        
+        try {
+            dialog.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(TaxSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        while (dialog.isVisible()) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(TaxSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return tax;
     }
 
@@ -72,7 +80,7 @@ public class TaxSelectDialog extends javax.swing.JDialog {
             taxes = dc.getAllTax();
             updateTable();
         } catch (IOException | SQLException ex) {
-            log.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 

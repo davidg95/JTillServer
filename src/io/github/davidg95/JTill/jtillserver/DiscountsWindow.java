@@ -844,7 +844,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
         final Runnable run = new Runnable() {
             @Override
             public void run() {
-                Product p = ProductSelectDialog.showDialog(dc);
+                Product p = ProductSelectDialog.showDialog();
                 if (p == null) {
                     return;
                 }

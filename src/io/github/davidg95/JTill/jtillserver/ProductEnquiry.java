@@ -487,7 +487,7 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             @Override
             public void run() {
                 try {
-                    product = ProductSelectDialog.showDialog(dc);
+                    product = ProductSelectDialog.showDialog();
                     if (product == null) {
                         return;
                     }
