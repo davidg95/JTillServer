@@ -6,7 +6,10 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.beans.PropertyVetoException;
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,8 +17,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -23,8 +24,8 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class ProductSelectDialog extends javax.swing.JInternalFrame {
-    
+public class ProductSelectDialog extends javax.swing.JDialog {
+
     private static Product product;
 
     private final DataConnect dc;
@@ -42,87 +43,35 @@ public class ProductSelectDialog extends javax.swing.JInternalFrame {
      * @param showOpen indicated whether open price products should show. new
      * product if a barcode is not found.
      */
-    public ProductSelectDialog(boolean showOpen) {
-        super();
+    public ProductSelectDialog(Window parent, boolean showOpen) {
+        super(parent);
         this.dc = GUI.gui.dc;
         this.showOpen = showOpen;
         closedFlag = false;
         initComponents();
-        super.setClosable(true);
-        super.setIconifiable(true);
+        setLocationRelativeTo(parent);
+        setModal(true);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         showAllProducts();
-        this.addInternalFrameListener(new InternalFrameListener() {
-            @Override
-            public void internalFrameOpened(InternalFrameEvent e) {
-
-            }
-
-            @Override
-            public void internalFrameClosing(InternalFrameEvent e) {
-                closedFlag = true;
-            }
-
-            @Override
-            public void internalFrameClosed(InternalFrameEvent e) {
-
-            }
-
-            @Override
-            public void internalFrameIconified(InternalFrameEvent e) {
-
-            }
-
-            @Override
-            public void internalFrameDeiconified(InternalFrameEvent e) {
-
-            }
-
-            @Override
-            public void internalFrameActivated(InternalFrameEvent e) {
-
-            }
-
-            @Override
-            public void internalFrameDeactivated(InternalFrameEvent e) {
-
-            }
-        });
         txtSearch.requestFocus();
     }
 
     /**
      * Method to show the product select dialog.
      *
+     * @param parent the parent component.
      * @param showOpen indicates whether open products should show or not.
      * @return the product selected by the user.
      */
-    public static Product showDialog(boolean showOpen) {
-        final ProductSelectDialog dialog = new ProductSelectDialog(showOpen);
-        product = null;
-        GUI.gui.internal.add(dialog);
-        final Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                dialog.setVisible(true);
-                try {
-                    dialog.setIcon(false);
-                    dialog.setSelected(true);
-                } catch (PropertyVetoException ex) {
-                    Logger.getLogger(ProductSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        };
-        final Thread thread = new Thread(run);
-        thread.start();
-        while (!dialog.closedFlag) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ProductSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    public static Product showDialog(Component parent, boolean showOpen) {
+        Window window = null;
+        if(parent instanceof Dialog || parent instanceof Frame){
+            window = (Window) parent;
         }
+        final ProductSelectDialog dialog = new ProductSelectDialog(window, showOpen);
+        product = null;
+        dialog.setVisible(true);
         return product;
     }
 
@@ -131,8 +80,8 @@ public class ProductSelectDialog extends javax.swing.JInternalFrame {
      *
      * @return the product selected by the user.
      */
-    public static Product showDialog() {
-        return showDialog(true);
+    public static Product showDialog(Component parent) {
+        return showDialog(parent, true);
     }
 
     /**

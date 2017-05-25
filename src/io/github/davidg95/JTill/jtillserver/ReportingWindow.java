@@ -428,25 +428,21 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepActionPerformed
-        new Thread(() -> {
-            dep = DepartmentSelectDialog.showDialog();
-            if (dep != null) {
-                btnDep.setText(dep.getName());
-            } else {
-                btnDep.setText("All");
-            }
-        }).start();
+        dep = DepartmentSelectDialog.showDialog(this);
+        if (dep != null) {
+            btnDep.setText(dep.getName());
+        } else {
+            btnDep.setText("All");
+        }
     }//GEN-LAST:event_btnDepActionPerformed
 
     private void btnCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCatActionPerformed
-        new Thread(() -> {
-            cat = CategorySelectDialog.showDialog();
-            if (cat != null) {
-                btnCat.setText(cat.getName());
-            } else {
-                btnCat.setText("All");
-            }
-        }).start();
+        cat = CategorySelectDialog.showDialog(this);
+        if (cat != null) {
+            btnCat.setText(cat.getName());
+        } else {
+            btnCat.setText("All");
+        }
     }//GEN-LAST:event_btnCatActionPerformed
 
     private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed

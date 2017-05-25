@@ -221,15 +221,13 @@ public class AdvancedSearchDialog extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jRadioButton2ActionPerformed
 
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
-        new Thread(() -> {
-            if (searchMode == 1) {
-                search = CategorySelectDialog.showDialog();
-                txtSearch.setText(((Category) search).getName());
-            } else {
-                search = DepartmentSelectDialog.showDialog();
-                txtSearch.setText(((Department) search).getName());
-            }
-        }).start();
+        if (searchMode == 1) {
+            search = CategorySelectDialog.showDialog(this);
+            txtSearch.setText(((Category) search).getName());
+        } else {
+            search = DepartmentSelectDialog.showDialog(this);
+            txtSearch.setText(((Department) search).getName());
+        }
     }//GEN-LAST:event_btnSelectActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed

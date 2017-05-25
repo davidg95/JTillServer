@@ -13,13 +13,11 @@ import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Window;
-import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -27,7 +25,7 @@ import javax.swing.JOptionPane;
  *
  * @author David
  */
-public final class ProductEntryDialog extends javax.swing.JInternalFrame {
+public final class ProductEntryDialog extends javax.swing.JDialog {
 
     private final DataConnect dc;
     private Plu plu;
@@ -42,17 +40,15 @@ public final class ProductEntryDialog extends javax.swing.JInternalFrame {
      * Creates new form ProductEntryDialog.
      *
      * @param parent the parent component.
-     * @param dc the data connection.
      * @param icon the frame icon.
      */
-    public ProductEntryDialog(Window parent, DataConnect dc, Image icon) {
-        super();
-        this.dc = dc;
+    public ProductEntryDialog(Window parent, Image icon) {
+        super(parent);
+        this.dc = GUI.gui.dc;
         initComponents();
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        super.setClosable(true);
-        super.setIconifiable(true);
-        super.setFrameIcon(new ImageIcon(icon));
+        setLocationRelativeTo(parent);
+        setModal(true);
         try {
             selectedCategory = dc.getCategory(1);
             selectedTax = dc.getTax(1);
@@ -67,20 +63,13 @@ public final class ProductEntryDialog extends javax.swing.JInternalFrame {
         c.show(jPanel1, "card2");
     }
 
-    public static void showDialog(Component parent, DataConnect dc, Image icon) {
+    public static void showDialog(Component parent, Image icon) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        ProductEntryDialog dialog = new ProductEntryDialog(window, dc, icon);
-        GUI.gui.internal.add(dialog);
+        ProductEntryDialog dialog = new ProductEntryDialog(window, icon);
         dialog.setVisible(true);
-        try {
-            dialog.setIcon(false);
-            dialog.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     private void resetPanels() {
@@ -571,13 +560,11 @@ public final class ProductEntryDialog extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSelectDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectDepartmentActionPerformed
-        new Thread(() -> {
-            Department d = DepartmentSelectDialog.showDialog();
-            if (d != null) {
-                selectedDepartment = d;
-                btnSelectDepartment.setText(selectedDepartment.getName());
-            }
-        }).start();
+        Department d = DepartmentSelectDialog.showDialog(this);
+        if (d != null) {
+            selectedDepartment = d;
+            btnSelectDepartment.setText(selectedDepartment.getName());
+        }
     }//GEN-LAST:event_btnSelectDepartmentActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
@@ -653,7 +640,7 @@ public final class ProductEntryDialog extends javax.swing.JInternalFrame {
 
     private void btnSelectCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectCategoryActionPerformed
         new Thread(() -> {
-            Category c = CategorySelectDialog.showDialog();
+            Category c = CategorySelectDialog.showDialog(this);
             if (c != null) {
                 selectedCategory = c;
                 btnSelectCategory.setText(selectedCategory.getName());
@@ -662,13 +649,11 @@ public final class ProductEntryDialog extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSelectCategoryActionPerformed
 
     private void btnSelectTaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectTaxActionPerformed
-        new Thread(() -> {
-            Tax t = TaxSelectDialog.showDialog();
-            if (t != null) {
-                selectedTax = t;
-                btnSelectTax.setText(selectedTax.getName());
-            }
-        }).start();
+        Tax t = TaxSelectDialog.showDialog(this);
+        if (t != null) {
+            selectedTax = t;
+            btnSelectTax.setText(selectedTax.getName());
+        }
     }//GEN-LAST:event_btnSelectTaxActionPerformed
 
     private void btnEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnterActionPerformed
@@ -730,28 +715,21 @@ public final class ProductEntryDialog extends javax.swing.JInternalFrame {
                 c.show(jPanel1, "card4");
                 txtOpenName.requestFocus();
             } else {
-                final Runnable run = new Runnable() {
-                    @Override
-                    public void run() {
-                        Product toCopy = ProductSelectDialog.showDialog(); //Copy details from an existing product
-                        if (toCopy != null) {
-                            toCopy.setStock(0);
-                            try {
-                                dc.addProductAndPlu(toCopy, plu);
-                                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "New Plu created", "New Plu", JOptionPane.INFORMATION_MESSAGE);
-                                txtPlu.setText("");
-                                radNew.setSelected(true);
-                                txtPlu.requestFocus();
-                            } catch (IOException ex) {
-                                Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (SQLException ex) {
-                                Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
+                Product toCopy = ProductSelectDialog.showDialog(this); //Copy details from an existing product
+                if (toCopy != null) {
+                    toCopy.setStock(0);
+                    try {
+                        dc.addProductAndPlu(toCopy, plu);
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "New Plu created", "New Plu", JOptionPane.INFORMATION_MESSAGE);
+                        txtPlu.setText("");
+                        radNew.setSelected(true);
+                        txtPlu.requestFocus();
+                    } catch (IOException ex) {
+                        Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                };
-                final Thread thread = new Thread(run);
-                thread.start();
+                }
             }
         } catch (IOException | SQLException ex) {
             Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
@@ -772,33 +750,27 @@ public final class ProductEntryDialog extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnBack2ActionPerformed
 
     private void btnOpenDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenDepartmentActionPerformed
-        new Thread(() -> {
-            Department d = DepartmentSelectDialog.showDialog();
-            if (d != null) {
-                selectedDepartment = d;
-                btnOpenDepartment.setText(selectedDepartment.getName());
-            }
-        }).start();
+        Department d = DepartmentSelectDialog.showDialog(this);
+        if (d != null) {
+            selectedDepartment = d;
+            btnOpenDepartment.setText(selectedDepartment.getName());
+        }
     }//GEN-LAST:event_btnOpenDepartmentActionPerformed
 
     private void btnOpenCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenCategoryActionPerformed
-        new Thread(() -> {
-            Category c = CategorySelectDialog.showDialog();
-            if (c != null) {
-                selectedCategory = c;
-                btnOpenCategory.setText(selectedCategory.getName());
-            }
-        }).start();
+        Category c = CategorySelectDialog.showDialog(this);
+        if (c != null) {
+            selectedCategory = c;
+            btnOpenCategory.setText(selectedCategory.getName());
+        }
     }//GEN-LAST:event_btnOpenCategoryActionPerformed
 
     private void btnOpenTaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenTaxActionPerformed
-        new Thread(() -> {
-            Tax t = TaxSelectDialog.showDialog();
-            if (t != null) {
-                selectedTax = t;
-                btnOpenTax.setText(selectedTax.getName());
-            }
-        }).start();
+        Tax t = TaxSelectDialog.showDialog(this);
+        if (t != null) {
+            selectedTax = t;
+            btnOpenTax.setText(selectedTax.getName());
+        }
     }//GEN-LAST:event_btnOpenTaxActionPerformed
 
     private void btnAddOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOpenActionPerformed

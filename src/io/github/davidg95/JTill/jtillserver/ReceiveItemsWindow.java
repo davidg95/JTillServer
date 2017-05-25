@@ -145,9 +145,9 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         } else {
             lblValue.setText("Total Value: £" + new DecimalFormat("#.00").format(val));
         }
-        if(products.isEmpty()){
+        if (products.isEmpty()) {
             btnReceive.setEnabled(false);
-        } else{
+        } else {
             btnReceive.setEnabled(true);
         }
     }
@@ -328,46 +328,39 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnReceiveActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        final Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                Product product = ProductSelectDialog.showDialog(false);
+        Product product = ProductSelectDialog.showDialog(this, false);
 
-                if (product == null) {
-                    return;
-                }
+        if (product == null) {
+            return;
+        }
 
-                product = (Product) product.clone();
+        product = (Product) product.clone();
 
-                String str = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter amount to receive", "Receive Stock", JOptionPane.INFORMATION_MESSAGE);
+        String str = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter amount to receive", "Receive Stock", JOptionPane.INFORMATION_MESSAGE);
 
-                if (str == null || str.isEmpty()) {
-                    return;
-                }
+        if (str == null || str.isEmpty()) {
+            return;
+        }
 
-                if (Utilities.isNumber(str)) {
-                    int amount = Integer.parseInt(str);
-                    if (amount <= 0) {
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Value must be greater than zero", "Receive Items", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    if (product.getStock() + amount > product.getMaxStockLevel() && product.getMaxStockLevel() != 0) {
-                        JOptionPane.showMessageDialog(ReceiveItemsWindow.this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product", "Stock", JOptionPane.WARNING_MESSAGE);
-                    }
-                    if (amount == 0) {
-                        return;
-                    }
-                    product.setStock(amount);
-
-                    products.add(product);
-                    updateTable();
-                } else {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
-                }
+        if (Utilities.isNumber(str)) {
+            int amount = Integer.parseInt(str);
+            if (amount <= 0) {
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Value must be greater than zero", "Receive Items", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        };
-        final Thread thread = new Thread(run);
-        thread.start();
+            if (product.getStock() + amount > product.getMaxStockLevel() && product.getMaxStockLevel() != 0) {
+                JOptionPane.showMessageDialog(ReceiveItemsWindow.this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product", "Stock", JOptionPane.WARNING_MESSAGE);
+            }
+            if (amount == 0) {
+                return;
+            }
+            product.setStock(amount);
+
+            products.add(product);
+            updateTable();
+        } else {
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void tblProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductsMouseClicked
@@ -375,19 +368,19 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         final Product product = products.get(row);
         if (evt.getClickCount() == 2) {
             if (evt.getClickCount() == 2) {
-                    String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
-                    if (!Utilities.isNumber(input)) {
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "A number must be entered", "Receive Items", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    int val = Integer.parseInt(input);
-                    if (val > 0) {
-                        product.setStock(val);
-                        updateTable();
-                    } else {
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
-                    }
+                String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
+                if (!Utilities.isNumber(input)) {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "A number must be entered", "Receive Items", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
+                int val = Integer.parseInt(input);
+                if (val > 0) {
+                    product.setStock(val);
+                    updateTable();
+                } else {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
+                }
+            }
         }
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();

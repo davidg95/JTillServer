@@ -6,6 +6,10 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.Window;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -19,7 +23,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class DepartmentSelectDialog extends javax.swing.JInternalFrame {
+public class DepartmentSelectDialog extends javax.swing.JDialog {
 
     private static Department department;
 
@@ -31,34 +35,25 @@ public class DepartmentSelectDialog extends javax.swing.JInternalFrame {
     /**
      * Creates new form DepartmentSelectDialog
      */
-    public DepartmentSelectDialog() {
-        super();
+    public DepartmentSelectDialog(Window parent) {
+        super(parent);
         this.dc = GUI.gui.dc;
         initComponents();
-        super.setClosable(true);
-        super.setIconifiable(true);
+        setLocationRelativeTo(parent);
+        setModal(true);
         ctc = new ArrayList<>();
         model = (DefaultTableModel) tblDep.getModel();
         showAllDepartments();
     }
 
-    public static Department showDialog() {
-        final DepartmentSelectDialog dialog = new DepartmentSelectDialog();
+    public static Department showDialog(Component parent) {
+        Window window = null;
+        if(parent instanceof Dialog || parent instanceof Frame){
+            window = (Window) parent;
+        }
+        final DepartmentSelectDialog dialog = new DepartmentSelectDialog(window);
         department = null;
-        GUI.gui.internal.add(dialog);
         dialog.setVisible(true);
-        try {
-            dialog.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(DepartmentSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        while (dialog.isVisible()) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(DepartmentSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
         return department;
     }
 

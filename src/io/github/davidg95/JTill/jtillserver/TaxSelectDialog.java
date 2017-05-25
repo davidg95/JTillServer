@@ -24,7 +24,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class TaxSelectDialog extends javax.swing.JInternalFrame {
+public class TaxSelectDialog extends javax.swing.JDialog {
 
     private final Logger LOG = Logger.getGlobal();
 
@@ -37,14 +37,14 @@ public class TaxSelectDialog extends javax.swing.JInternalFrame {
     /**
      * Creates new form TaxSelectDialog
      */
-    public TaxSelectDialog() {
-        super();
+    public TaxSelectDialog(Window parent) {
+        super(parent);
         taxes = new ArrayList<>();
         this.dc = GUI.gui.dc;
         initComponents();
         setTitle("Taxes");
-        super.setClosable(true);
-        super.setIconifiable(true);
+        setLocationRelativeTo(parent);
+        setModal(true);
         model = (DefaultTableModel) tblTax.getModel();
         init();
     }
@@ -54,24 +54,14 @@ public class TaxSelectDialog extends javax.swing.JInternalFrame {
      *
      * @return the tax that was selected.
      */
-    public static Tax showDialog() {
-        final TaxSelectDialog dialog = new TaxSelectDialog();
+    public static Tax showDialog(Component parent) {
+        Window window = null;
+        if (parent instanceof Dialog || parent instanceof Frame) {
+            window = (Window) parent;
+        }
+        final TaxSelectDialog dialog = new TaxSelectDialog(window);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        GUI.gui.internal.add(dialog);
         dialog.setVisible(true);
-        
-        try {
-            dialog.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(TaxSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        while (dialog.isVisible()) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(TaxSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
         return tax;
     }
 

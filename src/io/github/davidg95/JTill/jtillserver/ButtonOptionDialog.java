@@ -6,11 +6,11 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Frame;
 import java.awt.MouseInfo;
-import java.beans.PropertyVetoException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.ImageIcon;
+import java.awt.Window;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
  *
  * @author David
  */
-public final class ButtonOptionDialog extends javax.swing.JInternalFrame {
+public final class ButtonOptionDialog extends javax.swing.JDialog {
 
     private static TillButton button;
 
@@ -27,26 +27,24 @@ public final class ButtonOptionDialog extends javax.swing.JInternalFrame {
     private final int maxWidth;
     private final int maxHeight;
     
-    private boolean closedFlag;
-
     /**
      * Creates new form ButtonOptionDialog.
      *
-     * @param dc the data connection.
+     * @param parent the parent component.
      * @param maxWidth the maximum width of the button.
      * @param maxHeight the maximum height of the button.
      */
-    public ButtonOptionDialog(DataConnect dc, int maxWidth, int maxHeight) {
-        super();
-        this.dc = dc;
+    public ButtonOptionDialog(Window parent, int maxWidth, int maxHeight) {
+        super(parent);
+        this.dc = GUI.gui.dc;
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
-        closedFlag = false;
         initComponents();
+        setLocationRelativeTo(parent);
+        setModal(true);
         int x = (int) MouseInfo.getPointerInfo().getLocation().getX();
         int y = (int) MouseInfo.getPointerInfo().getLocation().getY();
         this.setLocation(x - getWidth() / 2, y - getHeight() / 2);
-        super.setFrameIcon(new ImageIcon(GUI.icon));
         setTitle(button.getName());
         if (button.getName().equals("[SPACE]")) {
             btnRemove.setEnabled(false);
@@ -88,36 +86,21 @@ public final class ButtonOptionDialog extends javax.swing.JInternalFrame {
      * Shows the ButtonOptionsDialog. Returns null if remove button was
      * selected, otherwise it will return an updated button object.
      *
+     * @param parent the parent component.
      * @param b the button object.
-     * @param dc the data connection.
      * @param maxWidth the maximum width of the button.
      * @param maxHeight the maximum height of the button.
      * @return the button with any changed applied.
      */
-    public static TillButton showDialog(TillButton b, DataConnect dc, int maxWidth, int maxHeight) {
-        button = b;
-        ButtonOptionDialog dialog = new ButtonOptionDialog(dc, maxWidth, maxHeight);
-        GUI.gui.internal.add(dialog);
-        final Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                dialog.setVisible(true);
-                try {
-                    dialog.setSelected(true);
-                } catch (PropertyVetoException ex) {
-                    Logger.getLogger(ButtonOptionDialog.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        };
-        final Thread thread = new Thread(run);
-        thread.start();
-        while(!dialog.closedFlag){
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ButtonOptionDialog.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    public static TillButton showDialog(Component parent, TillButton b, int maxWidth, int maxHeight) {
+        Window window = null;
+        if (parent instanceof Dialog || parent instanceof Frame) {
+            window = (Window) parent;
         }
+        button = b;
+        ButtonOptionDialog dialog = new ButtonOptionDialog(window, maxWidth, maxHeight);
+        GUI.gui.internal.add(dialog);
+        dialog.setVisible(true);
         return button;
     }
 
@@ -335,7 +318,6 @@ public final class ButtonOptionDialog extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        closedFlag = true;
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 

@@ -280,34 +280,27 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
      * Method to show the buttons options dialog for a particular button.
      */
     private void showButtonOptions() {
-        final Runnable run = new Runnable() {
+        currentButton = ButtonOptionDialog.showDialog(this, currentButton, 5 - currentButton.getX() + 1, 10 - currentButton.getY() + 1);
+        if (currentButton == null) { //If it is null then the button is getting removed.
+            try {
+                currentButton.setName("[SPACE]");
+                dc.updateButton(currentButton);
+            } catch (IOException | SQLException | JTillException ex) {
+                showError(ex);
+            }
+        } else { //If it is not null then it is being edited or nothing has happening to it
+            try {
+                dc.updateButton(currentButton); //This will update the ucrrent button in the database
+            } catch (IOException | SQLException | JTillException ex) {
+                showError(ex);
+            }
+        }
+        new Thread() {
             @Override
             public void run() {
-                currentButton = ButtonOptionDialog.showDialog(currentButton, dc, 5 - currentButton.getX() + 1, 10 - currentButton.getY() + 1);
-                if (currentButton == null) { //If it is null then the button is getting removed.
-                    try {
-                        currentButton.setName("[SPACE]");
-                        dc.updateButton(currentButton);
-                    } catch (IOException | SQLException | JTillException ex) {
-                        showError(ex);
-                    }
-                } else { //If it is not null then it is being edited or nothing has happening to it
-                    try {
-                        dc.updateButton(currentButton); //This will update the ucrrent button in the database
-                    } catch (IOException | SQLException | JTillException ex) {
-                        showError(ex);
-                    }
-                }
-                new Thread() {
-                    @Override
-                    public void run() {
-                        setButtons(); //This will update the view to reflect any changes
-                    }
-                }.start();
+                setButtons(); //This will update the view to reflect any changes
             }
-        };
-        final Thread thread = new Thread(run);
-        thread.start();
+        }.start();
     }
 
     private void showError(Exception e) {
@@ -430,9 +423,11 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             if (dc.getAllScreens().size() >= 8) {
                 JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Screen limit has been reached", "New Screen", JOptionPane.ERROR_MESSAGE);
                 return;
+
             }
         } catch (IOException | SQLException ex) {
-            Logger.getLogger(ScreenEditWindow.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScreenEditWindow.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         String name = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter Name", "New Screen", JOptionPane.PLAIN_MESSAGE);
         if (name == null) {

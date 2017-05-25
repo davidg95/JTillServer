@@ -441,24 +441,18 @@ public class ProductDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_chkOpenActionPerformed
 
     private void btnSelectCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectCategoryActionPerformed
-        new Thread(() -> {
-            selectedCategory = CategorySelectDialog.showDialog();
-            btnSelectCategory.setText(selectedCategory.getName());
-        }).start();
+        selectedCategory = CategorySelectDialog.showDialog(this);
+        btnSelectCategory.setText(selectedCategory.getName());
     }//GEN-LAST:event_btnSelectCategoryActionPerformed
 
     private void btnSelectTaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectTaxActionPerformed
-        new Thread(() -> {
-            selectedTax = TaxSelectDialog.showDialog();
+        selectedTax = TaxSelectDialog.showDialog(this);
             btnSelectTax.setText(selectedTax.getName());
-        }).start();
     }//GEN-LAST:event_btnSelectTaxActionPerformed
 
     private void btnSelectDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectDepartmentActionPerformed
-        new Thread(() -> {
-            selectedDepartment = DepartmentSelectDialog.showDialog();
-            btnSelectDepartment.setText(selectedDepartment.getName());
-        }).start();
+        selectedDepartment = DepartmentSelectDialog.showDialog(this);
+        btnSelectDepartment.setText(selectedDepartment.getName());
     }//GEN-LAST:event_btnSelectDepartmentActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

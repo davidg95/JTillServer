@@ -1,83 +1,14 @@
-JTill log Fri May 12 17:50:07 BST 2017
-[17:50:07] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[17:50:08] [INFO] Get staff count
-[17:50:08] [INFO] Starting Thread Pool Excecutor
-[17:50:08] [INFO] JTill Server local IP address is 192.168.1.65
-[17:50:08] [INFO] Server Socket running on port number 52341
-[17:50:08] [INFO] Ready to accept connections
-[17:50:10] [INFO] Login Staff dgrant
-[17:50:10] [INFO] David Grant has logged in
-[17:51:26] [INFO] Get product 2
-[17:51:26] [INFO] Get product 1
-[17:51:26] [INFO] Get product 2
-[17:51:26] [INFO] Get product 3
-[17:51:26] [INFO] Get product 4
-[17:51:26] [INFO] Get product 5
-[17:51:26] [INFO] Get product 7
-[17:51:26] [INFO] Get product 1
-[17:51:26] [INFO] Get product 2
-[17:51:26] [INFO] Get product 3
-[17:51:26] [INFO] Get product 4
-[17:51:26] [INFO] Get product 5
-[17:51:26] [INFO] Get product 7
-[17:51:26] [INFO] Get product 7
-[17:51:26] [INFO] Get product 2
-[17:51:26] [INFO] Get product 2
-[17:51:26] [INFO] Get product 2
-[17:51:26] [INFO] Get product 2
-[17:51:26] [INFO] Get product 2
-[17:51:26] [INFO] Get product 1
-[17:51:26] [INFO] Get product 2
-[17:51:26] [INFO] Get product 3
-[17:51:26] [INFO] Get product 4
-[17:51:26] [INFO] Get product 5
-[17:51:26] [INFO] Get product 7
-[17:51:26] [INFO] Get product 1
-[17:51:26] [INFO] Get product 2
-[17:51:26] [INFO] Get product 3
-[17:51:26] [INFO] Get product 4
-[17:51:26] [INFO] Get product 5
-[17:51:26] [INFO] Get product 7
-[17:51:26] [INFO] Get product 7
-[17:51:26] [INFO] Get product 2
-[17:51:26] [INFO] Get product 2
-[17:51:26] [INFO] Get product 2
-[17:51:26] [INFO] Get product 2
-[17:51:47] [INFO] Get product 2
-[17:51:47] [INFO] Get product 1
-[17:51:47] [INFO] Get product 2
-[17:51:47] [INFO] Get product 3
-[17:51:47] [INFO] Get product 4
-[17:51:47] [INFO] Get product 5
-[17:51:47] [INFO] Get product 7
-[17:51:47] [INFO] Get product 1
-[17:51:47] [INFO] Get product 2
-[17:51:47] [INFO] Get product 3
-[17:51:47] [INFO] Get product 4
-[17:51:47] [INFO] Get product 5
-[17:51:47] [INFO] Get product 7
-[17:51:47] [INFO] Get product 7
-[17:51:47] [INFO] Get product 2
-[17:51:47] [INFO] Get product 2
-[17:51:47] [INFO] Get product 2
-[17:51:47] [INFO] Get product 2
-[17:51:47] [INFO] Get product 2
-[17:51:47] [INFO] Get product 1
-[17:51:47] [INFO] Get product 2
-[17:51:47] [INFO] Get product 3
-[17:51:47] [INFO] Get product 4
-[17:51:47] [INFO] Get product 5
-[17:51:47] [INFO] Get product 7
-[17:51:47] [INFO] Get product 1
-[17:51:47] [INFO] Get product 2
-[17:51:47] [INFO] Get product 3
-[17:51:47] [INFO] Get product 4
-[17:51:47] [INFO] Get product 5
-[17:51:47] [INFO] Get product 7
-[17:51:47] [INFO] Get product 7
-[17:51:47] [INFO] Get product 2
-[17:51:47] [INFO] Get product 2
-[17:51:47] [INFO] Get product 2
-[17:51:47] [INFO] Get product 2
-[17:52:13] [INFO] Get product 9
-[17:52:13] [INFO] Product 9 updated
+JTill log Thu May 25 14:09:08 BST 2017
+[14:09:09] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[14:09:09] [INFO] Get staff count
+[14:09:09] [INFO] Starting Thread Pool Excecutor
+[14:09:09] [INFO] JTill Server local IP address is 192.168.1.65
+[14:09:09] [INFO] Server Socket running on port number 52341
+[14:09:09] [INFO] Ready to accept connections
+[14:09:12] [INFO] Login Staff dgrant
+[14:09:13] [INFO] David Grant has logged in
+[14:09:17] [INFO] Get all customers
+[14:09:17] [INFO] Get all customers
+[14:09:47] [INFO] Stopping JTIll Server
+[14:09:47] [INFO] Saving properties
+[14:09:47] [INFO] Stopping

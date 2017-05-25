@@ -841,35 +841,28 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtSearchActionPerformed
 
     private void btnAddTriggerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTriggerActionPerformed
-        final Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                Product p = ProductSelectDialog.showDialog();
-                if (p == null) {
-                    return;
-                }
-                String val = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter amount required", "Trigger", JOptionPane.INFORMATION_MESSAGE);
-                if (!Utilities.isNumber(val)) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must enter a number", "New Trigger", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                int value = Integer.parseInt(val);
-                if (value <= 0) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must enter a value greater than zero", "New Trigger", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                Trigger t = new Trigger(currentBucket.getId(), p.getId(), value);
-                try {
-                    dc.addTrigger(t);
-                    currentTriggerContents.add(t);
-                    updateTriggerTable();
-                } catch (IOException | SQLException ex) {
-                    showError(ex);
-                }
-            }
-        };
-        final Thread thread = new Thread(run);
-        thread.start();
+        Product p = ProductSelectDialog.showDialog(this);
+        if (p == null) {
+            return;
+        }
+        String val = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter amount required", "Trigger", JOptionPane.INFORMATION_MESSAGE);
+        if (!Utilities.isNumber(val)) {
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must enter a number", "New Trigger", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int value = Integer.parseInt(val);
+        if (value <= 0) {
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must enter a value greater than zero", "New Trigger", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        Trigger t = new Trigger(currentBucket.getId(), p.getId(), value);
+        try {
+            dc.addTrigger(t);
+            currentTriggerContents.add(t);
+            updateTriggerTable();
+        } catch (IOException | SQLException ex) {
+            showError(ex);
+        }
     }//GEN-LAST:event_btnAddTriggerActionPerformed
 
     private void btnRemoveTriggerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveTriggerActionPerformed

@@ -482,6 +482,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemDatabase = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         itemSalesList = new javax.swing.JMenuItem();
         itemLabelPrinting = new javax.swing.JMenuItem();
         itemStaffClocking = new javax.swing.JMenuItem();
@@ -997,6 +998,14 @@ public class GUI extends JFrame implements GUIInterface {
         });
         jMenu1.add(jMenuItem1);
 
+        jMenuItem3.setText("Transaction Viewer");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem3);
+
         itemSalesList.setText("Sales List");
         itemSalesList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1291,7 +1300,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemLabelPrintingActionPerformed
 
     private void itemCreateNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCreateNewProductActionPerformed
-        ProductEntryDialog.showDialog(this, dc, icon);
+        ProductEntryDialog.showDialog(this, icon);
     }//GEN-LAST:event_itemCreateNewProductActionPerformed
 
     private void itemNewStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNewStaffActionPerformed
@@ -1435,6 +1444,10 @@ public class GUI extends JFrame implements GUIInterface {
         SalesWindow.showSalesWindow(dc, icon);
     }//GEN-LAST:event_itemSalesListActionPerformed
 
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1485,6 +1498,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblClients;

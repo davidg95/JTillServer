@@ -26,7 +26,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public final class CategorySelectDialog extends javax.swing.JInternalFrame {
+public final class CategorySelectDialog extends javax.swing.JDialog {
 
     private static Category category;
 
@@ -38,12 +38,12 @@ public final class CategorySelectDialog extends javax.swing.JInternalFrame {
     /**
      * Creates new form CategorySelectDialog
      */
-    public CategorySelectDialog() {
-        super();
+    public CategorySelectDialog(Window parent) {
+        super(parent);
         this.dc = GUI.gui.dc;
         initComponents();
-        super.setClosable(true);
-        super.setIconifiable(true);
+        setLocationRelativeTo(parent);
+        setModal(true);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         showAllCategorys();
@@ -55,24 +55,15 @@ public final class CategorySelectDialog extends javax.swing.JInternalFrame {
      *
      * @return the category that was selected by the user.
      */
-    public static Category showDialog() {
-        final CategorySelectDialog dialog = new CategorySelectDialog();
+    public static Category showDialog(Component parent) {
+        Window window = null;
+        if(parent instanceof Dialog || parent instanceof Frame){
+            window = (Window) parent;
+        }
+        final CategorySelectDialog dialog = new CategorySelectDialog(window);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         category = null;
-        GUI.gui.internal.add(dialog);
         dialog.setVisible(true);
-        try {
-            dialog.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(CategorySelectDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        while (dialog.isVisible()) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(CategorySelectDialog.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
         return category;
     }
 

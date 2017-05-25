@@ -86,8 +86,8 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
             Logger.getLogger(LabelPrintingWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    private void init(){
+
+    private void init() {
         InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = table.getActionMap();
 
@@ -122,9 +122,9 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
             Object[] row = new Object[]{l.p.getName(), l.amount};
             model.addRow(row);
         }
-        if(amount > 0){
+        if (amount > 0) {
             btnPrint.setEnabled(true);
-        } else{
+        } else {
             btnPrint.setEnabled(false);
         }
         lblAmount.setText("Lables to print: " + amount);
@@ -350,22 +350,15 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        final Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                Product p = ProductSelectDialog.showDialog();
+        Product p = ProductSelectDialog.showDialog(this);
 
-                if (p == null) {
-                    return;
-                }
+        if (p == null) {
+            return;
+        }
 
-                labels.add(new Label(p, 1));
-                amount++;
-                updateTable();
-            }
-        };
-        final Thread thread = new Thread(run);
-        thread.start();
+        labels.add(new Label(p, 1));
+        amount++;
+        updateTable();
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCSVActionPerformed

@@ -505,48 +505,41 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        final Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                Product product = ProductSelectDialog.showDialog(false);
+        Product product = ProductSelectDialog.showDialog(this, false);
 
-                if (product == null) {
+        if (product == null) {
+            return;
+        }
+
+        product = (Product) product.clone();
+
+        String str = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
+
+        if (str == null || str.isEmpty()) {
+            return;
+        }
+
+        if (Utilities.isNumber(str)) {
+            int amount = Integer.parseInt(str);
+            if (amount <= 0) {
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Value must be greater than zero", "Waste Item", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (product.getStock() - amount < 0) {
+                if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Item does not have that much in stock. Continue?", "Waste", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
                     return;
-                }
-
-                product = (Product) product.clone();
-
-                String str = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
-
-                if (str == null || str.isEmpty()) {
-                    return;
-                }
-
-                if (Utilities.isNumber(str)) {
-                    int amount = Integer.parseInt(str);
-                    if (amount <= 0) {
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Value must be greater than zero", "Waste Item", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    if (product.getStock() - amount < 0) {
-                        if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Item does not have that much in stock. Continue?", "Waste", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
-                            return;
-                        }
-                    }
-                    if (amount == 0) {
-                        return;
-                    }
-                    int reason = cmbReason.getSelectedIndex() + 1;
-                    WasteItem wi = new WasteItem(product, amount, reason);
-                    wasteItems.add(wi);
-                    updateTable();
-                } else {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You must enter a number", "Waste Stock", JOptionPane.ERROR_MESSAGE);
                 }
             }
-        };
-        final Thread thread = new Thread(run);
-        thread.start();
+            if (amount == 0) {
+                return;
+            }
+            int reason = cmbReason.getSelectedIndex() + 1;
+            WasteItem wi = new WasteItem(product, amount, reason);
+            wasteItems.add(wi);
+            updateTable();
+        } else {
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You must enter a number", "Waste Stock", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnWasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWasteActionPerformed

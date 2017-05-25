@@ -855,7 +855,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSaveChangesActionPerformed
 
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
-        ProductEntryDialog.showDialog(this, dc, icon);
+        ProductEntryDialog.showDialog(this, icon);
         showAllProducts();
         setCurrentProduct(null);
     }//GEN-LAST:event_btnNewProductActionPerformed
@@ -1065,19 +1065,17 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnAdvancedActionPerformed
 
     private void searchFieldClick(int opt, JTextField f) {
-        new Thread(() -> {
-            if (opt == 1) {
-                searchC = CategorySelectDialog.showDialog();
-                if (searchC != null) {
-                    f.setText(searchC.getName());
-                }
-            } else {
-                searchD = DepartmentSelectDialog.showDialog();
-                if (searchD != null) {
-                    f.setText(searchD.getName());
-                }
+        if (opt == 1) {
+            searchC = CategorySelectDialog.showDialog(this);
+            if (searchC != null) {
+                f.setText(searchC.getName());
             }
-        }).start();
+        } else {
+            searchD = DepartmentSelectDialog.showDialog(this);
+            if (searchD != null) {
+                f.setText(searchD.getName());
+            }
+        }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdvanced;
