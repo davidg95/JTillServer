@@ -5,17 +5,86 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.*;
+import java.beans.PropertyVetoException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author David
  */
-public class TransactionViewerWindow extends javax.swing.JFrame {
+public class TransactionViewerWindow extends javax.swing.JInternalFrame {
+
+    private static final TransactionViewerWindow window;
+
+    private final DataConnect dc;
+
+    private final DefaultTableModel model;
+    private List<Sale> tableContents;
 
     /**
      * Creates new form TransactionViewerWindow
      */
     public TransactionViewerWindow() {
+        super();
+        this.dc = GUI.gui.dc;
+        super.setClosable(true);
+        super.setMaximizable(true);
+        super.setIconifiable(true);
         initComponents();
+        model = (DefaultTableModel) table.getModel();
+        table.setModel(model);
+        init();
+    }
+
+    static {
+        window = new TransactionViewerWindow();
+        GUI.gui.internal.add(window);
+    }
+
+    public static void showWindow() {
+        window.setVisible(true);
+        try {
+            window.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(TransactionViewerWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void init() {
+        try {
+            tableContents = dc.getAllSales();
+            setTable();
+            final List<Staff> staff = dc.getAllStaff();
+            final List<Till> tills = dc.getAllTills();
+            cmbStaff.setModel(new DefaultComboBoxModel(staff.toArray()));
+            cmbTerminal.setModel(new DefaultComboBoxModel(tills.toArray()));
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(TransactionViewerWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void setTable() {
+        model.setRowCount(0);
+        for (Sale s : tableContents) {
+            try {
+                final Staff staff = dc.getStaff(s.getStaff());
+                final Till till = dc.getTill(s.getTerminal());
+                model.addRow(new Object[]{s.getId(), s.getDate(), s.getTotal().setScale(2), staff.getName(), till.getName()});
+            } catch (IOException | StaffNotFoundException | SQLException | JTillException ex) {
+                Logger.getLogger(TransactionViewerWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     /**
@@ -28,80 +97,248 @@ public class TransactionViewerWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        table = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        cmbTerminal = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        cmbStaff = new javax.swing.JComboBox<>();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        btnSearch = new javax.swing.JButton();
+        chkAllTills = new javax.swing.JCheckBox();
+        chkAllStaff = new javax.swing.JCheckBox();
+        txtValFrom = new javax.swing.JSpinner();
+        txtValTo = new javax.swing.JSpinner();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        spinStart = new javax.swing.JSpinner();
+        spinEnd = new javax.swing.JSpinner();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setTitle("Transaction Viewer");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Timestamp", "Value", "Staff", "Terminal"
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(table);
+        if (table.getColumnModel().getColumnCount() > 0) {
+            table.getColumnModel().getColumn(0).setResizable(false);
+            table.getColumnModel().getColumn(1).setResizable(false);
+            table.getColumnModel().getColumn(2).setResizable(false);
+            table.getColumnModel().getColumn(3).setResizable(false);
+            table.getColumnModel().getColumn(4).setResizable(false);
+        }
+
+        jLabel1.setText("Terminal:");
+
+        cmbTerminal.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel2.setText("Staff:");
+
+        cmbStaff.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel3.setText("Value from:");
+
+        jLabel4.setText("Value to:");
+
+        btnSearch.setText("Search");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+
+        chkAllTills.setText("All");
+        chkAllTills.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkAllTillsActionPerformed(evt);
+            }
+        });
+
+        chkAllStaff.setText("All");
+        chkAllStaff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkAllStaffActionPerformed(evt);
+            }
+        });
+
+        txtValFrom.setValue(-99999);
+
+        txtValTo.setValue(99999);
+
+        jLabel5.setText("Start date:");
+
+        jLabel6.setText("End date:");
+
+        spinStart.setModel(new javax.swing.SpinnerDateModel());
+
+        spinEnd.setModel(new javax.swing.SpinnerDateModel());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(354, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 605, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSearch))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(cmbStaff, javax.swing.GroupLayout.Alignment.LEADING, 0, 133, Short.MAX_VALUE)
+                                    .addComponent(cmbTerminal, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(chkAllTills)
+                                    .addComponent(chkAllStaff)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(spinEnd, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(spinStart, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                                .addComponent(txtValTo, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtValFrom, javax.swing.GroupLayout.Alignment.LEADING)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 716, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(cmbTerminal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(chkAllTills))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(cmbStaff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(chkAllStaff))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(txtValFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(txtValTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(spinStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(spinEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(62, 62, 62)
+                        .addComponent(btnSearch)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TransactionViewerWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TransactionViewerWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TransactionViewerWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TransactionViewerWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        final ModalDialog mDialog = new ModalDialog(this, "Search", "Searching transactions...");
+        final Runnable run = () -> {
+            final Staff staff = (Staff) cmbStaff.getModel().getSelectedItem();
+            final Till terminal = (Till) cmbTerminal.getModel().getSelectedItem();
+            final boolean allStaff = chkAllStaff.isSelected();
+            final boolean allTills = chkAllTills.isSelected();
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TransactionViewerWindow().setVisible(true);
+            final int minVal = (int) txtValFrom.getValue();
+            final int maxVal = (int) txtValTo.getValue();
+
+            final Date startDate = (Date) spinStart.getValue();
+            final Date endDate = (Date) spinEnd.getValue();
+
+            try {
+                final List<Sale> sales = dc.getAllSales();
+                final List<Sale> newList = new LinkedList<>();
+                for (Sale s : sales) {
+                    if ((allTills || s.getTerminal() == terminal.getId()) && (allStaff || s.getStaff() == staff.getId()) && s.getTotal().compareTo(new BigDecimal(minVal)) == 1 && s.getTotal().compareTo(new BigDecimal(maxVal)) == -1 && s.getDate().after(startDate) && s.getDate().before(endDate)) {
+                        newList.add(s);
+                    }
+                }
+                tableContents = newList;
+                setTable();
+            } catch (IOException | SQLException ex) {
+                Logger.getLogger(TransactionViewerWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
-        });
-    }
+            mDialog.hide();
+        };
+        final Thread thread = new Thread(run);
+        thread.start();
+        mDialog.show();
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void chkAllTillsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkAllTillsActionPerformed
+        cmbTerminal.setEnabled(!chkAllTills.isSelected());
+    }//GEN-LAST:event_chkAllTillsActionPerformed
+
+    private void chkAllStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkAllStaffActionPerformed
+        cmbStaff.setEnabled(!chkAllStaff.isSelected());
+    }//GEN-LAST:event_chkAllStaffActionPerformed
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        if (evt.getClickCount() == 2) {
+            final int index = table.getSelectedRow();
+            if (index > -1) {
+                final Sale sale = tableContents.get(index);
+                SaleDialog.showSaleDialog(sale);
+            }
+        }
+    }//GEN-LAST:event_tableMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JCheckBox chkAllStaff;
+    private javax.swing.JCheckBox chkAllTills;
+    private javax.swing.JComboBox<String> cmbStaff;
+    private javax.swing.JComboBox<String> cmbTerminal;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JSpinner spinEnd;
+    private javax.swing.JSpinner spinStart;
+    private javax.swing.JTable table;
+    private javax.swing.JSpinner txtValFrom;
+    private javax.swing.JSpinner txtValTo;
     // End of variables declaration//GEN-END:variables
 }
