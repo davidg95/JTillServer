@@ -165,6 +165,13 @@ public class SaleDialog extends javax.swing.JInternalFrame {
                 Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
             }
 
+            if (header == null || header.isEmpty()) {
+                header = "JTill Receipt";
+            }
+            if (footer == null || footer.isEmpty()) {
+                footer = "Thank-you";
+            }
+
             Graphics2D g2 = (Graphics2D) graphics;
             g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 
@@ -182,7 +189,12 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             //Print sale info.
             g2.drawString("Receipt for sale: " + toPrint.getId(), 70, 140);
             g2.drawString("Time: " + toPrint.getDate(), 70, 160);
-            g2.drawString("Served by " + toPrint.getStaff(), 70, 180);
+            try {
+                final Staff staff = dc.getStaff(toPrint.getStaff());
+                g2.drawString("Served by " + staff, 70, 180);
+            } catch (IOException | StaffNotFoundException | SQLException ex) {
+                g2.drawString("Served by " + toPrint.getStaff(), 70, 180);
+            }
 
             final int item = 100;
             final int quantity = 300;
@@ -208,14 +220,14 @@ public class SaleDialog extends javax.swing.JInternalFrame {
                         g2.drawString(d.getName(), item, y);
                     }
                     g2.drawString("" + it.getQuantity(), quantity, y);
-                    g2.drawString("£" + it.getPrice(), total, y);
+                    g2.drawString("£" + it.getPrice().setScale(2), total, y);
                     y += 30;
                 } catch (IOException | ProductNotFoundException | SQLException | DiscountNotFoundException ex) {
                     Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             g2.drawLine(item - 30, y - 20, total + 100, y - 20);
-            g2.drawString("Total: £" + toPrint.getTotal(), total, y);
+            g2.drawString("Total: £" + toPrint.getTotal().setScale(2), total, y);
 
             //Print the footer.
             g2.setFont(new Font("Arial", Font.BOLD, 20));
@@ -226,15 +238,18 @@ public class SaleDialog extends javax.swing.JInternalFrame {
 
         private Image loadImage() {
             InputStream in;
-            Properties properties = new Properties();
+            final Properties properties = new Properties();
             try {
                 in = new FileInputStream("company.details");
                 properties.load(in);
 
-                String logoURL = properties.getProperty("LOGO");
-                File file = new File(logoURL);
+                final String logoURL = properties.getProperty("LOGO");
+                if (logoURL == null || logoURL.isEmpty()) {
+                    throw new FileNotFoundException("File Not Set");
+                }
+                final File file = new File(logoURL);
 
-                Image image = ImageIO.read(file);
+                final Image image = ImageIO.read(file);
                 in.close();
 
                 return image;

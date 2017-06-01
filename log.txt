@@ -1,7 +1,7 @@
-JTill log Thu Jun 01 15:42:53 BST 2017
-[15:42:54] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[15:42:54] [INFO] Starting Thread Pool Excecutor
-[15:42:54] [INFO] JTill Server local IP address is 192.168.1.65
-[15:42:54] [INFO] Server Socket running on port number 52341
-[15:42:54] [INFO] Ready to accept connections
-[15:42:56] [INFO] David Grant has logged in
+JTill log Thu Jun 01 17:08:23 BST 2017
+[17:08:23] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[17:08:23] [INFO] Starting Thread Pool Excecutor
+[17:08:23] [INFO] JTill Server local IP address is 192.168.1.65
+[17:08:23] [INFO] Server Socket running on port number 52341
+[17:08:23] [INFO] Ready to accept connections
+[17:08:25] [INFO] David Grant has logged in

@@ -107,12 +107,13 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         btnSearch = new javax.swing.JButton();
         chkAllTills = new javax.swing.JCheckBox();
         chkAllStaff = new javax.swing.JCheckBox();
-        txtValFrom = new javax.swing.JSpinner();
-        txtValTo = new javax.swing.JSpinner();
+        spinMoneyMin = new javax.swing.JSpinner();
+        spinMoneyMax = new javax.swing.JSpinner();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         spinStart = new javax.swing.JSpinner();
         spinEnd = new javax.swing.JSpinner();
+        btnClear = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Transaction Viewer");
@@ -150,10 +151,12 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         jLabel1.setText("Terminal:");
 
         cmbTerminal.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbTerminal.setEnabled(false);
 
         jLabel2.setText("Staff:");
 
         cmbStaff.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbStaff.setEnabled(false);
 
         jLabel3.setText("Value from:");
 
@@ -166,6 +169,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        chkAllTills.setSelected(true);
         chkAllTills.setText("All");
         chkAllTills.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -173,6 +177,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        chkAllStaff.setSelected(true);
         chkAllStaff.setText("All");
         chkAllStaff.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -180,17 +185,26 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        txtValFrom.setValue(-99999);
+        spinMoneyMin.setModel(new javax.swing.SpinnerNumberModel(0.0d, null, null, 1.0d));
+        spinMoneyMin.setValue(-99999.99);
 
-        txtValTo.setValue(99999);
+        spinMoneyMax.setModel(new javax.swing.SpinnerNumberModel(0.0d, null, null, 1.0d));
+        spinMoneyMax.setValue(99999.99);
 
         jLabel5.setText("Start date:");
 
         jLabel6.setText("End date:");
 
-        spinStart.setModel(new javax.swing.SpinnerDateModel());
+        spinStart.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(-3600000L), null, null, java.util.Calendar.DAY_OF_MONTH));
 
         spinEnd.setModel(new javax.swing.SpinnerDateModel());
+
+        btnClear.setText("Clear Search");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -199,9 +213,6 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnSearch))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel1)
@@ -223,8 +234,13 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(spinEnd, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(spinStart, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
-                                .addComponent(txtValTo, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtValFrom, javax.swing.GroupLayout.Alignment.LEADING)))))
+                                .addComponent(spinMoneyMax, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(spinMoneyMin, javax.swing.GroupLayout.Alignment.LEADING))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(btnSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnClear)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 716, Short.MAX_VALUE)
                 .addContainerGap())
@@ -247,11 +263,11 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(txtValFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(spinMoneyMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(txtValTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(spinMoneyMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
@@ -260,8 +276,10 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
                             .addComponent(spinEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(62, 62, 62)
-                        .addComponent(btnSearch)
+                        .addGap(54, 54, 54)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnSearch)
+                            .addComponent(btnClear))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE))
                 .addContainerGap())
@@ -273,31 +291,36 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         final ModalDialog mDialog = new ModalDialog(this, "Search", "Searching transactions...");
         final Runnable run = () -> {
-            final Staff staff = (Staff) cmbStaff.getModel().getSelectedItem();
-            final Till terminal = (Till) cmbTerminal.getModel().getSelectedItem();
-            final boolean allStaff = chkAllStaff.isSelected();
-            final boolean allTills = chkAllTills.isSelected();
-
-            final int minVal = (int) txtValFrom.getValue();
-            final int maxVal = (int) txtValTo.getValue();
-
-            final Date startDate = (Date) spinStart.getValue();
-            final Date endDate = (Date) spinEnd.getValue();
-
             try {
-                final List<Sale> sales = dc.getAllSales();
-                final List<Sale> newList = new LinkedList<>();
-                for (Sale s : sales) {
-                    if ((allTills || s.getTerminal() == terminal.getId()) && (allStaff || s.getStaff() == staff.getId()) && s.getTotal().compareTo(new BigDecimal(minVal)) == 1 && s.getTotal().compareTo(new BigDecimal(maxVal)) == -1 && s.getDate().after(startDate) && s.getDate().before(endDate)) {
-                        newList.add(s);
+                final Staff staff = (Staff) cmbStaff.getModel().getSelectedItem();
+                final Till terminal = (Till) cmbTerminal.getModel().getSelectedItem();
+                final boolean allStaff = chkAllStaff.isSelected();
+                final boolean allTills = chkAllTills.isSelected();
+
+                final double minVal = (double) spinMoneyMin.getValue();
+                final double maxVal = (double) spinMoneyMax.getValue();
+
+                final Date startDate = (Date) spinStart.getValue();
+                final Date endDate = (Date) spinEnd.getValue();
+
+                try {
+                    final List<Sale> sales = dc.getAllSales();
+                    final List<Sale> newList = new LinkedList<>();
+                    for (Sale s : sales) {
+                        if ((allTills || s.getTerminal() == terminal.getId()) && (allStaff || s.getStaff() == staff.getId()) && s.getTotal().compareTo(new BigDecimal(minVal)) >= 0 && s.getTotal().compareTo(new BigDecimal(maxVal)) <= 0 && s.getDate().after(startDate) && s.getDate().before(endDate)) {
+                            newList.add(s);
+                        }
                     }
+                    tableContents = newList;
+                    setTable();
+                } catch (IOException | SQLException ex) {
+                    Logger.getLogger(TransactionViewerWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                tableContents = newList;
-                setTable();
-            } catch (IOException | SQLException ex) {
-                Logger.getLogger(TransactionViewerWindow.class.getName()).log(Level.SEVERE, null, ex);
+                mDialog.hide();
+            } catch (Exception e) {
+                mDialog.hide();
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-            mDialog.hide();
         };
         final Thread thread = new Thread(run);
         thread.start();
@@ -322,7 +345,20 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableMouseClicked
 
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        cmbTerminal.setEnabled(false);
+        cmbStaff.setEnabled(false);
+        chkAllTills.setSelected(true);
+        chkAllStaff.setSelected(true);
+        spinMoneyMin.setValue(-99999.99);
+        spinMoneyMax.setValue(99999.99);
+        spinStart.setValue(new Date(0));
+        spinEnd.setValue(new Date());
+        init();
+    }//GEN-LAST:event_btnClearActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnClear;
     private javax.swing.JButton btnSearch;
     private javax.swing.JCheckBox chkAllStaff;
     private javax.swing.JCheckBox chkAllTills;
@@ -336,9 +372,9 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSpinner spinEnd;
+    private javax.swing.JSpinner spinMoneyMax;
+    private javax.swing.JSpinner spinMoneyMin;
     private javax.swing.JSpinner spinStart;
     private javax.swing.JTable table;
-    private javax.swing.JSpinner txtValFrom;
-    private javax.swing.JSpinner txtValTo;
     // End of variables declaration//GEN-END:variables
 }
