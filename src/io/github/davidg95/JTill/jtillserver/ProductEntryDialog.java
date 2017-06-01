@@ -572,7 +572,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         String shortName = txtShortName.getText();
         String val = txtOrderCode.getText();
         if (!Utilities.isNumber(val)) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         int orderCode = Integer.parseInt(val);
@@ -581,39 +581,39 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         Department dep = selectedDepartment;
         String comments = txtComments.getText();
         if (!Utilities.isNumber(txtPrice.getText())) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         BigDecimal price = new BigDecimal(txtPrice.getText());
         if (price.compareTo(BigDecimal.ZERO) < 0) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (!Utilities.isNumber(txtCostPrice.getText())) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         BigDecimal costPrice = new BigDecimal(txtCostPrice.getText());
         if (costPrice.compareTo(BigDecimal.ZERO) < 0) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (!Utilities.isNumber(txtMinStock.getText())) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         int minStock = Integer.parseInt(txtMinStock.getText());
         if (minStock < 0) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (!Utilities.isNumber(txtMaxStock.getText())) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         int maxStock = Integer.parseInt(txtMaxStock.getText());
         if (maxStock < 0) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
         product = new Product(name, shortName, orderCode, category.getId(), dep.getId(), comments, tax.getId(), false, price, costPrice, 0, minStock, maxStock, 0);
@@ -623,13 +623,13 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 dc.setSetting("NEXT_PLU", nextBarcode);
                 nextBarcode = null;
             }
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
             resetPanels();
             CardLayout c = (CardLayout) jPanel1.getLayout();
             c.show(jPanel1, "card2");
             txtPlu.requestFocus();
         } catch (HeadlessException | IOException | NumberFormatException | SQLException ex) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddProductActionPerformed
 
@@ -681,24 +681,24 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                         }
                     }
                 } else {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You have not specified a UPC Company Prefix. This must be done before generating your own barcodes. Go to Setup -> Plu Settings to do this.", "Generate Barcode", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "You have not specified a UPC Company Prefix. This must be done before generating your own barcodes. Go to Setup -> Plu Settings to do this.", "Generate Barcode", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 //If excecution reaches here, it means an unsude PLU as been generated
             } else {
                 //Get the PLu from the user, check what they entered is valid
                 if (txtPlu.getText().equals("")) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You must enter a barcode", "New Product", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "You must enter a barcode", "New Product", JOptionPane.WARNING_MESSAGE);
                     return;
                 } else if (txtPlu.getText().length() < 8 || txtPlu.getText().length() > 15) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Barcodes must be between 8 and 15 characters long", "New Product", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Barcodes must be between 8 and 15 characters long", "New Product", JOptionPane.WARNING_MESSAGE);
                     return;
                 } else if (!txtPlu.getText().matches("[0-9]+")) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must only contain numbers", "New Product", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Must only contain numbers", "New Product", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 if (dc.checkBarcode(txtPlu.getText())) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Barcode is already in use", "Barcode in use", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Barcode is already in use", "Barcode in use", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 plu = new Plu(txtPlu.getText(), 0);
@@ -720,7 +720,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     toCopy.setStock(0);
                     try {
                         dc.addProductAndPlu(toCopy, plu);
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "New Plu created", "New Plu", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "New Plu created", "New Plu", JOptionPane.INFORMATION_MESSAGE);
                         txtPlu.setText("");
                         radNew.setSelected(true);
                         txtPlu.requestFocus();
@@ -782,7 +782,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         String comments = txtOpenComments.getText();
         try {
             if (name.length() == 0 || shortName.length() == 0) {
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "All fields must be filled out", "Create Product", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "All fields must be filled out", "Create Product", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             product = new Product(name, shortName, 0, category.getId(), dep.getId(), comments, tax.getId(), true);
@@ -791,13 +791,13 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             if (chkNext.isSelected()) {
                 dc.setSetting("NEXT_PLU", nextBarcode);
             }
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
             resetPanels();
             CardLayout c = (CardLayout) jPanel1.getLayout();
             c.show(jPanel1, "card2");
             txtPlu.requestFocus();
         } catch (HeadlessException | IOException | NumberFormatException | SQLException ex) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddOpenActionPerformed
 
