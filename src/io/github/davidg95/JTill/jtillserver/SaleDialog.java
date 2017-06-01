@@ -38,7 +38,6 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.mail.MessagingException;
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -56,10 +55,10 @@ public class SaleDialog extends javax.swing.JInternalFrame {
     /**
      * Creates new form SaleDialog
      */
-    public SaleDialog(Sale sale, DataConnect dc) {
+    public SaleDialog(Sale sale) {
         super();
         this.sale = sale;
-        this.dc = dc;
+        this.dc = GUI.gui.dc;
         initComponents();
         super.setClosable(true);
         super.setIconifiable(true);
@@ -69,8 +68,8 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showSaleDialog(Sale sale, DataConnect dc) {
-        SaleDialog dialog = new SaleDialog(sale, dc);
+    public static void showSaleDialog(Sale sale) {
+        SaleDialog dialog = new SaleDialog(sale);
         GUI.gui.internal.add(dialog);
         dialog.setVisible(true);
         try {
@@ -99,7 +98,13 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         } catch (IOException | SQLException | JTillException ex) {
             lblTerminal.setText("Terminal: " + sale.getTerminal());
         }
-        lblTotal.setText("Sale Total: £" + sale.getTotal());
+        try {
+            final Staff staff = dc.getStaff(sale.getStaff());
+            lblStaff.setText("Staff: " + staff);
+        } catch (IOException | StaffNotFoundException | SQLException ex) {
+            Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        lblTotal.setText("Sale Total: £" + sale.getTotal().setScale(2));
 
         model.setRowCount(0);
 
@@ -114,10 +119,10 @@ public class SaleDialog extends javax.swing.JInternalFrame {
                 Object[] s;
                 if (item.getType() == SaleItem.PRODUCT) {
                     final Product p = dc.getProduct(item.getItem());
-                    s = new Object[]{item.getQuantity(), p.getName(), df.format(item.getPrice().doubleValue())};
+                    s = new Object[]{item.getQuantity(), p.getName(), df.format(item.getPrice().doubleValue() * item.getQuantity())};
                 } else {
                     final Discount d = dc.getDiscount(item.getItem());
-                    s = new Object[]{item.getQuantity(), d.getName(), df.format(item.getPrice().doubleValue())};
+                    s = new Object[]{item.getQuantity(), d.getName(), df.format(item.getPrice().doubleValue() * item.getQuantity())};
                 }
                 model.addRow(s);
             } catch (IOException | ProductNotFoundException | SQLException | DiscountNotFoundException ex) {
@@ -268,9 +273,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         btnEmail = new javax.swing.JButton();
         lblTotal = new javax.swing.JLabel();
         btnPrint = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
+        lblStaff = new javax.swing.JLabel();
 
         btnClose.setText("Close");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
@@ -324,6 +327,8 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             }
         });
 
+        lblStaff.setText("Staff: ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -331,14 +336,14 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(lblSaleID)
-                                .addComponent(lblTime)
-                                .addComponent(lblCustomer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lblTerminal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(lblTotal))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lblSaleID)
+                            .addComponent(lblTime)
+                            .addComponent(lblCustomer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblTerminal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblTotal)
+                            .addComponent(lblStaff, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -353,26 +358,27 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblSaleID)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblTime)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblCustomer)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblTerminal)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblTotal)
-                .addGap(193, 193, 193))
-            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblSaleID)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblTime)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblCustomer)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblTerminal)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblStaff)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblTotal)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
                     .addComponent(btnEmail)
                     .addComponent(btnPrint))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         pack();
@@ -400,22 +406,23 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             }
             final ModalDialog mDialog = new ModalDialog(this, "Email...", "Sending email...");
             final String fEmail = email;
-            Runnable run = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        dc.emailReceipt(fEmail, sale);
-                        mDialog.hide();
+            final Runnable run = () -> {
+                try {
+                    boolean result = dc.emailReceipt(fEmail, sale);
+                    mDialog.hide();
+                    if (result) {
                         JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (IOException | MessagingException ex) {
-                        mDialog.hide();
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Error sending email", "Email Receipt", JOptionPane.ERROR_MESSAGE);
-                    } finally {
-                        mDialog.hide();
+                    } else {
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Email not sent", "Email Receipt", JOptionPane.ERROR_MESSAGE);
                     }
+                } catch (IOException | MessagingException ex) {
+                    mDialog.hide();
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Error sending email", "Email Receipt", JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    mDialog.hide();
                 }
             };
-            Thread th = new Thread(run);
+            final Thread th = new Thread(run);
             th.start();
             mDialog.show();
         } catch (IOException | CustomerNotFoundException | SQLException ex) {
@@ -463,6 +470,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblCustomer;
     private javax.swing.JLabel lblSaleID;
+    private javax.swing.JLabel lblStaff;
     private javax.swing.JLabel lblTerminal;
     private javax.swing.JLabel lblTime;
     private javax.swing.JLabel lblTotal;
