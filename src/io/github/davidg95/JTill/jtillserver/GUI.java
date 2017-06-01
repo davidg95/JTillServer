@@ -455,7 +455,7 @@ public class GUI extends JFrame implements GUIInterface {
         menuFile = new javax.swing.JMenu();
         itemLogin = new javax.swing.JMenuItem();
         itemServerOptions = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        itemCheckDatabase = new javax.swing.JMenuItem();
         itemAbout = new javax.swing.JMenuItem();
         itemUpdate = new javax.swing.JMenuItem();
         itemExit = new javax.swing.JMenuItem();
@@ -481,9 +481,8 @@ public class GUI extends JFrame implements GUIInterface {
         itemLoyalty = new javax.swing.JMenuItem();
         itemDatabase = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        itemSalesList = new javax.swing.JMenuItem();
+        itemSalesReporting = new javax.swing.JMenuItem();
+        itemTransactionViewer = new javax.swing.JMenuItem();
         itemLabelPrinting = new javax.swing.JMenuItem();
         itemStaffClocking = new javax.swing.JMenuItem();
         itemTerminals = new javax.swing.JMenuItem();
@@ -792,13 +791,13 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuFile.add(itemServerOptions);
 
-        jMenuItem2.setText("Check Database");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        itemCheckDatabase.setText("Check Database");
+        itemCheckDatabase.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                itemCheckDatabaseActionPerformed(evt);
             }
         });
-        menuFile.add(jMenuItem2);
+        menuFile.add(itemCheckDatabase);
 
         itemAbout.setText("About");
         itemAbout.addActionListener(new java.awt.event.ActionListener() {
@@ -990,29 +989,21 @@ public class GUI extends JFrame implements GUIInterface {
 
         jMenu1.setText("Report");
 
-        jMenuItem1.setText("Sales Reporting");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        itemSalesReporting.setText("Sales Reporting");
+        itemSalesReporting.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                itemSalesReportingActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
+        jMenu1.add(itemSalesReporting);
 
-        jMenuItem3.setText("Transaction Viewer");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+        itemTransactionViewer.setText("Transaction Viewer");
+        itemTransactionViewer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
+                itemTransactionViewerActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem3);
-
-        itemSalesList.setText("Sales List");
-        itemSalesList.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemSalesListActionPerformed(evt);
-            }
-        });
-        jMenu1.add(itemSalesList);
+        jMenu1.add(itemTransactionViewer);
 
         itemLabelPrinting.setText("Label Printing");
         itemLabelPrinting.addActionListener(new java.awt.event.ActionListener() {
@@ -1287,9 +1278,9 @@ public class GUI extends JFrame implements GUIInterface {
         DepartmentsWindow.showWindow(dc, icon);
     }//GEN-LAST:event_itemDepartmentsActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void itemSalesReportingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSalesReportingActionPerformed
         ReportingWindow.showWindow(dc, icon);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_itemSalesReportingActionPerformed
 
     private void itemEnquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEnquiryActionPerformed
         ProductEnquiry.showWindow(dc, icon);
@@ -1400,7 +1391,7 @@ public class GUI extends JFrame implements GUIInterface {
         TillWindow.showWindow(dc);
     }//GEN-LAST:event_itemTerminalsActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void itemCheckDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCheckDatabaseActionPerformed
         final ModalDialog mDialog = new ModalDialog(this, "Database Check", "Checking database integrity...");
         final Runnable run = new Runnable() {
             @Override
@@ -1418,7 +1409,7 @@ public class GUI extends JFrame implements GUIInterface {
         Thread thread = new Thread(run);
         thread.start();
         mDialog.show();
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    }//GEN-LAST:event_itemCheckDatabaseActionPerformed
 
     private void itemUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemUpdateActionPerformed
         new Thread() {
@@ -1440,13 +1431,9 @@ public class GUI extends JFrame implements GUIInterface {
         }.start();
     }//GEN-LAST:event_itemUpdateActionPerformed
 
-    private void itemSalesListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSalesListActionPerformed
-        SalesWindow.showSalesWindow(dc, icon);
-    }//GEN-LAST:event_itemSalesListActionPerformed
-
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
+    private void itemTransactionViewerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTransactionViewerActionPerformed
+        TransactionViewerWindow.showWindow();
+    }//GEN-LAST:event_itemTransactionViewerActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
@@ -1465,6 +1452,7 @@ public class GUI extends JFrame implements GUIInterface {
     public javax.swing.JDesktopPane internal;
     private javax.swing.JMenuItem itemAbout;
     private javax.swing.JMenuItem itemCategorys;
+    private javax.swing.JMenuItem itemCheckDatabase;
     private javax.swing.JMenuItem itemCreateNewProduct;
     private javax.swing.JMenuItem itemCustomers;
     private javax.swing.JMenuItem itemDatabase;
@@ -1479,7 +1467,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemPluSettings;
     private javax.swing.JMenuItem itemReasons;
     private javax.swing.JMenuItem itemReceive;
-    private javax.swing.JMenuItem itemSalesList;
+    private javax.swing.JMenuItem itemSalesReporting;
     private javax.swing.JMenuItem itemServerOptions;
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStaffClocking;
@@ -1489,6 +1477,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemTaxes;
     private javax.swing.JMenuItem itemTerminals;
     private javax.swing.JMenuItem itemTillScreens;
+    private javax.swing.JMenuItem itemTransactionViewer;
     private javax.swing.JMenuItem itemUpdate;
     private javax.swing.JMenuItem itemWasteReports;
     private javax.swing.JMenuItem itemWasteStock;
@@ -1496,9 +1485,6 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblClients;
