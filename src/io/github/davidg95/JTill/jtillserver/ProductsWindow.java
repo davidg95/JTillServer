@@ -386,12 +386,20 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        tableProducts.getTableHeader().setReorderingAllowed(false);
         tableProducts.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 tableProductsMousePressed(evt);
             }
         });
         jScrollPane1.setViewportView(tableProducts);
+        if (tableProducts.getColumnModel().getColumnCount() > 0) {
+            tableProducts.getColumnModel().getColumn(0).setResizable(false);
+            tableProducts.getColumnModel().getColumn(1).setResizable(false);
+            tableProducts.getColumnModel().getColumn(2).setResizable(false);
+            tableProducts.getColumnModel().getColumn(3).setResizable(false);
+            tableProducts.getColumnModel().getColumn(4).setResizable(false);
+        }
 
         btnClose.setText("Close");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
