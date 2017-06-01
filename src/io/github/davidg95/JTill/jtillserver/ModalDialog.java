@@ -25,7 +25,7 @@ import javax.swing.border.Border;
  */
 public class ModalDialog {
 
-    private JInternalFrame dialog; //The dialog.
+    private JDialog dialog; //The dialog.
     private JPanel panel; //The panel for the components.
     private JLabel label; //The message label.
 
@@ -76,8 +76,8 @@ public class ModalDialog {
         Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         panel.add(label);
         panel.setBorder(padding);
-        dialog = new JInternalFrame();
-        GUI.gui.internal.add(dialog);
+        dialog = new JDialog();
+//        GUI.gui.internal.add(dialog);
         dialog.setResizable(false);
         dialog.setTitle(title);
         dialog.setContentPane(panel);
