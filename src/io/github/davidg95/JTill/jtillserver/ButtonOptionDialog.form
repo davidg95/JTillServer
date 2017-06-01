@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JInternalFrameFormInfo">
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
   <NonVisualComponents>
     <Component class="javax.swing.ButtonGroup" name="colorGroup">
     </Component>
   </NonVisualComponents>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -91,7 +92,7 @@
   <SubComponents>
     <Component class="javax.swing.JButton" name="btnRemove">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Remove Button"/>
+        <Property name="text" type="java.lang.String" value="Remove Product"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRemoveActionPerformed"/>
@@ -107,7 +108,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnChangeButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Change Button"/>
+        <Property name="text" type="java.lang.String" value="Change Product"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnChangeButtonActionPerformed"/>

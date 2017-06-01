@@ -99,7 +99,6 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         }
         button = b;
         ButtonOptionDialog dialog = new ButtonOptionDialog(window, maxWidth, maxHeight);
-        GUI.gui.internal.add(dialog);
         dialog.setVisible(true);
         return button;
     }
@@ -134,10 +133,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         radWhite = new javax.swing.JRadioButton();
         radBlack = new javax.swing.JRadioButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
-
-        btnRemove.setText("Remove Button");
+        btnRemove.setText("Remove Product");
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemoveActionPerformed(evt);
@@ -151,7 +147,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             }
         });
 
-        btnChangeButton.setText("Change Button");
+        btnChangeButton.setText("Change Product");
         btnChangeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnChangeButtonActionPerformed(evt);
