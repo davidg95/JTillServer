@@ -12,7 +12,6 @@ import java.awt.print.PrinterJob;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -62,7 +61,7 @@ public class ModalDialog {
         this(parent, title, text);
         this.job = job;
         this.hidden = false;
-        JButton button = new JButton("Cancel");
+        final JButton button = new JButton("Cancel");
         button.addActionListener((ActionEvent e) -> {
             this.job.cancel();
         });
@@ -73,11 +72,11 @@ public class ModalDialog {
     private void init() {
         panel = new JPanel();
         label = new JLabel(text);
-        Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+        final Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         panel.add(label);
         panel.setBorder(padding);
         dialog = new JDialog();
-//        GUI.gui.internal.add(dialog);
+        dialog.setAlwaysOnTop(true);
         dialog.setResizable(false);
         dialog.setTitle(title);
         dialog.setContentPane(panel);

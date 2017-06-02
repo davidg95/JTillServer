@@ -221,6 +221,8 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
         txtTax = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         txtNet = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        txtProfitPreTax = new javax.swing.JTextField();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Search By"));
 
@@ -280,9 +282,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                     .addComponent(chkAllDep, javax.swing.GroupLayout.Alignment.LEADING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jLabel4))
+                    .addComponent(jLabel4)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -367,10 +367,15 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
         txtTax.setEditable(false);
         txtTax.setText("£0.00");
 
-        jLabel8.setText("Net Sales:");
+        jLabel8.setText("Net Profit");
 
         txtNet.setEditable(false);
         txtNet.setText("£0.00");
+
+        jLabel9.setText("Profit Before Tax:");
+
+        txtProfitPreTax.setEditable(false);
+        txtProfitPreTax.setText("£0.00");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -379,38 +384,46 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel9)
                     .addComponent(jLabel6)
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtItems)
-                    .addComponent(txtSales, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE))
+                    .addComponent(txtSales, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
+                    .addComponent(txtProfitPreTax))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel7)
                     .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtTax, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
-                    .addComponent(txtNet))
+                    .addComponent(txtTax)
+                    .addComponent(txtNet, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(txtItems, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtItems, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtSales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(txtProfitPreTax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(txtTax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(txtSales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
-                    .addComponent(txtNet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txtNet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -431,9 +444,9 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -473,31 +486,40 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
 
                 int itemsSold = 0;
                 BigDecimal sales = BigDecimal.ZERO;
+                BigDecimal expenses = BigDecimal.ZERO;
                 BigDecimal tax = BigDecimal.ZERO;
 
                 if (items.isEmpty()) {
+                    mDialog.hide();
                     JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No results", "Sales Reporting", JOptionPane.INFORMATION_MESSAGE);
                     return;
                 }
 
                 for (SaleItem i : items) {
                     if (i.getType() == SaleItem.PRODUCT) {
+                        final Product product = dc.getProduct(i.getItem());
+                        final BigDecimal in = i.getPrice().multiply(new BigDecimal(i.getQuantity()));
+                        final BigDecimal out = product.getCostPrice().multiply(new BigDecimal(i.getQuantity()));
+                        expenses = expenses.add(out);
                         itemsSold += i.getQuantity();
-                        sales = sales.add(i.getPrice().multiply(new BigDecimal(i.getQuantity())));
-                        final Product p = dc.getProduct(i.getItem());
-                        final Tax t = dc.getTax(p.getTax());
-                        double taxP = t.getValue() / 100;
-                        tax = tax.add(i.getPrice().multiply(new BigDecimal(i.getQuantity()).multiply(new BigDecimal(taxP))));
+                        sales = sales.add(in);
+
+                        final Sale sale = dc.getSale(i.getSale());
+                        tax = tax.add(sale.getTaxValue());
                     }
                 }
+
+                final BigDecimal profitBeforeTax = sales.subtract(expenses);
                 updateTable();
                 txtItems.setText(itemsSold + "");
                 txtSales.setText("£" + new DecimalFormat("0.00").format(sales));
+                txtProfitPreTax.setText("£" + new DecimalFormat("0.00").format(profitBeforeTax));
                 txtTax.setText("£" + new DecimalFormat("0.00").format(tax));
-                txtNet.setText("£" + new DecimalFormat("0.00").format(sales.subtract(tax)));
-                mDialog.hide();
+                txtNet.setText("£" + new DecimalFormat("0.00").format(profitBeforeTax.subtract(tax)));
             } catch (IOException | SQLException | ProductNotFoundException | JTillException ex) {
                 Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                mDialog.hide();
             }
         };
         final Thread thread = new Thread(run);
@@ -527,6 +549,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -535,6 +558,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     private javax.swing.JTable table;
     private javax.swing.JTextField txtItems;
     private javax.swing.JTextField txtNet;
+    private javax.swing.JTextField txtProfitPreTax;
     private javax.swing.JTextField txtSales;
     private javax.swing.JTextField txtTax;
     // End of variables declaration//GEN-END:variables
