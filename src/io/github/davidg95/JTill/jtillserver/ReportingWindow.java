@@ -74,7 +74,25 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
         }
     }
 
-    public void updateTable() {
+    private void sortList(List<SaleItem> saleItems) {
+        items.clear();
+        for (SaleItem item : saleItems) {
+            boolean found = false;
+            for (SaleItem i : items) {
+                if (i.equals(item)) {
+                    found = true;
+                    i.increaseQuantity(item.getQuantity());
+                    i.getPrice().add(item.getPrice().multiply(new BigDecimal(item.getQuantity())));
+                    break;
+                }
+            }
+            if (!found) {
+                items.add(item);
+            }
+        }
+    }
+
+    private void updateTable() {
         model.setRowCount(0);
         for (SaleItem i : items) {
             try {
@@ -482,20 +500,20 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                 final Date startDate = (Date) spinStart.getValue();
                 final Date endDate = (Date) spinEnd.getValue();
 
-                items = dc.searchSaleItems(depid, catid, startDate, endDate);
+                List<SaleItem> saleItems = dc.searchSaleItems(depid, catid, startDate, endDate);
+
+                if (saleItems.isEmpty()) {
+                    mDialog.hide();
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No results", "Sales Reporting", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
 
                 int itemsSold = 0;
                 BigDecimal sales = BigDecimal.ZERO;
                 BigDecimal expenses = BigDecimal.ZERO;
                 BigDecimal tax = BigDecimal.ZERO;
 
-                if (items.isEmpty()) {
-                    mDialog.hide();
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No results", "Sales Reporting", JOptionPane.INFORMATION_MESSAGE);
-                    return;
-                }
-
-                for (SaleItem i : items) {
+                for (SaleItem i : saleItems) {
                     if (i.getType() == SaleItem.PRODUCT) {
                         final Product product = dc.getProduct(i.getItem());
                         final BigDecimal in = i.getPrice().multiply(new BigDecimal(i.getQuantity()));
@@ -503,13 +521,12 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                         expenses = expenses.add(out);
                         itemsSold += i.getQuantity();
                         sales = sales.add(in);
-
-                        final Sale sale = dc.getSale(i.getSale());
-                        tax = tax.add(sale.getTaxValue());
+                        tax = tax.add(i.getTaxValue());
                     }
                 }
 
                 final BigDecimal profitBeforeTax = sales.subtract(expenses);
+                sortList(saleItems);
                 updateTable();
                 txtItems.setText(itemsSold + "");
                 txtSales.setText("£" + new DecimalFormat("0.00").format(sales));

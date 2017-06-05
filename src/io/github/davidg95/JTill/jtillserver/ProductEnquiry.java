@@ -115,8 +115,8 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
                 g2.drawString("ID: " + p.getId(), x, y);
                 y += s;
                 final Plu plu = dc.getPluByProduct(p.getId());
-                final Category cat = dc.getCategory(p.getCategory());
-                final Department dep = dc.getDepartment(p.getDepartment());
+                final Category cat = dc.getCategory(p.getCategoryID());
+                final Department dep = dc.getDepartment(p.getDepartmentID());
                 g2.drawString("Plu: " + plu.getCode(), x, y);
                 y += s;
                 g2.drawString("Name: " + p.getLongName(), x, y);
@@ -489,8 +489,8 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
                 return;
             }
             final Plu plu = dc.getPluByProduct(product.getId());
-            final Department dep = dc.getDepartment(product.getDepartment());
-            final Category cat = dc.getCategory(product.getCategory());
+            final Department dep = dc.getDepartment(product.getDepartmentID());
+            final Category cat = dc.getCategory(product.getCategoryID());
             try {
                 totalSold = dc.getTotalSoldOfItem(product.getId());
                 valueSold = dc.getTotalValueSold(product.getId());

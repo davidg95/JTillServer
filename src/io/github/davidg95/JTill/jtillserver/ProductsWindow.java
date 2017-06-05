@@ -258,7 +258,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 txtComments.setText(p.getComments());
                 int index = 0;
                 //Set the Category combo box.
-                int c = p.getCategory();
+                int c = p.getCategoryID();
                 index = 0;
                 for (int i = 0; i < categorys.size(); i++) {
                     if (categorys.get(i).getId() == c) {
@@ -268,7 +268,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 }
                 cmbCategory.setSelectedIndex(index);
                 //Set the Tax combo box.
-                int t = p.getTax();
+                int t = p.getTaxID();
                 index = 0;
                 for (int i = 0; i < taxes.size(); i++) {
                     if (taxes.get(i).getId() == t) {
@@ -278,7 +278,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 }
                 cmbTax.setSelectedIndex(index);
                 //Set the Department combo box.
-                int d = p.getDepartment();
+                int d = p.getDepartmentID();
                 index = 0;
                 for (int i = 0; i < departments.size(); i++) {
                     if (departments.get(i).getId() == d) {
@@ -820,8 +820,8 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         if (product.isOpen()) {
             product.setLongName(name);
             product.setName(shortName);
-            product.setCategory(category.getId());
-            product.setTax(tax.getId());
+            product.setCategoryID(category.getId());
+            product.setTaxID(tax.getId());
             product.setComments(comments);
         } else {
             String pr = txtPrice.getText();
@@ -844,9 +844,9 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             int maxStock = Integer.parseInt(maxSt);
             product.setLongName(name);
             product.setName(shortName);
-            product.setCategory(category.getId());
-            product.setDepartment(dep.getId());
-            product.setTax(tax.getId());
+            product.setCategoryID(category.getId());
+            product.setDepartmentID(dep.getId());
+            product.setTaxID(tax.getId());
             product.setPrice(price);
             product.setCostPrice(costPrice);
             product.setStock(stock);
@@ -971,13 +971,13 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 for (Product p : currentTableContents) {
                     pw.println(p.getId() + ","
                             + p.getLongName() + ","
-                            + p.getCategory() + ","
+                            + p.getCategoryID() + ","
                             + p.getCostPrice() + ","
                             + p.getMaxStockLevel() + ","
                             + p.getMinStockLevel() + ","
                             + p.getPrice() + ","
                             + p.getStock() + ","
-                            + p.getTax());
+                            + p.getTaxID());
                 }
                 pw.close();
             } catch (FileNotFoundException ex) {

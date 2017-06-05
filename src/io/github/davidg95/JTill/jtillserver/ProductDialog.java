@@ -90,11 +90,11 @@ public class ProductDialog extends javax.swing.JDialog {
             txtMinStock.setText(p.getMinStockLevel() + "");
             txtMaxStock.setText(p.getMaxStockLevel() + "");
             txtComments.setText(p.getComments());
-            final Category c = dc.getCategory(p.getCategory());
+            final Category c = dc.getCategory(p.getCategoryID());
             btnSelectCategory.setText(c.getName());
-            final Tax t = dc.getTax(p.getTax());
+            final Tax t = dc.getTax(p.getTaxID());
             btnSelectTax.setText(t.getName());
-            final Department d = dc.getDepartment(p.getDepartment());
+            final Department d = dc.getDepartment(p.getDepartmentID());
             btnSelectDepartment.setText(d.getName());
             btnAddProduct.setText("Save Changes");
             setTitle("Edit Product " + p.getName());
@@ -403,11 +403,11 @@ public class ProductDialog extends javax.swing.JDialog {
                 } else {
                     product.setLongName(name);
                     product.setName(shortName);
-                    product.setCategory(category.getId());
+                    product.setCategoryID(category.getId());
                     product.setPrice(price);
                     product.setStock(stock);
                     product.setComments(comments);
-                    product.setTax(tax.getId());
+                    product.setTaxID(tax.getId());
                     product.setMinStockLevel(minStock);
                     product.setMaxStockLevel(maxStock);
                     product.setCostPrice(costPrice);

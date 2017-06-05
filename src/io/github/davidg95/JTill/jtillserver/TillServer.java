@@ -78,7 +78,7 @@ public class TillServer {
         TillSplashScreen.showSplashScreen();
         icon = new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/tillIcon.png")).getImage();
         settings = Settings.getInstance();
-        dc = new DBConnect();
+        dc = DBConnect.getInstance();
         TillSplashScreen.setLabel("Loading configurations");
         TillSplashScreen.addBar(5);
         settings.loadProperties();
