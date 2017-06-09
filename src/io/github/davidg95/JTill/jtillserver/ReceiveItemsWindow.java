@@ -134,8 +134,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         for (Product pr : products) {
             try {
                 final Plu p = dc.getPluByProduct(pr.getId());
-                model.addRow(new Object[]{pr.getId(), pr.getName(), p.getCode(), pr.getStock()});
-                val = val.add(pr.getPrice().multiply(new BigDecimal(pr.getStock())));
+                model.addRow(new Object[]{pr.getId(), pr.getLongName(), p.getCode(), pr.getStock()});
+                val = val.add(pr.getCostPrice().multiply(new BigDecimal(pr.getStock())));
             } catch (IOException | JTillException ex) {
                 Logger.getLogger(ReceiveItemsWindow.class.getName()).log(Level.SEVERE, null, ex);
             }

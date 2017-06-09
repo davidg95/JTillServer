@@ -212,7 +212,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         for (WasteItem wi : wasteItems) {
             try {
                 WasteReason wr = dc.getWasteReason(wi.getReason());
-                Object[] row = new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + wi.getProduct().getPrice().multiply(new BigDecimal(wi.getQuantity())), wr.getReason()};
+                Object[] row = new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + wi.getProduct().getPrice().multiply(new BigDecimal(wi.getQuantity())).setScale(2), wr.getReason()};
                 model.addRow(row);
             } catch (IOException | SQLException | JTillException ex) {
                 Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);

@@ -40,6 +40,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     /**
      * Creates new form ProductSelectDialog
      *
+     * @param parent the parent window.
      * @param showOpen indicated whether open price products should show. new
      * product if a barcode is not found.
      */
@@ -78,6 +79,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     /**
      * Method to show the product select dialog.
      *
+     * @param parent the parent component.
      * @return the product selected by the user.
      */
     public static Product showDialog(Component parent) {
@@ -126,7 +128,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * @param e the exception to show.
      */
     private void showError(Exception e) {
-        JOptionPane.showInternalMessageDialog(GUI.gui.internal, e, "Products", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, e, "Products", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -298,7 +300,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             } else {
                 try {
                     if (!Utilities.isNumber(search)) {
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Barcode must be a number", "Search", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Barcode must be a number", "Search", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     final Plu plu = dc.getPluByProduct(p.getId());
@@ -313,7 +315,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         if (newList.isEmpty()) {
             txtSearch.setSelectionStart(0);
             txtSearch.setSelectionEnd(txtSearch.getText().length());
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No Results", "Search", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No Results", "Search", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
         currentTableContents = newList;
