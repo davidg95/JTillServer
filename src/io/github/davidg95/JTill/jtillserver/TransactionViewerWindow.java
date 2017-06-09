@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.HeadlessException;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -76,15 +77,20 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
 
     private void setTable() {
         model.setRowCount(0);
+        final int totalSales = tableContents.size();
+        BigDecimal totalValue = BigDecimal.ZERO;
         for (Sale s : tableContents) {
             try {
                 final Staff staff = dc.getStaff(s.getStaff());
                 final Till till = dc.getTill(s.getTerminal());
                 model.addRow(new Object[]{s.getId(), s.getDate(), s.getTotal().setScale(2), staff.getName(), till.getName()});
+                totalValue = totalValue.add(s.getTotal());
             } catch (IOException | StaffNotFoundException | SQLException | JTillException ex) {
                 Logger.getLogger(TransactionViewerWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        txtTotalSales.setValue(totalSales);
+        txtTotalValue.setValue(totalValue);
     }
 
     /**
@@ -98,22 +104,31 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
         cmbTerminal = new javax.swing.JComboBox<>();
-        jLabel2 = new javax.swing.JLabel();
-        cmbStaff = new javax.swing.JComboBox<>();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        btnSearch = new javax.swing.JButton();
-        chkAllTills = new javax.swing.JCheckBox();
+        jLabel6 = new javax.swing.JLabel();
         chkAllStaff = new javax.swing.JCheckBox();
+        chkAllTills = new javax.swing.JCheckBox();
+        jLabel1 = new javax.swing.JLabel();
+        btnClear = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        spinStart = new javax.swing.JSpinner();
+        spinIdStart = new javax.swing.JSpinner();
         spinMoneyMin = new javax.swing.JSpinner();
+        cmbStaff = new javax.swing.JComboBox<>();
         spinMoneyMax = new javax.swing.JSpinner();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        spinStart = new javax.swing.JSpinner();
         spinEnd = new javax.swing.JSpinner();
-        btnClear = new javax.swing.JButton();
+        spinIdEnd = new javax.swing.JSpinner();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        btnSearch = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        txtTotalValue = new javax.swing.JFormattedTextField();
+        txtTotalSales = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Transaction Viewer");
@@ -148,24 +163,18 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
             table.getColumnModel().getColumn(4).setResizable(false);
         }
 
-        jLabel1.setText("Terminal:");
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Filter Options"));
 
         cmbTerminal.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cmbTerminal.setEnabled(false);
 
-        jLabel2.setText("Staff:");
+        jLabel6.setText("End date:");
 
-        cmbStaff.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cmbStaff.setEnabled(false);
-
-        jLabel3.setText("Value from:");
-
-        jLabel4.setText("Value to:");
-
-        btnSearch.setText("Search");
-        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+        chkAllStaff.setSelected(true);
+        chkAllStaff.setText("All");
+        chkAllStaff.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearchActionPerformed(evt);
+                chkAllStaffActionPerformed(evt);
             }
         });
 
@@ -177,27 +186,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        chkAllStaff.setSelected(true);
-        chkAllStaff.setText("All");
-        chkAllStaff.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkAllStaffActionPerformed(evt);
-            }
-        });
-
-        spinMoneyMin.setModel(new javax.swing.SpinnerNumberModel(0.0d, null, null, 1.0d));
-        spinMoneyMin.setValue(-99999.99);
-
-        spinMoneyMax.setModel(new javax.swing.SpinnerNumberModel(0.0d, null, null, 1.0d));
-        spinMoneyMax.setValue(99999.99);
-
-        jLabel5.setText("Start date:");
-
-        jLabel6.setText("End date:");
-
-        spinStart.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(-3600000L), null, null, java.util.Calendar.DAY_OF_MONTH));
-
-        spinEnd.setModel(new javax.swing.SpinnerDateModel());
+        jLabel1.setText("Terminal:");
 
         btnClear.setText("Clear Search");
         btnClear.addActionListener(new java.awt.event.ActionListener() {
@@ -206,6 +195,136 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel2.setText("Staff:");
+
+        jLabel8.setText("ID end");
+
+        spinStart.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(-3600000L), null, null, java.util.Calendar.DAY_OF_MONTH));
+
+        spinMoneyMin.setModel(new javax.swing.SpinnerNumberModel(0.0d, null, null, 1.0d));
+        spinMoneyMin.setValue(-99999.99);
+
+        cmbStaff.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbStaff.setEnabled(false);
+
+        spinMoneyMax.setModel(new javax.swing.SpinnerNumberModel(0.0d, null, null, 1.0d));
+        spinMoneyMax.setValue(99999.99);
+
+        jLabel5.setText("Start date:");
+
+        spinEnd.setModel(new javax.swing.SpinnerDateModel());
+
+        spinIdEnd.setValue(9999999);
+
+        jLabel3.setText("Value from:");
+
+        jLabel4.setText("Value to:");
+
+        jLabel7.setText("ID start:");
+
+        btnSearch.setText("Search");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel8))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(cmbStaff, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cmbTerminal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(chkAllTills)
+                                    .addComponent(chkAllStaff)))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(spinIdEnd, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(spinIdStart, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(spinEnd, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(spinStart, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(spinMoneyMax, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(spinMoneyMin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(btnSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnClear)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(cmbTerminal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkAllTills))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(cmbStaff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkAllStaff))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(spinMoneyMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(spinMoneyMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(spinStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(spinEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(spinIdStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addGap(5, 5, 5)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(spinIdEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSearch)
+                    .addComponent(btnClear))
+                .addContainerGap())
+        );
+
+        jLabel9.setText("Total Value:");
+
+        jLabel10.setText("Total Sales:");
+
+        txtTotalValue.setEditable(false);
+        txtTotalValue.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
+        txtTotalValue.setText("0.00");
+
+        txtTotalSales.setEditable(false);
+        txtTotalSales.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -213,36 +332,17 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6))
+                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(cmbStaff, javax.swing.GroupLayout.Alignment.LEADING, 0, 133, Short.MAX_VALUE)
-                                    .addComponent(cmbTerminal, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(chkAllTills)
-                                    .addComponent(chkAllStaff)))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(spinEnd, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(spinStart, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
-                                .addComponent(spinMoneyMax, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(spinMoneyMin, javax.swing.GroupLayout.Alignment.LEADING))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(btnSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClear)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 716, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtTotalValue, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                            .addComponent(txtTotalSales))))
+                .addGap(2, 2, 2)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 688, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -251,37 +351,17 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(cmbTerminal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(chkAllTills))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(cmbStaff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(chkAllStaff))
+                            .addComponent(jLabel9)
+                            .addComponent(txtTotalValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(spinMoneyMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(spinMoneyMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(spinStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(spinEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(54, 54, 54)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnSearch)
-                            .addComponent(btnClear))
+                            .addComponent(jLabel10)
+                            .addComponent(txtTotalSales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -290,41 +370,69 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         final ModalDialog mDialog = new ModalDialog(this, "Search", "Searching transactions...");
+        //Create a runnable to pass into a worker thread
         final Runnable run = () -> {
             try {
-                final Staff staff = (Staff) cmbStaff.getModel().getSelectedItem();
-                final Till terminal = (Till) cmbTerminal.getModel().getSelectedItem();
-                final boolean allStaff = chkAllStaff.isSelected();
-                final boolean allTills = chkAllTills.isSelected();
+                final Staff staff = (Staff) cmbStaff.getModel().getSelectedItem(); //Get the staff member to filter
+                final Till terminal = (Till) cmbTerminal.getModel().getSelectedItem(); //Get the till to filter
 
-                final double minVal = (double) spinMoneyMin.getValue();
-                final double maxVal = (double) spinMoneyMax.getValue();
+                final boolean allStaff = chkAllStaff.isSelected(); //Check if the allStaff box is selected
+                final boolean allTills = chkAllTills.isSelected(); //Check if the allTills box is selected
 
-                final Date startDate = (Date) spinStart.getValue();
-                final Date endDate = (Date) spinEnd.getValue();
+                final double minVal = (double) spinMoneyMin.getValue(); //Get the minimum sale value
+                final double maxVal = (double) spinMoneyMax.getValue(); //Get the maximum sale value
+
+                final Date startDate = (Date) spinStart.getValue(); //Get the start date
+                final Date endDate = (Date) spinEnd.getValue(); //Get the end date
+
+                final int startID = (int) spinIdStart.getValue(); //Get the start ID
+                final int endID = (int) spinIdEnd.getValue(); //Get the end ID
+
+                //Check to make sure that the minimum value is less than the maximum value
+                if (minVal > maxVal) {
+                    mDialog.hide();
+                    JOptionPane.showMessageDialog(this, "Minimum value must be greater or equal to the maximum value", "Transaction Search", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                //Check to make sure that the start time is afer then end time
+                if (endDate.getTime() < startDate.getTime()) {
+                    mDialog.hide();
+                    JOptionPane.showMessageDialog(this, "Start date must be on or after then end date", "Transaction Search", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                //Check to make sure that the start ID is before the end ID
+                if (startID > endID) {
+                    mDialog.hide();
+                    JOptionPane.showMessageDialog(this, "Start ID must be greater than or equal to the end ID", "Transaction Search", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
                 try {
-                    final List<Sale> sales = dc.getAllSales();
-                    final List<Sale> newList = new LinkedList<>();
+                    final List<Sale> sales = dc.getAllSales(); //Get all the sales
+                    final List<Sale> newList = new LinkedList<>(); //Create a list for the filtered sales
+                    //Check each sale and make sure it matches the criteria
                     for (Sale s : sales) {
-                        if ((allTills || s.getTerminal() == terminal.getId()) && (allStaff || s.getStaff() == staff.getId()) && s.getTotal().compareTo(new BigDecimal(minVal)) >= 0 && s.getTotal().compareTo(new BigDecimal(maxVal)) <= 0 && s.getDate().after(startDate) && s.getDate().before(endDate)) {
+                        if ((allTills || s.getTerminal() == terminal.getId()) && (allStaff || s.getStaff() == staff.getId()) && s.getTotal().compareTo(new BigDecimal(minVal)) >= 0 && s.getTotal().compareTo(new BigDecimal(maxVal)) <= 0 && s.getDate().after(startDate) && s.getDate().before(endDate) && (s.getId() >= startID && s.getId() <= endID)) {
                             newList.add(s);
                         }
                     }
                     tableContents = newList;
+                    //Display the sales in the table.
                     setTable();
                 } catch (IOException | SQLException ex) {
                     Logger.getLogger(TransactionViewerWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 mDialog.hide();
-            } catch (Exception e) {
+            } catch (HeadlessException e) {
                 mDialog.hide();
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         };
-        final Thread thread = new Thread(run);
-        thread.start();
-        mDialog.show();
+        final Thread thread = new Thread(run); //Create the worker thread
+        thread.start(); //Start the worker thread
+        mDialog.show(); //Show the dialog to indicate that a search is in progress
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void chkAllTillsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkAllTillsActionPerformed
@@ -354,6 +462,8 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         spinMoneyMax.setValue(99999.99);
         spinStart.setValue(new Date(0));
         spinEnd.setValue(new Date());
+        spinIdStart.setValue(0);
+        spinIdEnd.setValue(9999999);
         init();
     }//GEN-LAST:event_btnClearActionPerformed
 
@@ -365,16 +475,25 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
     private javax.swing.JComboBox<String> cmbStaff;
     private javax.swing.JComboBox<String> cmbTerminal;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSpinner spinEnd;
+    private javax.swing.JSpinner spinIdEnd;
+    private javax.swing.JSpinner spinIdStart;
     private javax.swing.JSpinner spinMoneyMax;
     private javax.swing.JSpinner spinMoneyMin;
     private javax.swing.JSpinner spinStart;
     private javax.swing.JTable table;
+    private javax.swing.JFormattedTextField txtTotalSales;
+    private javax.swing.JFormattedTextField txtTotalValue;
     // End of variables declaration//GEN-END:variables
 }
