@@ -175,22 +175,23 @@ public class GUI extends JFrame implements GUIInterface {
     }
 
     /**
-     * Initial setup of the gui which creates the database.
+     * Initial setup which creates the database and prompts the user to create
+     * the first member of staff.
      */
     private void initialSetup() {
         if (dc instanceof DBConnect) {
             try {
                 DBConnect db = (DBConnect) dc;
                 TillSplashScreen.setLabel("Creating database...");
-                db.create(settings.getSetting("db_address") + "create=true;", settings.getSetting("db_username"), settings.getSetting("db_password"));
+                db.create(settings.getSetting("db_address") + "create=true;", settings.getSetting("db_username"), settings.getSetting("db_password")); //Create the database
                 TillSplashScreen.setLabel("Populating database");
-                db.addCustomer(new Customer("NONE", "", "", "", "", "", "", "", "", "", "", 0, BigDecimal.ZERO));
-                Staff s = StaffDialog.showNewStaffDialog(this, db);
+                db.addCustomer(new Customer("NONE", "", "", "", "", "", "", "", "", "", "", 0, BigDecimal.ZERO)); //Create a blank customer
+                Staff s = StaffDialog.showNewStaffDialog(this, db); //Show the create staff dialog
                 if (s == null) {
-                    System.exit(0);
+                    System.exit(0); // Exit if the user clicked cancel
                 }
             } catch (SQLException ex) {
-                if (ex.getErrorCode() == 40000) {
+                if (ex.getErrorCode() == 40000) { //If another application is already using the database.
                     LOG.log(Level.SEVERE, "The database is already in use. The program will now terminate");
                     JOptionPane.showMessageDialog(this, "The database is already in use by another application. Program will now terminate.\nError Code " + ex.getErrorCode(), "Database in use", JOptionPane.ERROR_MESSAGE);
                     System.exit(0);
@@ -209,42 +210,26 @@ public class GUI extends JFrame implements GUIInterface {
      */
     public void databaseLogin() {
         try {
-            setTitle("JTill Server - " + dc.getSetting("SITE_NAME"));
+            setTitle("JTill Server - " + dc.getSetting("SITE_NAME")); //Set the window title
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }
-        if (!remote) {
+        if (!remote) { //Test if this is a remote server connection
             try {
                 DBConnect db = (DBConnect) dc;
-                TillSplashScreen.setLabel("Connecting to database");
-                db.connect(settings.getSetting("db_address"), settings.getSetting("db_username"), settings.getSetting("db_password"));
-                if (dc.getStaffCount() == 0) {
-//                    final Runnable run = new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Staff s = StaffDialog.showNewStaffDialog(db, true);
-//                            if (s == null) {
-//                                System.exit(0);
-//                            }
-//                        }
-//                    };
-//                    final Thread thread = new Thread(run);
-//                    thread.start();
-//                    try {
-//                        thread.join();
-//                    } catch (InterruptedException ex) {
-//                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
-                    Staff s = new Staff("JTill Admin", Staff.MANAGER, "admin", "jtill", 0.01);
+                TillSplashScreen.setLabel("Connecting to database"); //Update the splash screen
+                db.connect(settings.getSetting("db_address"), settings.getSetting("db_username"), settings.getSetting("db_password")); //Open a connection to the database
+                if (dc.getStaffCount() == 0) { //Check to see if any staff members have been created
+                    Staff s = new Staff("JTill Admin", Staff.MANAGER, "admin", "jtill", 0.01); //Create the admin member of staff if they do not already exists
                     try {
-                        s = dc.addStaff(s);
+                        s = dc.addStaff(s); //Add the member of staff
                     } catch (SQLException | IOException ex) {
                         JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
-                TillSplashScreen.addBar(56);
+                TillSplashScreen.addBar(56); //Update the splash screen
             } catch (SQLException ex) {
-                initialSetup();
+                initialSetup(); //If there was an issue connecting to the database, go to the initial setup.
             } catch (IOException ex) {
                 LOG.log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
@@ -485,6 +470,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemTransactionViewer = new javax.swing.JMenuItem();
         itemLabelPrinting = new javax.swing.JMenuItem();
         itemStaffClocking = new javax.swing.JMenuItem();
+        itemStaffReporting = new javax.swing.JMenuItem();
         itemTerminals = new javax.swing.JMenuItem();
         itemWasteReports = new javax.swing.JMenuItem();
 
@@ -1021,6 +1007,14 @@ public class GUI extends JFrame implements GUIInterface {
         });
         jMenu1.add(itemStaffClocking);
 
+        itemStaffReporting.setText("Staff Reporting");
+        itemStaffReporting.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemStaffReportingActionPerformed(evt);
+            }
+        });
+        jMenu1.add(itemStaffReporting);
+
         itemTerminals.setText("Terminals");
         itemTerminals.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1098,18 +1092,17 @@ public class GUI extends JFrame implements GUIInterface {
                 return;
             }
             LOG.log(Level.INFO, "Stopping JTIll Server");
-            DBConnect db = (DBConnect) dc;
             LOG.log(Level.INFO, "Saving properties");
-            settings.saveProperties();
-            TillServer.removeSystemTrayIcon();
+            settings.saveProperties(); //Save the server properties
+            TillServer.removeSystemTrayIcon(); //Remove the system tray icon
         }
         try {
-            dc.close();
+            dc.close(); //Close the Database/Server connection
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }
         LOG.log(Level.INFO, "Stopping");
-        System.exit(0);
+        System.exit(0); //Exit the application
     }//GEN-LAST:event_itemExitActionPerformed
 
     private void itemCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCustomersActionPerformed
@@ -1392,23 +1385,23 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemTerminalsActionPerformed
 
     private void itemCheckDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCheckDatabaseActionPerformed
-        final ModalDialog mDialog = new ModalDialog(this, "Database Check", "Checking database integrity...");
-        final Runnable run = new Runnable() {
+        final ModalDialog mDialog = new ModalDialog(this, "Database Check", "Checking database integrity..."); //Create the dialog object
+        final Runnable run = new Runnable() { //Create the runnable for performing the database check
             @Override
             public void run() {
                 try {
-                    ((DBConnect) dc).integrityCheck();
-                    mDialog.hide();
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Check complete. No Issues.", "Database Check", JOptionPane.INFORMATION_MESSAGE);
-                } catch (SQLException ex) {
-                    mDialog.hide();
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Database Check", JOptionPane.ERROR_MESSAGE);
+                    dc.integrityCheck(); //Perform the Database check
+                    mDialog.hide(); //Hide the dialog once the check completes
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Check complete. No Issues.", "Database Check", JOptionPane.INFORMATION_MESSAGE); //Show success message
+                } catch (IOException | SQLException ex) {
+                    mDialog.hide(); //Hide the dialog if there is an error
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Database Check", JOptionPane.ERROR_MESSAGE); //Show the error
                 }
             }
         };
-        Thread thread = new Thread(run);
-        thread.start();
-        mDialog.show();
+        final Thread thread = new Thread(run); //Create the thread for running the integrity check
+        thread.start(); //Start the thread
+        mDialog.show(); //Show the running dialog
     }//GEN-LAST:event_itemCheckDatabaseActionPerformed
 
     private void itemUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemUpdateActionPerformed
@@ -1416,24 +1409,28 @@ public class GUI extends JFrame implements GUIInterface {
             @Override
             public void run() {
                 try {
-                    String latest = UpdateChecker.checkForUpdate();
-                    if (!latest.equals(TillServer.VERSION)) {
+                    String latest = UpdateChecker.checkForUpdate(); //Get the latest version of JTillServer
+                    if (!latest.equals(TillServer.VERSION)) { //Check to see if this is the latest version
                         if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Version " + latest + " avaliable. Download now?", "Update", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                            Desktop.getDesktop().browse(new URI(UpdateChecker.SERVER_UPDATE_DOWNLOAD));
+                            Desktop.getDesktop().browse(new URI(UpdateChecker.SERVER_UPDATE_DOWNLOAD)); //If the users wants to, download the update.
                         }
                     } else {
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You are currently at the latest version", "Update", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You are currently at the latest version", "Update", JOptionPane.INFORMATION_MESSAGE); //Display message to indicate the this is the latest version
                     }
                 } catch (Exception ex) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Error checking for update", "Update", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Error checking for update", "Update", JOptionPane.INFORMATION_MESSAGE); //Display error message
                 }
             }
-        }.start();
+        }.start(); //Start this thread
     }//GEN-LAST:event_itemUpdateActionPerformed
 
     private void itemTransactionViewerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTransactionViewerActionPerformed
         TransactionViewerWindow.showWindow();
     }//GEN-LAST:event_itemTransactionViewerActionPerformed
+
+    private void itemStaffReportingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffReportingActionPerformed
+        StaffReportingWindow.showWindow();
+    }//GEN-LAST:event_itemStaffReportingActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
@@ -1471,6 +1468,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemServerOptions;
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStaffClocking;
+    private javax.swing.JMenuItem itemStaffReporting;
     private javax.swing.JMenuItem itemStock;
     private javax.swing.JMenuItem itemStockTake;
     private javax.swing.JMenuItem itemSuppliers;

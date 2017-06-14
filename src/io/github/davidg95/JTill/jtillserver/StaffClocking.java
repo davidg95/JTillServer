@@ -10,7 +10,6 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
@@ -352,7 +351,7 @@ public class StaffClocking extends javax.swing.JInternalFrame {
         final Runnable run = new Runnable() {
             @Override
             public void run() {
-                staff = StaffSelectDialog.showDialog(dc);
+                staff = StaffSelectDialog.showDialog();
                 if (staff == null) {
                     return;
                 }

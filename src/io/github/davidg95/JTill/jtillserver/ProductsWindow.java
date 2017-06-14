@@ -69,9 +69,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     public ProductsWindow(DataConnect dc, Image icon) {
         this.dc = dc;
         this.icon = icon;
-//        this.setIconImage(icon);
         initComponents();
-//        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         super.setFrameIcon(new ImageIcon(icon));
         super.setMaximizable(true);
         super.setIconifiable(true);
@@ -157,7 +155,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         for (Product p : currentTableContents) {
             try {
                 final Plu plu = dc.getPluByProduct(p.getId());
-                Object[] s = new Object[]{p.getId(), plu.getCode(), p.getLongName(), (p.isOpen() ? "Open Price" : p.getPrice()), (p.isOpen() ? "N/A" : p.getStock())};
+                Object[] s = new Object[]{p.getId(), plu.getCode(), p.getLongName(), (p.isOpen() ? "Open Price" : p.getPrice().setScale(2)), (p.isOpen() ? "N/A" : p.getStock())};
                 model.addRow(s);
             } catch (IOException | JTillException ex) {
                 Logger.getLogger(ProductsWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -247,8 +245,8 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                     jLabel11.setEnabled(true);
                     final Plu plu = dc.getPluByProduct(p.getId());
                     txtBarcode.setText(plu.getCode());
-                    txtPrice.setText(p.getPrice() + "");
-                    txtCostPrice.setText(p.getCostPrice() + "");
+                    txtPrice.setText(p.getPrice().setScale(2) + "");
+                    txtCostPrice.setText(p.getCostPrice().setScale(2) + "");
                     txtPrice.setEditable(true);
                     txtCostPrice.setEditable(true);
                     txtStock.setText(p.getStock() + "");
@@ -1059,8 +1057,11 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         panel.add(field);
         b1.setSelected(true);
         JOptionPane.showInternalMessageDialog(GUI.gui.internal, panel, "Advanced Search", JOptionPane.PLAIN_MESSAGE);
+        if(searchC == null && searchD == null){
+            return;
+        }
         try {
-            List<Product> results = dc.getProductsAdvanced("WHERE " + (b1.isSelected() ? "CATEGORY_ID=" + searchC.getId() : "DEPARTMENT_ID=" + searchD.getId()));
+            final List<Product> results = dc.getProductsAdvanced("WHERE " + (b1.isSelected() ? "CATEGORY_ID=" + searchC.getId() : "DEPARTMENT_ID=" + searchD.getId()));
             if (results.isEmpty()) {
                 JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No results", "Product Search", JOptionPane.INFORMATION_MESSAGE);
                 return;

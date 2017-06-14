@@ -474,13 +474,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
-                SaleItem item = items.get(table.getSelectedRow());
-                try {
-                    final Sale sale = dc.getSale(item.getSale());
-                    SaleDialog.showSaleDialog(sale);
-                } catch (IOException | SQLException | JTillException ex) {
-                    Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                
             }
         }
     }//GEN-LAST:event_tableMouseClicked

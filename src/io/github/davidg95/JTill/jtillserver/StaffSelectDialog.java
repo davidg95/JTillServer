@@ -6,24 +6,18 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author David
  */
-public class StaffSelectDialog extends javax.swing.JInternalFrame {
+public class StaffSelectDialog extends javax.swing.JDialog {
 
     private static Staff staff;
 
@@ -32,85 +26,24 @@ public class StaffSelectDialog extends javax.swing.JInternalFrame {
     private final DefaultTableModel model;
     private List<Staff> currentTableContents;
 
-    private boolean closedFlag;
-
     /**
      * Creates new form StaffSelectDialog
      */
-    public StaffSelectDialog(DataConnect dc) {
+    public StaffSelectDialog() {
         super();
-        this.dc = dc;
-        closedFlag = false;
+        this.dc = GUI.gui.dc;
         initComponents();
-        super.setClosable(true);
-        super.setIconifiable(true);
-        super.setFrameIcon(new ImageIcon(GUI.icon));
+        setModal(true);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         showAllStaff();
-        this.addInternalFrameListener(new InternalFrameListener() {
-            @Override
-            public void internalFrameOpened(InternalFrameEvent e) {
-
-            }
-
-            @Override
-            public void internalFrameClosing(InternalFrameEvent e) {
-                closedFlag = true;
-            }
-
-            @Override
-            public void internalFrameClosed(InternalFrameEvent e) {
-
-            }
-
-            @Override
-            public void internalFrameIconified(InternalFrameEvent e) {
-
-            }
-
-            @Override
-            public void internalFrameDeiconified(InternalFrameEvent e) {
-
-            }
-
-            @Override
-            public void internalFrameActivated(InternalFrameEvent e) {
-
-            }
-
-            @Override
-            public void internalFrameDeactivated(InternalFrameEvent e) {
-
-            }
-        });
         txtSearch.requestFocus();
     }
 
-    public static Staff showDialog(DataConnect dc) {
-        final StaffSelectDialog dialog = new StaffSelectDialog(dc);
-        GUI.gui.internal.add(dialog);
+    public static Staff showDialog() {
+        final StaffSelectDialog dialog = new StaffSelectDialog();
         staff = null;
-        final Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                dialog.setVisible(true);
-                try {
-                    dialog.setSelected(true);
-                } catch (PropertyVetoException ex) {
-                    Logger.getLogger(StaffSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        };
-        final Thread thread = new Thread(run);
-        thread.start();
-        while (!dialog.closedFlag) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(StaffSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        dialog.setVisible(true);
         return staff;
     }
 
@@ -271,13 +204,11 @@ public class StaffSelectDialog extends javax.swing.JInternalFrame {
     private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
         staff = currentTableContents.get(table.getSelectedRow());
         if (evt.getClickCount() == 2) {
-            closedFlag = true;
             this.setVisible(false);
         }
     }//GEN-LAST:event_tableMousePressed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        closedFlag = true;
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 

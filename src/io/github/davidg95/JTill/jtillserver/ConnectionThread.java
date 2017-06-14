@@ -5,10 +5,14 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.JConnMethod;
 import io.github.davidg95.JTill.jtill.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.Socket;
 import java.net.SocketException;
@@ -33,10 +37,10 @@ public class ConnectionThread extends Thread {
 
     private final DataConnect dc; //The main database connection.
 
-    private ObjectInputStream obIn;
-    private ObjectOutputStream obOut;
+    private ObjectInputStream obIn; //InputStream for receiving data.
+    private ObjectOutputStream obOut; //OutputStream for sending data
 
-    private final Socket socket;
+    private final Socket socket; //The main socket
 
     private boolean conn_term = false;
 
@@ -61,6 +65,16 @@ public class ConnectionThread extends Thread {
         sem = new Semaphore(1);
     }
 
+    /**
+     * Main run method for the connection thread. This method initialises the
+     * input and output streams and performs the client-server handshake. It
+     * will check if the connection is allowed and block if it is not. It will
+     * then enter a while loop where it will wait for data from the client. It
+     * uses a switch statement to analyse the flag on the connection data object
+     * and decide what the request is for. The switch statement then spawns a
+     * new thread for dealing with the request, freeing up the main thread to
+     * handle further requests.
+     */
     @Override
     public void run() {
         try {
@@ -98,7 +112,7 @@ public class ConnectionThread extends Thread {
                     o = obIn.readObject();
 
                     till.setLastContact(new Date());
-                } catch (SocketException ex) {
+                } catch (SocketException ex) { //If the users ends the connection suddenly, this catch clause will detect it on the readObject() method on the input stream.
                     LOG.log(Level.WARNING, "The connection to the terminal was shut down forcefully");
                     try {
                         LOG.log(Level.INFO, "Logging staff out");
@@ -116,12 +130,33 @@ public class ConnectionThread extends Thread {
                 currentData = (ConnectionData) o;
                 input = currentData.getFlag();
 
-                String inp[] = input.split(",");
+                final String inp[] = input.split(",");
                 final ConnectionData data = currentData.clone();
 
                 LOG.log(Level.INFO, "Received " + data.getFlag() + " from client", data.getFlag());
 
-                switch (inp[0]) {
+                Method[] methods = ConnectionThread.class.getDeclaredMethods();
+
+                for (Method m : methods) {
+                    Annotation[] annos = m.getAnnotations();
+                    for (Annotation a : annos) {
+                        if (a.annotationType() == JConnMethod.class) {
+                            JConnMethod ja = (JConnMethod) a;
+                            if (ja.value().equals(inp[0])) {
+                                try {
+                                    if (m.getParameterCount() == 0) {
+                                        m.invoke(this);
+                                    } else {
+                                        m.invoke(this, data);
+                                    }
+                                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                                    Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        }
+                    }
+                }
+                /*switch (inp[0]) {
                     case "NEWPRODUCT": { //Add a new product
                         new Thread(inp[0]) {
                             @Override
@@ -1377,7 +1412,7 @@ public class ConnectionThread extends Thread {
                         LOG.log(Level.WARNING, "An unknown flag " + data.getFlag() + " was received from " + till.getName());
                         break;
                     }
-                }
+                }*/
                 sem.release();
             }
             LOG.log(Level.INFO, till.getName() + " has disconnected");
@@ -1398,6 +1433,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("NEWPRODUCT")
     private void newProduct(ConnectionData data) {
         try {
             try {
@@ -1417,6 +1453,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVEPRODUCT")
     private void removeProduct(ConnectionData data) {
         try {
             try {
@@ -1440,6 +1477,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("PRUCHASE")
     private void purchase(ConnectionData data) {
         try {
             try {
@@ -1467,6 +1505,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETPRODUCT")
     private void getProduct(ConnectionData data) {
         try {
             try {
@@ -1490,6 +1529,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATEPRODUCT")
     private void updateProduct(ConnectionData data) {
         try {
             try {
@@ -1509,6 +1549,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETPRODUCTBARCODE")
     private void getProductByBarcode(ConnectionData data) {
         try {
             try {
@@ -1528,6 +1569,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("CHECKBARCODE")
     private void checkBarcode(ConnectionData data) {
         try {
             try {
@@ -1547,6 +1589,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLPRODUCTS")
     private void getAllProducts() {
         try {
             try {
@@ -1560,6 +1603,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("PRODUCTLOOKUP")
     private void productLookup(ConnectionData data) {
         try {
             try {
@@ -1579,6 +1623,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("NEWCUSTOMER")
     private void newCustomer(ConnectionData data) {
         try {
             try {
@@ -1598,6 +1643,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVECUSTOMER")
     private void removeCustomer(ConnectionData data) {
         try {
             try {
@@ -1617,6 +1663,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETCUSTOMER")
     private void getCustomer(ConnectionData data) {
         try {
             try {
@@ -1636,6 +1683,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETCUSTOMERBYNAME")
     private void getCustomerByName(ConnectionData data) {
         try {
             try {
@@ -1655,6 +1703,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATECUSTOMER")
     private void updateCustomer(ConnectionData data) {
         try {
             try {
@@ -1674,6 +1723,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLCUSTOMERS")
     private void getAllCustomers() {
         try {
             try {
@@ -1687,6 +1737,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("CUSTOMERLOOKUP")
     private void customerLookup(ConnectionData data) {
         try {
             try {
@@ -1705,6 +1756,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDSTAFF")
     private void addStaff(ConnectionData data) {
         try {
             try {
@@ -1726,6 +1778,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVESTAFF")
     private void removeStaff(ConnectionData data) {
         try {
             try {
@@ -1745,6 +1798,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETSTAFF")
     private void getStaff(ConnectionData data) {
         try {
             try {
@@ -1765,6 +1819,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATESTAFF")
     private void updateStaff(ConnectionData data) {
         try {
             try {
@@ -1786,6 +1841,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLSTAFF")
     private void getAllStaff() {
         try {
             try {
@@ -1802,6 +1858,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("STAFFCOUNT")
     private void staffCount() {
         try {
             try {
@@ -1814,6 +1871,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDSALE")
     private void addSale(ConnectionData data) {
         try {
             try {
@@ -1833,6 +1891,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLSALES")
     private void getAllSales() {
         try {
             try {
@@ -1846,6 +1905,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETSALE")
     private void getSale(ConnectionData data) {
         try {
             try {
@@ -1865,6 +1925,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATESALE")
     private void updateSale(ConnectionData data) {
         try {
             try {
@@ -1884,6 +1945,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETSALEDATERANGE")
     private void getSaleDateRange(ConnectionData data) {
         try {
             try {
@@ -1908,6 +1970,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("SUSPENDSALE")
     private void suspendSale(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -1929,6 +1992,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("RESUMESALE")
     private void resumeSale(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -1945,6 +2009,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("LOGIN")
     private void login(ConnectionData data) {
         try {
             try {
@@ -1973,6 +2038,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("TILLLOGIN")
     private void tillLogin(ConnectionData data) {
         try {
             try {
@@ -1995,6 +2061,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("LOGOUT")
     private void logout(ConnectionData data) {
         try {
             try {
@@ -2016,6 +2083,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("TILLOGOUT")
     private void tillLogout(ConnectionData data) {
         try {
             try {
@@ -2037,6 +2105,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDCATEGORY")
     private void addCategory(ConnectionData data) {
         try {
             try {
@@ -2056,6 +2125,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATECATEGORY")
     private void updateCategory(ConnectionData data) {
         try {
             try {
@@ -2075,6 +2145,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVECATEGORY")
     private void removeCategory(ConnectionData data) {
         try {
             try {
@@ -2094,6 +2165,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETCATEGORY")
     private void getCategory(ConnectionData data) {
         try {
             try {
@@ -2113,6 +2185,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLCATEGORYS")
     private void getAllCategorys() {
         try {
             try {
@@ -2126,6 +2199,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETPRODUCTSINCATEGORY")
     private void getProductsInCategory(ConnectionData data) {
         try {
             try {
@@ -2145,6 +2219,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDDISCOUNT")
     private void addDiscount(ConnectionData data) {
         try {
             try {
@@ -2164,6 +2239,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATEDISCOUNT")
     private void updateDiscount(ConnectionData data) {
         try {
             try {
@@ -2183,6 +2259,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVEDISCOUNT")
     private void removeDiscount(ConnectionData data) {
         try {
             try {
@@ -2202,6 +2279,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETDISCOUNT")
     private void getDiscount(ConnectionData data) {
         try {
             try {
@@ -2221,6 +2299,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLDISCOUNTS")
     private void getAllDiscounts() {
         try {
             try {
@@ -2234,6 +2313,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDTAX")
     private void addTax(ConnectionData data) {
         try {
             try {
@@ -2253,6 +2333,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVETAX")
     private void removeTax(ConnectionData data) {
         try {
             try {
@@ -2272,6 +2353,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETTAX")
     private void getTax(ConnectionData data) {
         try {
             try {
@@ -2291,6 +2373,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATETAX")
     private void updateTax(ConnectionData data) {
         try {
             try {
@@ -2310,6 +2393,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLTAX")
     private void getAllTax() {
         try {
             try {
@@ -2323,6 +2407,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETPRODUCTSINTAX")
     private void getProductsInTax(ConnectionData data) {
         try {
             try {
@@ -2338,6 +2423,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDSCREEN")
     private void addScreen(ConnectionData data) {
         try {
             try {
@@ -2357,6 +2443,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDBUTTON")
     private void addButton(ConnectionData data) {
         try {
             try {
@@ -2376,6 +2463,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVESCREEN")
     private void removeScreen(ConnectionData data) {
         try {
             try {
@@ -2395,6 +2483,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVEBUTTON")
     private void removeButton(ConnectionData data) {
         try {
             try {
@@ -2414,6 +2503,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATESCREEN")
     private void updateScreen(ConnectionData data) {
         try {
             try {
@@ -2433,6 +2523,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATEBUTTON")
     private void updateButton(ConnectionData data) {
         try {
             try {
@@ -2452,6 +2543,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETSCREEN")
     private void getScreen(ConnectionData data) {
         try {
             try {
@@ -2471,6 +2563,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETBUTTON")
     private void getButton(ConnectionData data) {
         try {
             try {
@@ -2490,6 +2583,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLSCREENS")
     private void getAllScreens() {
         try {
             try {
@@ -2503,6 +2597,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLBUTTONS")
     private void getAllButtons() {
         try {
             try {
@@ -2516,6 +2611,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETBUTTONSONSCREEN")
     private void getButtonsOnScreen(ConnectionData data) {
         try {
             try {
@@ -2535,6 +2631,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ASSISSTANCE")
     private void assisstance(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -2551,6 +2648,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETTAKINGS")
     private void getTakings(ConnectionData data) {
         try {
             try {
@@ -2571,6 +2669,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETUNCASHEDSALES")
     private void getUncashedSales(ConnectionData data) {
         try {
             try {
@@ -2591,6 +2690,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("SENDEMAIL")
     private void sendEmail(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -2607,6 +2707,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("SENDRECEIPT")
     private void sendReceipt(ConnectionData data) {
         try {
             try {
@@ -2631,6 +2732,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDTILL")
     private void addTill(ConnectionData data) {
         try {
             try {
@@ -2651,6 +2753,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVETILL")
     private void removeTill(ConnectionData data) {
         try {
             try {
@@ -2671,6 +2774,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETTILL")
     private void getTill(ConnectionData data) {
         try {
             try {
@@ -2690,6 +2794,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLTILLS")
     private void getAllTills() {
         try {
             try {
@@ -2703,6 +2808,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("CONNECTTILL")
     private void connectTill(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -2720,12 +2826,14 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("DISCONNECTTILL")
     private void disconnectTill(ConnectionData data) {
         ConnectionData clone = data.clone();
         Till t = (Till) clone.getData();
         dc.disconnectTill(t);
     }
 
+    @JConnMethod("GETALLCONNECTEDTILLS")
     private void getAllConnectedTills() {
         try {
             try {
@@ -2739,6 +2847,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("SETSETTING")
     private void setSetting(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -2756,6 +2865,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETSETTING")
     private void getSetting(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -2772,6 +2882,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETSETTINGDEFAULT")
     private void getSettingDefault(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -2798,6 +2909,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDPLU")
     private void addPlu(ConnectionData data) {
         try {
             try {
@@ -2818,6 +2930,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVEPLU")
     private void removePlu(ConnectionData data) {
         try {
             try {
@@ -2838,6 +2951,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETPLU")
     private void getPlu(ConnectionData data) {
         try {
             try {
@@ -2858,6 +2972,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETPLUBYCODE")
     private void getPluByCode(ConnectionData data) {
         try {
             try {
@@ -2878,6 +2993,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLPLUS")
     private void getAllPlus() {
         try {
             try {
@@ -2892,6 +3008,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATEPLU")
     private void updatePlu(ConnectionData data) {
         try {
             try {
@@ -2912,6 +3029,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ISTILLLOGGEDIN")
     private void isTillLoggedIn(ConnectionData data) {
         try {
             try {
@@ -2932,6 +3050,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("CHECKUSER")
     private void checkUsername(ConnectionData data) {
         try {
             try {
@@ -2952,6 +3071,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDWASTEREPORT")
     private void addWasteReport(ConnectionData data) {
         try {
             try {
@@ -2972,6 +3092,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVEWASTEREPORT")
     private void removeWasteReport(ConnectionData data) {
         try {
             try {
@@ -2992,6 +3113,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETWASTEREPORT")
     private void getWasteReport(ConnectionData data) {
         try {
             try {
@@ -3012,6 +3134,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLWASTEREPORTS")
     private void getAllWasteReports() {
         try {
             try {
@@ -3025,6 +3148,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATEWASTEREPORT")
     private void updateWasteReport(ConnectionData data) {
         try {
             try {
@@ -3045,6 +3169,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDWASTEITEM")
     private void addWasteItem(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3066,6 +3191,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVEWASTEITEM")
     private void removeWasteItem(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3085,6 +3211,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETWASTEITEM")
     private void getWasteItem(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3105,6 +3232,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLWASTEITEMS")
     private void getAllWasteItems() {
         try {
             try {
@@ -3118,6 +3246,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATEWASTEITEM")
     private void updateWasteItem(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3138,6 +3267,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDWASTEREASON")
     private void addWasteReason(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3158,6 +3288,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVEWASTEREASON")
     private void removeWasteReason(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3177,6 +3308,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETWASTEREASON")
     private void getWasteReason(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3197,6 +3329,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLWASTEREASONS")
     private void getAllWasteReasons() {
         try {
             try {
@@ -3210,6 +3343,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATEWASTEREASON")
     private void updateWasteReason(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3230,6 +3364,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDSUPPLIER")
     private void addSupplier(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3250,6 +3385,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVESUPPLIER")
     private void removeSupplier(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3270,6 +3406,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETSUPPLIER")
     private void getSupplier(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3290,6 +3427,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLSUPPLIERS")
     private void getAllSuppliers() {
         try {
             try {
@@ -3303,6 +3441,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATESUPPLIER")
     private void updateSupplier(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3323,6 +3462,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDDEPARTMENT")
     private void addDepartment(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3343,6 +3483,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVEDEPARTMENT")
     private void removeDepartment(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3363,6 +3504,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETDEPARTMENT")
     private void getDepartment(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3383,6 +3525,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLDEPARTMENTS")
     private void getAllDepartments() {
         try {
             try {
@@ -3396,6 +3539,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATEDEPARTMENT")
     private void updateDepartment(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3416,6 +3560,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDSALEITEM")
     private void addSaleItem(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3442,6 +3587,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVESALEITEM")
     private void removeSaleItem(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3462,6 +3608,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETSALEITEM")
     private void getSaleItem(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3482,6 +3629,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLSALEITEMS")
     private void getAllSaleItems() {
         try {
             try {
@@ -3510,6 +3658,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATESALEITEM")
     private void updateSaleItem(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3530,6 +3679,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETTOTALSOLDITEM")
     private void getTotalSoldItem(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3550,6 +3700,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETVALUESOLDITEM")
     private void getValueSoldItem(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3570,6 +3721,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETTOTALWASTEDITEM")
     private void getTotalWastedItem(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3590,6 +3742,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETVALUEWASTEDITEM")
     private void getValueWastedItem(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3610,6 +3763,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDRECEIVEDITEM")
     private void addReceivedItem(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3630,6 +3784,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETSPENTONITEM")
     private void getValueSpentOnItem(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3650,6 +3805,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("CLOCKON")
     private void clockOn(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3670,6 +3826,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("CLOCKOFF")
     private void clockOff(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3690,6 +3847,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETALLCLOCKS")
     private void getAllClocks(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3710,6 +3868,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("CLEARCLOCKS")
     private void clearClocks(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3730,6 +3889,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDTRIGGER")
     private void addTrigger(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3750,6 +3910,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETDISCOUNTBUCKETS")
     private void getDiscountBuckets(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3770,6 +3931,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVETRIGGER")
     private void removeTrigger(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3790,6 +3952,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETVALIDDISCOUNTS")
     private void getValidDiscounts() {
         try {
             try {
@@ -3803,6 +3966,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDBUCKET")
     private void addBucket(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3823,6 +3987,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("REMOVEBUCKET")
     private void removeBucket(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3843,6 +4008,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETBUCKETTRIGGERS")
     private void getBucketTriggers(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3863,6 +4029,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATETRIGGER")
     private void updateTrigger(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3883,6 +4050,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("UPDATEBUCKET")
     private void updateBucket(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3903,6 +4071,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETUNCASHEDTERMINALSALES")
     private void getUncashedTerminalSales(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3923,6 +4092,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("ADDPRODUCTANDPLU")
     private void addProductAndPlu(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
@@ -3944,6 +4114,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
+    @JConnMethod("GETPRODUCTANDPLU")
     private void getPluByProduct(ConnectionData data) {
         try {
             ConnectionData clone = data.clone();
