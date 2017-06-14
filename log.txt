@@ -1,34 +1,31 @@
-JTill log Wed Jun 14 15:31:29 BST 2017
-[15:31:30] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[15:31:30] [INFO] Starting Thread Pool Excecutor
-[15:31:30] [INFO] JTill Server local IP address is 192.168.1.65
-[15:31:30] [INFO] Server Socket running on port number 52341
-[15:31:30] [INFO] Ready to accept connections
-[15:31:39] [INFO] DAVID-PC has connected
-[15:31:39] [INFO] Received GETSETTING from client
-[15:31:39] [INFO] Received GETSETTING from client
-[15:31:39] [INFO] Received GETSETTING from client
-[15:31:39] [INFO] Received GETSETTING from client
-[15:31:39] [INFO] Received GETVALIDDISCOUNTS from client
-[15:31:39] [INFO] Received GETALLSCREENS from client
-[15:31:39] [INFO] Received GETBUTTONSONSCREEN from client
-[15:31:39] [INFO] Received GETPRODUCT from client
-[15:31:39] [INFO] Received GETPRODUCT from client
-[15:31:39] [INFO] Received GETPRODUCT from client
-[15:31:43] [INFO] Received GETSTAFF from client
-[15:31:43] [INFO] Received CLOCKON from client
-[15:31:44] [INFO] Received TILLLOGIN from client
-[15:31:44] [INFO] David Grant has logged in from DAVID-PC
-[15:31:44] [INFO] Received RESUMESALE from client
-[15:31:45] [INFO] Received GETCATEGORY from client
-[15:31:47] [INFO] Received ADDSALE from client
-[15:31:47] [INFO] Received GETSETTING from client
-[15:31:47] [INFO] Received GETSETTING from client
-[15:38:05] [INFO] Received GETCATEGORY from client
-[15:38:07] [INFO] Received GETCATEGORY from client
-[15:38:08] [INFO] Received ADDSALE from client
-[15:38:08] [INFO] Received GETSETTING from client
-[15:38:08] [INFO] Received GETSETTING from client
-[15:38:09] [INFO] Received TILLLOGOUT from client
-[15:38:20] [WARNING] The connection to the terminal was shut down forcefully
-[15:38:20] [INFO] Logging staff out
+JTill log Wed Jun 14 17:05:28 BST 2017
+[17:05:28] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[17:05:29] [INFO] Starting Thread Pool Excecutor
+[17:05:29] [INFO] JTill Server local IP address is 192.168.1.65
+[17:05:29] [INFO] Server Socket running on port number 52341
+[17:05:29] [INFO] Ready to accept connections
+[17:05:35] [INFO] DAVID-PC has connected
+[17:05:35] [INFO] Received GETSETTING from client
+[17:05:35] [INFO] Received GETSETTING from client
+[17:05:35] [INFO] Received GETSETTING from client
+[17:05:35] [INFO] Received GETSETTING from client
+[17:05:35] [INFO] Received GETVALIDDISCOUNTS from client
+[17:05:35] [INFO] Received GETALLSCREENS from client
+[17:05:35] [INFO] Received GETBUTTONSONSCREEN from client
+[17:05:35] [INFO] Received GETPRODUCT from client
+[17:05:35] [INFO] Received GETPRODUCT from client
+[17:05:35] [INFO] Received GETPRODUCT from client
+[17:05:36] [INFO] Received GETSTAFF from client
+[17:05:36] [INFO] Received CLOCKON from client
+[17:05:37] [INFO] Received TILLLOGIN from client
+[17:05:37] [INFO] David Grant has logged in from DAVID-PC
+[17:05:37] [INFO] Received RESUMESALE from client
+[17:05:38] [INFO] Received GETCATEGORY from client
+[17:05:39] [INFO] Received GETCATEGORY from client
+[17:05:40] [INFO] Received GETCATEGORY from client
+[17:05:42] [INFO] Received ADDSALE from client
+[17:05:42] [INFO] Received GETSETTING from client
+[17:05:42] [INFO] Received GETSETTING from client
+[17:05:43] [INFO] Received TILLLOGOUT from client
+[17:05:46] [WARNING] The connection to the terminal was shut down forcefully
+[17:05:46] [INFO] Logging staff out
