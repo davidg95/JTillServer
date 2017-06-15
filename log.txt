@@ -1,31 +1,34 @@
-JTill log Wed Jun 14 17:05:28 BST 2017
-[17:05:28] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[17:05:29] [INFO] Starting Thread Pool Excecutor
-[17:05:29] [INFO] JTill Server local IP address is 192.168.1.65
-[17:05:29] [INFO] Server Socket running on port number 52341
-[17:05:29] [INFO] Ready to accept connections
-[17:05:35] [INFO] DAVID-PC has connected
-[17:05:35] [INFO] Received GETSETTING from client
-[17:05:35] [INFO] Received GETSETTING from client
-[17:05:35] [INFO] Received GETSETTING from client
-[17:05:35] [INFO] Received GETSETTING from client
-[17:05:35] [INFO] Received GETVALIDDISCOUNTS from client
-[17:05:35] [INFO] Received GETALLSCREENS from client
-[17:05:35] [INFO] Received GETBUTTONSONSCREEN from client
-[17:05:35] [INFO] Received GETPRODUCT from client
-[17:05:35] [INFO] Received GETPRODUCT from client
-[17:05:35] [INFO] Received GETPRODUCT from client
-[17:05:36] [INFO] Received GETSTAFF from client
-[17:05:36] [INFO] Received CLOCKON from client
-[17:05:37] [INFO] Received TILLLOGIN from client
-[17:05:37] [INFO] David Grant has logged in from DAVID-PC
-[17:05:37] [INFO] Received RESUMESALE from client
-[17:05:38] [INFO] Received GETCATEGORY from client
-[17:05:39] [INFO] Received GETCATEGORY from client
-[17:05:40] [INFO] Received GETCATEGORY from client
-[17:05:42] [INFO] Received ADDSALE from client
-[17:05:42] [INFO] Received GETSETTING from client
-[17:05:42] [INFO] Received GETSETTING from client
-[17:05:43] [INFO] Received TILLLOGOUT from client
-[17:05:46] [WARNING] The connection to the terminal was shut down forcefully
-[17:05:46] [INFO] Logging staff out
+JTill log Thu Jun 15 16:44:22 BST 2017
+[16:44:23] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[16:44:23] [INFO] Starting Thread Pool Excecutor
+[16:44:23] [INFO] JTill Server local IP address is 192.168.1.65
+[16:44:23] [INFO] Server Socket running on port number 52341
+[16:44:23] [INFO] Ready to accept connections
+[16:44:29] [INFO] DAVID-PC has connected
+[16:44:29] [INFO] Received GETSETTING from client
+[16:44:29] [INFO] Received GETSETTING from client
+[16:44:29] [INFO] Received GETSETTING from client
+[16:44:29] [INFO] Received GETSETTING from client
+[16:44:29] [INFO] Received GETVALIDDISCOUNTS from client
+[16:44:29] [INFO] Received GETALLSCREENS from client
+[16:44:29] [INFO] Received GETBUTTONSONSCREEN from client
+[16:44:29] [INFO] Received GETPRODUCT from client
+[16:44:29] [INFO] Received GETPRODUCT from client
+[16:44:29] [INFO] Received GETPRODUCT from client
+[16:44:30] [INFO] Received GETSTAFF from client
+[16:44:31] [INFO] Received CLOCKON from client
+[16:44:31] [INFO] Received TILLLOGIN from client
+[16:44:31] [INFO] David Grant has logged in from DAVID-PC
+[16:44:31] [INFO] Received RESUMESALE from client
+[16:44:32] [INFO] Received GETCATEGORY from client
+[16:44:33] [INFO] Received GETCATEGORY from client
+[16:44:35] [INFO] Received GETCATEGORY from client
+[16:44:35] [INFO] Received GETPRODUCTBARCODE from client
+[16:44:37] [INFO] Received ADDSALE from client
+[16:44:37] [INFO] Received GETSETTING from client
+[16:44:37] [INFO] Received GETSETTING from client
+[16:44:38] [INFO] Received TILLLOGOUT from client
+[16:44:38] [INFO] David Grant has logged out
+[16:44:38] [INFO] Received CONNTERM from client
+[16:44:39] [WARNING] The connection to the terminal was shut down forcefully
+[16:44:39] [INFO] Logging staff out
