@@ -35,30 +35,30 @@ public class LoginDialog extends javax.swing.JDialog implements CapsListener {
 
     /**
      * Creates new form LoginDialog
+     * @param parent the parent window.
      */
-    public LoginDialog(Window parent, DataConnect dc) {
+    public LoginDialog(Window parent) {
         super(parent);
-        this.dc = dc;
+        this.dc = GUI.gui.dc;
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setModal(true);
         ch = new CapsChecker(this);
         ch.start();
     }
-
+    
     /**
      * Shows the login dialog.
      *
      * @param parent the parent component.
-     * @param dc the data which stored who is logged in and who is not.
      * @return the member of staff logging in.
      */
-    public static Staff showLoginDialog(Component parent, DataConnect dc) {
+    public static Staff showLoginDialog(Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new LoginDialog(window, dc);
+        dialog = new LoginDialog(window);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         staff = null;
         dialog.setVisible(true);
@@ -83,16 +83,18 @@ public class LoginDialog extends javax.swing.JDialog implements CapsListener {
 
         private final CapsListener l;
         private boolean state;
+        private volatile boolean run;
 
         public CapsChecker(CapsListener l) {
             super("Caps Checker");
             this.l = l;
             state = Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
+            run = true;
         }
 
         @Override
         public void run() {
-            while (true) {
+            while (run) {
                 if (state != Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK)) {
                     if (!state) {
                         l.doCapsOn();
@@ -217,8 +219,8 @@ public class LoginDialog extends javax.swing.JDialog implements CapsListener {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        String username = txtUsername.getText();
-        String password = new String(txtPassword.getPassword());
+        final String username = txtUsername.getText();
+        final String password = new String(txtPassword.getPassword());
 
         if (username.equals("") || password.equals("")) {
             lblLogin.setText("Please enter both username and password");
@@ -233,6 +235,7 @@ public class LoginDialog extends javax.swing.JDialog implements CapsListener {
                     }
                     return;
                 }
+                ch.run = false; //Signals the Caps Checker thread to stop running
                 this.setVisible(false);
             } catch (LoginException ex) {
                 lblLogin.setText(ex.getMessage());

@@ -96,7 +96,7 @@ public class GUI extends JFrame implements GUIInterface {
         }
         this.dc = dataConnect;
         this.remote = remote;
-        this.icon = icon;
+        GUI.icon = icon;
         if (!remote) {
             this.settings = Settings.getInstance();
         }
@@ -224,7 +224,7 @@ public class GUI extends JFrame implements GUIInterface {
                 if (dc.getStaffCount() == 0) { //Check to see if any staff members have been created
                     Staff s = new Staff("JTill Admin", Staff.MANAGER, "admin", "jtill", 0.01); //Create the admin member of staff if they do not already exists
                     try {
-                        s = dc.addStaff(s); //Add the member of staff
+                        dc.addStaff(s); //Add the member of staff
                     } catch (SQLException | IOException ex) {
                         JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -295,7 +295,7 @@ public class GUI extends JFrame implements GUIInterface {
      * Method to log a member of staff in to the server.
      */
     public void login() {
-        staff = LoginDialog.showLoginDialog(this, dc);
+        staff = LoginDialog.showLoginDialog(this);
         if (staff != null) {
             lblUser.setText(staff.getName());
             itemLogin.setText("Log Out");
@@ -1388,19 +1388,16 @@ public class GUI extends JFrame implements GUIInterface {
 
     private void itemCheckDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCheckDatabaseActionPerformed
         final ModalDialog mDialog = new ModalDialog(this, "Database Check", "Checking database integrity..."); //Create the dialog object
-        final Runnable run = new Runnable() { //Create the runnable for performing the database check
-            @Override
-            public void run() {
-                try {
-                    dc.integrityCheck(); //Perform the Database check
-                    mDialog.hide(); //Hide the dialog once the check completes
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Check complete. No Issues.", "Database Check", JOptionPane.INFORMATION_MESSAGE); //Show success message
-                } catch (IOException | SQLException ex) {
-                    mDialog.hide(); //Hide the dialog if there is an error
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Database Check", JOptionPane.ERROR_MESSAGE); //Show the error
-                }
+        final Runnable run = () -> {
+            try {
+                dc.integrityCheck(); //Perform the Database check
+                mDialog.hide(); //Hide the dialog once the check completes
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Check complete. No Issues.", "Database Check", JOptionPane.INFORMATION_MESSAGE); //Show success message
+            } catch (IOException | SQLException ex) {
+                mDialog.hide(); //Hide the dialog if there is an error
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Database Check", JOptionPane.ERROR_MESSAGE); //Show the error
             }
-        };
+        }; //Create the runnable for performing the database check
         final Thread thread = new Thread(run); //Create the thread for running the integrity check
         thread.start(); //Start the thread
         mDialog.show(); //Show the running dialog
