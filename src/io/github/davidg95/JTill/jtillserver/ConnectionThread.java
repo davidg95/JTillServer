@@ -13,7 +13,6 @@ import java.io.ObjectOutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.math.BigDecimal;
 import java.net.Socket;
 import java.net.SocketException;
@@ -166,36 +165,20 @@ public class ConnectionThread extends Thread {
                         final String flag = data.getFlag(); //Get the flag from the connection object
                         if (ja.value().equals(flag)) { //Check if the current flag matches the flag definted on the annotation
                             try {
-                                Runnable run; //Runnable which will invoke the method
                                 final ConnectionData clone = data.clone(); //Take a clone of the connection data object
                                 m.setAccessible(true); //Set the access to public
-                                if (m.getParameterCount() == 0) { //Check if it has any parameters
-                                    run = () -> {
+                                final Runnable run = () -> {
+                                    try {
+                                        final Object ret = m.invoke(this, clone.getData()); //Invoke the method
+                                        obOut.writeObject(ConnectionData.create("SUCC", ret)); //Return the result
+                                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException ex) {
                                         try {
-                                            final Object ret = m.invoke(this); //Invoke the method
-                                            obOut.writeObject(ConnectionData.create("SUCC", ret)); //Return the result
-                                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException ex) {
-                                            try {
-                                                obOut.writeObject(ConnectionData.create("FAIL", ex));
-                                            } catch (IOException ex1) {
-                                                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex1);
-                                            }
+                                            obOut.writeObject(ConnectionData.create("FAIL", ex));
+                                        } catch (IOException ex1) {
+                                            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex1);
                                         }
-                                    };
-                                } else {
-                                    run = () -> {
-                                        try {
-                                            final Object ret = m.invoke(this, clone.getData()); //Invoke the method
-                                            obOut.writeObject(ConnectionData.create("SUCC", ret)); //Return the result
-                                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException ex) {
-                                            try {
-                                                obOut.writeObject(ConnectionData.create("FAIL", ex));
-                                            } catch (IOException ex1) {
-                                                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex1);
-                                            }
-                                        }
-                                    };
-                                }
+                                    }
+                                };
                                 new Thread(run).start(); //Run the thread which will invoke the method
                                 break;
                             } catch (IllegalArgumentException ex) {
@@ -225,87 +208,87 @@ public class ConnectionThread extends Thread {
     }
 
     @JConnMethod("NEWPRODUCT")
-    private Product newProduct(Product p) throws IOException, SQLException {
+    public Product newProduct(Product p) throws IOException, SQLException {
         return dc.addProduct(p);
     }
 
     @JConnMethod("REMOVEPRODUCT")
-    private void removeProduct(int code) throws ProductNotFoundException, IOException, SQLException {
+    public void removeProduct(int code) throws ProductNotFoundException, IOException, SQLException {
         dc.removeProduct(code);
     }
 
     @JConnMethod("PURCHASE")
-    private int purchase(Product p, int amount) throws IOException, ProductNotFoundException, OutOfStockException, SQLException {
+    public int purchase(Product p, int amount) throws IOException, ProductNotFoundException, OutOfStockException, SQLException {
         return dc.purchaseProduct(p.getId(), amount);
     }
 
     @JConnMethod("GETPRODUCT")
-    private Product getProduct(int code) throws IOException, ProductNotFoundException, SQLException {
+    public Product getProduct(int code) throws IOException, ProductNotFoundException, SQLException {
         return dc.getProduct(code);
     }
 
     @JConnMethod("UPDATEPRODUCT")
-    private Product updateProduct(Product p) throws IOException, ProductNotFoundException, SQLException {
+    public Product updateProduct(Product p) throws IOException, ProductNotFoundException, SQLException {
         return dc.updateProduct(p);
     }
 
     @JConnMethod("GETPRODUCTBARCODE")
-    private Product getProductByBarcode(String barcode) throws IOException, ProductNotFoundException, SQLException {
+    public Product getProductByBarcode(String barcode) throws IOException, ProductNotFoundException, SQLException {
         return dc.getProductByBarcode(barcode);
     }
 
     @JConnMethod("CHECKBARCODE")
-    private boolean checkBarcode(String barcode) throws IOException, SQLException {
+    public boolean checkBarcode(String barcode) throws IOException, SQLException {
         return dc.checkBarcode(barcode);
     }
 
     @JConnMethod("GETALLPRODUCTS")
-    private List<Product> getAllProducts() throws IOException, SQLException {
+    public List<Product> getAllProducts() throws IOException, SQLException {
         return dc.getAllProducts();
     }
 
     @JConnMethod("PRODUCTLOOKUP")
-    private List<Product> productLookup(String terms) throws IOException, SQLException {
+    public List<Product> productLookup(String terms) throws IOException, SQLException {
         return dc.productLookup(terms);
     }
 
     @JConnMethod("NEWCUSTOMER")
-    private Customer newCustomer(Customer c) throws IOException, SQLException {
+    public Customer newCustomer(Customer c) throws IOException, SQLException {
         return dc.addCustomer(c);
     }
 
     @JConnMethod("REMOVECUSTOMER")
-    private void removeCustomer(int id) throws IOException, CustomerNotFoundException, SQLException {
+    public void removeCustomer(int id) throws IOException, CustomerNotFoundException, SQLException {
         dc.removeCustomer(id);
     }
 
     @JConnMethod("GETCUSTOMER")
-    private Customer getCustomer(int id) throws IOException, CustomerNotFoundException, SQLException {
+    public Customer getCustomer(int id) throws IOException, CustomerNotFoundException, SQLException {
         return dc.getCustomer(id);
     }
 
     @JConnMethod("GETCUSTOMERBYNAME")
-    private List<Customer> getCustomerByName(String name) throws IOException, CustomerNotFoundException, SQLException {
+    public List<Customer> getCustomerByName(String name) throws IOException, CustomerNotFoundException, SQLException {
         return dc.getCustomerByName(name);
     }
 
     @JConnMethod("UPDATECUSTOMER")
-    private Customer updateCustomer(Customer c) throws IOException, CustomerNotFoundException, SQLException {
+    public Customer updateCustomer(Customer c) throws IOException, CustomerNotFoundException, SQLException {
         return dc.updateCustomer(c);
     }
 
     @JConnMethod("GETALLCUSTOMERS")
-    private List<Customer> getAllCustomers() throws IOException, SQLException {
+    public List<Customer> getAllCustomers() throws IOException, SQLException {
         return dc.getAllCustomers();
     }
 
     @JConnMethod("CUSTOMERLOOKUP")
-    private List<Customer> customerLookup(String terms) throws IOException, SQLException {
+    public List<Customer> customerLookup(String terms) throws IOException, SQLException {
         return dc.customerLookup(terms);
     }
 
     @JConnMethod("ADDSTAFF")
-    private Staff addStaff(Staff s) throws IOException, SQLException {
+    public Staff addStaff(Staff s) throws IOException, SQLException {
         s.setPassword(Encryptor.decrypt(s.getPassword()));
         Staff newS = dc.addStaff(s);
         s.setPassword(Encryptor.encrypt(s.getPassword()));
@@ -313,19 +296,19 @@ public class ConnectionThread extends Thread {
     }
 
     @JConnMethod("REMOVESTAFF")
-    private void removeStaff(int id) throws IOException, StaffNotFoundException, SQLException {
+    public void removeStaff(int id) throws IOException, StaffNotFoundException, SQLException {
         dc.removeStaff(id);
     }
 
     @JConnMethod("GETSTAFF")
-    private Staff getStaff(int id) throws IOException, StaffNotFoundException, SQLException {
+    public Staff getStaff(int id) throws IOException, StaffNotFoundException, SQLException {
         Staff s = dc.getStaff(id);
         s.setPassword(Encryptor.encrypt(s.getPassword()));
         return s;
     }
 
     @JConnMethod("UPDATESTAFF")
-    private Staff updateStaff(Staff s) throws IOException, StaffNotFoundException, SQLException {
+    public Staff updateStaff(Staff s) throws IOException, StaffNotFoundException, SQLException {
         s.setPassword(Encryptor.decrypt(s.getPassword()));
         Staff updatedStaff = dc.updateStaff(s);
         s.setPassword(Encryptor.encrypt(s.getPassword()));
@@ -333,7 +316,7 @@ public class ConnectionThread extends Thread {
     }
 
     @JConnMethod("GETALLSTAFF")
-    private List<Staff> getAllStaff() throws IOException, SQLException, SQLException {
+    public List<Staff> getAllStaff() throws IOException, SQLException, SQLException {
         List<Staff> staffList = dc.getAllStaff();
         staffList.forEach((s) -> {
             s.setPassword(Encryptor.encrypt(s.getPassword()));
@@ -342,47 +325,47 @@ public class ConnectionThread extends Thread {
     }
 
     @JConnMethod("STAFFCOUNT")
-    private int staffCount() throws IOException, SQLException {
+    public int staffCount() throws IOException, SQLException {
         return dc.getStaffCount();
     }
 
     @JConnMethod("ADDSALE")
-    private Sale addSale(Sale s) throws IOException, SQLException {
+    public Sale addSale(Sale s) throws IOException, SQLException {
         return dc.addSale(s);
     }
 
     @JConnMethod("GETALLSALES")
-    private List<Sale> getAllSales() throws IOException, SQLException {
+    public List<Sale> getAllSales() throws IOException, SQLException {
         return dc.getAllSales();
     }
 
     @JConnMethod("GETSALE")
-    private Sale getSale(int id) throws IOException, SQLException, JTillException {
+    public Sale getSale(int id) throws IOException, SQLException, JTillException {
         return dc.getSale(id);
     }
 
     @JConnMethod("UPDATESALE")
-    private Sale updateSale(Sale sale) throws IOException, SQLException, JTillException {
+    public Sale updateSale(Sale sale) throws IOException, SQLException, JTillException {
         return dc.updateSale(sale);
     }
 
     @JConnMethod("GETSALEDATERANGE")
-    private List<Sale> getSaleDateRange(Time start, Time end) throws IOException, SQLException {
+    public List<Sale> getSaleDateRange(Time start, Time end) throws IOException, SQLException {
         return dc.getSalesInRange(start, end);
     }
 
     @JConnMethod("SUSPENDSALE")
-    private void suspendSale(Sale sale, Staff s) throws IOException {
+    public void suspendSale(Sale sale, Staff s) throws IOException {
         dc.suspendSale(sale, s);
     }
 
     @JConnMethod("RESUMESALE")
-    private Sale resumeSale(Staff s) throws IOException {
+    public Sale resumeSale(Staff s) throws IOException {
         return dc.resumeSale(s);
     }
 
     @JConnMethod("LOGIN")
-    private Staff login(String username, String password) throws IOException, LoginException, SQLException {
+    public Staff login(String username, String password) throws IOException, LoginException, SQLException {
         password = Encryptor.decrypt(password);
         final Staff s = dc.login(username, password);
         ConnectionThread.this.staff = s;
@@ -392,7 +375,7 @@ public class ConnectionThread extends Thread {
     }
 
     @JConnMethod("TILLLOGIN")
-    private Staff tillLogin(int id) throws IOException, LoginException, SQLException {
+    public Staff tillLogin(int id) throws IOException, LoginException, SQLException {
         final Staff s = dc.tillLogin(id);
         ConnectionThread.this.staff = s;
         LOG.log(Level.INFO, staff.getName() + " has logged in from " + till.getName());
@@ -401,545 +384,545 @@ public class ConnectionThread extends Thread {
     }
 
     @JConnMethod("LOGOUT")
-    private void logout(Staff s) throws IOException, StaffNotFoundException {
+    public void logout(Staff s) throws IOException, StaffNotFoundException {
         dc.logout(s);
         LOG.log(Level.INFO, staff.getName() + " has logged out");
         ConnectionThread.this.staff = null;
     }
 
     @JConnMethod("TILLLOGOUT")
-    private void tillLogout(Staff s) throws IOException, StaffNotFoundException {
+    public void tillLogout(Staff s) throws IOException, StaffNotFoundException {
         dc.tillLogout(s);
         LOG.log(Level.INFO, staff.getName() + " has logged out");
         ConnectionThread.this.staff = null;
     }
 
     @JConnMethod("ADDCATEGORY")
-    private Category addCategory(Category c) throws IOException, SQLException {
+    public Category addCategory(Category c) throws IOException, SQLException {
         return dc.addCategory(c);
     }
 
     @JConnMethod("UPDATECATEGORY")
-    private Category updateCategory(Category c) throws IOException, SQLException, JTillException {
+    public Category updateCategory(Category c) throws IOException, SQLException, JTillException {
         return dc.updateCategory(c);
     }
 
     @JConnMethod("REMOVECATEGORY")
-    private void removeCategory(int id) throws IOException, SQLException, JTillException {
+    public void removeCategory(int id) throws IOException, SQLException, JTillException {
         dc.removeCategory(id);
     }
 
     @JConnMethod("GETCATEGORY")
-    private Category getCategory(int id) throws IOException, SQLException, JTillException {
+    public Category getCategory(int id) throws IOException, SQLException, JTillException {
         return dc.getCategory(id);
     }
 
     @JConnMethod("GETALLCATEGORYS")
-    private List<Category> getAllCategorys() throws IOException, SQLException, JTillException {
+    public List<Category> getAllCategorys() throws IOException, SQLException, JTillException {
         return dc.getAllCategorys();
     }
 
     @JConnMethod("GETPRODUCTSINCATEGORY")
-    private List<Product> getProductsInCategory(int id) throws IOException, SQLException, JTillException {
+    public List<Product> getProductsInCategory(int id) throws IOException, SQLException, JTillException {
         return dc.getProductsInCategory(id);
     }
 
     @JConnMethod("ADDDISCOUNT")
-    private Discount addDiscount(Discount d) throws IOException, SQLException {
+    public Discount addDiscount(Discount d) throws IOException, SQLException {
         return dc.addDiscount(d);
     }
 
     @JConnMethod("UPDATEDISCOUNT")
-    private Discount updateDiscount(Discount d) throws IOException, SQLException, DiscountNotFoundException {
+    public Discount updateDiscount(Discount d) throws IOException, SQLException, DiscountNotFoundException {
         return dc.updateDiscount(d);
     }
 
     @JConnMethod("REMOVEDISCOUNT")
-    private void removeDiscount(int id) throws IOException, SQLException, DiscountNotFoundException {
+    public void removeDiscount(int id) throws IOException, SQLException, DiscountNotFoundException {
         dc.removeDiscount(id);
     }
 
     @JConnMethod("GETDISCOUNT")
-    private Discount getDiscount(int id) throws IOException, SQLException, DiscountNotFoundException {
+    public Discount getDiscount(int id) throws IOException, SQLException, DiscountNotFoundException {
         return dc.getDiscount(id);
     }
 
     @JConnMethod("GETALLDISCOUNTS")
-    private List<Discount> getAllDiscounts() throws IOException, SQLException {
+    public List<Discount> getAllDiscounts() throws IOException, SQLException {
         return dc.getAllDiscounts();
     }
 
     @JConnMethod("ADDTAX")
-    private Tax addTax(Tax t) throws IOException, SQLException {
+    public Tax addTax(Tax t) throws IOException, SQLException {
         return dc.addTax(t);
     }
 
     @JConnMethod("REMOVETAX")
-    private void removeTax(int id) throws IOException, SQLException, JTillException {
+    public void removeTax(int id) throws IOException, SQLException, JTillException {
         dc.removeTax(id);
     }
 
     @JConnMethod("GETTAX")
-    private Tax getTax(int id) throws IOException, SQLException, JTillException {
+    public Tax getTax(int id) throws IOException, SQLException, JTillException {
         return dc.getTax(id);
     }
 
     @JConnMethod("UPDATETAX")
-    private Tax updateTax(Tax t) throws IOException, SQLException, JTillException {
+    public Tax updateTax(Tax t) throws IOException, SQLException, JTillException {
         return dc.updateTax(t);
     }
 
     @JConnMethod("GETALLTAX")
-    private List<Tax> getAllTax() throws IOException, SQLException, JTillException {
+    public List<Tax> getAllTax() throws IOException, SQLException, JTillException {
         return dc.getAllTax();
     }
 
     @JConnMethod("GETPRODUCTSINTAX")
-    private List<Product> getProductsInTax(int id) throws IOException, SQLException, JTillException {
+    public List<Product> getProductsInTax(int id) throws IOException, SQLException, JTillException {
         return dc.getProductsInTax(id);
     }
 
     @JConnMethod("ADDSCREEN")
-    private Screen addScreen(Screen s) throws IOException, SQLException, JTillException {
+    public Screen addScreen(Screen s) throws IOException, SQLException, JTillException {
         return dc.addScreen(s);
     }
 
     @JConnMethod("ADDBUTTON")
-    private TillButton addButton(TillButton b) throws IOException, SQLException, JTillException {
+    public TillButton addButton(TillButton b) throws IOException, SQLException, JTillException {
         return dc.addButton(b);
     }
 
     @JConnMethod("REMOVESCREEN")
-    private void removeScreen(Screen s) throws IOException, SQLException, ScreenNotFoundException {
+    public void removeScreen(Screen s) throws IOException, SQLException, ScreenNotFoundException {
         dc.removeScreen(s);
     }
 
     @JConnMethod("REMOVEBUTTON")
-    private void removeButton(TillButton b) throws IOException, SQLException, JTillException {
+    public void removeButton(TillButton b) throws IOException, SQLException, JTillException {
         dc.removeButton(b);
     }
 
     @JConnMethod("UPDATESCREEN")
-    private Screen updateScreen(Screen s) throws IOException, SQLException, ScreenNotFoundException {
+    public Screen updateScreen(Screen s) throws IOException, SQLException, ScreenNotFoundException {
         return dc.updateScreen(s);
     }
 
     @JConnMethod("UPDATEBUTTON")
-    private TillButton updateButton(TillButton b) throws IOException, SQLException, JTillException {
+    public TillButton updateButton(TillButton b) throws IOException, SQLException, JTillException {
         return dc.updateButton(b);
     }
 
     @JConnMethod("GETSCREEN")
-    private Screen getScreen(int id) throws IOException, SQLException, ScreenNotFoundException {
+    public Screen getScreen(int id) throws IOException, SQLException, ScreenNotFoundException {
         return dc.getScreen(id);
     }
 
     @JConnMethod("GETBUTTON")
-    private TillButton getButton(int id) throws IOException, SQLException, JTillException {
+    public TillButton getButton(int id) throws IOException, SQLException, JTillException {
         return dc.getButton(id);
     }
 
     @JConnMethod("GETALLSCREENS")
-    private List<Screen> getAllScreens() throws IOException, SQLException {
+    public List<Screen> getAllScreens() throws IOException, SQLException {
         return dc.getAllScreens();
     }
 
     @JConnMethod("GETALLBUTTONS")
-    private List<TillButton> getAllButtons() throws IOException, SQLException {
+    public List<TillButton> getAllButtons() throws IOException, SQLException {
         return dc.getAllButtons();
     }
 
     @JConnMethod("GETBUTTONSONSCREEN")
-    private List<TillButton> getButtonsOnScreen(Screen s) throws IOException, SQLException, ScreenNotFoundException {
+    public List<TillButton> getButtonsOnScreen(Screen s) throws IOException, SQLException, ScreenNotFoundException {
         return dc.getButtonsOnScreen(s);
     }
 
     @JConnMethod("ASSISSTANCE")
-    private void assisstance(String message) throws IOException {
+    public void assisstance(String message) throws IOException {
         dc.assisstance(staff.getName() + " on terminal " + till.getName() + " has requested assistance with message:\n" + message);
     }
 
     @JConnMethod("GETTAKINGS")
-    private BigDecimal getTakings(int terminal) throws IOException, SQLException {
+    public BigDecimal getTakings(int terminal) throws IOException, SQLException {
         return dc.getTillTakings(terminal);
     }
 
     @JConnMethod("GETUNCASHEDSALES")
-    private List<Sale> getUncashedSales(String terminal) throws IOException, SQLException {
+    public List<Sale> getUncashedSales(String terminal) throws IOException, SQLException {
         return dc.getUncashedSales(terminal);
     }
 
     @JConnMethod("SENDEMAIL")
-    private void sendEmail(String message) throws IOException, SQLException {
+    public void sendEmail(String message) throws IOException, SQLException {
         dc.sendEmail(message);
     }
 
     @JConnMethod("SENDRECEIPT")
-    private void sendReceipt(String email, Sale sale) throws IOException, MessagingException {
+    public void sendReceipt(String email, Sale sale) throws IOException, MessagingException {
         dc.emailReceipt(email, sale);
     }
 
     @JConnMethod("ADDTILL")
-    private Till addTill(Till t) throws IOException, SQLException {
+    public Till addTill(Till t) throws IOException, SQLException {
         return dc.addTill(t);
     }
 
     @JConnMethod("REMOVETILL")
-    private void removeTill(int id) throws IOException, SQLException, JTillException {
+    public void removeTill(int id) throws IOException, SQLException, JTillException {
         dc.removeTill(id);
     }
 
     @JConnMethod("GETTILL")
-    private Till getTill(int id) throws IOException, SQLException, JTillException {
+    public Till getTill(int id) throws IOException, SQLException, JTillException {
         return dc.getTill(id);
     }
 
     @JConnMethod("GETALLTILLS")
-    private List<Till> getAllTills() throws IOException, SQLException {
+    public List<Till> getAllTills() throws IOException, SQLException {
         return dc.getAllTills();
     }
 
     @JConnMethod("CONNECTTILL")
-    private Till connectTill(String name, UUID uuid) throws IOException, SQLException {
+    public Till connectTill(String name, UUID uuid) throws IOException, SQLException {
         return dc.connectTill(name, uuid);
     }
 
     @JConnMethod("DISCONNECTTILL")
-    private void disconnectTill(Till t
+    public void disconnectTill(Till t
     ) {
         dc.disconnectTill(t);
     }
 
     @JConnMethod("GETALLCONNECTEDTILLS")
-    private List<Till> getAllConnectedTills() throws IOException {
+    public List<Till> getAllConnectedTills() throws IOException {
         return dc.getConnectedTills();
     }
 
     @JConnMethod("SETSETTING")
-    private void setSetting(String key, String value) throws IOException {
+    public void setSetting(String key, String value) throws IOException {
         dc.setSetting(key, value);
     }
 
     @JConnMethod("GETSETTING")
-    private String getSetting(String key) throws IOException {
+    public String getSetting(String key) throws IOException {
         return dc.getSetting(key);
     }
 
     @JConnMethod("GETSETTINGDEFAULT")
-    private String getSettingDefault(String key, String def_value) throws IOException {
+    public String getSettingDefault(String key, String def_value) throws IOException {
         return dc.getSetting(key, def_value);
     }
 
-    private Settings getSettingsInstance() throws IOException {
+    public Settings getSettingsInstance() throws IOException {
         return dc.getSettingsInstance();
     }
 
     @JConnMethod("ADDPLU")
-    private Plu addPlu(Plu p) throws IOException, SQLException {
+    public Plu addPlu(Plu p) throws IOException, SQLException {
         return dc.addPlu(p);
     }
 
     @JConnMethod("REMOVEPLU")
-    private void removePlu(Plu p) throws IOException, SQLException, JTillException {
+    public void removePlu(Plu p) throws IOException, SQLException, JTillException {
         dc.removePlu(p);
     }
 
     @JConnMethod("GETPLU")
-    private Plu getPlu(int id) throws IOException, SQLException, JTillException {
+    public Plu getPlu(int id) throws IOException, SQLException, JTillException {
         return dc.getPlu(id);
     }
 
     @JConnMethod("GETPLUBYCODE")
-    private Plu getPluByCode(String code) throws IOException, SQLException, JTillException {
+    public Plu getPluByCode(String code) throws IOException, SQLException, JTillException {
         return dc.getPluByCode(code);
     }
 
     @JConnMethod("GETALLPLUS")
-    private List<Plu> getAllPlus() throws IOException, SQLException {
+    public List<Plu> getAllPlus() throws IOException, SQLException {
         return dc.getAllPlus();
     }
 
     @JConnMethod("UPDATEPLU")
-    private Plu updatePlu(Plu plu) throws IOException, SQLException, JTillException {
+    public Plu updatePlu(Plu plu) throws IOException, SQLException, JTillException {
         return dc.updatePlu(plu);
     }
 
     @JConnMethod("ISTILLLOGGEDIN")
-    private boolean isTillLoggedIn(Staff s) throws IOException, StaffNotFoundException, SQLException {
+    public boolean isTillLoggedIn(Staff s) throws IOException, StaffNotFoundException, SQLException {
         return dc.isTillLoggedIn(s);
     }
 
     @JConnMethod("CHECKUSER")
-    private boolean checkUsername(String username) throws IOException, SQLException, JTillException {
+    public boolean checkUsername(String username) throws IOException, SQLException, JTillException {
         return dc.checkUsername(username);
     }
 
     @JConnMethod("ADDWASTEREPORT")
-    private WasteReport addWasteReport(WasteReport wr) throws IOException, SQLException, JTillException {
+    public WasteReport addWasteReport(WasteReport wr) throws IOException, SQLException, JTillException {
         return dc.addWasteReport(wr);
     }
 
     @JConnMethod("REMOVEWASTEREPORT")
-    private void removeWasteReport(int id) throws IOException, SQLException, JTillException {
+    public void removeWasteReport(int id) throws IOException, SQLException, JTillException {
         dc.removeWasteReport(id);
     }
 
     @JConnMethod("GETWASTEREPORT")
-    private WasteReport getWasteReport(int id) throws IOException, SQLException, JTillException {
+    public WasteReport getWasteReport(int id) throws IOException, SQLException, JTillException {
         return dc.getWasteReport(id);
     }
 
     @JConnMethod("GETALLWASTEREPORTS")
-    private List<WasteReport> getAllWasteReports() throws IOException, SQLException, JTillException {
+    public List<WasteReport> getAllWasteReports() throws IOException, SQLException, JTillException {
         return dc.getAllWasteReports();
     }
 
     @JConnMethod("UPDATEWASTEREPORT")
-    private WasteReport updateWasteReport(WasteReport wr) throws IOException, SQLException, JTillException {
+    public WasteReport updateWasteReport(WasteReport wr) throws IOException, SQLException, JTillException {
         return dc.updateWasteReport(wr);
     }
 
     @JConnMethod("ADDWASTEITEM")
-    private WasteItem addWasteItem(WasteReport wr, WasteItem wi) throws IOException, SQLException, JTillException {
+    public WasteItem addWasteItem(WasteReport wr, WasteItem wi) throws IOException, SQLException, JTillException {
         return dc.addWasteItem(wr, wi);
     }
 
     @JConnMethod("REMOVEWASTEITEM")
-    private void removeWasteItem(int id) throws IOException, SQLException, JTillException {
+    public void removeWasteItem(int id) throws IOException, SQLException, JTillException {
         dc.removeWasteItem(id);
     }
 
     @JConnMethod("GETWASTEITEM")
-    private WasteItem getWasteItem(int id) throws IOException, SQLException, JTillException {
+    public WasteItem getWasteItem(int id) throws IOException, SQLException, JTillException {
         return dc.getWasteItem(id);
     }
 
     @JConnMethod("GETALLWASTEITEMS")
-    private List<WasteItem> getAllWasteItems() throws IOException, SQLException, JTillException {
+    public List<WasteItem> getAllWasteItems() throws IOException, SQLException, JTillException {
         return dc.getAllWasteItems();
     }
 
     @JConnMethod("UPDATEWASTEITEM")
-    private WasteItem updateWasteItem(WasteItem wi) throws IOException, SQLException, JTillException {
+    public WasteItem updateWasteItem(WasteItem wi) throws IOException, SQLException, JTillException {
         return dc.updateWasteItem(wi);
     }
 
     @JConnMethod("ADDWASTEREASON")
-    private WasteReason addWasteReason(WasteReason wr) throws IOException, SQLException, JTillException {
+    public WasteReason addWasteReason(WasteReason wr) throws IOException, SQLException, JTillException {
         return dc.addWasteReason(wr);
     }
 
     @JConnMethod("REMOVEWASTEREASON")
-    private void removeWasteReason(int id) throws IOException, SQLException, JTillException {
+    public void removeWasteReason(int id) throws IOException, SQLException, JTillException {
         dc.removeWasteReason(id);
     }
 
     @JConnMethod("GETWASTEREASON")
-    private WasteReason getWasteReason(int id) throws IOException, SQLException, JTillException {
+    public WasteReason getWasteReason(int id) throws IOException, SQLException, JTillException {
         return dc.getWasteReason(id);
     }
 
     @JConnMethod("GETALLWASTEREASONS")
-    private List<WasteReason> getAllWasteReasons() throws IOException, SQLException, JTillException {
+    public List<WasteReason> getAllWasteReasons() throws IOException, SQLException, JTillException {
         return dc.getAllWasteReasons();
     }
 
     @JConnMethod("UPDATEWASTEREASON")
-    private WasteReason updateWasteReason(WasteReason wr) throws IOException, SQLException, JTillException {
+    public WasteReason updateWasteReason(WasteReason wr) throws IOException, SQLException, JTillException {
         return dc.updateWasteReason(wr);
     }
 
     @JConnMethod("ADDSUPPLIER")
-    private Supplier addSupplier(Supplier s) throws IOException, SQLException, JTillException {
+    public Supplier addSupplier(Supplier s) throws IOException, SQLException, JTillException {
         return dc.addSupplier(s);
     }
 
     @JConnMethod("REMOVESUPPLIER")
-    private void removeSupplier(int id) throws IOException, SQLException, JTillException {
+    public void removeSupplier(int id) throws IOException, SQLException, JTillException {
         dc.removeSupplier(id);
     }
 
     @JConnMethod("GETSUPPLIER")
-    private Supplier getSupplier(int id) throws IOException, SQLException, JTillException {
+    public Supplier getSupplier(int id) throws IOException, SQLException, JTillException {
         return dc.getSupplier(id);
     }
 
     @JConnMethod("GETALLSUPPLIERS")
-    private List<Supplier> getAllSuppliers() throws IOException, SQLException {
+    public List<Supplier> getAllSuppliers() throws IOException, SQLException {
         return dc.getAllSuppliers();
     }
 
     @JConnMethod("UPDATESUPPLIER")
-    private Supplier updateSupplier(Supplier s) throws IOException, SQLException, JTillException {
+    public Supplier updateSupplier(Supplier s) throws IOException, SQLException, JTillException {
         return dc.updateSupplier(s);
     }
 
     @JConnMethod("ADDDEPARTMENT")
-    private Department addDepartment(Department d) throws IOException, SQLException, JTillException {
+    public Department addDepartment(Department d) throws IOException, SQLException, JTillException {
         return dc.addDepartment(d);
     }
 
     @JConnMethod("REMOVEDEPARTMENT")
-    private void removeDepartment(int id) throws IOException, SQLException, JTillException {
+    public void removeDepartment(int id) throws IOException, SQLException, JTillException {
         dc.removeDepartment(id);
     }
 
     @JConnMethod("GETDEPARTMENT")
-    private Department getDepartment(int id) throws IOException, SQLException, JTillException {
+    public Department getDepartment(int id) throws IOException, SQLException, JTillException {
         return dc.getDepartment(id);
     }
 
     @JConnMethod("GETALLDEPARTMENTS")
-    private List<Department> getAllDepartments() throws IOException, SQLException {
+    public List<Department> getAllDepartments() throws IOException, SQLException {
         return dc.getAllDepartments();
     }
 
     @JConnMethod("UPDATEDEPARTMENT")
-    private Department updateDepartment(Department d) throws IOException, SQLException, JTillException {
+    public Department updateDepartment(Department d) throws IOException, SQLException, JTillException {
         return dc.updateDepartment(d);
     }
 
     @JConnMethod("ADDSALEITEM")
-    private SaleItem addSaleItem(Sale s, SaleItem i) throws IOException, SQLException, JTillException {
+    public SaleItem addSaleItem(Sale s, SaleItem i) throws IOException, SQLException, JTillException {
         return dc.addSaleItem(s, i);
     }
 
     @JConnMethod("REMOVESALEITEM")
-    private void removeSaleItem(int id) throws IOException, SQLException, JTillException {
+    public void removeSaleItem(int id) throws IOException, SQLException, JTillException {
         dc.removeSaleItem(id);
     }
 
     @JConnMethod("GETSALEITEM")
-    private SaleItem getSaleItem(int id) throws IOException, SQLException, JTillException {
+    public SaleItem getSaleItem(int id) throws IOException, SQLException, JTillException {
         return dc.getSaleItem(id);
     }
 
     @JConnMethod("GETALLSALEITEMS")
-    private List<SaleItem> getAllSaleItems() throws IOException, SQLException {
+    public List<SaleItem> getAllSaleItems() throws IOException, SQLException {
         return dc.getAllSaleItems();
     }
 
-    private List<SaleItem> subSaleItemQuery(String q) throws IOException, SQLException {
+    public List<SaleItem> subSaleItemQuery(String q) throws IOException, SQLException {
         return dc.submitSaleItemQuery(q);
     }
 
     @JConnMethod("UPDATESALEITEM")
-    private SaleItem updateSaleItem(SaleItem i) throws IOException, SQLException, JTillException {
+    public SaleItem updateSaleItem(SaleItem i) throws IOException, SQLException, JTillException {
         return dc.updateSaleItem(i);
     }
 
     @JConnMethod("GETTOTALSOLDITEM")
-    private int getTotalSoldItem(int id) throws IOException, SQLException, ProductNotFoundException {
+    public int getTotalSoldItem(int id) throws IOException, SQLException, ProductNotFoundException {
         return dc.getTotalSoldOfItem(id);
     }
 
     @JConnMethod("GETVALUESOLDITEM")
-    private BigDecimal getValueSoldItem(int id) throws IOException, SQLException, ProductNotFoundException {
+    public BigDecimal getValueSoldItem(int id) throws IOException, SQLException, ProductNotFoundException {
         return dc.getTotalValueSold(id);
     }
 
     @JConnMethod("GETTOTALWASTEDITEM")
-    private int getTotalWastedItem(int id) throws IOException, SQLException, ProductNotFoundException {
+    public int getTotalWastedItem(int id) throws IOException, SQLException, ProductNotFoundException {
         return dc.getTotalWastedOfItem(id);
     }
 
     @JConnMethod("GETVALUEWASTEDITEM")
-    private BigDecimal getValueWastedItem(int id) throws IOException, SQLException, ProductNotFoundException {
+    public BigDecimal getValueWastedItem(int id) throws IOException, SQLException, ProductNotFoundException {
         return dc.getValueWastedOfItem(id);
     }
 
     @JConnMethod("ADDRECEIVEDITEM")
-    private void addReceivedItem(ReceivedItem i) throws IOException, SQLException {
+    public void addReceivedItem(ReceivedItem i) throws IOException, SQLException {
         dc.addReceivedItem(i);
     }
 
     @JConnMethod("GETSPENTONITEM")
-    private BigDecimal getValueSpentOnItem(int id) throws IOException, SQLException, ProductNotFoundException {
+    public BigDecimal getValueSpentOnItem(int id) throws IOException, SQLException, ProductNotFoundException {
         return dc.getValueSpentOnItem(id);
     }
 
     @JConnMethod("CLOCKON")
-    private void clockOn(int id) throws IOException, SQLException, StaffNotFoundException {
+    public void clockOn(int id) throws IOException, SQLException, StaffNotFoundException {
         dc.clockOn(id);
     }
 
     @JConnMethod("CLOCKOFF")
-    private void clockOff(int id) throws IOException, SQLException, StaffNotFoundException {
+    public void clockOff(int id) throws IOException, SQLException, StaffNotFoundException {
         dc.clockOff(id);
     }
 
     @JConnMethod("GETALLCLOCKS")
-    private List<ClockItem> getAllClocks(int id) throws IOException, SQLException, StaffNotFoundException {
+    public List<ClockItem> getAllClocks(int id) throws IOException, SQLException, StaffNotFoundException {
         return dc.getAllClocks(id);
     }
 
     @JConnMethod("CLEARCLOCKS")
-    private void clearClocks(int id) throws IOException, SQLException, StaffNotFoundException {
+    public void clearClocks(int id) throws IOException, SQLException, StaffNotFoundException {
         dc.clearClocks(id);
     }
 
     @JConnMethod("ADDTRIGGER")
-    private Trigger addTrigger(Trigger t) throws IOException, SQLException {
+    public Trigger addTrigger(Trigger t) throws IOException, SQLException {
         return dc.addTrigger(t);
     }
 
     @JConnMethod("GETDISCOUNTBUCKETS")
-    private List<DiscountBucket> getDiscountBuckets(int id) throws IOException, SQLException, DiscountNotFoundException {
+    public List<DiscountBucket> getDiscountBuckets(int id) throws IOException, SQLException, DiscountNotFoundException {
         return dc.getDiscountBuckets(id);
     }
 
     @JConnMethod("REMOVETRIGGER")
-    private void removeTrigger(int id) throws IOException, SQLException, JTillException {
+    public void removeTrigger(int id) throws IOException, SQLException, JTillException {
         dc.removeTrigger(id);
     }
 
     @JConnMethod("GETVALIDDISCOUNTS")
-    private List<Discount> getValidDiscounts() throws IOException, SQLException, JTillException {
+    public List<Discount> getValidDiscounts() throws IOException, SQLException, JTillException {
         return dc.getValidDiscounts();
     }
 
     @JConnMethod("ADDBUCKET")
-    private DiscountBucket addBucket(DiscountBucket b) throws IOException, SQLException, JTillException {
+    public DiscountBucket addBucket(DiscountBucket b) throws IOException, SQLException, JTillException {
         return dc.addBucket(b);
     }
 
     @JConnMethod("REMOVEBUCKET")
-    private void removeBucket(int id) throws IOException, SQLException, JTillException {
+    public void removeBucket(int id) throws IOException, SQLException, JTillException {
         dc.removeBucket(id);
     }
 
     @JConnMethod("GETBUCKETTRIGGERS")
-    private List<Trigger> getBucketTriggers(int id) throws IOException, SQLException, JTillException {
+    public List<Trigger> getBucketTriggers(int id) throws IOException, SQLException, JTillException {
         return dc.getBucketTriggers(id);
     }
 
     @JConnMethod("UPDATETRIGGER")
-    private Trigger updateTrigger(Trigger t) throws IOException, SQLException, JTillException {
+    public Trigger updateTrigger(Trigger t) throws IOException, SQLException, JTillException {
         return dc.updateTrigger(t);
     }
 
     @JConnMethod("UPDATEBUCKET")
-    private DiscountBucket updateBucket(DiscountBucket b) throws IOException, SQLException, JTillException {
+    public DiscountBucket updateBucket(DiscountBucket b) throws IOException, SQLException, JTillException {
         return dc.updateBucket(b);
     }
 
     @JConnMethod("GETUNCASHEDTERMINALSALES")
-    private List<Sale> getUncashedTerminalSales(int id) throws IOException, SQLException, JTillException {
+    public List<Sale> getUncashedTerminalSales(int id) throws IOException, SQLException, JTillException {
         return dc.getUncachedTillSales(id);
     }
 
     @JConnMethod("ADDPRODUCTANDPLU")
-    private Product addProductAndPlu(Product p, Plu pl) throws IOException, SQLException, JTillException {
+    public Product addProductAndPlu(Product p, Plu pl) throws IOException, SQLException, JTillException {
         return dc.addProductAndPlu(p, pl);
     }
 
     @JConnMethod("GETPLUBYPRODUCT")
-    private Plu getPluByProduct(int id) throws IOException, SQLException, JTillException {
+    public Plu getPluByProduct(int id) throws IOException, SQLException, JTillException {
         return dc.getPluByProduct(id);
     }
 
     @JConnMethod("SEARCHSALEITEMS")
-    private List<SaleItem> searchSaleItems(Object[] object) throws IOException, SQLException, JTillException {
+    public List<SaleItem> searchSaleItems(Object[] object) throws IOException, SQLException, JTillException {
         final int department = (int) object[0];
         final int category = (int) object[1];
         final Date start = (Date) object[2];
@@ -948,34 +931,34 @@ public class ConnectionThread extends Thread {
     }
 
     @JConnMethod("CONNTERM")
-    private void terminateConnection() throws IOException, SQLException, StaffNotFoundException {
+    public void terminateConnection() throws IOException, SQLException, StaffNotFoundException {
         dc.logout(staff);
         dc.tillLogout(staff);
         conn_term = true;
     }
 
     @JConnMethod("GETTERMINALSALES")
-    private List<Sale> getTerminalSales(int terminal, boolean uncashedOnly) throws IOException, SQLException, JTillException {
+    public List<Sale> getTerminalSales(int terminal, boolean uncashedOnly) throws IOException, SQLException, JTillException {
         return dc.getTerminalSales(terminal, uncashedOnly);
     }
 
     @JConnMethod("INTEGRITYCHECK")
-    private HashMap integrityCheck() throws IOException, SQLException {
+    public HashMap integrityCheck() throws IOException, SQLException {
         return dc.integrityCheck();
     }
 
     @JConnMethod("CASHUNCASHEDSALES")
-    private void cashUncashedSales(int t) throws IOException, SQLException {
+    public void cashUncashedSales(int t) throws IOException, SQLException {
         dc.cashUncashedSales(t);
     }
 
     @JConnMethod("GETPRODUCTSADVANCED")
-    private List<Product> getProductsAdvanced(String WHERE) throws IOException, SQLException {
+    public List<Product> getProductsAdvanced(String WHERE) throws IOException, SQLException {
         return dc.getProductsAdvanced(WHERE);
     }
 
     @JConnMethod("GETSTAFFSALES")
-    private List<Sale> getStaffSales(Staff s) throws IOException, SQLException, StaffNotFoundException {
+    public List<Sale> getStaffSales(Staff s) throws IOException, SQLException, StaffNotFoundException {
         return dc.getStaffSales(s);
     }
 }
