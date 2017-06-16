@@ -73,6 +73,10 @@ public class ConnectionThread extends Thread {
         sem = new Semaphore(1);
     }
 
+    /**
+     * Static initialiser which creates the list of methods and scans for
+     * JConnMethod methods.
+     */
     static {
         JCONNMETHODS = new LinkedList<>();
         scanClass();
@@ -179,34 +183,18 @@ public class ConnectionThread extends Thread {
                                         }
                                     };
                                 } else {
-                                    final Parameter[] params = m.getParameters();
-                                    if (params.length == 1) {
-                                        run = () -> {
+                                    run = () -> {
+                                        try {
+                                            final Object ret = m.invoke(this, clone.getData()); //Invoke the method
+                                            obOut.writeObject(ConnectionData.create("SUCC", ret)); //Return the result
+                                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException ex) {
                                             try {
-                                                final Object ret = m.invoke(this, clone.getData()[0]); //Invoke the method
-                                                obOut.writeObject(ConnectionData.create("SUCC", ret)); //Return the result
-                                            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException ex) {
-                                                try {
-                                                    obOut.writeObject(ConnectionData.create("FAIL", ex));
-                                                } catch (IOException ex1) {
-                                                    Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex1);
-                                                }
+                                                obOut.writeObject(ConnectionData.create("FAIL", ex));
+                                            } catch (IOException ex1) {
+                                                Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex1);
                                             }
-                                        };
-                                    } else {
-                                        run = () -> {
-                                            try {
-                                                final Object ret = m.invoke(this, clone.getData()[0], clone.getData()[1]); //Invoke the method
-                                                obOut.writeObject(ConnectionData.create("SUCC", ret)); //Return the result
-                                            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException ex) {
-                                                try {
-                                                    obOut.writeObject(ConnectionData.create("FAIL", ex));
-                                                } catch (IOException ex1) {
-                                                    Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex1);
-                                                }
-                                            }
-                                        };
-                                    }
+                                        }
+                                    };
                                 }
                                 new Thread(run).start(); //Run the thread which will invoke the method
                                 break;
