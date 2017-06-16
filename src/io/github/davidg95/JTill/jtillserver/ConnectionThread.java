@@ -290,9 +290,9 @@ public class ConnectionThread extends Thread {
     @JConnMethod("ADDSTAFF")
     public Staff addStaff(Staff s) throws IOException, SQLException {
         s.setPassword(Encryptor.decrypt(s.getPassword()));
-        Staff newS = dc.addStaff(s);
+        s = dc.addStaff(s);
         s.setPassword(Encryptor.encrypt(s.getPassword()));
-        return newS;
+        return s;
     }
 
     @JConnMethod("REMOVESTAFF")
@@ -302,7 +302,7 @@ public class ConnectionThread extends Thread {
 
     @JConnMethod("GETSTAFF")
     public Staff getStaff(int id) throws IOException, StaffNotFoundException, SQLException {
-        Staff s = dc.getStaff(id);
+        final Staff s = dc.getStaff(id);
         s.setPassword(Encryptor.encrypt(s.getPassword()));
         return s;
     }
@@ -310,14 +310,14 @@ public class ConnectionThread extends Thread {
     @JConnMethod("UPDATESTAFF")
     public Staff updateStaff(Staff s) throws IOException, StaffNotFoundException, SQLException {
         s.setPassword(Encryptor.decrypt(s.getPassword()));
-        Staff updatedStaff = dc.updateStaff(s);
+        s = dc.updateStaff(s);
         s.setPassword(Encryptor.encrypt(s.getPassword()));
         return s;
     }
 
     @JConnMethod("GETALLSTAFF")
     public List<Staff> getAllStaff() throws IOException, SQLException, SQLException {
-        List<Staff> staffList = dc.getAllStaff();
+        final List<Staff> staffList = dc.getAllStaff();
         staffList.forEach((s) -> {
             s.setPassword(Encryptor.encrypt(s.getPassword()));
         });
