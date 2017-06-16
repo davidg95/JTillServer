@@ -26,8 +26,6 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TransactionViewerWindow extends javax.swing.JInternalFrame {
 
-    private static final TransactionViewerWindow window;
-
     private final DataConnect dc;
 
     private final DefaultTableModel model;
@@ -48,12 +46,9 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         init();
     }
 
-    static {
-        window = new TransactionViewerWindow();
-        GUI.gui.internal.add(window);
-    }
-
     public static void showWindow() {
+        final TransactionViewerWindow window = new TransactionViewerWindow();
+        GUI.gui.internal.add(window);
         window.setVisible(true);
         try {
             window.setSelected(true);
