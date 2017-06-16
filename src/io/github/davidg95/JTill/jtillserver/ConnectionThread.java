@@ -130,9 +130,7 @@ public class ConnectionThread extends Thread {
             LOG.log(Level.INFO, till.getName() + " has connected");
 
             while (!conn_term) {
-
                 Object o;
-
                 try {
                     o = obIn.readObject();
 
@@ -154,7 +152,7 @@ public class ConnectionThread extends Thread {
                 }
                 currentData = (ConnectionData) o;
 
-                final ConnectionData data = currentData.clone();
+                final ConnectionData data = currentData.clone(); //Take a clone of the ConnectionData object
 
                 LOG.log(Level.INFO, "Received " + data.getFlag() + " from client", data.getFlag());
 
@@ -179,7 +177,7 @@ public class ConnectionThread extends Thread {
                                         }
                                     }
                                 };
-                                new Thread(run).start(); //Run the thread which will invoke the method
+                                new Thread(run, flag).start(); //Run the thread which will invoke the method
                                 break;
                             } catch (IllegalArgumentException ex) {
                                 Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -198,12 +196,12 @@ public class ConnectionThread extends Thread {
             }
         } finally {
             try {
-                dc.disconnectTill(till);
-                socket.close();
+                dc.disconnectTill(till); //Set the till to disconnected
+                socket.close(); //Close the socket
             } catch (IOException ex) {
                 LOG.log(Level.SEVERE, null, ex);
             }
-            ConnectionAcceptThread.removeConnection(this);
+            ConnectionAcceptThread.removeConnection(this); //Remove the connection from the list
         }
     }
 
