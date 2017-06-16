@@ -86,10 +86,10 @@ public class ConnectionThread extends Thread {
 
             final ConnectionData firstCon = (ConnectionData) obIn.readObject();
 
-            final String site = (String) firstCon.getData();
+            final String site = (String) firstCon.getData()[0];
             UUID uuid = null;
-            if (firstCon.getData2() != null) {
-                uuid = (UUID) firstCon.getData2();
+            if (firstCon.getData()[1] != null) {
+                uuid = (UUID) firstCon.getData()[1];
             }
 
             till = dc.connectTill(site, uuid);
@@ -145,7 +145,7 @@ public class ConnectionThread extends Thread {
                         if (a.annotationType() == JConnMethod.class) { //Check if it as the JConnMethod annotation
                             final JConnMethod ja = (JConnMethod) a; //Get the JConnMethod annotation object to find out the flag name
                             final String flag = inp[0]; //Get the flag from the connection object
-                            if(flag.equals("GETPLUBYPRODUCT") || flag.equals("GETALLPRODUCTS")){
+                            if(flag.equals("LOGIN")){
                                 System.out.println("Cheese");
                             }
                             if (ja.value().equals(flag)) { //Check if the current flag matches the flag definted on the annotation
@@ -171,7 +171,7 @@ public class ConnectionThread extends Thread {
                                         if (params.length == 1) {
                                             run = () -> {
                                                 try {
-                                                    final Object ret = m.invoke(this, clone.getData()); //Invoke the method
+                                                    final Object ret = m.invoke(this, clone.getData()[0]); //Invoke the method
                                                     obOut.writeObject(ConnectionData.create("SUCC", ret)); //Return the result
                                                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException ex) {
                                                     try {
@@ -184,7 +184,7 @@ public class ConnectionThread extends Thread {
                                         } else {
                                             run = () -> {
                                                 try {
-                                                    final Object ret = m.invoke(this, clone.getData(), clone.getData2()); //Invoke the method
+                                                    final Object ret = m.invoke(this, clone.getData()[0], clone.getData()[1]); //Invoke the method
                                                     obOut.writeObject(ConnectionData.create("SUCC", ret)); //Return the result
                                                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException ex) {
                                                     try {
@@ -224,17 +224,17 @@ public class ConnectionThread extends Thread {
             ConnectionAcceptThread.removeConnection(this);
         }
     }
-
+    
     @JConnMethod("NEWPRODUCT")
     private Product newProduct(Product p) throws IOException, SQLException {
         return dc.addProduct(p);
     }
-
+    
     @JConnMethod("REMOVEPRODUCT")
     private void removeProduct(int code) throws ProductNotFoundException, IOException, SQLException {
         dc.removeProduct(code);
     }
-
+    
     @JConnMethod("PURCHASE")
     private int purchase(Product p, int amount) throws IOException, ProductNotFoundException, OutOfStockException, SQLException {
         return dc.purchaseProduct(p.getId(), amount);

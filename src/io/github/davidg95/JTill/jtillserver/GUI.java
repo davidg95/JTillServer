@@ -74,7 +74,7 @@ public class GUI extends JFrame implements GUIInterface {
 
     public static Image icon; //The icon for the frame.
 
-    private final Settings settings; //The settings object.
+    private Settings settings; //The settings object.
 
     private static final String HELP_TEXT = "Press F1 for help";
 
@@ -97,7 +97,9 @@ public class GUI extends JFrame implements GUIInterface {
         this.dc = dataConnect;
         this.remote = remote;
         this.icon = icon;
-        this.settings = Settings.getInstance();
+        if (!remote) {
+            this.settings = Settings.getInstance();
+        }
         initComponents();
         init();
         try {
