@@ -49,7 +49,7 @@ public class ConnectionThread extends Thread {
     public Staff staff; //The staff member currently logged on.
     public Till till; //The till that is using this connection.
 
-    private ConnectionData currentData;
+    private ConnectionData currentData; //The current data object that has been recevied
 
     private final Semaphore sem; //Semaphore for the output stream.
 
@@ -849,7 +849,7 @@ public class ConnectionThread extends Thread {
         dc.clockOff(id);
     }
 
-    @JConnMethod("GETALLCLOCKS")
+    @JConnMethod("GETCLOCKS")
     public List<ClockItem> getAllClocks(int id) throws IOException, SQLException, StaffNotFoundException {
         return dc.getAllClocks(id);
     }

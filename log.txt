@@ -1,63 +1,18 @@
-JTill log Fri Jun 16 15:46:30 BST 2017
-[15:46:30] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[15:46:30] [INFO] Starting Thread Pool Excecutor
-[15:46:30] [INFO] JTill Server local IP address is 192.168.1.65
-[15:46:30] [INFO] Server Socket running on port number 52341
-[15:46:30] [INFO] Ready to accept connections
-[15:46:36] [INFO] DAVID-PC has connected
-[15:46:36] [INFO] Received GETSETTING from client
-[15:46:36] [INFO] Received GETSETTING from client
-[15:46:36] [INFO] Received GETSETTING from client
-[15:46:36] [INFO] Received GETSETTING from client
-[15:46:36] [INFO] Received GETVALIDDISCOUNTS from client
-[15:46:36] [INFO] Received GETALLSCREENS from client
-[15:46:36] [INFO] Received GETBUTTONSONSCREEN from client
-[15:46:36] [INFO] Received GETPRODUCT from client
-[15:46:36] [INFO] Received GETPRODUCT from client
-[15:46:36] [INFO] Received GETPRODUCT from client
-[15:46:38] [INFO] Received GETSTAFF from client
-[15:46:39] [INFO] Received CLOCKON from client
-[15:46:39] [INFO] Received TILLLOGIN from client
-[15:46:39] [INFO] David Grant has logged in from DAVID-PC
-[15:46:39] [INFO] Received RESUMESALE from client
-[15:46:42] [INFO] Received GETCATEGORY from client
-[15:46:43] [INFO] Received GETPRODUCTBARCODE from client
-[15:46:44] [INFO] Received GETCATEGORY from client
-[15:46:47] [INFO] Received ADDSALE from client
-[15:46:47] [WARNING] 3 is below minimum stock level
-[15:46:47] [INFO] Received GETSETTING from client
-[15:46:47] [INFO] Received GETSETTING from client
-[15:46:50] [INFO] Received TILLLOGOUT from client
-[15:46:50] [INFO] David Grant has logged out
-[15:46:51] [INFO] Received CONNTERM from client
-[15:46:51] [WARNING] The connection to the terminal was shut down forcefully
-[15:46:51] [INFO] Logging staff out
-[15:46:54] [INFO] DAVID-PC has connected
-[15:46:54] [INFO] Received GETSETTING from client
-[15:46:57] [INFO] Received LOGIN from client
-[15:46:57] [INFO] David Grant has logged in
-[15:46:57] [INFO] Received GETSETTING from client
-[15:46:58] [INFO] Received GETALLPRODUCTS from client
-[15:46:58] [INFO] Received GETPLUBYPRODUCT from client
-[15:46:58] [INFO] Received GETPLUBYPRODUCT from client
-[15:46:58] [INFO] Received GETPLUBYPRODUCT from client
-[15:46:58] [INFO] Received GETALLDEPARTMENTS from client
-[15:46:58] [INFO] Received GETALLTAX from client
-[15:46:58] [INFO] Received GETALLCATEGORYS from client
-[15:46:58] [INFO] Received GETALLPRODUCTS from client
-[15:46:58] [INFO] Received GETPLUBYPRODUCT from client
-[15:46:58] [INFO] Received GETPLUBYPRODUCT from client
-[15:46:58] [INFO] Received GETPLUBYPRODUCT from client
-[15:46:58] [INFO] Received GETALLDEPARTMENTS from client
-[15:46:58] [INFO] Received GETALLTAX from client
-[15:46:58] [INFO] Received GETALLCATEGORYS from client
-[15:47:01] [INFO] Received GETALLCUSTOMERS from client
-[15:47:01] [INFO] Received GETALLCUSTOMERS from client
-[15:47:05] [INFO] Received INTEGRITYCHECK from client
-[15:47:07] [INFO] Received GETALLPRODUCTS from client
-[15:47:07] [INFO] Received GETPLUBYPRODUCT from client
-[15:47:07] [INFO] Received GETPLUBYPRODUCT from client
-[15:47:07] [INFO] Received GETPLUBYPRODUCT from client
-[15:47:07] [INFO] Received GETALLDEPARTMENTS from client
-[15:47:07] [INFO] Received GETALLTAX from client
-[15:47:07] [INFO] Received GETALLCATEGORYS from client
+JTill log Fri Jun 16 17:04:29 BST 2017
+[17:04:29] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[17:04:30] [INFO] Starting Thread Pool Excecutor
+[17:04:30] [INFO] JTill Server local IP address is 192.168.1.65
+[17:04:30] [INFO] Server Socket running on port number 52341
+[17:04:30] [INFO] Ready to accept connections
+[17:04:35] [INFO] DAVID-PC has connected
+[17:04:35] [INFO] Received GETSETTING from client
+[17:04:38] [INFO] Received LOGIN from client
+[17:04:38] [INFO] David Grant has logged in
+[17:04:38] [INFO] Received GETSETTING from client
+[17:04:47] [INFO] Received GETALLSTAFF from client
+[17:04:48] [INFO] Received GETCLOCKS from client
+[17:04:52] [INFO] Received GETALLSTAFF from client
+[17:04:52] [INFO] Received GETCLOCKS from client
+[17:05:05] [INFO] Received CONNTERM from client
+[17:05:05] [WARNING] The connection to the terminal was shut down forcefully
+[17:05:05] [INFO] Logging staff out

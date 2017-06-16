@@ -348,50 +348,43 @@ public class StaffClocking extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        final Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                staff = StaffSelectDialog.showDialog();
-                if (staff == null) {
-                    return;
-                }
-                txtStaff.setText(staff.toString());
-                try {
-                    currentTableContents = dc.getAllClocks(staff.getId());
-                    clocked = 0;
-                    long on = 0;
-                    int last = -1;
-                    for (ClockItem i : currentTableContents) {
-                        if (i.getType() == ClockItem.CLOCK_ON) {
-                            if (last != ClockItem.CLOCK_ON) {
-                                last = ClockItem.CLOCK_ON;
-                                on = i.getTime().getTime();
-                            }
-                        } else {
-                            if (on != 0) {
-                                long off = i.getTime().getTime();
-                                double duration = off - on;
-                                double minutes = (duration / 1000) / 60;
-                                double hours = minutes / 60;
-                                clocked += hours;
-                                last = ClockItem.CLOCK_OFF;
-                            }
-                        }
+        staff = StaffSelectDialog.showDialog();
+        if (staff == null) {
+            return;
+        }
+        txtStaff.setText(staff.toString());
+        try {
+            currentTableContents = dc.getAllClocks(staff.getId());
+            clocked = 0;
+            long on = 0;
+            int last = -1;
+            for (ClockItem i : currentTableContents) {
+                if (i.getType() == ClockItem.CLOCK_ON) {
+                    if (last != ClockItem.CLOCK_ON) {
+                        last = ClockItem.CLOCK_ON;
+                        on = i.getTime().getTime();
                     }
-                    BigDecimal bClocked = new BigDecimal(clocked).setScale(2, RoundingMode.HALF_UP);
-                    txtHours.setText(bClocked + "");
-                    txtRate.setText(staff.getWage() + "");
-                    setTable();
-                    for (Component comp : calPanel.getComponents()) {
-                        comp.setEnabled(true);
+                } else {
+                    if (on != 0) {
+                        long off = i.getTime().getTime();
+                        double duration = off - on;
+                        double minutes = (duration / 1000) / 60;
+                        double hours = minutes / 60;
+                        clocked += hours;
+                        last = ClockItem.CLOCK_OFF;
                     }
-                } catch (IOException | SQLException | StaffNotFoundException ex) {
-                    Logger.getLogger(StaffClocking.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        };
-        final Thread thread = new Thread(run);
-        thread.start();
+            BigDecimal bClocked = new BigDecimal(clocked).setScale(2, RoundingMode.HALF_UP);
+            txtHours.setText(bClocked + "");
+            txtRate.setText(staff.getWage() + "");
+            setTable();
+            for (Component comp : calPanel.getComponents()) {
+                comp.setEnabled(true);
+            }
+        } catch (IOException | SQLException | StaffNotFoundException ex) {
+            Logger.getLogger(StaffClocking.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnCalculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateActionPerformed
@@ -477,16 +470,22 @@ public class StaffClocking extends javax.swing.JInternalFrame {
                         th.start();
                         mDialog.show();
                         JOptionPane.showMessageDialog(this, "Printing complete", "Wage Report", JOptionPane.INFORMATION_MESSAGE);
+
                     }
                 } catch (StaffNotFoundException ex) {
-                    Logger.getLogger(StaffClocking.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(StaffClocking.class
+                            .getName()).log(Level.SEVERE, null, ex);
+
                 }
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(StaffClocking.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StaffClocking.class
+                    .getName()).log(Level.SEVERE, null, ex);
+
         } catch (SQLException ex) {
-            Logger.getLogger(StaffClocking.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StaffClocking.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnAllStaffActionPerformed
 
