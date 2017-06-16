@@ -208,7 +208,7 @@ public class ConnectionThread extends Thread {
                 sem.release();
             }
             LOG.log(Level.INFO, till.getName() + " has disconnected");
-        } catch (IOException | ClassNotFoundException ex) {
+        } catch (CloneNotSupportedException | IOException | ClassNotFoundException ex) {
             if (till == null) {
                 LOG.log(Level.SEVERE, "There was an error with the conenction to a client. Client information could not be retrieved. The connection will be forecfully terminated", ex);
             } else {
