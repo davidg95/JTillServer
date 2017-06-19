@@ -786,7 +786,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 return;
             }
             product = new Product(name, shortName, 0, category.getId(), dep.getId(), comments, tax.getId(), true);
-            plu.setProduct(product.getId());
+            plu.setProductID(product.getId());
             product = dc.addProductAndPlu(product, plu);
             if (chkNext.isSelected()) {
                 dc.setSetting("NEXT_PLU", nextBarcode);

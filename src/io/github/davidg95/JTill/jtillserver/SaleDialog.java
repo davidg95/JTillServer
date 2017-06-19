@@ -6,14 +6,10 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Component;
-import java.awt.Dialog;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Window;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterAbortException;
@@ -84,26 +80,11 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         Calendar c = Calendar.getInstance();
         c.setTime(sale.getDate());
         lblTime.setText("Time: " + c.getTime().toString());
-        if (sale.getCustomer() != 0) {
-            try {
-                final Customer cus = dc.getCustomer(sale.getCustomer());
-                lblCustomer.setText("Customer: " + cus.getName());
-            } catch (IOException | CustomerNotFoundException | SQLException ex) {
-                Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        if (sale.getCustomerID() != 0) {
+            lblCustomer.setText("Customer: " + sale.getCustomer().getName());
         }
-        try {
-            final Till till = dc.getTill(sale.getTerminal());
-            lblTerminal.setText("Terminal: " + till.getName());
-        } catch (IOException | SQLException | JTillException ex) {
-            lblTerminal.setText("Terminal: " + sale.getTerminal());
-        }
-        try {
-            final Staff staff = dc.getStaff(sale.getStaff());
-            lblStaff.setText("Staff: " + staff);
-        } catch (IOException | StaffNotFoundException | SQLException ex) {
-            Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        lblTerminal.setText("Terminal: " + sale.getTerminal().getName());
+        lblStaff.setText("Staff: " + sale.getStaff().getName());
         lblTotal.setText("Sale Total: £" + sale.getTotal().setScale(2));
 
         model.setRowCount(0);
@@ -190,10 +171,10 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             g2.drawString("Receipt for sale: " + toPrint.getId(), 70, 140);
             g2.drawString("Time: " + toPrint.getDate(), 70, 160);
             try {
-                final Staff staff = dc.getStaff(toPrint.getStaff());
+                final Staff staff = dc.getStaff(toPrint.getStaffID());
                 g2.drawString("Served by " + staff, 70, 180);
             } catch (IOException | StaffNotFoundException | SQLException ex) {
-                g2.drawString("Served by " + toPrint.getStaff(), 70, 180);
+                g2.drawString("Served by " + toPrint.getStaffID(), 70, 180);
             }
 
             final int item = 100;
@@ -406,8 +387,8 @@ public class SaleDialog extends javax.swing.JInternalFrame {
     private void btnEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmailActionPerformed
         String email;
         try {
-            if (sale.getCustomer() != 1) {
-                final Customer c = dc.getCustomer(sale.getCustomer());
+            if (sale.getCustomerID() != 1) {
+                final Customer c = dc.getCustomer(sale.getCustomerID());
                 email = c.getEmail();
                 if (email == null) {
                     email = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);

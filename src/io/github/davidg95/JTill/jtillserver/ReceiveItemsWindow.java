@@ -458,7 +458,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                         if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                             Plu p = new Plu(barcode, 0);
                             product = ProductDialog.showNewProductDialog(this, dc, p, quantity);
-                            p.setProduct(product.getId());
+                            p.setProductID(product.getId());
                             JOptionPane.showInternalMessageDialog(GUI.gui.internal, product.getLongName() + " has now been added to the system with given stock level, there is no need to receive it here.", "Added", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }

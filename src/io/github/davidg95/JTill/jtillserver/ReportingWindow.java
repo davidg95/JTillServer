@@ -474,7 +474,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
-                
+
             }
         }
     }//GEN-LAST:event_tableMouseClicked
@@ -483,18 +483,18 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
         final ModalDialog mDialog = new ModalDialog(this, "Sales Report", "Generating report...");
         final Runnable run = () -> {
             try {
-                int depid = ((Department) cmbDepartment.getSelectedItem()).getId();
-                int catid = ((Category) cmbCategory.getSelectedItem()).getId();
-                if (chkAllDep.isSelected()) {
+                int depid = ((Department) cmbDepartment.getSelectedItem()).getId(); //Get the selected Department
+                int catid = ((Category) cmbCategory.getSelectedItem()).getId();  //Get the selected Category
+                if (chkAllDep.isSelected()) { //Check if all departments was selected
                     depid = -1;
                 }
-                if (chkAllCat.isSelected()) {
+                if (chkAllCat.isSelected()) { //Check if all categories was selected
                     catid = -1;
                 }
-                final Date startDate = (Date) spinStart.getValue();
-                final Date endDate = (Date) spinEnd.getValue();
+                final Date startDate = (Date) spinStart.getValue(); //Get the selected start date
+                final Date endDate = (Date) spinEnd.getValue(); //Get the selected end date
 
-                List<SaleItem> saleItems = dc.searchSaleItems(depid, catid, startDate, endDate);
+                final List<SaleItem> saleItems = dc.searchSaleItems(depid, catid, startDate, endDate); //Get a list of all the sale items that match the search
 
                 if (saleItems.isEmpty()) {
                     mDialog.hide();

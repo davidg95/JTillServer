@@ -44,10 +44,10 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
 
-    private Product product;
+    private Plu plu;
 
     private final DefaultTableModel model;
-    private List<Product> currentTableContents;
+    private List<Plu> currentTableContents;
 
     private List<Department> departments;
     private List<Tax> taxes;
@@ -95,7 +95,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             frame.toFront();
         } else {
             update();
-            frame.setCurrentProduct(null);
+            frame.setCurrentPlu(null);
             frame.setVisible(true);
         }
         try {
@@ -152,14 +152,10 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private void updateTable() {
         model.setRowCount(0);
 
-        for (Product p : currentTableContents) {
-            try {
-                final Plu plu = dc.getPluByProduct(p.getId());
-                Object[] s = new Object[]{p.getId(), plu.getCode(), p.getLongName(), (p.isOpen() ? "Open Price" : p.getPrice().setScale(2)), (p.isOpen() ? "N/A" : p.getStock())};
-                model.addRow(s);
-            } catch (IOException | JTillException ex) {
-                Logger.getLogger(ProductsWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        for (Plu p : currentTableContents) {
+            final Product product = p.getProduct();
+            Object[] s = new Object[]{product.getId(), p.getCode(), product.getLongName(), (product.isOpen() ? "Open Price" : product.getPrice().setScale(2)), (product.isOpen() ? "N/A" : product.getStock())};
+            model.addRow(s);
         }
 
         tableProducts.setModel(model);
@@ -170,7 +166,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
      */
     private void showAllProducts() {
         try {
-            currentTableContents = dc.getAllProducts();
+            currentTableContents = dc.getAllPlus();
         } catch (IOException | SQLException ex) {
             showError(ex);
         }
@@ -182,7 +178,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
      *
      * @param p the product to show.
      */
-    private void setCurrentProduct(Product p) {
+    private void setCurrentPlu(Plu p) {
         if (p == null) { //If product is null then clear all the fields.
             txtName.setText("");
             txtShortName.setText("");
@@ -196,98 +192,93 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             cmbTax.setSelectedIndex(0);
             cmbCategory.setSelectedIndex(0);
             cmbDepartments.setSelectedIndex(0);
-            product = null;
+            plu = null;
             for (Component c : panelCurrent.getComponents()) {
                 c.setEnabled(false);
             }
         } else { //Fill the fields with the product.
-            try {
-                for (Component c : panelCurrent.getComponents()) {
-                    c.setEnabled(true);
-                }
-                this.product = p;
-                txtName.setText(p.getLongName());
-                txtShortName.setText(p.getName());
-                if (p.isOpen()) { //Check if price is open.
-                    txtPrice.setEnabled(false);
-                    txtCostPrice.setEnabled(false);
-                    txtBarcode.setEnabled(true);
-                    txtStock.setEnabled(false);
-                    txtMinStock.setEnabled(false);
-                    txtMaxStock.setEnabled(false);
-                    jLabel3.setEnabled(false);
-                    jLabel9.setEnabled(false);
-                    jLabel2.setEnabled(false);
-                    jLabel4.setEnabled(false);
-                    jLabel10.setEnabled(false);
-                    jLabel11.setEnabled(false);
-                    final Plu plu = dc.getPluByProduct(p.getId());
-                    txtBarcode.setText(plu.getCode());
-                    txtPrice.setText("OPEN");
-                    txtCostPrice.setText("OPEN");
-                    txtPrice.setEditable(false);
-                    txtCostPrice.setEditable(false);
-                    txtStock.setText("");
-                    txtMinStock.setText("");
-                    txtMaxStock.setText("");
-                } else {
-                    txtPrice.setEnabled(true);
-                    txtCostPrice.setEnabled(true);
-                    txtBarcode.setEnabled(true);
-                    txtStock.setEnabled(true);
-                    txtMinStock.setEnabled(true);
-                    txtMaxStock.setEnabled(true);
-                    jLabel3.setEnabled(true);
-                    jLabel9.setEnabled(true);
-                    jLabel2.setEnabled(true);
-                    jLabel4.setEnabled(true);
-                    jLabel10.setEnabled(true);
-                    jLabel11.setEnabled(true);
-                    final Plu plu = dc.getPluByProduct(p.getId());
-                    txtBarcode.setText(plu.getCode());
-                    txtPrice.setText(p.getPrice().setScale(2) + "");
-                    txtCostPrice.setText(p.getCostPrice().setScale(2) + "");
-                    txtPrice.setEditable(true);
-                    txtCostPrice.setEditable(true);
-                    txtStock.setText(p.getStock() + "");
-                    txtMinStock.setText(p.getMinStockLevel() + "");
-                    txtMaxStock.setText(p.getMaxStockLevel() + "");
-                }
-                txtComments.setText(p.getComments());
-                int index = 0;
-                //Set the Category combo box.
-                int c = p.getCategoryID();
-                index = 0;
-                for (int i = 0; i < categorys.size(); i++) {
-                    if (categorys.get(i).getId() == c) {
-                        index = i;
-                        break;
-                    }
-                }
-                cmbCategory.setSelectedIndex(index);
-                //Set the Tax combo box.
-                int t = p.getTaxID();
-                index = 0;
-                for (int i = 0; i < taxes.size(); i++) {
-                    if (taxes.get(i).getId() == t) {
-                        index = i;
-                        break;
-                    }
-                }
-                cmbTax.setSelectedIndex(index);
-                //Set the Department combo box.
-                int d = p.getDepartmentID();
-                index = 0;
-                for (int i = 0; i < departments.size(); i++) {
-                    if (departments.get(i).getId() == d) {
-                        index = i;
-                        break;
-                    }
-                }
-                cmbDepartments.setSelectedIndex(index);
-            } catch (IOException | JTillException ex) {
-                showError(ex);
+            for (Component c : panelCurrent.getComponents()) {
+                c.setEnabled(true);
             }
+            this.plu = p;
+            final Product product = plu.getProduct();
+            txtName.setText(product.getLongName());
+            txtShortName.setText(p.getName());
+            if (product.isOpen()) { //Check if price is open.
+                txtPrice.setEnabled(false);
+                txtCostPrice.setEnabled(false);
+                txtBarcode.setEnabled(true);
+                txtStock.setEnabled(false);
+                txtMinStock.setEnabled(false);
+                txtMaxStock.setEnabled(false);
+                jLabel3.setEnabled(false);
+                jLabel9.setEnabled(false);
+                jLabel2.setEnabled(false);
+                jLabel4.setEnabled(false);
+                jLabel10.setEnabled(false);
+                jLabel11.setEnabled(false);
+                txtBarcode.setText(plu.getCode());
+                txtPrice.setText("OPEN");
+                txtCostPrice.setText("OPEN");
+                txtPrice.setEditable(false);
+                txtCostPrice.setEditable(false);
+                txtStock.setText("");
+                txtMinStock.setText("");
+                txtMaxStock.setText("");
+            } else {
+                txtPrice.setEnabled(true);
+                txtCostPrice.setEnabled(true);
+                txtBarcode.setEnabled(true);
+                txtStock.setEnabled(true);
+                txtMinStock.setEnabled(true);
+                txtMaxStock.setEnabled(true);
+                jLabel3.setEnabled(true);
+                jLabel9.setEnabled(true);
+                jLabel2.setEnabled(true);
+                jLabel4.setEnabled(true);
+                jLabel10.setEnabled(true);
+                jLabel11.setEnabled(true);
+                txtBarcode.setText(plu.getCode());
+                txtPrice.setText(product.getPrice().setScale(2) + "");
+                txtCostPrice.setText(product.getCostPrice().setScale(2) + "");
+                txtPrice.setEditable(true);
+                txtCostPrice.setEditable(true);
+                txtStock.setText(product.getStock() + "");
+                txtMinStock.setText(product.getMinStockLevel() + "");
+                txtMaxStock.setText(product.getMaxStockLevel() + "");
+            }
+            txtComments.setText(product.getComments());
+            int index = 0;
+            //Set the Category combo box.
+            int c = product.getCategoryID();
+            index = 0;
+            for (int i = 0; i < categorys.size(); i++) {
+                if (categorys.get(i).getId() == c) {
+                    index = i;
+                    break;
+                }
+            }
+            cmbCategory.setSelectedIndex(index);
+            //Set the Tax combo box.
+            int t = product.getTaxID();
+            index = 0;
+            for (int i = 0; i < taxes.size(); i++) {
+                if (taxes.get(i).getId() == t) {
+                    index = i;
+                    break;
+                }
+            }
+            cmbTax.setSelectedIndex(index);
+            //Set the Department combo box.
+            int d = product.getDepartmentID();
+            index = 0;
+            for (int i = 0; i < departments.size(); i++) {
+                if (departments.get(i).getId() == d) {
+                    index = i;
+                    break;
+                }
+            }
+            cmbDepartments.setSelectedIndex(index);
         }
     }
 
@@ -789,7 +780,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                     showError(ex);
                 }
                 showAllProducts();
-                setCurrentProduct(null);
+                setCurrentPlu(null);
                 txtName.requestFocus();
             }
         }
@@ -815,6 +806,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             dep = departments.get(cmbDepartments.getSelectedIndex());
         }
         String comments = txtComments.getText();
+        final Product product = plu.getProduct();
         if (product.isOpen()) {
             product.setLongName(name);
             product.setName(shortName);
@@ -863,12 +855,12 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
         ProductEntryDialog.showDialog(this, icon);
         showAllProducts();
-        setCurrentProduct(null);
+        setCurrentPlu(null);
     }//GEN-LAST:event_btnNewProductActionPerformed
 
     private void tableProductsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProductsMousePressed
-        Product p = currentTableContents.get(tableProducts.getSelectedRow());
-        setCurrentProduct(p);
+        Plu p = currentTableContents.get(tableProducts.getSelectedRow());
+        setCurrentPlu(p);
     }//GEN-LAST:event_tableProductsMousePressed
 
     private void btnShowCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowCategorysActionPerformed
@@ -901,46 +893,41 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         } else {
             option = 3;
         }
-        List<Product> newList = new ArrayList<>();
-        try {
-            switch (option) {
-                case 1:
-                    for (Product p : currentTableContents) {
-                        if ((p.getId() + "").contains(terms)) {
-                            newList.add(p);
-                        }
-                    }
-                    break;
-                case 2:
-                    for (Product p : currentTableContents) {
-                        final Plu plu = dc.getPluByProduct(p.getId());
-                        if (plu.getCode().equals(terms)) {
-                            newList.add(p);
-                        }
-                    }
-                    break;
-                default:
-                    currentTableContents.stream().filter((p) -> (p.getLongName().toLowerCase().contains(terms.toLowerCase()) || p.getName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((p) -> {
+        final List<Plu> newList = new ArrayList<>();
+        switch (option) {
+            case 1:
+                for (Plu p : currentTableContents) {
+                    if ((p.getId() + "").contains(terms)) {
                         newList.add(p);
-                    });
-                    break;
-            }
-
-            if (newList.isEmpty()) {
-                txtSearch.setSelectionStart(0);
-                txtSearch.setSelectionEnd(txtSearch.getText().length());
-                JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.ERROR_MESSAGE);
-            } else {
-                txtSearch.setText("");
-                currentTableContents = newList;
-                if (newList.size() == 1) {
-                    setCurrentProduct(newList.get(0));
+                    }
                 }
-            }
-            updateTable();
-        } catch (IOException | JTillException ex) {
-            Logger.getLogger(ProductsWindow.class.getName()).log(Level.SEVERE, null, ex);
+                break;
+            case 2:
+                for (Plu p : currentTableContents) {
+                    if (plu.getCode().equals(terms)) {
+                        newList.add(p);
+                    }
+                }
+                break;
+            default:
+                currentTableContents.stream().filter((p) -> (p.getProduct().getLongName().toLowerCase().contains(terms.toLowerCase()) || p.getProduct().getName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((p) -> {
+                    newList.add(p);
+                });
+                break;
         }
+
+        if (newList.isEmpty()) {
+            txtSearch.setSelectionStart(0);
+            txtSearch.setSelectionEnd(txtSearch.getText().length());
+            JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.ERROR_MESSAGE);
+        } else {
+            txtSearch.setText("");
+            currentTableContents = newList;
+            if (newList.size() == 1) {
+                setCurrentPlu(newList.get(0));
+            }
+        }
+        updateTable();
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnReceiveStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiveStockActionPerformed
@@ -956,26 +943,27 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnChartActionPerformed
 
     private void btnCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCSVActionPerformed
-        JFileChooser chooser = new JFileChooser();
+        final JFileChooser chooser = new JFileChooser();
         chooser.setApproveButtonText("Export CSV");
         chooser.setDialogTitle("Export CSV File");
-        int returnVal = chooser.showOpenDialog(this);
+        final int returnVal = chooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
 
             try {
-                PrintWriter pw = new PrintWriter(file);
+                final PrintWriter pw = new PrintWriter(file);
 
-                for (Product p : currentTableContents) {
+                for (Plu p : currentTableContents) {
+                    final Product product = p.getProduct();
                     pw.println(p.getId() + ","
-                            + p.getLongName() + ","
-                            + p.getCategoryID() + ","
-                            + p.getCostPrice() + ","
-                            + p.getMaxStockLevel() + ","
-                            + p.getMinStockLevel() + ","
-                            + p.getPrice() + ","
-                            + p.getStock() + ","
-                            + p.getTaxID());
+                            + product.getLongName() + ","
+                            + product.getCategoryID() + ","
+                            + product.getCostPrice() + ","
+                            + product.getMaxStockLevel() + ","
+                            + product.getMinStockLevel() + ","
+                            + product.getPrice() + ","
+                            + product.getStock() + ","
+                            + product.getTaxID());
                 }
                 pw.close();
             } catch (FileNotFoundException ex) {
@@ -1060,17 +1048,17 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         if (searchC == null && searchD == null) {
             return;
         }
-        try {
-            final List<Product> results = dc.getProductsAdvanced("WHERE " + (b1.isSelected() ? "CATEGORY_ID=" + searchC.getId() : "DEPARTMENT_ID=" + searchD.getId()));
-            if (results.isEmpty()) {
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No results", "Product Search", JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }
-            currentTableContents = results;
-            updateTable();
-        } catch (IOException | SQLException ex) {
-            Logger.getLogger(ProductsWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            final List<Plu> results = dc.getProductsAdvanced("WHERE " + (b1.isSelected() ? "CATEGORY_ID=" + searchC.getId() : "DEPARTMENT_ID=" + searchD.getId()));
+//            if (results.isEmpty()) {
+//                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No results", "Product Search", JOptionPane.INFORMATION_MESSAGE);
+//                return;
+//            }
+//            currentTableContents = results;
+//            updateTable();
+//        } catch (IOException | SQLException ex) {
+//            Logger.getLogger(ProductsWindow.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }//GEN-LAST:event_btnAdvancedActionPerformed
 
     private void searchFieldClick(int opt, JTextField f) {

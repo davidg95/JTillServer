@@ -163,7 +163,7 @@ public class ConnectionThread extends Thread {
                         final String flag = data.getFlag(); //Get the flag from the connection object
                         if (ja.value().equals(flag)) { //Check if the current flag matches the flag definted on the annotation
                             try {
-                                if(flag.equals("ADDBUCKET")){
+                                if (flag.equals("GETALLDEPARTMENTS")) {
                                     System.out.println("Cheese");
                                 }
                                 final ConnectionData clone = data.clone(); //Take a clone of the connection data object
@@ -197,6 +197,8 @@ public class ConnectionThread extends Thread {
             } else {
                 LOG.log(Level.SEVERE, "There was an error with the conenction to " + till.getName() + ". The connection will be forecfully terminated", ex);
             }
+        } catch (Exception ex) {
+            System.out.println(ex);
         } finally {
             try {
                 dc.disconnectTill(till); //Set the till to disconnected
@@ -924,11 +926,7 @@ public class ConnectionThread extends Thread {
     }
 
     @JConnMethod("SEARCHSALEITEMS")
-    public List<SaleItem> searchSaleItems(Object[] object) throws IOException, SQLException, JTillException {
-        final int department = (int) object[0];
-        final int category = (int) object[1];
-        final Date start = (Date) object[2];
-        final Date end = (Date) object[3];
+    public List<SaleItem> searchSaleItems(int department, int category, Date start, Date end) throws IOException, SQLException, JTillException {
         return dc.searchSaleItems(department, category, start, end);
     }
 

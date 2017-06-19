@@ -76,8 +76,8 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         BigDecimal totalValue = BigDecimal.ZERO;
         for (Sale s : tableContents) {
             try {
-                final Staff staff = dc.getStaff(s.getStaff());
-                final Till till = dc.getTill(s.getTerminal());
+                final Staff staff = dc.getStaff(s.getStaffID());
+                final Till till = dc.getTill(s.getTerminalID());
                 model.addRow(new Object[]{s.getId(), s.getDate(), s.getTotal().setScale(2), staff.getName(), till.getName()});
                 totalValue = totalValue.add(s.getTotal());
             } catch (IOException | StaffNotFoundException | SQLException | JTillException ex) {
@@ -368,6 +368,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         //Create a runnable to pass into a worker thread
         final Runnable run = () -> {
             try {
+                //Search options
                 final Staff staff = (Staff) cmbStaff.getModel().getSelectedItem(); //Get the staff member to filter
                 final Till terminal = (Till) cmbTerminal.getModel().getSelectedItem(); //Get the till to filter
 
@@ -409,7 +410,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                     final List<Sale> newList = new LinkedList<>(); //Create a list for the filtered sales
                     //Check each sale and make sure it matches the criteria
                     for (Sale s : sales) {
-                        if ((allTills || s.getTerminal() == terminal.getId()) && (allStaff || s.getStaff() == staff.getId()) && s.getTotal().compareTo(new BigDecimal(minVal)) >= 0 && s.getTotal().compareTo(new BigDecimal(maxVal)) <= 0 && s.getDate().after(startDate) && s.getDate().before(endDate) && (s.getId() >= startID && s.getId() <= endID)) {
+                        if ((allTills || s.getTerminalID() == terminal.getId()) && (allStaff || s.getStaffID() == staff.getId()) && s.getTotal().compareTo(new BigDecimal(minVal)) >= 0 && s.getTotal().compareTo(new BigDecimal(maxVal)) <= 0 && s.getDate().after(startDate) && s.getDate().before(endDate) && (s.getId() >= startID && s.getId() <= endID)) {
                             newList.add(s);
                         }
                     }
