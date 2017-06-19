@@ -163,6 +163,9 @@ public class ConnectionThread extends Thread {
                         final String flag = data.getFlag(); //Get the flag from the connection object
                         if (ja.value().equals(flag)) { //Check if the current flag matches the flag definted on the annotation
                             try {
+                                if(flag.equals("ADDBUCKET")){
+                                    System.out.println("Cheese");
+                                }
                                 final ConnectionData clone = data.clone(); //Take a clone of the connection data object
                                 m.setAccessible(true); //Set the access to public
                                 final Runnable run = () -> {
@@ -611,6 +614,7 @@ public class ConnectionThread extends Thread {
         return dc.getSetting(key, def_value);
     }
 
+    @Deprecated
     public Settings getSettingsInstance() throws IOException {
         return dc.getSettingsInstance();
     }

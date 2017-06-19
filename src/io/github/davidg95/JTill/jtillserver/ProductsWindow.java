@@ -1057,7 +1057,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         panel.add(field);
         b1.setSelected(true);
         JOptionPane.showInternalMessageDialog(GUI.gui.internal, panel, "Advanced Search", JOptionPane.PLAIN_MESSAGE);
-        if(searchC == null && searchD == null){
+        if (searchC == null && searchD == null) {
             return;
         }
         try {

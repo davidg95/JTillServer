@@ -1,18 +1,28 @@
-JTill log Fri Jun 16 17:04:29 BST 2017
-[17:04:29] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[17:04:30] [INFO] Starting Thread Pool Excecutor
-[17:04:30] [INFO] JTill Server local IP address is 192.168.1.65
-[17:04:30] [INFO] Server Socket running on port number 52341
-[17:04:30] [INFO] Ready to accept connections
-[17:04:35] [INFO] DAVID-PC has connected
-[17:04:35] [INFO] Received GETSETTING from client
-[17:04:38] [INFO] Received LOGIN from client
-[17:04:38] [INFO] David Grant has logged in
-[17:04:38] [INFO] Received GETSETTING from client
-[17:04:47] [INFO] Received GETALLSTAFF from client
-[17:04:48] [INFO] Received GETCLOCKS from client
-[17:04:52] [INFO] Received GETALLSTAFF from client
-[17:04:52] [INFO] Received GETCLOCKS from client
-[17:05:05] [INFO] Received CONNTERM from client
-[17:05:05] [WARNING] The connection to the terminal was shut down forcefully
-[17:05:05] [INFO] Logging staff out
+JTill log Mon Jun 19 13:38:12 BST 2017
+[13:38:12] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[13:38:12] [INFO] Starting Thread Pool Excecutor
+[13:38:12] [INFO] JTill Server local IP address is 192.168.1.65
+[13:38:12] [INFO] Server Socket running on port number 52341
+[13:38:12] [INFO] Ready to accept connections
+[13:38:16] [INFO] DAVID-PC has connected
+[13:38:16] [INFO] Received GETSETTING from client
+[13:38:19] [WARNING] The connection to the terminal was shut down forcefully
+[13:38:19] [INFO] Logging staff out
+[13:38:22] [INFO] DAVID-PC has connected
+[13:38:22] [INFO] Received GETSETTING from client
+[13:38:25] [INFO] Received LOGIN from client
+[13:38:25] [INFO] David Grant has logged in
+[13:38:25] [INFO] Received GETSETTING from client
+[13:39:42] [INFO] Received LOGOUT from client
+[13:39:42] [INFO] David Grant has logged out
+[13:39:43] [INFO] Received CONNTERM from client
+[13:39:44] [WARNING] The connection to the terminal was shut down forcefully
+[13:39:44] [INFO] Logging staff out
+[13:39:46] [INFO] DAVID-PC has connected
+[13:39:46] [INFO] Received GETSETTING from client
+[13:39:50] [INFO] Received LOGIN from client
+[13:39:50] [INFO] David Grant has logged in
+[13:39:50] [INFO] Received GETSETTING from client
+[13:40:00] [INFO] Received GETALLPRODUCTS from client
+[13:40:07] [WARNING] The connection to the terminal was shut down forcefully
+[13:40:07] [INFO] Logging staff out
