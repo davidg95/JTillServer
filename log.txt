@@ -1,59 +1,18 @@
-JTill log Mon Jun 19 16:33:42 BST 2017
-[16:33:42] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[16:33:42] [INFO] Starting Thread Pool Excecutor
-[16:33:42] [INFO] JTill Server local IP address is 192.168.1.65
-[16:33:42] [INFO] Server Socket running on port number 52341
-[16:33:42] [INFO] Ready to accept connections
-[16:33:45] [INFO] David Grant has logged in
-[16:33:51] [INFO] DAVID-PC has connected
-[16:33:51] [INFO] Received GETSETTING from client
-[16:33:53] [INFO] Received LOGIN from client
-[16:33:53] [INFO] David Grant has logged in
-[16:33:53] [INFO] Received GETSETTING from client
-[16:33:54] [INFO] Received GETALLSALES from client
-[16:33:54] [INFO] Received GETSTAFF from client
-[16:33:54] [INFO] Received GETTILL from client
-[16:33:54] [INFO] Received GETSTAFF from client
-[16:33:54] [INFO] Received GETTILL from client
-[16:33:54] [INFO] Received GETSTAFF from client
-[16:33:54] [INFO] Received GETTILL from client
-[16:33:54] [INFO] Received GETSTAFF from client
-[16:33:54] [INFO] Received GETTILL from client
-[16:33:54] [INFO] Received GETSTAFF from client
-[16:33:54] [INFO] Received GETTILL from client
-[16:33:54] [INFO] Received GETSTAFF from client
-[16:33:54] [INFO] Received GETTILL from client
-[16:33:54] [INFO] Received GETSTAFF from client
-[16:33:54] [INFO] Received GETTILL from client
-[16:33:54] [INFO] Received GETSTAFF from client
-[16:33:54] [INFO] Received GETTILL from client
-[16:33:54] [INFO] Received GETSTAFF from client
-[16:33:54] [INFO] Received GETTILL from client
-[16:33:54] [INFO] Received GETSTAFF from client
-[16:33:55] [INFO] Received GETTILL from client
-[16:33:55] [INFO] Received GETSTAFF from client
-[16:33:55] [INFO] Received GETTILL from client
-[16:33:55] [INFO] Received GETSTAFF from client
-[16:33:55] [INFO] Received GETTILL from client
-[16:33:55] [INFO] Received GETSTAFF from client
-[16:33:55] [INFO] Received GETTILL from client
-[16:33:55] [INFO] Received GETSTAFF from client
-[16:33:55] [INFO] Received GETTILL from client
-[16:33:55] [INFO] Received GETSTAFF from client
-[16:33:55] [INFO] Received GETTILL from client
-[16:33:55] [INFO] Received GETSTAFF from client
-[16:33:55] [INFO] Received GETTILL from client
-[16:33:55] [INFO] Received GETSTAFF from client
-[16:33:55] [INFO] Received GETTILL from client
-[16:33:55] [INFO] Received GETSTAFF from client
-[16:33:55] [INFO] Received GETTILL from client
-[16:33:55] [INFO] Received GETSTAFF from client
-[16:33:55] [INFO] Received GETTILL from client
-[16:33:55] [INFO] Received GETSTAFF from client
-[16:33:55] [INFO] Received GETTILL from client
-[16:33:55] [INFO] Received GETSTAFF from client
-[16:33:55] [INFO] Received GETTILL from client
-[16:33:55] [INFO] Received GETSTAFF from client
-[16:33:55] [INFO] Received GETTILL from client
-[16:33:55] [INFO] Received GETALLSTAFF from client
-[16:33:55] [INFO] Received GETALLTILLS from client
+JTill log Mon Jun 19 17:13:54 BST 2017
+[17:13:54] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[17:13:54] [INFO] Starting Thread Pool Excecutor
+[17:13:54] [INFO] JTill Server local IP address is 192.168.1.65
+[17:13:54] [INFO] Server Socket running on port number 52341
+[17:13:54] [INFO] Ready to accept connections
+[17:13:58] [INFO] DAVID-PC has connected
+[17:13:58] [INFO] Received GETSETTING from client
+[17:14:03] [INFO] Received LOGIN from client
+[17:14:03] [INFO] David Grant has logged in
+[17:14:03] [INFO] Received GETSETTING from client
+[17:14:06] [INFO] Received GETALLSALES from client
+[17:14:06] [INFO] Received GETALLSTAFF from client
+[17:14:06] [INFO] Received GETALLTILLS from client
+[17:14:18] [INFO] Received GETALLSALES from client
+[17:14:21] [INFO] Received CONNTERM from client
+[17:14:22] [WARNING] The connection to the terminal was shut down forcefully
+[17:14:22] [INFO] Logging staff out
