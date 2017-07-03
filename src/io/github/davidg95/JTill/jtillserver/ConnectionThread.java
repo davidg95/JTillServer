@@ -163,7 +163,7 @@ public class ConnectionThread extends Thread {
                         final String flag = data.getFlag(); //Get the flag from the connection object
                         if (ja.value().equals(flag)) { //Check if the current flag matches the flag definted on the annotation
                             try {
-                                if (flag.equals("GETALLDEPARTMENTS")) {
+                                if (flag.equals("ADDRECEIVEDITEM")) {
                                     System.out.println("Cheese");
                                 }
                                 final ConnectionData clone = data.clone(); //Take a clone of the connection data object

@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -96,7 +97,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
         model.setRowCount(0);
         for (SaleItem i : items) {
             try {
-                final Product p = dc.getProduct(i.getItem());
+                final Product p = dc.getProduct(i.getItemId());
                 model.addRow(new Object[]{i.getId(), p.getName(), i.getQuantity(), new DecimalFormat("#.00").format(i.getPrice().multiply(new BigDecimal(i.getQuantity())))});
             } catch (IOException | ProductNotFoundException | SQLException ex) {
                 Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -187,10 +188,10 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
             for (SaleItem it : items) {
                 try {
                     if (it.getType() == SaleItem.PRODUCT) {
-                        final Product product = dc.getProduct(it.getItem());
+                        final Product product = dc.getProduct(it.getItemId());
                         g2.drawString(product.getName(), itemCol, y);
                     } else {
-                        final Discount discount = dc.getDiscount(it.getItem());
+                        final Discount discount = dc.getDiscount(it.getItemId());
                         g2.drawString(discount.getName(), itemCol, y);
                     }
                     g2.drawString("" + it.getQuantity(), quantityCol, y);
@@ -216,7 +217,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        panelSearch = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -242,7 +243,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
         jLabel9 = new javax.swing.JLabel();
         txtProfitPreTax = new javax.swing.JTextField();
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Search By"));
+        panelSearch.setBorder(javax.swing.BorderFactory.createTitledBorder("Search By"));
 
         jLabel1.setText("Department:");
 
@@ -281,56 +282,56 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout panelSearchLayout = new javax.swing.GroupLayout(panelSearch);
+        panelSearch.setLayout(panelSearchLayout);
+        panelSearchLayout.setHorizontalGroup(
+            panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelSearchLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel2)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(cmbDepartment, 0, 146, Short.MAX_VALUE)
                     .addComponent(cmbCategory, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(chkAllCat, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(chkAllDep, javax.swing.GroupLayout.Alignment.LEADING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel4)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(spinStart)
                     .addComponent(spinEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnGenerate, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(121, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        panelSearchLayout.setVerticalGroup(
+            panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelSearchLayout.createSequentialGroup()
+                .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(btnGenerate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(panelSearchLayout.createSequentialGroup()
+                            .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel3)
                                 .addComponent(spinStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel4)
                                 .addComponent(spinEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addGroup(panelSearchLayout.createSequentialGroup()
+                        .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
                             .addComponent(cmbDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(chkAllDep))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(cmbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(chkAllCat))))
@@ -452,7 +453,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
@@ -460,7 +461,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panelSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -509,7 +510,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
 
                 for (SaleItem i : saleItems) {
                     if (i.getType() == SaleItem.PRODUCT) {
-                        final Product product = dc.getProduct(i.getItem());
+                        final Product product = (Product) i.getItem();
                         final BigDecimal in = i.getPrice().multiply(new BigDecimal(i.getQuantity()));
                         final BigDecimal out = product.getCostPrice().multiply(new BigDecimal(i.getQuantity()));
                         expenses = expenses.add(out);
@@ -527,14 +528,28 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                 txtProfitPreTax.setText("£" + new DecimalFormat("0.00").format(profitBeforeTax));
                 txtTax.setText("£" + new DecimalFormat("0.00").format(tax));
                 txtNet.setText("£" + new DecimalFormat("0.00").format(profitBeforeTax.subtract(tax)));
-            } catch (IOException | SQLException | ProductNotFoundException | JTillException ex) {
+            } catch (IOException | SQLException | JTillException ex) {
                 Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
+                panelSearch.setEnabled(true);
+                for (Component comp : panelSearch.getComponents()) {
+                    comp.setEnabled(true);
+                }
+                if (chkAllCat.isSelected()) {
+                    cmbCategory.setEnabled(false);
+                }
+                if (chkAllDep.isSelected()) {
+                    cmbDepartment.setEnabled(false);
+                }
                 mDialog.hide();
             }
         };
         final Thread thread = new Thread(run);
         thread.start();
+        panelSearch.setEnabled(false);
+        for (Component comp : panelSearch.getComponents()) {
+            comp.setEnabled(false);
+        }
         mDialog.show();
     }//GEN-LAST:event_btnGenerateActionPerformed
 
@@ -561,9 +576,9 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel panelSearch;
     private javax.swing.JSpinner spinEnd;
     private javax.swing.JSpinner spinStart;
     private javax.swing.JTable table;

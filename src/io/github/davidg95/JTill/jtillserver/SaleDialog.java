@@ -99,10 +99,10 @@ public class SaleDialog extends javax.swing.JInternalFrame {
                 }
                 Object[] s;
                 if (item.getType() == SaleItem.PRODUCT) {
-                    final Product p = dc.getProduct(item.getItem());
+                    final Product p = dc.getProduct(item.getItemId());
                     s = new Object[]{item.getQuantity(), p.getName(), df.format(item.getPrice().doubleValue() * item.getQuantity())};
                 } else {
-                    final Discount d = dc.getDiscount(item.getItem());
+                    final Discount d = dc.getDiscount(item.getItemId());
                     s = new Object[]{item.getQuantity(), d.getName(), df.format(item.getPrice().doubleValue() * item.getQuantity())};
                 }
                 model.addRow(s);
@@ -194,10 +194,10 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             for (SaleItem it : toPrint.getSaleItems()) {
                 try {
                     if (it.getType() == SaleItem.PRODUCT) {
-                        final Product p = dc.getProduct(it.getItem());
+                        final Product p = dc.getProduct(it.getItemId());
                         g2.drawString(p.getName(), item, y);
                     } else {
-                        final Discount d = dc.getDiscount(it.getItem());
+                        final Discount d = dc.getDiscount(it.getItemId());
                         g2.drawString(d.getName(), item, y);
                     }
                     g2.drawString("" + it.getQuantity(), quantity, y);

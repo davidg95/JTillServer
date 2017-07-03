@@ -1193,10 +1193,14 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemServerOptionsActionPerformed
 
     private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
-        JOptionPane.showMessageDialog(null, "JTill Server is running on port number "
-                + settings.getSetting("port") + " with " + clientCounter + " connections.\n"
-                + dc.toString(), "JTill Server",
-                JOptionPane.INFORMATION_MESSAGE);
+        try {
+            JOptionPane.showMessageDialog(this, "JTill Server is running on port number "
+                    + dc.getSetting("port") + " with " + clientCounter + " connections.\n"
+                    + dc.toString(), "JTill Server",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_itemAboutActionPerformed
 
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
