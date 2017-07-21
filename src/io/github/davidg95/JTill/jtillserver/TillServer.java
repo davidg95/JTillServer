@@ -89,7 +89,7 @@ public class TillServer {
         }
         try {
             TillSplashScreen.setLabel("Starting server socket");
-            connThread = new ConnectionAcceptThread(dc);
+            connThread = new ConnectionAcceptThread();
             TillSplashScreen.addBar(10);
         } catch (IOException ex) {
         }

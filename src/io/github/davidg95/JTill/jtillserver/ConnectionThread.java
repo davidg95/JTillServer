@@ -37,7 +37,7 @@ public class ConnectionThread extends Thread {
 
     private static final Logger LOG = Logger.getGlobal();
 
-    private final DataConnect dc; //The main database connection.
+    private final DBConnect dc; //The main database connection.
 
     private ObjectInputStream obIn; //InputStream for receiving data.
     private ObjectOutputStream obOut; //OutputStream for sending data
@@ -62,13 +62,12 @@ public class ConnectionThread extends Thread {
      * Constructor for Connection thread.
      *
      * @param name the name of the thread.
-     * @param dc the data connection.
      * @param s the socket used for this connection.
      */
-    public ConnectionThread(String name, DataConnect dc, Socket s) {
+    public ConnectionThread(String name, Socket s) {
         super(name);
         this.socket = s;
-        this.dc = dc;
+        this.dc = DBConnect.getInstance();
         sem = new Semaphore(1);
     }
 

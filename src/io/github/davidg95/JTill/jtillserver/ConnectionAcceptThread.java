@@ -36,22 +36,19 @@ public class ConnectionAcceptThread extends Thread {
     private final Settings settings;
 
     private final ServerSocket socket;
-    private final DataConnect dc;
     
     public static List<ConnectionThread> connections;
 
     /**
      * Constructor which starts the ThreadPoolExcecutor.
      *
-     * @param dc the data connection.
      * @param PORT the port number to listen on.
      * @throws IOException if there was a network error.
      */
-    public ConnectionAcceptThread(DataConnect dc, int PORT) throws IOException {
+    public ConnectionAcceptThread(int PORT) throws IOException {
         super("ConnectionAcceptThread");
         this.socket = new ServerSocket(PORT);
         PORT_IN_USE = PORT;
-        this.dc = dc;
         settings = Settings.getInstance();
         connections = new ArrayList<>();
     }
@@ -59,11 +56,10 @@ public class ConnectionAcceptThread extends Thread {
     /**
      * Constructor which starts the ThreadPoolExcecutor on the default port.
      *
-     * @param dc the data connection.
      * @throws IOException if there was a network error.
      */
-    public ConnectionAcceptThread(DataConnect dc) throws IOException {
-        this(dc, Settings.DEFAULT_PORT);
+    public ConnectionAcceptThread() throws IOException {
+        this(Settings.DEFAULT_PORT);
     }
     
     public static void removeConnection(ConnectionThread th){
@@ -86,7 +82,7 @@ public class ConnectionAcceptThread extends Thread {
         for (;;) {
             try {
                 Socket incoming = socket.accept(); //Wait for a connection.
-                ConnectionThread th = new ConnectionThread(socket.getInetAddress().getHostAddress(), dc, incoming);
+                ConnectionThread th = new ConnectionThread(socket.getInetAddress().getHostAddress(), incoming);
                 pool.submit(th); //Submit the socket to the excecutor.
                 connections.add(th);
             } catch (IOException ex) {
