@@ -7,6 +7,7 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.TillSplashScreen;
 import io.github.davidg95.JTill.jtill.*;
+import io.github.davidg95.jconn.JConnServer;
 import java.awt.AWTException;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
@@ -36,10 +37,6 @@ public class TillServer {
      * The GUI.
      */
     public static GUI g;
-    /**
-     * The thread which handle incoming connections.
-     */
-    private ConnectionAcceptThread connThread;
 
     /**
      * The image icon for the windows.
@@ -54,6 +51,8 @@ public class TillServer {
     private Settings settings;
     
     public static final String VERSION = "v0.0.1";
+    
+    public static final int PORT_IN_USE = 52341;
 
     /**
      * @param args the command line arguments
@@ -87,12 +86,6 @@ public class TillServer {
             g = GUI.create(dc, false, icon);
             setSystemTray();
         }
-        try {
-            TillSplashScreen.setLabel("Starting server socket");
-            connThread = new ConnectionAcceptThread();
-            TillSplashScreen.addBar(10);
-        } catch (IOException ex) {
-        }
     }
 
     /**
@@ -100,8 +93,11 @@ public class TillServer {
      */
     public void start() {
         g.databaseLogin();
-        if (connThread != null) {
-            connThread.start();
+        try {
+            TillSplashScreen.setLabel("Starting server socket");
+            JConnServer.start(PORT_IN_USE, ConnectionThread.class);
+            TillSplashScreen.addBar(10);
+        } catch (IOException ex) {
         }
         TillSplashScreen.addBar(24);
         TillSplashScreen.hideSplashScreen();

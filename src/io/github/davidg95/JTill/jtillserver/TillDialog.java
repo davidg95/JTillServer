@@ -6,10 +6,8 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.Window;
+import io.github.davidg95.jconn.JConnServer;
+import io.github.davidg95.jconn.JConnThread;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -63,14 +61,13 @@ public class TillDialog extends javax.swing.JInternalFrame {
             txtLastContact.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(till.getLastContact()));
         }
         txtStaff.setText("Not logged in");
-        for (ConnectionThread thread : ConnectionAcceptThread.connections) {
-            if (thread.till.equals(t)) {
-                Staff s = thread.staff;
-                if (s == null) {
-                    txtStaff.setText("Not logged in");
-                } else {
-                    txtStaff.setText(thread.staff.getName());
-                }
+        for (JConnThread thread : JConnServer.getClientConnections()) {
+            final ConnectionThread th = (ConnectionThread) thread.getMethodClass();
+            Staff s = th.staff;
+            if (s == null) {
+                txtStaff.setText("Not logged in");
+            } else {
+                txtStaff.setText(th.staff.getName());
             }
         }
         model = (DefaultTableModel) table.getModel();
