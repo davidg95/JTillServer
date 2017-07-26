@@ -41,15 +41,9 @@ public class ConnectionThread {
     }
 
     @JConnMethod("UUID")
-    public boolean initialConnection(@JConnParameter("UUID") UUID uuid, @JConnParameter("SITE") String site) {
+    public Till initialConnection(@JConnParameter("UUID") UUID uuid, @JConnParameter("SITE") String site) {
         till = dc.connectTill(site, uuid);
-
-        if (till == null) {
-            return false;
-        } else {
-            LOG.log(Level.INFO, till.getName() + " has connected");
-            return true;
-        }
+        return till;
     }
 
     @JConnMethod("NEWPRODUCT")
