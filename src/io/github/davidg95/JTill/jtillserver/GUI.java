@@ -7,6 +7,7 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.TillSplashScreen;
 import io.github.davidg95.JTill.jtill.*;
+import io.github.davidg95.jconn.JConnData;
 import java.awt.Desktop;
 import java.awt.Image;
 import java.awt.SystemTray;
@@ -80,7 +81,7 @@ public class GUI extends JFrame implements GUIInterface {
 
     private int warningCount;
     private LinkedList<String> warningsList;
-    
+
     private ModalDialog mDialog;
 
     /**
@@ -271,6 +272,9 @@ public class GUI extends JFrame implements GUIInterface {
     public void log(Object o) {
         txtLog.append(o.toString() + "\n");
         txtLog.setCaretPosition(txtLog.getDocument().getLength());
+        if (TillServer.server != null) {
+            TillServer.server.sendData(null, JConnData.create("LOG").addParam("MESSAGE", o.toString()));
+        }
     }
 
     @Override
@@ -372,9 +376,9 @@ public class GUI extends JFrame implements GUIInterface {
     @Override
     public void connectionDrop() {
         mDialog = new ModalDialog(this, "Connection lost", "Connection lost");
-        new Thread(){
+        new Thread() {
             @Override
-            public void run(){
+            public void run() {
                 mDialog.show();
             }
         }.start();

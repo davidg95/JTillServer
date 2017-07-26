@@ -1,9 +1,5 @@
-JTill log Wed Jul 26 13:29:33 BST 2017
-[13:29:33] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[13:29:38] [INFO] David Grant has logged in
-[13:29:49] [INFO] David Grant has logged in from DAVID-PC
-[13:29:55] [WARNING] 4 is below minimum stock level
-[13:29:55] [WARNING] 5 is below minimum stock level
-[13:29:58] [INFO] Stopping JTIll Server
-[13:29:58] [INFO] Saving properties
-[13:29:58] [INFO] Stopping
+JTill log Wed Jul 26 16:48:22 BST 2017
+[16:48:22] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[16:48:29] [INFO] David Grant has logged in
+[16:48:42] [INFO] David Grant has logged in from DAVID-PC
+[16:48:46] [INFO] David Grant has logged out
