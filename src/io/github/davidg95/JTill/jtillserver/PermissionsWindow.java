@@ -48,11 +48,6 @@ public class PermissionsWindow extends javax.swing.JInternalFrame {
     public PermissionsWindow(DataConnect dc) {
         super();
         this.dc = dc;
-        try {
-            settings = dc.getSettingsInstance();
-        } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
-        }
         initComponents();
 //        setLocationRelativeTo(parent);
 //        setModal(true);

@@ -164,7 +164,7 @@ public class GUI extends JFrame implements GUIInterface {
         } catch (UnknownHostException ex) {
             lblServerAddress.setText("Local Server Address: UNKNOWN");
         }
-        lblPort.setText("Port Number: " + ConnectionAcceptThread.PORT_IN_USE);
+        lblPort.setText("Port Number: " + TillServer.PORT_IN_USE);
     }
 
     @Override
