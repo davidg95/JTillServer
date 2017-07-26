@@ -80,6 +80,8 @@ public class GUI extends JFrame implements GUIInterface {
 
     private int warningCount;
     private LinkedList<String> warningsList;
+    
+    private ModalDialog mDialog;
 
     /**
      * Creates new form GUI
@@ -365,6 +367,22 @@ public class GUI extends JFrame implements GUIInterface {
     @Override
     public void addTill(Till t) {
 
+    }
+
+    @Override
+    public void connectionDrop() {
+        mDialog = new ModalDialog(this, "Connection lost", "Connection lost");
+        new Thread(){
+            @Override
+            public void run(){
+                mDialog.show();
+            }
+        }.start();
+    }
+
+    @Override
+    public void connectionReestablish() {
+        mDialog.hide();
     }
 
     private class LogHandler extends Handler {
