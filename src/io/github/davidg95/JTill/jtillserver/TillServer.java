@@ -53,6 +53,8 @@ public class TillServer {
     public static final String VERSION = "v0.0.1";
     
     public static final int PORT_IN_USE = 52341;
+    
+    public static JConnServer server;
 
     /**
      * @param args the command line arguments
@@ -95,7 +97,7 @@ public class TillServer {
         g.databaseLogin();
         try {
             TillSplashScreen.setLabel("Starting server socket");
-            JConnServer.start(PORT_IN_USE, ConnectionThread.class);
+            server = JConnServer.start(PORT_IN_USE, ConnectionThread.class);
             TillSplashScreen.addBar(10);
         } catch (IOException ex) {
         }

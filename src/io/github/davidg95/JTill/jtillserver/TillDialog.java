@@ -61,7 +61,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
             txtLastContact.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(till.getLastContact()));
         }
         txtStaff.setText("Not logged in");
-        for (JConnThread thread : JConnServer.getClientConnections()) {
+        for (JConnThread thread : TillServer.server.getClientConnections()) {
             final ConnectionThread th = (ConnectionThread) thread.getMethodClass();
             Staff s = th.staff;
             if (s == null) {
