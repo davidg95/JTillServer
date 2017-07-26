@@ -5,9 +5,8 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.JConnMethod;
+import io.github.davidg95.jconn.*;
 import io.github.davidg95.JTill.jtill.*;
-import io.github.davidg95.jconn.JConnParameter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
