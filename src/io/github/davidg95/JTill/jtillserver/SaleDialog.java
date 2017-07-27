@@ -90,25 +90,21 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         model.setRowCount(0);
 
         for (SaleItem item : sale.getSaleItems()) {
-            try {
-                DecimalFormat df;
-                if (item.getPrice().compareTo(BigDecimal.ZERO) > 1) {
-                    df = new DecimalFormat("#.00");
-                } else {
-                    df = new DecimalFormat("0.00");
-                }
-                Object[] s;
-                if (item.getType() == SaleItem.PRODUCT) {
-                    final Product p = dc.getProduct(item.getItemId());
-                    s = new Object[]{item.getQuantity(), p.getName(), df.format(item.getPrice().doubleValue() * item.getQuantity())};
-                } else {
-                    final Discount d = dc.getDiscount(item.getItemId());
-                    s = new Object[]{item.getQuantity(), d.getName(), df.format(item.getPrice().doubleValue() * item.getQuantity())};
-                }
-                model.addRow(s);
-            } catch (IOException | ProductNotFoundException | SQLException | DiscountNotFoundException ex) {
-                Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
+            DecimalFormat df;
+            if (item.getPrice().compareTo(BigDecimal.ZERO) > 1) {
+                df = new DecimalFormat("#.00");
+            } else {
+                df = new DecimalFormat("0.00");
             }
+            Object[] s;
+            if (item.getType() == SaleItem.PRODUCT) {
+                final Product p = (Product) item.getItem();
+                s = new Object[]{item.getQuantity(), p.getName(), df.format(item.getPrice().doubleValue() * item.getQuantity())};
+            } else {
+                final Discount d = (Discount) item.getItem();
+                s = new Object[]{item.getQuantity(), d.getName(), df.format(item.getPrice().doubleValue() * item.getQuantity())};
+            }
+            model.addRow(s);
         }
 
         tableItems.setModel(model);
@@ -192,20 +188,16 @@ public class SaleDialog extends javax.swing.JInternalFrame {
 
             //Print the sale items.
             for (SaleItem it : toPrint.getSaleItems()) {
-                try {
-                    if (it.getType() == SaleItem.PRODUCT) {
-                        final Product p = dc.getProduct(it.getItemId());
-                        g2.drawString(p.getName(), item, y);
-                    } else {
-                        final Discount d = dc.getDiscount(it.getItemId());
-                        g2.drawString(d.getName(), item, y);
-                    }
-                    g2.drawString("" + it.getQuantity(), quantity, y);
-                    g2.drawString("£" + it.getPrice().setScale(2), total, y);
-                    y += 30;
-                } catch (IOException | ProductNotFoundException | SQLException | DiscountNotFoundException ex) {
-                    Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
+                if (it.getType() == SaleItem.PRODUCT) {
+                    final Product p = (Product) it.getItem();
+                    g2.drawString(p.getName(), item, y);
+                } else {
+                    final Discount d = (Discount) it.getItem();
+                    g2.drawString(d.getName(), item, y);
                 }
+                g2.drawString("" + it.getQuantity(), quantity, y);
+                g2.drawString("£" + it.getPrice().setScale(2), total, y);
+                y += 30;
             }
             g2.drawLine(item - 30, y - 20, total + 100, y - 20);
             g2.drawString("Total: £" + toPrint.getTotal().setScale(2), total, y);

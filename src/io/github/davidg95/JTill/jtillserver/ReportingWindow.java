@@ -96,12 +96,8 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     private void updateTable() {
         model.setRowCount(0);
         for (SaleItem i : items) {
-            try {
-                final Product p = dc.getProduct(i.getItemId());
-                model.addRow(new Object[]{i.getId(), p.getName(), i.getQuantity(), new DecimalFormat("#.00").format(i.getPrice().multiply(new BigDecimal(i.getQuantity())))});
-            } catch (IOException | ProductNotFoundException | SQLException ex) {
-                Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            final Product p = (Product) i.getItem();
+            model.addRow(new Object[]{i.getId(), p.getName(), i.getQuantity(), new DecimalFormat("#.00").format(i.getPrice().multiply(new BigDecimal(i.getQuantity())))});
         }
     }
 
@@ -186,20 +182,16 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
 
             //Print the sale items.
             for (SaleItem it : items) {
-                try {
-                    if (it.getType() == SaleItem.PRODUCT) {
-                        final Product product = dc.getProduct(it.getItemId());
-                        g2.drawString(product.getName(), itemCol, y);
-                    } else {
-                        final Discount discount = dc.getDiscount(it.getItemId());
-                        g2.drawString(discount.getName(), itemCol, y);
-                    }
-                    g2.drawString("" + it.getQuantity(), quantityCol, y);
-                    g2.drawString("£" + it.getPrice(), totalCol, y);
-                    y += 30;
-                } catch (IOException | ProductNotFoundException | SQLException | DiscountNotFoundException ex) {
-                    Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
+                if (it.getType() == SaleItem.PRODUCT) {
+                    final Product product = (Product) it.getItem();
+                    g2.drawString(product.getName(), itemCol, y);
+                } else {
+                    final Discount discount = (Discount) it.getItem();
+                    g2.drawString(discount.getName(), itemCol, y);
                 }
+                g2.drawString("" + it.getQuantity(), quantityCol, y);
+                g2.drawString("£" + it.getPrice(), totalCol, y);
+                y += 30;
             }
             g2.drawLine(itemCol - 30, y - 20, totalCol + 100, y - 20);
 
