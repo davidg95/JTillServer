@@ -50,6 +50,11 @@ public class ConnectionHandler {
         return till;
     }
 
+    @JConnMethod("RECONNECT")
+    public void reconnect(@JConnParameter("UUID") UUID uuid, @JConnParameter("SITE") String site) {
+        till = dc.connectTill(site, uuid);
+    }
+
     @JConnMethod("PROPERTIES")
     public Properties getProperties() {
         return Settings.getInstance().getProperties();
@@ -181,7 +186,7 @@ public class ConnectionHandler {
     public Sale addSale(@JConnParameter("SALE") Sale s) throws IOException, SQLException {
         return dc.addSale(s);
     }
-    
+
     @JConnMethod("SENDSALES")
     public void sendSales(@JConnParameter("SALES") List<Sale> sales) throws IOException, SQLException {
         gui.setTaskLabel("Receiving sales from terminal");
