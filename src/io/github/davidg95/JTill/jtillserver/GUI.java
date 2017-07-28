@@ -8,6 +8,7 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.TillSplashScreen;
 import io.github.davidg95.JTill.jtill.*;
 import io.github.davidg95.jconn.JConnData;
+import io.github.davidg95.jconn.JConnThread;
 import java.awt.Desktop;
 import java.awt.Image;
 import java.awt.SystemTray;
@@ -498,7 +499,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemTaxes = new javax.swing.JMenuItem();
         itemPluSettings = new javax.swing.JMenuItem();
         itemLoyalty = new javax.swing.JMenuItem();
-        itemDatabase = new javax.swing.JMenuItem();
+        itemReinitTills = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         itemSalesReporting = new javax.swing.JMenuItem();
         itemTransactionViewer = new javax.swing.JMenuItem();
@@ -1001,9 +1002,13 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemLoyalty);
 
-        itemDatabase.setText("Database Settings");
-        itemDatabase.setEnabled(false);
-        menuSetup.add(itemDatabase);
+        itemReinitTills.setText("Reinitialise all tills");
+        itemReinitTills.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemReinitTillsActionPerformed(evt);
+            }
+        });
+        menuSetup.add(itemReinitTills);
 
         jMenuBar1.add(menuSetup);
 
@@ -1467,6 +1472,10 @@ public class GUI extends JFrame implements GUIInterface {
         StaffReportingWindow.showWindow();
     }//GEN-LAST:event_itemStaffReportingActionPerformed
 
+    private void itemReinitTillsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReinitTillsActionPerformed
+        TillServer.server.sendData(null, JConnData.create("LOGOUT"));
+    }//GEN-LAST:event_itemReinitTillsActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1487,7 +1496,6 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemCheckDatabase;
     private javax.swing.JMenuItem itemCreateNewProduct;
     private javax.swing.JMenuItem itemCustomers;
-    private javax.swing.JMenuItem itemDatabase;
     private javax.swing.JMenuItem itemDepartments;
     private javax.swing.JMenuItem itemDiscounts;
     private javax.swing.JMenuItem itemEnquiry;
@@ -1499,6 +1507,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemPluSettings;
     private javax.swing.JMenuItem itemReasons;
     private javax.swing.JMenuItem itemReceive;
+    private javax.swing.JMenuItem itemReinitTills;
     private javax.swing.JMenuItem itemSalesReporting;
     private javax.swing.JMenuItem itemServerOptions;
     private javax.swing.JMenuItem itemStaff;

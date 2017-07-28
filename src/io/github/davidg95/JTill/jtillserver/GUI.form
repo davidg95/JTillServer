@@ -239,11 +239,13 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemLoyaltyActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="itemDatabase">
+            <MenuItem class="javax.swing.JMenuItem" name="itemReinitTills">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Database Settings"/>
-                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="text" type="java.lang.String" value="Reinitialise all tills"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemReinitTillsActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
