@@ -14,6 +14,7 @@ import java.sql.Time;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,17 +34,25 @@ public class ConnectionHandler {
     public Staff staff; //The staff member currently logged on.
     public Till till; //The till that is using this connection.
 
+    private final GUI gui;
+
     /**
      * Constructor for Connection thread.
      */
     public ConnectionHandler() {
         this.dc = DBConnect.getInstance();
+        this.gui = GUI.gui;
     }
 
     @JConnMethod("UUID")
     public Till initialConnection(@JConnParameter("UUID") UUID uuid, @JConnParameter("SITE") String site) {
         till = dc.connectTill(site, uuid);
         return till;
+    }
+
+    @JConnMethod("PROPERTIES")
+    public Properties getProperties() {
+        return Settings.getInstance().getProperties();
     }
 
     @JConnMethod("NEWPRODUCT")
@@ -171,6 +180,15 @@ public class ConnectionHandler {
     @JConnMethod("ADDSALE")
     public Sale addSale(@JConnParameter("SALE") Sale s) throws IOException, SQLException {
         return dc.addSale(s);
+    }
+    
+    @JConnMethod("SENDSALES")
+    public void sendSales(@JConnParameter("SALES") List<Sale> sales) throws IOException, SQLException {
+        gui.setTaskLabel("Receiving sales from terminal");
+        for (Sale s : sales) {
+            dc.addSale(s);
+        }
+        gui.setTaskLabel("");
     }
 
     @JConnMethod("GETALLSALES")

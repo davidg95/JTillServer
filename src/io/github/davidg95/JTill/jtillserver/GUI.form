@@ -578,7 +578,7 @@
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   <Component id="lblClients" min="-2" pref="140" max="-2" attributes="0"/>
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                  <Component id="jLabel1" pref="318" max="32767" attributes="0"/>
+                  <Component id="lblTask" pref="318" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -588,7 +588,7 @@
               <Component id="lblHelp" alignment="0" max="32767" attributes="0"/>
               <Component id="lblUser" alignment="0" max="32767" attributes="0"/>
               <Component id="lblClients" alignment="0" max="32767" attributes="0"/>
-              <Component id="jLabel1" alignment="1" max="32767" attributes="0"/>
+              <Component id="lblTask" alignment="1" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -645,7 +645,7 @@
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lblClientsMouseClicked"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel1">
+        <Component class="javax.swing.JLabel" name="lblTask">
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">

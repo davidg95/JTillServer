@@ -6,7 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import io.github.davidg95.jconn.JConnServer;
+import io.github.davidg95.jconn.JConnData;
 import io.github.davidg95.jconn.JConnThread;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
@@ -17,7 +17,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -27,8 +26,6 @@ import javax.swing.table.DefaultTableModel;
  * @author David
  */
 public class TillDialog extends javax.swing.JInternalFrame {
-
-    private static JDialog dialog;
 
     private Till till;
     private final DataConnect dc;
@@ -66,8 +63,10 @@ public class TillDialog extends javax.swing.JInternalFrame {
             Staff s = th.staff;
             if (s == null) {
                 txtStaff.setText("Not logged in");
+                btnLogout.setEnabled(false);
             } else {
                 txtStaff.setText(th.staff.getName());
+                btnLogout.setEnabled(true);
             }
         }
         model = (DefaultTableModel) table.getModel();
@@ -128,8 +127,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
         btnCashup = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        btnLogout = new javax.swing.JButton();
 
         lblID.setText("Till ID: ");
 
@@ -191,6 +189,13 @@ public class TillDialog extends javax.swing.JInternalFrame {
             table.getColumnModel().getColumn(2).setResizable(false);
         }
 
+        btnLogout.setText("Logout");
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -212,10 +217,13 @@ public class TillDialog extends javax.swing.JInternalFrame {
                         .addComponent(txtUncashedTakings, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCashup))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(txtLastContact, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                        .addComponent(txtStaff, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtName, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtLastContact, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                            .addComponent(txtStaff, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtName, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnLogout))
                     .addComponent(btnClose))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
@@ -246,7 +254,8 @@ public class TillDialog extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblStaff)
-                            .addComponent(txtStaff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtStaff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnLogout))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblLastContact)
@@ -337,9 +346,22 @@ public class TillDialog extends javax.swing.JInternalFrame {
         }).start();
     }//GEN-LAST:event_btnCashupActionPerformed
 
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        for (JConnThread th : TillServer.server.getClientConnections()) {
+            if (this.till.getId() == ((ConnectionHandler) th.getMethodClass()).till.getId()) {
+                try {
+                    th.sendData(JConnData.create("LOGOUT"));
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Network Error", "Logout", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }//GEN-LAST:event_btnLogoutActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCashup;
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnLogout;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblID;
     private javax.swing.JLabel lblLastContact;

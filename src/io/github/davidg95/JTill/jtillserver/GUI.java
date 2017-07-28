@@ -138,6 +138,10 @@ public class GUI extends JFrame implements GUIInterface {
         warningsList = new LinkedList<>();
         warningCount = 0;
     }
+    
+    public void setTaskLabel(String message){
+        lblTask.setText(message);
+    }
 
     /**
      * Creates a new instance of the GUI.
@@ -389,6 +393,12 @@ public class GUI extends JFrame implements GUIInterface {
         mDialog.hide();
     }
 
+    @Override
+    public void initTill() {
+        
+        this.logout();
+    }
+
     private class LogHandler extends Handler {
 
         @Override
@@ -452,7 +462,7 @@ public class GUI extends JFrame implements GUIInterface {
         lblUser = new javax.swing.JLabel();
         lblWarnings = new javax.swing.JLabel();
         lblClients = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        lblTask = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtLog = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
@@ -705,7 +715,7 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
 
-        jLabel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        lblTask.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         javax.swing.GroupLayout statusBarLayout = new javax.swing.GroupLayout(statusBar);
         statusBar.setLayout(statusBarLayout);
@@ -720,7 +730,7 @@ public class GUI extends JFrame implements GUIInterface {
                 .addGap(0, 0, 0)
                 .addComponent(lblClients, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE))
+                .addComponent(lblTask, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE))
         );
         statusBarLayout.setVerticalGroup(
             statusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -728,7 +738,7 @@ public class GUI extends JFrame implements GUIInterface {
             .addComponent(lblHelp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblClients, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lblTask, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         txtLog.setEditable(false);
@@ -1504,7 +1514,6 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemUpdate;
     private javax.swing.JMenuItem itemWasteReports;
     private javax.swing.JMenuItem itemWasteStock;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
@@ -1514,6 +1523,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JLabel lblHelp;
     private javax.swing.JLabel lblPort;
     private javax.swing.JLabel lblServerAddress;
+    private javax.swing.JLabel lblTask;
     private javax.swing.JLabel lblUser;
     private javax.swing.JLabel lblWarnings;
     private javax.swing.JMenu menuFile;
