@@ -62,7 +62,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
         }
         txtStaff.setText("Not logged in");
         for (JConnThread thread : TillServer.server.getClientConnections()) {
-            final ConnectionThread th = (ConnectionThread) thread.getMethodClass();
+            final ConnectionHandler th = (ConnectionHandler) thread.getMethodClass();
             Staff s = th.staff;
             if (s == null) {
                 txtStaff.setText("Not logged in");

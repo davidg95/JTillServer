@@ -48,7 +48,7 @@ public class TillServer {
     public static TrayIcon trayIcon;
     public static SystemTray tray;
 
-    private Settings settings;
+    private final Settings settings;
     
     public static final String VERSION = "v0.0.1";
     
@@ -97,7 +97,7 @@ public class TillServer {
         g.databaseLogin();
         try {
             TillSplashScreen.setLabel("Starting server socket");
-            server = JConnServer.start(PORT_IN_USE, ConnectionThread.class);
+            server = JConnServer.start(PORT_IN_USE, ConnectionHandler.class);
             TillSplashScreen.addBar(10);
         } catch (IOException ex) {
         }
