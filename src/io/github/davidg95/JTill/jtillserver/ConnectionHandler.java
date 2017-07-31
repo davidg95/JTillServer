@@ -43,8 +43,8 @@ public class ConnectionHandler {
         this.dc = DBConnect.getInstance();
         this.gui = GUI.gui;
     }
-
-    @JConnMethod("UUID")
+    
+    @JConnMethod("CONNECT")
     public Till initialConnection(@JConnParameter("UUID") UUID uuid, @JConnParameter("SITE") String site) {
         till = dc.connectTill(site, uuid);
         return till;
