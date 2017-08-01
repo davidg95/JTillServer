@@ -1,2 +1,22 @@
-JTill log Mon Jul 31 16:58:29 BST 2017
-[16:58:29] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+JTill log Tue Aug 01 14:01:26 BST 2017
+[14:01:26] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[14:01:33] [INFO] David Grant has logged in from DAVID-PC
+[14:01:34] [INFO] David Grant has logged out
+[14:01:38] [INFO] David Grant has logged in from DAVID-PC
+[14:01:39] [INFO] David Grant has logged out
+[14:01:46] [INFO] David Grant has logged in from DAVID-PC
+[14:01:47] [INFO] David Grant has logged out
+[14:01:48] [INFO] David Grant has logged in from DAVID-PC
+[14:01:49] [INFO] David Grant has logged out
+[14:01:51] [INFO] David Grant has logged in from DAVID-PC
+[14:01:58] [INFO] David Grant has logged out
+[14:03:58] [INFO] David Grant has logged in from DAVID-PC
+[14:03:59] [INFO] David Grant has logged out
+[14:04:37] [INFO] David Grant has logged in from DAVID-PC
+[14:04:38] [INFO] David Grant has logged out
+[14:04:42] [INFO] David Grant has logged in from DAVID-PC
+[14:04:43] [INFO] David Grant has logged out
+[14:04:44] [INFO] David Grant has logged in from DAVID-PC
+[14:04:45] [INFO] David Grant has logged out
+[14:04:48] [INFO] David Grant has logged in from DAVID-PC
+[14:04:50] [INFO] David Grant has logged out

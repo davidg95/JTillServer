@@ -172,6 +172,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             chkTerminal.setSelected(dc.getSetting("SHOW_TERMINAL_RECEIPT").equals("true"));
             chkEmailPrompt.setSelected(dc.getSetting("PROMPT_EMAIL_RECEIPT", "false").equals("true"));
             chkUpdate.setSelected(dc.getSetting("UPDATE_STARTUP", "true").equals("true"));
+            chkCode.setSelected(dc.getSetting("LOGINTYPE", "CODE").equals("CODE"));
         } catch (IOException ex) {
 
         }
@@ -207,6 +208,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         panelSecurity = new javax.swing.JPanel();
         chkLogOut = new javax.swing.JCheckBox();
         btnSaveSecurity = new javax.swing.JButton();
+        chkCode = new javax.swing.JCheckBox();
         jPanel1 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -399,14 +401,18 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        chkCode.setText("Use code for login");
+
         javax.swing.GroupLayout panelSecurityLayout = new javax.swing.GroupLayout(panelSecurity);
         panelSecurity.setLayout(panelSecurityLayout);
         panelSecurityLayout.setHorizontalGroup(
             panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelSecurityLayout.createSequentialGroup()
-                .addGroup(panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnSaveSecurity)
-                    .addComponent(chkLogOut))
+                .addGroup(panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(btnSaveSecurity)
+                        .addComponent(chkLogOut))
+                    .addComponent(chkCode))
                 .addContainerGap(146, Short.MAX_VALUE))
         );
         panelSecurityLayout.setVerticalGroup(
@@ -414,8 +420,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             .addGroup(panelSecurityLayout.createSequentialGroup()
                 .addComponent(chkLogOut)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSaveSecurity)
-                .addContainerGap())
+                .addComponent(chkCode)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnSaveSecurity))
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Email Settings"));
@@ -440,7 +447,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(102, 102, 102)
                 .addComponent(btnSave)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(162, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel11)
@@ -707,9 +714,8 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(panelSecurity, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(panelSecurity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -755,12 +761,12 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                             .addComponent(btnPermissions, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(34, 34, 34))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(panelSecurity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(panelSecurity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap())))
         );
 
         pack();
@@ -865,6 +871,11 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 dc.setSetting("AUTO_LOGOUT", "TRUE");
             } else {
                 dc.setSetting("AUTO_LOGOUT", "FALSE");
+            }
+            if(chkCode.isSelected()){
+                dc.setSetting("LOGINTYPE", "CODE");
+            } else{
+                dc.setSetting("LOGINTYPE", "BUTTONS");
             }
             JOptionPane.showMessageDialog(this, "Security settings have been saved", "Security Settings", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
@@ -1116,6 +1127,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnSetLAF;
     private javax.swing.JCheckBox chkAddress;
     private javax.swing.JCheckBox chkApproveNew;
+    private javax.swing.JCheckBox chkCode;
     private javax.swing.JCheckBox chkEmailPrompt;
     private javax.swing.JCheckBox chkLogOut;
     private javax.swing.JCheckBox chkSendProducts;
