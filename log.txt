@@ -1,37 +1,5 @@
-JTill log Wed Aug 02 17:04:45 BST 2017
-[17:04:45] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[17:04:50] [INFO] David Grant has logged in
-[17:04:57] [INFO] David Grant has logged in from DAVID-PC
-[17:05:00] [INFO] David Grant has logged out
-[17:05:16] [INFO] David Grant has logged in from DAVID-PC
-[17:05:17] [INFO] David Grant has logged out
-[17:05:18] [INFO] David Grant has logged in from DAVID-PC
-[17:05:20] [INFO] David Grant has logged out
-[17:05:21] [INFO] David Grant has logged in from DAVID-PC
-[17:05:22] [INFO] David Grant has logged out
-[17:09:20] [INFO] David Grant has logged in from DAVID-PC
-[17:10:39] [INFO] David Grant has logged in from DAVID-PC
-[17:10:42] [INFO] David Grant has logged out
-[17:10:43] [INFO] David Grant has logged in from DAVID-PC
-[17:10:44] [INFO] David Grant has logged out
-[17:10:53] [INFO] David Grant has logged in from DAVID-PC
-[17:10:55] [INFO] David Grant has logged out
-[17:11:19] [INFO] David Grant has logged in from DAVID-PC
-[17:13:02] [INFO] David Grant has logged in from DAVID-PC
-[17:13:03] [INFO] David Grant has logged out
-[17:13:05] [INFO] David Grant has logged in from DAVID-PC
-[17:13:06] [INFO] David Grant has logged out
-[17:13:08] [INFO] David Grant has logged in from DAVID-PC
-[17:13:12] [INFO] David Grant has logged out
-[17:13:21] [INFO] David Grant has logged in from DAVID-PC
-[17:13:24] [INFO] David Grant has logged out
-[17:13:25] [INFO] David Grant has logged in from DAVID-PC
-[17:13:30] [INFO] David Grant has logged out
-[17:13:44] [INFO] David Grant has logged in from DAVID-PC
-[17:13:45] [INFO] David Grant has logged out
-[17:13:46] [INFO] David Grant has logged in from DAVID-PC
-[17:13:47] [INFO] David Grant has logged out
-[17:13:48] [INFO] David Grant has logged in from DAVID-PC
-[17:13:50] [INFO] David Grant has logged out
-[17:13:50] [INFO] David Grant has logged in from DAVID-PC
-[17:13:52] [INFO] David Grant has logged out
+JTill log Wed Aug 02 17:47:31 BST 2017
+[17:47:31] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[17:47:36] [INFO] David Grant has logged in
+[17:47:44] [INFO] David Grant has logged in from DAVID-PC
+[17:48:44] [INFO] David Grant has logged out
