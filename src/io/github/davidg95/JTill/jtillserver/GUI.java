@@ -500,6 +500,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemPluSettings = new javax.swing.JMenuItem();
         itemLoyalty = new javax.swing.JMenuItem();
         itemReinitTills = new javax.swing.JMenuItem();
+        itemDatabase = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         itemSalesReporting = new javax.swing.JMenuItem();
         itemTransactionViewer = new javax.swing.JMenuItem();
@@ -1010,6 +1011,14 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemReinitTills);
 
+        itemDatabase.setText("Database");
+        itemDatabase.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemDatabaseActionPerformed(evt);
+            }
+        });
+        menuSetup.add(itemDatabase);
+
         jMenuBar1.add(menuSetup);
 
         jMenu1.setText("Report");
@@ -1476,6 +1485,10 @@ public class GUI extends JFrame implements GUIInterface {
         TillServer.server.sendData(null, JConnData.create("LOGOUT"));
     }//GEN-LAST:event_itemReinitTillsActionPerformed
 
+    private void itemDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDatabaseActionPerformed
+        DatabaseWindow.showDatabaseWindow();
+    }//GEN-LAST:event_itemDatabaseActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1496,6 +1509,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemCheckDatabase;
     private javax.swing.JMenuItem itemCreateNewProduct;
     private javax.swing.JMenuItem itemCustomers;
+    private javax.swing.JMenuItem itemDatabase;
     private javax.swing.JMenuItem itemDepartments;
     private javax.swing.JMenuItem itemDiscounts;
     private javax.swing.JMenuItem itemEnquiry;

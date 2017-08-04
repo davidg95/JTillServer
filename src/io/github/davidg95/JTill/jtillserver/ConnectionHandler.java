@@ -43,7 +43,7 @@ public class ConnectionHandler {
         this.dc = DBConnect.getInstance();
         this.gui = GUI.gui;
     }
-    
+
     @JConnMethod("CONNECT")
     public Till initialConnection(@JConnParameter("UUID") UUID uuid, @JConnParameter("SITE") String site) {
         till = dc.connectTill(site, uuid);
@@ -808,5 +808,10 @@ public class ConnectionHandler {
     @JConnMethod("GETSTAFFSALES")
     public List<Sale> getStaffSales(@JConnParameter("STAFF") Staff s) throws IOException, SQLException, StaffNotFoundException {
         return dc.getStaffSales(s);
+    }
+
+    @JConnMethod("DATABASEINFO")
+    public Object[] databaseInfo() throws IOException, SQLException {
+        return dc.databaseInfo();
     }
 }

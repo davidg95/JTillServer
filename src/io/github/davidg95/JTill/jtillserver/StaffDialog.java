@@ -78,11 +78,11 @@ public class StaffDialog extends javax.swing.JDialog {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
-    }
+        }
         dialog = new StaffDialog(window, dc, manager);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         staff = null;
-                dialog.setVisible(true);
+        dialog.setVisible(true);
         return staff;
     }
 
@@ -98,7 +98,7 @@ public class StaffDialog extends javax.swing.JDialog {
         dialog = new StaffDialog(window, dc, s);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         staff = s;
-                dialog.setVisible(true);
+        dialog.setVisible(true);
         return staff;
     }
 
@@ -261,7 +261,7 @@ public class StaffDialog extends javax.swing.JDialog {
         int position = cmbPosition.getSelectedIndex() + 1;
         String password = new String(txtPassword.getPassword());
         String confirmPassword = new String(txtPasswordConfirm.getPassword());
-        if(name.length() == 0 || username.length() == 0 || password.length() == 0 || confirmPassword.length() == 0){
+        if (name.length() == 0 || username.length() == 0 || password.length() < 6 || confirmPassword.length() == 0) {
             JOptionPane.showMessageDialog(this, "Fill out all fields", "New Staf", JOptionPane.ERROR_MESSAGE);
             return;
         }
