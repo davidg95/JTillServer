@@ -43,13 +43,13 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         initComponents();
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
+        setVisible(true);
+        GUI.gui.internal.add(this);
         init();
     }
 
     public static void showWindow() {
         final TransactionViewerWindow window = new TransactionViewerWindow();
-        GUI.gui.internal.add(window);
-        window.setVisible(true);
         try {
             window.setSelected(true);
         } catch (PropertyVetoException ex) {
@@ -77,7 +77,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         for (Sale s : tableContents) {
             final Staff staff = s.getStaff();
             final Till till = s.getTerminal();
-            model.addRow(new Object[]{s.getId(), s.getDate(), s.getTotal().setScale(2), staff.getName(), till.getName()});
+            model.addRow(new Object[]{s.getId(), s.getDate(), s.getTotal().setScale(2), Encryptor.decrypt(staff.getName()), till.getName()});
             totalValue = totalValue.add(s.getTotal());
         }
         txtTotalSales.setValue(totalSales);

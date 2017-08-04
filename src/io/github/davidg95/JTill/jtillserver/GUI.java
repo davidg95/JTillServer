@@ -139,8 +139,8 @@ public class GUI extends JFrame implements GUIInterface {
         warningsList = new LinkedList<>();
         warningCount = 0;
     }
-    
-    public void setTaskLabel(String message){
+
+    public void setTaskLabel(String message) {
         lblTask.setText(message);
     }
 
@@ -396,7 +396,7 @@ public class GUI extends JFrame implements GUIInterface {
 
     @Override
     public void initTill() {
-        
+
         this.logout();
     }
 
@@ -1474,7 +1474,14 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemUpdateActionPerformed
 
     private void itemTransactionViewerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTransactionViewerActionPerformed
-        TransactionViewerWindow.showWindow();
+        final ModalDialog mDialog = new ModalDialog(this, "Transactions", "Loading tranactions...");
+        final Runnable run = () -> {
+            TransactionViewerWindow.showWindow();
+            mDialog.hide();
+        };
+        final Thread thread = new Thread(run, "TransactionWindow");
+        thread.start();
+        mDialog.show();
     }//GEN-LAST:event_itemTransactionViewerActionPerformed
 
     private void itemStaffReportingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffReportingActionPerformed

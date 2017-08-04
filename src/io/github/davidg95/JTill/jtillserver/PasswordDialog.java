@@ -155,6 +155,11 @@ public class PasswordDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Password cannot be empty!", "Password", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        
+        if(!Validator.validatePassword(pass1)){
+            JOptionPane.showMessageDialog(this, "Password must be greater than 5 characters", "Password", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         if (!pass1.equals(pass2)) {
             JOptionPane.showMessageDialog(this, "Passwords do not match!", "Password", JOptionPane.ERROR_MESSAGE);

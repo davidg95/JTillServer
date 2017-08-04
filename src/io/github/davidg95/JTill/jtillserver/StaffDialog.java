@@ -261,8 +261,12 @@ public class StaffDialog extends javax.swing.JDialog {
         int position = cmbPosition.getSelectedIndex() + 1;
         String password = new String(txtPassword.getPassword());
         String confirmPassword = new String(txtPasswordConfirm.getPassword());
-        if (name.length() == 0 || username.length() == 0 || password.length() < 6 || confirmPassword.length() == 0) {
+        if (name.length() == 0 || username.length() == 0 || password.length() == 0 || confirmPassword.length() == 0) {
             JOptionPane.showMessageDialog(this, "Fill out all fields", "New Staf", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!Validator.validatePassword(password)) {
+            JOptionPane.showMessageDialog(this, "Password must be greater than 5 characters", "New Staf", JOptionPane.ERROR_MESSAGE);
             return;
         }
         try {
