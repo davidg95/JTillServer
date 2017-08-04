@@ -499,6 +499,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
         txtComments.setColumns(20);
         txtComments.setRows(5);
+        txtComments.setEnabled(false);
         jScrollPane2.setViewportView(txtComments);
 
         txtBarcode.setEditable(false);
