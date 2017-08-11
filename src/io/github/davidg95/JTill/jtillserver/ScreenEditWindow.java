@@ -475,6 +475,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
     private void listMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClicked
         currentScreen = (Screen) model.getElementAt(list.getSelectedIndex());
+        categoryCards.show(panelProducts, currentScreen.getName());
         if (evt.getClickCount() == 2) {
             Screen s = ScreenButtonOptionDialog.showDialog(ScreenEditWindow.this, currentScreen);
             if (s == null) {
