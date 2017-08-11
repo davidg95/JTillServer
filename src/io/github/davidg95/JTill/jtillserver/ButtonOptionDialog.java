@@ -434,6 +434,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             button.setName("[SPACE]");
             txtItem.setName("[SPACE]");
             button.setType(TillButton.SPACE);
+        } else{
+            button.setName(txtItem.getText());
         }
         JOptionPane.showMessageDialog(this, "Size and color saved", "Button Options", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnSaveActionPerformed
