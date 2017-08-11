@@ -500,6 +500,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemPluSettings = new javax.swing.JMenuItem();
         itemLoyalty = new javax.swing.JMenuItem();
         itemReinitTills = new javax.swing.JMenuItem();
+        itemTerminals = new javax.swing.JMenuItem();
         itemDatabase = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         itemSalesReporting = new javax.swing.JMenuItem();
@@ -507,7 +508,6 @@ public class GUI extends JFrame implements GUIInterface {
         itemLabelPrinting = new javax.swing.JMenuItem();
         itemStaffClocking = new javax.swing.JMenuItem();
         itemStaffReporting = new javax.swing.JMenuItem();
-        itemTerminals = new javax.swing.JMenuItem();
         itemWasteReports = new javax.swing.JMenuItem();
 
         setTitle("JTill Server");
@@ -1011,6 +1011,14 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemReinitTills);
 
+        itemTerminals.setText("Terminals");
+        itemTerminals.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemTerminalsActionPerformed(evt);
+            }
+        });
+        menuSetup.add(itemTerminals);
+
         itemDatabase.setText("Database");
         itemDatabase.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1062,14 +1070,6 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         jMenu1.add(itemStaffReporting);
-
-        itemTerminals.setText("Terminals");
-        itemTerminals.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemTerminalsActionPerformed(evt);
-            }
-        });
-        jMenu1.add(itemTerminals);
 
         itemWasteReports.setText("Waste Reports");
         itemWasteReports.addActionListener(new java.awt.event.ActionListener() {
