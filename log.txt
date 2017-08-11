@@ -1,5 +1,5 @@
-JTill log Fri Aug 11 11:55:48 BST 2017
-[11:55:48] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[11:55:48] [INFO] The database does not exist[11:56:04] [INFO] David Grant has logged in from DAVID-PC
-les
-[11:55:48] [SEVERE] The database is already in use. The program will now terminate
+JTill log Fri Aug 11 15:38:49 BST 2017
+[15:38:49] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[15:38:52] [INFO] David Grant has logged in
+[15:39:04] [INFO] David Grant has logged in from DAVID-PC
+[15:39:36] [INFO] David Grant has logged out

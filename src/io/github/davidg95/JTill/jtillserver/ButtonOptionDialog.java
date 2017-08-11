@@ -26,7 +26,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
     private final int maxWidth;
     private final int maxHeight;
-    
+
     /**
      * Creates new form ButtonOptionDialog.
      *
@@ -46,8 +46,15 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         int y = (int) MouseInfo.getPointerInfo().getLocation().getY();
         this.setLocation(x - getWidth() / 2, y - getHeight() / 2);
         setTitle(button.getName());
-        if (button.getName().equals("[SPACE]")) {
-            btnRemove.setEnabled(false);
+        if (button.getType() == TillButton.SPACE) {
+            btnChangeButton.setEnabled(false);
+            rSpace.setSelected(true);
+        } else if (button.getType() == TillButton.ITEM) {
+            btnChangeButton.setText("Change Product");
+            rProduct.setSelected(true);
+        } else {
+            btnChangeButton.setText("Change Screen");
+            rScreen.setSelected(true);
         }
         txtWidth.setText(button.getWidth() + "");
         txtHeight.setText(button.getHeight() + "");
@@ -113,7 +120,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         colorGroup = new javax.swing.ButtonGroup();
-        btnRemove = new javax.swing.JButton();
+        typeButtonGroup = new javax.swing.ButtonGroup();
         btnClose = new javax.swing.JButton();
         btnChangeButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -132,13 +139,10 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         radPurple = new javax.swing.JRadioButton();
         radWhite = new javax.swing.JRadioButton();
         radBlack = new javax.swing.JRadioButton();
-
-        btnRemove.setText("Remove Product");
-        btnRemove.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveActionPerformed(evt);
-            }
-        });
+        panelType = new javax.swing.JPanel();
+        rSpace = new javax.swing.JRadioButton();
+        rProduct = new javax.swing.JRadioButton();
+        rScreen = new javax.swing.JRadioButton();
 
         btnClose.setText("Close");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
@@ -255,6 +259,56 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                 .addComponent(radOrange))
         );
 
+        panelType.setBorder(javax.swing.BorderFactory.createTitledBorder("Type"));
+
+        typeButtonGroup.add(rSpace);
+        rSpace.setSelected(true);
+        rSpace.setText("Space");
+        rSpace.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rSpaceActionPerformed(evt);
+            }
+        });
+
+        typeButtonGroup.add(rProduct);
+        rProduct.setText("Product");
+        rProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rProductActionPerformed(evt);
+            }
+        });
+
+        typeButtonGroup.add(rScreen);
+        rScreen.setText("Screen");
+        rScreen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rScreenActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelTypeLayout = new javax.swing.GroupLayout(panelType);
+        panelType.setLayout(panelTypeLayout);
+        panelTypeLayout.setHorizontalGroup(
+            panelTypeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelTypeLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelTypeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rSpace)
+                    .addComponent(rProduct)
+                    .addComponent(rScreen))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panelTypeLayout.setVerticalGroup(
+            panelTypeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelTypeLayout.createSequentialGroup()
+                .addComponent(rSpace)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rProduct)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rScreen)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -274,40 +328,43 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnChangeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnChangeButton, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                    .addComponent(btnClose, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnRemove)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnChangeButton)
-                        .addGap(40, 40, 40)
-                        .addComponent(btnClose))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel3))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel1))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel2))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnSave))
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnChangeButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnClose))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel3))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel1))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel2))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnSave))
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(panelType, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -317,17 +374,20 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 
-    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-        button.setName("[SPACE]");
-        txtItem.setName("[SPACE]");
-    }//GEN-LAST:event_btnRemoveActionPerformed
-
     private void btnChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeButtonActionPerformed
-        Item i = ItemSelectDialog.showDialog(this, dc);
-        if (i != null) {
-            button.setItem(i.getId());
-            button.setName(i.getName());
-            txtItem.setText(i.getName());
+        if (rProduct.isSelected()) {
+            Item i = ItemSelectDialog.showDialog(this, dc);
+            if (i != null) {
+                button.setItem(i.getId());
+                button.setName(i.getName());
+                txtItem.setText(i.getName());
+            }
+            button.setType(TillButton.ITEM);
+        } else if (rScreen.isSelected()) {
+            Screen s = ScreenSelectDialog.showDialog(this);
+            button.setItem(s.getId());
+            button.setType(TillButton.SCREEN);
+            button.setName(s.getName());
         }
     }//GEN-LAST:event_btnChangeButtonActionPerformed
 
@@ -369,6 +429,14 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             col = TillButton.BLACK;
         }
         button.setColorValue(col);
+
+        if (rSpace.isSelected()) {
+            button.setName("[SPACE]");
+            txtItem.setName("[SPACE]");
+            button.setType(TillButton.SPACE);
+        } else{
+            button.setName(txtItem.getText());
+        }
         JOptionPane.showMessageDialog(this, "Size and color saved", "Button Options", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -402,16 +470,33 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_txtHeightKeyReleased
 
+    private void rSpaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSpaceActionPerformed
+        btnChangeButton.setEnabled(false);
+    }//GEN-LAST:event_rSpaceActionPerformed
+
+    private void rProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rProductActionPerformed
+        btnChangeButton.setEnabled(true);
+        btnChangeButton.setText("Change Product");
+    }//GEN-LAST:event_rProductActionPerformed
+
+    private void rScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rScreenActionPerformed
+        btnChangeButton.setEnabled(true);
+        btnChangeButton.setText("Change Screen");
+    }//GEN-LAST:event_rScreenActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChangeButton;
     private javax.swing.JButton btnClose;
-    private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnSave;
     private javax.swing.ButtonGroup colorGroup;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel panelType;
+    private javax.swing.JRadioButton rProduct;
+    private javax.swing.JRadioButton rScreen;
+    private javax.swing.JRadioButton rSpace;
     private javax.swing.JRadioButton radBlack;
     private javax.swing.JRadioButton radBlue;
     private javax.swing.JRadioButton radGreen;
@@ -423,5 +508,6 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     private javax.swing.JTextField txtHeight;
     private javax.swing.JTextField txtItem;
     private javax.swing.JTextField txtWidth;
+    private javax.swing.ButtonGroup typeButtonGroup;
     // End of variables declaration//GEN-END:variables
 }
