@@ -19,7 +19,9 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,6 +32,9 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.ListModel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 /**
  *
@@ -56,11 +61,13 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     /**
      * The amount of buttons each screen has horizontally.
      */
-    private int BUTTONS_GRID_X = 5;
+    private final int BUTTONS_GRID_X = 5;
     /**
      * The amount of buttons each screen has vertically.
      */
-    private int BUTTONS_GRID_Y = 10;
+    private final int BUTTONS_GRID_Y = 10;
+
+    private final MyListModel model;
 
     /**
      * Creates new form ScreenEditWindow
@@ -70,7 +77,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
      */
     public ScreenEditWindow(DataConnect dc, Image icon) {
         this.dc = dc;
-//        this.setIconImage(icon);
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
@@ -78,6 +84,66 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         initComponents();
         categoryCards = (CardLayout) panelProducts.getLayout();
         cardsButtonGroup = new ButtonGroup();
+        model = new MyListModel();
+        init();
+    }
+
+    private void init() {
+        list.setModel(model);
+    }
+
+    class MyListModel implements ListModel {
+
+        private final List<Screen> screens = new ArrayList<>();
+        private final List<ListDataListener> listeners = new LinkedList<>();
+
+        public void addScreen(Screen s) {
+            screens.add(s);
+            alertListenersChanged(screens.size() - 1, screens.size() - 1);
+        }
+
+        public void removeScreen(Screen s) {
+            screens.remove(s);
+            int index = 0;
+            for (int i = 0; i < screens.size(); i++) {
+                if (screens.get(i).equals(s)) {
+                    index = i;
+                    break;
+                }
+            }
+            alertListenersChanged(index, index);
+        }
+
+        public void removeScreen(int i) {
+            screens.remove(i);
+            alertListenersChanged(i, i);
+        }
+
+        @Override
+        public int getSize() {
+            return screens.size();
+        }
+
+        @Override
+        public Object getElementAt(int index) {
+            return screens.get(index);
+        }
+
+        private void alertListenersChanged(int i1, int i2) {
+            for (ListDataListener l : listeners) {
+                l.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, i1, i2));
+            }
+        }
+
+        @Override
+        public void addListDataListener(ListDataListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeListDataListener(ListDataListener l) {
+            listeners.remove(l);
+        }
     }
 
     /**
@@ -117,19 +183,12 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             List<Screen> screens = dc.getAllScreens(); //Get all the screens on the server.
             amount = dc.getAllButtons().size();
             bar.setMaximum(amount);
-            panelScreens.removeAll();
-            panelScreens.setLayout(new GridLayout(2, 4));
             for (Screen s : screens) {
                 addScreenButton(s);
+                model.addScreen(s);
             }
-
-            for (int i = screens.size(); i < 8; i++) {
-                JPanel panel = new JPanel();
-                panel.setBackground(Color.WHITE);
-                panelScreens.add(panel);
-            }
-            repaint();
-            revalidate();
+//            repaint();
+//            revalidate();
 
             if (currentScreen != null) {
                 if (cardsButtonGroup.getButtonCount() > 0) {
@@ -154,58 +213,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
      * @param s the screen to create a button for.
      */
     public void addScreenButton(Screen s) {
-        JToggleButton cButton = new JToggleButton(s.getName()); //Create a new toggle button for the screen.
-        if (s.getColorValue() != 0) {
-            cButton.setBackground(new Color(s.getColorValue()));
-        }
-        cButton.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    Screen s = ScreenButtonOptionDialog.showDialog(ScreenEditWindow.this, currentScreen);
-                    if (s == null) {
-                        try {
-                            dc.removeScreen(currentScreen);
-                        } catch (IOException | SQLException | ScreenNotFoundException ex) {
-                            showError(ex);
-                        }
-                    } else {
-                        try {
-                            dc.updateScreen(s);
-                        } catch (IOException | SQLException | ScreenNotFoundException ex) {
-                            showError(ex);
-                        }
-                    }
-                    setButtons();
-                }
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-
-        });
-        cButton.addActionListener((ActionEvent e) -> {
-            categoryCards.show(panelProducts, s.getName());
-            currentScreen = s;
-        });
-        cardsButtonGroup.add(cButton); //Add the toggle button to the cards button group.
         JPanel panel = new JPanel(); //Create a panel for the buttons on this screen.
         panel.setLayout(new GridBagLayout());
 
@@ -270,7 +277,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 bar.repaint();
             }
             panelProducts.add(panel, s.getName()); //Add the screen panel to the container panel for all screens.
-            panelScreens.add(cButton); //Add the screens toggle button.
         } catch (SQLException | IOException | ScreenNotFoundException ex) {
             showError(ex);
         }
@@ -332,10 +338,11 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
         panelEditor = new javax.swing.JPanel();
         panelProducts = new javax.swing.JPanel();
-        panelScreens = new javax.swing.JPanel();
         btnNewScreen = new javax.swing.JButton();
         bar = new javax.swing.JProgressBar();
         btnClose = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        list = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Screen Editor");
@@ -345,27 +352,20 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         panelProducts.setBorder(javax.swing.BorderFactory.createTitledBorder("Buttons"));
         panelProducts.setLayout(new java.awt.CardLayout());
 
-        panelScreens.setBorder(javax.swing.BorderFactory.createTitledBorder("Screens"));
-        panelScreens.setLayout(new java.awt.CardLayout());
-
         javax.swing.GroupLayout panelEditorLayout = new javax.swing.GroupLayout(panelEditor);
         panelEditor.setLayout(panelEditorLayout);
         panelEditorLayout.setHorizontalGroup(
             panelEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelEditorLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panelScreens, javax.swing.GroupLayout.DEFAULT_SIZE, 1145, Short.MAX_VALUE))
+                .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, 1145, Short.MAX_VALUE)
                 .addContainerGap())
         );
         panelEditorLayout.setVerticalGroup(
             panelEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelEditorLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelScreens, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
+                .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -383,14 +383,25 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        list.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(list);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnNewScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnNewScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 66, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(bar, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -406,7 +417,9 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnNewScreen)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 420, Short.MAX_VALUE))
                     .addComponent(panelEditor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -419,16 +432,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewScreenActionPerformed
-        try {
-            if (dc.getAllScreens().size() >= 8) {
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Screen limit has been reached", "New Screen", JOptionPane.ERROR_MESSAGE);
-                return;
-
-            }
-        } catch (IOException | SQLException ex) {
-            Logger.getLogger(ScreenEditWindow.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
         String name = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter Name", "New Screen", JOptionPane.PLAIN_MESSAGE);
         if (name == null) {
             return;
@@ -439,13 +442,13 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                     @Override
                     public void run() {
                         try {
-                            int position = dc.getAllScreens().size() - 1;
-                            Screen s = new Screen(name, position, 0, 5, 10);
-                            Screen sc = dc.addScreen(s);
+                            Screen s = new Screen(name);
+                            s = dc.addScreen(s);
                             int x = 1;
                             int y = 1;
                             for (int i = 0; i < 50; i++) {
-                                TillButton bu = dc.addButton(new TillButton("[SPACE]", 0, sc.getId(), 1, 1, 1, x, y));
+                                TillButton bu = dc.addButton(new TillButton("[SPACE]", 0, TillButton.SPACE, s.getId(), 1, 1, 1, x, y));
+                                dc.addButton(bu);
                                 x++;
                                 if (x == 6) {
                                     x = 1;
@@ -470,12 +473,35 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 
+    private void listMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClicked
+        currentScreen = (Screen) model.getElementAt(list.getSelectedIndex());
+        if (evt.getClickCount() == 2) {
+            Screen s = ScreenButtonOptionDialog.showDialog(ScreenEditWindow.this, currentScreen);
+            if (s == null) {
+                try {
+                    dc.removeScreen(currentScreen);
+                    model.removeScreen(currentScreen);
+                } catch (IOException | SQLException | ScreenNotFoundException ex) {
+                    showError(ex);
+                }
+            } else {
+                try {
+                    dc.updateScreen(s);
+                } catch (IOException | SQLException | ScreenNotFoundException ex) {
+                    showError(ex);
+                }
+            }
+            setButtons();
+        }
+    }//GEN-LAST:event_listMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JProgressBar bar;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnNewScreen;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JList<String> list;
     private javax.swing.JPanel panelEditor;
     private javax.swing.JPanel panelProducts;
-    private javax.swing.JPanel panelScreens;
     // End of variables declaration//GEN-END:variables
 }
