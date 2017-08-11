@@ -11,7 +11,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -118,6 +117,11 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             screens.remove(i);
             alertListenersChanged(i, i);
         }
+        
+        public void empty(){
+            screens.clear();
+            alertListenersChanged(0, 0);
+        }
 
         @Override
         public int getSize() {
@@ -183,12 +187,13 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             List<Screen> screens = dc.getAllScreens(); //Get all the screens on the server.
             amount = dc.getAllButtons().size();
             bar.setMaximum(amount);
+            model.empty();
             for (Screen s : screens) {
                 addScreenButton(s);
                 model.addScreen(s);
             }
-//            repaint();
-//            revalidate();
+            repaint();
+            revalidate();
 
             if (currentScreen != null) {
                 if (cardsButtonGroup.getButtonCount() > 0) {
