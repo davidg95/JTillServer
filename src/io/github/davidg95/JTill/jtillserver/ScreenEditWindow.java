@@ -514,7 +514,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
             menu.add(rename);
             menu.add(remove);
-            menu.show(this, evt.getX(), evt.getY());
+            menu.show(evt.getComponent(), evt.getX(), evt.getY());
         } else {
             categoryCards.show(panelProducts, sc.getName());
             currentScreen = sc;
