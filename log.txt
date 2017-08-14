@@ -1,11 +1,36 @@
-JTill log Mon Aug 14 12:45:27 BST 2017
-[12:45:27] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[12:45:30] [INFO] David Grant has logged in
-[12:45:50] [INFO] David Grant has logged in from DAVID-PC
-[12:47:52] [INFO] David Grant has logged in from DAVID-PC
-[12:49:59] [INFO] David Grant has logged out
-[12:50:08] [INFO] David Grant has logged in from DAVID-PC
-[12:50:12] [INFO] David Grant has logged out
-[12:51:20] [INFO] David Grant has logged in from DAVID-PC
-[12:52:10] [INFO] David Grant has logged in from DAVID-PC
-[12:52:12] [INFO] David Grant has logged out
+JTill log Mon Aug 14 13:05:46 BST 2017
+[13:05:46] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[13:05:47] [INFO] The database does not exists, so it is getting created
+[13:05:47] [INFO] Creating tables
+[13:05:47] [INFO] Created tills table
+[13:05:47] [INFO] Created tax table
+[13:05:47] [INFO] Created categorys table
+[13:05:47] [INFO] Created departments table
+[13:05:47] [INFO] Created configs table
+[13:05:47] [INFO] Created sales table
+[13:05:47] [INFO] Created customers table
+[13:05:47] [INFO] Created products table
+[13:05:47] [INFO] Created plus table
+[13:05:47] [INFO] Created discounts table
+[13:05:47] [INFO] Created buckets table
+[13:05:47] [INFO] Create triggers table
+[13:05:47] [INFO] Created saleItems table
+[13:05:47] [INFO] Created staff table
+[13:05:47] [INFO] Created screens table
+[13:05:47] [INFO] Created buttons table
+[13:05:47] [INFO] Created waste reports table
+[13:05:47] [INFO] Created table waste reasons
+[13:05:47] [INFO] Created table waste items
+[13:05:47] [INFO] Created table suppliers
+[13:05:47] [INFO] Created table recevied items
+[13:05:47] [INFO] Created table clockonoff
+[13:05:48] [INFO] Created table images
+[13:06:04] [INFO] David Grant has logged in
+[13:09:25] [INFO] David Grant has logged in from DAVID-PC
+[13:09:28] [INFO] David Grant has logged out
+[13:09:55] [INFO] David Grant has logged in from DAVID-PC
+[13:09:56] [INFO] David Grant has logged out
+[13:10:23] [INFO] David Grant has logged in from DAVID-PC
+[13:10:28] [INFO] David Grant has logged out
+[13:10:40] [INFO] David Grant has logged in from DAVID-PC
+[13:10:42] [INFO] David Grant has logged out

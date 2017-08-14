@@ -117,8 +117,8 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             screens.remove(i);
             alertListenersChanged(i, i);
         }
-        
-        public void empty(){
+
+        public void empty() {
             screens.clear();
             alertListenersChanged(0, 0);
         }
@@ -238,7 +238,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 gbc.weightx = 1;
                 gbc.weighty = 1;
                 gbc.fill = GridBagConstraints.BOTH;
-                if (b.getName().equals("[SPACE]")) { //If it is a space, create a panel for the button.
+                if (b.getType() == TillButton.SPACE) { //If it is a space, create a panel for the button.
                     JPanel pan = new JPanel();
                     pan.setBackground(Color.WHITE);
                     //pan.setLayout(new GridLayout(1, 1));
