@@ -13,6 +13,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyVetoException;
@@ -28,10 +29,13 @@ import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
 import javax.swing.ListModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
@@ -210,6 +214,8 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             showError(ex);
         }
         bar.setValue(0);
+        repaint();
+        revalidate();
     }
 
     /**
@@ -479,25 +485,39 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void listMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClicked
-        currentScreen = (Screen) model.getElementAt(list.getSelectedIndex());
-        categoryCards.show(panelProducts, currentScreen.getName());
-        if (evt.getClickCount() == 2) {
-            Screen s = ScreenButtonOptionDialog.showDialog(ScreenEditWindow.this, currentScreen);
-            if (s == null) {
-                try {
-                    dc.removeScreen(currentScreen);
-                    model.removeScreen(currentScreen);
-                } catch (IOException | SQLException | ScreenNotFoundException ex) {
-                    showError(ex);
+        Screen sc = (Screen) model.getElementAt(list.getSelectedIndex());
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem rename = new JMenuItem("Rename");
+            JMenuItem remove = new JMenuItem("Remove");
+            rename.addActionListener((ActionEvent e) -> {
+                String name = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter new screen name", "Screen name for " + sc.getName(), JOptionPane.OK_CANCEL_OPTION);
+                if (name != null) {
+                    sc.setName(name);
+                    try {
+                        dc.updateScreen(sc);
+                    } catch (IOException | SQLException | ScreenNotFoundException ex) {
+                        JOptionPane.showMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
-            } else {
+            });
+            remove.addActionListener((ActionEvent e) -> {
                 try {
-                    dc.updateScreen(s);
+                    if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Are you sure you want to remove " + sc.getName() + "?", "Remove Screen " + sc.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        dc.removeScreen(sc);
+                        model.removeScreen(sc);
+                    }
                 } catch (IOException | SQLException | ScreenNotFoundException ex) {
-                    showError(ex);
+                    JOptionPane.showMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            }
-            setButtons();
+            });
+
+            menu.add(rename);
+            menu.add(remove);
+            menu.show(this, evt.getX(), evt.getY());
+        } else {
+            categoryCards.show(panelProducts, sc.getName());
+            currentScreen = sc;
         }
     }//GEN-LAST:event_listMouseClicked
 
