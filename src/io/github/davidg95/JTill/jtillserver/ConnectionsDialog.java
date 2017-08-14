@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 /**
  * Dialog which shows all current connected clients.
@@ -176,9 +177,10 @@ public class ConnectionsDialog extends javax.swing.JInternalFrame {
                 } catch (JTillException ex) {
                     Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                TillDialog.showDialog(t);
-            } catch (IOException | SQLException ex) {
-                Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);
+                TillDialog.showDialog(this, t);
+                dc.updateTill(t);
+            } catch (IOException | SQLException | JTillException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_lstConnectionsMouseClicked
