@@ -179,7 +179,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
             return;
         }
         Till t = contents.get(index);
-        TillDialog.showDialog(t);
+        TillDialog.showDialog(this, t);
     }//GEN-LAST:event_btnViewActionPerformed
 
     private void btnCashupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCashupActionPerformed
@@ -277,7 +277,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
         if (evt.getClickCount() == 2) {
             int index = table.getSelectedRow();
             Till t = contents.get(index);
-            TillDialog.showDialog(t);
+            TillDialog.showDialog(this, t);
         }
     }//GEN-LAST:event_tableMouseClicked
 

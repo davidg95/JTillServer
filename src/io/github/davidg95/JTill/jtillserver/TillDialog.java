@@ -8,6 +8,10 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import io.github.davidg95.jconn.JConnData;
 import io.github.davidg95.jconn.JConnThread;
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.Window;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -17,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JInternalFrame;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -25,7 +29,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class TillDialog extends javax.swing.JInternalFrame {
+public class TillDialog extends javax.swing.JDialog {
 
     private Till till;
     private final DataConnect dc;
@@ -37,14 +41,14 @@ public class TillDialog extends javax.swing.JInternalFrame {
      *
      * @param t the till.
      */
-    public TillDialog(Till t) {
-        super();
+    public TillDialog(Window parent, Till t) {
+        super(parent);
         this.till = t;
         this.dc = GUI.gui.dc;
         initComponents();
+        setModal(true);
+        setLocationRelativeTo(parent);
         setTitle(till.getName());
-        super.setClosable(true);
-        super.setIconifiable(true);
         txtID.setText("" + till.getId());
         txtUUID.setText(till.getUuid().toString());
         txtName.setText(till.getName());
@@ -69,22 +73,24 @@ public class TillDialog extends javax.swing.JInternalFrame {
                 btnLogout.setEnabled(true);
             }
         }
-        txtDefaultScreen.setText(till.getDefaultScreen().getName());
+        try {
+            Screen sc = dc.getScreen(till.getDefaultScreen());
+            txtDefaultScreen.setText(sc.getName());
+        } catch (IOException | SQLException | ScreenNotFoundException ex) {
+        }
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
         getAllSales();
     }
 
-    public static void showDialog(Till till) {
-        final TillDialog dialog = new TillDialog(till);
-        dialog.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
-        GUI.gui.internal.add(dialog);
-        dialog.setVisible(true);
-        try {
-            dialog.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(TillDialog.class.getName()).log(Level.SEVERE, null, ex);
+    public static void showDialog(Component parent, Till till) {
+        Window window = null;
+        if (window instanceof Frame || window instanceof Dialog) {
+            window = (Window) parent;
         }
+        final TillDialog dialog = new TillDialog(window, till);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setVisible(true);
     }
 
     private void getAllSales() {
@@ -417,9 +423,19 @@ public class TillDialog extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnLogoutActionPerformed
 
     private void btnChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeActionPerformed
-        final Screen s = ScreenSelectDialog.showDialog(this);
-        till.setDefaultScreen(s);
-        txtDefaultScreen.setText(s.getName());
+        try {
+            if (dc.getAllScreens().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "You have not configured any screens", "Screens", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            final Screen s = ScreenSelectDialog.showDialog(this);
+            if (s != null) {
+                till.setDefaultScreen(s.getId());
+                txtDefaultScreen.setText(s.getName());
+            }
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(TillDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnChangeActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

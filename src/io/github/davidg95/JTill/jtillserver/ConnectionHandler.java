@@ -439,6 +439,11 @@ public class ConnectionHandler {
         return dc.getTill(id);
     }
 
+    @JConnMethod("UPDATETILL")
+    public Till updateTill(@JConnParameter("TILL") Till t) throws IOException, SQLException, JTillException {
+        return dc.updateTill(t);
+    }
+
     @JConnMethod("GETALLTILLS")
     public List<Till> getAllTills() throws IOException, SQLException {
         return dc.getAllTills();

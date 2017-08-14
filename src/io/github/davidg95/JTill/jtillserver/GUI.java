@@ -400,6 +400,13 @@ public class GUI extends JFrame implements GUIInterface {
         this.logout();
     }
 
+    @Override
+    public Till showTillSetupWindow(String name) {
+        Till till = new Till(name, 0);
+        TillDialog.showDialog(this, till);
+        return till;
+    }
+
     private class LogHandler extends Handler {
 
         @Override
@@ -1564,7 +1571,7 @@ public class GUI extends JFrame implements GUIInterface {
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void allow() {
+    public void allow(Till t) {
 
     }
 
