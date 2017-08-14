@@ -251,8 +251,10 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                     pan.addMouseListener(new MouseListener() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
-                            currentButton = b;
-                            showButtonOptions(); //Show the button options dialog.
+                            if (SwingUtilities.isLeftMouseButton(e)) {
+                                currentButton = b;
+                                showButtonOptions(); //Show the button options dialog.
+                            }
                         }
 
                         @Override
@@ -490,6 +492,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem rename = new JMenuItem("Rename");
             JMenuItem remove = new JMenuItem("Remove");
+            JMenuItem duplicate = new JMenuItem("Duplicate");
             rename.addActionListener((ActionEvent e) -> {
                 String name = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter new screen name", "Screen name for " + sc.getName(), JOptionPane.OK_CANCEL_OPTION);
                 if (name != null) {
@@ -508,12 +511,23 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                         model.removeScreen(sc);
                     }
                 } catch (IOException | SQLException | ScreenNotFoundException ex) {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+            duplicate.addActionListener((ActionEvent e) -> {
+                try {
+                    String dup = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter name for duplicate", "Duplicate " + sc.getName(), JOptionPane.OK_CANCEL_OPTION);
+                    if (dup != null) {
+                        model.addScreen(dc.addScreen(sc));
+                    }
+                } catch (IOException | SQLException ex) {
                     JOptionPane.showMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
 
             menu.add(rename);
             menu.add(remove);
+            menu.add(duplicate);
             menu.show(evt.getComponent(), evt.getX(), evt.getY());
         } else {
             categoryCards.show(panelProducts, sc.getName());
