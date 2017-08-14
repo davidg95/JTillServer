@@ -214,8 +214,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             showError(ex);
         }
         bar.setValue(0);
-        repaint();
-        revalidate();
     }
 
     /**
@@ -349,38 +347,16 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panelEditor = new javax.swing.JPanel();
-        panelProducts = new javax.swing.JPanel();
         btnNewScreen = new javax.swing.JButton();
         bar = new javax.swing.JProgressBar();
         btnClose = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         list = new javax.swing.JList<>();
+        panelProducts = new javax.swing.JPanel();
+        lblMessage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Screen Editor");
-
-        panelEditor.setBorder(javax.swing.BorderFactory.createTitledBorder("Editor"));
-
-        panelProducts.setBorder(javax.swing.BorderFactory.createTitledBorder("Buttons"));
-        panelProducts.setLayout(new java.awt.CardLayout());
-
-        javax.swing.GroupLayout panelEditorLayout = new javax.swing.GroupLayout(panelEditor);
-        panelEditor.setLayout(panelEditorLayout);
-        panelEditorLayout.setHorizontalGroup(
-            panelEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelEditorLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, 1145, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        panelEditorLayout.setVerticalGroup(
-            panelEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelEditorLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
 
         btnNewScreen.setText("Add Screen");
         btnNewScreen.addActionListener(new java.awt.event.ActionListener() {
@@ -403,6 +379,9 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(list);
 
+        panelProducts.setBorder(javax.swing.BorderFactory.createTitledBorder("Buttons"));
+        panelProducts.setLayout(new java.awt.CardLayout());
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -410,30 +389,32 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnNewScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 66, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                    .addComponent(btnNewScreen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(bar, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnClose))
-                    .addComponent(panelEditor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(913, 913, 913)
+                        .addComponent(btnClose)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(8, 8, 8)
+                .addComponent(lblMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnNewScreen)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 420, Short.MAX_VALUE))
-                    .addComponent(panelEditor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnNewScreen)
+                        .addGap(0, 395, Short.MAX_VALUE))
+                    .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnClose)
@@ -516,9 +497,11 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             });
             duplicate.addActionListener((ActionEvent e) -> {
                 try {
-                    String dup = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter name for duplicate", "Duplicate " + sc.getName(), JOptionPane.OK_CANCEL_OPTION);
-                    if (dup != null) {
-                        model.addScreen(dc.addScreen(sc));
+                    String name = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter name for duplicate", "Duplicate " + sc.getName(), JOptionPane.OK_CANCEL_OPTION);
+                    if (name != null) {
+                        Screen dup = sc.clone();
+                        dup.setName(name);
+                        model.addScreen(dc.addScreen(dup));
                     }
                 } catch (IOException | SQLException ex) {
                     JOptionPane.showMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -540,8 +523,8 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnNewScreen;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblMessage;
     private javax.swing.JList<String> list;
-    private javax.swing.JPanel panelEditor;
     private javax.swing.JPanel panelProducts;
     // End of variables declaration//GEN-END:variables
 }
