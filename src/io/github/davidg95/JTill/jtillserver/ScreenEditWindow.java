@@ -306,11 +306,12 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 showError(ex);
             }
         }
+        final String name = currentScreen.getName();
         new Thread() {
             @Override
             public void run() {
                 setButtons(); //This will update the view to reflect any changes
-                categoryCards.show(panelProducts, currentScreen.getName());
+                categoryCards.show(panelProducts, name);
                 repaint();
             }
         }.start();
