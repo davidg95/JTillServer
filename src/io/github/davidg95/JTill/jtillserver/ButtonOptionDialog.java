@@ -385,9 +385,16 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             button.setType(TillButton.ITEM);
         } else if (rScreen.isSelected()) {
             Screen s = ScreenSelectDialog.showDialog(this);
-            button.setItem(s.getId());
+            if (s != null) {
+                button.setItem(s.getId());
+                button.setName(s.getName());
+                txtItem.setText(s.getName());
+            }
             button.setType(TillButton.SCREEN);
-            button.setName(s.getName());
+        } else if (rSpace.isSelected()) {
+            button.setName("[SPACE]");
+            txtItem.setName("[SPACE]");
+            button.setType(TillButton.SPACE);
         }
     }//GEN-LAST:event_btnChangeButtonActionPerformed
 
@@ -434,7 +441,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             button.setName("[SPACE]");
             txtItem.setName("[SPACE]");
             button.setType(TillButton.SPACE);
-        } else{
+        } else {
             button.setName(txtItem.getText());
         }
         JOptionPane.showMessageDialog(this, "Size and color saved", "Button Options", JOptionPane.INFORMATION_MESSAGE);

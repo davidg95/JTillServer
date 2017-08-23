@@ -310,6 +310,8 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             @Override
             public void run() {
                 setButtons(); //This will update the view to reflect any changes
+                categoryCards.show(panelProducts, currentScreen.getName());
+                repaint();
             }
         }.start();
     }
