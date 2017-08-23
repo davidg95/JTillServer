@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
 import java.beans.PropertyVetoException;
@@ -15,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -234,6 +236,8 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         cmbLaf = new javax.swing.JComboBox<>();
         btnSetLAF = new javax.swing.JButton();
         chkUpdate = new javax.swing.JCheckBox();
+        btnColor = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
@@ -535,6 +539,20 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
 
         chkUpdate.setText("Check for updates on startup");
 
+        btnColor.setText("Terminal Background Color");
+        btnColor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnColorActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Clear Color");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelGeneralLayout = new javax.swing.GroupLayout(panelGeneral);
         panelGeneral.setLayout(panelGeneralLayout);
         panelGeneralLayout.setHorizontalGroup(
@@ -555,9 +573,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                             .addComponent(chkEmailPrompt)
                             .addComponent(chkSendProducts)
                             .addGroup(panelGeneralLayout.createSequentialGroup()
-                                .addComponent(jLabel13)
+                                .addComponent(btnColor)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(spinSaleCache, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jButton1))
                             .addComponent(chkUpdate)
                             .addComponent(chkApproveNew)
                             .addComponent(btnCompanyDetails)
@@ -566,7 +584,11 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cmbLaf, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnSetLAF)))
+                                .addComponent(btnSetLAF))
+                            .addGroup(panelGeneralLayout.createSequentialGroup()
+                                .addComponent(jLabel13)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(spinSaleCache, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 27, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(panelGeneralLayout.createSequentialGroup()
@@ -583,7 +605,11 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 .addComponent(chkSendProducts)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chkEmailPrompt)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnColor)
+                    .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
                     .addComponent(spinSaleCache, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -872,9 +898,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             } else {
                 dc.setSetting("AUTO_LOGOUT", "FALSE");
             }
-            if(chkCode.isSelected()){
+            if (chkCode.isSelected()) {
                 dc.setSetting("LOGINTYPE", "CODE");
-            } else{
+            } else {
                 dc.setSetting("LOGINTYPE", "BUTTONS");
             }
             JOptionPane.showMessageDialog(this, "Security settings have been saved", "Security Settings", JOptionPane.INFORMATION_MESSAGE);
@@ -1110,8 +1136,26 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnSetLAFActionPerformed
 
+    private void btnColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColorActionPerformed
+        Color c = JColorChooser.showDialog(this, "Terminal Screen Background Color", null);
+        try {
+            dc.setSetting("TERMINAL_BG", Integer.toString(c.getRGB()));
+        } catch (IOException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnColorActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            dc.setSetting("TERMINAL_BG", Integer.toString(0));
+        } catch (IOException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnColor;
     private javax.swing.JButton btnCompanyDetails;
     private javax.swing.JButton btnCompanyDetails2;
     private javax.swing.JButton btnDatabaseCancel;
@@ -1135,6 +1179,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JCheckBox chkTerminal;
     private javax.swing.JCheckBox chkUpdate;
     private javax.swing.JComboBox<String> cmbLaf;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
