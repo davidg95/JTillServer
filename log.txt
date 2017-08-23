@@ -1,35 +1,4 @@
-JTill log Wed Aug 23 14:13:02 BST 2017
-[14:13:02] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[14:13:02] [INFO] The database does not exists, so it is getting created
-[14:13:02] [INFO] Creating tables
-[14:13:03] [INFO] Created tills table
-[14:13:03] [INFO] Created tax table
-[14:13:03] [INFO] Created categorys table
-[14:13:03] [INFO] Created departments table
-[14:13:03] [INFO] Created configs table
-[14:13:03] [INFO] Created sales table
-[14:13:03] [INFO] Created customers table
-[14:13:03] [INFO] Created products table
-[14:13:03] [INFO] Created plus table
-[14:13:03] [INFO] Created discounts table
-[14:13:03] [INFO] Created buckets table
-[14:13:03] [INFO] Create triggers table
-[14:13:03] [INFO] Created saleItems table
-[14:13:03] [INFO] Created staff table
-[14:13:03] [INFO] Created screens table
-[14:13:03] [INFO] Created buttons table
-[14:13:03] [INFO] Created waste reports table
-[14:13:03] [INFO] Created table waste reasons
-[14:13:03] [INFO] Created table waste items
-[14:13:03] [INFO] Created table suppliers
-[14:13:03] [INFO] Created table recevied items
-[14:13:03] [INFO] Created table clockonoff
-[14:13:03] [INFO] Created table images
-[14:13:16] [INFO] David Grant has logged in
-[14:16:25] [INFO] David Grant has logged in from DAVID-PC
-[14:16:27] [INFO] David Grant has logged out
-[14:16:56] [INFO] David Grant has logged in from DAVID-PC
-[14:17:30] [WARNING] 4 is below minimum stock level
-[14:17:30] [WARNING] 5 is below minimum stock level
-[14:17:30] [WARNING] 3 is below minimum stock level
-[14:17:31] [INFO] David Grant has logged out
+JTill log Wed Aug 23 15:09:24 BST 2017
+[15:09:24] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[15:09:31] [INFO] David Grant has logged in from DAVID-PC
+[15:09:35] [INFO] David Grant has logged out
