@@ -13,7 +13,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyVetoException;
@@ -60,15 +59,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
     //Progress bar stuff
     private int amount;
-
-    /**
-     * The amount of buttons each screen has horizontally.
-     */
-    private final int BUTTONS_GRID_X = 5;
-    /**
-     * The amount of buttons each screen has vertically.
-     */
-    private final int BUTTONS_GRID_Y = 10;
 
     private final MyListModel model;
 
@@ -199,6 +189,10 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             repaint();
             revalidate();
 
+            if (!screens.isEmpty()) {
+                currentScreen = screens.get(0);
+            }
+
             if (currentScreen != null) {
                 if (cardsButtonGroup.getButtonCount() > 0) {
                     Enumeration<AbstractButton> abButs = cardsButtonGroup.getElements();
@@ -233,7 +227,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                     pButton.setBackground(new Color(b.getColorValue()));
                 }
                 pButton.setMinimumSize(new Dimension(0, 0));
-                pButton.setMaximumSize(new Dimension(panel.getWidth() / this.BUTTONS_GRID_X, panel.getHeight() / this.BUTTONS_GRID_Y));
+                pButton.setMaximumSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
                 GridBagConstraints gbc = new GridBagConstraints();
                 gbc.gridx = b.getX() - 1;
                 gbc.gridy = b.getY() - 1;
@@ -297,7 +291,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
      * Method to show the buttons options dialog for a particular button.
      */
     private void showButtonOptions() {
-        currentButton = ButtonOptionDialog.showDialog(this, currentButton, 5 - currentButton.getX() + 1, 10 - currentButton.getY() + 1);
+        currentButton = ButtonOptionDialog.showDialog(this, currentButton, currentScreen.getWidth() - currentButton.getX() + 1, currentScreen.getHeight() - currentButton.getY() + 1);
         if (currentButton == null) { //If it is null then the button is getting removed.
             try {
                 currentButton.setName("[SPACE]");
@@ -354,6 +348,12 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         list = new javax.swing.JList<>();
         panelProducts = new javax.swing.JPanel();
         lblMessage = new javax.swing.JLabel();
+        panelScreenProperties = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        numRow = new javax.swing.JFormattedTextField();
+        numCol = new javax.swing.JFormattedTextField();
+        btnSave = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Screen Editor");
@@ -382,6 +382,55 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         panelProducts.setBorder(javax.swing.BorderFactory.createTitledBorder("Buttons"));
         panelProducts.setLayout(new java.awt.CardLayout());
 
+        panelScreenProperties.setBorder(javax.swing.BorderFactory.createTitledBorder("Screen Settings"));
+
+        jLabel1.setText("Rows:");
+
+        jLabel2.setText("Collumns:");
+
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelScreenPropertiesLayout = new javax.swing.GroupLayout(panelScreenProperties);
+        panelScreenProperties.setLayout(panelScreenPropertiesLayout);
+        panelScreenPropertiesLayout.setHorizontalGroup(
+            panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelScreenPropertiesLayout.createSequentialGroup()
+                .addGroup(panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelScreenPropertiesLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(numRow, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                            .addComponent(numCol)))
+                    .addGroup(panelScreenPropertiesLayout.createSequentialGroup()
+                        .addGap(42, 42, 42)
+                        .addComponent(btnSave)))
+                .addContainerGap(52, Short.MAX_VALUE))
+        );
+        panelScreenPropertiesLayout.setVerticalGroup(
+            panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelScreenPropertiesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(numRow, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(numCol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSave)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -389,8 +438,9 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
-                    .addComponent(btnNewScreen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(btnNewScreen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelScreenProperties, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -398,7 +448,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                         .addComponent(bar, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(913, 913, 913)
                         .addComponent(btnClose)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 28, Short.MAX_VALUE))
                     .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -413,7 +463,9 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnNewScreen)
-                        .addGap(0, 395, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(panelScreenProperties, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 269, Short.MAX_VALUE))
                     .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -436,8 +488,8 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                     @Override
                     public void run() {
                         try {
-                            Screen s = new Screen(name);
-                            s = dc.addScreen(s);
+                            Screen s = new Screen(name, 5, 10);
+                            currentScreen = dc.addScreen(s);
                             int x = 1;
                             int y = 1;
                             for (int i = 0; i < 50; i++) {
@@ -504,7 +556,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                         model.addScreen(dc.addScreen(dup));
                     }
                 } catch (IOException | SQLException ex) {
-                    JOptionPane.showMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
 
@@ -515,16 +567,36 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         } else {
             categoryCards.show(panelProducts, sc.getName());
             currentScreen = sc;
+            numRow.setValue(currentScreen.getHeight());
+            numCol.setValue(currentScreen.getWidth());
         }
     }//GEN-LAST:event_listMouseClicked
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        int row = (int) numRow.getValue();
+        int col = (int) numCol.getValue();
+        currentScreen.setWidth(col);
+        currentScreen.setHeight(row);
+        try {
+            dc.updateScreen(currentScreen);
+        } catch (IOException | SQLException | ScreenNotFoundException ex) {
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSaveActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JProgressBar bar;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnNewScreen;
+    private javax.swing.JButton btnSave;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblMessage;
     private javax.swing.JList<String> list;
+    private javax.swing.JFormattedTextField numCol;
+    private javax.swing.JFormattedTextField numRow;
     private javax.swing.JPanel panelProducts;
+    private javax.swing.JPanel panelScreenProperties;
     // End of variables declaration//GEN-END:variables
 }
