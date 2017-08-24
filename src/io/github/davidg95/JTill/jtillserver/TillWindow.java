@@ -6,6 +6,10 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import io.github.davidg95.jconn.JConnData;
+import io.github.davidg95.jconn.JConnThread;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -15,7 +19,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -83,9 +90,8 @@ public class TillWindow extends javax.swing.JInternalFrame {
         table = new javax.swing.JTable();
         btnClose = new javax.swing.JButton();
         btnView = new javax.swing.JButton();
-        btnCashup = new javax.swing.JButton();
+        btnReinit = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Tills");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
@@ -130,10 +136,10 @@ public class TillWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        btnCashup.setText("Cash Up");
-        btnCashup.addActionListener(new java.awt.event.ActionListener() {
+        btnReinit.setText("Reinitialise all connected tills");
+        btnReinit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCashupActionPerformed(evt);
+                btnReinitActionPerformed(evt);
             }
         });
 
@@ -148,7 +154,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnView)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCashup)
+                        .addComponent(btnReinit)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
@@ -162,8 +168,8 @@ public class TillWindow extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
                     .addComponent(btnView)
-                    .addComponent(btnCashup))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnReinit))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         pack();
@@ -182,108 +188,54 @@ public class TillWindow extends javax.swing.JInternalFrame {
         TillDialog.showDialog(this, t);
     }//GEN-LAST:event_btnViewActionPerformed
 
-    private void btnCashupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCashupActionPerformed
-        int index = table.getSelectedRow();
-        if (index == -1) {
-            return;
-        }
-        try {
-            Till till = contents.get(index);
-            till.setUncashedTakings(dc.getTillTakings(till.getId()));
-            if (till.getUncashedTakings().doubleValue() <= 0) {
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No uncashed sales", "Till", JOptionPane.ERROR_MESSAGE);
-                return;
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        if (SwingUtilities.isLeftMouseButton(evt)) {
+            if (evt.getClickCount() == 2) {
+                int index = table.getSelectedRow();
+                Till t = contents.get(index);
+                TillDialog.showDialog(this, t);
             }
-            if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Cash up till " + till.getName() + "?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
-                return;
-            }
-            TillReport report = new TillReport();
-            report.actualTakings = dc.getTillTakings(till.getId());
-            if (report.actualTakings.compareTo(BigDecimal.ZERO) <= 0) {
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "That till currently has no declared takings", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
-                return;
-            }
-            report.actualTakings = report.actualTakings.setScale(2);
-            String strVal = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter value of money counted", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
-            if (strVal == null) {
-                return;
-            }
-            if (strVal.equals("")) {
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "A Value must be entered", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if (!Utilities.isNumber(strVal)) {
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You must enter a number greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            double value = Double.parseDouble(strVal);
-            if (value <= 0) {
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You must enter a value greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            report.declared = new BigDecimal(strVal);
-            report.declared = report.declared.setScale(2);
-            report.difference = report.declared.subtract(report.actualTakings);
-            report.difference = report.difference.setScale(2);
-            DecimalFormat df;
-            if (report.actualTakings.compareTo(BigDecimal.ONE) >= 1) {
-                df = new DecimalFormat("#.00");
-            } else {
-                df = new DecimalFormat("0.00");
-            }
-            DecimalFormat df2;
-            if (report.difference.compareTo(BigDecimal.ONE) >= 1) {
-                df2 = new DecimalFormat("#.00");
-            } else {
-                df2 = new DecimalFormat("0.00");
-            }
-            report.averageSpend = report.actualTakings.divide(new BigDecimal(1));
-            till = dc.getTill(till.getId());
-            report.tax = BigDecimal.ZERO;
-
-            dc.cashUncashedSales(till.getId());
-
-            TillReportDialog.showDialog(report);
-
-            if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Do you want the report emailed?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                String message = "Cashup for terminal " + till.getName()
-                        + "\nValue counted: £" + report.declared.toString()
-                        + "\nActual takings: £" + report.actualTakings.toString()
-                        + "\nDifference: £" + report.difference.toString();
-                final ModalDialog mDialog = new ModalDialog(this, "Email", "Emailing...");
-                final Runnable run = new Runnable() {
-                    @Override
-                    public void run() {
+        } else if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem view = new JMenuItem("View");
+            view.addActionListener((ActionEvent e) -> {
+                int index = table.getSelectedRow();
+                Till t = contents.get(index);
+                TillDialog.showDialog(this, t);
+            });
+            JMenuItem reinit = new JMenuItem("Reinit");
+            reinit.addActionListener((ActionEvent e) -> {
+                for (JConnThread th : TillServer.server.getClientConnections()) {
+                    int index = table.getSelectedRow();
+                    Till t = contents.get(index);
+                    ConnectionHandler hand = (ConnectionHandler) th.getMethodClass();
+                    if (hand.till.getId() == t.getId()) {
                         try {
-                            dc.sendEmail(message);
-                            mDialog.hide();
-                            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
+                            th.sendData(JConnData.create("REINIT"));
+                            return;
                         } catch (IOException ex) {
-                            mDialog.hide();
-                            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
-                };
-                final Thread thread = new Thread(run);
-                thread.start();
-                mDialog.show();
-            }
-        } catch (IOException | SQLException | JTillException ex) {
-            Logger.getLogger(TillWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnCashupActionPerformed
+                }
+                JOptionPane.showInternalMessageDialog(this, "Till offline", "Reinitalise", JOptionPane.WARNING_MESSAGE);
+            });
 
-    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
-        if (evt.getClickCount() == 2) {
-            int index = table.getSelectedRow();
-            Till t = contents.get(index);
-            TillDialog.showDialog(this, t);
+            menu.add(view);
+            menu.add(reinit);
+            menu.show(table, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tableMouseClicked
 
+    private void btnReinitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReinitActionPerformed
+        if (JOptionPane.showInternalConfirmDialog(this, "Warning! This will log all staff members out. Continue?", "Reinitalise", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            TillServer.server.sendData(null, JConnData.create("REINIT"));
+        }
+    }//GEN-LAST:event_btnReinitActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCashup;
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnReinit;
     private javax.swing.JButton btnView;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;

@@ -1496,7 +1496,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemStaffReportingActionPerformed
 
     private void itemReinitTillsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReinitTillsActionPerformed
-        TillServer.server.sendData(null, JConnData.create("LOGOUT"));
+        TillServer.server.sendData(null, JConnData.create("REINIT"));
     }//GEN-LAST:event_itemReinitTillsActionPerformed
 
     private void itemDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDatabaseActionPerformed
