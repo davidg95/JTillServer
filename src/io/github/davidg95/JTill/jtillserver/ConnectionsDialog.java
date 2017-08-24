@@ -6,10 +6,12 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import io.github.davidg95.jconn.JConnThread;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -87,20 +89,13 @@ public class ConnectionsDialog extends javax.swing.JInternalFrame {
      * Method to display the contents of the list in the dialog.
      */
     private void setList() {
-        try {
-            List<Till> tills = dc.getAllTills();
-            for (Till t : dc.getConnectedTills()) {
-                for (Till ti : tills) {
-                    if (ti.equals(t)) {
-                        ti.setConnected(true);
-                    }
-                }
-            }
-            model = new MyListModel(tills);
-            lstConnections.setModel(model);
-        } catch (IOException | SQLException ex) {
-            Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);
+        final List<Till> tills = new ArrayList<>();
+        for (JConnThread th : TillServer.server.getClientConnections()) {
+            ConnectionHandler hand = (ConnectionHandler) th.getMethodClass();
+            tills.add(hand.till);
         }
+        model = new MyListModel(tills);
+        lstConnections.setModel(model);
     }
 
     /**
