@@ -196,34 +196,36 @@ public class TillWindow extends javax.swing.JInternalFrame {
                 TillDialog.showDialog(this, t);
             }
         } else if (SwingUtilities.isRightMouseButton(evt)) {
-            JPopupMenu menu = new JPopupMenu();
-            JMenuItem view = new JMenuItem("View");
-            view.addActionListener((ActionEvent e) -> {
+            try {
                 int index = table.getSelectedRow();
-                Till t = contents.get(index);
-                TillDialog.showDialog(this, t);
-            });
-            JMenuItem reinit = new JMenuItem("Reinit");
-            reinit.addActionListener((ActionEvent e) -> {
-                for (JConnThread th : TillServer.server.getClientConnections()) {
-                    int index = table.getSelectedRow();
-                    Till t = contents.get(index);
-                    ConnectionHandler hand = (ConnectionHandler) th.getMethodClass();
-                    if (hand.till.getId() == t.getId()) {
-                        try {
-                            th.sendData(JConnData.create("REINIT"));
-                            return;
-                        } catch (IOException ex) {
-                            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                Till t = dc.getTill(contents.get(index).getId());
+                JPopupMenu menu = new JPopupMenu();
+                JMenuItem view = new JMenuItem("View");
+                view.addActionListener((ActionEvent e) -> {
+                    TillDialog.showDialog(this, t);
+                });
+                JMenuItem reinit = new JMenuItem("Reinit");
+                reinit.addActionListener((ActionEvent e) -> {
+                    for (JConnThread th : TillServer.server.getClientConnections()) {
+                        ConnectionHandler hand = (ConnectionHandler) th.getMethodClass();
+                        if (hand.till.getId() == t.getId()) {
+                            try {
+                                th.sendData(JConnData.create("REINIT"));
+                                return;
+                            } catch (IOException ex) {
+                                JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                            }
                         }
                     }
-                }
-                JOptionPane.showInternalMessageDialog(this, "Till offline", "Reinitalise", JOptionPane.WARNING_MESSAGE);
-            });
+                    JOptionPane.showInternalMessageDialog(this, "Till offline", "Reinitalise", JOptionPane.WARNING_MESSAGE);
+                });
 
-            menu.add(view);
-            menu.add(reinit);
-            menu.show(table, evt.getX(), evt.getY());
+                menu.add(view);
+                menu.add(reinit);
+                menu.show(table, evt.getX(), evt.getY());
+            } catch (IOException | SQLException | JTillException ex) {
+                JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_tableMouseClicked
 
