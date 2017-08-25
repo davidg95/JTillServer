@@ -432,9 +432,10 @@ public class TillDialog extends javax.swing.JDialog {
             if (s != null) {
                 till.setDefaultScreen(s.getId());
                 txtDefaultScreen.setText(s.getName());
+                dc.updateTill(till);
             }
-        } catch (IOException | SQLException ex) {
-            Logger.getLogger(TillDialog.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | SQLException | JTillException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnChangeActionPerformed
 
