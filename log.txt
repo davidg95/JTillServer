@@ -1,22 +1,19 @@
-JTill log Fri Aug 25 12:51:24 BST 2017
-[12:51:24] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[12:51:29] [INFO] David Grant has logged in from DAVID-PC
-[12:51:35] [INFO] David Grant has logged out
-[12:51:37] [INFO] David Grant has logged in from DAVID-PC
-[12:53:30] [INFO] David Grant has logged out
-[12:53:32] [INFO] David Grant has logged in from DAVID-PC
-[12:53:33] [INFO] David Grant has logged out
-[12:53:35] [INFO] David Grant has logged in from DAVID-PC
-[12:53:36] [INFO] David Grant has logged out
-[12:53:39] [INFO] David Grant has logged in from DAVID-PC
-[12:53:46] [INFO] David Grant has logged out
-[12:53:48] [INFO] David Grant has logged in from DAVID-PC
-[12:53:56] [INFO] David Grant has logged out
-[12:53:58] [INFO] David Grant has logged in from DAVID-PC
-[12:53:59] [INFO] David Grant has logged out
-[12:54:02] [INFO] David Grant has logged in from DAVID-PC
-[12:54:05] [INFO] David Grant has logged out
-[12:54:08] [INFO] David Grant has logged in from DAVID-PC
-[12:54:09] [INFO] David Grant has logged out
-[12:54:13] [INFO] David Grant has logged in from DAVID-PC
-[12:54:14] [INFO] David Grant has logged out
+JTill log Fri Aug 25 12:58:07 BST 2017
+[12:58:08] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[12:58:16] [INFO] David Grant has logged in from DAVID-PC
+[12:58:19] [INFO] David Grant has logged out
+[12:58:36] [INFO] David Grant has logged in from DAVID-PC
+[12:58:39] [INFO] David Grant has logged out
+[12:59:25] [INFO] David Grant has logged in from DAVID-PC
+[13:00:23] [INFO] David Grant has logged out
+[13:00:24] [INFO] David Grant has logged in from DAVID-PC
+[13:00:27] [INFO] David Grant has logged out
+[13:01:21] [INFO] David Grant has logged in from DAVID-PC
+[13:01:22] [INFO] David Grant has logged out
+[13:01:23] [INFO] David Grant has logged in from DAVID-PC
+[13:01:31] [INFO] David Grant has logged out
+[13:01:33] [INFO] David Grant has logged in from DAVID-PC
+[13:01:54] [INFO] David Grant has logged out
+[13:02:31] [INFO] David Grant has logged in from DAVID-PC
+[13:02:47] [WARNING] 3 is below minimum stock level
+[13:03:16] [INFO] David Grant has logged out
