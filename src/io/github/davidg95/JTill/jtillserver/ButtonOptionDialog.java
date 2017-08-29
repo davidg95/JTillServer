@@ -144,6 +144,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         rProduct = new javax.swing.JRadioButton();
         rScreen = new javax.swing.JRadioButton();
 
+        setResizable(false);
+
         btnClose.setText("Close");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
