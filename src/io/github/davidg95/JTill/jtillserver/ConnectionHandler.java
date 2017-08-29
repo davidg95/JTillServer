@@ -7,6 +7,7 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.jconn.*;
 import io.github.davidg95.JTill.jtill.*;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.image.Image;
 import javax.mail.MessagingException;
 
 /**
@@ -818,5 +820,10 @@ public class ConnectionHandler {
     @JConnMethod("DATABASEINFO")
     public Object[] databaseInfo() throws IOException, SQLException {
         return dc.databaseInfo();
+    }
+
+    @JConnMethod("GETBGIMAGE")
+    public File getBackgroundImage() throws IOException {
+        return dc.getLoginBackground();
     }
 }
