@@ -1,7 +1,34 @@
-JTill log Fri Aug 25 18:39:48 BST 2017
-[18:39:48] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[18:39:57] [INFO] David Grant has logged in from DAVID-PC
-[18:40:04] [INFO] David Grant has logged out
-[18:40:06] [INFO] David Grant has logged in from DAVID-PC
-[18:40:08] [WARNING] 3 is below minimum stock level
-[18:40:10] [INFO] David Grant has logged out
+JTill log Mon Aug 28 16:42:40 BST 2017
+[16:42:40] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[16:42:40] [INFO] The database does not exists, so it is getting created
+[16:42:40] [INFO] Creating tables
+[16:42:41] [INFO] Created tills table
+[16:42:41] [INFO] Created tax table
+[16:42:41] [INFO] Created categorys table
+[16:42:41] [INFO] Created departments table
+[16:42:41] [INFO] Created configs table
+[16:42:41] [INFO] Created sales table
+[16:42:41] [INFO] Created customers table
+[16:42:41] [INFO] Created products table
+[16:42:41] [INFO] Created plus table
+[16:42:41] [INFO] Created discounts table
+[16:42:41] [INFO] Created buckets table
+[16:42:41] [INFO] Create triggers table
+[16:42:41] [INFO] Created saleItems table
+[16:42:41] [INFO] Created staff table
+[16:42:41] [INFO] Created screens table
+[16:42:41] [INFO] Created buttons table
+[16:42:41] [INFO] Created waste reports table
+[16:42:41] [INFO] Created table waste reasons
+[16:42:41] [INFO] Created table waste items
+[16:42:41] [INFO] Created table suppliers
+[16:42:41] [INFO] Created table recevied items
+[16:42:41] [INFO] Created table clockonoff
+[16:42:41] [INFO] Created table images
+[16:42:57] [INFO] David Grant has logged in
+[16:45:05] [INFO] David Grant has logged in from DAVID-PC
+[16:45:16] [INFO] David Grant has logged out
+[16:47:47] [INFO] David Grant has logged in from DAVID-PC
+[16:48:19] [INFO] David Grant has logged out
+[16:49:11] [INFO] David Grant has logged in from DAVID-PC
+[16:49:12] [INFO] David Grant has logged out
