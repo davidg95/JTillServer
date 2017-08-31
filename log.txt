@@ -1,18 +1,6 @@
-JTill log Thu Aug 31 15:27:06 BST 2017
-[15:27:06] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[15:27:13] [INFO] David Grant has logged in from DAVID-PC
-[15:27:22] [WARNING] 4 is below minimum stock level
-[15:27:22] [WARNING] 3 is below minimum stock level
-[15:27:26] [WARNING] 4 is below minimum stock level
-[15:27:26] [WARNING] 3 is below minimum stock level
-[15:27:29] [WARNING] 4 is below minimum stock level
-[15:27:29] [WARNING] 3 is below minimum stock level
-[15:27:32] [WARNING] 4 is below minimum stock level
-[15:27:32] [WARNING] 3 is below minimum stock level
-[15:27:35] [WARNING] 4 is below minimum stock level
-[15:27:35] [WARNING] 3 is below minimum stock level
-[15:27:39] [WARNING] 4 is below minimum stock level
-[15:27:39] [WARNING] 3 is below minimum stock level
-[15:27:44] [WARNING] 4 is below minimum stock level
-[15:27:44] [WARNING] 3 is below minimum stock level
-[15:27:44] [INFO] David Grant has logged out
+JTill log Thu Aug 31 16:42:38 BST 2017
+[16:42:38] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[16:42:51] [INFO] David Grant has logged in from DAVID-PC
+[16:43:01] [INFO] David Grant has logged out
+[16:43:18] [INFO] David Grant has logged in from DAVID-PC
+[16:43:22] [INFO] David Grant has logged out
