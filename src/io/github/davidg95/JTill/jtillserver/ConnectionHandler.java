@@ -19,7 +19,6 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.image.Image;
 import javax.mail.MessagingException;
 
 /**
@@ -47,8 +46,8 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("CONNECT")
-    public Till initialConnection(@JConnParameter("UUID") UUID uuid, @JConnParameter("SITE") String site) {
-        till = dc.connectTill(site, uuid);
+    public Till initialConnection(@JConnParameter("UUID") UUID uuid, @JConnParameter("NAME") String name) {
+        till = dc.connectTill(name, uuid);
         return till;
     }
 
@@ -437,7 +436,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("GETTILL")
-    public Till getTill(@JConnParameter("ID") int id) throws IOException, SQLException, JTillException {
+    public Till getTill(@JConnParameter("TERMINAL") int id) throws IOException, SQLException, JTillException {
         return dc.getTill(id);
     }
 
@@ -825,5 +824,10 @@ public class ConnectionHandler {
     @JConnMethod("GETBGIMAGE")
     public File getBackgroundImage() throws IOException {
         return dc.getLoginBackground();
+    }
+
+    @JConnMethod("REINITTILLS")
+    public void reinitTills() throws IOException {
+        dc.reinitialiseAllTills();
     }
 }

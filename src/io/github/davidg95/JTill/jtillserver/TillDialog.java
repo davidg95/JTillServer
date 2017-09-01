@@ -50,7 +50,6 @@ public class TillDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setTitle(till.getName());
         txtID.setText("" + till.getId());
-        txtUUID.setText(till.getUuid().toString());
         txtName.setText(till.getName());
         txtUncashedTakings.setText("£" + new DecimalFormat("#.00").format(till.getUncashedTakings()));
         if (till.getUncashedTakings().compareTo(BigDecimal.ZERO) == 0) {
@@ -133,9 +132,8 @@ public class TillDialog extends javax.swing.JDialog {
         txtName = new javax.swing.JTextField();
         lblID = new javax.swing.JLabel();
         txtID = new javax.swing.JTextField();
-        txtUUID = new javax.swing.JTextField();
         lblName = new javax.swing.JLabel();
-        lblUUID = new javax.swing.JLabel();
+        btnChangeName = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         txtDefaultScreen = new javax.swing.JTextField();
         btnChange = new javax.swing.JButton();
@@ -197,17 +195,18 @@ public class TillDialog extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Till Info"));
 
-        txtName.setEditable(false);
-
         lblID.setText("Till ID: ");
 
         txtID.setEditable(false);
 
-        txtUUID.setEditable(false);
-
         lblName.setText("Till Name: ");
 
-        lblUUID.setText("UUID:");
+        btnChangeName.setText("Save");
+        btnChangeName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChangeNameActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -217,13 +216,14 @@ public class TillDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblName, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lblUUID, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lblID, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtUUID, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
-                    .addComponent(txtName))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnChangeName)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -235,12 +235,9 @@ public class TillDialog extends javax.swing.JDialog {
                     .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtUUID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblUUID))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblName)
-                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnChangeName))
                 .addContainerGap())
         );
 
@@ -294,7 +291,7 @@ public class TillDialog extends javax.swing.JDialog {
                                     .addComponent(btnCashup)
                                     .addComponent(btnChange))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -435,13 +432,30 @@ public class TillDialog extends javax.swing.JDialog {
                 dc.updateTill(till);
             }
         } catch (IOException | SQLException | JTillException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnChangeActionPerformed
+
+    private void btnChangeNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeNameActionPerformed
+        String name = txtName.getText();
+        if (name.equals("")) {
+            JOptionPane.showMessageDialog(this, "You msut enter a name", "Name", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        till.setName(name);
+        try {
+            dc.updateTill(till);
+            
+            JOptionPane.showMessageDialog(this, "Rename succesful, restart till to take effect.", "Rename", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException | SQLException | JTillException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnChangeNameActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCashup;
     private javax.swing.JButton btnChange;
+    private javax.swing.JButton btnChangeName;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnLogout;
     private javax.swing.JLabel jLabel1;
@@ -452,14 +466,12 @@ public class TillDialog extends javax.swing.JDialog {
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblStaff;
     private javax.swing.JLabel lblTakings;
-    private javax.swing.JLabel lblUUID;
     private javax.swing.JTable table;
     private javax.swing.JTextField txtDefaultScreen;
     private javax.swing.JTextField txtID;
     private javax.swing.JTextField txtLastContact;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtStaff;
-    private javax.swing.JTextField txtUUID;
     private javax.swing.JTextField txtUncashedTakings;
     // End of variables declaration//GEN-END:variables
 }

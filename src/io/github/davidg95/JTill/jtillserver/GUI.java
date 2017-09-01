@@ -8,7 +8,6 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.TillSplashScreen;
 import io.github.davidg95.JTill.jtill.*;
 import io.github.davidg95.jconn.JConnData;
-import io.github.davidg95.jconn.JConnThread;
 import java.awt.Desktop;
 import java.awt.Image;
 import java.awt.SystemTray;
@@ -405,6 +404,10 @@ public class GUI extends JFrame implements GUIInterface {
         Till till = new Till(name, 0);
         TillDialog.showDialog(this, till);
         return till;
+    }
+
+    @Override
+    public void renameTill(String name) {
     }
 
     private class LogHandler extends Handler {
@@ -1496,7 +1499,13 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemStaffReportingActionPerformed
 
     private void itemReinitTillsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReinitTillsActionPerformed
-        TillServer.server.sendData(null, JConnData.create("REINIT"));
+        try {
+            if (JOptionPane.showInternalConfirmDialog(internal, "Warning! This will log all staff members out. Continue?", "Reinitialise tills", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                dc.reinitialiseAllTills();
+            }
+        } catch (IOException ex) {
+            JOptionPane.showInternalConfirmDialog(internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_itemReinitTillsActionPerformed
 
     private void itemDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDatabaseActionPerformed

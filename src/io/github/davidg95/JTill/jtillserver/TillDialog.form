@@ -66,7 +66,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <Component id="jScrollPane1" pref="372" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="370" max="32767" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -227,14 +227,16 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="lblName" alignment="1" min="-2" max="-2" attributes="0"/>
-                      <Component id="lblUUID" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="lblID" alignment="1" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="txtID" alignment="0" min="-2" pref="44" max="-2" attributes="0"/>
-                      <Component id="txtUUID" pref="242" max="32767" attributes="0"/>
-                      <Component id="txtName" alignment="0" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="txtID" min="-2" pref="44" max="-2" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <Component id="txtName" min="-2" pref="180" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="btnChangeName" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -250,13 +252,9 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="txtUUID" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="lblUUID" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="lblName" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtName" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnChangeName" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -265,9 +263,6 @@
       </Layout>
       <SubComponents>
         <Component class="javax.swing.JTextField" name="txtName">
-          <Properties>
-            <Property name="editable" type="boolean" value="false"/>
-          </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblID">
           <Properties>
@@ -279,20 +274,18 @@
             <Property name="editable" type="boolean" value="false"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="txtUUID">
-          <Properties>
-            <Property name="editable" type="boolean" value="false"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JLabel" name="lblName">
           <Properties>
             <Property name="text" type="java.lang.String" value="Till Name: "/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="lblUUID">
+        <Component class="javax.swing.JButton" name="btnChangeName">
           <Properties>
-            <Property name="text" type="java.lang.String" value="UUID:"/>
+            <Property name="text" type="java.lang.String" value="Save"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnChangeNameActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
