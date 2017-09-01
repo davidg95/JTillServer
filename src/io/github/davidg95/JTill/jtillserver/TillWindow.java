@@ -222,7 +222,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
             view.addActionListener((ActionEvent e) -> {
                 TillDialog.showDialog(this, t);
             });
-            JMenuItem reinit = new JMenuItem("Reinit");
+            JMenuItem reinit = new JMenuItem("Reinitialise Terminal");
             reinit.addActionListener((ActionEvent e) -> {
                 for (JConnThread th : TillServer.server.getClientConnections()) {
                     ConnectionHandler hand = (ConnectionHandler) th.getMethodClass();
@@ -250,7 +250,12 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
     private void btnReinitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReinitActionPerformed
         if (JOptionPane.showInternalConfirmDialog(this, "Warning! This will log all staff members out. Continue?", "Reinitalise", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            TillServer.server.sendData(null, JConnData.create("REINIT"));
+
+            try {
+                dc.reinitialiseAllTills();
+            } catch (IOException ex) {
+                JOptionPane.showInternalConfirmDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btnReinitActionPerformed
 

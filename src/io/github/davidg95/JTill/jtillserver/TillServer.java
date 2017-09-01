@@ -98,6 +98,7 @@ public class TillServer {
         try {
             TillSplashScreen.setLabel("Starting server socket");
             server = JConnServer.start(PORT_IN_USE, ConnectionHandler.class);
+            dc.setServer(server);
             TillSplashScreen.addBar(10);
         } catch (IOException ex) {
         }

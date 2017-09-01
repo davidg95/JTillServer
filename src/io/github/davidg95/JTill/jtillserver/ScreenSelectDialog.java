@@ -199,6 +199,7 @@ public class ScreenSelectDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        screen = null;
         setVisible(false);
     }//GEN-LAST:event_btnCancelActionPerformed
 

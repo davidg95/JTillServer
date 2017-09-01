@@ -75,10 +75,17 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         final int totalSales = tableContents.size();
         BigDecimal totalValue = BigDecimal.ZERO;
         for (Sale s : tableContents) {
-            final Staff staff = s.getStaff();
-            final Till till = s.getTerminal();
-            model.addRow(new Object[]{s.getId(), s.getDate(), s.getTotal().setScale(2), Encryptor.decrypt(staff.getName()), till.getName()});
-            totalValue = totalValue.add(s.getTotal());
+            try {
+                final Staff staff = dc.getStaff(s.getStaffID());
+                s.setStaff(staff);
+                final Customer customer = dc.getCustomer(s.getCustomerID());
+                s.setCustomer(customer);
+                final Till till = s.getTerminal();
+                model.addRow(new Object[]{s.getId(), s.getDate(), s.getTotal().setScale(2), staff.getName(), till.getName()});
+                totalValue = totalValue.add(s.getTotal());
+            } catch (IOException | StaffNotFoundException | SQLException | CustomerNotFoundException ex) {
+                JOptionPane.showInternalConfirmDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
         txtTotalSales.setValue(totalSales);
         txtTotalValue.setValue(totalValue);
