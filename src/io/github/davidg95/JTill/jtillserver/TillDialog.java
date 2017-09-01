@@ -431,8 +431,10 @@ public class TillDialog extends javax.swing.JDialog {
                 txtDefaultScreen.setText(s.getName());
                 dc.updateTill(till);
             }
-        } catch (IOException | SQLException | JTillException ex) {
+        } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.INFORMATION_MESSAGE);
+        } catch (JTillException ex) {
+            
         }
     }//GEN-LAST:event_btnChangeActionPerformed
 
@@ -445,9 +447,10 @@ public class TillDialog extends javax.swing.JDialog {
         till.setName(name);
         try {
             dc.updateTill(till);
-            
             JOptionPane.showMessageDialog(this, "Rename succesful, restart till to take effect.", "Rename", JOptionPane.INFORMATION_MESSAGE);
-        } catch (IOException | SQLException | JTillException ex) {
+        } catch(JTillException ex){
+            
+        } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnChangeNameActionPerformed
