@@ -8,6 +8,7 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.TillSplashScreen;
 import io.github.davidg95.JTill.jtill.*;
 import io.github.davidg95.jconn.JConnData;
+import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Image;
 import java.awt.SystemTray;
@@ -1488,9 +1489,11 @@ public class GUI extends JFrame implements GUIInterface {
         final Runnable run = () -> {
             TransactionViewerWindow.showWindow();
             mDialog.hide();
+            this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         };
         final Thread thread = new Thread(run, "TransactionWindow");
         thread.start();
+        this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         mDialog.show();
     }//GEN-LAST:event_itemTransactionViewerActionPerformed
 

@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Cursor;
 import java.awt.HeadlessException;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
@@ -423,13 +424,16 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                 } catch (IOException | SQLException ex) {
                     Logger.getLogger(TransactionViewerWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 mDialog.hide();
             } catch (HeadlessException e) {
+                this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 mDialog.hide();
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         };
         final Thread thread = new Thread(run); //Create the worker thread
+        this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         thread.start(); //Start the worker thread
         mDialog.show(); //Show the dialog to indicate that a search is in progress
     }//GEN-LAST:event_btnSearchActionPerformed
