@@ -136,6 +136,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             cmbPosition.setSelectedIndex(0);
             txtWage.setText("");
             staff = null;
+            chkEnabled.setSelected(false);
         } else {
             this.staff = s;
             txtName.setText(s.getName());
@@ -144,6 +145,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             int index = p - 1;
             cmbPosition.setSelectedIndex(index);
             txtWage.setText(s.getWage() + "");
+            chkEnabled.setSelected(staff.isEnabled());
         }
     }
 
@@ -183,6 +185,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         lblPassword = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         txtWage = new javax.swing.JTextField();
+        chkEnabled = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Manage Staff");
@@ -292,6 +295,8 @@ public class StaffWindow extends javax.swing.JInternalFrame {
 
         jLabel4.setText("Wage:");
 
+        chkEnabled.setText("Enabled");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -300,6 +305,14 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnAddStaff)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSave))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnRemoveStaff)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnShowAll))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(lblPassword)
                             .addComponent(jLabel1)
@@ -307,20 +320,14 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                             .addComponent(jLabel3)
                             .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnPassword)
-                            .addComponent(txtName)
-                            .addComponent(cmbPosition, 0, 139, Short.MAX_VALUE)
-                            .addComponent(txtUsername)
-                            .addComponent(txtWage)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAddStaff)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSave))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnRemoveStaff)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnShowAll)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkEnabled)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(btnPassword)
+                                .addComponent(txtName)
+                                .addComponent(cmbPosition, 0, 139, Short.MAX_VALUE)
+                                .addComponent(txtUsername)
+                                .addComponent(txtWage)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
@@ -343,7 +350,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -364,7 +371,9 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(txtWage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addGap(4, 4, 4)
+                        .addComponent(chkEnabled)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAddStaff)
                             .addComponent(btnSave))
@@ -421,6 +430,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             staff.setUsername(username);
             staff.setPosition(position);
             staff.setWage(wage);
+            staff.setEnabled(chkEnabled.isSelected());
             dc.updateStaff(staff);
         } catch (SQLException | StaffNotFoundException | IOException ex) {
             showError(ex);
@@ -540,6 +550,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnShowAll;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JCheckBox chkEnabled;
     private javax.swing.JComboBox<String> cmbPosition;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

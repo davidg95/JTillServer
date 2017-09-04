@@ -130,10 +130,10 @@ public class StaffDialog extends javax.swing.JDialog {
         lblError = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         txtWage = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        chkEnabled = new javax.swing.JCheckBox();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("New Staff");
-        setResizable(false);
 
         cmbPosition.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Assisstant", "Supervisor", "Manager", "Area Manager"}));
 
@@ -186,6 +186,8 @@ public class StaffDialog extends javax.swing.JDialog {
             }
         });
 
+        jLabel7.setText("Enable Account:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -205,15 +207,18 @@ public class StaffDialog extends javax.swing.JDialog {
                             .addComponent(jLabel3)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5)
-                            .addComponent(jLabel6))
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtName)
-                            .addComponent(cmbPosition, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtUsername)
-                            .addComponent(txtPassword)
-                            .addComponent(txtPasswordConfirm, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                            .addComponent(txtWage))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtName)
+                                .addComponent(cmbPosition, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtUsername)
+                                .addComponent(txtPassword)
+                                .addComponent(txtPasswordConfirm, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                                .addComponent(txtWage))
+                            .addComponent(chkEnabled))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -244,6 +249,10 @@ public class StaffDialog extends javax.swing.JDialog {
                     .addComponent(jLabel6)
                     .addComponent(txtWage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(chkEnabled))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblError, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -288,7 +297,7 @@ public class StaffDialog extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "Wage must be greater than 0", "Create New Staff", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                staff = new Staff(name, position, username, password, wage);
+                staff = new Staff(name, position, username, password, wage, chkEnabled.isSelected());
                 try {
                     Staff s = dc.addStaff(staff);
                 } catch (SQLException | IOException ex) {
@@ -330,6 +339,7 @@ public class StaffDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClose;
+    private javax.swing.JCheckBox chkEnabled;
     private javax.swing.JComboBox<String> cmbPosition;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -337,6 +347,7 @@ public class StaffDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel lblError;
     private javax.swing.JTextField txtName;
     private javax.swing.JPasswordField txtPassword;

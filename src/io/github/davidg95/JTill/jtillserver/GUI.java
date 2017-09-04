@@ -230,7 +230,7 @@ public class GUI extends JFrame implements GUIInterface {
                 TillSplashScreen.setLabel("Connecting to database"); //Update the splash screen
                 db.connect(settings.getSetting("db_address"), settings.getSetting("db_username"), settings.getSetting("db_password")); //Open a connection to the database
                 if (dc.getStaffCount() == 0) { //Check to see if any staff members have been created
-                    Staff s = new Staff("JTill Admin", Staff.MANAGER, "admin", "jtill", 0.01); //Create the admin member of staff if they do not already exists
+                    Staff s = new Staff("JTill Admin", Staff.MANAGER, "admin", "jtill", 0.01, true); //Create the admin member of staff if they do not already exists
                     try {
                         dc.addStaff(s); //Add the member of staff
                     } catch (SQLException | IOException ex) {

@@ -40,15 +40,19 @@
                           <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel6" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel7" alignment="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="txtName" max="32767" attributes="0"/>
-                          <Component id="cmbPosition" max="32767" attributes="0"/>
-                          <Component id="txtUsername" max="32767" attributes="0"/>
-                          <Component id="txtPassword" max="32767" attributes="0"/>
-                          <Component id="txtPasswordConfirm" pref="139" max="32767" attributes="0"/>
-                          <Component id="txtWage" alignment="0" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="txtName" max="32767" attributes="0"/>
+                              <Component id="cmbPosition" max="32767" attributes="0"/>
+                              <Component id="txtUsername" max="32767" attributes="0"/>
+                              <Component id="txtPassword" max="32767" attributes="0"/>
+                              <Component id="txtPasswordConfirm" pref="139" max="32767" attributes="0"/>
+                              <Component id="txtWage" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="chkEnabled" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -90,6 +94,11 @@
                   <Component id="txtWage" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkEnabled" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="lblError" min="-2" pref="19" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -194,6 +203,13 @@
         <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtWageFocusGained"/>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtWageActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel7">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Enable Account:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkEnabled">
     </Component>
   </SubComponents>
 </Form>

@@ -238,7 +238,7 @@ public class LoginDialog extends javax.swing.JDialog implements CapsListener {
                 ch.run = false; //Signals the Caps Checker thread to stop running
                 this.setVisible(false);
             } catch (LoginException ex) {
-                lblLogin.setText(ex.getMessage());
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Login", JOptionPane.ERROR_MESSAGE);
             } catch (IOException | SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 Logger.getGlobal().log(Level.WARNING, null, ex);
