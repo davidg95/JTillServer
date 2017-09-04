@@ -35,6 +35,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -337,8 +338,11 @@ public class GUI extends JFrame implements GUIInterface {
      */
     private void logout() {
         try {
-            lblUser.setText("Not Logged In");
             dc.logout(staff);
+            for(JInternalFrame f: internal.getAllFrames()){
+                f.setVisible(false);
+            }
+            lblUser.setText("Not Logged In");
             LOG.log(Level.INFO, staff.getName() + " has logged out");
         } catch (StaffNotFoundException ex) {
         } catch (IOException ex) {
