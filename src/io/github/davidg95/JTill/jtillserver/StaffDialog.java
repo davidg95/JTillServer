@@ -188,6 +188,8 @@ public class StaffDialog extends javax.swing.JDialog {
 
         jLabel7.setText("Enable Account:");
 
+        chkEnabled.setSelected(true);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(

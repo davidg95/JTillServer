@@ -210,6 +210,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="chkEnabled">
+      <Properties>
+        <Property name="selected" type="boolean" value="true"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>
