@@ -7,6 +7,8 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -15,7 +17,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -153,6 +157,25 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         JOptionPane.showMessageDialog(this, e, "Staff", JOptionPane.ERROR_MESSAGE);
     }
 
+    private void changePassword(Staff s) {
+        if (GUI.staff.getPosition() >= 3) {
+            String password = PasswordDialog.showDialog(this, dc, s);
+            if (password != null) {
+                if (!password.equals("")) {
+                    s.setPassword(password);
+                    try {
+                        dc.updateStaff(s);
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Password successfully changed", "Password", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (IOException | StaffNotFoundException | SQLException ex) {
+                        showError(ex);
+                    }
+                }
+            }
+        } else {
+            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You cannot change users passwords", "Password", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -217,8 +240,8 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             }
         });
         tableStaff.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                tableStaffMousePressed(evt);
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableStaffMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tableStaff);
@@ -475,15 +498,6 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         showAllStaff();
     }//GEN-LAST:event_btnShowAllActionPerformed
 
-    private void tableStaffMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStaffMousePressed
-        btnPassword.setEnabled(true);
-        if (evt.getClickCount() == 2) {
-            editStaff();
-        } else if (evt.getClickCount() == 1) {
-            setCurrentStaff(currentTableContents.get(tableStaff.getSelectedRow()));
-        }
-    }//GEN-LAST:event_tableStaffMousePressed
-
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         int option;
         String terms = txtSearch.getText();
@@ -523,23 +537,39 @@ public class StaffWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPasswordActionPerformed
-        if (GUI.staff.getPosition() >= 3) {
-            String password = PasswordDialog.showDialog(this, dc, staff);
-            if (password != null) {
-                if (!password.equals("")) {
-                    staff.setPassword(password);
-                    try {
-                        dc.updateStaff(staff);
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Password successfully changed", "Password", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (IOException | StaffNotFoundException | SQLException ex) {
-                        showError(ex);
-                    }
-                }
-            }
-        } else {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You cannot change users passwords", "Password", JOptionPane.ERROR_MESSAGE);
-        }
+        changePassword(staff);
     }//GEN-LAST:event_btnPasswordActionPerformed
+
+    private void tableStaffMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStaffMouseClicked
+        setCurrentStaff(currentTableContents.get(tableStaff.getSelectedRow()));
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem pass = new JMenuItem("Change Password");
+            pass.addActionListener((ActionEvent e) -> {
+                changePassword(staff);
+            });
+            JMenuItem enable = new JMenuItem("Disable Account");
+            if (!staff.isEnabled()) {
+                enable.setText("Enable Account");
+            }
+            enable.addActionListener((ActionEvent e) -> {
+                staff.setEnabled(!staff.isEnabled());
+                try {
+                    dc.updateStaff(staff);
+                    JOptionPane.showInternalMessageDialog(this, "Account " + (staff.isEnabled() ? "enabled" : "disabled"), "Staff", JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException | StaffNotFoundException | SQLException ex) {
+                    JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Staff", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+            menu.add(pass);
+            menu.add(enable);
+            menu.show(tableStaff, evt.getX(), evt.getY());
+        } else if (SwingUtilities.isLeftMouseButton(evt)) {
+            if (evt.getClickCount() == 2) {
+                editStaff();
+            }
+        }
+    }//GEN-LAST:event_tableStaffMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
