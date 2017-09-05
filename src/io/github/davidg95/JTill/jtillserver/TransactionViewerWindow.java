@@ -421,6 +421,9 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                     tableContents = newList;
                     //Display the sales in the table.
                     setTable();
+                    if (tableContents.isEmpty()) {
+                        JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "No results", "Transactions", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 } catch (IOException | SQLException ex) {
                     Logger.getLogger(TransactionViewerWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }

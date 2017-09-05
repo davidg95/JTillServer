@@ -96,6 +96,7 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
         lblSchema = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        btnClearSales = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Database Settings");
@@ -122,6 +123,13 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        btnClearSales.setText("Clear sales data");
+        btnClearSales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearSalesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -129,19 +137,19 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblName)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 379, Short.MAX_VALUE)
-                        .addComponent(jButton2))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblName)
                             .addComponent(lblVer)
                             .addComponent(lblCatalog)
                             .addComponent(lblSchema))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 341, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnClearSales)
+                            .addComponent(jButton2))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -152,12 +160,14 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
                     .addComponent(lblName)
                     .addComponent(jButton2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblVer)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblVer)
+                    .addComponent(btnClearSales))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblCatalog)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblSchema)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 252, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 247, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addContainerGap())
         );
@@ -186,7 +196,32 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
         mDialog.show(); //Show the running dialog
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void btnClearSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearSalesActionPerformed
+        if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "This will clear ALL sales data, continue?", "Clear sales data", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            final ModalDialog mDialog = new ModalDialog(this, "Sales Data", "Clearing...");
+            final Runnable run = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        int val = dc.clearSalesData();
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(GUI.gui.internal, val + " records removed", "Sales Data", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (IOException | SQLException ex) {
+                        mDialog.hide();
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                    } finally {
+                        mDialog.hide();
+                    }
+                }
+            };
+            final Thread thread = new Thread(run);
+            thread.start();
+            mDialog.show();
+        }
+    }//GEN-LAST:event_btnClearSalesActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnClearSales;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel lblCatalog;

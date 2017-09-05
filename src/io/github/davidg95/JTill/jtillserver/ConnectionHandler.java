@@ -830,4 +830,9 @@ public class ConnectionHandler {
     public void reinitTills() throws IOException {
         dc.reinitialiseAllTills();
     }
+
+    @JConnMethod("CLEARSALES")
+    public int clearSalesData() throws IOException, SQLException {
+        return dc.clearSalesData();
+    }
 }
