@@ -203,7 +203,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             this.plu = p;
             final Product product = plu.getProduct();
             txtName.setText(product.getLongName());
-            txtShortName.setText(p.getName());
+            txtShortName.setText(product.getName());
             if (product.isOpen()) { //Check if price is open.
                 txtPrice.setEnabled(false);
                 txtCostPrice.setEnabled(false);
