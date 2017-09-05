@@ -336,7 +336,8 @@ public class GUI extends JFrame implements GUIInterface {
      * Method to log a member of staff out of the server and display the login
      * dialog.
      */
-    private void logout() {
+    @Override
+    public void logout() {
         try {
             dc.logout(staff);
             for(JInternalFrame f: internal.getAllFrames()){

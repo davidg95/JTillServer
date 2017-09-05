@@ -13,7 +13,6 @@ import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -103,6 +102,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
         btnClose = new javax.swing.JButton();
         btnView = new javax.swing.JButton();
         btnReinit = new javax.swing.JButton();
+        btnRefresh = new javax.swing.JButton();
 
         setTitle("Tills");
 
@@ -156,6 +156,13 @@ public class TillWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        btnRefresh.setText("Refresh");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -168,6 +175,8 @@ public class TillWindow extends javax.swing.JInternalFrame {
                         .addComponent(btnView)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnReinit)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRefresh)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
@@ -181,7 +190,8 @@ public class TillWindow extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
                     .addComponent(btnView)
-                    .addComponent(btnReinit))
+                    .addComponent(btnReinit)
+                    .addComponent(btnRefresh))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
@@ -259,8 +269,13 @@ public class TillWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnReinitActionPerformed
 
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        this.getAllTills();
+    }//GEN-LAST:event_btnRefreshActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnReinit;
     private javax.swing.JButton btnView;
     private javax.swing.JScrollPane jScrollPane1;
