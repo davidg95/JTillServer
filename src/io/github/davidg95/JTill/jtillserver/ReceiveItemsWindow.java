@@ -136,7 +136,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 if (index == -1) {
                     return;
                 }
-                if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Are you sure you want to remove this item?\n" + p, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Are you sure you want to remove this item?\n" + p, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     model.removeRow(index);
                     products.remove(index);
                 }
@@ -161,7 +161,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         if (val == BigDecimal.ZERO) {
             lblValue.setText("Total Value: £0.00");
         } else {
-            lblValue.setText("Total Value: £" + new DecimalFormat("#.00").format(val));
+            lblValue.setText("Total Value: £" + new DecimalFormat("0.00").format(val));
         }
         if (products.isEmpty()) {
             btnReceive.setEnabled(false);
@@ -358,7 +358,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
         product = (Product) product.clone();
 
-        String str = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter amount to receive", "Receive Stock", JOptionPane.INFORMATION_MESSAGE);
+        String str = JOptionPane.showInternalInputDialog(ReceiveItemsWindow.this, "Enter amount to receive", "Receive Stock", JOptionPane.INFORMATION_MESSAGE);
 
         if (str == null || str.isEmpty()) {
             return;
@@ -367,7 +367,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         if (Utilities.isNumber(str)) {
             int amount = Integer.parseInt(str);
             if (amount <= 0) {
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Value must be greater than zero", "Receive Items", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "Value must be greater than zero", "Receive Items", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if (product.getStock() + amount > product.getMaxStockLevel() && product.getMaxStockLevel() != 0) {
@@ -384,7 +384,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             products.add(product);
             updateTable();
         } else {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddProductActionPerformed
 
@@ -393,9 +393,9 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         final Product product = products.get(row);
         if (evt.getClickCount() == 2) {
             if (evt.getClickCount() == 2) {
-                String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
+                String input = JOptionPane.showInternalInputDialog(ReceiveItemsWindow.this, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
                 if (!Utilities.isNumber(input)) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "A number must be entered", "Receive Items", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "A number must be entered", "Receive Items", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 int val = Integer.parseInt(input);
@@ -403,7 +403,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     product.setStock(val);
                     updateTable();
                 } else {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
                 }
             }
         }
@@ -413,9 +413,9 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             JMenuItem item = new JMenuItem("Remove");
             it.addActionListener((ActionEvent e) -> {
                 if (evt.getClickCount() == 2) {
-                    String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
+                    String input = JOptionPane.showInternalInputDialog(ReceiveItemsWindow.this, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
                     if (!Utilities.isNumber(input)) {
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "A number must be entered", "Receive Items", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "A number must be entered", "Receive Items", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     int val = Integer.parseInt(input);
@@ -423,12 +423,12 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                         product.setStock(val);
                         updateTable();
                     } else {
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
                     }
                 }
             });
             item.addActionListener((ActionEvent e) -> {
-                if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Remove this item?", "Remove Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Remove this item?", "Remove Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     products.remove(tblProducts.getSelectedRow());
                     updateTable();
                 }
@@ -459,7 +459,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     String[] items = line.split(",");
 
                     if (items.length != 2) {
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
 
@@ -480,18 +480,18 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                             JOptionPane.showMessageDialog(this, ex);
                         }
                     } catch (ProductNotFoundException ex) {
-                        if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                             Plu p = new Plu(barcode, 0);
                             product = ProductDialog.showNewProductDialog(this, dc, p, quantity);
                             p.setProductID(product.getId());
-                            JOptionPane.showInternalMessageDialog(GUI.gui.internal, product.getLongName() + " has now been added to the system with given stock level, there is no need to receive it here.", "Added", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, product.getLongName() + " has now been added to the system with given stock level, there is no need to receive it here.", "Added", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 }
             } catch (FileNotFoundException ex) {
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "File Not Found", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, ex, "File Not Found", JOptionPane.ERROR_MESSAGE);
             } catch (IOException | SQLException ex) {
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnAddCSVActionPerformed
