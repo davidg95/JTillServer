@@ -178,7 +178,6 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     int res = JOptionPane.showInternalConfirmDialog(WasteStockWindow.this, "Do you want to save the current report?", "Save", JOptionPane.YES_NO_OPTION);
                     if (res == JOptionPane.YES_OPTION) {
                         GUI.gui.savedReports.put("WAS", wasteItems);
-                        JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "Report saved", "Save", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
             }

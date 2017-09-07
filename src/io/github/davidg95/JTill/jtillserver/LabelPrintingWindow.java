@@ -95,7 +95,6 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
                     int res = JOptionPane.showInternalConfirmDialog(LabelPrintingWindow.this, "Do you want to save the current report?", "Save", JOptionPane.YES_NO_OPTION);
                     if (res == JOptionPane.YES_OPTION) {
                         GUI.gui.savedReports.put("LAB", labels);
-                        JOptionPane.showInternalMessageDialog(LabelPrintingWindow.this, "Report saved", "Save", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
             }

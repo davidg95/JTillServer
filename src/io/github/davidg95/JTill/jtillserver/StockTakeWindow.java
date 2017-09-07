@@ -81,7 +81,6 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
                     int res = JOptionPane.showInternalConfirmDialog(StockTakeWindow.this, "Do you want to save the current report?", "Save", JOptionPane.YES_NO_OPTION);
                     if (res == JOptionPane.YES_OPTION) {
                         GUI.gui.savedReports.put("STO", currentTableContents);
-                        JOptionPane.showInternalMessageDialog(StockTakeWindow.this, "Report saved", "Save", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
             }
