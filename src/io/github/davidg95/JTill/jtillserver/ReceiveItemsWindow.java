@@ -188,6 +188,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         lblValue = new javax.swing.JLabel();
         cmbSuppliers = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txtInvoice = new javax.swing.JTextField();
 
         tblProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -260,6 +262,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
         jLabel1.setText("Supplier:");
 
+        jLabel2.setText("Invoice No.:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -279,7 +283,10 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnClose))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cmbSuppliers, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -291,9 +298,11 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmbSuppliers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(txtInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnReceive)
@@ -319,33 +328,45 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         if (products.isEmpty()) {
             return;
         }
+        if (txtInvoice.getText().isEmpty()) {
+            JOptionPane.showInternalMessageDialog(this, "You must enter an invoice number", "Receive", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        Supplier supplier = (Supplier) cmbSuppliers.getSelectedItem();
+        ReceivedReport report = new ReceivedReport(txtInvoice.getText(), supplier.getId());
         products.forEach((p) -> {
             try {
                 Product product = dc.getProduct(p.getId());
                 product.addStock(p.getStock());
                 p = dc.updateProduct(product);
-                dc.addReceivedItem(new ReceivedItem(p.getId(), p.getStock(), p.getCostPrice()));
+                report.addItem(new ReceivedItem(p.getId(), p.getStock(), p.getCostPrice()));
             } catch (IOException | ProductNotFoundException | SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-        lblValue.setText("Total: £0.00");
-        model.setRowCount(0);
-        products.clear();
-        btnReceive.setEnabled(false);
-        JOptionPane.showMessageDialog(this, "All items have been received", "Received", JOptionPane.INFORMATION_MESSAGE);
-        if (JOptionPane.showConfirmDialog(this, "Do you want to print the report?", "Print", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            try {
-                BigDecimal val = BigDecimal.ZERO;
-                for (Product p : products) {
-                    val = val.add(p.getPrice());
+        try {
+            dc.addReceivedReport(report);
+            lblValue.setText("Total: £0.00");
+            model.setRowCount(0);
+            products.clear();
+            btnReceive.setEnabled(false);
+            txtInvoice.setText("");
+            JOptionPane.showMessageDialog(this, "All items have been received", "Received", JOptionPane.INFORMATION_MESSAGE);
+            if (JOptionPane.showConfirmDialog(this, "Do you want to print the report?", "Print", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                try {
+                    BigDecimal val = BigDecimal.ZERO;
+                    for (Product p : products) {
+                        val = val.add(p.getPrice());
+                    }
+                    MessageFormat header = new MessageFormat("Receive Stock " + new Date());
+                    MessageFormat footer = new MessageFormat("Page{0,number,integer}");
+                    tblProducts.print(PrintMode.FIT_WIDTH, header, footer);
+                } catch (PrinterException ex) {
+                    JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                MessageFormat header = new MessageFormat("Receive Stock " + new Date());
-                MessageFormat footer = new MessageFormat("Page{0,number,integer}");
-                tblProducts.print(PrintMode.FIT_WIDTH, header, footer);
-            } catch (PrinterException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnReceiveActionPerformed
 
@@ -503,8 +524,10 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnReceive;
     private javax.swing.JComboBox<String> cmbSuppliers;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblValue;
     private javax.swing.JTable tblProducts;
+    private javax.swing.JTextField txtInvoice;
     // End of variables declaration//GEN-END:variables
 }

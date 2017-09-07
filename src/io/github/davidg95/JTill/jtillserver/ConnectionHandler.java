@@ -691,8 +691,8 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("ADDRECEIVEDITEM")
-    public void addReceivedItem(@JConnParameter("ITEM") ReceivedItem i) throws IOException, SQLException {
-        dc.addReceivedItem(i);
+    public void addReceivedItem(@JConnParameter("ITEM") ReceivedItem i, @JConnParameter("REP") int report) throws IOException, SQLException {
+        dc.addReceivedItem(i, report);
     }
 
     @JConnMethod("GETSPENTONITEM")
@@ -834,5 +834,10 @@ public class ConnectionHandler {
     @JConnMethod("CLEARSALES")
     public int clearSalesData() throws IOException, SQLException {
         return dc.clearSalesData();
+    }
+
+    @JConnMethod("ADDRECREP")
+    public void addReceivedReport(@JConnParameter("REP") ReceivedReport rep) throws IOException, SQLException {
+        dc.addReceivedReport(rep);
     }
 }
