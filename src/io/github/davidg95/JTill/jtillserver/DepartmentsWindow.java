@@ -46,7 +46,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
     }
 
     public static void showWindow(DataConnect dc, Image icon) {
-        if (window == null) {
+        if (window == null || window.isClosed()) {
             window = new DepartmentsWindow(dc, icon);
             GUI.gui.internal.add(window);
         }

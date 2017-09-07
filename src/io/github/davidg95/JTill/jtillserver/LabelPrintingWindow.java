@@ -37,6 +37,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -47,8 +49,7 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
 
-    private final List<Label> labels; //The labels to print.
-    private int amount; //The total amount of labels getting printed.
+    private List<Label> labels; //The labels to print.
 
     private final DefaultTableModel model;
 
@@ -58,7 +59,6 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
     public LabelPrintingWindow(DataConnect dc, Image icon) {
         this.labels = new ArrayList<>();
         this.dc = dc;
-        amount = 0;
         initComponents();
         super.setClosable(true);
         super.setMaximizable(true);
@@ -88,6 +88,23 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
+        this.addInternalFrameListener(new InternalFrameAdapter() {
+            @Override
+            public void internalFrameClosing(InternalFrameEvent e) {
+                if (!labels.isEmpty()) {
+                    int res = JOptionPane.showInternalConfirmDialog(LabelPrintingWindow.this, "Do you want to save the current report?", "Save", JOptionPane.YES_NO_OPTION);
+                    if (res == JOptionPane.YES_OPTION) {
+                        GUI.gui.savedReports.put("LAB", labels);
+                        JOptionPane.showInternalMessageDialog(LabelPrintingWindow.this, "Report saved", "Save", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        });
+        if (GUI.gui.savedReports.containsKey("LAB")) {
+            labels = GUI.gui.savedReports.get("LAB");
+            updateTable();
+            GUI.gui.savedReports.remove("LAB");
+        }
         InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = table.getActionMap();
 
@@ -346,7 +363,11 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        setVisible(false);
+        try {
+            setClosed(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(LabelPrintingWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
@@ -357,7 +378,6 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
         }
 
         labels.add(new Label(p, 1));
-        amount++;
         updateTable();
     }//GEN-LAST:event_btnAddProductActionPerformed
 

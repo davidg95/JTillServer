@@ -59,7 +59,7 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
      * @param dc a reference to the data source.
      */
     public static void showCustomersListWindow(DataConnect dc, Image icon) {
-        if (frame == null) {
+        if (frame == null || frame.isClosed()) {
             frame = new CustomersWindow(dc, icon);
             GUI.gui.internal.add(frame);
         }

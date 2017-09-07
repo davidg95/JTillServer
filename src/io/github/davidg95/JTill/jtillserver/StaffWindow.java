@@ -57,7 +57,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
     }
 
     public static void showStaffListWindow(DataConnect dc, Image icon) {
-        if (frame == null) {
+        if (frame == null || frame.isClosed()) {
             frame = new StaffWindow(dc, icon);
             GUI.gui.internal.add(frame);
         }

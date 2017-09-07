@@ -49,7 +49,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
     }
 
     public static void showWindow(DataConnect dc) {
-        if (window == null) {
+        if (window == null || window.isClosed()) {
             window = new TillWindow(dc);
             GUI.gui.internal.add(window);
         }

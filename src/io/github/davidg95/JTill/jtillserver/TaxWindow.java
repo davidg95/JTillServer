@@ -49,7 +49,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
     }
 
     public static void showTaxWindow(DataConnect dc, Image icon) {
-        if (frame == null) {
+        if (frame == null || frame.isClosed()) {
             frame = new TaxWindow(dc, icon);
             GUI.gui.internal.add(frame);
         }

@@ -55,7 +55,7 @@ public class LoyaltySettingsWindow extends javax.swing.JInternalFrame {
     }
 
     public static void showWindow(Image icon) {
-        if (window == null) {
+        if (window == null || window.isClosed()) {
             window = new LoyaltySettingsWindow(icon);
             GUI.gui.internal.add(window);
         }

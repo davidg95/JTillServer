@@ -87,7 +87,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
      * @param dc the data source.
      */
     public static void showProductsListWindow(DataConnect dc, Image icon) {
-        if (frame == null) {
+        if (frame == null || frame.isClosed()) {
             frame = new ProductsWindow(dc, icon);
             GUI.gui.internal.add(frame);
         }

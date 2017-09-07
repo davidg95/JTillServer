@@ -51,13 +51,13 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
     }
 
     public static void showWindow(DataConnect dc, Image icon) {
-        if (window == null) {
+        if (window == null || window.isClosed()) {
             window = new SupplierWindow(dc, icon);
             GUI.gui.internal.add(window);
         }
         window.setVisible(true);
         try {
-        window.setIcon(false);
+            window.setIcon(false);
             window.setSelected(true);
         } catch (PropertyVetoException ex) {
             Logger.getLogger(SupplierWindow.class.getName()).log(Level.SEVERE, null, ex);

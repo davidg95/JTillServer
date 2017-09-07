@@ -65,7 +65,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
      * @param icon the frame icon.
      */
     public static void showCategoryWindow(DataConnect dc, Image icon) {
-        if (frame == null) {
+        if (frame == null || frame.isClosed()) {
             frame = new CategorysWindow(dc, icon);
             GUI.gui.internal.add(frame);
         }

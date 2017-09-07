@@ -79,7 +79,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
      * @param dc the data source.
      */
     public static void showDiscountListWindow(DataConnect dc, Image icon) {
-        if (frame == null) {
+        if (frame == null || frame.isClosed()) {
             frame = new DiscountsWindow(dc, icon);
             GUI.gui.internal.add(frame);
         }

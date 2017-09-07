@@ -46,7 +46,7 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
      * if needed.
      */
     public static void showDatabaseWindow() {
-        if (frame == null) {
+        if (frame == null || frame.isClosed()) {
             frame = new DatabaseWindow();
             GUI.gui.internal.add(frame);
         }

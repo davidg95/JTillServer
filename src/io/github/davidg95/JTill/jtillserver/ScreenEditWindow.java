@@ -151,7 +151,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
      * @param icon the icon for the window.
      */
     public static void showScreenEditWindow(DataConnect dc, Image icon) {
-        if (frame == null) {
+        if (frame == null || frame.isClosed()) {
             frame = new ScreenEditWindow(dc, icon);
             GUI.gui.internal.add(frame);
         }

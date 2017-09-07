@@ -127,7 +127,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     }
 
     public static void showSettingsWindow(DataConnect dc, Image icon) {
-        if (frame == null) {
+        if (frame == null || frame.isClosed()) {
             frame = new SettingsWindow(dc, icon);
             GUI.gui.internal.add(frame);
         }
