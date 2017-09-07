@@ -12,6 +12,7 @@ import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -35,18 +36,19 @@ public class LoginDialog extends javax.swing.JDialog implements CapsListener {
 
     /**
      * Creates new form LoginDialog
+     *
      * @param parent the parent window.
      */
     public LoginDialog(Window parent) {
         super(parent);
         this.dc = GUI.gui.dc;
         initComponents();
-        this.setLocationRelativeTo(parent);
-        this.setModal(true);
+        super.setLocationRelativeTo(parent);
+        super.setModal(true);
         ch = new CapsChecker(this);
         ch.start();
     }
-    
+
     /**
      * Shows the login dialog.
      *
@@ -239,6 +241,8 @@ public class LoginDialog extends javax.swing.JDialog implements CapsListener {
                 this.setVisible(false);
             } catch (LoginException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Login", JOptionPane.ERROR_MESSAGE);
+                txtPassword.setSelectionStart(0);
+                txtPassword.setSelectionEnd(txtPassword.getPassword().length);
             } catch (IOException | SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 Logger.getGlobal().log(Level.WARNING, null, ex);
