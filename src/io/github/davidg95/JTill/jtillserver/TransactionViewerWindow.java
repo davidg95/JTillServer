@@ -75,6 +75,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         model.setRowCount(0);
         final int totalSales = tableContents.size();
         BigDecimal totalValue = BigDecimal.ZERO;
+        BigDecimal totalTax = BigDecimal.ZERO;
         for (Sale s : tableContents) {
             try {
                 final Staff staff = dc.getStaff(s.getStaffID());
@@ -84,12 +85,16 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                 final Till till = s.getTerminal();
                 model.addRow(new Object[]{s.getId(), s.getDate(), s.getTotal().setScale(2), staff.getName(), till.getName()});
                 totalValue = totalValue.add(s.getTotal());
+                for (SaleItem si : s.getSaleItems()) {
+                    totalTax = totalTax.add(si.getTaxValue());
+                }
             } catch (IOException | StaffNotFoundException | SQLException | CustomerNotFoundException ex) {
                 JOptionPane.showInternalConfirmDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         txtTotalSales.setValue(totalSales);
         txtTotalValue.setValue(totalValue);
+        txtTax.setValue(totalTax);
     }
 
     /**
@@ -128,6 +133,8 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         jLabel10 = new javax.swing.JLabel();
         txtTotalValue = new javax.swing.JFormattedTextField();
         txtTotalSales = new javax.swing.JFormattedTextField();
+        txtTax = new javax.swing.JFormattedTextField();
+        jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Transaction Viewer");
@@ -324,6 +331,11 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         txtTotalSales.setEditable(false);
         txtTotalSales.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
 
+        txtTax.setEditable(false);
+        txtTax.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
+
+        jLabel11.setText("Total Tax:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -333,11 +345,13 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtTax)
                             .addComponent(txtTotalValue, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
                             .addComponent(txtTotalSales))))
                 .addGap(2, 2, 2)
@@ -359,8 +373,12 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel10)
                             .addComponent(txtTotalSales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtTax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel11))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -391,21 +409,21 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                 //Check to make sure that the minimum value is less than the maximum value
                 if (minVal > maxVal) {
                     mDialog.hide();
-                    JOptionPane.showMessageDialog(this, "Minimum value must be greater or equal to the maximum value", "Transaction Search", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(this, "Minimum value must be greater or equal to the maximum value", "Transaction Search", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
                 //Check to make sure that the start time is afer then end time
                 if (endDate.getTime() < startDate.getTime()) {
                     mDialog.hide();
-                    JOptionPane.showMessageDialog(this, "Start date must be on or after then end date", "Transaction Search", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(this, "Start date must be on or after then end date", "Transaction Search", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
                 //Check to make sure that the start ID is before the end ID
                 if (startID > endID) {
                     mDialog.hide();
-                    JOptionPane.showMessageDialog(this, "Start ID must be greater than or equal to the end ID", "Transaction Search", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(this, "Start ID must be greater than or equal to the end ID", "Transaction Search", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
@@ -422,10 +440,12 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                     //Display the sales in the table.
                     setTable();
                     if (tableContents.isEmpty()) {
-                        JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "No results", "Transactions", JOptionPane.INFORMATION_MESSAGE);
+                        mDialog.hide();
+                        JOptionPane.showInternalMessageDialog(TransactionViewerWindow.this, "No results", "Transactions", JOptionPane.INFORMATION_MESSAGE);
                     }
                 } catch (IOException | SQLException ex) {
-                    Logger.getLogger(TransactionViewerWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    mDialog.hide();
+                    JOptionPane.showInternalMessageDialog(TransactionViewerWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 mDialog.hide();
@@ -482,6 +502,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
     private javax.swing.JComboBox<String> cmbTerminal;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -499,6 +520,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
     private javax.swing.JSpinner spinMoneyMin;
     private javax.swing.JSpinner spinStart;
     private javax.swing.JTable table;
+    private javax.swing.JFormattedTextField txtTax;
     private javax.swing.JFormattedTextField txtTotalSales;
     private javax.swing.JFormattedTextField txtTotalValue;
     // End of variables declaration//GEN-END:variables
