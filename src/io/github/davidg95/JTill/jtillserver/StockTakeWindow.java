@@ -30,6 +30,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -39,7 +41,7 @@ import javax.swing.table.DefaultTableModel;
 public class StockTakeWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
-    private final List<Product> currentTableContents;
+    private List<Product> currentTableContents;
     private final DefaultTableModel model;
 
     /**
@@ -72,6 +74,23 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
+        this.addInternalFrameListener(new InternalFrameAdapter() {
+            @Override
+            public void internalFrameClosing(InternalFrameEvent e) {
+                if (!currentTableContents.isEmpty()) {
+                    int res = JOptionPane.showInternalConfirmDialog(StockTakeWindow.this, "Do you want to save the current report?", "Save", JOptionPane.YES_NO_OPTION);
+                    if (res == JOptionPane.YES_OPTION) {
+                        GUI.gui.savedReports.put("STO", currentTableContents);
+                        JOptionPane.showInternalMessageDialog(StockTakeWindow.this, "Report saved", "Save", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        });
+        if(GUI.gui.savedReports.containsKey("STO")){
+            currentTableContents = GUI.gui.savedReports.get("STO");
+            updateTable();
+            GUI.gui.savedReports.remove("STO");
+        }
         InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = table.getActionMap();
 
@@ -301,7 +320,11 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        setVisible(false);
+        try {
+            setClosed(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(StockTakeWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed

@@ -44,6 +44,8 @@ import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -54,7 +56,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
     private WasteReport report;
-    private final List<WasteItem> wasteItems;
+    private List<WasteItem> wasteItems;
     private final DefaultTableModel model;
     private final DefaultComboBoxModel cmbModel;
     private Date date;
@@ -169,6 +171,23 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
+        this.addInternalFrameListener(new InternalFrameAdapter() {
+            @Override
+            public void internalFrameClosing(InternalFrameEvent e) {
+                if (!wasteItems.isEmpty()) {
+                    int res = JOptionPane.showInternalConfirmDialog(WasteStockWindow.this, "Do you want to save the current report?", "Save", JOptionPane.YES_NO_OPTION);
+                    if (res == JOptionPane.YES_OPTION) {
+                        GUI.gui.savedReports.put("WAS", wasteItems);
+                        JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "Report saved", "Save", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        });
+        if(GUI.gui.savedReports.containsKey("WAS")){
+            wasteItems = GUI.gui.savedReports.get("WAS");
+            updateTable();
+            GUI.gui.savedReports.remove("WAS");
+        }
         try {
             List<WasteReason> reasons = dc.getAllWasteReasons();
             for (WasteReason r : reasons) {
@@ -501,7 +520,11 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        this.setVisible(false);
+        try {
+            this.setClosed(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed

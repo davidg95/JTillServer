@@ -38,6 +38,8 @@ import javax.swing.JTable;
 import javax.swing.JTable.PrintMode;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -47,7 +49,7 @@ import javax.swing.table.DefaultTableModel;
 public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
-    private final List<Product> products;
+    private List<Product> products;
     private final DefaultTableModel model;
     private final DefaultComboBoxModel cmbModel;
 
@@ -95,6 +97,23 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
+        this.addInternalFrameListener(new InternalFrameAdapter() {
+            @Override
+            public void internalFrameClosing(InternalFrameEvent e) {
+                if (!products.isEmpty()) {
+                    int res = JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Do you want to save the current report?", "Save", JOptionPane.YES_NO_OPTION);
+                    if (res == JOptionPane.YES_OPTION) {
+                        GUI.gui.savedReports.put("REC", products);
+                        JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "Report saved", "Save", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        });
+        if (GUI.gui.savedReports.containsKey("REC")) {
+            products = GUI.gui.savedReports.get("REC");
+            updateTable();
+            GUI.gui.savedReports.remove("REC");
+        }
         cmbModel.removeAllElements();
         try {
             List<Supplier> suppliers = dc.getAllSuppliers();
@@ -290,7 +309,11 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        setVisible(false);
+        try {
+            super.setClosed(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(ReceiveItemsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiveActionPerformed

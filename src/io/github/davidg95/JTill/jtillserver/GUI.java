@@ -18,6 +18,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -28,7 +29,9 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -85,6 +88,8 @@ public class GUI extends JFrame implements GUIInterface {
     private LinkedList<String> warningsList;
 
     private ModalDialog mDialog;
+    
+    public HashMap<String, List> savedReports = new HashMap<>();
 
     /**
      * Creates new form GUI
@@ -340,8 +345,12 @@ public class GUI extends JFrame implements GUIInterface {
     public void logout() {
         try {
             dc.logout(staff);
-            for(JInternalFrame f: internal.getAllFrames()){
-                f.setVisible(false);
+            for (JInternalFrame f : internal.getAllFrames()) {
+                try {
+                    f.setClosed(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             lblUser.setText("Not Logged In");
             LOG.log(Level.INFO, staff.getName() + " has logged out");

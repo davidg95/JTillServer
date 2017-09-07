@@ -1,8 +1,10 @@
-JTill log Tue Sep 05 16:40:41 BST 2017
-[16:40:41] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[16:40:41] [INFO] Column ENABLED already exists, no need to change database.
+JTill log Thu Sep 07 13:12:54 BST 2017
+[13:12:55] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[13:12:55] [INFO] Column ENABLED already exists, no need to change database.
 java.sql.SQLException: Column 'ENABLED' already exists in Table/View '"APP"."STAFF"'.
-[16:40:44] [INFO] David Grant has logged in
-[16:41:23] [INFO] Stopping JTIll Server
-[16:41:23] [INFO] Saving properties
-[16:41:23] [INFO] Stopping
+[13:12:57] [INFO] David Grant has logged in
+[13:13:08] [INFO] David Grant has logged out
+[13:13:11] [INFO] David Grant has logged in
+[13:13:37] [INFO] Stopping JTIll Server
+[13:13:37] [INFO] Saving properties
+[13:13:37] [INFO] Stopping
