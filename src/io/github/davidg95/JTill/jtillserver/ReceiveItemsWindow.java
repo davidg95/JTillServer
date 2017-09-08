@@ -7,7 +7,6 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
@@ -55,6 +54,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private List<Product> products;
     private final DefaultTableModel model;
     private final DefaultComboBoxModel cmbModel;
+
+    private boolean viewMode = false;
 
     /**
      * Creates new form ReceiveItemsWindow
@@ -224,6 +225,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         cmbSuppliers.setEnabled(false);
         txtInvoice.setEditable(false);
         chkPaid.setEnabled(false);
+        viewMode = true;
     }
 
     /**
@@ -474,6 +476,9 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void tblProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductsMouseClicked
+        if (viewMode) {
+            return;
+        }
         final int row = tblProducts.getSelectedRow();
         final Product product = products.get(row);
         if (evt.getClickCount() == 2) {
