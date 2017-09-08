@@ -67,7 +67,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
             cmbStaff.setModel(new DefaultComboBoxModel(staff.toArray()));
             cmbTerminal.setModel(new DefaultComboBoxModel(tills.toArray()));
         } catch (IOException | SQLException ex) {
-            Logger.getLogger(TransactionViewerWindow.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
