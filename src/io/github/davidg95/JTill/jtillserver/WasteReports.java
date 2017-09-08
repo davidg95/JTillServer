@@ -11,7 +11,6 @@ import io.github.davidg95.JTill.jtill.Utilities;
 import io.github.davidg95.JTill.jtill.WasteItem;
 import io.github.davidg95.JTill.jtill.WasteReason;
 import io.github.davidg95.JTill.jtill.WasteReport;
-import java.awt.Image;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -24,7 +23,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -56,8 +54,8 @@ public class WasteReports extends javax.swing.JInternalFrame {
     /**
      * Creates new form WasteReports
      */
-    public WasteReports(DataConnect dc) {
-        this.dc = dc;
+    public WasteReports() {
+        this.dc = GUI.gui.dc;
         initComponents();
         setTitle("Waste Reports");
         super.setClosable(true);
@@ -73,9 +71,9 @@ public class WasteReports extends javax.swing.JInternalFrame {
         }
     }
 
-    public static void showWindow(DataConnect dc) {
+    public static void showWindow() {
         if (window == null) {
-            window = new WasteReports(dc);
+            window = new WasteReports();
             GUI.gui.internal.add(window);
         }
         window.setVisible(true);

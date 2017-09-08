@@ -840,4 +840,14 @@ public class ConnectionHandler {
     public void addReceivedReport(@JConnParameter("REP") ReceivedReport rep) throws IOException, SQLException {
         dc.addReceivedReport(rep);
     }
+
+    @JConnMethod("GETRECREP")
+    public List<ReceivedReport> getAllReceivedReports() throws IOException, SQLException {
+        return dc.getAllReceivedReports();
+    }
+
+    @JConnMethod("UPDATERECREP")
+    public ReceivedReport updateReceivedReport(@JConnParameter("RECREP") ReceivedReport rr) throws IOException, SQLException {
+        return dc.updateReceivedReport(rr);
+    }
 }

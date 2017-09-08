@@ -534,6 +534,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemStaffClocking = new javax.swing.JMenuItem();
         itemStaffReporting = new javax.swing.JMenuItem();
         itemWasteReports = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         setTitle("JTill Server");
         setIconImage(GUI.icon);
@@ -1104,6 +1105,14 @@ public class GUI extends JFrame implements GUIInterface {
         });
         jMenu1.add(itemWasteReports);
 
+        jMenuItem1.setText("Received Reports");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
         jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
@@ -1287,7 +1296,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnScreensActionPerformed
 
     private void itemReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReceiveActionPerformed
-        ReceiveItemsWindow.showWindow(dc, icon);
+        ReceiveItemsWindow.showWindow(dc);
     }//GEN-LAST:event_itemReceiveActionPerformed
 
     private void itemWasteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemWasteStockActionPerformed
@@ -1307,7 +1316,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_chkInfoActionPerformed
 
     private void itemWasteReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemWasteReportsActionPerformed
-        WasteReports.showWindow(dc);
+        WasteReports.showWindow();
     }//GEN-LAST:event_itemWasteReportsActionPerformed
 
     private void itemReasonsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReasonsActionPerformed
@@ -1529,6 +1538,10 @@ public class GUI extends JFrame implements GUIInterface {
         DatabaseWindow.showDatabaseWindow();
     }//GEN-LAST:event_itemDatabaseActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        ReceivedReportsWindow.showWindow();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1580,6 +1593,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblClients;

@@ -182,7 +182,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 }
             }
         });
-        if(GUI.gui.savedReports.containsKey("WAS")){
+        if (GUI.gui.savedReports.containsKey("WAS")) {
             wasteItems = GUI.gui.savedReports.get("WAS");
             updateTable();
             GUI.gui.savedReports.remove("WAS");
@@ -652,6 +652,8 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem it = new JMenuItem("Change Quantity");
+            final Font boldFont = new Font(it.getFont().getFontName(), Font.BOLD, it.getFont().getSize());
+            it.setFont(boldFont);
             JMenuItem item = new JMenuItem("Remove");
             it.addActionListener((ActionEvent e) -> {
                 String input = JOptionPane.showInternalInputDialog(WasteStockWindow.this, "Enter new quantity", "Waste Stock", JOptionPane.PLAIN_MESSAGE);

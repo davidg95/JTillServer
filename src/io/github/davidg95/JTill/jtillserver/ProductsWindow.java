@@ -932,7 +932,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnReceiveStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiveStockActionPerformed
-        ReceiveItemsWindow.showWindow(dc, icon);
+        ReceiveItemsWindow.showWindow(dc);
     }//GEN-LAST:event_btnReceiveStockActionPerformed
 
     private void btnWasteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWasteStockActionPerformed

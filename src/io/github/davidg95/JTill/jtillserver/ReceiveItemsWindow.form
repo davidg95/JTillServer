@@ -25,6 +25,8 @@
                   <Component id="jScrollPane1" pref="604" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="lblValue" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="chkPaid" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="btnAddCSV" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -67,6 +69,7 @@
                   <Component id="btnAddProduct" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnAddCSV" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblValue" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkPaid" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -189,6 +192,11 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtInvoice">
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkPaid">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Paid"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

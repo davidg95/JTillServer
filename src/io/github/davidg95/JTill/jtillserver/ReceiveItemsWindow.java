@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -22,6 +23,7 @@ import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,6 +51,7 @@ import javax.swing.table.DefaultTableModel;
 public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
+    private ReceivedReport rr;
     private List<Product> products;
     private final DefaultTableModel model;
     private final DefaultComboBoxModel cmbModel;
@@ -57,18 +60,16 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
      * Creates new form ReceiveItemsWindow
      *
      * @param dc the data connection.
-     * @param icon the frame icon.
      */
-    public ReceiveItemsWindow(DataConnect dc, Image icon) {
+    public ReceiveItemsWindow(DataConnect dc) {
         this.dc = dc;
         this.products = new ArrayList<>();
         initComponents();
         setTitle("Receive Stock");
-//        setIconImage(icon);
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
-        super.setFrameIcon(new ImageIcon(icon));
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
         model.setRowCount(0);
@@ -77,8 +78,26 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showWindow(DataConnect dc, Image icon) {
-        ReceiveItemsWindow window = new ReceiveItemsWindow(dc, icon);
+    public ReceiveItemsWindow(ReceivedReport rr) {
+        this.dc = GUI.gui.dc;
+        this.rr = rr;
+        this.products = new LinkedList<>();
+        initComponents();
+        setTitle("Receive Stock");
+        super.setClosable(true);
+        super.setMaximizable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
+        model = (DefaultTableModel) tblProducts.getModel();
+        tblProducts.setModel(model);
+        model.setRowCount(0);
+        cmbModel = (DefaultComboBoxModel) cmbSuppliers.getModel();
+        cmbSuppliers.setModel(cmbModel);
+        setReport();
+    }
+
+    public static void showWindow(DataConnect dc) {
+        ReceiveItemsWindow window = new ReceiveItemsWindow(dc);
         GUI.gui.internal.add(window);
         try {
             List<Supplier> suppliers = dc.getAllSuppliers();
@@ -94,6 +113,34 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         } catch (PropertyVetoException ex) {
             Logger.getLogger(ReceiveItemsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static void showWindow(ReceivedReport rr) {
+        ReceiveItemsWindow window = new ReceiveItemsWindow(rr);
+        GUI.gui.internal.add(window);
+        try {
+            window.setVisible(true);
+            window.setIcon(false);
+            window.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(ReceiveItemsWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void setReport() {
+        try {
+            for (ReceivedItem item : rr.getItems()) {
+                products.add(dc.getProduct(item.getProduct()));
+            }
+            updateTable();
+            txtInvoice.setText(rr.getInvoiceId());
+            final Supplier sup = dc.getSupplier(rr.getSupplierId());
+            cmbModel.setSelectedItem(sup);
+            chkPaid.setSelected(rr.isPaid());
+        } catch (IOException | ProductNotFoundException | SQLException | JTillException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        setViewMode();
     }
 
     private void init() {
@@ -170,6 +217,15 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         }
     }
 
+    private void setViewMode() {
+        btnAddCSV.setEnabled(false);
+        btnAddProduct.setEnabled(false);
+        btnReceive.setEnabled(false);
+        cmbSuppliers.setEnabled(false);
+        txtInvoice.setEditable(false);
+        chkPaid.setEnabled(false);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -190,6 +246,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtInvoice = new javax.swing.JTextField();
+        chkPaid = new javax.swing.JCheckBox();
 
         tblProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -264,6 +321,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
         jLabel2.setText("Invoice No.:");
 
+        chkPaid.setText("Paid");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -274,6 +333,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(lblValue)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkPaid)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnAddCSV)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -309,7 +370,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     .addComponent(btnClose)
                     .addComponent(btnAddProduct)
                     .addComponent(btnAddCSV)
-                    .addComponent(lblValue))
+                    .addComponent(lblValue)
+                    .addComponent(chkPaid))
                 .addContainerGap())
         );
 
@@ -344,6 +406,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
+        report.setPaid(chkPaid.isSelected());
         try {
             dc.addReceivedReport(report);
             lblValue.setText("Total: £0.00");
@@ -351,6 +414,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             products.clear();
             btnReceive.setEnabled(false);
             txtInvoice.setText("");
+            chkPaid.setSelected(false);
             JOptionPane.showMessageDialog(this, "All items have been received", "Received", JOptionPane.INFORMATION_MESSAGE);
             if (JOptionPane.showConfirmDialog(this, "Do you want to print the report?", "Print", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 try {
@@ -431,6 +495,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem it = new JMenuItem("Change Quantity");
+            final Font boldFont = new Font(it.getFont().getFontName(), Font.BOLD, it.getFont().getSize());
+            it.setFont(boldFont);
             JMenuItem item = new JMenuItem("Remove");
             it.addActionListener((ActionEvent e) -> {
                 if (evt.getClickCount() == 2) {
@@ -522,6 +588,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnReceive;
+    private javax.swing.JCheckBox chkPaid;
     private javax.swing.JComboBox<String> cmbSuppliers;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
