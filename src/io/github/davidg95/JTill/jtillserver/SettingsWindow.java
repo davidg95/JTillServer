@@ -60,7 +60,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         initComponents();
         model = new MyModel();
         model.setSelectedItem(0);
-        cmbLaf.setModel(model);
         model.setSelectedItem(UIManager.getLookAndFeel());
 //        setLocationRelativeTo(null);
     }
@@ -177,7 +176,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             chkTerminal.setSelected(dc.getSetting("SHOW_TERMINAL_RECEIPT").equals("true"));
             chkEmailPrompt.setSelected(dc.getSetting("PROMPT_EMAIL_RECEIPT", "false").equals("true"));
             chkUpdate.setSelected(dc.getSetting("UPDATE_STARTUP", "true").equals("true"));
-            chkCode.setSelected(dc.getSetting("LOGINTYPE", "CODE").equals("CODE"));
+            txtLogoutTimeout.setText(dc.getSetting("LOGOUT_TIMEOUT", "0"));
         } catch (IOException ex) {
 
         }
@@ -213,7 +212,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         panelSecurity = new javax.swing.JPanel();
         chkLogOut = new javax.swing.JCheckBox();
         btnSaveSecurity = new javax.swing.JButton();
-        chkCode = new javax.swing.JCheckBox();
+        jLabel8 = new javax.swing.JLabel();
+        txtLogoutTimeout = new javax.swing.JFormattedTextField();
+        jLabel7 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -235,9 +236,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         btnCompanyDetails = new javax.swing.JButton();
         chkApproveNew = new javax.swing.JCheckBox();
         chkEmailPrompt = new javax.swing.JCheckBox();
-        jLabel7 = new javax.swing.JLabel();
-        cmbLaf = new javax.swing.JComboBox<>();
-        btnSetLAF = new javax.swing.JButton();
         chkUpdate = new javax.swing.JCheckBox();
         btnColor = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -409,26 +407,38 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        chkCode.setText("Use code for login");
+        jLabel8.setText("Logout Timeout:");
+
+        txtLogoutTimeout.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+
+        jLabel7.setText("s");
 
         javax.swing.GroupLayout panelSecurityLayout = new javax.swing.GroupLayout(panelSecurity);
         panelSecurity.setLayout(panelSecurityLayout);
         panelSecurityLayout.setHorizontalGroup(
             panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelSecurityLayout.createSequentialGroup()
-                .addGroup(panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(btnSaveSecurity)
                         .addComponent(chkLogOut))
-                    .addComponent(chkCode))
-                .addContainerGap(146, Short.MAX_VALUE))
+                    .addGroup(panelSecurityLayout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtLogoutTimeout)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addContainerGap(92, Short.MAX_VALUE))
         );
         panelSecurityLayout.setVerticalGroup(
             panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelSecurityLayout.createSequentialGroup()
                 .addComponent(chkLogOut)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkCode)
+                .addGroup(panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(txtLogoutTimeout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSaveSecurity))
         );
@@ -530,17 +540,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        jLabel7.setText("Look and Feel:");
-
-        cmbLaf.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        btnSetLAF.setText("Set");
-        btnSetLAF.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSetLAFActionPerformed(evt);
-            }
-        });
-
         chkUpdate.setText("Check for updates on startup");
 
         btnColor.setText("Terminal Background Color");
@@ -589,30 +588,26 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                                         .addComponent(btnColor)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jButton1))
-                                    .addComponent(chkUpdate)
                                     .addComponent(chkApproveNew)
                                     .addComponent(btnCompanyDetails)
-                                    .addGroup(panelGeneralLayout.createSequentialGroup()
-                                        .addComponent(jLabel7)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(cmbLaf, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnSetLAF))
                                     .addGroup(panelGeneralLayout.createSequentialGroup()
                                         .addComponent(jLabel13)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(spinSaleCache, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 27, Short.MAX_VALUE))))
+                                .addGap(0, 55, Short.MAX_VALUE))))
                     .addGroup(panelGeneralLayout.createSequentialGroup()
-                        .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelGeneralLayout.createSequentialGroup()
-                                .addGap(128, 128, 128)
-                                .addComponent(btnSaveCache))
-                            .addGroup(panelGeneralLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(btnImage)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap()
+                        .addComponent(btnImage)
+                        .addGap(0, 178, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(panelGeneralLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chkUpdate)
+                    .addGroup(panelGeneralLayout.createSequentialGroup()
+                        .addGap(118, 118, 118)
+                        .addComponent(btnSaveCache)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelGeneralLayout.setVerticalGroup(
             panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -642,15 +637,10 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCompanyDetails)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(cmbLaf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSetLAF))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chkUpdate)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSaveCache)
-                .addContainerGap())
+                .addGap(36, 36, 36))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Receipt Settings")));
@@ -811,7 +801,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
         );
 
@@ -918,11 +908,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             } else {
                 dc.setSetting("AUTO_LOGOUT", "FALSE");
             }
-            if (chkCode.isSelected()) {
-                dc.setSetting("LOGINTYPE", "CODE");
-            } else {
-                dc.setSetting("LOGINTYPE", "BUTTONS");
-            }
+            dc.setSetting("LOGOUT_TIMEOUT", txtLogoutTimeout.getText());
             JOptionPane.showMessageDialog(this, "Security settings have been saved", "Security Settings", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
@@ -1136,26 +1122,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnDatabaseCancelActionPerformed
 
-    private void btnSetLAFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetLAFActionPerformed
-        final String sel = (String) model.getSelectedItem();
-
-        for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
-            if (laf.getName().equals(sel)) {
-                final LookAndFeelInfo lafi = laf;
-                SwingUtilities.invokeLater(() -> {
-                    try {
-                        UIManager.setLookAndFeel(lafi.getClassName());
-                        SwingUtilities.updateComponentTreeUI(GUI.gui);
-
-                    } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                        Logger.getLogger(SettingsWindow.class
-                                .getName()).log(Level.SEVERE, null, ex);
-                    }
-                });
-            }
-        }
-    }//GEN-LAST:event_btnSetLAFActionPerformed
-
     private void btnColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColorActionPerformed
         Color c = JColorChooser.showDialog(this, "Terminal Screen Background Color", null);
         try {
@@ -1202,17 +1168,14 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSaveCache;
     private javax.swing.JButton btnSaveSecurity;
-    private javax.swing.JButton btnSetLAF;
     private javax.swing.JCheckBox chkAddress;
     private javax.swing.JCheckBox chkApproveNew;
-    private javax.swing.JCheckBox chkCode;
     private javax.swing.JCheckBox chkEmailPrompt;
     private javax.swing.JCheckBox chkLogOut;
     private javax.swing.JCheckBox chkSendProducts;
     private javax.swing.JCheckBox chkStaff;
     private javax.swing.JCheckBox chkTerminal;
     private javax.swing.JCheckBox chkUpdate;
-    private javax.swing.JComboBox<String> cmbLaf;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1229,6 +1192,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel panelDatabase;
@@ -1237,6 +1201,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JPanel panelSecurity;
     private javax.swing.JSpinner spinSaleCache;
     private javax.swing.JTextField txtAddress;
+    private javax.swing.JFormattedTextField txtLogoutTimeout;
     private javax.swing.JTextField txtMailAddress;
     private javax.swing.JTextField txtMaxConn;
     private javax.swing.JTextField txtMaxQueued;
