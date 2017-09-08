@@ -76,7 +76,7 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
             receivedReports = new LinkedList<>();
             for (ReceivedReport rr : rrs) {
                 final Supplier s = dc.getSupplier(rr.getSupplierId());
-                Object[] row = new Object[]{rr.getId(), rr.getInvoiceId(), s.getName(), rr.isPaid()};
+                Object[] row = new Object[]{rr.getId(), rr.getInvoiceId(), s.getName(), (rr.isPaid() ? "YES" : "NO")};
                 if (chkShowUnpaid.isSelected() && !rr.isPaid()) {
                     model.addRow(row);
                     receivedReports.add(rr);
