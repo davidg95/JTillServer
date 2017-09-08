@@ -103,6 +103,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
         btnView = new javax.swing.JButton();
         btnReinit = new javax.swing.JButton();
         btnRefresh = new javax.swing.JButton();
+        btnBuildUpdates = new javax.swing.JButton();
 
         setTitle("Tills");
 
@@ -163,6 +164,13 @@ public class TillWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        btnBuildUpdates.setText("Send Build Updates");
+        btnBuildUpdates.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuildUpdatesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -177,6 +185,8 @@ public class TillWindow extends javax.swing.JInternalFrame {
                         .addComponent(btnReinit)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRefresh)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBuildUpdates)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
@@ -191,7 +201,8 @@ public class TillWindow extends javax.swing.JInternalFrame {
                     .addComponent(btnClose)
                     .addComponent(btnView)
                     .addComponent(btnReinit)
-                    .addComponent(btnRefresh))
+                    .addComponent(btnRefresh)
+                    .addComponent(btnBuildUpdates))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
@@ -268,7 +279,18 @@ public class TillWindow extends javax.swing.JInternalFrame {
         this.getAllTills();
     }//GEN-LAST:event_btnRefreshActionPerformed
 
+    private void btnBuildUpdatesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuildUpdatesActionPerformed
+        try {
+            dc.sendBuildUpdates(UpdateChecker.downloadTerminalUpdate());
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showInternalConfirmDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showInternalConfirmDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnBuildUpdatesActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBuildUpdates;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnReinit;

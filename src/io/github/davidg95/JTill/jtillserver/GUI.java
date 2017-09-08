@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.InetAddress;
-import java.net.URI;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -422,6 +421,12 @@ public class GUI extends JFrame implements GUIInterface {
 
     @Override
     public void renameTill(String name) {
+        //Nothing
+    }
+
+    @Override
+    public void buildUpdate(File f) {
+        //Nothing
     }
 
     private class LogHandler extends Handler {
