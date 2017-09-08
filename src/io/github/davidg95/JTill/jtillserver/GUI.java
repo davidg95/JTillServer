@@ -88,7 +88,7 @@ public class GUI extends JFrame implements GUIInterface {
     private LinkedList<String> warningsList;
 
     private ModalDialog mDialog;
-    
+
     public HashMap<String, List> savedReports = new HashMap<>();
 
     /**
@@ -410,8 +410,7 @@ public class GUI extends JFrame implements GUIInterface {
 
     @Override
     public void initTill() {
-
-        this.logout();
+        //Nothing as remote clients do not need reinitialised.
     }
 
     @Override

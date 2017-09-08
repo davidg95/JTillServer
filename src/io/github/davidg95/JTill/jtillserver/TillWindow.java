@@ -71,15 +71,15 @@ public class TillWindow extends javax.swing.JInternalFrame {
         try {
             contents = dc.getAllTills();
             model.setRowCount(0);
-            for (JConnThread th : TillServer.server.getClientConnections()) {
-                ConnectionHandler hand = (ConnectionHandler) th.getMethodClass();
-                for (int i = 0; i < contents.size(); i++) {
-                    final Till t = contents.get(i);
-                    if (t.getId() == hand.till.getId()) {
-                        contents.set(i, hand.till);
-                    }
-                }
-            }
+//            for (JConnThread th : TillServer.server.getClientConnections()) {
+//                ConnectionHandler hand = (ConnectionHandler) th.getMethodClass();
+//                for (int i = 0; i < contents.size(); i++) {
+//                    final Till t = contents.get(i);
+//                    if (t.getId() == hand.till.getId()) {
+//                        contents.set(i, hand.till);
+//                    }
+//                }
+//            }
             for (Till t : contents) {
                 model.addRow(new Object[]{t.getId(), t.getName(), new DecimalFormat("#.00").format(t.getUncashedTakings()), (t.isConnected() ? "Online" : "Offline")});
             }
