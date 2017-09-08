@@ -84,7 +84,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         this.rr = rr;
         this.products = new LinkedList<>();
         initComponents();
-        setTitle("Receive Stock");
+        setTitle("Receive Stock - " + rr.getInvoiceId());
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
