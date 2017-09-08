@@ -224,7 +224,6 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         btnReceive.setEnabled(false);
         cmbSuppliers.setEnabled(false);
         txtInvoice.setEditable(false);
-        chkPaid.setEnabled(false);
         viewMode = true;
     }
 
@@ -324,6 +323,11 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         jLabel2.setText("Invoice No.:");
 
         chkPaid.setText("Paid");
+        chkPaid.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkPaidActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -587,6 +591,18 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             }
         }
     }//GEN-LAST:event_btnAddCSVActionPerformed
+
+    private void chkPaidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkPaidActionPerformed
+        if (viewMode) {
+            rr.setPaid(chkPaid.isSelected());
+            try {
+                dc.updateReceivedReport(rr);
+                JOptionPane.showMessageDialog(this, (chkPaid.isSelected() ? "Marked as paid" : "Marked as not paid"), "Invoice " + rr.getInvoiceId(), JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_chkPaidActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddCSV;

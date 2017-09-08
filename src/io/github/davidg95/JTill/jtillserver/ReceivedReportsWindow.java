@@ -53,6 +53,7 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
         model = (DefaultTableModel) tblReports.getModel();
         tblReports.setModel(model);
         reloadTable();
+        txtInvoiceNo.requestFocus();
     }
 
     public static void showWindow() {
@@ -106,6 +107,9 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
         btnClose = new javax.swing.JButton();
         chkShowUnpaid = new javax.swing.JCheckBox();
         btnMarkPaid = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        txtInvoiceNo = new javax.swing.JTextField();
+        btnSearch = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -162,6 +166,21 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel1.setText("Invoice No.:");
+
+        txtInvoiceNo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtInvoiceNoActionPerformed(evt);
+            }
+        });
+
+        btnSearch.setText("Search");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -174,6 +193,12 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
                         .addComponent(chkShowUnpaid)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnMarkPaid)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtInvoiceNo, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSearch)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
@@ -182,12 +207,15 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
                     .addComponent(chkShowUnpaid)
-                    .addComponent(btnMarkPaid))
+                    .addComponent(btnMarkPaid)
+                    .addComponent(jLabel1)
+                    .addComponent(txtInvoiceNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSearch))
                 .addContainerGap())
         );
 
@@ -261,11 +289,34 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
         reloadTable();
     }//GEN-LAST:event_btnMarkPaidActionPerformed
 
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        try {
+            final String number = txtInvoiceNo.getText();
+
+            for (ReceivedReport rr : dc.getAllReceivedReports()) {
+                if (rr.getInvoiceId().equals(number)) {
+                    ReceiveItemsWindow.showWindow(rr);
+                    return;
+                }
+            }
+            JOptionPane.showMessageDialog(this, "Invoice " + number + " not found", "Invoice", JOptionPane.WARNING_MESSAGE);
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void txtInvoiceNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInvoiceNoActionPerformed
+        btnSearch.doClick();
+    }//GEN-LAST:event_txtInvoiceNoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnMarkPaid;
+    private javax.swing.JButton btnSearch;
     private javax.swing.JCheckBox chkShowUnpaid;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblReports;
+    private javax.swing.JTextField txtInvoiceNo;
     // End of variables declaration//GEN-END:variables
 }
