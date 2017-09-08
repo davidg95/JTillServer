@@ -300,7 +300,7 @@ public class GUI extends JFrame implements GUIInterface {
             String latest = UpdateChecker.checkForUpdate();
             if (!latest.equals(TillServer.VERSION)) {
                 if (JOptionPane.showConfirmDialog(this, "Version " + latest + " avaliable. Download now?", "Update", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    Desktop.getDesktop().browse(new URI(UpdateChecker.SERVER_UPDATE_DOWNLOAD));
+                    UpdateChecker.downloadServerUpdate();
                 }
             }
         } catch (Exception ex) {
@@ -1494,7 +1494,7 @@ public class GUI extends JFrame implements GUIInterface {
                     String latest = UpdateChecker.checkForUpdate(); //Get the latest version of JTillServer
                     if (!latest.equals(TillServer.VERSION)) { //Check to see if this is the latest version
                         if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Version " + latest + " avaliable. Download now?", "Update", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                            Desktop.getDesktop().browse(new URI(UpdateChecker.SERVER_UPDATE_DOWNLOAD)); //If the users wants to, download the update.
+                            UpdateChecker.downloadServerUpdate();
                         }
                     } else {
                         JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You are currently at the latest version", "Update", JOptionPane.INFORMATION_MESSAGE); //Display message to indicate the this is the latest version

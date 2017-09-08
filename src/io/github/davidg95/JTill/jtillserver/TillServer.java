@@ -48,11 +48,11 @@ public class TillServer {
     public static SystemTray tray;
 
     private final Settings settings;
-    
+
     public static final String VERSION = "v0.0.1";
-    
+
     public static final int PORT_IN_USE = 52341;
-    
+
     public static JConnServer server;
 
     /**
