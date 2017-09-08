@@ -2060,14 +2060,14 @@ public class DBConnect implements DataConnect {
             final Till t = new Till(tname, uncashed, tid, uuid, sc);
             s.setTerminal(t);
 
-            int stid = set.getInt("ID");
-            String stname = set.getString("NAME");
-            int position = set.getInt("POSITION");
-            String uname = set.getString("USERNAME");
-            String pword = set.getString("PASSWORD");
+            int stid = set.getInt(28);
+            String stname = set.getString(29);
+            int position = set.getInt(30);
+            String uname = set.getString(31);
+            String pword = set.getString(32);
             String dPass = Encryptor.decrypt(pword);
-            boolean enabled = set.getBoolean("ENABLED");
-            double wage = set.getDouble("WAGE");
+            boolean enabled = set.getBoolean(33);
+            double wage = set.getDouble(34);
             final Staff st = new Staff(stid, stname, position, uname, dPass, wage, enabled);
             s.setStaff(st);
 
@@ -2242,7 +2242,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<Sale> getAllSales() throws SQLException {
-        String query = "SELECT * FROM SALES s, CUSTOMERS c, TILLS t, STAFF st , SaleItems si WHERE c.ID = s.CUSTOMER AND st.ID = s.STAFF AND CASHED = FALSE AND si.SALE_ID = s.ID AND s.TERMINAL = t.ID";
+        String query = "SELECT * FROM SALES s, CUSTOMERS c, TILLS t, STAFF st WHERE c.ID = s.CUSTOMER AND st.ID = s.STAFF AND s.TERMINAL = t.ID";
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             List<Sale> sales = new LinkedList<>();
