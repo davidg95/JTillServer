@@ -877,4 +877,9 @@ public class ConnectionHandler {
     public ReceivedReport updateReceivedReport(@JConnParameter("RECREP") ReceivedReport rr) throws IOException, SQLException {
         return dc.updateReceivedReport(rr);
     }
+
+    @JConnMethod("REINITTILL")
+    public void reinitTill(@JConnParameter("ID") int id) throws IOException, SQLException {
+        dc.reinitTill(id);
+    }
 }
