@@ -23,13 +23,16 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="lblSaleID" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblTime" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblCustomer" alignment="0" max="32767" attributes="0"/>
-                          <Component id="lblTerminal" alignment="0" max="32767" attributes="0"/>
-                          <Component id="lblTotal" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblStaff" alignment="0" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="lblSaleID" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblTime" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblCustomer" alignment="0" max="32767" attributes="0"/>
+                              <Component id="lblTerminal" alignment="0" max="32767" attributes="0"/>
+                              <Component id="lblTotal" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblStaff" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="lblTaxValue" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="110" max="32767" attributes="0"/>
                       <Component id="jScrollPane2" min="-2" pref="327" max="-2" attributes="0"/>
@@ -65,6 +68,8 @@
                       <Component id="lblStaff" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="lblTotal" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="lblTaxValue" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -173,6 +178,11 @@
     <Component class="javax.swing.JLabel" name="lblStaff">
       <Properties>
         <Property name="text" type="java.lang.String" value="Staff: "/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblTaxValue">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Tax Value:"/>
       </Properties>
     </Component>
   </SubComponents>

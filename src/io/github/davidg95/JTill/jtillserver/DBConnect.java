@@ -4729,10 +4729,10 @@ public class DBConnect implements DataConnect {
                 while (set.next()) {
                     int id = set.getInt(1);
                     int pid = set.getInt(2);
-                    int qu = set.getInt(3);
+                    int qu = set.getInt(4);
                     BigDecimal price = new BigDecimal(Double.toString(set.getDouble(5)));
-                    int iSa = set.getInt(6);
-                    BigDecimal tax = new BigDecimal(Double.toString(set.getDouble(7)));
+                    int iSa = set.getInt(7);
+                    BigDecimal tax = new BigDecimal(Double.toString(set.getDouble(6)));
                     final Item it = this.getProduct(pid);
                     SaleItem i = new SaleItem(iSa, it, qu, id, price, 1, tax);
                     int pcode = set.getInt(8);

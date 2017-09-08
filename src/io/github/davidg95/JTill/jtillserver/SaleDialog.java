@@ -89,7 +89,9 @@ public class SaleDialog extends javax.swing.JInternalFrame {
 
         model.setRowCount(0);
 
+        BigDecimal taxValue = BigDecimal.ZERO;
         for (SaleItem item : sale.getSaleItems()) {
+            taxValue = taxValue.add(item.getTaxValue());
             DecimalFormat df;
             if (item.getPrice().compareTo(BigDecimal.ZERO) > 1) {
                 df = new DecimalFormat("#.00");
@@ -106,7 +108,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             }
             model.addRow(s);
         }
-
+        lblTaxValue.setText("Tax Value: £" + taxValue);
         tableItems.setModel(model);
     }
 
@@ -262,6 +264,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         lblTotal = new javax.swing.JLabel();
         btnPrint = new javax.swing.JButton();
         lblStaff = new javax.swing.JLabel();
+        lblTaxValue = new javax.swing.JLabel();
 
         btnClose.setText("Close");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
@@ -317,6 +320,8 @@ public class SaleDialog extends javax.swing.JInternalFrame {
 
         lblStaff.setText("Staff: ");
 
+        lblTaxValue.setText("Tax Value:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -325,13 +330,15 @@ public class SaleDialog extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lblSaleID)
-                            .addComponent(lblTime)
-                            .addComponent(lblCustomer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblTerminal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblTotal)
-                            .addComponent(lblStaff, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(lblSaleID)
+                                .addComponent(lblTime)
+                                .addComponent(lblCustomer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblTerminal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblTotal)
+                                .addComponent(lblStaff, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(lblTaxValue))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -360,7 +367,9 @@ public class SaleDialog extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblStaff)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblTotal)))
+                        .addComponent(lblTotal)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblTaxValue)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
@@ -459,6 +468,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lblCustomer;
     private javax.swing.JLabel lblSaleID;
     private javax.swing.JLabel lblStaff;
+    private javax.swing.JLabel lblTaxValue;
     private javax.swing.JLabel lblTerminal;
     private javax.swing.JLabel lblTime;
     private javax.swing.JLabel lblTotal;

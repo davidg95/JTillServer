@@ -1,14 +1,14 @@
-JTill log Fri Sep 08 14:22:40 BST 2017
-[14:22:40] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[14:22:41] [INFO] Column ENABLED already exists in STAFF, no need to change database.
+JTill log Fri Sep 08 14:44:00 BST 2017
+[14:44:00] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[14:44:01] [INFO] Column ENABLED already exists in STAFF, no need to change database.
 java.sql.SQLException: Column 'ENABLED' already exists in Table/View '"APP"."STAFF"'.
-[14:22:41] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
+[14:44:01] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
 java.sql.SQLException: Table/View 'RECEIVED_REPORTS' already exists in Schema 'APP'.
-[14:22:41] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
+[14:44:01] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
 java.sql.SQLException: Column 'RECEIVED_REPORT' already exists in Table/View '"APP"."RECEIVEDITEMS"'.
-[14:22:41] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
+[14:44:01] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
 java.sql.SQLException: Column 'PAID' already exists in Table/View '"APP"."RECEIVED_REPORTS"'.
-[14:22:45] [INFO] David Grant has logged in
-[14:23:03] [INFO] Stopping JTIll Server
-[14:23:03] [INFO] Saving properties
-[14:23:03] [INFO] Stopping
+[14:44:03] [INFO] David Grant has logged in
+[14:44:19] [INFO] Stopping JTIll Server
+[14:44:19] [INFO] Saving properties
+[14:44:19] [INFO] Stopping
