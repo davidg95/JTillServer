@@ -234,16 +234,11 @@ public class TillWindow extends javax.swing.JInternalFrame {
             });
             JMenuItem reinit = new JMenuItem("Reinitialise Terminal");
             reinit.addActionListener((ActionEvent e) -> {
-                for (JConnThread th : TillServer.server.getClientConnections()) {
-                    ConnectionHandler hand = (ConnectionHandler) th.getMethodClass();
-                    if (hand.till.getId() == t.getId()) {
-                        try {
-                            th.sendData(JConnData.create("REINIT"));
-                            return;
-                        } catch (IOException ex) {
-                            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
+                try {
+                    dc.reinitTill(t.getId());
+                    return;
+                } catch (SQLException | IOException ex) {
+                    JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 JOptionPane.showInternalMessageDialog(this, "Till offline", "Reinitalise", JOptionPane.WARNING_MESSAGE);
             });
