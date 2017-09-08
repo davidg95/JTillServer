@@ -72,7 +72,7 @@ public class WasteReports extends javax.swing.JInternalFrame {
     }
 
     public static void showWindow() {
-        if (window == null) {
+        if (window == null || window.isClosed()) {
             window = new WasteReports();
             GUI.gui.internal.add(window);
         }
