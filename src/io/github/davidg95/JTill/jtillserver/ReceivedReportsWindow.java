@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,12 +52,7 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
         super.setFrameIcon(new ImageIcon(GUI.icon));
         model = (DefaultTableModel) tblReports.getModel();
         tblReports.setModel(model);
-        try {
-            receivedReports = dc.getAllReceivedReports();
-            reloadTable();
-        } catch (IOException | SQLException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        reloadTable();
     }
 
     public static void showWindow() {
@@ -75,15 +71,19 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
 
     private void reloadTable() {
         try {
+            List<ReceivedReport> rrs = dc.getAllReceivedReports();
             model.setRowCount(0);
-            for (ReceivedReport rr : receivedReports) {
+            receivedReports = new LinkedList<>();
+            for (ReceivedReport rr : rrs) {
                 final Supplier s = dc.getSupplier(rr.getSupplierId());
                 Object[] row = new Object[]{rr.getId(), rr.getInvoiceId(), s.getName(), rr.isPaid()};
                 if (chkShowUnpaid.isSelected() && !rr.isPaid()) {
                     model.addRow(row);
+                    receivedReports.add(rr);
                 }
                 if (!chkShowUnpaid.isSelected()) {
                     model.addRow(row);
+                    receivedReports.add(rr);
                 }
             }
         } catch (IOException | SQLException | JTillException ex) {
@@ -241,18 +241,24 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tblReportsMouseClicked
 
     private void btnMarkPaidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMarkPaidActionPerformed
-        ReceivedReport rr = receivedReports.get(tblReports.getSelectedRow());
-        if (rr.isPaid()) {
-            JOptionPane.showInternalMessageDialog(this, "Already Paid", "Received Report", JOptionPane.WARNING_MESSAGE);
-            return;
+        int[] selected = tblReports.getSelectedRows();
+        ReceivedReport[] reps = new ReceivedReport[selected.length];
+        for (int i = 0; i < selected.length; i++) {
+            reps[i] = receivedReports.get(selected[i]);
         }
-        rr.setPaid(true);
-        try {
-            dc.updateReceivedReport(rr);
-            reloadTable();
-        } catch (IOException | SQLException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        for (ReceivedReport rr : reps) {
+            try {
+                if (rr.isPaid()) {
+                    JOptionPane.showInternalMessageDialog(this, "Already Paid", "Received Report", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                rr.setPaid(true);
+                dc.updateReceivedReport(rr);
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
+        reloadTable();
     }//GEN-LAST:event_btnMarkPaidActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
