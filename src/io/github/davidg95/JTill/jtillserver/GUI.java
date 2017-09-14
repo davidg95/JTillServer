@@ -515,6 +515,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemWasteStock = new javax.swing.JMenuItem();
         itemEnquiry = new javax.swing.JMenuItem();
         itemStockTake = new javax.swing.JMenuItem();
+        itemManualSale = new javax.swing.JMenuItem();
         menuSetup = new javax.swing.JMenu();
         itemReasons = new javax.swing.JMenuItem();
         itemSuppliers = new javax.swing.JMenuItem();
@@ -932,6 +933,14 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         menuStock.add(itemStockTake);
+
+        itemManualSale.setText("Manual Sale");
+        itemManualSale.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemManualSaleActionPerformed(evt);
+            }
+        });
+        menuStock.add(itemManualSale);
 
         jMenuBar1.add(menuStock);
 
@@ -1546,6 +1555,10 @@ public class GUI extends JFrame implements GUIInterface {
         ReceivedReportsWindow.showWindow();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void itemManualSaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemManualSaleActionPerformed
+        ManualSaleWindow.showWindow();
+    }//GEN-LAST:event_itemManualSaleActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1574,6 +1587,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemLabelPrinting;
     private javax.swing.JMenuItem itemLogin;
     private javax.swing.JMenuItem itemLoyalty;
+    private javax.swing.JMenuItem itemManualSale;
     private javax.swing.JMenuItem itemNewStaff;
     private javax.swing.JMenuItem itemPluSettings;
     private javax.swing.JMenuItem itemReasons;
