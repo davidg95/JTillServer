@@ -8,8 +8,10 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import io.github.davidg95.jconn.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -5082,8 +5084,22 @@ public class DBConnect implements DataConnect {
         for (JConnThread th : server.getClientConnections()) {
             ConnectionHandler hand = (ConnectionHandler) th.getMethodClass();
             if (hand.till != null) {
-                th.sendData(JConnData.create("BUILDUPDATE"));
+                th.sendData(JConnData.create("REQUPDATE"));
             }
         }
+    }
+
+    @Override
+    public List<byte[]> downloadTerminalUpdate() throws Exception {
+        File file = UpdateChecker.downloadTerminalUpdate();
+        FileInputStream in = new FileInputStream(file);
+        List<byte[]> bytes = new LinkedList<>();
+        byte[] b = new byte[88*1024];
+        int count;
+        while((count = in.read(b)) > 0){
+            bytes.add(b);
+        }
+        in.close();
+        return bytes;
     }
 }

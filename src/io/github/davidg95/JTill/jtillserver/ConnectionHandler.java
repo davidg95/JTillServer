@@ -37,7 +37,6 @@ import io.github.davidg95.JTill.jtill.Trigger;
 import io.github.davidg95.JTill.jtill.WasteItem;
 import io.github.davidg95.JTill.jtill.WasteReason;
 import io.github.davidg95.JTill.jtill.WasteReport;
-import io.github.davidg95.JTill.jtillserver.DBConnect;
 import io.github.davidg95.jconn.*;
 import java.io.File;
 import java.io.IOException;
@@ -881,5 +880,10 @@ public class ConnectionHandler {
     @JConnMethod("REINITTILL")
     public void reinitTill(@JConnParameter("ID") int id) throws IOException, SQLException {
         dc.reinitTill(id);
+    }
+    
+    @JConnMethod("DOWNLOADTER")
+    public List<byte[]> downloadTerminalUpdate() throws Exception{
+        return dc.downloadTerminalUpdate();
     }
 }
