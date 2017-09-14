@@ -828,7 +828,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("CASHUNCASHEDSALES")
-    public void cashUncashedSales(@JConnParameter("T") int t) throws IOException, SQLException {
+    public void cashUncashedSales(@JConnParameter("TERMINAL") int t) throws IOException, SQLException {
         dc.cashUncashedSales(t);
     }
 
