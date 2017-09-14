@@ -336,74 +336,77 @@ public class TillDialog extends javax.swing.JDialog {
 
     private void btnCashupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCashupActionPerformed
 //        new Thread(() -> {
-            try {
-                TillReport report = new TillReport();
-                report.actualTakings = dc.getTillTakings(till.getId());
-                if (report.actualTakings.compareTo(BigDecimal.ZERO) <= 0) {
-                    JOptionPane.showMessageDialog(this, "That till currently has no declared takings", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
-                    return;
-                }
-                report.actualTakings = report.actualTakings.setScale(2);
-                String strVal = JOptionPane.showInputDialog(this, "Enter value of money counted", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
-                if (strVal == null || strVal.equals("")) {
-                    return;
-                }
-                if (!Utilities.isNumber(strVal)) {
-                    JOptionPane.showInputDialog(this, "You must enter a number greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                report.declared = new BigDecimal(strVal);
-                report.declared = report.declared.setScale(2);
-                report.difference = report.declared.subtract(report.actualTakings);
-                report.difference = report.difference.setScale(2);
-                DecimalFormat df;
-                if (report.actualTakings.compareTo(BigDecimal.ONE) >= 1) {
-                    df = new DecimalFormat("#.00");
-                } else {
-                    df = new DecimalFormat("0.00");
-                }
-                DecimalFormat df2;
-                if (report.difference.compareTo(BigDecimal.ONE) >= 1) {
-                    df2 = new DecimalFormat("#.00");
-                } else {
-                    df2 = new DecimalFormat("0.00");
-                }
-                report.averageSpend = report.actualTakings.divide(new BigDecimal(1));
-                till = dc.getTill(till.getId());
-                txtUncashedTakings.setText("£" + till.getUncashedTakings());
-                report.tax = BigDecimal.ZERO;
-
-                model.setRowCount(0);
-                
-                dc.cashUncashedSales(till.getId());
-
-                if (JOptionPane.showConfirmDialog(this, "Do you want the report emailed?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    String message = "Cashup for terminal " + till.getName()
-                            + "\nValue counted: £" + report.declared.toString()
-                            + "\nActual takings: £" + report.actualTakings.toString()
-                            + "\nDifference: £" + report.difference.toString();
-                    final ModalDialog mDialog = new ModalDialog(this, "Email", "Emailing...");
-                    final Runnable run = new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                dc.sendEmail(message);
-                                mDialog.hide();
-                                JOptionPane.showInputDialog(TillDialog.this, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
-                            } catch (IOException ex) {
-                                mDialog.hide();
-                                JOptionPane.showInputDialog(TillDialog.this, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
-                            }
-                        }
-                    };
-                    final Thread thread = new Thread(run);
-                    thread.start();
-                    mDialog.show();
-                }
-                TillReportDialog.showDialog(report);
-            } catch (IOException | SQLException | JTillException ex) {
-                Logger.getLogger(TillDialog.class.getName()).log(Level.SEVERE, null, ex);
+        try {
+            TillReport report = new TillReport();
+            report.actualTakings = dc.getTillTakings(till.getId());
+            if (report.actualTakings.compareTo(BigDecimal.ZERO) <= 0) {
+                JOptionPane.showMessageDialog(this, "That till currently has no declared takings", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
+                return;
             }
+            report.actualTakings = report.actualTakings.setScale(2);
+            String strVal = JOptionPane.showInputDialog(this, "Enter value of money counted", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
+            if (strVal == null || strVal.equals("")) {
+                return;
+            }
+            if (!Utilities.isNumber(strVal)) {
+                JOptionPane.showInputDialog(this, "You must enter a number greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            report.declared = new BigDecimal(strVal);
+            report.declared = report.declared.setScale(2);
+            report.difference = report.declared.subtract(report.actualTakings);
+            report.difference = report.difference.setScale(2);
+            List<Sale> sales = dc.getUncachedTillSales(till.getId());
+            report.transactions = sales.size();
+            report.averageSpend = report.actualTakings.divide(new BigDecimal(report.transactions));
+            DecimalFormat df;
+            if (report.actualTakings.compareTo(BigDecimal.ONE) >= 1) {
+                df = new DecimalFormat("#.00");
+            } else {
+                df = new DecimalFormat("0.00");
+            }
+            DecimalFormat df2;
+            if (report.difference.compareTo(BigDecimal.ONE) >= 1) {
+                df2 = new DecimalFormat("#.00");
+            } else {
+                df2 = new DecimalFormat("0.00");
+            }
+            report.averageSpend = report.actualTakings.divide(new BigDecimal(1));
+            till = dc.getTill(till.getId());
+            txtUncashedTakings.setText("£" + till.getUncashedTakings());
+            report.tax = BigDecimal.ZERO;
+
+            model.setRowCount(0);
+
+            dc.cashUncashedSales(till.getId());
+
+            if (JOptionPane.showConfirmDialog(this, "Do you want the report emailed?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                String message = "Cashup for terminal " + till.getName()
+                        + "\nValue counted: £" + report.declared.toString()
+                        + "\nActual takings: £" + report.actualTakings.toString()
+                        + "\nDifference: £" + report.difference.toString();
+                final ModalDialog mDialog = new ModalDialog(this, "Email", "Emailing...");
+                final Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            dc.sendEmail(message);
+                            mDialog.hide();
+                            JOptionPane.showInputDialog(TillDialog.this, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (IOException ex) {
+                            mDialog.hide();
+                            JOptionPane.showInputDialog(TillDialog.this, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                };
+                final Thread thread = new Thread(run);
+                thread.start();
+                mDialog.show();
+            }
+            TillReportDialog.showDialog(report);
+        } catch (IOException | SQLException | JTillException ex) {
+            Logger.getLogger(TillDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
 //        }).start();
     }//GEN-LAST:event_btnCashupActionPerformed
 
@@ -434,7 +437,7 @@ public class TillDialog extends javax.swing.JDialog {
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.INFORMATION_MESSAGE);
         } catch (JTillException ex) {
-            
+
         }
     }//GEN-LAST:event_btnChangeActionPerformed
 
@@ -448,8 +451,8 @@ public class TillDialog extends javax.swing.JDialog {
         try {
             dc.updateTill(till);
             JOptionPane.showMessageDialog(this, "Rename succesful, restart till to take effect.", "Rename", JOptionPane.INFORMATION_MESSAGE);
-        } catch(JTillException ex){
-            
+        } catch (JTillException ex) {
+
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
