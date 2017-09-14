@@ -737,7 +737,7 @@ public class ConnectionHandler {
         dc.clockOff(id);
     }
 
-    @JConnMethod("GETCLOCKS")
+    @JConnMethod("GETALLCLOCKS")
     public List<ClockItem> getAllClocks(@JConnParameter("ID") int id) throws IOException, SQLException, StaffNotFoundException {
         return dc.getAllClocks(id);
     }
