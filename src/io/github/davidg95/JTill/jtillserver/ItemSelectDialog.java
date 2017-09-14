@@ -44,6 +44,7 @@ public class ItemSelectDialog extends javax.swing.JDialog {
         setModal(true);
         setLocationRelativeTo(parent);
         model = (DefaultTableModel) tblItems.getModel();
+        txtSearch.requestFocus();
         init();
     }
 
@@ -165,6 +166,12 @@ public class ItemSelectDialog extends javax.swing.JDialog {
 
         jLabel1.setText("Search:");
 
+        txtSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearchActionPerformed(evt);
+            }
+        });
+
         btnSearch.setText("Search");
         btnSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -233,6 +240,10 @@ public class ItemSelectDialog extends javax.swing.JDialog {
             this.setVisible(false);
         }
     }//GEN-LAST:event_tblItemsMouseClicked
+
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+        btnSearch.doClick();
+    }//GEN-LAST:event_txtSearchActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
