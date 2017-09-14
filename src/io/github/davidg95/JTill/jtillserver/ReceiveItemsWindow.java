@@ -51,7 +51,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
     private ReceivedReport rr;
-    private List<Product> products;
+    private List<ReceivedItem> products;
     private final DefaultTableModel model;
     private final DefaultComboBoxModel cmbModel;
 
@@ -130,15 +130,13 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
     private void setReport() {
         try {
-            for (ReceivedItem item : rr.getItems()) {
-                products.add(dc.getProduct(item.getProduct()));
-            }
+            products = rr.getItems();
             updateTable();
             txtInvoice.setText(rr.getInvoiceId());
             final Supplier sup = dc.getSupplier(rr.getSupplierId());
             cmbModel.setSelectedItem(sup);
             chkPaid.setSelected(rr.isPaid());
-        } catch (IOException | ProductNotFoundException | SQLException | JTillException ex) {
+        } catch (IOException | SQLException | JTillException ex) {
             JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
         setViewMode();
@@ -180,7 +178,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 final int index = tblProducts.getSelectedRow();
-                final Product p = products.get(index);
+                final ReceivedItem p = products.get(index);
                 if (index == -1) {
                     return;
                 }
@@ -197,12 +195,13 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         model.setRowCount(0);
         BigDecimal val = BigDecimal.ZERO;
         val.setScale(2);
-        for (Product pr : products) {
+        for (ReceivedItem pr : products) {
             try {
-                final Plu p = dc.getPluByProduct(pr.getId());
-                model.addRow(new Object[]{pr.getId(), pr.getLongName(), p.getCode(), pr.getStock()});
-                val = val.add(pr.getCostPrice().multiply(new BigDecimal(pr.getStock())));
-            } catch (IOException | JTillException ex) {
+                final Product pro = dc.getProduct(pr.getProduct());
+                final Plu p = dc.getPluByProduct(pro.getId());
+                model.addRow(new Object[]{pro.getId(), pro.getLongName(), p.getCode(), pr.getQuantity()});
+                val = val.add(pro.getCostPrice().multiply(new BigDecimal(pr.getQuantity())));
+            } catch (IOException | JTillException | ProductNotFoundException | SQLException ex) {
                 Logger.getLogger(ReceiveItemsWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -398,21 +397,22 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         }
         if (txtInvoice.getText().isEmpty()) {
             JOptionPane.showInternalMessageDialog(this, "You must enter an invoice number", "Receive", JOptionPane.WARNING_MESSAGE);
+            txtInvoice.requestFocus();
             return;
         }
         Supplier supplier = (Supplier) cmbSuppliers.getSelectedItem();
         ReceivedReport report = new ReceivedReport(txtInvoice.getText(), supplier.getId());
         products.forEach((p) -> {
             try {
-                Product product = dc.getProduct(p.getId());
-                product.addStock(p.getStock());
-                p = dc.updateProduct(product);
-                report.addItem(new ReceivedItem(p.getId(), p.getStock(), p.getCostPrice()));
+                Product product = dc.getProduct(p.getProduct());
+                product.addStock(p.getQuantity());
+                dc.updateProduct(product);
             } catch (IOException | ProductNotFoundException | SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
         report.setPaid(chkPaid.isSelected());
+        report.setItems(products);
         try {
             dc.addReceivedReport(report);
             lblValue.setText("Total: £0.00");
@@ -425,7 +425,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             if (JOptionPane.showConfirmDialog(this, "Do you want to print the report?", "Print", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 try {
                     BigDecimal val = BigDecimal.ZERO;
-                    for (Product p : products) {
+                    for (ReceivedItem p : products) {
                         val = val.add(p.getPrice());
                     }
                     MessageFormat header = new MessageFormat("Receive Stock " + new Date());
@@ -446,8 +446,6 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         if (product == null) {
             return;
         }
-
-        product = (Product) product.clone();
 
         String str = JOptionPane.showInternalInputDialog(ReceiveItemsWindow.this, "Enter amount to receive", "Receive Stock", JOptionPane.INFORMATION_MESSAGE);
 
@@ -470,9 +468,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             if (amount == 0) {
                 return;
             }
-            product.setStock(amount);
 
-            products.add(product);
+            products.add(new ReceivedItem(product.getId(), amount, product.getCostPrice()));
             updateTable();
         } else {
             JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
@@ -484,7 +481,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             return;
         }
         final int row = tblProducts.getSelectedRow();
-        final Product product = products.get(row);
+        final ReceivedItem product = products.get(row);
         if (evt.getClickCount() == 2) {
             if (evt.getClickCount() == 2) {
                 String input = JOptionPane.showInternalInputDialog(ReceiveItemsWindow.this, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
@@ -494,7 +491,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 }
                 int val = Integer.parseInt(input);
                 if (val > 0) {
-                    product.setStock(val);
+                    product.setQuantity(val);
                     updateTable();
                 } else {
                     JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
@@ -516,7 +513,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     }
                     int val = Integer.parseInt(input);
                     if (val > 0) {
-                        product.setStock(val);
+                        product.setQuantity(val);
                         updateTable();
                     } else {
                         JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
@@ -568,7 +565,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
                         product.setStock(quantity);
 
-                        products.add(product);
+                        products.add(new ReceivedItem(product.getId(), quantity, product.getCostPrice()));
                         try {
                             final Plu plu = dc.getPluByProduct(product.getId());
                             model.addRow(new Object[]{product.getId(), product.getName(), plu.getCode(), product.getStock()});

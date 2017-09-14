@@ -5033,8 +5033,8 @@ public class DBConnect implements DataConnect {
                 while (set.next()) {
                     int iid = set.getInt(1);
                     int pro = set.getInt(2);
-                    int quantity = set.getInt(3);
-                    BigDecimal price = set.getBigDecimal(4);
+                    BigDecimal price = set.getBigDecimal(3);
+                    int quantity = set.getInt(4);
 
                     ReceivedItem ri = new ReceivedItem(iid, pro, quantity, price);
 
