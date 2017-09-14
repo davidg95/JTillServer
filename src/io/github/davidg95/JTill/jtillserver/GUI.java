@@ -425,7 +425,7 @@ public class GUI extends JFrame implements GUIInterface {
     }
 
     @Override
-    public void buildUpdate(File f) {
+    public void requestUpdate() {
         //Nothing
     }
 

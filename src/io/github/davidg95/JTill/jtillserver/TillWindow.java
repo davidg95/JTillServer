@@ -281,7 +281,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
     private void btnBuildUpdatesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuildUpdatesActionPerformed
         try {
-            dc.sendBuildUpdates(UpdateChecker.downloadTerminalUpdate());
+            dc.sendBuildUpdates();
         } catch (IOException | SQLException ex) {
             JOptionPane.showInternalConfirmDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
