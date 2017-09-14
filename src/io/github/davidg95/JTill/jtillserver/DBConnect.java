@@ -5076,4 +5076,14 @@ public class DBConnect implements DataConnect {
             }
         }
     }
+
+    @Override
+    public void sendBuildUpdates() throws IOException, SQLException {
+        for (JConnThread th : server.getClientConnections()) {
+            ConnectionHandler hand = (ConnectionHandler) th.getMethodClass();
+            if (hand.till != null) {
+                th.sendData(JConnData.create("BUILDUPDATE"));
+            }
+        }
+    }
 }
