@@ -335,21 +335,21 @@ public class TillDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnCashupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCashupActionPerformed
-        new Thread(() -> {
+//        new Thread(() -> {
             try {
                 TillReport report = new TillReport();
                 report.actualTakings = dc.getTillTakings(till.getId());
                 if (report.actualTakings.compareTo(BigDecimal.ZERO) <= 0) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "That till currently has no declared takings", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "That till currently has no declared takings", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
                 report.actualTakings = report.actualTakings.setScale(2);
-                String strVal = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter value of money counted", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
+                String strVal = JOptionPane.showInputDialog(this, "Enter value of money counted", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
                 if (strVal == null || strVal.equals("")) {
                     return;
                 }
                 if (!Utilities.isNumber(strVal)) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You must enter a number greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInputDialog(this, "You must enter a number greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 report.declared = new BigDecimal(strVal);
@@ -374,10 +374,10 @@ public class TillDialog extends javax.swing.JDialog {
                 report.tax = BigDecimal.ZERO;
 
                 model.setRowCount(0);
+                
+                dc.cashUncashedSales(till.getId());
 
-                TillReportDialog.showDialog(report);
-
-                if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Do you want the report emailed?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                if (JOptionPane.showConfirmDialog(this, "Do you want the report emailed?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     String message = "Cashup for terminal " + till.getName()
                             + "\nValue counted: £" + report.declared.toString()
                             + "\nActual takings: £" + report.actualTakings.toString()
@@ -389,10 +389,10 @@ public class TillDialog extends javax.swing.JDialog {
                             try {
                                 dc.sendEmail(message);
                                 mDialog.hide();
-                                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
+                                JOptionPane.showInputDialog(TillDialog.this, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
                             } catch (IOException ex) {
                                 mDialog.hide();
-                                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showInputDialog(TillDialog.this, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
                             }
                         }
                     };
@@ -400,10 +400,11 @@ public class TillDialog extends javax.swing.JDialog {
                     thread.start();
                     mDialog.show();
                 }
+                TillReportDialog.showDialog(report);
             } catch (IOException | SQLException | JTillException ex) {
                 Logger.getLogger(TillDialog.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }).start();
+//        }).start();
     }//GEN-LAST:event_btnCashupActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed

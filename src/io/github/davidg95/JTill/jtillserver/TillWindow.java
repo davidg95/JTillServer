@@ -6,8 +6,6 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import io.github.davidg95.jconn.JConnData;
-import io.github.davidg95.jconn.JConnThread;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.io.IOException;

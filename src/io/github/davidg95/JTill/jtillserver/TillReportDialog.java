@@ -15,7 +15,7 @@ import javax.swing.SwingUtilities;
  *
  * @author David
  */
-public class TillReportDialog extends javax.swing.JInternalFrame {
+public class TillReportDialog extends javax.swing.JFrame {
 
     private final TillReport report;
 
@@ -26,8 +26,6 @@ public class TillReportDialog extends javax.swing.JInternalFrame {
         super();
         this.report = report;
         initComponents();
-        super.setClosable(true);
-        super.setIconifiable(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setTitle("Till Report");
         declared.setText("£" + report.declared);
@@ -40,23 +38,7 @@ public class TillReportDialog extends javax.swing.JInternalFrame {
 
     public static void showDialog(TillReport report) {
         final TillReportDialog dialog = new TillReportDialog(report);
-        GUI.gui.internal.add(dialog);
-        dialog.setLocation((GUI.gui.internal.getWidth() / 2) - (dialog.getWidth() / 2), (GUI.gui.internal.getHeight() / 2) - (dialog.getHeight() / 2));
-        SwingUtilities.invokeLater(() -> {
-            dialog.setVisible(true);
-            try {
-                dialog.setSelected(true);
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(TillReportDialog.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            while (dialog.isVisible()) {
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(TillReportDialog.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
+        dialog.setVisible(true);
     }
 
     /**
