@@ -296,16 +296,16 @@ public class GUI extends JFrame implements GUIInterface {
     }
 
     public void checkUpdate() {
-        try {
-            String latest = UpdateChecker.checkForUpdate();
-            if (!latest.equals(TillServer.VERSION)) {
-                if (JOptionPane.showConfirmDialog(this, "Version " + latest + " avaliable. Download now?", "Update", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    UpdateChecker.downloadServerUpdate();
-                }
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error checking for update", "Update", JOptionPane.INFORMATION_MESSAGE);
-        }
+//        try {
+//            String latest = UpdateChecker.checkForUpdate();
+//            if (!latest.equals(TillServer.VERSION)) {
+//                if (JOptionPane.showConfirmDialog(this, "Version " + latest + " avaliable. Download now?", "Update", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+//                    UpdateChecker.downloadServerUpdate();
+//                }
+//            }
+//        } catch (Exception ex) {
+//            JOptionPane.showMessageDialog(this, "Error checking for update", "Update", JOptionPane.INFORMATION_MESSAGE);
+//        }
     }
 
     /**

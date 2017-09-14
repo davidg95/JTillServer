@@ -437,6 +437,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             }
         } catch (IOException | SQLException ex) {
             JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
         }
     }//GEN-LAST:event_btnReceiveActionPerformed
 
