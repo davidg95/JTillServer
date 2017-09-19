@@ -429,6 +429,11 @@ public class GUI extends JFrame implements GUIInterface {
         //Nothing
     }
 
+    @Override
+    public void markNewData() {
+        //Nothing
+    }
+
     private class LogHandler extends Handler {
 
         @Override
