@@ -1544,9 +1544,7 @@ public class GUI extends JFrame implements GUIInterface {
 
     private void itemSendDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSendDataActionPerformed
         try {
-            if (JOptionPane.showInternalConfirmDialog(internal, "Warning! This will log all staff members out. Continue?", "Reinitialise tills", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                dc.reinitialiseAllTills();
-            }
+            dc.reinitialiseAllTills();
         } catch (IOException ex) {
             JOptionPane.showInternalConfirmDialog(internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }

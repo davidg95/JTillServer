@@ -263,13 +263,10 @@ public class TillWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tableMouseClicked
 
     private void btnSendDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendDataActionPerformed
-        if (JOptionPane.showInternalConfirmDialog(this, "Warning! This will log all staff members out. Continue?", "Reinitalise", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-
-            try {
-                dc.reinitialiseAllTills();
-            } catch (IOException ex) {
-                JOptionPane.showInternalConfirmDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        try {
+            dc.reinitialiseAllTills();
+        } catch (IOException ex) {
+            JOptionPane.showInternalConfirmDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSendDataActionPerformed
 
@@ -281,9 +278,9 @@ public class TillWindow extends javax.swing.JInternalFrame {
         try {
             dc.sendBuildUpdates();
         } catch (IOException | SQLException ex) {
-            JOptionPane.showInternalConfirmDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalConfirmDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
-            JOptionPane.showInternalConfirmDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalConfirmDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnBuildUpdatesActionPerformed
 
