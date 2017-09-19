@@ -48,6 +48,7 @@ public class TillDialog extends javax.swing.JDialog {
         setModal(true);
         setLocationRelativeTo(parent);
         setTitle(till.getName());
+        setIconImage(GUI.icon);
         txtID.setText("" + till.getId());
         txtName.setText(till.getName());
         txtUncashedTakings.setText("£" + new DecimalFormat("#.00").format(till.getUncashedTakings()));
