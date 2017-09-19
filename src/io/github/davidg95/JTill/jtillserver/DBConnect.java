@@ -756,6 +756,18 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+            Screen s = new Screen("DEFAULT", 5, 10);
+            addScreen(s);
+            int x = 1;
+            int y = 1;
+            for (int i = 0; i < 50; i++) {
+                TillButton bu = addButton(new TillButton("[SPACE]", 0, TillButton.SPACE, s.getId(), 1, 1, 1, x, y));
+                x++;
+                if (x == 6) {
+                    x = 1;
+                    y++;
+                }
+            }
         }
     }
 
@@ -5093,9 +5105,9 @@ public class DBConnect implements DataConnect {
         File file = UpdateChecker.downloadTerminalUpdate();
         FileInputStream in = new FileInputStream(file);
         List<byte[]> bytes = new LinkedList<>();
-        byte[] b = new byte[88*1024];
+        byte[] b = new byte[88 * 1024];
         int count;
-        while((count = in.read(b)) > 0){
+        while ((count = in.read(b)) > 0) {
             bytes.add(b);
         }
         in.close();

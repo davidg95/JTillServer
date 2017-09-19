@@ -1,13 +1,11 @@
-JTill log Tue Sep 19 11:34:31 BST 2017
-[11:34:31] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[11:34:31] [INFO] Column ENABLED already exists in STAFF, no need to change database.
+JTill log Tue Sep 19 13:39:38 BST 2017
+[13:39:38] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[13:39:38] [INFO] Column ENABLED already exists in STAFF, no need to change database.
 java.sql.SQLException: Column 'ENABLED' already exists in Table/View '"APP"."STAFF"'.
-[11:34:31] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
+[13:39:38] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
 java.sql.SQLException: Table/View 'RECEIVED_REPORTS' already exists in Schema 'APP'.
-[11:34:31] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
+[13:39:38] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
 java.sql.SQLException: Column 'RECEIVED_REPORT' already exists in Table/View '"APP"."RECEIVEDITEMS"'.
-[11:34:32] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
+[13:39:39] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
 java.sql.SQLException: Column 'PAID' already exists in Table/View '"APP"."RECEIVED_REPORTS"'.
-[11:36:02] [INFO] David Grant has logged in
-[11:37:12] [INFO] David Grant has logged out
-[11:37:18] [INFO] Bradley Joss has logged in
+[13:39:42] [INFO] David Grant has logged in
