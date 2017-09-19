@@ -99,7 +99,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
         table = new javax.swing.JTable();
         btnClose = new javax.swing.JButton();
         btnView = new javax.swing.JButton();
-        btnReinit = new javax.swing.JButton();
+        btnSendData = new javax.swing.JButton();
         btnRefresh = new javax.swing.JButton();
         btnBuildUpdates = new javax.swing.JButton();
 
@@ -148,10 +148,10 @@ public class TillWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        btnReinit.setText("Reinitialise all connected tills");
-        btnReinit.addActionListener(new java.awt.event.ActionListener() {
+        btnSendData.setText("Send Data to Tills");
+        btnSendData.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnReinitActionPerformed(evt);
+                btnSendDataActionPerformed(evt);
             }
         });
 
@@ -180,7 +180,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnView)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnReinit)
+                        .addComponent(btnSendData)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRefresh)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -198,7 +198,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
                     .addComponent(btnView)
-                    .addComponent(btnReinit)
+                    .addComponent(btnSendData)
                     .addComponent(btnRefresh)
                     .addComponent(btnBuildUpdates))
                 .addContainerGap(15, Short.MAX_VALUE))
@@ -241,28 +241,28 @@ public class TillWindow extends javax.swing.JInternalFrame {
             view.addActionListener((ActionEvent e) -> {
                 TillDialog.showDialog(this, t);
             });
-            JMenuItem reinit = new JMenuItem("Reinitialise Terminal");
-            reinit.addActionListener((ActionEvent e) -> {
+            JMenuItem sendData = new JMenuItem("Send Data");
+            sendData.addActionListener((ActionEvent e) -> {
                 try {
-                    dc.reinitTill(t.getId());
+                    dc.sendData(t.getId());
                     return;
                 } catch (SQLException | IOException ex) {
                     JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                JOptionPane.showInternalMessageDialog(this, "Till offline", "Reinitalise", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showInternalMessageDialog(this, "Till offline", "Send Data", JOptionPane.WARNING_MESSAGE);
             });
 
             if (!t.isConnected()) {
-                reinit.setEnabled(false);
+                sendData.setEnabled(false);
             }
 
             menu.add(view);
-            menu.add(reinit);
+            menu.add(sendData);
             menu.show(table, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tableMouseClicked
 
-    private void btnReinitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReinitActionPerformed
+    private void btnSendDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendDataActionPerformed
         if (JOptionPane.showInternalConfirmDialog(this, "Warning! This will log all staff members out. Continue?", "Reinitalise", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 
             try {
@@ -271,7 +271,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showInternalConfirmDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-    }//GEN-LAST:event_btnReinitActionPerformed
+    }//GEN-LAST:event_btnSendDataActionPerformed
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
         this.getAllTills();
@@ -291,7 +291,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnBuildUpdates;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnRefresh;
-    private javax.swing.JButton btnReinit;
+    private javax.swing.JButton btnSendData;
     private javax.swing.JButton btnView;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;

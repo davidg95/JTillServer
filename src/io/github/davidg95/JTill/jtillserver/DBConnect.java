@@ -4956,7 +4956,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public void reinitialiseAllTills() throws IOException {
-        server.sendData(null, JConnData.create("REINIT"));
+        server.sendData(null, JConnData.create("SENDDATA"));
     }
 
     @Override
@@ -5081,11 +5081,11 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public void reinitTill(int id) throws IOException, SQLException {
+    public void sendData(int id) throws IOException, SQLException {
         for (JConnThread th : server.getClientConnections()) {
             ConnectionHandler hand = (ConnectionHandler) th.getMethodClass();
             if (hand.till != null && hand.till.getId() == id) {
-                th.sendData(JConnData.create("REINIT"));
+                th.sendData(JConnData.create("SENDDATA"));
             }
         }
     }

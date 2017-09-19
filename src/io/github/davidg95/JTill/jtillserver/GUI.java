@@ -534,7 +534,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemTaxes = new javax.swing.JMenuItem();
         itemPluSettings = new javax.swing.JMenuItem();
         itemLoyalty = new javax.swing.JMenuItem();
-        itemReinitTills = new javax.swing.JMenuItem();
+        itemSendData = new javax.swing.JMenuItem();
         itemTerminals = new javax.swing.JMenuItem();
         itemDatabase = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
@@ -1047,13 +1047,13 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemLoyalty);
 
-        itemReinitTills.setText("Reinitialise all tills");
-        itemReinitTills.addActionListener(new java.awt.event.ActionListener() {
+        itemSendData.setText("Send Data to Terminals");
+        itemSendData.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemReinitTillsActionPerformed(evt);
+                itemSendDataActionPerformed(evt);
             }
         });
-        menuSetup.add(itemReinitTills);
+        menuSetup.add(itemSendData);
 
         itemTerminals.setText("Terminals");
         itemTerminals.addActionListener(new java.awt.event.ActionListener() {
@@ -1542,7 +1542,7 @@ public class GUI extends JFrame implements GUIInterface {
         StaffReportingWindow.showWindow();
     }//GEN-LAST:event_itemStaffReportingActionPerformed
 
-    private void itemReinitTillsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReinitTillsActionPerformed
+    private void itemSendDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSendDataActionPerformed
         try {
             if (JOptionPane.showInternalConfirmDialog(internal, "Warning! This will log all staff members out. Continue?", "Reinitialise tills", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 dc.reinitialiseAllTills();
@@ -1550,7 +1550,7 @@ public class GUI extends JFrame implements GUIInterface {
         } catch (IOException ex) {
             JOptionPane.showInternalConfirmDialog(internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_itemReinitTillsActionPerformed
+    }//GEN-LAST:event_itemSendDataActionPerformed
 
     private void itemDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDatabaseActionPerformed
         DatabaseWindow.showDatabaseWindow();
@@ -1597,8 +1597,8 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemPluSettings;
     private javax.swing.JMenuItem itemReasons;
     private javax.swing.JMenuItem itemReceive;
-    private javax.swing.JMenuItem itemReinitTills;
     private javax.swing.JMenuItem itemSalesReporting;
+    private javax.swing.JMenuItem itemSendData;
     private javax.swing.JMenuItem itemServerOptions;
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStaffClocking;

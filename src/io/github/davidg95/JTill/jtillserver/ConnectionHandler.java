@@ -877,9 +877,9 @@ public class ConnectionHandler {
         return dc.updateReceivedReport(rr);
     }
 
-    @JConnMethod("REINITTILL")
-    public void reinitTill(@JConnParameter("ID") int id) throws IOException, SQLException {
-        dc.reinitTill(id);
+    @JConnMethod("SENDDATA")
+    public void sendData(@JConnParameter("ID") int id) throws IOException, SQLException {
+        dc.sendData(id);
     }
     
     @JConnMethod("DOWNLOADTER")

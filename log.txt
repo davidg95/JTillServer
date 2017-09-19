@@ -1,29 +1,21 @@
-JTill log Tue Sep 19 14:05:56 BST 2017
-[14:05:56] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[14:05:56] [INFO] Column ENABLED already exists in STAFF, no need to change database.
+JTill log Tue Sep 19 14:27:23 BST 2017
+[14:27:23] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[14:27:24] [INFO] Column ENABLED already exists in STAFF, no need to change database.
 java.sql.SQLException: Column 'ENABLED' already exists in Table/View '"APP"."STAFF"'.
-[14:05:56] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
+[14:27:24] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
 java.sql.SQLException: Table/View 'RECEIVED_REPORTS' already exists in Schema 'APP'.
-[14:05:56] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
+[14:27:24] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
 java.sql.SQLException: Column 'RECEIVED_REPORT' already exists in Table/View '"APP"."RECEIVEDITEMS"'.
-[14:05:57] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
+[14:27:24] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
 java.sql.SQLException: Column 'PAID' already exists in Table/View '"APP"."RECEIVED_REPORTS"'.
-[14:06:08] [INFO] David Grant has logged in from DAVID-PC
-[14:06:17] [INFO] David Grant has logged in
-[14:06:20] [INFO] David Grant has logged out
-[14:06:24] [INFO] David Grant has logged in from DAVID-PC
-[14:06:25] [INFO] David Grant has logged out
-[14:06:25] [INFO] David Grant has logged out
-[14:06:25] [INFO] David Grant has logged out
-[14:07:57] [INFO] David Grant has logged in from DAVID-PC
-[14:08:03] [INFO] David Grant has logged out
-[14:10:45] [INFO] David Grant has logged in from DAVID-PC
-[14:10:54] [INFO] David Grant has logged out
-[14:10:56] [INFO] David Grant has logged in from DAVID-PC
-[14:11:04] [INFO] David Grant has logged out
-[14:11:06] [INFO] David Grant has logged in from DAVID-PC
-[14:11:14] [INFO] David Grant has logged out
-[14:11:17] [INFO] David Grant has logged in from DAVID-PC
-[14:11:24] [INFO] David Grant has logged out
-[14:11:28] [INFO] David Grant has logged in from DAVID-PC
-[14:11:34] [INFO] David Grant has logged out
+[14:27:29] [INFO] David Grant has logged in
+[14:27:44] [INFO] David Grant has logged in from DAVID-PC
+[14:27:54] [INFO] David Grant has logged out
+[14:28:00] [INFO] David Grant has logged in from DAVID-PC
+[14:28:10] [INFO] David Grant has logged out
+[14:28:12] [INFO] David Grant has logged in from DAVID-PC
+[14:28:20] [INFO] David Grant has logged out
+[14:29:26] [INFO] David Grant has logged in from DAVID-PC
+[14:29:53] [INFO] David Grant has logged out
+[14:29:56] [INFO] David Grant has logged in from DAVID-PC
+[14:30:01] [INFO] David Grant has logged out

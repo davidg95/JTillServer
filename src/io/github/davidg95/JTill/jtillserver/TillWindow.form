@@ -29,7 +29,7 @@
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="btnView" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnReinit" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnSendData" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnRefresh" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -51,7 +51,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnClose" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnView" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnReinit" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnSendData" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnRefresh" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnBuildUpdates" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -128,12 +128,12 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnViewActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnReinit">
+    <Component class="javax.swing.JButton" name="btnSendData">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Reinitialise all connected tills"/>
+        <Property name="text" type="java.lang.String" value="Send Data to Tills"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnReinitActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSendDataActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnRefresh">
