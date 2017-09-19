@@ -224,6 +224,20 @@ public class DBConnect implements DataConnect {
         } catch (SQLException ex) {
             LOG.log(Level.INFO, "Column PAID already exists in RECEIVED_REPORTS, no need to change database.", ex);
         }
+        
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                int res = stmt.executeUpdate("ALTER TABLE SCREENS ADD INHERITS INT");
+                LOG.log(Level.INFO, "New fields added to SCREENS table, " + res + " rows affected");
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                throw ex;
+            }
+        } catch (SQLException ex) {
+            LOG.log(Level.INFO, "Column INHERITS already exists in SCREENS, no need to change database.", ex);
+        }
     }
 
     /**
@@ -456,6 +470,7 @@ public class DBConnect implements DataConnect {
                 + "         (START WITH 1, INCREMENT BY 1),\n"
                 + "     NAME VARCHAR(50) not null,\n"
                 + "     WIDTH INT not null,\n"
+                + "     INHERITS INT not null,\n"
                 + "     HEIGHT INT not null\n"
                 + ")";
         String buttons = "create table \"APP\".BUTTONS\n"
@@ -756,7 +771,7 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
-            Screen s = new Screen("DEFAULT", 5, 10);
+            Screen s = new Screen("DEFAULT", 5, 10, -1);
             addScreen(s);
             int x = 1;
             int y = 1;
@@ -2525,7 +2540,8 @@ public class DBConnect implements DataConnect {
             String name = set.getString("NAME");
             int width = set.getInt("WIDTH");
             int height = set.getInt("HEIGHT");
-            Screen s = new Screen(name, id, width, height);
+            int inherits = set.getInt("INHERITS");
+            Screen s = new Screen(name, id, width, height, inherits);
 
             screens.add(s);
         }
@@ -2556,7 +2572,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public Screen addScreen(Screen s) throws SQLException {
-        String query = "INSERT INTO SCREENS (NAME, WIDTH, HEIGHT) VALUES (" + s.getSQLInsertString() + ")";
+        String query = "INSERT INTO SCREENS (NAME, WIDTH, HEIGHT, INHERITS) VALUES (" + s.getSQLInsertString() + ")";
         try (Connection con = getNewConnection()) {
             PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             try {
@@ -2740,7 +2756,8 @@ public class DBConnect implements DataConnect {
                     String name = set.getString("NAME");
                     int width = set.getInt("WIDTH");
                     int height = set.getInt("HEIGHT");
-                    Screen s = new Screen(name, id, width, height);
+                    int inherits = set.getInt("INHERITS");
+                    Screen s = new Screen(name, id, width, height, inherits);
 
                     screens.add(s);
                 }
