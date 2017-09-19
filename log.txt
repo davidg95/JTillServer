@@ -1,12 +1,13 @@
-JTill log Thu Sep 14 17:03:18 BST 2017
-[17:03:18] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[17:03:18] [INFO] Column ENABLED already exists in STAFF, no need to change database.
+JTill log Tue Sep 19 11:34:31 BST 2017
+[11:34:31] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[11:34:31] [INFO] Column ENABLED already exists in STAFF, no need to change database.
 java.sql.SQLException: Column 'ENABLED' already exists in Table/View '"APP"."STAFF"'.
-[17:03:18] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
+[11:34:31] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
 java.sql.SQLException: Table/View 'RECEIVED_REPORTS' already exists in Schema 'APP'.
-[17:03:18] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
+[11:34:31] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
 java.sql.SQLException: Column 'RECEIVED_REPORT' already exists in Table/View '"APP"."RECEIVEDITEMS"'.
-[17:03:19] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
+[11:34:32] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
 java.sql.SQLException: Column 'PAID' already exists in Table/View '"APP"."RECEIVED_REPORTS"'.
-[17:03:22] [INFO] David Grant has logged in
-[17:03:30] [SEVERE] java.sql.SQLIntegrityConstraintViolationException: INSERT on table 'SALES' caused a violation of foreign key constraint 'SQL170828164241151' for key (-1).  The statement has been rolled back.
+[11:36:02] [INFO] David Grant has logged in
+[11:37:12] [INFO] David Grant has logged out
+[11:37:18] [INFO] Bradley Joss has logged in
