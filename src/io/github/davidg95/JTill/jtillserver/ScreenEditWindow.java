@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -239,7 +240,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 if (b.getType() == TillButton.SPACE) { //If it is a space, create a panel for the button.
                     JPanel pan = new JPanel();
                     pan.setBackground(Color.WHITE);
-                    //pan.setLayout(new GridLayout(1, 1));
+                    pan.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, false));
                     pan.addMouseListener(new MouseListener() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
@@ -270,6 +271,8 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                         }
 
                     });
+                    panel.setMinimumSize(new Dimension(0, 0));
+                    panel.setMaximumSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
                     panel.add(pan, gbc); //Add the panel to the screen panel.
                 } else { //If the button is a button.
                     pButton.addActionListener((ActionEvent e) -> {
@@ -350,7 +353,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         list = new javax.swing.JList<>();
         panelProducts = new javax.swing.JPanel();
-        lblMessage = new javax.swing.JLabel();
         panelScreenProperties = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -416,7 +418,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                     .addGroup(panelScreenPropertiesLayout.createSequentialGroup()
                         .addGap(42, 42, 42)
                         .addComponent(btnSave)))
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
         panelScreenPropertiesLayout.setVerticalGroup(
             panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -440,27 +442,23 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(btnNewScreen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnNewScreen, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(panelScreenProperties, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(bar, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(913, 913, 913)
-                        .addComponent(btnClose)
-                        .addGap(0, 28, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 610, Short.MAX_VALUE)
+                        .addComponent(btnClose))
                     .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(8, 8, 8)
-                .addComponent(lblMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -468,10 +466,10 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                         .addComponent(btnNewScreen)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(panelScreenProperties, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 269, Short.MAX_VALUE))
+                        .addGap(0, 169, Short.MAX_VALUE))
                     .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnClose)
                     .addComponent(bar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
@@ -481,8 +479,12 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewScreenActionPerformed
-        String name = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter Name", "New Screen", JOptionPane.PLAIN_MESSAGE);
+        String name = JOptionPane.showInternalInputDialog(this, "Enter Name", "New Screen", JOptionPane.PLAIN_MESSAGE);
         if (name == null) {
+            return;
+        }
+        if (name.equalsIgnoreCase("default")) {
+            JOptionPane.showInternalMessageDialog(this, "That name is not allowed", "New Screen", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (!name.equals("")) {
@@ -562,6 +564,10 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 }
             });
 
+            if (sc.getName().equals("DEFAULT")) {
+                remove.setEnabled(false);
+                rename.setEnabled(false);
+            }
             menu.add(rename);
             menu.add(remove);
             menu.add(duplicate);
@@ -594,7 +600,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblMessage;
     private javax.swing.JList<String> list;
     private javax.swing.JFormattedTextField numCol;
     private javax.swing.JFormattedTextField numRow;

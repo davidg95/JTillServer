@@ -414,7 +414,7 @@ public class GUI extends JFrame implements GUIInterface {
 
     @Override
     public Till showTillSetupWindow(String name) {
-        Till till = new Till(name, 0);
+        Till till = new Till(name, 1);
         TillDialog.showDialog(this, till);
         return till;
     }

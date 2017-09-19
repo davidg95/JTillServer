@@ -75,6 +75,7 @@ public class TillDialog extends javax.swing.JDialog {
             Screen sc = dc.getScreen(till.getDefaultScreen());
             txtDefaultScreen.setText(sc.getName());
         } catch (IOException | SQLException | ScreenNotFoundException ex) {
+            
         }
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
