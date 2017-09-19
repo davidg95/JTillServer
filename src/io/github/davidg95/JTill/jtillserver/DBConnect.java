@@ -5113,4 +5113,17 @@ public class DBConnect implements DataConnect {
         in.close();
         return bytes;
     }
+
+    @Override
+    public void logoutTill(int id) throws IOException, JTillException {
+        for (JConnThread th : server.getClientConnections()) {
+            ConnectionHandler hand = (ConnectionHandler) th.getMethodClass();
+            if (hand.till != null) {
+                if (hand.till.getId() == id) {
+                    th.sendData(JConnData.create("LOGOUT"));
+                    return;
+                }
+            }
+        }
+    }
 }

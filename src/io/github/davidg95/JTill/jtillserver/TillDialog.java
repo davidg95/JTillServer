@@ -55,11 +55,6 @@ public class TillDialog extends javax.swing.JDialog {
         if (till.getUncashedTakings().compareTo(BigDecimal.ZERO) == 0) {
             txtUncashedTakings.setText("£0.00");
         }
-        if (t.getLastContact() == null) {
-            txtLastContact.setText("None");
-        } else {
-            txtLastContact.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(till.getLastContact()));
-        }
         txtStaff.setText("Not logged in");
         for (JConnThread thread : TillServer.server.getClientConnections()) {
             final ConnectionHandler th = (ConnectionHandler) thread.getMethodClass();
@@ -76,7 +71,7 @@ public class TillDialog extends javax.swing.JDialog {
             Screen sc = dc.getScreen(till.getDefaultScreen());
             txtDefaultScreen.setText(sc.getName());
         } catch (IOException | SQLException | ScreenNotFoundException ex) {
-            
+
         }
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
@@ -121,10 +116,8 @@ public class TillDialog extends javax.swing.JDialog {
         lblTakings = new javax.swing.JLabel();
         btnClose = new javax.swing.JButton();
         lblStaff = new javax.swing.JLabel();
-        lblLastContact = new javax.swing.JLabel();
         txtUncashedTakings = new javax.swing.JTextField();
         txtStaff = new javax.swing.JTextField();
-        txtLastContact = new javax.swing.JTextField();
         btnCashup = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
@@ -138,6 +131,7 @@ public class TillDialog extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         txtDefaultScreen = new javax.swing.JTextField();
         btnChange = new javax.swing.JButton();
+        btnSendData = new javax.swing.JButton();
 
         lblTakings.setText("Uncashed Takings: ");
 
@@ -150,13 +144,9 @@ public class TillDialog extends javax.swing.JDialog {
 
         lblStaff.setText("Staff:");
 
-        lblLastContact.setText("Last Contact:");
-
         txtUncashedTakings.setEditable(false);
 
         txtStaff.setEditable(false);
-
-        txtLastContact.setEditable(false);
 
         btnCashup.setText("Cash Up");
         btnCashup.addActionListener(new java.awt.event.ActionListener() {
@@ -194,13 +184,13 @@ public class TillDialog extends javax.swing.JDialog {
             }
         });
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Till Info"));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Terminal Info"));
 
-        lblID.setText("Till ID: ");
+        lblID.setText("Terminal ID:");
 
         txtID.setEditable(false);
 
-        lblName.setText("Till Name: ");
+        lblName.setText("Terminal Name:");
 
         btnChangeName.setText("Save");
         btnChangeName.addActionListener(new java.awt.event.ActionListener() {
@@ -253,6 +243,13 @@ public class TillDialog extends javax.swing.JDialog {
             }
         });
 
+        btnSendData.setText("Send Data to Terminal");
+        btnSendData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSendDataActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -261,13 +258,11 @@ public class TillDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(lblLastContact)
+                        .addGap(97, 97, 97)
+                        .addComponent(btnClose)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtLastContact, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnClose))
-                        .addGap(109, 109, 109))
+                        .addComponent(btnSendData)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -292,7 +287,7 @@ public class TillDialog extends javax.swing.JDialog {
                                     .addComponent(btnCashup)
                                     .addComponent(btnChange))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -320,12 +315,10 @@ public class TillDialog extends javax.swing.JDialog {
                             .addComponent(jLabel1)
                             .addComponent(txtDefaultScreen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnChange))
-                        .addGap(37, 37, 37)
+                        .addGap(126, 126, 126)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblLastContact)
-                            .addComponent(txtLastContact, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(69, 69, 69)
-                        .addComponent(btnClose)
+                            .addComponent(btnClose)
+                            .addComponent(btnSendData))
                         .addGap(39, 39, 39))))
         );
 
@@ -413,14 +406,10 @@ public class TillDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCashupActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
-        for (JConnThread th : TillServer.server.getClientConnections()) {
-            if (this.till.getId() == ((ConnectionHandler) th.getMethodClass()).till.getId()) {
-                try {
-                    th.sendData(JConnData.create("LOGOUT"));
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(this, "Network Error", "Logout", JOptionPane.ERROR_MESSAGE);
-                }
-            }
+        try {
+            dc.logoutTill(till.getId());
+        } catch (IOException | JTillException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnLogoutActionPerformed
 
@@ -437,7 +426,7 @@ public class TillDialog extends javax.swing.JDialog {
                 dc.updateTill(till);
             }
         } catch (IOException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         } catch (JTillException ex) {
 
         }
@@ -460,24 +449,31 @@ public class TillDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btnChangeNameActionPerformed
 
+    private void btnSendDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendDataActionPerformed
+        try {
+            dc.sendData(till.getId());
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSendDataActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCashup;
     private javax.swing.JButton btnChange;
     private javax.swing.JButton btnChangeName;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnLogout;
+    private javax.swing.JButton btnSendData;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblID;
-    private javax.swing.JLabel lblLastContact;
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblStaff;
     private javax.swing.JLabel lblTakings;
     private javax.swing.JTable table;
     private javax.swing.JTextField txtDefaultScreen;
     private javax.swing.JTextField txtID;
-    private javax.swing.JTextField txtLastContact;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtStaff;
     private javax.swing.JTextField txtUncashedTakings;

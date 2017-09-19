@@ -881,9 +881,14 @@ public class ConnectionHandler {
     public void sendData(@JConnParameter("ID") int id) throws IOException, SQLException {
         dc.sendData(id);
     }
-    
+
     @JConnMethod("DOWNLOADTER")
-    public List<byte[]> downloadTerminalUpdate() throws Exception{
+    public List<byte[]> downloadTerminalUpdate() throws Exception {
         return dc.downloadTerminalUpdate();
+    }
+
+    @JConnMethod("LOGOUTTERMINAL")
+    public void logoutTerminal(@JConnParameter("ID") int id) throws IOException, JTillException {
+        dc.logoutTill(id);
     }
 }
