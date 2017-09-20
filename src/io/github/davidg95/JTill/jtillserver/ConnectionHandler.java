@@ -891,4 +891,9 @@ public class ConnectionHandler {
     public void logoutTerminal(@JConnParameter("ID") int id) throws IOException, JTillException {
         dc.logoutTill(id);
     }
+
+    @JConnMethod("ISINHERITED")
+    public boolean isInherited(@JConnParameter("SCREEN") Screen s) throws IOException, SQLException, JTillException {
+        return dc.isInherited(s);
+    }
 }
