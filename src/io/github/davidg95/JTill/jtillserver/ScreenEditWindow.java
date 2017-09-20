@@ -644,7 +644,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             });
             menu.add(rename);
             menu.add(remove);
-            menu.add(duplicate);
+//            menu.add(duplicate);
             menu.add(inherit);
             menu.show(evt.getComponent(), evt.getX(), evt.getY());
         } else {
