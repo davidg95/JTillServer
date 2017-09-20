@@ -224,7 +224,7 @@ public class DBConnect implements DataConnect {
         } catch (SQLException ex) {
             LOG.log(Level.INFO, "Column PAID already exists in RECEIVED_REPORTS, no need to change database.", ex);
         }
-        
+
         try (final Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
@@ -5140,6 +5140,25 @@ public class DBConnect implements DataConnect {
                     th.sendData(JConnData.create("LOGOUT"));
                     return;
                 }
+            }
+        }
+    }
+
+    @Override
+    public boolean isInherited(Screen s) throws IOException, SQLException, JTillException {
+        String query = "SELECT * FROM SCREENS WHERE INHERITS = " + s.getId();
+        try (Connection con = getNewConnection()) {
+            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            try {
+                ResultSet set = stmt.executeQuery(query);
+                set.last();
+                int res = set.getRow();
+                con.commit();
+                return (res > 0);
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
             }
         }
     }
