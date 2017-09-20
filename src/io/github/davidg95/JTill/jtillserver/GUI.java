@@ -817,6 +817,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
 
         internal.setBackground(null);
+        internal.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         javax.swing.GroupLayout internalLayout = new javax.swing.GroupLayout(internal);
         internal.setLayout(internalLayout);
