@@ -231,6 +231,15 @@ public class DBConnect implements DataConnect {
                 int res = stmt.executeUpdate("ALTER TABLE SCREENS ADD INHERITS INT");
                 LOG.log(Level.INFO, "New fields added to SCREENS table, " + res + " rows affected");
                 con.commit();
+                try {
+                    Statement stmt2 = con.createStatement();
+                    int res2 = stmt2.executeUpdate("UPDATE STAFF SET INHERITS = -1");
+                    LOG.log(Level.INFO, "Set inherits to -1, " + res2 + " rows affected");
+                    con.commit();
+                } catch (SQLException ex) {
+                    con.rollback();
+                    throw ex;
+                }
             } catch (SQLException ex) {
                 con.rollback();
                 throw ex;
