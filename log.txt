@@ -1,20 +1,17 @@
-JTill log Wed Sep 20 14:40:36 BST 2017
-[14:40:36] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[14:40:36] [INFO] Column ENABLED already exists in STAFF, no need to change database.
+JTill log Wed Sep 20 15:16:42 BST 2017
+[15:16:42] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[15:16:42] [INFO] Column ENABLED already exists in STAFF, no need to change database.
 java.sql.SQLException: Column 'ENABLED' already exists in Table/View '"APP"."STAFF"'.
-[14:40:36] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
+[15:16:42] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
 java.sql.SQLException: Table/View 'RECEIVED_REPORTS' already exists in Schema 'APP'.
-[14:40:37] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
+[15:16:42] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
 java.sql.SQLException: Column 'RECEIVED_REPORT' already exists in Table/View '"APP"."RECEIVEDITEMS"'.
-[14:40:37] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
+[15:16:43] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
 java.sql.SQLException: Column 'PAID' already exists in Table/View '"APP"."RECEIVED_REPORTS"'.
-[14:40:37] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
+[15:16:43] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
 java.sql.SQLException: Column 'INHERITS' already exists in Table/View '"APP"."SCREENS"'.
-[14:40:41] [INFO] David Grant has logged in
-[14:44:14] [INFO] David Grant has logged in from DAVID-PC
-[14:44:27] [WARNING] 2 is below minimum stock level
-[14:44:27] [WARNING] 3 is below minimum stock level
-[14:44:28] [INFO] David Grant has logged out
-[14:44:35] [INFO] Stopping JTIll Server
-[14:44:35] [INFO] Saving properties
-[14:44:35] [INFO] Stopping
+[15:17:50] [INFO] David Grant has logged in
+[15:18:12] [INFO] David Grant has logged in from DAVID-PC
+[15:18:14] [INFO] David Grant has logged out
+[15:19:55] [INFO] David Grant has logged in from DAVID-PC
+[15:19:56] [INFO] David Grant has logged out
