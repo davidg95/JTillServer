@@ -303,8 +303,8 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 gbc.fill = GridBagConstraints.BOTH;
                 if (b.getType() == TillButton.SPACE) { //If it is a space, create a panel for the button.
                     JPanel pan = new JPanel();
-                    pan.setBackground(Color.WHITE);
-                    pan.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, false));
+                    pan.setBackground(Color.GRAY);
+                    pan.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1, false));
                     pan.addMouseListener(new MouseListener() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
@@ -326,12 +326,12 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
                         @Override
                         public void mouseEntered(MouseEvent e) {
-                            pan.setBackground(Color.GRAY); //Set the panel to turn grey when the mouse hovers over it.
+                            pan.setBackground(Color.LIGHT_GRAY); //Set the panel to turn grey when the mouse hovers over it.
                         }
 
                         @Override
                         public void mouseExited(MouseEvent e) {
-                            pan.setBackground(Color.WHITE); //Set the panel back to white when the mouse leaves.
+                            pan.setBackground(Color.GRAY); //Set the panel back to white when the mouse leaves.
                         }
 
                     });
