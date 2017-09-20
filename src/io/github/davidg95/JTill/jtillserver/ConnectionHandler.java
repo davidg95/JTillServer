@@ -893,7 +893,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("ISINHERITED")
-    public boolean isInherited(@JConnParameter("SCREEN") Screen s) throws IOException, SQLException, JTillException {
-        return dc.isInherited(s);
+    public List<Screen> checkInheritance(@JConnParameter("SCREEN") Screen s) throws IOException, SQLException, JTillException {
+        return dc.checkInheritance(s);
     }
 }

@@ -228,9 +228,27 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 for (TillButton b : buttons) {
                     if (b.getType() != TillButton.SPACE) {
                         JButton pButton = new JButton(b.getName()); //Creat a new button for the button.
-                        if (b.getColorValue() != 0) {
-                            pButton.setBackground(new Color(b.getColorValue()));
+                        switch (b.getColorValue()) {
+                            case TillButton.BLACK:
+                                pButton.setBackground(Color.BLACK);
+                                break;
+                            case TillButton.BLUE:
+                                pButton.setBackground(Color.BLUE);
+                                break;
+                            case TillButton.GREEN:
+                                pButton.setBackground(Color.GREEN);
+                                break;
+                            case TillButton.ORANGE:
+                                pButton.setBackground(Color.ORANGE);
+                                break;
+                            case TillButton.PURPLE:
+                                pButton.setBackground(Color.PINK);
+                                break;
+                            default:
+                                break;
                         }
+                        pButton.setOpaque(true);
+                        pButton.setBorderPainted(false);
                         pButton.setMinimumSize(new Dimension(0, 0));
                         pButton.setMaximumSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
                         GridBagConstraints gbc = new GridBagConstraints();
@@ -241,58 +259,38 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                         gbc.weightx = 1;
                         gbc.weighty = 1;
                         gbc.fill = GridBagConstraints.BOTH;
-                        if (b.getType() == TillButton.SPACE) { //If it is a space, create a panel for the button.
-                            JPanel pan = new JPanel();
-                            pan.setBackground(Color.WHITE);
-                            pan.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, false));
-                            pan.addMouseListener(new MouseListener() {
-                                @Override
-                                public void mouseClicked(MouseEvent e) {
-                                    if (SwingUtilities.isLeftMouseButton(e)) {
-                                        currentButton = b;
-                                        showButtonOptions(); //Show the button options dialog.
-                                    }
-                                }
-
-                                @Override
-                                public void mousePressed(MouseEvent e) {
-
-                                }
-
-                                @Override
-                                public void mouseReleased(MouseEvent e) {
-
-                                }
-
-                                @Override
-                                public void mouseEntered(MouseEvent e) {
-                                    pan.setBackground(Color.GRAY); //Set the panel to turn grey when the mouse hovers over it.
-                                }
-
-                                @Override
-                                public void mouseExited(MouseEvent e) {
-                                    pan.setBackground(Color.WHITE); //Set the panel back to white when the mouse leaves.
-                                }
-
-                            });
-                            panel.setMinimumSize(new Dimension(0, 0));
-                            panel.setMaximumSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
-                            panel.add(pan, gbc); //Add the panel to the screen panel.
-                        } else { //If the button is a button.
-                            pButton.addActionListener((ActionEvent e) -> {
-                                currentButton = b;
-                                showButtonOptions(); //Show the button options dialog.
-                            });
-                            panel.add(pButton, gbc); //Add the button to the panel.
-                        }
+                        pButton.addActionListener((ActionEvent e) -> {
+                            currentButton = b;
+                            showButtonOptions(); //Show the button options dialog.
+                        });
+                        pButton.setEnabled(false);
+                        panel.add(pButton, gbc); //Add the button to the panel.
                     }
                 }
             }
             for (TillButton b : currentButtons) {
                 JButton pButton = new JButton(b.getName()); //Creat a new button for the button.
-                if (b.getColorValue() != 0) {
-                    pButton.setBackground(new Color(b.getColorValue()));
+                switch (b.getColorValue()) {
+                    case TillButton.BLACK:
+                        pButton.setBackground(Color.BLACK);
+                        break;
+                    case TillButton.BLUE:
+                        pButton.setBackground(Color.BLUE);
+                        break;
+                    case TillButton.GREEN:
+                        pButton.setBackground(Color.GREEN);
+                        break;
+                    case TillButton.ORANGE:
+                        pButton.setBackground(Color.ORANGE);
+                        break;
+                    case TillButton.PURPLE:
+                        pButton.setBackground(Color.PINK);
+                        break;
+                    default:
+                        break;
                 }
+                pButton.setOpaque(true);
+                pButton.setBorderPainted(false);
                 pButton.setMinimumSize(new Dimension(0, 0));
                 pButton.setMaximumSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
                 GridBagConstraints gbc = new GridBagConstraints();
@@ -637,7 +635,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             remove.addActionListener((ActionEvent e) -> {
                 try {
                     if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove " + sc.getName() + "?", "Remove Screen " + sc.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                        if (dc.isInherited(sc)) {
+                        if (!dc.checkInheritance(sc).isEmpty()) {
                             if (JOptionPane.showInternalConfirmDialog(this, "Warning! This screen is being inherited. Are you sure you want to remove it?", "Remove Screen " + sc.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                                 return;
                             }
@@ -670,8 +668,13 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             JMenuItem inherit = new JMenuItem("Check Inheritance");
             inherit.addActionListener((ActionEvent e) -> {
                 try {
-                    if (dc.isInherited(sc)) {
-                        JOptionPane.showInternalMessageDialog(this, "This screen is inherited");
+                    List<Screen> screens = dc.checkInheritance(sc);
+                    if (!screens.isEmpty()) {
+                        String scList = "";
+                        for(Screen s: screens){
+                            scList += "\n" + s.getName();
+                        }
+                        JOptionPane.showInternalMessageDialog(this, "This screen is inherited by-" + scList);
                     } else {
                         JOptionPane.showInternalMessageDialog(this, "This screen is not inherited");
                     }
@@ -722,6 +725,10 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
     private void btnInheritsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInheritsActionPerformed
         Screen par = ScreenSelectDialog.showDialog(this);
+        if (par.equals(currentScreen)) {
+            JOptionPane.showInternalMessageDialog(this, "A screen cannot inherit itself", "Inheritance", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         if (par == null) {
             currentScreen.setInherits(-1);
             try {

@@ -5154,16 +5154,15 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public boolean isInherited(Screen s) throws IOException, SQLException, JTillException {
+    public List<Screen> checkInheritance(Screen s) throws IOException, SQLException, JTillException {
         String query = "SELECT * FROM SCREENS WHERE INHERITS = " + s.getId();
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             try {
                 ResultSet set = stmt.executeQuery(query);
-                set.last();
-                int res = set.getRow();
+                List<Screen> screens = this.getScreensFromResultSet(set);
                 con.commit();
-                return (res > 0);
+                return screens;
             } catch (SQLException ex) {
                 con.rollback();
                 LOG.log(Level.SEVERE, null, ex);
