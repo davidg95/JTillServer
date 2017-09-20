@@ -189,22 +189,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             }
             repaint();
             revalidate();
-
-            if (!screens.isEmpty()) {
-                currentScreen = screens.get(0);
-            }
-
-            if (currentScreen != null) {
-                if (cardsButtonGroup.getButtonCount() > 0) {
-                    Enumeration<AbstractButton> abButs = cardsButtonGroup.getElements();
-                    while (abButs.hasMoreElements()) {
-                        JToggleButton button = (JToggleButton) abButs.nextElement();
-                        if (button.getText().equals(currentScreen.getName())) {
-                            button.doClick();
-                        }
-                    }
-                }
-            }
         } catch (SQLException | IOException ex) {
             showError(ex);
         }
