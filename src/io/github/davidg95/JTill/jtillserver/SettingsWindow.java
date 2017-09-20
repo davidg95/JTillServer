@@ -942,6 +942,10 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             }
             dc.setSetting("LOGOUT_TIMEOUT", txtLogoutTimeout.getText());
             if (chkUnlock.isSelected()) {
+                if (txtUnlockCode.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Must enter a value for Unlock Code", "Security Settings", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 dc.setSetting("UNLOCK_CODE", (String) txtUnlockCode.getValue());
             } else {
                 dc.setSetting("UNLOCK_CODE", "OFF");
