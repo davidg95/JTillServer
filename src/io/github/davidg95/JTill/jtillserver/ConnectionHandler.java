@@ -5,38 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.Category;
-import io.github.davidg95.JTill.jtill.ClockItem;
-import io.github.davidg95.JTill.jtill.Customer;
-import io.github.davidg95.JTill.jtill.CustomerNotFoundException;
-import io.github.davidg95.JTill.jtill.Department;
-import io.github.davidg95.JTill.jtill.Discount;
-import io.github.davidg95.JTill.jtill.DiscountBucket;
-import io.github.davidg95.JTill.jtill.DiscountNotFoundException;
-import io.github.davidg95.JTill.jtill.Encryptor;
-import io.github.davidg95.JTill.jtill.JTillException;
-import io.github.davidg95.JTill.jtill.LoginException;
-import io.github.davidg95.JTill.jtill.OutOfStockException;
-import io.github.davidg95.JTill.jtill.Plu;
-import io.github.davidg95.JTill.jtill.Product;
-import io.github.davidg95.JTill.jtill.ProductNotFoundException;
-import io.github.davidg95.JTill.jtill.ReceivedItem;
-import io.github.davidg95.JTill.jtill.ReceivedReport;
-import io.github.davidg95.JTill.jtill.Sale;
-import io.github.davidg95.JTill.jtill.SaleItem;
-import io.github.davidg95.JTill.jtill.Screen;
-import io.github.davidg95.JTill.jtill.ScreenNotFoundException;
-import io.github.davidg95.JTill.jtill.Settings;
-import io.github.davidg95.JTill.jtill.Staff;
-import io.github.davidg95.JTill.jtill.StaffNotFoundException;
-import io.github.davidg95.JTill.jtill.Supplier;
-import io.github.davidg95.JTill.jtill.Tax;
-import io.github.davidg95.JTill.jtill.Till;
-import io.github.davidg95.JTill.jtill.TillButton;
-import io.github.davidg95.JTill.jtill.Trigger;
-import io.github.davidg95.JTill.jtill.WasteItem;
-import io.github.davidg95.JTill.jtill.WasteReason;
-import io.github.davidg95.JTill.jtill.WasteReport;
+import io.github.davidg95.JTill.jtill.*;
 import io.github.davidg95.jconn.*;
 import java.io.File;
 import java.io.IOException;
@@ -895,5 +864,10 @@ public class ConnectionHandler {
     @JConnMethod("ISINHERITED")
     public List<Screen> checkInheritance(@JConnParameter("SCREEN") Screen s) throws IOException, SQLException, JTillException {
         return dc.checkInheritance(s);
+    }
+
+    @JConnMethod("GETTILLSTAFF")
+    public Staff getTillStaff(@JConnParameter("ID") int id) throws IOException, JTillException {
+        return dc.getTillStaff(id);
     }
 }

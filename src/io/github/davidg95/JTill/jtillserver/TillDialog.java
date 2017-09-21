@@ -52,22 +52,23 @@ public class TillDialog extends javax.swing.JDialog {
         txtID.setText("" + till.getId());
         txtName.setText(till.getName());
         txtStaff.setText("Not logged in");
-        for (JConnThread thread : TillServer.server.getClientConnections()) {
-            final ConnectionHandler th = (ConnectionHandler) thread.getMethodClass();
-            Staff s = th.staff;
+        try {
+            Staff s = dc.getTillStaff(till.getId());
             if (s == null) {
                 txtStaff.setText("Not logged in");
                 btnLogout.setEnabled(false);
             } else {
-                txtStaff.setText(th.staff.getName());
+                txtStaff.setText(s.getName());
                 btnLogout.setEnabled(true);
             }
+        } catch (IOException | JTillException ex) {
         }
+
         try {
             Screen sc = dc.getScreen(till.getDefaultScreen());
             txtDefaultScreen.setText(sc.getName());
         } catch (IOException | SQLException | ScreenNotFoundException ex) {
-
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);

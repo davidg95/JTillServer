@@ -170,7 +170,7 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         } catch (SQLException ex) {
-            LOG.log(Level.INFO, "Column ENABLED already exists in STAFF, no need to change database.", ex);
+            LOG.log(Level.INFO, "Column ENABLED already exists in STAFF, no need to change database.");
         }
 
         try (final Connection con = getNewConnection()) {
@@ -194,7 +194,7 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         } catch (SQLException ex) {
-            LOG.log(Level.INFO, "Table RECEIVED_REPORTS already exists, no need to change database.", ex);
+            LOG.log(Level.INFO, "Table RECEIVED_REPORTS already exists, no need to change database.");
         }
 
         try (final Connection con = getNewConnection()) {
@@ -208,7 +208,7 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         } catch (SQLException ex) {
-            LOG.log(Level.INFO, "Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.", ex);
+            LOG.log(Level.INFO, "Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.");
         }
 
         try (final Connection con = getNewConnection()) {
@@ -222,7 +222,7 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         } catch (SQLException ex) {
-            LOG.log(Level.INFO, "Column PAID already exists in RECEIVED_REPORTS, no need to change database.", ex);
+            LOG.log(Level.INFO, "Column PAID already exists in RECEIVED_REPORTS, no need to change database.");
         }
 
         try (final Connection con = getNewConnection()) {
@@ -245,7 +245,7 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         } catch (SQLException ex) {
-            LOG.log(Level.INFO, "Column INHERITS already exists in SCREENS, no need to change database.", ex);
+            LOG.log(Level.INFO, "Column INHERITS already exists in SCREENS, no need to change database.");
         }
     }
 
@@ -4685,7 +4685,7 @@ public class DBConnect implements DataConnect {
             LOG.log(Level.SEVERE, null, ex);
             throw new JTillException("Error getting sales");
         }
-        }
+    }
 
     @Override
     public Product addProductAndPlu(Product p, Plu pl) throws IOException, SQLException {
@@ -5169,5 +5169,20 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         }
+    }
+
+    @Override
+    public Staff getTillStaff(int id) throws IOException, JTillException {
+        for (JConnThread thread : TillServer.server.getClientConnections()) {
+            final ConnectionHandler th = (ConnectionHandler) thread.getMethodClass();
+            if (th.till.getId() == id) {
+                if (th.staff == null) {
+                    return null;
+                } else {
+                    return th.staff;
+                }
+            }
+        }
+        return null;
     }
 }
