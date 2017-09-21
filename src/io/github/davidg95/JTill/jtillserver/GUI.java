@@ -8,8 +8,11 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.TillSplashScreen;
 import io.github.davidg95.JTill.jtill.*;
 import io.github.davidg95.jconn.JConnData;
+import java.awt.AlphaComposite;
 import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
@@ -35,7 +38,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JCheckBox;
+import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
@@ -90,6 +95,8 @@ public class GUI extends JFrame implements GUIInterface {
 
     public HashMap<String, List> savedReports = new HashMap<>();
 
+    private Image image;
+
     /**
      * Creates new form GUI
      *
@@ -118,6 +125,37 @@ public class GUI extends JFrame implements GUIInterface {
         }
         connections = new ArrayList<>();
         LOG.addHandler(new LogHandler());
+        try {
+            image = ImageIO.read(dc.getLoginBackground());
+        } catch (IOException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Class for adding the background image to the desktop pane.
+     */
+    private class MyInternal extends JDesktopPane {
+
+        /**
+         * Paints the background image.
+         *
+         * @param g the Graphics context.
+         */
+        @Override
+        public void paintComponent(Graphics g) {
+            try {
+                Graphics2D g2 = (Graphics2D) g;
+                if (!Boolean.parseBoolean(dc.getSetting("SHOWBACKGROUND"))) {
+                    return;
+                }
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
+                g2.drawImage(image, 0, 0, internal.getWidth(), internal.getHeight(), null);
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
+            } catch (IOException ex) {
+                Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     private void init() {
@@ -488,6 +526,7 @@ public class GUI extends JFrame implements GUIInterface {
         btnReports = new javax.swing.JButton();
         btnScreens = new javax.swing.JButton();
         btnSettings = new javax.swing.JButton();
+        btnSendData = new javax.swing.JButton();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
         lblServerAddress = new javax.swing.JLabel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
@@ -504,7 +543,7 @@ public class GUI extends JFrame implements GUIInterface {
         chkSevere = new javax.swing.JCheckBox();
         chkWarning = new javax.swing.JCheckBox();
         chkInfo = new javax.swing.JCheckBox();
-        internal = new javax.swing.JDesktopPane();
+        internal = new MyInternal();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         itemLogin = new javax.swing.JMenuItem();
@@ -712,6 +751,26 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         jToolBar1.add(btnSettings);
+
+        btnSendData.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/send.png"))); // NOI18N
+        btnSendData.setToolTipText("Send data to terminals");
+        btnSendData.setFocusable(false);
+        btnSendData.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSendData.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSendData.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnSendDataMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnSendDataMouseExited(evt);
+            }
+        });
+        btnSendData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSendDataActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnSendData);
         jToolBar1.add(filler2);
 
         lblServerAddress.setText("Local Server Address: 0.0.0.0");
@@ -1563,6 +1622,22 @@ public class GUI extends JFrame implements GUIInterface {
         ManualSaleWindow.showWindow();
     }//GEN-LAST:event_itemManualSaleActionPerformed
 
+    private void btnSendDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendDataActionPerformed
+        try {
+            dc.reinitialiseAllTills();
+        } catch (IOException ex) {
+            JOptionPane.showInternalConfirmDialog(internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSendDataActionPerformed
+
+    private void btnSendDataMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSendDataMouseEntered
+        lblHelp.setText("Send data to terminals");
+    }//GEN-LAST:event_btnSendDataMouseEntered
+
+    private void btnSendDataMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSendDataMouseExited
+        lblHelp.setText(HELP_TEXT);
+    }//GEN-LAST:event_btnSendDataMouseExited
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1571,6 +1646,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JButton btnManageStock;
     private javax.swing.JButton btnReports;
     private javax.swing.JButton btnScreens;
+    private javax.swing.JButton btnSendData;
     private javax.swing.JButton btnSettings;
     private javax.swing.JCheckBox chkInfo;
     private javax.swing.JCheckBox chkSevere;
