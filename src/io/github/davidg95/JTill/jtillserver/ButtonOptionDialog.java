@@ -46,9 +46,12 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         int y = (int) MouseInfo.getPointerInfo().getLocation().getY();
         this.setLocation(x - getWidth() / 2, y - getHeight() / 2);
         setTitle(button.getName());
+        txtItem.setText(button.getName());
         if (button.getType() == TillButton.SPACE) {
             btnChangeButton.setEnabled(false);
             rSpace.setSelected(true);
+            txtItem.setEnabled(false);
+            txtItem.setText("");
         } else if (button.getType() == TillButton.ITEM) {
             btnChangeButton.setText("Change Product");
             rProduct.setSelected(true);
@@ -64,7 +67,6 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         }
         txtWidth.setText(button.getWidth() + "");
         txtHeight.setText(button.getHeight() + "");
-        txtItem.setText(button.getName());
         switch (button.getColorValue()) {
             case TillButton.BLUE:
                 radBlue.setSelected(true);
@@ -465,9 +467,15 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         }
         button.setColorValue(col);
 
+        if (!rSpace.isSelected()) {
+            if (txtItem.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "You must enter button text", "Button", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+
         if (rSpace.isSelected()) {
             button.setName("[SPACE]");
-            txtItem.setName("[SPACE]");
             button.setType(TillButton.SPACE);
         } else if (rBack.isSelected()) {
             button.setName(txtItem.getText());
@@ -512,24 +520,32 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
     private void rSpaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSpaceActionPerformed
         btnChangeButton.setEnabled(false);
+        txtItem.setText("");
+        txtItem.setEnabled(false);
     }//GEN-LAST:event_rSpaceActionPerformed
 
     private void rProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rProductActionPerformed
         btnChangeButton.setEnabled(true);
         btnChangeButton.setText("Change Product");
+        txtItem.setEnabled(true);
     }//GEN-LAST:event_rProductActionPerformed
 
     private void rScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rScreenActionPerformed
         btnChangeButton.setEnabled(true);
         btnChangeButton.setText("Change Screen");
+        txtItem.setEnabled(true);
     }//GEN-LAST:event_rScreenActionPerformed
 
     private void rBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rBackActionPerformed
         btnChangeButton.setEnabled(false);
+        txtItem.setEnabled(true);
+        txtItem.setText("Back");
     }//GEN-LAST:event_rBackActionPerformed
 
     private void rMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rMainActionPerformed
         btnChangeButton.setEnabled(false);
+        txtItem.setEnabled(true);
+        txtItem.setText("Main");
     }//GEN-LAST:event_rMainActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
