@@ -39,92 +39,21 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private boolean editNetwork = false;
 
     private boolean editDatabase = false;
-
-    private final MyModel model;
-
+    
     /**
      * Creates new form Settings
-     *
-     * @param dc
-     * @param icon
      */
-    public SettingsWindow(DataConnect dc, Image icon) {
-        this.dc = dc;
-//        this.setIconImage(icon);
+    public SettingsWindow() {
+        this.dc = GUI.gui.dc;
         super.setIconifiable(true);
         super.setClosable(true);
-        super.setFrameIcon(new ImageIcon(icon));
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
-        model = new MyModel();
-        model.setSelectedItem(0);
-        model.setSelectedItem(UIManager.getLookAndFeel());
-//        setLocationRelativeTo(null);
     }
 
-    private class MyModel implements ComboBoxModel {
-
-        private final LookAndFeelInfo[] info;
-
-        private LookAndFeelInfo selected;
-
-        private final LinkedList<ListDataListener> listeners;
-
-        public MyModel() {
-            info = UIManager.getInstalledLookAndFeels();
-            listeners = new LinkedList<>();
-        }
-
-        @Override
-        public void setSelectedItem(Object anItem) {
-            for (LookAndFeelInfo lafi : info) {
-                if (lafi.getName().equals(anItem)) {
-                    selected = lafi;
-                }
-            }
-        }
-
-        public void setSelectedItem(int index) {
-            selected = info[index];
-        }
-
-        public void setSelectedItem(String name) {
-            for (LookAndFeelInfo lafi : info) {
-                if (lafi.getName().equals(name)) {
-                    selected = lafi;
-                }
-            }
-        }
-
-        @Override
-        public Object getSelectedItem() {
-            return selected.getName();
-        }
-
-        @Override
-        public int getSize() {
-            return info.length;
-        }
-
-        @Override
-        public Object getElementAt(int index) {
-            return info[index].getName();
-        }
-
-        @Override
-        public void addListDataListener(ListDataListener l) {
-            listeners.add(l);
-        }
-
-        @Override
-        public void removeListDataListener(ListDataListener l) {
-            listeners.remove(l);
-        }
-
-    }
-
-    public static void showSettingsWindow(DataConnect dc, Image icon) {
+    public static void showSettingsWindow() {
         if (frame == null || frame.isClosed()) {
-            frame = new SettingsWindow(dc, icon);
+            frame = new SettingsWindow();
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {
@@ -171,10 +100,10 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             chkAddress.setSelected(dc.getSetting("SHOW_ADDRESS_RECEIPT").equals("true"));
             chkStaff.setSelected(dc.getSetting("SHOW_STAFF_RECEIPT").equals("true"));
             chkTerminal.setSelected(dc.getSetting("SHOW_TERMINAL_RECEIPT").equals("true"));
-            chkEmailPrompt.setSelected(dc.getSetting("PROMPT_EMAIL_RECEIPT", "false").equals("true"));
-            chkUpdate.setSelected(dc.getSetting("UPDATE_STARTUP", "true").equals("true"));
-            txtLogoutTimeout.setText(dc.getSetting("LOGOUT_TIMEOUT", "0"));
-            String unlockCode = dc.getSetting("UNLOCK_CODE", "OFF");
+            chkEmailPrompt.setSelected(dc.getSetting("PROMPT_EMAIL_RECEIPT").equals("true"));
+            chkUpdate.setSelected(dc.getSetting("UPDATE_STARTUP").equals("true"));
+            txtLogoutTimeout.setText(dc.getSetting("LOGOUT_TIMEOUT"));
+            String unlockCode = dc.getSetting("UNLOCK_CODE");
             if (unlockCode.equals("OFF")) {
                 chkUnlock.setSelected(false);
                 txtUnlockCode.setEnabled(false);

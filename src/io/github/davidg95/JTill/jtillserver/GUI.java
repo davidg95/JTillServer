@@ -1288,7 +1288,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnCategorysActionPerformed
 
     private void itemServerOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemServerOptionsActionPerformed
-        SettingsWindow.showSettingsWindow(dc, icon);
+        SettingsWindow.showSettingsWindow();
     }//GEN-LAST:event_itemServerOptionsActionPerformed
 
     private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
@@ -1307,7 +1307,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnReportsActionPerformed
 
     private void btnSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsActionPerformed
-        SettingsWindow.showSettingsWindow(dc, icon);
+        SettingsWindow.showSettingsWindow();
     }//GEN-LAST:event_btnSettingsActionPerformed
 
     private void btnScreensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScreensActionPerformed
