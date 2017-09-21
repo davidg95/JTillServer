@@ -13,6 +13,7 @@ import java.awt.Frame;
 import java.awt.Window;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -341,7 +342,7 @@ public class TillDialog extends javax.swing.JDialog {
                 }
             }
             report.actualTakings = report.actualTakings.setScale(2);
-            report.tax = report.tax.setScale(2);
+            report.tax = report.tax.setScale(2, RoundingMode.HALF_UP);
             String strVal = JOptionPane.showInputDialog(this, "Enter value of money counted", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
             if (strVal == null) {
                 return;

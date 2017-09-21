@@ -1,15 +1,16 @@
-JTill log Thu Sep 21 14:10:26 BST 2017
-[14:10:26] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[14:10:26] [INFO] Column ENABLED already exists in STAFF, no need to change database.
+JTill log Thu Sep 21 14:59:43 BST 2017
+[14:59:43] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[14:59:43] [INFO] Column ENABLED already exists in STAFF, no need to change database.
 java.sql.SQLException: Column 'ENABLED' already exists in Table/View '"APP"."STAFF"'.
-[14:10:26] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
+[14:59:43] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
 java.sql.SQLException: Table/View 'RECEIVED_REPORTS' already exists in Schema 'APP'.
-[14:10:26] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
+[14:59:43] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
 java.sql.SQLException: Column 'RECEIVED_REPORT' already exists in Table/View '"APP"."RECEIVEDITEMS"'.
-[14:10:27] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
+[14:59:44] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
 java.sql.SQLException: Column 'PAID' already exists in Table/View '"APP"."RECEIVED_REPORTS"'.
-[14:10:27] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
+[14:59:44] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
 java.sql.SQLException: Column 'INHERITS' already exists in Table/View '"APP"."SCREENS"'.
-[14:10:30] [INFO] David Grant has logged in
-[14:10:39] [INFO] David Grant has logged in from DAVID-PC
-[14:10:49] [INFO] David Grant has logged out
+[14:59:46] [INFO] David Grant has logged in
+[15:00:31] [INFO] Stopping JTIll Server
+[15:00:31] [INFO] Saving properties
+[15:00:31] [INFO] Stopping

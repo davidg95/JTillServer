@@ -11,13 +11,23 @@ import io.github.davidg95.JTill.jtill.Plu;
 import io.github.davidg95.JTill.jtill.Product;
 import io.github.davidg95.JTill.jtill.Sale;
 import io.github.davidg95.JTill.jtill.SaleItem;
+import io.github.davidg95.JTill.jtill.Till;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ComboBoxModel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -32,6 +42,10 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
 
     private final DefaultTableModel model;
 
+    private MyComboModel cmbModel;
+
+    private final DecimalFormat df;
+
     /**
      * Creates new form ManualSaleDialog
      */
@@ -42,6 +56,7 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
+        df = new DecimalFormat("0.00");
         model = (DefaultTableModel) table.getModel();
         init();
     }
@@ -54,8 +69,71 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
-        sale = new Sale(-1, GUI.staff.getId());
         model.setRowCount(0);
+        try {
+            cmbModel = new MyComboModel(dc.getAllTills());
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex);
+        }
+        cmbTerminal.setModel(cmbModel);
+        sale = new Sale(((Till) cmbTerminal.getSelectedItem()).getId(), GUI.staff.getId());
+        lblTotal.setText("Total: £0.00");
+    }
+
+    private class MyComboModel implements ComboBoxModel {
+
+        private final List<Till> terminals;
+
+        private int currentItem;
+
+        private final List<ListDataListener> listeners;
+
+        public MyComboModel(List<Till> t) {
+            terminals = t;
+            currentItem = 0;
+            listeners = new LinkedList<>();
+        }
+
+        @Override
+        public void setSelectedItem(Object anItem) {
+            for (int i = 0; i < terminals.size(); i++) {
+                if (terminals.get(i).equals((Till) anItem)) {
+                    currentItem = i;
+                    return;
+                }
+            }
+        }
+
+        @Override
+        public Object getSelectedItem() {
+            return terminals.get(currentItem);
+        }
+
+        @Override
+        public int getSize() {
+            return terminals.size();
+        }
+
+        @Override
+        public Object getElementAt(int index) {
+            return terminals.get(index);
+        }
+
+        private void alertAll(int type, int i1, int i2) {
+            for (ListDataListener l : listeners) {
+                l.contentsChanged(new ListDataEvent(this, type, i1, i2));
+            }
+        }
+
+        @Override
+        public void addListDataListener(ListDataListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeListDataListener(ListDataListener l) {
+            listeners.remove(l);
+        }
     }
 
     private void addItem(Product p, int q) {
@@ -70,6 +148,7 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
             try {
                 final Product p = (Product) si.getItem();
                 final Plu pl = dc.getPluByProduct(p.getId());
+                si.setTotalPrice(p.getPrice().multiply(new BigDecimal(si.getQuantity())).setScale(2).toString());
                 Object[] s = new Object[]{pl.getCode(), p.getLongName(), si.getQuantity(), si.getTotalPrice()};
                 total = total.add(si.getPrice().multiply(new BigDecimal(si.getQuantity())));
                 model.addRow(s);
@@ -77,7 +156,7 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
                 Logger.getLogger(ManualSaleWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        lblTotal.setText("Total: £" + total.toString());
+        lblTotal.setText("Total: £" + total.setScale(2).toString());
     }
 
     /**
@@ -95,8 +174,10 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
         btnCancel = new javax.swing.JButton();
         btnComplete = new javax.swing.JButton();
         lblTotal = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        cmbTerminal = new javax.swing.JComboBox<>();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -115,6 +196,11 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(table);
@@ -148,6 +234,10 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
 
         lblTotal.setText("Total: £0.00");
 
+        jLabel1.setText("Terminal:");
+
+        cmbTerminal.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -168,16 +258,24 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE))))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cmbTerminal, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(cmbTerminal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAdd)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAdd))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblTotal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -207,11 +305,14 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
         try {
             sale.complete();
             sale.setDate(new Date());
+            sale.setCustomerID(1);
+            sale.setStaff(GUI.staff);
+            sale.setMop(Sale.MOP_CASH);
             dc.addSale(sale);
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Sale complete", "Sale", JOptionPane.INFORMATION_MESSAGE);
             init();
+            JOptionPane.showInternalMessageDialog(this, "Sale complete", "Sale", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException | SQLException ex) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Sale", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(this, ex, "Sale", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(ManualSaleWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnCompleteActionPerformed
@@ -220,10 +321,41 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
         setVisible(false);
     }//GEN-LAST:event_btnCancelActionPerformed
 
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        if (table.getSelectedRow() == -1) {
+            return;
+        }
+        SaleItem item = sale.getSaleItems().get(table.getSelectedRow());
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem quantity = new JMenuItem("Change Quantity");
+            JMenuItem remove = new JMenuItem("Remove");
+            quantity.addActionListener((ActionEvent) -> {
+                try {
+                    int q = Integer.parseInt(JOptionPane.showInternalInputDialog(this, "Enter new quantity", "Quantity for " + item.getName(), JOptionPane.PLAIN_MESSAGE));
+                    item.setQuantity(q);
+                    refreshTable();
+                } catch (NumberFormatException e) {
+                    JOptionPane.showInternalMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+            remove.addActionListener((ActionEvent) -> {
+                sale.voidItem(item);
+                refreshTable();
+            });
+
+            menu.add(quantity);
+            menu.add(remove);
+            menu.show(table, evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_tableMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnComplete;
+    private javax.swing.JComboBox<String> cmbTerminal;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JTable table;
