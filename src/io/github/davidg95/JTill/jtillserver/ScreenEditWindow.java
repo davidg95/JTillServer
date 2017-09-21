@@ -19,12 +19,10 @@ import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -33,7 +31,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JToggleButton;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListDataEvent;
@@ -52,7 +49,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     private final DataConnect dc;
 
     private final CardLayout categoryCards; //Cards for each screen
-    private final ButtonGroup cardsButtonGroup; //Button group for the screen buttons
 
     private Screen currentScreen; //The current selected screen.
     private TillButton currentButton; //The current selected button.
@@ -77,7 +73,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         super.setFrameIcon(new ImageIcon(icon));
         initComponents();
         categoryCards = (CardLayout) panelProducts.getLayout();
-        cardsButtonGroup = new ButtonGroup();
         model = new MyListModel();
         init();
     }
@@ -233,8 +228,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                         }
                         pButton.setOpaque(true);
                         pButton.setBorderPainted(false);
-                        pButton.setMinimumSize(new Dimension(0, 0));
-                        pButton.setMaximumSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
                         GridBagConstraints gbc = new GridBagConstraints();
                         gbc.gridx = b.getX() - 1;
                         gbc.gridy = b.getY() - 1;
@@ -275,8 +268,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 }
                 pButton.setOpaque(true);
                 pButton.setBorderPainted(false);
-                pButton.setMinimumSize(new Dimension(0, 0));
-                pButton.setMaximumSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
+                pButton.setPreferredSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
                 GridBagConstraints gbc = new GridBagConstraints();
                 gbc.gridx = b.getX() - 1;
                 gbc.gridy = b.getY() - 1;
@@ -319,14 +311,14 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                         }
 
                     });
-                    panel.setMinimumSize(new Dimension(0, 0));
-                    panel.setMaximumSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
+                    pan.setPreferredSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
                     panel.add(pan, gbc); //Add the panel to the screen panel.
                 } else { //If the button is a button.
                     pButton.addActionListener((ActionEvent e) -> {
                         currentButton = b;
                         showButtonOptions(); //Show the button options dialog.
                     });
+                    pButton.setPreferredSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
                     panel.add(pButton, gbc); //Add the button to the panel.
                 }
                 bar.setValue(bar.getValue() + 1);
