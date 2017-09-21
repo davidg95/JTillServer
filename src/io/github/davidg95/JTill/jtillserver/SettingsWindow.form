@@ -549,7 +549,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
@@ -563,14 +563,6 @@
                       </Group>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="chkEmailPrompt" min="-2" max="-2" attributes="0"/>
-                              <Component id="chkSendProducts" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="btnColor" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="chkApproveNew" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="btnCompanyDetails" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
@@ -583,6 +575,15 @@
                                   <EmptySpace min="-2" pref="118" max="-2" attributes="0"/>
                                   <Component id="btnSaveCache" min="-2" max="-2" attributes="0"/>
                               </Group>
+                              <Component id="chkEmailPrompt" min="-2" max="-2" attributes="0"/>
+                              <Component id="chkSendProducts" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="btnColor" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="chkApproveNew" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="chkShowBack" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="0" pref="55" max="32767" attributes="0"/>
                       </Group>
@@ -594,7 +595,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="chkApproveNew" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="chkSendProducts" min="-2" max="-2" attributes="0"/>
@@ -607,7 +608,9 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="btnImage" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="chkShowBack" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="32" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="spinSaleCache" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -714,6 +717,11 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnImageActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="chkShowBack">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Show image on server"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

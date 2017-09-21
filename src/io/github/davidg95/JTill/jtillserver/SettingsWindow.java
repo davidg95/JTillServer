@@ -8,21 +8,15 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Image;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.event.ListDataListener;
 
 /**
  *
@@ -39,7 +33,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private boolean editNetwork = false;
 
     private boolean editDatabase = false;
-    
+
     /**
      * Creates new form Settings
      */
@@ -104,6 +98,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             chkUpdate.setSelected(dc.getSetting("UPDATE_STARTUP").equals("true"));
             txtLogoutTimeout.setText(dc.getSetting("LOGOUT_TIMEOUT"));
             String unlockCode = dc.getSetting("UNLOCK_CODE");
+            chkShowBack.setSelected(Boolean.parseBoolean(dc.getSetting("SHOWBACKGROUND")));
             if (unlockCode.equals("OFF")) {
                 chkUnlock.setSelected(false);
                 txtUnlockCode.setEnabled(false);
@@ -178,6 +173,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         btnColor = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         btnImage = new javax.swing.JButton();
+        chkShowBack = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
@@ -393,7 +389,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                         .addGroup(panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
                             .addComponent(chkUnlock))))
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelSecurityLayout.setVerticalGroup(
             panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -409,7 +405,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                     .addComponent(jLabel9)
                     .addComponent(txtUnlockCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(chkUnlock))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSaveSecurity))
         );
 
@@ -533,6 +529,8 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        chkShowBack.setText("Show image on server");
+
         javax.swing.GroupLayout panelGeneralLayout = new javax.swing.GroupLayout(panelGeneral);
         panelGeneral.setLayout(panelGeneralLayout);
         panelGeneralLayout.setHorizontalGroup(
@@ -550,13 +548,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                         .addComponent(txtSiteName))
                     .addGroup(panelGeneralLayout.createSequentialGroup()
                         .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chkEmailPrompt)
-                            .addComponent(chkSendProducts)
-                            .addGroup(panelGeneralLayout.createSequentialGroup()
-                                .addComponent(btnColor)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton1))
-                            .addComponent(chkApproveNew)
                             .addComponent(btnCompanyDetails)
                             .addGroup(panelGeneralLayout.createSequentialGroup()
                                 .addComponent(jLabel13)
@@ -566,14 +557,22 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                             .addComponent(chkUpdate)
                             .addGroup(panelGeneralLayout.createSequentialGroup()
                                 .addGap(118, 118, 118)
-                                .addComponent(btnSaveCache)))
+                                .addComponent(btnSaveCache))
+                            .addComponent(chkEmailPrompt)
+                            .addComponent(chkSendProducts)
+                            .addGroup(panelGeneralLayout.createSequentialGroup()
+                                .addComponent(btnColor)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton1))
+                            .addComponent(chkApproveNew)
+                            .addComponent(chkShowBack))
                         .addGap(0, 55, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         panelGeneralLayout.setVerticalGroup(
             panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelGeneralLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(chkApproveNew)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chkSendProducts)
@@ -585,7 +584,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                     .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnImage)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chkShowBack)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
                     .addComponent(spinSaleCache, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -984,7 +985,11 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         } catch (IOException ex) {
             error = true;
         }
-
+        try {
+            dc.setSetting("SHOWBACKGROUND", Boolean.toString(chkShowBack.isSelected()));
+        } catch (IOException ex) {
+            error = true;
+        }
         if (error) {
             JOptionPane.showMessageDialog(this, "There was an error saving some settings", "General Settings", JOptionPane.WARNING_MESSAGE);
         }
@@ -1147,6 +1152,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JCheckBox chkEmailPrompt;
     private javax.swing.JCheckBox chkLogOut;
     private javax.swing.JCheckBox chkSendProducts;
+    private javax.swing.JCheckBox chkShowBack;
     private javax.swing.JCheckBox chkStaff;
     private javax.swing.JCheckBox chkTerminal;
     private javax.swing.JCheckBox chkUnlock;

@@ -302,6 +302,10 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnCompleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompleteActionPerformed
+        if (sale.getSaleItems().isEmpty()) {
+            JOptionPane.showInternalMessageDialog(this, "No items in sale", "Complete Sale", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         try {
             sale.complete();
             sale.setDate(new Date());
