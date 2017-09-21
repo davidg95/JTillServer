@@ -19,4 +19,13 @@ public class TillReport {
     public int transactions;
     public BigDecimal averageSpend;
     public BigDecimal tax;
+
+    public TillReport() {
+        declared = BigDecimal.ZERO;
+        actualTakings = BigDecimal.ZERO;
+        difference = BigDecimal.ZERO;
+        averageSpend = BigDecimal.ZERO;
+        tax = BigDecimal.ZERO;
+        transactions = 0;
+    }
 }

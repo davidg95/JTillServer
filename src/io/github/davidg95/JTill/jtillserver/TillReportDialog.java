@@ -5,29 +5,27 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import java.beans.PropertyVetoException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.Window;
 import javax.swing.JDialog;
-import javax.swing.SwingUtilities;
 
 /**
  *
  * @author David
  */
-public class TillReportDialog extends javax.swing.JFrame {
-
-    private final TillReport report;
+public class TillReportDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form TillReportDialog
      */
-    public TillReportDialog(TillReport report) {
-        super();
-        this.report = report;
+    public TillReportDialog(Window parent, TillReport report) {
+        super(parent);
         initComponents();
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setTitle("Till Report");
+        setLocationRelativeTo(parent);
         declared.setText("£" + report.declared);
         actual.setText("£" + report.actualTakings);
         diff.setText("£" + report.difference);
@@ -36,8 +34,12 @@ public class TillReportDialog extends javax.swing.JFrame {
         tax.setText("£" + report.tax);
     }
 
-    public static void showDialog(TillReport report) {
-        final TillReportDialog dialog = new TillReportDialog(report);
+    public static void showDialog(Component parent, TillReport report) {
+        Window window = null;
+        if (parent instanceof Dialog || parent instanceof Frame) {
+            window = (Window) parent;
+        }
+        final TillReportDialog dialog = new TillReportDialog(window, report);
         dialog.setVisible(true);
     }
 

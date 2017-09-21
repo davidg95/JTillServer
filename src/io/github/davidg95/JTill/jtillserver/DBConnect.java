@@ -4685,7 +4685,7 @@ public class DBConnect implements DataConnect {
             LOG.log(Level.SEVERE, null, ex);
             throw new JTillException("Error getting sales");
         }
-    }
+        }
 
     @Override
     public Product addProductAndPlu(Product p, Plu pl) throws IOException, SQLException {
