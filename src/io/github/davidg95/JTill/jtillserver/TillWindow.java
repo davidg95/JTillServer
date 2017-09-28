@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -76,6 +77,78 @@ public class TillWindow extends javax.swing.JInternalFrame {
             }
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, "Error loading form", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void xReport(Till t) {
+        try {
+            TillReport report = new TillReport();
+            List<Sale> sales = dc.getTerminalSales(t.getId(), true);
+            if (sales.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "This till has no sales since the last cash up", "Cash up till", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            for (Sale s : sales) {
+                report.actualTakings = report.actualTakings.add(s.getTotal());
+                for (SaleItem si : s.getSaleItems()) {
+                    report.tax = report.tax.add(si.getTaxValue());
+                }
+            }
+            report.actualTakings = report.actualTakings.setScale(2);
+            report.tax = report.tax.setScale(2, RoundingMode.HALF_UP);
+            String strVal = JOptionPane.showInputDialog(this, "Enter value of money counted", "Cash up till " + t.getName(), JOptionPane.PLAIN_MESSAGE);
+            if (strVal == null) {
+                return;
+            }
+            if (strVal.equals("")) {
+                JOptionPane.showMessageDialog(this, "You must enter a value", "Cash up till", JOptionPane.ERROR_MESSAGE);
+            }
+            if (!Utilities.isNumber(strVal)) {
+                JOptionPane.showInputDialog(this, "You must enter a number greater than zero", "Cash up till " + t.getName(), JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            report.declared = new BigDecimal(strVal);
+            report.declared = report.declared.setScale(2);
+            report.difference = report.declared.subtract(report.actualTakings);
+            report.difference = report.difference.setScale(2);
+            report.transactions = sales.size();
+            report.averageSpend = report.actualTakings.divide(new BigDecimal(report.transactions));
+
+            if (JOptionPane.showConfirmDialog(this, "Do you want the report emailed?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                String message = "Cashup for terminal " + t.getName()
+                        + "\nValue counted: £" + report.declared.toString()
+                        + "\nActual takings: £" + report.actualTakings.toString()
+                        + "\nDifference: £" + report.difference.toString();
+                final ModalDialog mDialog = new ModalDialog(this, "Email", "Emailing...");
+                final Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            dc.sendEmail(message);
+                            mDialog.hide();
+                            JOptionPane.showInputDialog(TillWindow.this, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (IOException ex) {
+                            mDialog.hide();
+                            JOptionPane.showInputDialog(TillWindow.this, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                };
+                final Thread thread = new Thread(run);
+                thread.start();
+                mDialog.show();
+            }
+            TillReportDialog.showDialog(this, report);
+        } catch (Exception ex) {
+            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void zReport(Till t) {
+        try {
+            xReport(t);
+            dc.cashUncashedSales(t.getId());
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -241,10 +314,12 @@ public class TillWindow extends javax.swing.JInternalFrame {
             }
             Till t = contents.get(index);
             JPopupMenu menu = new JPopupMenu();
+
             JMenuItem view = new JMenuItem("View");
             view.addActionListener((ActionEvent e) -> {
                 TillDialog.showDialog(this, t);
             });
+
             JMenuItem sendData = new JMenuItem("Send Data");
             sendData.addActionListener((ActionEvent e) -> {
                 try {
@@ -256,12 +331,24 @@ public class TillWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showInternalMessageDialog(this, "Till offline", "Send Data", JOptionPane.WARNING_MESSAGE);
             });
 
+            JMenuItem xReport = new JMenuItem("X Report");
+            xReport.addActionListener((ActionEvent e) -> {
+                xReport(t);
+            });
+
+            JMenuItem zReport = new JMenuItem("Z Report");
+            zReport.addActionListener((ActionEvent e) -> {
+                zReport(t);
+            });
+
             if (!t.isConnected()) {
                 sendData.setEnabled(false);
             }
 
             menu.add(view);
             menu.add(sendData);
+            menu.add(xReport);
+            menu.add(zReport);
             menu.show(table, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tableMouseClicked
@@ -294,8 +381,8 @@ public class TillWindow extends javax.swing.JInternalFrame {
                 long session = Long.parseLong(dc.getSetting("SESSION", Long.toString(new Date().getTime())));
                 List<Sale> sales = dc.getZSales(session);
                 BigDecimal takings = BigDecimal.ZERO;
-                for(Sale s: sales){
-                    for(SaleItem si: s.getSaleItems()){
+                for (Sale s : sales) {
+                    for (SaleItem si : s.getSaleItems()) {
                         takings = takings.add(si.getPrice().multiply(new BigDecimal(Integer.toString(si.getQuantity()))));
                     }
                 }
