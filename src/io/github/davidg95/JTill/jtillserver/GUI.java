@@ -528,6 +528,7 @@ public class GUI extends JFrame implements GUIInterface {
         btnScreens = new javax.swing.JButton();
         btnSettings = new javax.swing.JButton();
         btnSendData = new javax.swing.JButton();
+        btnTerminals = new javax.swing.JButton();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
         lblServerAddress = new javax.swing.JLabel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
@@ -584,7 +585,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemStaffClocking = new javax.swing.JMenuItem();
         itemStaffReporting = new javax.swing.JMenuItem();
         itemWasteReports = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        itemReceivedReports = new javax.swing.JMenuItem();
 
         setTitle("JTill Server");
         setIconImage(GUI.icon);
@@ -772,6 +773,26 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         jToolBar1.add(btnSendData);
+
+        btnTerminals.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/terminals.png"))); // NOI18N
+        btnTerminals.setToolTipText("View and edit terminals");
+        btnTerminals.setFocusable(false);
+        btnTerminals.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnTerminals.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnTerminals.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnTerminalsMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnTerminalsMouseExited(evt);
+            }
+        });
+        btnTerminals.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTerminalsActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnTerminals);
         jToolBar1.add(filler2);
 
         lblServerAddress.setText("Local Server Address: 0.0.0.0");
@@ -1184,13 +1205,13 @@ public class GUI extends JFrame implements GUIInterface {
         });
         jMenu1.add(itemWasteReports);
 
-        jMenuItem1.setText("Received Reports");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        itemReceivedReports.setText("Received Reports");
+        itemReceivedReports.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                itemReceivedReportsActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
+        jMenu1.add(itemReceivedReports);
 
         jMenuBar1.add(jMenu1);
 
@@ -1615,9 +1636,9 @@ public class GUI extends JFrame implements GUIInterface {
         DatabaseWindow.showDatabaseWindow();
     }//GEN-LAST:event_itemDatabaseActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void itemReceivedReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReceivedReportsActionPerformed
         ReceivedReportsWindow.showWindow();
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_itemReceivedReportsActionPerformed
 
     private void itemManualSaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemManualSaleActionPerformed
         ManualSaleWindow.showWindow();
@@ -1639,6 +1660,18 @@ public class GUI extends JFrame implements GUIInterface {
         lblHelp.setText(HELP_TEXT);
     }//GEN-LAST:event_btnSendDataMouseExited
 
+    private void btnTerminalsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnTerminalsMouseEntered
+        lblHelp.setText("View and edit terminals");
+    }//GEN-LAST:event_btnTerminalsMouseEntered
+
+    private void btnTerminalsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnTerminalsMouseExited
+        lblHelp.setText(HELP_TEXT);
+    }//GEN-LAST:event_btnTerminalsMouseExited
+
+    private void btnTerminalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTerminalsActionPerformed
+        TillWindow.showWindow(dc);
+    }//GEN-LAST:event_btnTerminalsActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
@@ -1649,6 +1682,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JButton btnScreens;
     private javax.swing.JButton btnSendData;
     private javax.swing.JButton btnSettings;
+    private javax.swing.JButton btnTerminals;
     private javax.swing.JCheckBox chkInfo;
     private javax.swing.JCheckBox chkSevere;
     private javax.swing.JCheckBox chkWarning;
@@ -1673,6 +1707,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemPluSettings;
     private javax.swing.JMenuItem itemReasons;
     private javax.swing.JMenuItem itemReceive;
+    private javax.swing.JMenuItem itemReceivedReports;
     private javax.swing.JMenuItem itemSalesReporting;
     private javax.swing.JMenuItem itemSendData;
     private javax.swing.JMenuItem itemServerOptions;
@@ -1692,7 +1727,6 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblClients;
