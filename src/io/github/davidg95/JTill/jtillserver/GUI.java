@@ -441,8 +441,9 @@ public class GUI extends JFrame implements GUIInterface {
     }
 
     @Override
-    public void connectionReestablish() {
+    public Staff connectionReestablish() {
         mDialog.hide();
+        return null;
     }
 
     @Override

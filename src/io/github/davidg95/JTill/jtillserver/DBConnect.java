@@ -3121,7 +3121,7 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public Till connectTill(String name, UUID uuid) {
+    public Till connectTill(String name, UUID uuid, Staff staff) {
         try {
             if (uuid == null) {
                 throw new JTillException("No UUID");
