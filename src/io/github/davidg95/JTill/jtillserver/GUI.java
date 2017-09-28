@@ -522,12 +522,15 @@ public class GUI extends JFrame implements GUIInterface {
         btnManageStock = new javax.swing.JButton();
         btnManageCustomers = new javax.swing.JButton();
         btnManageStaff = new javax.swing.JButton();
+        btnAddStaff = new javax.swing.JButton();
         btnDiscounts = new javax.swing.JButton();
         btnCategorys = new javax.swing.JButton();
         btnSendData = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         btnNewProduct = new javax.swing.JButton();
+        btnReceiveStock = new javax.swing.JButton();
         btnWasteStock = new javax.swing.JButton();
+        btnEnquiry = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
         btnScreens = new javax.swing.JButton();
         btnTerminals = new javax.swing.JButton();
@@ -659,6 +662,26 @@ public class GUI extends JFrame implements GUIInterface {
         });
         jToolBar1.add(btnManageStaff);
 
+        btnAddStaff.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/addStaff.png"))); // NOI18N
+        btnAddStaff.setToolTipText("Add a new staff");
+        btnAddStaff.setFocusable(false);
+        btnAddStaff.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddStaff.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddStaff.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnAddStaffMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnAddStaffMouseExited(evt);
+            }
+        });
+        btnAddStaff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddStaffActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnAddStaff);
+
         btnDiscounts.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/discount.png"))); // NOI18N
         btnDiscounts.setToolTipText("Manage Discounts");
         btnDiscounts.setFocusable(false);
@@ -721,9 +744,18 @@ public class GUI extends JFrame implements GUIInterface {
         jToolBar1.add(jSeparator1);
 
         btnNewProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/add.png"))); // NOI18N
+        btnNewProduct.setToolTipText("Create a new product");
         btnNewProduct.setFocusable(false);
         btnNewProduct.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnNewProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNewProduct.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnNewProductMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnNewProductMouseExited(evt);
+            }
+        });
         btnNewProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNewProductActionPerformed(evt);
@@ -731,16 +763,65 @@ public class GUI extends JFrame implements GUIInterface {
         });
         jToolBar1.add(btnNewProduct);
 
+        btnReceiveStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/receive.png"))); // NOI18N
+        btnReceiveStock.setToolTipText("Receive stock");
+        btnReceiveStock.setFocusable(false);
+        btnReceiveStock.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnReceiveStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnReceiveStock.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnReceiveStockMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnReceiveStockMouseExited(evt);
+            }
+        });
+        btnReceiveStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReceiveStockActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnReceiveStock);
+
         btnWasteStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/waste.png"))); // NOI18N
+        btnWasteStock.setToolTipText("Waste stock");
         btnWasteStock.setFocusable(false);
         btnWasteStock.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnWasteStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnWasteStock.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnWasteStockMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnWasteStockMouseExited(evt);
+            }
+        });
         btnWasteStock.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnWasteStockActionPerformed(evt);
             }
         });
         jToolBar1.add(btnWasteStock);
+
+        btnEnquiry.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/enquiry.png"))); // NOI18N
+        btnEnquiry.setToolTipText("Product enquiry");
+        btnEnquiry.setFocusable(false);
+        btnEnquiry.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnEnquiry.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEnquiry.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnEnquiryMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnEnquiryMouseExited(evt);
+            }
+        });
+        btnEnquiry.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEnquiryActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnEnquiry);
         jToolBar1.add(jSeparator2);
 
         btnScreens.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/screens.png"))); // NOI18N
@@ -1492,7 +1573,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemSalesReportingActionPerformed
 
     private void itemEnquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEnquiryActionPerformed
-        ProductEnquiry.showWindow(dc, icon);
+        ProductEnquiry.showWindow(icon);
     }//GEN-LAST:event_itemEnquiryActionPerformed
 
     private void itemLabelPrintingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLabelPrintingActionPerformed
@@ -1710,13 +1791,71 @@ public class GUI extends JFrame implements GUIInterface {
         WasteStockWindow.showWindow(dc);
     }//GEN-LAST:event_btnWasteStockActionPerformed
 
+    private void btnNewProductMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNewProductMouseEntered
+        lblHelp.setText("Create a new product");
+    }//GEN-LAST:event_btnNewProductMouseEntered
+
+    private void btnNewProductMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNewProductMouseExited
+        lblHelp.setText(HELP_TEXT);
+    }//GEN-LAST:event_btnNewProductMouseExited
+
+    private void btnWasteStockMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnWasteStockMouseEntered
+        lblHelp.setText("Waste stock");
+    }//GEN-LAST:event_btnWasteStockMouseEntered
+
+    private void btnWasteStockMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnWasteStockMouseExited
+        lblHelp.setText(HELP_TEXT);
+    }//GEN-LAST:event_btnWasteStockMouseExited
+
+    private void btnAddStaffMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddStaffMouseEntered
+        lblHelp.setText("Add a member of staff");
+    }//GEN-LAST:event_btnAddStaffMouseEntered
+
+    private void btnAddStaffMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddStaffMouseExited
+        lblHelp.setText(HELP_TEXT);
+    }//GEN-LAST:event_btnAddStaffMouseExited
+
+    private void btnAddStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStaffActionPerformed
+        Staff s = StaffDialog.showNewStaffDialog(this, dc);
+        if (s != null) {
+            JOptionPane.showMessageDialog(this, "New staff member " + s + " created");
+        }
+    }//GEN-LAST:event_btnAddStaffActionPerformed
+
+    private void btnReceiveStockMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReceiveStockMouseEntered
+        lblHelp.setText("Receive stock");
+    }//GEN-LAST:event_btnReceiveStockMouseEntered
+
+    private void btnReceiveStockMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReceiveStockMouseExited
+        lblHelp.setText(HELP_TEXT);
+    }//GEN-LAST:event_btnReceiveStockMouseExited
+
+    private void btnReceiveStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiveStockActionPerformed
+        ReceiveItemsWindow.showWindow(dc);
+    }//GEN-LAST:event_btnReceiveStockActionPerformed
+
+    private void btnEnquiryMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEnquiryMouseEntered
+        lblHelp.setText("Product enquiry");
+    }//GEN-LAST:event_btnEnquiryMouseEntered
+
+    private void btnEnquiryMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEnquiryMouseExited
+        lblHelp.setText(HELP_TEXT);
+    }//GEN-LAST:event_btnEnquiryMouseExited
+
+    private void btnEnquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnquiryActionPerformed
+        ProductEnquiry.showWindow(icon);
+    }//GEN-LAST:event_btnEnquiryActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddStaff;
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
+    private javax.swing.JButton btnEnquiry;
     private javax.swing.JButton btnManageCustomers;
     private javax.swing.JButton btnManageStaff;
     private javax.swing.JButton btnManageStock;
     private javax.swing.JButton btnNewProduct;
+    private javax.swing.JButton btnReceiveStock;
     private javax.swing.JButton btnReports;
     private javax.swing.JButton btnScreens;
     private javax.swing.JButton btnSendData;

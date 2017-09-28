@@ -36,18 +36,15 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
     private BigDecimal valueSold;
     private int totalWasted;
     private BigDecimal valueWasted;
-    private int totalReceived;
-    private BigDecimal valueReceived;
     private BigDecimal totalSpent;
 
     /**
      * Creates new form ProductEnquiry
      *
-     * @param dc the data connection.
      * @param icon the frame icon.
      */
-    public ProductEnquiry(DataConnect dc, Image icon) {
-        this.dc = dc;
+    public ProductEnquiry(Image icon) {
+        this.dc = GUI.gui.dc;
         initComponents();
 //        setIconImage(icon);
         super.setClosable(true);
@@ -58,11 +55,10 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
     /**
      * Method to show the Product Enquiry window.
      *
-     * @param dc the data connection.
      * @param icon the icon for the window.
      */
-    public static void showWindow(DataConnect dc, Image icon) {
-        ProductEnquiry window = new ProductEnquiry(dc, icon);
+    public static void showWindow(Image icon) {
+        ProductEnquiry window = new ProductEnquiry(icon);
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {
