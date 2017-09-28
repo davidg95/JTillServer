@@ -524,11 +524,16 @@ public class GUI extends JFrame implements GUIInterface {
         btnManageStaff = new javax.swing.JButton();
         btnDiscounts = new javax.swing.JButton();
         btnCategorys = new javax.swing.JButton();
-        btnReports = new javax.swing.JButton();
-        btnScreens = new javax.swing.JButton();
-        btnSettings = new javax.swing.JButton();
         btnSendData = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JToolBar.Separator();
+        btnNewProduct = new javax.swing.JButton();
+        btnWasteStock = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JToolBar.Separator();
+        btnScreens = new javax.swing.JButton();
         btnTerminals = new javax.swing.JButton();
+        btnSettings = new javax.swing.JButton();
+        jSeparator3 = new javax.swing.JToolBar.Separator();
+        btnReports = new javax.swing.JButton();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
         lblServerAddress = new javax.swing.JLabel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
@@ -694,25 +699,49 @@ public class GUI extends JFrame implements GUIInterface {
         });
         jToolBar1.add(btnCategorys);
 
-        btnReports.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/reports.png"))); // NOI18N
-        btnReports.setToolTipText("Reports");
-        btnReports.setFocusable(false);
-        btnReports.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnReports.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnReports.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnSendData.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/send.png"))); // NOI18N
+        btnSendData.setToolTipText("Send data to terminals");
+        btnSendData.setFocusable(false);
+        btnSendData.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSendData.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSendData.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnReportsMouseEntered(evt);
+                btnSendDataMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnReportsMouseExited(evt);
+                btnSendDataMouseExited(evt);
             }
         });
-        btnReports.addActionListener(new java.awt.event.ActionListener() {
+        btnSendData.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnReportsActionPerformed(evt);
+                btnSendDataActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnReports);
+        jToolBar1.add(btnSendData);
+        jToolBar1.add(jSeparator1);
+
+        btnNewProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/add.png"))); // NOI18N
+        btnNewProduct.setFocusable(false);
+        btnNewProduct.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnNewProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNewProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewProductActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnNewProduct);
+
+        btnWasteStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/waste.png"))); // NOI18N
+        btnWasteStock.setFocusable(false);
+        btnWasteStock.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnWasteStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnWasteStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnWasteStockActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnWasteStock);
+        jToolBar1.add(jSeparator2);
 
         btnScreens.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/screens.png"))); // NOI18N
         btnScreens.setToolTipText("Edit Screens");
@@ -734,46 +763,6 @@ public class GUI extends JFrame implements GUIInterface {
         });
         jToolBar1.add(btnScreens);
 
-        btnSettings.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/settings.png"))); // NOI18N
-        btnSettings.setToolTipText("Settings");
-        btnSettings.setFocusable(false);
-        btnSettings.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnSettings.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnSettings.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnSettingsMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnSettingsMouseExited(evt);
-            }
-        });
-        btnSettings.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSettingsActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnSettings);
-
-        btnSendData.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/send.png"))); // NOI18N
-        btnSendData.setToolTipText("Send data to terminals");
-        btnSendData.setFocusable(false);
-        btnSendData.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnSendData.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnSendData.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnSendDataMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnSendDataMouseExited(evt);
-            }
-        });
-        btnSendData.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSendDataActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnSendData);
-
         btnTerminals.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/terminals.png"))); // NOI18N
         btnTerminals.setToolTipText("View and edit terminals");
         btnTerminals.setFocusable(false);
@@ -793,6 +782,47 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         jToolBar1.add(btnTerminals);
+
+        btnSettings.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/settings.png"))); // NOI18N
+        btnSettings.setToolTipText("Settings");
+        btnSettings.setFocusable(false);
+        btnSettings.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSettings.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSettings.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnSettingsMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnSettingsMouseExited(evt);
+            }
+        });
+        btnSettings.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSettingsActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnSettings);
+        jToolBar1.add(jSeparator3);
+
+        btnReports.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/reports.png"))); // NOI18N
+        btnReports.setToolTipText("Reports");
+        btnReports.setFocusable(false);
+        btnReports.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnReports.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnReports.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnReportsMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnReportsMouseExited(evt);
+            }
+        });
+        btnReports.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReportsActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnReports);
         jToolBar1.add(filler2);
 
         lblServerAddress.setText("Local Server Address: 0.0.0.0");
@@ -1672,17 +1702,27 @@ public class GUI extends JFrame implements GUIInterface {
         TillWindow.showWindow(dc);
     }//GEN-LAST:event_btnTerminalsActionPerformed
 
+    private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
+        ProductEntryDialog.showDialog(this, icon);
+    }//GEN-LAST:event_btnNewProductActionPerformed
+
+    private void btnWasteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWasteStockActionPerformed
+        WasteStockWindow.showWindow(dc);
+    }//GEN-LAST:event_btnWasteStockActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCategorys;
     private javax.swing.JButton btnDiscounts;
     private javax.swing.JButton btnManageCustomers;
     private javax.swing.JButton btnManageStaff;
     private javax.swing.JButton btnManageStock;
+    private javax.swing.JButton btnNewProduct;
     private javax.swing.JButton btnReports;
     private javax.swing.JButton btnScreens;
     private javax.swing.JButton btnSendData;
     private javax.swing.JButton btnSettings;
     private javax.swing.JButton btnTerminals;
+    private javax.swing.JButton btnWasteStock;
     private javax.swing.JCheckBox chkInfo;
     private javax.swing.JCheckBox chkSevere;
     private javax.swing.JCheckBox chkWarning;
@@ -1728,6 +1768,9 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JToolBar.Separator jSeparator2;
+    private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblClients;
     private javax.swing.JLabel lblHelp;

@@ -1,9 +1,11 @@
-JTill log Thu Sep 28 13:02:28 BST 2017
-[13:02:28] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[13:02:28] [INFO] Column ENABLED already exists in STAFF, no need to change database.
-[13:02:28] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
-[13:02:28] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
-[13:02:28] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
-[13:02:28] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
-[13:02:33] [INFO] David Grant has logged in from DAVID-PC
-[13:02:45] [INFO] David Grant has logged out
+JTill log Thu Sep 28 15:11:42 BST 2017
+[15:11:42] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[15:11:43] [INFO] Column ENABLED already exists in STAFF, no need to change database.
+[15:11:43] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
+[15:11:43] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
+[15:11:43] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
+[15:11:43] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
+[15:11:45] [INFO] David Grant has logged in
+[15:11:59] [INFO] Stopping JTIll Server
+[15:11:59] [INFO] Saving properties
+[15:11:59] [INFO] Stopping
