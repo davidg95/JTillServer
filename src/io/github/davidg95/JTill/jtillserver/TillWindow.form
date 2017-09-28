@@ -34,6 +34,8 @@
                       <Component id="btnRefresh" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnBuildUpdates" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnZ" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="btnClose" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -54,6 +56,7 @@
                   <Component id="btnSendData" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnRefresh" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnBuildUpdates" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnZ" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="15" max="32767" attributes="0"/>
           </Group>
@@ -150,6 +153,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuildUpdatesActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnZ">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Z Report"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnZActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

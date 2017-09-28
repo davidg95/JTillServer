@@ -871,4 +871,9 @@ public class ConnectionHandler {
     public Staff getTillStaff(@JConnParameter("ID") int id) throws IOException, JTillException {
         return dc.getTillStaff(id);
     }
+
+    @JConnMethod("ZSALES")
+    public List<Sale> getZSales(@JConnParameter("SESSION") long session) throws IOException, SQLException, JTillException {
+        return dc.getZSales(session);
+    }
 }

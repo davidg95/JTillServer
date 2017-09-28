@@ -5185,4 +5185,23 @@ public class DBConnect implements DataConnect {
         }
         return null;
     }
+
+    @Override
+    public List<Sale> getZSales(long session) throws IOException, SQLException, JTillException {
+        String query = "SELECT * FROM SALES s, CUSTOMERS c, TILLS t, STAFF st WHERE c.ID = s.CUSTOMER AND st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.TIMESTAMP >=" + session;
+        try (Connection con = getNewConnection()) {
+            Statement stmt = con.createStatement();
+            List<Sale> sales = new LinkedList<>();
+            try {
+                ResultSet set = stmt.executeQuery(query);
+                sales = getSalesFromResultSet(set);
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+            return sales;
+        }
+    }
 }

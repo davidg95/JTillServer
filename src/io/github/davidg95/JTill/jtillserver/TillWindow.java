@@ -9,8 +9,10 @@ import io.github.davidg95.JTill.jtill.*;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -93,6 +95,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
         btnSendData = new javax.swing.JButton();
         btnRefresh = new javax.swing.JButton();
         btnBuildUpdates = new javax.swing.JButton();
+        btnZ = new javax.swing.JButton();
 
         setTitle("Tills");
 
@@ -160,6 +163,13 @@ public class TillWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        btnZ.setText("Z Report");
+        btnZ.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnZActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -176,6 +186,8 @@ public class TillWindow extends javax.swing.JInternalFrame {
                         .addComponent(btnRefresh)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnBuildUpdates)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnZ)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
@@ -191,7 +203,8 @@ public class TillWindow extends javax.swing.JInternalFrame {
                     .addComponent(btnView)
                     .addComponent(btnSendData)
                     .addComponent(btnRefresh)
-                    .addComponent(btnBuildUpdates))
+                    .addComponent(btnBuildUpdates)
+                    .addComponent(btnZ))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
@@ -275,12 +288,32 @@ public class TillWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnBuildUpdatesActionPerformed
 
+    private void btnZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZActionPerformed
+        if (JOptionPane.showInternalConfirmDialog(this, "This will take a report for all tills and reset the session, continue?", "Z Report", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            try {
+                long session = Long.parseLong(dc.getSetting("SESSION", Long.toString(new Date().getTime())));
+                List<Sale> sales = dc.getZSales(session);
+                BigDecimal takings = BigDecimal.ZERO;
+                for(Sale s: sales){
+                    for(SaleItem si: s.getSaleItems()){
+                        takings = takings.add(si.getPrice().multiply(new BigDecimal(Integer.toString(si.getQuantity()))));
+                    }
+                }
+                dc.setSetting("SESSION", Long.toString(new Date().getTime()));
+                JOptionPane.showInternalMessageDialog(this, "Got " + sales.size() + " sales\nTotal takings: £" + takings, "Z Report", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException | SQLException | JTillException ex) {
+                JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnZActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuildUpdates;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnSendData;
     private javax.swing.JButton btnView;
+    private javax.swing.JButton btnZ;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
