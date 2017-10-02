@@ -8,7 +8,9 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -249,9 +251,11 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                     pan.addMouseListener(new MouseListener() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
+                            currentButton = b;
                             if (SwingUtilities.isLeftMouseButton(e)) {
-                                currentButton = b;
                                 showButtonOptions(); //Show the button options dialog.
+                            } else if (SwingUtilities.isRightMouseButton(e)) {
+                                showPopup(pan, e, b);
                             }
                         }
 
@@ -283,6 +287,14 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                         currentButton = b;
                         showButtonOptions(); //Show the button options dialog.
                     });
+                    pButton.addMouseListener(new java.awt.event.MouseAdapter() {
+                        public void mouseClicked(java.awt.event.MouseEvent evt) {
+                            if (SwingUtilities.isRightMouseButton(evt)) {
+                                currentButton = b;
+                                showPopup(pButton, evt, b);
+                            }
+                        }
+                    });
                     pButton.setPreferredSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
                     panel.add(pButton, gbc); //Add the button to the panel.
                 }
@@ -293,6 +305,44 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         } catch (SQLException | IOException | ScreenNotFoundException ex) {
             showError(ex);
         }
+    }
+
+    private void showPopup(Component c, MouseEvent evt, TillButton b) {
+        final JPopupMenu menu = new JPopupMenu();
+        final JMenuItem edit = new JMenuItem("Edit");
+        final Font boldFont = new Font(edit.getFont().getFontName(), Font.BOLD, edit.getFont().getSize());
+        edit.setFont(boldFont);
+        final JMenuItem remove = new JMenuItem("Remove");
+
+        edit.addActionListener((ActionEvent e) -> {
+            showButtonOptions();
+        });
+
+        if (c instanceof JPanel) {
+            remove.setEnabled(false);
+        }
+        remove.addActionListener((ActionEvent e) -> {
+            b.setWidth(1);
+            b.setHeight(1);
+            b.setType(TillButton.SPACE);
+            try {
+                dc.updateButton(currentButton); //This will update the ucrrent button in the database
+            } catch (IOException | SQLException | JTillException ex) {
+                showError(ex);
+            }
+            new Thread() {
+                @Override
+                public void run() {
+                    setButtons(); //This will update the view to reflect any changes
+                    categoryCards.show(panelProducts, currentScreen.getName());
+                    repaint();
+                }
+            }.start();
+        });
+
+        menu.add(edit);
+        menu.add(remove);
+        menu.show(c, evt.getX(), evt.getY());
     }
 
     /**

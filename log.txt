@@ -1,28 +1,9 @@
-JTill log Mon Oct 02 14:44:55 BST 2017
-[14:44:55] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[14:44:56] [INFO] Column ENABLED already exists in STAFF, no need to change database.
-[14:44:56] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
-[14:44:56] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
-[14:44:56] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
-[14:44:56] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
-[14:44:56] [INFO] Changed BUTTONS.COLOR, 0 rows affected
-[14:44:56] [INFO] ERROR
-[14:44:56] [INFO] New field added to BUTTONS table, 2050 rows affected
-[14:44:58] [INFO] David Grant has logged in
-[14:45:29] [INFO] David Grant has logged in from DAVID-PC
-[14:45:37] [INFO] David Grant has logged out
-[14:45:39] [INFO] David Grant has logged in from DAVID-PC
-[14:45:48] [INFO] David Grant has logged out
-[14:45:50] [INFO] David Grant has logged in from DAVID-PC
-[14:45:51] [INFO] David Grant has logged out
-[14:45:52] [INFO] David Grant has logged in from DAVID-PC
-[14:45:53] [INFO] David Grant has logged out
-[14:46:20] [INFO] David Grant has logged in from DAVID-PC
-[14:46:21] [INFO] David Grant has logged out
-[14:46:54] [INFO] David Grant has logged in from DAVID-PC
-[14:46:55] [INFO] David Grant has logged out
-[14:46:57] [INFO] David Grant has logged in from DAVID-PC
-[14:46:58] [INFO] David Grant has logged out
-[14:49:29] [INFO] Stopping JTIll Server
-[14:49:29] [INFO] Saving properties
-[14:49:29] [INFO] Stopping
+JTill log Mon Oct 02 15:27:41 BST 2017
+[15:27:41] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[15:27:42] [INFO] Column ENABLED already exists in STAFF, no need to change database.
+[15:27:42] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
+[15:27:42] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
+[15:27:42] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
+[15:27:42] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
+[15:27:42] [INFO] ERROR
+[15:27:47] [INFO] David Grant has logged in
