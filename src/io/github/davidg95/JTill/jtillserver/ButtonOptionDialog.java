@@ -433,6 +433,12 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         } else {
             btnChangeButton.setEnabled(false);
         }
+        
+        if(func.equals("Product")){
+            btnChangeButton.setText("Change Product");
+        } else if(func.equals("Screen")){
+            btnChangeButton.setText("Change Screen");
+        }
     }//GEN-LAST:event_cmbFunctionActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
