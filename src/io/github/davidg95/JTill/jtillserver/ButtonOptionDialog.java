@@ -58,21 +58,27 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         } else if (button.getType() == TillButton.ITEM) {
             btnChangeButton.setText("Change Product");
             cmbFunction.setSelectedItem("Product");
+            txtItem.setText(button.getName());
         } else if (button.getType() == TillButton.BACK) {
             btnChangeButton.setEnabled(false);
             cmbFunction.setSelectedItem("Back");
+            txtItem.setText(button.getName());
         } else if (button.getType() == TillButton.MAIN) {
             btnChangeButton.setEnabled(false);
             cmbFunction.setSelectedItem("Main");
+            txtItem.setText(button.getName());
         } else if (button.getType() == TillButton.LOGOFF) {
             btnChangeButton.setEnabled(false);
             cmbFunction.setSelectedItem("Logoff");
+            txtItem.setText(button.getName());
         } else if (button.getType() == TillButton.PAYMENT) {
             btnChangeButton.setEnabled(false);
             cmbFunction.setSelectedItem("Payment");
+            txtItem.setText(button.getName());
         } else {
             btnChangeButton.setText("Change Screen");
             cmbFunction.setSelectedItem("Screen");
+            txtItem.setText(button.getName());
         }
         txtWidth.setText(button.getWidth() + "");
         txtHeight.setText(button.getHeight() + "");
