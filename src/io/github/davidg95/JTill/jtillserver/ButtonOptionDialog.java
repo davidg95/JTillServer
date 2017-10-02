@@ -66,6 +66,9 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         } else if (button.getType() == TillButton.LOGOFF) {
             btnChangeButton.setEnabled(false);
             rLogoff.setSelected(true);
+        } else if(button.getType() == TillButton.PAYMENT){
+            btnChangeButton.setEnabled(false);
+            rPayment.setSelected(true);
         } else {
             btnChangeButton.setText("Change Screen");
             rScreen.setSelected(true);
@@ -126,6 +129,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         rBack = new javax.swing.JRadioButton();
         rMain = new javax.swing.JRadioButton();
         rLogoff = new javax.swing.JRadioButton();
+        rPayment = new javax.swing.JRadioButton();
         jLabel4 = new javax.swing.JLabel();
         txtColor = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
@@ -225,6 +229,14 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             }
         });
 
+        typeButtonGroup.add(rPayment);
+        rPayment.setText("Payment");
+        rPayment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rPaymentActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelTypeLayout = new javax.swing.GroupLayout(panelType);
         panelType.setLayout(panelTypeLayout);
         panelTypeLayout.setHorizontalGroup(
@@ -237,7 +249,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                     .addComponent(rScreen)
                     .addComponent(rBack)
                     .addComponent(rMain)
-                    .addComponent(rLogoff))
+                    .addComponent(rLogoff)
+                    .addComponent(rPayment))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelTypeLayout.setVerticalGroup(
@@ -252,8 +265,10 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                 .addComponent(rBack)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rMain)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(rLogoff))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rLogoff)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rPayment))
         );
 
         jLabel4.setText("Color:");
@@ -417,9 +432,13 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         } else if (rLogoff.isSelected()) {
             button.setName(txtItem.getText());
             button.setType(TillButton.LOGOFF);
+        } else if (rPayment.isSelected()) {
+            button.setName(txtItem.getText());
+            button.setType(TillButton.PAYMENT);
         } else {
             button.setName(txtItem.getText());
         }
+        setVisible(false);
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void txtWidthKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtWidthKeyReleased
@@ -506,6 +525,12 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         txtFontColor.setText(TillButton.rbg2Hex(c));
     }//GEN-LAST:event_txtFontColorMouseClicked
 
+    private void rPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rPaymentActionPerformed
+        btnChangeButton.setEnabled(false);
+        txtItem.setEnabled(true);
+        txtItem.setText("Payment");
+    }//GEN-LAST:event_rPaymentActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChangeButton;
     private javax.swing.JButton btnClose;
@@ -520,6 +545,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     private javax.swing.JRadioButton rBack;
     private javax.swing.JRadioButton rLogoff;
     private javax.swing.JRadioButton rMain;
+    private javax.swing.JRadioButton rPayment;
     private javax.swing.JRadioButton rProduct;
     private javax.swing.JRadioButton rScreen;
     private javax.swing.JRadioButton rSpace;

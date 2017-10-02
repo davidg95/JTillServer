@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -310,6 +311,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     private void showPopup(Component c, MouseEvent evt, TillButton b) {
         final JPopupMenu menu = new JPopupMenu();
         final JMenuItem edit = new JMenuItem("Edit");
+        final JMenu position = new JMenu("Position");
         final Font boldFont = new Font(edit.getFont().getFontName(), Font.BOLD, edit.getFont().getSize());
         edit.setFont(boldFont);
         final JMenuItem remove = new JMenuItem("Remove");
@@ -319,30 +321,63 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         });
 
         if (c instanceof JPanel) {
+            position.setEnabled(false);
             remove.setEnabled(false);
         }
+        JMenuItem up = new JMenuItem("Move Up");
+        JMenuItem down = new JMenuItem("Move Down");
+        JMenuItem left = new JMenuItem("Move Left");
+        JMenuItem right = new JMenuItem("Move Right");
+
+        up.addActionListener((ActionEvent e) -> {
+            b.setY(b.getY() - 1);
+            saveAndUpdate();
+        });
+        down.addActionListener((ActionEvent e) -> {
+            b.setY(b.getY() + 1);
+            saveAndUpdate();
+        });
+        left.addActionListener((ActionEvent e) -> {
+            b.setX(b.getX() - 1);
+            saveAndUpdate();
+        });
+        right.addActionListener((ActionEvent e) -> {
+            b.setX(b.getX() + 1);
+            saveAndUpdate();
+        });
+        
+        position.add(up);
+        position.add(down);
+        position.add(left);
+        position.add(right);
+
         remove.addActionListener((ActionEvent e) -> {
             b.setWidth(1);
             b.setHeight(1);
             b.setType(TillButton.SPACE);
-            try {
-                dc.updateButton(currentButton); //This will update the ucrrent button in the database
-            } catch (IOException | SQLException | JTillException ex) {
-                showError(ex);
-            }
-            new Thread() {
-                @Override
-                public void run() {
-                    setButtons(); //This will update the view to reflect any changes
-                    categoryCards.show(panelProducts, currentScreen.getName());
-                    repaint();
-                }
-            }.start();
+            saveAndUpdate();
         });
 
         menu.add(edit);
+//        menu.add(position);
         menu.add(remove);
         menu.show(c, evt.getX(), evt.getY());
+    }
+
+    private void saveAndUpdate() {
+        try {
+            dc.updateButton(currentButton); //This will update the ucrrent button in the database
+        } catch (IOException | SQLException | JTillException ex) {
+            showError(ex);
+        }
+        new Thread() {
+            @Override
+            public void run() {
+                setButtons(); //This will update the view to reflect any changes
+                categoryCards.show(panelProducts, currentScreen.getName());
+                repaint();
+            }
+        }.start();
     }
 
     /**
