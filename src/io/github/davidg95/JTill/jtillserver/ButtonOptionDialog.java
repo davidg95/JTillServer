@@ -41,6 +41,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         this.dc = GUI.gui.dc;
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
+        this.setIconImage(GUI.icon);
         initComponents();
         setLocationRelativeTo(parent);
         setModal(true);
