@@ -345,7 +345,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             b.setX(b.getX() + 1);
             saveAndUpdate();
         });
-        
+
         position.add(up);
         position.add(down);
         position.add(left);
@@ -355,6 +355,8 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             b.setWidth(1);
             b.setHeight(1);
             b.setType(TillButton.SPACE);
+            b.setColorValue("000000");
+            b.setFontColor("ffffff");
             saveAndUpdate();
         });
 

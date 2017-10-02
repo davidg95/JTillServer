@@ -51,27 +51,27 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         txtItem.setText(button.getName());
         if (button.getType() == TillButton.SPACE) {
             btnChangeButton.setEnabled(false);
-            rSpace.setSelected(true);
+            cmbFunction.setSelectedItem("Space");
             txtItem.setEnabled(false);
             txtItem.setText("");
         } else if (button.getType() == TillButton.ITEM) {
             btnChangeButton.setText("Change Product");
-            rProduct.setSelected(true);
+            cmbFunction.setSelectedItem("Product");
         } else if (button.getType() == TillButton.BACK) {
             btnChangeButton.setEnabled(false);
-            rBack.setSelected(true);
+            cmbFunction.setSelectedItem("Back");
         } else if (button.getType() == TillButton.MAIN) {
             btnChangeButton.setEnabled(false);
-            rMain.setSelected(true);
+            cmbFunction.setSelectedItem("Main");
         } else if (button.getType() == TillButton.LOGOFF) {
             btnChangeButton.setEnabled(false);
-            rLogoff.setSelected(true);
-        } else if(button.getType() == TillButton.PAYMENT){
+            cmbFunction.setSelectedItem("Logoff");
+        } else if (button.getType() == TillButton.PAYMENT) {
             btnChangeButton.setEnabled(false);
-            rPayment.setSelected(true);
+            cmbFunction.setSelectedItem("Payment");
         } else {
             btnChangeButton.setText("Change Screen");
-            rScreen.setSelected(true);
+            cmbFunction.setSelectedItem("Screen");
         }
         txtWidth.setText(button.getWidth() + "");
         txtHeight.setText(button.getHeight() + "");
@@ -122,18 +122,12 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         txtItem = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         btnSave = new javax.swing.JButton();
-        panelType = new javax.swing.JPanel();
-        rSpace = new javax.swing.JRadioButton();
-        rProduct = new javax.swing.JRadioButton();
-        rScreen = new javax.swing.JRadioButton();
-        rBack = new javax.swing.JRadioButton();
-        rMain = new javax.swing.JRadioButton();
-        rLogoff = new javax.swing.JRadioButton();
-        rPayment = new javax.swing.JRadioButton();
         jLabel4 = new javax.swing.JLabel();
         txtColor = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txtFontColor = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        cmbFunction = new javax.swing.JComboBox<>();
 
         setResizable(false);
 
@@ -178,99 +172,6 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             }
         });
 
-        panelType.setBorder(javax.swing.BorderFactory.createTitledBorder("Type"));
-
-        typeButtonGroup.add(rSpace);
-        rSpace.setSelected(true);
-        rSpace.setText("Space");
-        rSpace.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rSpaceActionPerformed(evt);
-            }
-        });
-
-        typeButtonGroup.add(rProduct);
-        rProduct.setText("Product");
-        rProduct.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rProductActionPerformed(evt);
-            }
-        });
-
-        typeButtonGroup.add(rScreen);
-        rScreen.setText("Screen");
-        rScreen.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rScreenActionPerformed(evt);
-            }
-        });
-
-        typeButtonGroup.add(rBack);
-        rBack.setText("Back");
-        rBack.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rBackActionPerformed(evt);
-            }
-        });
-
-        typeButtonGroup.add(rMain);
-        rMain.setText("Main");
-        rMain.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rMainActionPerformed(evt);
-            }
-        });
-
-        typeButtonGroup.add(rLogoff);
-        rLogoff.setText("Logoff");
-        rLogoff.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rLogoffActionPerformed(evt);
-            }
-        });
-
-        typeButtonGroup.add(rPayment);
-        rPayment.setText("Payment");
-        rPayment.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rPaymentActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout panelTypeLayout = new javax.swing.GroupLayout(panelType);
-        panelType.setLayout(panelTypeLayout);
-        panelTypeLayout.setHorizontalGroup(
-            panelTypeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelTypeLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panelTypeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rSpace)
-                    .addComponent(rProduct)
-                    .addComponent(rScreen)
-                    .addComponent(rBack)
-                    .addComponent(rMain)
-                    .addComponent(rLogoff)
-                    .addComponent(rPayment))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        panelTypeLayout.setVerticalGroup(
-            panelTypeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelTypeLayout.createSequentialGroup()
-                .addComponent(rSpace)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rProduct)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rScreen)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rBack)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rMain)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rLogoff)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rPayment))
-        );
-
         jLabel4.setText("Color:");
 
         txtColor.setEditable(false);
@@ -289,75 +190,87 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             }
         });
 
+        jLabel6.setText("Function:");
+
+        cmbFunction.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Space", "Product", "Screen", "Back", "Main", "Logoff", "Payment" }));
+        cmbFunction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbFunctionActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(btnChangeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel4)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtColor)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFontColor, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(btnSave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtFontColor)
+                            .addComponent(cmbFunction, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtColor)
+                            .addComponent(btnChangeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnSave, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtWidth)
-                    .addComponent(txtItem)
-                    .addComponent(txtHeight, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
-                    .addComponent(btnClose, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(15, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtWidth, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                            .addComponent(txtItem)
+                            .addComponent(txtHeight, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(btnClose, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelType, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txtItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel3))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel1))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2))
-                                .addGap(20, 20, 20)
-                                .addComponent(btnSave)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnClose))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnChangeButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel4)
-                                    .addComponent(txtColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txtFontColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel5))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addGap(49, 49, 49)
+                        .addComponent(btnClose))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnChangeButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(txtColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtFontColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(cmbFunction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSave)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -368,7 +281,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeButtonActionPerformed
-        if (rProduct.isSelected()) {
+        String func = (String) cmbFunction.getSelectedItem();
+        if (func.equals("Product")) {
             Item i = ItemSelectDialog.showDialog(this, dc);
             if (i != null) {
                 button.setItem(i.getId());
@@ -376,7 +290,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                 txtItem.setText(i.getName());
             }
             button.setType(TillButton.ITEM);
-        } else if (rScreen.isSelected()) {
+        } else if (func.equals("Screen")) {
             Screen s = ScreenSelectDialog.showDialog(this);
             if (s != null) {
                 button.setItem(s.getId());
@@ -384,10 +298,6 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                 txtItem.setText(s.getName());
             }
             button.setType(TillButton.SCREEN);
-        } else if (rSpace.isSelected()) {
-            button.setName("[SPACE]");
-            txtItem.setName("[SPACE]");
-            button.setType(TillButton.SPACE);
         }
     }//GEN-LAST:event_btnChangeButtonActionPerformed
 
@@ -413,26 +323,27 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         button.setColorValue(TillButton.rbg2Hex(txtColor.getBackground()));
         button.setFontColor(TillButton.rbg2Hex(txtFontColor.getBackground()));
 
-        if (!rSpace.isSelected()) {
+        String func = (String) cmbFunction.getSelectedItem();
+        if (!func.equals("SPACE")) {
             if (txtItem.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "You must enter button text", "Button", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
 
-        if (rSpace.isSelected()) {
+        if (func.equals("Space")) {
             button.setName("[SPACE]");
             button.setType(TillButton.SPACE);
-        } else if (rBack.isSelected()) {
+        } else if (func.equals("Back")) {
             button.setName(txtItem.getText());
             button.setType(TillButton.BACK);
-        } else if (rMain.isSelected()) {
+        } else if (func.equals("Main")) {
             button.setName(txtItem.getText());
             button.setType(TillButton.MAIN);
-        } else if (rLogoff.isSelected()) {
+        } else if (func.equals("Logoff")) {
             button.setName(txtItem.getText());
             button.setType(TillButton.LOGOFF);
-        } else if (rPayment.isSelected()) {
+        } else if (func.equals("Payment")) {
             button.setName(txtItem.getText());
             button.setType(TillButton.PAYMENT);
         } else {
@@ -471,42 +382,6 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_txtHeightKeyReleased
 
-    private void rSpaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSpaceActionPerformed
-        btnChangeButton.setEnabled(false);
-        txtItem.setText("");
-        txtItem.setEnabled(false);
-    }//GEN-LAST:event_rSpaceActionPerformed
-
-    private void rProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rProductActionPerformed
-        btnChangeButton.setEnabled(true);
-        btnChangeButton.setText("Change Product");
-        txtItem.setEnabled(true);
-    }//GEN-LAST:event_rProductActionPerformed
-
-    private void rScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rScreenActionPerformed
-        btnChangeButton.setEnabled(true);
-        btnChangeButton.setText("Change Screen");
-        txtItem.setEnabled(true);
-    }//GEN-LAST:event_rScreenActionPerformed
-
-    private void rBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rBackActionPerformed
-        btnChangeButton.setEnabled(false);
-        txtItem.setEnabled(true);
-        txtItem.setText("Back");
-    }//GEN-LAST:event_rBackActionPerformed
-
-    private void rMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rMainActionPerformed
-        btnChangeButton.setEnabled(false);
-        txtItem.setEnabled(true);
-        txtItem.setText("Main");
-    }//GEN-LAST:event_rMainActionPerformed
-
-    private void rLogoffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rLogoffActionPerformed
-        btnChangeButton.setEnabled(false);
-        txtItem.setEnabled(true);
-        txtItem.setText("Logoff");
-    }//GEN-LAST:event_rLogoffActionPerformed
-
     private void txtColorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtColorMouseClicked
         Color c = JColorChooser.showDialog(this, "Select background color", TillButton.hex2Rgb(button.getColorValue()));
         if (c == null) {
@@ -525,30 +400,39 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         txtFontColor.setText(TillButton.rbg2Hex(c));
     }//GEN-LAST:event_txtFontColorMouseClicked
 
-    private void rPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rPaymentActionPerformed
-        btnChangeButton.setEnabled(false);
-        txtItem.setEnabled(true);
-        txtItem.setText("Payment");
-    }//GEN-LAST:event_rPaymentActionPerformed
+    private void cmbFunctionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbFunctionActionPerformed
+        String func = (String) cmbFunction.getSelectedItem();
+        if (func.equals("Space")) {
+            txtItem.setEnabled(false);
+            txtItem.setText("");
+        } else {
+            txtItem.setEnabled(true);
+            txtItem.setText("");
+        }
+
+        if (func.equals("Main") || func.equals("Back") || func.equals("Logoff") || func.equals("Payment")) {
+            txtItem.setText(func);
+        }
+        
+        if(func.equals("Product") || func.equals("Screen")){
+            btnChangeButton.setEnabled(true);
+        } else{
+            btnChangeButton.setEnabled(false);
+        }
+    }//GEN-LAST:event_cmbFunctionActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChangeButton;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnSave;
+    private javax.swing.JComboBox<String> cmbFunction;
     private javax.swing.ButtonGroup colorGroup;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel panelType;
-    private javax.swing.JRadioButton rBack;
-    private javax.swing.JRadioButton rLogoff;
-    private javax.swing.JRadioButton rMain;
-    private javax.swing.JRadioButton rPayment;
-    private javax.swing.JRadioButton rProduct;
-    private javax.swing.JRadioButton rScreen;
-    private javax.swing.JRadioButton rSpace;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JTextField txtColor;
     private javax.swing.JTextField txtFontColor;
     private javax.swing.JTextField txtHeight;
