@@ -75,6 +75,10 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             btnChangeButton.setEnabled(false);
             cmbFunction.setSelectedItem("Payment");
             txtItem.setText(button.getName());
+        } else if (button.getType() == TillButton.VOID) {
+            btnChangeButton.setEnabled(false);
+            cmbFunction.setSelectedItem("Void");
+            txtItem.setText(button.getName());
         } else {
             btnChangeButton.setText("Change Screen");
             cmbFunction.setSelectedItem("Screen");
@@ -199,7 +203,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
         jLabel6.setText("Function:");
 
-        cmbFunction.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Space", "Product", "Screen", "Back", "Main", "Logoff", "Payment" }));
+        cmbFunction.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Space", "Product", "Screen", "Back", "Main", "Logoff", "Payment", "Void" }));
         cmbFunction.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbFunctionActionPerformed(evt);
@@ -353,6 +357,9 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         } else if (func.equals("Payment")) {
             button.setName(txtItem.getText());
             button.setType(TillButton.PAYMENT);
+        } else if (func.equals("Void")) {
+            button.setName(txtItem.getText());
+            button.setType(TillButton.VOID);
         } else {
             button.setName(txtItem.getText());
         }
@@ -417,13 +424,13 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             txtItem.setText("");
         }
 
-        if (func.equals("Main") || func.equals("Back") || func.equals("Logoff") || func.equals("Payment")) {
+        if (func.equals("Main") || func.equals("Back") || func.equals("Logoff") || func.equals("Payment") || func.equals("Void")) {
             txtItem.setText(func);
         }
-        
-        if(func.equals("Product") || func.equals("Screen")){
+
+        if (func.equals("Product") || func.equals("Screen")) {
             btnChangeButton.setEnabled(true);
-        } else{
+        } else {
             btnChangeButton.setEnabled(false);
         }
     }//GEN-LAST:event_cmbFunctionActionPerformed
