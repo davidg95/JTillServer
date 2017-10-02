@@ -208,25 +208,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                     if (b.getType() != TillButton.SPACE) {
                         JButton pButton = new JButton(b.getName()); //Creat a new button for the button.
                         pButton.setPreferredSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
-                        switch (b.getColorValue()) {
-                            case TillButton.BLACK:
-                                pButton.setBackground(Color.BLACK);
-                                break;
-                            case TillButton.BLUE:
-                                pButton.setBackground(Color.BLUE);
-                                break;
-                            case TillButton.GREEN:
-                                pButton.setBackground(Color.GREEN);
-                                break;
-                            case TillButton.ORANGE:
-                                pButton.setBackground(Color.ORANGE);
-                                break;
-                            case TillButton.PURPLE:
-                                pButton.setBackground(Color.PINK);
-                                break;
-                            default:
-                                break;
-                        }
+                        pButton.setBackground(TillButton.hex2Rgb(b.getColorValue()));
                         pButton.setOpaque(true);
                         pButton.setBorderPainted(false);
                         GridBagConstraints gbc = new GridBagConstraints();
@@ -248,25 +230,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             }
             for (TillButton b : currentButtons) {
                 JButton pButton = new JButton(b.getName()); //Creat a new button for the button.
-                switch (b.getColorValue()) {
-                    case TillButton.BLACK:
-                        pButton.setBackground(Color.BLACK);
-                        break;
-                    case TillButton.BLUE:
-                        pButton.setBackground(Color.BLUE);
-                        break;
-                    case TillButton.GREEN:
-                        pButton.setBackground(Color.GREEN);
-                        break;
-                    case TillButton.ORANGE:
-                        pButton.setBackground(Color.ORANGE);
-                        break;
-                    case TillButton.PURPLE:
-                        pButton.setBackground(Color.PINK);
-                        break;
-                    default:
-                        break;
-                }
+                pButton.setBackground(TillButton.hex2Rgb(b.getColorValue()));
                 pButton.setOpaque(true);
                 pButton.setBorderPainted(false);
                 pButton.setPreferredSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
@@ -542,7 +506,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                             int x = 1;
                             int y = 1;
                             for (int i = 0; i < (fw * fh); i++) {
-                                TillButton bu = dc.addButton(new TillButton("[SPACE]", 0, TillButton.SPACE, s.getId(), 1, 1, 1, x, y));
+                                TillButton bu = dc.addButton(new TillButton("[SPACE]", 0, TillButton.SPACE, s.getId(), "000000", "ffffff", 1, 1, x, y));
                                 x++;
                                 if (x == (fw + 1)) {
                                     x = 1;

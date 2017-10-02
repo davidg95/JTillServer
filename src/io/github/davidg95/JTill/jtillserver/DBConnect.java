@@ -247,6 +247,29 @@ public class DBConnect implements DataConnect {
         } catch (SQLException ex) {
             LOG.log(Level.INFO, "Column INHERITS already exists in SCREENS, no need to change database.");
         }
+
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                int res = stmt.executeUpdate("ALTER TABLE BUTTONS ADD FONT_COLOR VARCHAR(7)");
+                LOG.log(Level.INFO, "New field added to BUTTONS table, " + res + " rows affected");
+                con.commit();
+                try {
+                    Statement stmt2 = con.createStatement();
+                    int res2 = stmt2.executeUpdate("UPDATE BUTTONS SET FONT_COLOR = '000000'");
+                    LOG.log(Level.INFO, "Set FONT_COLOR to 'ffffff', " + res2 + " rows affected");
+                    con.commit();
+                } catch (SQLException ex) {
+                    con.rollback();
+                    throw ex;
+                }
+            } catch (SQLException ex) {
+                con.rollback();
+                throw ex;
+            }
+        } catch (SQLException ex) {
+            LOG.log(Level.INFO, "ERROR");
+        }
     }
 
     /**
@@ -490,7 +513,8 @@ public class DBConnect implements DataConnect {
                 + "     NAME VARCHAR(50) not null,\n"
                 + "     PRODUCT INT not null,\n"
                 + "     TYPE INT not null,\n"
-                + "     COLOR INT,\n"
+                + "     COLOR VARCHAR(7),\n"
+                + "     FONT_COLOR VARCHAR(7),\n"
                 + "     WIDTH INT,\n"
                 + "     HEIGHT INT,\n"
                 + "     XPOS INT,\n"
@@ -785,7 +809,7 @@ public class DBConnect implements DataConnect {
             int x = 1;
             int y = 1;
             for (int i = 0; i < 50; i++) {
-                TillButton bu = addButton(new TillButton("[SPACE]", 0, TillButton.SPACE, s.getId(), 1, 1, 1, x, y));
+                TillButton bu = addButton(new TillButton("[SPACE]", 0, TillButton.SPACE, s.getId(), "000000", "ffffff", 1, 1, x, y));
                 x++;
                 if (x == 6) {
                     x = 1;
@@ -2566,12 +2590,13 @@ public class DBConnect implements DataConnect {
             int p = set.getInt("PRODUCT");
             int type = set.getInt("TYPE");
             int s = set.getInt("SCREEN_ID");
-            int color = set.getInt("COLOR");
+            String color = set.getString("COLOR");
+            String fontColor = set.getString("FONT_COLOR");
             int width = set.getInt("WIDTH");
             int height = set.getInt("HEIGHT");
             int x = set.getInt("XPOS");
             int y = set.getInt("YPOS");
-            TillButton b = new TillButton(name, p, type, s, color, id, width, height, x, y);
+            TillButton b = new TillButton(name, p, type, s, color, fontColor, id, width, height, x, y);
 
             buttons.add(b);
         }
@@ -2603,7 +2628,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public TillButton addButton(TillButton b) throws SQLException {
-        String query = "INSERT INTO BUTTONS (NAME, PRODUCT, TYPE, COLOR, SCREEN_ID, WIDTH, HEIGHT, XPOS, YPOS) VALUES (" + b.getSQLInsertString() + ")";
+        String query = "INSERT INTO BUTTONS (NAME, PRODUCT, TYPE, COLOR, FONT_COLOR, SCREEN_ID, WIDTH, HEIGHT, XPOS, YPOS) VALUES (" + b.getSQLInsertString() + ")";
         try (Connection con = getNewConnection()) {
             PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             try {
@@ -2794,13 +2819,14 @@ public class DBConnect implements DataConnect {
                     String name = set.getString("NAME");
                     int p = set.getInt("PRODUCT");
                     int type = set.getInt("TYPE");
-                    int color = set.getInt("COLOR");
+                    String color = set.getString("COLOR");
+                    String fontColor = set.getString("FONT_COLOR");
                     int s = set.getInt("SCREEN_ID");
                     int width = set.getInt("WIDTH");
                     int height = set.getInt("HEIGHT");
                     int x = set.getInt("XPOS");
                     int y = set.getInt("YPOS");
-                    TillButton b = new TillButton(name, p, type, s, color, id, width, height, x, y);
+                    TillButton b = new TillButton(name, p, type, s, color, fontColor, id, width, height, x, y);
                     buttons.add(b);
                 }
                 con.commit();
@@ -2830,13 +2856,14 @@ public class DBConnect implements DataConnect {
                         i = set.getInt("PRODUCT");
                     }
                     int type = set.getInt("TYPE");
-                    int color = set.getInt("COLOR");
+                    String color = set.getString("COLOR");
+                    String fontColor = set.getString("FONT_COLOR");
                     int width = set.getInt("WIDTH");
                     int height = set.getInt("HEIGHT");
                     int x = set.getInt("XPOS");
                     int y = set.getInt("YPOS");
 
-                    TillButton b = new TillButton(name, i, type, s.getId(), color, id, width, height, x, y);
+                    TillButton b = new TillButton(name, i, type, s.getId(), color, fontColor, id, width, height, x, y);
 
                     buttons.add(b);
                 }

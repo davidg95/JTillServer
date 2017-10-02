@@ -6,11 +6,13 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.MouseInfo;
 import java.awt.Window;
+import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -70,34 +72,10 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         }
         txtWidth.setText(button.getWidth() + "");
         txtHeight.setText(button.getHeight() + "");
-        switch (button.getColorValue()) {
-            case TillButton.BLUE:
-                radBlue.setSelected(true);
-                break;
-            case TillButton.RED:
-                radRed.setSelected(true);
-                break;
-            case TillButton.GREEN:
-                radGreen.setSelected(true);
-                break;
-            case TillButton.YELLOW:
-                radYellow.setSelected(true);
-                break;
-            case TillButton.ORANGE:
-                radOrange.setSelected(true);
-                break;
-            case TillButton.PURPLE:
-                radPurple.setSelected(true);
-                break;
-            case TillButton.WHITE:
-                radWhite.setSelected(true);
-                break;
-            case TillButton.BLACK:
-                radBlack.setSelected(true);
-                break;
-            default:
-                break;
-        }
+        txtColor.setBackground(TillButton.hex2Rgb(button.getColorValue()));
+        txtColor.setText(button.getColorValue());
+        txtFontColor.setBackground(TillButton.hex2Rgb(button.getFontColor()));
+        txtFontColor.setText(button.getFontColor());
     }
 
     /**
@@ -141,15 +119,6 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         txtItem = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         btnSave = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
-        radBlue = new javax.swing.JRadioButton();
-        radRed = new javax.swing.JRadioButton();
-        radGreen = new javax.swing.JRadioButton();
-        radYellow = new javax.swing.JRadioButton();
-        radOrange = new javax.swing.JRadioButton();
-        radPurple = new javax.swing.JRadioButton();
-        radWhite = new javax.swing.JRadioButton();
-        radBlack = new javax.swing.JRadioButton();
         panelType = new javax.swing.JPanel();
         rSpace = new javax.swing.JRadioButton();
         rProduct = new javax.swing.JRadioButton();
@@ -157,6 +126,10 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         rBack = new javax.swing.JRadioButton();
         rMain = new javax.swing.JRadioButton();
         rLogoff = new javax.swing.JRadioButton();
+        jLabel4 = new javax.swing.JLabel();
+        txtColor = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        txtFontColor = new javax.swing.JTextField();
 
         setResizable(false);
 
@@ -200,83 +173,6 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                 btnSaveActionPerformed(evt);
             }
         });
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Color"));
-
-        colorGroup.add(radBlue);
-        radBlue.setSelected(true);
-        radBlue.setText("Blue");
-        radBlue.setActionCommand("1");
-
-        colorGroup.add(radRed);
-        radRed.setText("Red");
-        radRed.setActionCommand("2");
-
-        colorGroup.add(radGreen);
-        radGreen.setText("Green");
-        radGreen.setActionCommand("3");
-
-        colorGroup.add(radYellow);
-        radYellow.setText("Yellow");
-        radYellow.setActionCommand("4");
-
-        colorGroup.add(radOrange);
-        radOrange.setText("Orange");
-        radOrange.setActionCommand("5");
-
-        colorGroup.add(radPurple);
-        radPurple.setText("Purple");
-        radPurple.setActionCommand("6");
-
-        colorGroup.add(radWhite);
-        radWhite.setText("White");
-        radWhite.setActionCommand("7");
-
-        colorGroup.add(radBlack);
-        radBlack.setText("Black");
-        radBlack.setActionCommand("8");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(radGreen)
-                    .addComponent(radYellow)
-                    .addComponent(radRed)
-                    .addComponent(radBlue))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(radBlack)
-                    .addComponent(radWhite)
-                    .addComponent(radOrange)
-                    .addComponent(radPurple)))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(radBlue)
-                            .addComponent(radBlack))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(radRed)
-                            .addComponent(radWhite))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(radGreen)
-                            .addComponent(radPurple))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(radYellow))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(radOrange)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
 
         panelType.setBorder(javax.swing.BorderFactory.createTitledBorder("Type"));
 
@@ -360,15 +256,41 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                 .addComponent(rLogoff))
         );
 
+        jLabel4.setText("Color:");
+
+        txtColor.setEditable(false);
+        txtColor.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtColorMouseClicked(evt);
+            }
+        });
+
+        jLabel5.setText("Font Color:");
+
+        txtFontColor.setEditable(false);
+        txtFontColor.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtFontColorMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnChangeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnChangeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtColor)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtFontColor, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -383,7 +305,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                     .addComponent(txtItem)
                     .addComponent(txtHeight, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
                     .addComponent(btnClose, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -392,26 +314,34 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panelType, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addGap(20, 20, 20)
-                        .addComponent(btnSave)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClose)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnChangeButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel3))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel2))
+                                .addGap(20, 20, 20)
+                                .addComponent(btnSave)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnClose))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnChangeButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel4)
+                                    .addComponent(txtColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtFontColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel5))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -465,25 +395,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         }
         button.setWidth(width);
         button.setHeight(height);
-        int col = 0;
-        if (radBlue.isSelected()) {
-            col = TillButton.BLUE;
-        } else if (radRed.isSelected()) {
-            col = TillButton.RED;
-        } else if (radGreen.isSelected()) {
-            col = TillButton.GREEN;
-        } else if (radYellow.isSelected()) {
-            col = TillButton.YELLOW;
-        } else if (radOrange.isSelected()) {
-            col = TillButton.ORANGE;
-        } else if (radPurple.isSelected()) {
-            col = TillButton.PURPLE;
-        } else if (radWhite.isSelected()) {
-            col = TillButton.WHITE;
-        } else if (radBlack.isSelected()) {
-            col = TillButton.BLACK;
-        }
-        button.setColorValue(col);
+        button.setColorValue(TillButton.rbg2Hex(txtColor.getBackground()));
+        button.setFontColor(TillButton.rbg2Hex(txtFontColor.getBackground()));
 
         if (!rSpace.isSelected()) {
             if (txtItem.getText().isEmpty()) {
@@ -575,6 +488,24 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         txtItem.setText("Logoff");
     }//GEN-LAST:event_rLogoffActionPerformed
 
+    private void txtColorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtColorMouseClicked
+        Color c = JColorChooser.showDialog(this, "Select background color", TillButton.hex2Rgb(button.getColorValue()));
+        if (c == null) {
+            return;
+        }
+        txtColor.setBackground(c);
+        txtColor.setText(TillButton.rbg2Hex(c));
+    }//GEN-LAST:event_txtColorMouseClicked
+
+    private void txtFontColorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtFontColorMouseClicked
+        Color c = JColorChooser.showDialog(this, "Select font color", TillButton.hex2Rgb(button.getFontColor()));
+        if (c == null) {
+            return;
+        }
+        txtFontColor.setBackground(c);
+        txtFontColor.setText(TillButton.rbg2Hex(c));
+    }//GEN-LAST:event_txtFontColorMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChangeButton;
     private javax.swing.JButton btnClose;
@@ -583,7 +514,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel panelType;
     private javax.swing.JRadioButton rBack;
     private javax.swing.JRadioButton rLogoff;
@@ -591,14 +523,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     private javax.swing.JRadioButton rProduct;
     private javax.swing.JRadioButton rScreen;
     private javax.swing.JRadioButton rSpace;
-    private javax.swing.JRadioButton radBlack;
-    private javax.swing.JRadioButton radBlue;
-    private javax.swing.JRadioButton radGreen;
-    private javax.swing.JRadioButton radOrange;
-    private javax.swing.JRadioButton radPurple;
-    private javax.swing.JRadioButton radRed;
-    private javax.swing.JRadioButton radWhite;
-    private javax.swing.JRadioButton radYellow;
+    private javax.swing.JTextField txtColor;
+    private javax.swing.JTextField txtFontColor;
     private javax.swing.JTextField txtHeight;
     private javax.swing.JTextField txtItem;
     private javax.swing.JTextField txtWidth;
