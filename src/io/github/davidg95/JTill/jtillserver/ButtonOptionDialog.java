@@ -61,6 +61,9 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         } else if (button.getType() == TillButton.MAIN) {
             btnChangeButton.setEnabled(false);
             rMain.setSelected(true);
+        } else if (button.getType() == TillButton.LOGOFF) {
+            btnChangeButton.setEnabled(false);
+            rLogoff.setSelected(true);
         } else {
             btnChangeButton.setText("Change Screen");
             rScreen.setSelected(true);
@@ -153,6 +156,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         rScreen = new javax.swing.JRadioButton();
         rBack = new javax.swing.JRadioButton();
         rMain = new javax.swing.JRadioButton();
+        rLogoff = new javax.swing.JRadioButton();
 
         setResizable(false);
 
@@ -253,22 +257,25 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(radBlue)
-                    .addComponent(radBlack))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(radRed)
-                    .addComponent(radWhite))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(radGreen)
-                    .addComponent(radPurple))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(radYellow))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(radOrange))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(radBlue)
+                            .addComponent(radBlack))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(radRed)
+                            .addComponent(radWhite))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(radGreen)
+                            .addComponent(radPurple))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radYellow))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(radOrange)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         panelType.setBorder(javax.swing.BorderFactory.createTitledBorder("Type"));
@@ -314,6 +321,14 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             }
         });
 
+        typeButtonGroup.add(rLogoff);
+        rLogoff.setText("Logoff");
+        rLogoff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rLogoffActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelTypeLayout = new javax.swing.GroupLayout(panelType);
         panelType.setLayout(panelTypeLayout);
         panelTypeLayout.setHorizontalGroup(
@@ -325,7 +340,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                     .addComponent(rProduct)
                     .addComponent(rScreen)
                     .addComponent(rBack)
-                    .addComponent(rMain))
+                    .addComponent(rMain)
+                    .addComponent(rLogoff))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelTypeLayout.setVerticalGroup(
@@ -340,7 +356,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                 .addComponent(rBack)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rMain)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(rLogoff))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -372,12 +389,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnChangeButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(panelType, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panelType, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -390,11 +403,16 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(20, 20, 20)
                         .addComponent(btnSave)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClose)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnClose)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnChangeButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         pack();
@@ -483,6 +501,9 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         } else if (rMain.isSelected()) {
             button.setName(txtItem.getText());
             button.setType(TillButton.MAIN);
+        } else if (rLogoff.isSelected()) {
+            button.setName(txtItem.getText());
+            button.setType(TillButton.LOGOFF);
         } else {
             button.setName(txtItem.getText());
         }
@@ -548,6 +569,12 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         txtItem.setText("Main");
     }//GEN-LAST:event_rMainActionPerformed
 
+    private void rLogoffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rLogoffActionPerformed
+        btnChangeButton.setEnabled(false);
+        txtItem.setEnabled(true);
+        txtItem.setText("Logoff");
+    }//GEN-LAST:event_rLogoffActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChangeButton;
     private javax.swing.JButton btnClose;
@@ -559,6 +586,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel panelType;
     private javax.swing.JRadioButton rBack;
+    private javax.swing.JRadioButton rLogoff;
     private javax.swing.JRadioButton rMain;
     private javax.swing.JRadioButton rProduct;
     private javax.swing.JRadioButton rScreen;

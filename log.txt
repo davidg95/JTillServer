@@ -1,8 +1,22 @@
-JTill log Mon Oct 02 11:09:38 BST 2017
-[11:09:38] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[11:09:39] [INFO] Column ENABLED already exists in STAFF, no need to change database.
-[11:09:39] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
-[11:09:39] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
-[11:09:39] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
-[11:09:39] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
-[11:09:42] [INFO] David Grant has logged in
+JTill log Mon Oct 02 13:06:34 BST 2017
+[13:06:35] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[13:06:35] [INFO] Column ENABLED already exists in STAFF, no need to change database.
+[13:06:36] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
+[13:06:36] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
+[13:06:36] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
+[13:06:36] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
+[13:06:38] [INFO] David Grant has logged in
+[13:07:07] [INFO] David Grant has logged in from DAVID-PC
+[13:07:11] [INFO] David Grant has logged out
+[13:07:53] [INFO] David Grant has logged in from DAVID-PC
+[13:07:56] [INFO] David Grant has logged out
+[13:08:34] [INFO] David Grant has logged in from DAVID-PC
+[13:08:52] [INFO] David Grant has logged out
+[13:09:36] [INFO] David Grant has logged in from DAVID-PC
+[13:09:38] [INFO] David Grant has logged out
+[13:10:15] [INFO] David Grant has logged in from DAVID-PC
+[13:10:16] [INFO] David Grant has logged out
+[13:10:18] [INFO] David Grant has logged in from DAVID-PC
+[13:10:28] [INFO] David Grant has logged out
+[13:10:46] [INFO] David Grant has logged in from DAVID-PC
+[13:10:50] [INFO] David Grant has logged out
