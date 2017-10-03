@@ -5,22 +5,6 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
-
 /**
  *
  * @author David
@@ -32,6 +16,7 @@ public class HelpPage extends javax.swing.JFrame {
      */
     public HelpPage() {
         initComponents();
+        this.setIconImage(GUI.icon);
     }
 
     /**

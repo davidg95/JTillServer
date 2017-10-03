@@ -559,7 +559,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemLogin = new javax.swing.JMenuItem();
         itemServerOptions = new javax.swing.JMenuItem();
         itemCheckDatabase = new javax.swing.JMenuItem();
-        itemAbout = new javax.swing.JMenuItem();
+        itemInfo = new javax.swing.JMenuItem();
         itemUpdate = new javax.swing.JMenuItem();
         itemExit = new javax.swing.JMenuItem();
         menuStock = new javax.swing.JMenu();
@@ -594,6 +594,9 @@ public class GUI extends JFrame implements GUIInterface {
         itemStaffReporting = new javax.swing.JMenuItem();
         itemWasteReports = new javax.swing.JMenuItem();
         itemReceivedReports = new javax.swing.JMenuItem();
+        menuHelp = new javax.swing.JMenu();
+        itemAbout = new javax.swing.JMenuItem();
+        itemHelp = new javax.swing.JMenuItem();
 
         setTitle("JTill Server");
         setIconImage(GUI.icon);
@@ -1050,13 +1053,13 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuFile.add(itemCheckDatabase);
 
-        itemAbout.setText("About");
-        itemAbout.addActionListener(new java.awt.event.ActionListener() {
+        itemInfo.setText("Info");
+        itemInfo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemAboutActionPerformed(evt);
+                itemInfoActionPerformed(evt);
             }
         });
-        menuFile.add(itemAbout);
+        menuFile.add(itemInfo);
 
         itemUpdate.setText("Check For Update");
         itemUpdate.addActionListener(new java.awt.event.ActionListener() {
@@ -1326,6 +1329,26 @@ public class GUI extends JFrame implements GUIInterface {
 
         jMenuBar1.add(jMenu1);
 
+        menuHelp.setText("Help");
+
+        itemAbout.setText("About");
+        itemAbout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemAboutActionPerformed(evt);
+            }
+        });
+        menuHelp.add(itemAbout);
+
+        itemHelp.setText("Help Pages");
+        itemHelp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemHelpActionPerformed(evt);
+            }
+        });
+        menuHelp.add(itemHelp);
+
+        jMenuBar1.add(menuHelp);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1483,7 +1506,7 @@ public class GUI extends JFrame implements GUIInterface {
         SettingsWindow.showSettingsWindow();
     }//GEN-LAST:event_itemServerOptionsActionPerformed
 
-    private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
+    private void itemInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemInfoActionPerformed
         try {
             JOptionPane.showMessageDialog(this, "JTill Server is running on port number "
                     + dc.getSetting("port") + " with " + clientCounter + " connections.\n"
@@ -1492,7 +1515,7 @@ public class GUI extends JFrame implements GUIInterface {
         } catch (IOException ex) {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_itemAboutActionPerformed
+    }//GEN-LAST:event_itemInfoActionPerformed
 
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
         ReportingWindow.showWindow(dc, icon);
@@ -1846,6 +1869,14 @@ public class GUI extends JFrame implements GUIInterface {
         ProductEnquiry.showWindow(icon);
     }//GEN-LAST:event_btnEnquiryActionPerformed
 
+    private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
+        JOptionPane.showMessageDialog(this, "JTill Server version " + TillServer.VERSION, "JTill Server", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_itemAboutActionPerformed
+
+    private void itemHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemHelpActionPerformed
+        new HelpPage().setVisible(true);
+    }//GEN-LAST:event_itemHelpActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
     private javax.swing.JButton btnCategorys;
@@ -1878,6 +1909,8 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemDiscounts;
     private javax.swing.JMenuItem itemEnquiry;
     private javax.swing.JMenuItem itemExit;
+    private javax.swing.JMenuItem itemHelp;
+    private javax.swing.JMenuItem itemInfo;
     private javax.swing.JMenuItem itemLabelPrinting;
     private javax.swing.JMenuItem itemLogin;
     private javax.swing.JMenuItem itemLoyalty;
@@ -1919,6 +1952,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JLabel lblUser;
     private javax.swing.JLabel lblWarnings;
     private javax.swing.JMenu menuFile;
+    private javax.swing.JMenu menuHelp;
     private javax.swing.JMenu menuSetup;
     private javax.swing.JMenu menuStock;
     private javax.swing.JPanel statusBar;
