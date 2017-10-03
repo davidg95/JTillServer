@@ -463,9 +463,9 @@ public class DBConnect implements DataConnect {
                 + "     DEPARTMENT_ID INT not null references DEPARTMENTS(ID),\n"
                 + "	TAX_ID INT not null references TAX(ID),\n"
                 + "	COST_PRICE DOUBLE,\n"
-                + "     PACK_SIZE INT,\n"
                 + "	MIN_PRODUCT_LEVEL INTEGER,\n"
-                + "	MAX_PRODUCT_LEVEL INTEGER\n"
+                + "	MAX_PRODUCT_LEVEL INTEGER,\n"
+                + "     PACK_SIZE IN,\n"
                 + ")";
         String plus = "create table APP.PLUS\n"
                 + "(\n"
@@ -4838,9 +4838,9 @@ public class DBConnect implements DataConnect {
                     int dId = set.getInt(17);
                     int taxID = set.getInt(18);
                     BigDecimal costPrice = new BigDecimal(Double.toString(set.getDouble(19)));
-                    int packSize = set.getInt(20);
-                    int minStock = set.getInt(21);
-                    int maxStock = set.getInt(22);
+                    int minStock = set.getInt(20);
+                    int maxStock = set.getInt(21);
+                    int packSize = set.getInt(22);
 
                     Product p = new Product(name, shortName, order_code, categoryID, dId, comments, taxID, open, pprice, costPrice, packSize, stock, minStock, maxStock, pcode);
                     i.setItem(p);
