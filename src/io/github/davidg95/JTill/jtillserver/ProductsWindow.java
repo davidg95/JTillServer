@@ -251,6 +251,8 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 txtStock.setText(product.getStock() + "");
                 txtMinStock.setText(product.getMinStockLevel() + "");
                 txtMaxStock.setText(product.getMaxStockLevel() + "");
+                txtPrice.setEditable(true);
+                txtCostPrice.setEditable(true);
             }
             txtComments.setText(product.getComments());
             int index = 0;
