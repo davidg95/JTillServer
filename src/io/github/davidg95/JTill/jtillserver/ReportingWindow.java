@@ -522,7 +522,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                 txtTax.setText("£" + new DecimalFormat("0.00").format(tax));
                 txtNet.setText("£" + new DecimalFormat("0.00").format(profitBeforeTax.subtract(tax)));
             } catch (IOException | SQLException | JTillException ex) {
-                Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             } finally {
                 panelSearch.setEnabled(true);
                 for (Component comp : panelSearch.getComponents()) {
