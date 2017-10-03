@@ -323,6 +323,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         if (c instanceof JPanel) {
             position.setEnabled(false);
             remove.setEnabled(false);
+            edit.setText("Add button");
         }
         JMenuItem up = new JMenuItem("Move Up");
         JMenuItem down = new JMenuItem("Move Down");
@@ -361,7 +362,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         });
 
         menu.add(edit);
-//        menu.add(position);
+        menu.add(position);
         menu.add(remove);
         menu.show(c, evt.getX(), evt.getY());
     }
@@ -715,14 +716,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
     private void btnInheritsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInheritsActionPerformed
         Screen par = ScreenSelectDialog.showDialog(this);
-        if (par.equals(currentScreen)) {
-            JOptionPane.showInternalMessageDialog(this, "A screen cannot inherit itself", "Inheritance", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        if (par.getWidth() != currentScreen.getWidth() || par.getHeight() != currentScreen.getHeight()) {
-            JOptionPane.showInternalMessageDialog(this, "Parent screens must have the same width and height", "Inheritance", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
         if (par == null) {
             currentScreen.setInherits(-1);
             try {
@@ -732,6 +725,14 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
             setButtons();
+            return;
+        }
+        if (par.equals(currentScreen)) {
+            JOptionPane.showInternalMessageDialog(this, "A screen cannot inherit itself", "Inheritance", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (par.getWidth() != currentScreen.getWidth() || par.getHeight() != currentScreen.getHeight()) {
+            JOptionPane.showInternalMessageDialog(this, "Parent screens must have the same width and height", "Inheritance", JOptionPane.ERROR_MESSAGE);
             return;
         }
         currentScreen.setInherits(par.getId());
