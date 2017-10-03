@@ -504,7 +504,8 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                     if (i.getType() == SaleItem.PRODUCT) {
                         final Product product = (Product) i.getItem();
                         final BigDecimal in = i.getPrice().multiply(new BigDecimal(i.getQuantity()));
-                        final BigDecimal out = product.getCostPrice().multiply(new BigDecimal(i.getQuantity()));
+                        final BigDecimal individualCost = product.getCostPrice().divide(new BigDecimal(Integer.toString(product.getPackSize())));
+                        final BigDecimal out = individualCost.multiply(new BigDecimal(i.getQuantity()));
                         expenses = expenses.add(out);
                         itemsSold += i.getQuantity();
                         sales = sales.add(in);

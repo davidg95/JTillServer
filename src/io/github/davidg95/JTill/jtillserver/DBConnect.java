@@ -270,6 +270,29 @@ public class DBConnect implements DataConnect {
         } catch (SQLException ex) {
             LOG.log(Level.INFO, "ERROR");
         }
+
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                int res = stmt.executeUpdate("ALTER TABLE PRODUCTS ADD PACK_SIZE INT");
+                LOG.log(Level.INFO, "New field added to PRODUCTS table, " + res + " rows affected");
+                con.commit();
+                try {
+                    Statement stmt2 = con.createStatement();
+                    int res2 = stmt2.executeUpdate("UPDATE PRODUCTS SET PACK_SIZE = 1");
+                    LOG.log(Level.INFO, "Set PACK_SIZE to 1, " + res2 + " rows affected");
+                    con.commit();
+                } catch (SQLException ex) {
+                    con.rollback();
+                    throw ex;
+                }
+            } catch (SQLException ex) {
+                con.rollback();
+                throw ex;
+            }
+        } catch (SQLException ex) {
+            LOG.log(Level.INFO, "ERROR");
+        }
     }
 
     /**
@@ -440,6 +463,7 @@ public class DBConnect implements DataConnect {
                 + "     DEPARTMENT_ID INT not null references DEPARTMENTS(ID),\n"
                 + "	TAX_ID INT not null references TAX(ID),\n"
                 + "	COST_PRICE DOUBLE,\n"
+                + "     PACK_SIZE INT,\n"
                 + "	MIN_PRODUCT_LEVEL INTEGER,\n"
                 + "	MAX_PRODUCT_LEVEL INTEGER\n"
                 + ")";
@@ -847,7 +871,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<Product> getAllProducts() throws SQLException {
-        String query = "SELECT ID as pId, ORDER_CODE, p.NAME as pName, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL FROM PRODUCTS p";
+        String query = "SELECT ID as pId, ORDER_CODE, p.NAME as pName, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL FROM PRODUCTS p";
         List<Product> products;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
@@ -867,10 +891,11 @@ public class DBConnect implements DataConnect {
                     int dId = set.getInt("DEPARTMENT_ID");
                     int taxID = set.getInt("TAX_ID");
                     BigDecimal costPrice = new BigDecimal(Double.toString(set.getDouble("COST_PRICE")));
+                    int packSize = set.getInt("PACK_SIZE");
                     int minStock = set.getInt("MIN_PRODUCT_LEVEL");
                     int maxStock = set.getInt("MAX_PRODUCT_LEVEL");
 
-                    Product p = new Product(name, shortName, order_code, cid, dId, comments, taxID, open, price, costPrice, stock, minStock, maxStock, code);
+                    Product p = new Product(name, shortName, order_code, cid, dId, comments, taxID, open, price, costPrice, packSize, stock, minStock, maxStock, code);
                     p.setCategory(this.getCategory(p.getCategoryID()));
                     p.setDepartment(this.getDepartment(p.getDepartmentID()));
                     p.setTax(this.getTax(p.getTaxID()));
@@ -905,10 +930,11 @@ public class DBConnect implements DataConnect {
             int dId = set.getInt("DEPARTMENT_ID");
             int taxID = set.getInt("TAX_ID");
             BigDecimal costPrice = new BigDecimal(Double.toString(set.getDouble("COST_PRICE")));
+            int packSize = set.getInt("PACK_SIZE");
             int minStock = set.getInt("MIN_PRODUCT_LEVEL");
             int maxStock = set.getInt("MAX_PRODUCT_LEVEL");
 
-            Product p = new Product(name, shortName, order_code, categoryID, dId, comments, taxID, open, price, costPrice, stock, minStock, maxStock, code);
+            Product p = new Product(name, shortName, order_code, categoryID, dId, comments, taxID, open, price, costPrice, packSize, stock, minStock, maxStock, code);
 
             products.add(p);
         }
@@ -925,7 +951,7 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public Product addProduct(Product p) throws SQLException {
-        String query = "INSERT INTO PRODUCTS (ORDER_CODE, NAME, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL) VALUES (" + p.getSQLInsertString() + ")";
+        String query = "INSERT INTO PRODUCTS (ORDER_CODE, NAME, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL) VALUES (" + p.getSQLInsertString() + ")";
         try (Connection con = getNewConnection()) {
             try (PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
                 long stamp = productLock.writeLock();
@@ -1115,7 +1141,7 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public Product getProduct(int code) throws SQLException, ProductNotFoundException {
-        String query = "SELECT p.ID as pId, p.ORDER_CODE, p.NAME as pName, p.OPEN_PRICE, p.PRICE, p.STOCK, p.COMMENTS, p.SHORT_NAME, p.CATEGORY_ID, p.DEPARTMENT_ID, p.TAX_ID, p.COST_PRICE, p.MIN_PRODUCT_LEVEL, p.MAX_PRODUCT_LEVEL FROM PRODUCTS p WHERE p.ID=" + code;
+        String query = "SELECT p.ID as pId, p.ORDER_CODE, p.NAME as pName, p.OPEN_PRICE, p.PRICE, p.STOCK, p.COMMENTS, p.SHORT_NAME, p.CATEGORY_ID, p.DEPARTMENT_ID, p.TAX_ID, p.COST_PRICE, p.PACK_SIZE, p.MIN_PRODUCT_LEVEL, p.MAX_PRODUCT_LEVEL FROM PRODUCTS p WHERE p.ID=" + code;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             List<Product> products = new LinkedList<>();
@@ -1158,7 +1184,7 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public Product getProductByBarcode(String barcode) throws SQLException, ProductNotFoundException {
-        String query = "SELECT p.ID as pId, p.ORDER_CODE, p.NAME as pName, p.OPEN_PRICE, p.PRICE, p.STOCK, p.COMMENTS, p.SHORT_NAME, p.DEPARTMENT_ID, p.CATEGORY_ID, p.TAX_ID, p.COST_PRICE, p.MIN_PRODUCT_LEVEL, p.MAX_PRODUCT_LEVEL, pl.ID as plId, pl.CODE as plCode, pl.PRODUCT as plProduct FROM PRODUCTS p, PLUS pl WHERE p.ID = pl.PRODUCT AND pl.CODE='" + barcode + "'";
+        String query = "SELECT p.ID as pId, p.ORDER_CODE, p.NAME as pName, p.OPEN_PRICE, p.PRICE, p.STOCK, p.COMMENTS, p.SHORT_NAME, p.DEPARTMENT_ID, p.CATEGORY_ID, p.TAX_ID, p.COST_PRICE, p.PACK_SIZE, p.MIN_PRODUCT_LEVEL, p.MAX_PRODUCT_LEVEL, pl.ID as plId, pl.CODE as plCode, pl.PRODUCT as plProduct FROM PRODUCTS p, PLUS pl WHERE p.ID = pl.PRODUCT AND pl.CODE='" + barcode + "'";
         List<Product> products = new LinkedList<>();
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
@@ -4717,7 +4743,7 @@ public class DBConnect implements DataConnect {
     public Product addProductAndPlu(Product p, Plu pl) throws IOException, SQLException {
         try (Connection con = getNewConnection()) {
             try {
-                String productAdd = "INSERT INTO PRODUCTS (ORDER_CODE, NAME, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL) VALUES (" + p.getSQLInsertString() + ")";
+                String productAdd = "INSERT INTO PRODUCTS (ORDER_CODE, NAME, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL) VALUES (" + p.getSQLInsertString() + ")";
                 PreparedStatement productStmt = con.prepareStatement(productAdd, Statement.RETURN_GENERATED_KEYS);
                 productStmt.executeUpdate();
                 ResultSet product = productStmt.getGeneratedKeys();
@@ -4812,10 +4838,11 @@ public class DBConnect implements DataConnect {
                     int dId = set.getInt(17);
                     int taxID = set.getInt(18);
                     BigDecimal costPrice = new BigDecimal(Double.toString(set.getDouble(19)));
-                    int minStock = set.getInt(20);
-                    int maxStock = set.getInt(21);
+                    int packSize = set.getInt(20);
+                    int minStock = set.getInt(21);
+                    int maxStock = set.getInt(22);
 
-                    Product p = new Product(name, shortName, order_code, categoryID, dId, comments, taxID, open, pprice, costPrice, stock, minStock, maxStock, pcode);
+                    Product p = new Product(name, shortName, order_code, categoryID, dId, comments, taxID, open, pprice, costPrice, packSize, stock, minStock, maxStock, pcode);
                     i.setItem(p);
                     items.add(i);
                 }
@@ -5201,6 +5228,9 @@ public class DBConnect implements DataConnect {
     public Staff getTillStaff(int id) throws IOException, JTillException {
         for (JConnThread thread : TillServer.server.getClientConnections()) {
             final ConnectionHandler th = (ConnectionHandler) thread.getMethodClass();
+            if(th.till == null){
+                continue;
+            }
             if (th.till.getId() == id) {
                 if (th.staff == null) {
                     return null;

@@ -185,6 +185,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             txtBarcode.setText("");
             txtPrice.setText("");
             txtCostPrice.setText("");
+            txtPackSize.setText("");
             txtStock.setText("");
             txtMinStock.setText("");
             txtMaxStock.setText("");
@@ -217,9 +218,12 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 jLabel4.setEnabled(false);
                 jLabel10.setEnabled(false);
                 jLabel11.setEnabled(false);
+                jLabel14.setEnabled(false);
                 txtBarcode.setText(plu.getCode());
                 txtPrice.setText("OPEN");
                 txtCostPrice.setText("OPEN");
+                txtPackSize.setText("0");
+                txtPackSize.setEnabled(false);
                 txtPrice.setEditable(false);
                 txtCostPrice.setEditable(false);
                 txtStock.setText("");
@@ -228,6 +232,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             } else {
                 txtPrice.setEnabled(true);
                 txtCostPrice.setEnabled(true);
+                txtPackSize.setEnabled(true);
                 txtBarcode.setEnabled(true);
                 txtStock.setEnabled(true);
                 txtMinStock.setEnabled(true);
@@ -238,11 +243,11 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 jLabel4.setEnabled(true);
                 jLabel10.setEnabled(true);
                 jLabel11.setEnabled(true);
+                jLabel14.setEnabled(true);
                 txtBarcode.setText(plu.getCode());
                 txtPrice.setText(product.getPrice().setScale(2) + "");
                 txtCostPrice.setText(product.getCostPrice().setScale(2) + "");
-                txtPrice.setEditable(true);
-                txtCostPrice.setEditable(true);
+                txtPackSize.setValue(product.getPackSize());
                 txtStock.setText(product.getStock() + "");
                 txtMinStock.setText(product.getMinStockLevel() + "");
                 txtMaxStock.setText(product.getMaxStockLevel() + "");
@@ -347,6 +352,8 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         txtPrice = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        txtPackSize = new javax.swing.JFormattedTextField();
         btnAdvanced = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -557,63 +564,72 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
         jLabel4.setText("Stock:");
 
+        jLabel14.setText("Pack Size:");
+
+        txtPackSize.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+
         javax.swing.GroupLayout panelCurrentLayout = new javax.swing.GroupLayout(panelCurrent);
         panelCurrent.setLayout(panelCurrentLayout);
         panelCurrentLayout.setHorizontalGroup(
             panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelCurrentLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelCurrentLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
+                        .addGap(16, 16, 16)
                         .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtBarcode)
                             .addComponent(txtName)
                             .addComponent(txtShortName)
                             .addGroup(panelCurrentLayout.createSequentialGroup()
-                                .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(txtPrice, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                                    .addComponent(txtPackSize))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel9)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtCostPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCurrentLayout.createSequentialGroup()
+                    .addGroup(panelCurrentLayout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtStock)
                             .addGroup(panelCurrentLayout.createSequentialGroup()
-                                .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(cmbDepartments, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(panelCurrentLayout.createSequentialGroup()
-                                        .addComponent(txtMinStock)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel11))
-                                    .addComponent(cmbCategory, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(panelCurrentLayout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(cmbTax, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtMaxStock)
-                                    .addComponent(btnShowCategorys, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnShowTax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnDepartments, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCurrentLayout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                                    .addGroup(panelCurrentLayout.createSequentialGroup()
+                                        .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(cmbDepartments, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addGroup(panelCurrentLayout.createSequentialGroup()
+                                                .addComponent(txtMinStock)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jLabel11))
+                                            .addComponent(cmbCategory, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addGroup(panelCurrentLayout.createSequentialGroup()
+                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                .addComponent(cmbTax, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtMaxStock)
+                                            .addComponent(btnShowCategorys, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(btnShowTax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(btnDepartments, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(txtStock, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCurrentLayout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelCurrentLayout.setVerticalGroup(
             panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -636,6 +652,10 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                     .addComponent(jLabel9)
                     .addComponent(txtCostPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(txtPackSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -663,9 +683,9 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                     .addComponent(btnDepartments))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addContainerGap())
+                    .addComponent(jLabel5)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         btnAdvanced.setText("Advanced");
@@ -817,8 +837,13 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         } else {
             String pr = txtPrice.getText();
             String costPr = txtCostPrice.getText();
+            int packSize = Integer.parseInt(txtPackSize.getText());
+            if (packSize < 1) {
+                JOptionPane.showInternalMessageDialog(this, "Pack size must be 1 or greater", "Save Changes", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             if (!Utilities.isNumber(pr) || !Utilities.isNumber(costPr)) {
-                JOptionPane.showMessageDialog(this, "Must enter a number for price and cost price", "Save Changes", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(this, "Must enter a number for price and cost price", "Save Changes", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             BigDecimal price = new BigDecimal(pr);
@@ -827,7 +852,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             String minSt = txtMinStock.getText();
             String maxSt = txtMaxStock.getText();
             if (!Utilities.isNumber(st) || !Utilities.isNumber(minSt) || !Utilities.isNumber(maxSt)) {
-                JOptionPane.showMessageDialog(this, "Must enter a number for stock levels", "Save Changes", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(this, "Must enter a number for stock levels", "Save Changes", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int stock = Integer.parseInt(st);
@@ -840,6 +865,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             product.setTaxID(tax.getId());
             product.setPrice(price);
             product.setCostPrice(costPrice);
+            product.setPackSize(packSize);
             product.setStock(stock);
             product.setMinStockLevel(minStock);
             product.setMaxStockLevel(maxStock);
@@ -1049,17 +1075,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         if (searchC == null && searchD == null) {
             return;
         }
-//        try {
-//            final List<Plu> results = dc.getProductsAdvanced("WHERE " + (b1.isSelected() ? "CATEGORY_ID=" + searchC.getId() : "DEPARTMENT_ID=" + searchD.getId()));
-//            if (results.isEmpty()) {
-//                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No results", "Product Search", JOptionPane.INFORMATION_MESSAGE);
-//                return;
-//            }
-//            currentTableContents = results;
-//            updateTable();
-//        } catch (IOException | SQLException ex) {
-//            Logger.getLogger(ProductsWindow.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }//GEN-LAST:event_btnAdvancedActionPerformed
 
     private void searchFieldClick(int opt, JTextField f) {
@@ -1099,6 +1114,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1120,6 +1136,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtMaxStock;
     private javax.swing.JTextField txtMinStock;
     private javax.swing.JTextField txtName;
+    private javax.swing.JFormattedTextField txtPackSize;
     private javax.swing.JTextField txtPrice;
     private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtShortName;
