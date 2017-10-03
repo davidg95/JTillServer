@@ -89,11 +89,11 @@ public class WasteReports extends javax.swing.JInternalFrame {
         model.setRowCount(0);
         BigDecimal val = BigDecimal.ZERO;
         for (WasteReport wr : wasteReports) {
-            Object[] row = new Object[]{wr.getId(), new DecimalFormat("#.00").format(wr.getTotalValue()), wr.getDate()};
+            Object[] row = new Object[]{wr.getId(), new DecimalFormat("0.00").format(wr.getTotalValue()), wr.getDate()};
             model.addRow(row);
             val = val.add(wr.getTotalValue());
         }
-        lblValue.setText("Total Value: £" + new DecimalFormat("#.00").format(val));
+        lblValue.setText("Total Value: £" + new DecimalFormat("0.00").format(val));
     }
 
     /**
@@ -273,7 +273,8 @@ public class WasteReports extends javax.swing.JInternalFrame {
                         }
                     }
                 } else {
-                    JOptionPane.showMessageDialog(this, "A product must be selected", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(this, "A product must be selected", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
                 break;
             }
@@ -288,23 +289,24 @@ public class WasteReports extends javax.swing.JInternalFrame {
                         }
                     }
                 } else {
-                    JOptionPane.showMessageDialog(this, "A reason must be selected", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(this, "A reason must be selected", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
                 break;
             }
             case GREATER: {
                 String val = txtSearch.getText();
                 if (val.length() == 0) {
-                    JOptionPane.showMessageDialog(this, "A value must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(this, "A value must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 if (!Utilities.isNumber(val)) {
-                    JOptionPane.showMessageDialog(this, "A number must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(this, "A number must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 BigDecimal value = new BigDecimal(val);
                 if (value.compareTo(BigDecimal.ZERO) < 0) {
-                    JOptionPane.showMessageDialog(this, "Negative values not allowed", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(this, "Negative values not allowed", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 for (WasteReport wr : wasteReports) {
@@ -317,16 +319,16 @@ public class WasteReports extends javax.swing.JInternalFrame {
             case LESS: {
                 String val = txtSearch.getText();
                 if (val.length() == 0) {
-                    JOptionPane.showMessageDialog(this, "A value must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(this, "A value must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 if (!Utilities.isNumber(val)) {
-                    JOptionPane.showMessageDialog(this, "A number must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(this, "A number must be entered", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 BigDecimal value = new BigDecimal(val);
                 if (value.compareTo(BigDecimal.ZERO) < 0) {
-                    JOptionPane.showMessageDialog(this, "Negative values not allowed", "Waste Reports", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(this, "Negative values not allowed", "Waste Reports", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 for (WasteReport wr : wasteReports) {
@@ -361,6 +363,9 @@ public class WasteReports extends javax.swing.JInternalFrame {
         if (wasteReports.size() == 1) {
             WasteStockWindow.showWindow(dc, wasteReports.get(0));
         }
+        if (wasteReports.isEmpty()) {
+            JOptionPane.showInternalMessageDialog(this, "No results", "Waste Reports", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnShowAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowAllActionPerformed
@@ -375,7 +380,7 @@ public class WasteReports extends javax.swing.JInternalFrame {
     private void txtSearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSearchMouseClicked
         switch (cmbSearch.getSelectedIndex()) {
             case CONTAINING:
-                p = (Product) JTillObjectSelectDialog.showDialog(this, dc, "Select a Product", Product.class);
+                p = ProductSelectDialog.showDialog(this);
                 if (p != null) {
                     txtSearch.setText(p.getName());
                 }

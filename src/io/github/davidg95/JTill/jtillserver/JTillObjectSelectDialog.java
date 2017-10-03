@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
@@ -48,6 +47,7 @@ public class JTillObjectSelectDialog extends javax.swing.JDialog {
         filter.add(E);
         objects = new ArrayList<>();
         initComponents();
+        this.setIconImage(GUI.icon);
         setTitle(title);
         setModal(true);
         setLocationRelativeTo(parent);
