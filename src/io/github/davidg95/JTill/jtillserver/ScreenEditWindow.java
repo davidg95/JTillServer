@@ -193,6 +193,38 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         bar.setValue(0);
     }
 
+    private void checkInheritance(JPanel panel, Screen s) throws IOException, SQLException, ScreenNotFoundException {
+        if (s.getInherits() == -1) {
+            return;
+        }
+        Screen parent = dc.getScreen(s.getInherits());
+        checkInheritance(panel, parent);
+        List<TillButton> buttons = dc.getButtonsOnScreen(parent);
+        for (TillButton b : buttons) {
+            if (b.getType() != TillButton.SPACE) {
+                JButton pButton = new JButton(b.getName()); //Creat a new button for the button.
+                pButton.setPreferredSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
+                pButton.setBackground(TillButton.hex2Rgb(b.getColorValue()));
+                pButton.setOpaque(true);
+                pButton.setBorderPainted(false);
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.gridx = b.getX() - 1;
+                gbc.gridy = b.getY() - 1;
+                gbc.gridwidth = b.getWidth();
+                gbc.gridheight = b.getHeight();
+                gbc.weightx = 1;
+                gbc.weighty = 1;
+                gbc.fill = GridBagConstraints.BOTH;
+                pButton.addActionListener((ActionEvent e) -> {
+                    currentButton = b;
+                    showButtonOptions(); //Show the button options dialog.
+                });
+                pButton.setEnabled(false);
+                panel.add(pButton, gbc); //Add the button to the panel.
+            }
+        }
+    }
+
     /**
      * Creates a new button for the screen.
      *
@@ -204,33 +236,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
         try {
             currentButtons = dc.getButtonsOnScreen(s); //Get all the buttons on the screen.
-            if (s.getInherits() != -1) {
-                Screen parent = dc.getScreen(s.getInherits());
-                List<TillButton> buttons = dc.getButtonsOnScreen(parent);
-                for (TillButton b : buttons) {
-                    if (b.getType() != TillButton.SPACE) {
-                        JButton pButton = new JButton(b.getName()); //Creat a new button for the button.
-                        pButton.setPreferredSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
-                        pButton.setBackground(TillButton.hex2Rgb(b.getColorValue()));
-                        pButton.setOpaque(true);
-                        pButton.setBorderPainted(false);
-                        GridBagConstraints gbc = new GridBagConstraints();
-                        gbc.gridx = b.getX() - 1;
-                        gbc.gridy = b.getY() - 1;
-                        gbc.gridwidth = b.getWidth();
-                        gbc.gridheight = b.getHeight();
-                        gbc.weightx = 1;
-                        gbc.weighty = 1;
-                        gbc.fill = GridBagConstraints.BOTH;
-                        pButton.addActionListener((ActionEvent e) -> {
-                            currentButton = b;
-                            showButtonOptions(); //Show the button options dialog.
-                        });
-                        pButton.setEnabled(false);
-                        panel.add(pButton, gbc); //Add the button to the panel.
-                    }
-                }
-            }
+            checkInheritance(panel, s);
             for (TillButton b : currentButtons) {
                 JButton pButton = new JButton(b.getName()); //Creat a new button for the button.
                 pButton.setBackground(TillButton.hex2Rgb(b.getColorValue()));
