@@ -837,8 +837,7 @@ public class DBConnect implements DataConnect {
     }
 
     /**
-     * Method to close the database connection. This will close the data sets
-     * and close the connection.
+     * This method does not do anything and should not be used.
      */
     @Override
     @Deprecated
