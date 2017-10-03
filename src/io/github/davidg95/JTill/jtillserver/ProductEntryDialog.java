@@ -46,6 +46,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         super(parent);
         this.dc = GUI.gui.dc;
         initComponents();
+        this.setIconImage(GUI.icon);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(parent);
         setModal(true);

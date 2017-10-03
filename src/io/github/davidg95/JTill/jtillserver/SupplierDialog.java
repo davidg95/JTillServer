@@ -28,9 +28,9 @@ public class SupplierDialog extends javax.swing.JDialog {
     /**
      * Creates new form SupplierDialog
      */
-    public SupplierDialog(Window parent, DataConnect dc) {
+    public SupplierDialog(Window parent) {
         super(parent);
-        this.dc = dc;
+        this.dc = GUI.gui.dc;
         this.s = null;
         initComponents();
         setModal(true);
@@ -41,9 +41,9 @@ public class SupplierDialog extends javax.swing.JDialog {
     /**
      * Creates new form SupplierDialog
      */
-    public SupplierDialog(Window parent, DataConnect dc, Supplier s) {
+    public SupplierDialog(Window parent, Supplier s) {
         super(parent);
-        this.dc = dc;
+        this.dc = GUI.gui.dc;
         this.s = s;
         initComponents();
         txtName.setText(s.getName());
@@ -55,21 +55,21 @@ public class SupplierDialog extends javax.swing.JDialog {
         setTitle("Edit Supplier");
     }
 
-    public static void showDialog(Component parent, DataConnect dc) {
+    public static void showDialog(Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new SupplierDialog(window, dc);
+        dialog = new SupplierDialog(window);
         dialog.setVisible(true);
     }
 
-    public static void showDialog(Component parent, DataConnect dc, Supplier s) {
+    public static void showDialog(Component parent, Supplier s) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new SupplierDialog(window, dc, s);
+        dialog = new SupplierDialog(window, s);
         dialog.setVisible(true);
     }
 

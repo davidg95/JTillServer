@@ -50,6 +50,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         this.showOpen = showOpen;
         closedFlag = false;
         initComponents();
+        this.setIconImage(GUI.icon);
         setLocationRelativeTo(parent);
         setModal(true);
         currentTableContents = new ArrayList<>();

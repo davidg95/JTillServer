@@ -465,7 +465,7 @@ public class DBConnect implements DataConnect {
                 + "	COST_PRICE DOUBLE,\n"
                 + "	MIN_PRODUCT_LEVEL INTEGER,\n"
                 + "	MAX_PRODUCT_LEVEL INTEGER,\n"
-                + "     PACK_SIZE IN,\n"
+                + "     PACK_SIZE INT\n"
                 + ")";
         String plus = "create table APP.PLUS\n"
                 + "(\n"
@@ -3925,7 +3925,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public Supplier updateSupplier(Supplier s) throws IOException, SQLException, JTillException {
-        String query = "UPDATE SUPPLIERS SET NAME='" + s.getName() + "' ADDRESS='" + s.getAddress() + "', PHONE='" + s.getContactNumber() + "'";
+        String query = "UPDATE SUPPLIERS SET NAME='" + s.getName() + "', ADDRESS='" + s.getAddress() + "', PHONE='" + s.getContactNumber() + "'";
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             long stamp = supL.writeLock();

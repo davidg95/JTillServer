@@ -200,7 +200,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 final Product pro = dc.getProduct(pr.getProduct());
                 final Plu p = dc.getPluByProduct(pro.getId());
                 model.addRow(new Object[]{pro.getId(), pro.getLongName(), p.getCode(), pr.getQuantity()});
-                val = val.add(pro.getCostPrice().multiply(new BigDecimal(pr.getQuantity())));
+                val = val.add(pro.getCostPrice().divide(new BigDecimal(Integer.toString(pro.getPackSize()))).multiply(new BigDecimal(pr.getQuantity())));
             } catch (IOException | JTillException | ProductNotFoundException | SQLException ex) {
                 Logger.getLogger(ReceiveItemsWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -470,7 +470,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 return;
             }
 
-            products.add(new ReceivedItem(product.getId(), amount, product.getCostPrice()));
+            products.add(new ReceivedItem(product.getId(), amount, product.getCostPrice().divide(new BigDecimal(Integer.toString(product.getPackSize())))));
             updateTable();
         } else {
             JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);

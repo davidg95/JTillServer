@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -34,12 +35,10 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
     public SupplierWindow(DataConnect dc, Image icon) {
         this.dc = dc;
         initComponents();
-//        this.setIconImage(icon);
         super.setClosable(true);
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(icon));
         setTitle("Suppliers");
-//        setLocationRelativeTo(null);
         model = new DefaultListModel();
         try {
             currentTableContents = dc.getAllSuppliers();
@@ -92,6 +91,11 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
+        lstSuppliers.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lstSuppliersMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(lstSuppliers);
 
         btnAdd.setText("Add New");
@@ -142,7 +146,7 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        SupplierDialog.showDialog(this, dc);
+        SupplierDialog.showDialog(this);
         try {
             currentTableContents = dc.getAllSuppliers();
             setList();
@@ -150,6 +154,19 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
             Logger.getLogger(SupplierWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnAddActionPerformed
+
+    private void lstSuppliersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstSuppliersMouseClicked
+        if (SwingUtilities.isLeftMouseButton(evt)) {
+            if (evt.getClickCount() == 2) {
+                int row = lstSuppliers.getSelectedIndex();
+                if (row == -1) {
+                    return;
+                }
+                Supplier sup = currentTableContents.get(row);
+                SupplierDialog.showDialog(this, sup);
+            }
+        }
+    }//GEN-LAST:event_lstSuppliersMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
