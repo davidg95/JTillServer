@@ -876,4 +876,9 @@ public class ConnectionHandler {
     public List<Sale> getZSales(@JConnParameter("SESSION") long session) throws IOException, SQLException, JTillException {
         return dc.getZSales(session);
     }
+    
+    @JConnMethod("PURGE")
+    public void purgeDatabase() throws IOException, SQLException{
+        dc.purgeDatabase();
+    }
 }

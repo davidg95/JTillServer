@@ -5228,7 +5228,7 @@ public class DBConnect implements DataConnect {
     public Staff getTillStaff(int id) throws IOException, JTillException {
         for (JConnThread thread : TillServer.server.getClientConnections()) {
             final ConnectionHandler th = (ConnectionHandler) thread.getMethodClass();
-            if(th.till == null){
+            if (th.till == null) {
                 continue;
             }
             if (th.till.getId() == id) {
@@ -5258,6 +5258,28 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
             return sales;
+        }
+    }
+
+    @Override
+    public void purgeDatabase() throws IOException, SQLException {
+        String r1 = "DELETE FROM RECEIVEDITEMS";
+        String r2 = "DELETE FROM RECEIVED_REPORTS";
+        String w1 = "DELETE FROM WASTEITEMS";
+        String w2 = "DELETE FROM WASTEREPORTS";
+        try (Connection con = getNewConnection()) {
+            Statement stmt = con.createStatement();
+            try {
+                stmt.executeUpdate(r1);
+                stmt.executeUpdate(r2);
+                stmt.executeUpdate(w1);
+                stmt.executeUpdate(w2);
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
         }
     }
 }

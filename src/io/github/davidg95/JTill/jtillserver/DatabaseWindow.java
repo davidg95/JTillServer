@@ -61,7 +61,6 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
         } catch (PropertyVetoException ex) {
             Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
-        JOptionPane.showInternalMessageDialog(frame, "WARNING! Changing the settings here can damage your database beyond repair! Please ensure you know exactly what you are doing before making changes here!", "Database Settings", JOptionPane.WARNING_MESSAGE);
     }
 
     private void init() {
@@ -97,6 +96,7 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         btnClearSales = new javax.swing.JButton();
+        btnPurge = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Database Settings");
@@ -130,6 +130,13 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        btnPurge.setText("Purge Database");
+        btnPurge.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPurgeActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -149,7 +156,8 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 341, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnClearSales)
-                            .addComponent(jButton2))))
+                            .addComponent(jButton2)
+                            .addComponent(btnPurge))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -164,10 +172,13 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
                     .addComponent(lblVer)
                     .addComponent(btnClearSales))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblCatalog)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblSchema)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 247, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblCatalog)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblSchema))
+                    .addComponent(btnPurge))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 251, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addContainerGap())
         );
@@ -220,8 +231,33 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnClearSalesActionPerformed
 
+    private void btnPurgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPurgeActionPerformed
+        if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "This will clear ALL sales data, received reports, and waste data. Continue?", "Purge Database", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            final ModalDialog mDialog = new ModalDialog(this, "Sales Data", "Clearing...");
+            final Runnable run = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        dc.purgeDatabase();
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(GUI.gui.internal, "Purge complete", "Purge Database", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (IOException | SQLException ex) {
+                        mDialog.hide();
+                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                    } finally {
+                        mDialog.hide();
+                    }
+                }
+            };
+            final Thread thread = new Thread(run);
+            thread.start();
+            mDialog.show();
+        }
+    }//GEN-LAST:event_btnPurgeActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClearSales;
+    private javax.swing.JButton btnPurge;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel lblCatalog;
