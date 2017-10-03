@@ -108,7 +108,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             }
             model.addRow(s);
         }
-        lblTaxValue.setText("Tax Value: £" + taxValue);
+        lblTaxValue.setText("Tax Value: £" + new DecimalFormat("0.00").format(taxValue.doubleValue()));
         tableItems.setModel(model);
     }
 
