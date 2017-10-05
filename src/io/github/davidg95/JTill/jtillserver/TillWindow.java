@@ -314,6 +314,17 @@ public class TillWindow extends javax.swing.JInternalFrame {
                 zReport(t);
             });
 
+            JMenuItem remove = new JMenuItem("Remove");
+            remove.addActionListener((ActionEvent e) -> {
+                try {
+                    dc.removeTill(t.getId());
+                    JOptionPane.showInternalMessageDialog(this, "Terminal " + t.getName() + " has been removed from the system", "Remove Terminal", JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException | JTillException | SQLException ex) {
+                    JOptionPane.showInternalMessageDialog(this, ex, "Remove Terminal", JOptionPane.ERROR_MESSAGE);
+                }
+                update();
+            });
+
             if (!t.isConnected()) {
                 sendData.setEnabled(false);
             }
@@ -322,6 +333,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
             menu.add(sendData);
             menu.add(xReport);
             menu.add(zReport);
+            menu.add(remove);
             menu.show(table, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tableMouseClicked
@@ -350,7 +362,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
     private void btnZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZActionPerformed
         if (JOptionPane.showInternalConfirmDialog(this, "This will take a report for all tills and reset the session, continue?", "Z Report", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            
+
         }
     }//GEN-LAST:event_btnZActionPerformed
 
