@@ -352,7 +352,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         button.setFontColor(TillButton.rbg2Hex(txtFontColor.getBackground()));
 
         String func = (String) cmbFunction.getSelectedItem();
-        if (!func.equals("space")) {
+        if (!func.equals("Space")) {
             if (txtItem.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "You must enter button text", "Button", JOptionPane.ERROR_MESSAGE);
                 return;
