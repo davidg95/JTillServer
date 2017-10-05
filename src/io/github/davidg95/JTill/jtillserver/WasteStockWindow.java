@@ -360,6 +360,8 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         dateSpin = new javax.swing.JSpinner();
 
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/tillIcon.png"))); // NOI18N
+
         tblProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -534,7 +536,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         }
 
         product = (Product) product.clone();
-
+        
         String str = JOptionPane.showInternalInputDialog(WasteStockWindow.this, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
 
         if (str == null || str.isEmpty()) {
