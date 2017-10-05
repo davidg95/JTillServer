@@ -356,11 +356,9 @@ public class TillDialog extends javax.swing.JDialog {
                 return;
             }
             report.declared = new BigDecimal(strVal);
-            report.declared = report.declared.setScale(2);
             report.difference = report.declared.subtract(report.actualTakings);
-            report.difference = report.difference.setScale(2);
             report.transactions = sales.size();
-            report.averageSpend = report.actualTakings.divide(new BigDecimal(report.transactions));
+            report.averageSpend = report.actualTakings.divide(new BigDecimal(report.transactions), RoundingMode.HALF_DOWN);
 
             model.setRowCount(0);
 
@@ -393,6 +391,7 @@ public class TillDialog extends javax.swing.JDialog {
             TillReportDialog.showDialog(this, report);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(TillDialog.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         }
     }//GEN-LAST:event_btnCashupActionPerformed
 
