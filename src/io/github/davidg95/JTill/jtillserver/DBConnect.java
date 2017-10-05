@@ -4892,43 +4892,6 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public void cashUncashedSales(int t) throws IOException, SQLException {
-        String query = "SELECT * FROM SALES WHERE SALES.CASHED = FALSE AND SALES.TERMINAL = " + t + "";
-        try (Connection con = getNewConnection()) {
-            Statement stmt = con.createStatement();
-            BigDecimal result = new BigDecimal("0");
-            try {
-                ResultSet set = stmt.executeQuery(query);
-                while (set.next()) {
-                    int id = set.getInt("ID");
-                    BigDecimal price = new BigDecimal(Double.toString(set.getDouble("PRICE")));
-                    int customerid = set.getInt("CUSTOMER");
-                    Date date = new Date(set.getLong("TIMESTAMP"));
-                    int terminal = set.getInt("TERMINAL");
-                    boolean cashed = set.getBoolean("CASHED");
-                    int sId = set.getInt("STAFF");
-                    Sale s = new Sale(id, price, customerid, date, terminal, cashed, sId);
-                    s.setProducts(getItemsInSale(s));
-                    if (!s.isCashed()) {
-                        result = result.add(s.getTotal());
-                        s.setCashed(true);
-                        try {
-                            updateSaleNoSem(s);
-                        } catch (JTillException ex) {
-                            LOG.log(Level.WARNING, null, ex);
-                        }
-                    }
-                }
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-        }
-    }
-
-    @Override
     public List<Product> getProductsAdvanced(String WHERE) throws IOException, SQLException {
         String query = "SELECT * FROM PRODUCTS " + WHERE;
         try (Connection con = getNewConnection()) {

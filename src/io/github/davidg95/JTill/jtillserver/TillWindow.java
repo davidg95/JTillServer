@@ -10,10 +10,8 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -105,9 +103,23 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
     private void zReport(Till t) {
         try {
-            xReport(t);
-            dc.cashUncashedSales(t.getId());
-        } catch (IOException | SQLException ex) {
+            String strVal = JOptionPane.showInputDialog(this, "Enter value of money counted", "Cash up till " + t.getName(), JOptionPane.PLAIN_MESSAGE);
+            if (strVal == null) {
+                return;
+            }
+            if (strVal.equals("")) {
+                JOptionPane.showMessageDialog(this, "You must enter a value", "Cash up till", JOptionPane.ERROR_MESSAGE);
+            }
+            if (!Utilities.isNumber(strVal)) {
+                JOptionPane.showInputDialog(this, "You must enter a number greater than zero", "Cash up till " + t.getName(), JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            BigDecimal declared = new BigDecimal(strVal);
+
+            final TillReport report = dc.zReport(t.getId(), declared);
+            TillReportDialog.showDialog(this, report);
+        } catch (Exception ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }

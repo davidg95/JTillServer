@@ -797,11 +797,6 @@ public class ConnectionHandler {
         return dc.integrityCheck();
     }
 
-    @JConnMethod("CASHUNCASHEDSALES")
-    public void cashUncashedSales(@JConnParameter("TERMINAL") int t) throws IOException, SQLException {
-        dc.cashUncashedSales(t);
-    }
-
     @JConnMethod("GETPRODUCTSADVANCED")
     public List<Product> getProductsAdvanced(@JConnParameter("WHERE") String WHERE) throws IOException, SQLException {
         return dc.getProductsAdvanced(WHERE);
