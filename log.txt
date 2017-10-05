@@ -1,10 +1,10 @@
-JTill log Tue Oct 03 17:11:17 BST 2017
-[17:11:17] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[17:11:17] [INFO] Column ENABLED already exists in STAFF, no need to change database.
-[17:11:17] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
-[17:11:17] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
-[17:11:17] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
-[17:11:17] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
-[17:11:17] [INFO] ERROR
-[17:11:17] [INFO] ERROR
-[17:11:21] [INFO] David Grant has logged in
+JTill log Thu Oct 05 10:41:32 BST 2017
+[10:41:32] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[10:41:33] [INFO] Column ENABLED already exists in STAFF, no need to change database.
+[10:41:33] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
+[10:41:33] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
+[10:41:33] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
+[10:41:33] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
+[10:41:33] [INFO] ERROR
+[10:41:33] [INFO] ERROR
+[10:41:35] [INFO] David Grant has logged in

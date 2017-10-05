@@ -501,12 +501,11 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         }
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
-            JMenuItem it = new JMenuItem("Change Quantity");
-            final Font boldFont = new Font(it.getFont().getFontName(), Font.BOLD, it.getFont().getSize());
-            it.setFont(boldFont);
-            JMenuItem item = new JMenuItem("Remove");
-            it.addActionListener((ActionEvent e) -> {
-                if (evt.getClickCount() == 2) {
+            JMenuItem qu = new JMenuItem("Change Quantity");
+            final Font boldFont = new Font(qu.getFont().getFontName(), Font.BOLD, qu.getFont().getSize());
+            qu.setFont(boldFont);
+            JMenuItem rem = new JMenuItem("Remove");
+            qu.addActionListener((ActionEvent e) -> {
                     String input = JOptionPane.showInternalInputDialog(ReceiveItemsWindow.this, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
                     if (!Utilities.isNumber(input)) {
                         JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "A number must be entered", "Receive Items", JOptionPane.ERROR_MESSAGE);
@@ -519,16 +518,15 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     } else {
                         JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
                     }
-                }
             });
-            item.addActionListener((ActionEvent e) -> {
+            rem.addActionListener((ActionEvent e) -> {
                 if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Remove this item?", "Remove Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     products.remove(tblProducts.getSelectedRow());
                     updateTable();
                 }
             });
-            menu.add(it);
-            menu.add(item);
+            menu.add(qu);
+            menu.add(rem);
             menu.show(tblProducts, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tblProductsMouseClicked
