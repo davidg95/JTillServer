@@ -566,6 +566,7 @@ public class DBConnect implements DataConnect {
                 + "     HEIGHT INT,\n"
                 + "     XPOS INT,\n"
                 + "     YPOS INT,\n"
+                + "     ACCESS_LEVEL INT,\n"
                 + "     SCREEN_ID INT not null references SCREENS(ID)\n"
                 + ")";
         String wasteReports = "create table \"APP\".WASTEREPORTS\n"
