@@ -295,7 +295,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
      * @param e the exception to show.
      */
     private void showError(Exception e) {
-        JOptionPane.showMessageDialog(this, e, "Products", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showInternalMessageDialog(this, e, "Products", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -794,17 +794,18 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private void btnRemoveProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveProductActionPerformed
         int index = tableProducts.getSelectedRow();
         if (index != -1) {
-            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following product?\n" + currentTableContents.get(index), "Remove Product", JOptionPane.YES_NO_OPTION);
+            int opt = JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove the following product?\n" + currentTableContents.get(index), "Remove Product", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
                     dc.removeProduct(currentTableContents.get(index).getId());
                     GUI.getInstance().updateLables();
+                    showAllProducts();
+                    setCurrentPlu(null);
+                    txtName.requestFocus();
+                    JOptionPane.showInternalMessageDialog(this, "Product has been removed", "Remove Product", JOptionPane.INFORMATION_MESSAGE);
                 } catch (ProductNotFoundException | IOException | SQLException ex) {
                     showError(ex);
                 }
-                showAllProducts();
-                setCurrentPlu(null);
-                txtName.requestFocus();
             }
         }
     }//GEN-LAST:event_btnRemoveProductActionPerformed

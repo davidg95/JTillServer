@@ -1077,13 +1077,25 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public void removeProduct(int id) throws SQLException, ProductNotFoundException {
-        String query = "DELETE FROM PRODUCTS WHERE PRODUCTS.ID = " + id + "";
+        String query = "DELETE FROM PRODUCTS WHERE PRODUCTS.ID = " + id;
         String iQuery = "DELETE FROM WASTEITEMS WHERE PRODUCT = " + id;
+        String pQuery = "DELETE FROM PLUS WHERE PRODUCT = " + id;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             int value;
             try {
                 stmt.executeUpdate(iQuery);
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+            try {
+                value = stmt.executeUpdate(pQuery);
+                if (value == 0) {
+                    throw new ProductNotFoundException(id + "");
+                }
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
