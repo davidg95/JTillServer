@@ -5,6 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.TillReport;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;

@@ -6,7 +6,6 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import io.github.davidg95.jconn.JConnThread;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;

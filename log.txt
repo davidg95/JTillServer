@@ -1,10 +1,19 @@
-JTill log Thu Oct 05 11:15:01 BST 2017
-[11:15:01] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[11:15:02] [INFO] Column ENABLED already exists in STAFF, no need to change database.
-[11:15:02] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
-[11:15:02] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
-[11:15:02] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
-[11:15:02] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
-[11:15:02] [INFO] ERROR
-[11:15:02] [INFO] ERROR
-[11:15:07] [INFO] David Grant has logged in
+JTill log Thu Oct 05 12:06:06 BST 2017
+[12:06:06] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[12:06:07] [INFO] Column ENABLED already exists in STAFF, no need to change database.
+[12:06:07] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
+[12:06:07] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
+[12:06:07] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
+[12:06:07] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
+[12:06:07] [INFO] ERROR
+[12:06:07] [INFO] ERROR
+[12:06:09] [INFO] David Grant has logged in
+[12:06:19] [INFO] David Grant has logged in from DAVID-PC
+[12:06:23] [WARNING] 1 is below minimum stock level
+[12:06:25] [WARNING] 1 is below minimum stock level
+[12:06:47] [INFO] David Grant has logged out
+[12:10:02] [INFO] David Grant has logged in from DAVID-PC
+[12:10:04] [WARNING] 1 is below minimum stock level
+[12:10:06] [WARNING] 1 is below minimum stock level
+[12:10:09] [WARNING] 1 is below minimum stock level
+[12:10:22] [INFO] David Grant has logged out
