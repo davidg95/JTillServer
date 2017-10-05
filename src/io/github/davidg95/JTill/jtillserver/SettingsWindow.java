@@ -96,7 +96,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             chkTerminal.setSelected(dc.getSetting("SHOW_TERMINAL_RECEIPT").equals("true"));
             chkEmailPrompt.setSelected(dc.getSetting("PROMPT_EMAIL_RECEIPT").equals("true"));
             chkUpdate.setSelected(dc.getSetting("UPDATE_STARTUP").equals("true"));
-            txtLogoutTimeout.setText(dc.getSetting("LOGOUT_TIMEOUT"));
+            txtLogoutTimeout.setValue(Integer.parseInt(dc.getSetting("LOGOUT_TIMEOUT")));
             String unlockCode = dc.getSetting("UNLOCK_CODE");
             chkShowBack.setSelected(Boolean.parseBoolean(dc.getSetting("SHOWBACKGROUND")));
             if (unlockCode.equals("OFF")) {
@@ -143,11 +143,11 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         chkLogOut = new javax.swing.JCheckBox();
         btnSaveSecurity = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
-        txtLogoutTimeout = new javax.swing.JFormattedTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        txtUnlockCode = new javax.swing.JFormattedTextField();
         chkUnlock = new javax.swing.JCheckBox();
+        txtLogoutTimeout = new javax.swing.JSpinner();
+        txtUnlockCode = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -343,17 +343,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
 
         jLabel8.setText("Logout Timeout:");
 
-        txtLogoutTimeout.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-
         jLabel7.setText("s");
 
         jLabel9.setText("Till Unlock Code:");
-
-        try {
-            txtUnlockCode.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("####")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
 
         chkUnlock.setText("Enable");
         chkUnlock.addActionListener(new java.awt.event.ActionListener() {
@@ -361,6 +353,8 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 chkUnlockActionPerformed(evt);
             }
         });
+
+        txtLogoutTimeout.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
 
         javax.swing.GroupLayout panelSecurityLayout = new javax.swing.GroupLayout(panelSecurity);
         panelSecurity.setLayout(panelSecurityLayout);
@@ -389,7 +383,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                         .addGroup(panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
                             .addComponent(chkUnlock))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
         panelSecurityLayout.setVerticalGroup(
             panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -398,13 +392,13 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(txtLogoutTimeout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7))
+                    .addComponent(jLabel7)
+                    .addComponent(txtLogoutTimeout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelSecurityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(txtUnlockCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(chkUnlock))
+                    .addComponent(chkUnlock)
+                    .addComponent(txtUnlockCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSaveSecurity))
         );
@@ -870,20 +864,24 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             } else {
                 dc.setSetting("AUTO_LOGOUT", "FALSE");
             }
-            dc.setSetting("LOGOUT_TIMEOUT", txtLogoutTimeout.getText());
+            dc.setSetting("LOGOUT_TIMEOUT", txtLogoutTimeout.getValue().toString());
             if (chkUnlock.isSelected()) {
-                if (txtUnlockCode.getValue() == null) {
-                    JOptionPane.showMessageDialog(this, "Must enter a value for Unlock Code", "Security Settings", JOptionPane.ERROR_MESSAGE);
+                if (txtUnlockCode.getText().isEmpty()) {
+                    JOptionPane.showInternalMessageDialog(this, "Must enter a value for Unlock Code", "Security Settings", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                dc.setSetting("UNLOCK_CODE", (String) txtUnlockCode.getValue());
+                if (!Utilities.isNumber(txtUnlockCode.getText())) {
+                    JOptionPane.showInternalMessageDialog(this, "Must enter a numerical value for unlock code", "Security Settings", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                dc.setSetting("UNLOCK_CODE", txtUnlockCode.getText());
             } else {
                 dc.setSetting("UNLOCK_CODE", "OFF");
             }
-            JOptionPane.showMessageDialog(this, "Security settings have been saved", "Security Settings", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showInternalMessageDialog(this, "Security settings have been saved", "Security Settings", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "Error saving security settings, changes have been rolled back", "Security Settings", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(this, "Error saving security settings, changes have been rolled back", "Security Settings", JOptionPane.ERROR_MESSAGE);
             try {
                 boolean old = dc.getSetting("AUTO_LOGOUT").equals("TRUE");
                 chkLogOut.setSelected(old);
@@ -1183,7 +1181,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JPanel panelSecurity;
     private javax.swing.JSpinner spinSaleCache;
     private javax.swing.JTextField txtAddress;
-    private javax.swing.JFormattedTextField txtLogoutTimeout;
+    private javax.swing.JSpinner txtLogoutTimeout;
     private javax.swing.JTextField txtMailAddress;
     private javax.swing.JTextField txtMaxConn;
     private javax.swing.JTextField txtMaxQueued;
@@ -1195,7 +1193,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtReceiptHeader;
     private javax.swing.JTextField txtSiteName;
     private javax.swing.JTextField txtSymbol;
-    private javax.swing.JFormattedTextField txtUnlockCode;
+    private javax.swing.JTextField txtUnlockCode;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 }
