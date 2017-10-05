@@ -509,17 +509,26 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
 
     private void btnRemoveCashedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveCashedActionPerformed
         if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove cashed sales?", "Remove Cashed Sales", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            try {
-                int val = dc.removeCashedSales();
-                if (val == 0) {
-                    JOptionPane.showInternalMessageDialog(this, "No sales to remove", "Remove Cashed Sales", JOptionPane.INFORMATION_MESSAGE);
-                    return;
+
+            final ModalDialog mDialog = new ModalDialog(this, "Remove Cashed Sales", "Removing cashed sales...");
+            final Runnable run = () -> {
+                try {
+                    int val = dc.removeCashedSales();
+                    if (val == 0) {
+                        mDialog.hide();
+                        JOptionPane.showInternalMessageDialog(TransactionViewerWindow.this, "No sales to remove", "Remove Cashed Sales", JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
+                    init();
+                    mDialog.hide();
+                    JOptionPane.showInternalMessageDialog(TransactionViewerWindow.this, "Remove " + val + " sales", "Remove Cashed Sales", JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException | SQLException ex) {
+                    mDialog.hide();
+                    JOptionPane.showInternalMessageDialog(TransactionViewerWindow.this, ex, "Remove Cashed Sales", JOptionPane.ERROR_MESSAGE);
                 }
-                init();
-                JOptionPane.showInternalMessageDialog(this, "Remove " + val + " sales", "Remove Cashed Sales", JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException | SQLException ex) {
-                JOptionPane.showInternalMessageDialog(this, ex, "Remove Cashed Sales", JOptionPane.ERROR_MESSAGE);
-            }
+            };
+            new Thread(run, "RemoveSales").start();
+            mDialog.show();
         }
     }//GEN-LAST:event_btnRemoveCashedActionPerformed
 
