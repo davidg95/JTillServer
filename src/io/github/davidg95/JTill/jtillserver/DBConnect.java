@@ -2953,6 +2953,7 @@ public class DBConnect implements DataConnect {
                         + "     NAME VARCHAR(50) not null,\n"
                         + "     PRODUCT INT not null,\n"
                         + "     COLOR INT,\n"
+                        + "     ACCESS_LEVEL INT,\n"
                         + "     SCREEN_ID INT not null references SCREENS(ID)\n"
                         + ")";
                 stmt.execute(cscreens);
