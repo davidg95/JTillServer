@@ -174,6 +174,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         jButton1 = new javax.swing.JButton();
         btnImage = new javax.swing.JButton();
         chkShowBack = new javax.swing.JCheckBox();
+        btnRemoveImage = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
@@ -525,6 +526,13 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
 
         chkShowBack.setText("Show image on server");
 
+        btnRemoveImage.setText("Remove Image");
+        btnRemoveImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveImageActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelGeneralLayout = new javax.swing.GroupLayout(panelGeneral);
         panelGeneral.setLayout(panelGeneralLayout);
         panelGeneralLayout.setHorizontalGroup(
@@ -547,7 +555,10 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                                 .addComponent(jLabel13)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(spinSaleCache, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(btnImage)
+                            .addGroup(panelGeneralLayout.createSequentialGroup()
+                                .addComponent(btnImage)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnRemoveImage))
                             .addComponent(chkUpdate)
                             .addGroup(panelGeneralLayout.createSequentialGroup()
                                 .addGap(118, 118, 118)
@@ -577,7 +588,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                     .addComponent(btnColor)
                     .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnImage)
+                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnImage)
+                    .addComponent(btnRemoveImage))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chkShowBack)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1119,7 +1132,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             try {
                 dc.setSetting("bg_url", file.getAbsolutePath());
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "File is not an image", "Background Image", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(this, "File is not an image", "Background Image", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnImageActionPerformed
@@ -1127,6 +1140,14 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private void chkUnlockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkUnlockActionPerformed
         txtUnlockCode.setEnabled(chkUnlock.isSelected());
     }//GEN-LAST:event_chkUnlockActionPerformed
+
+    private void btnRemoveImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveImageActionPerformed
+        try {
+            dc.setSetting("bg_url", "NONE");
+        } catch (IOException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnRemoveImageActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
@@ -1141,6 +1162,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnNetworkCancel;
     private javax.swing.JButton btnPermissions;
     private javax.swing.JButton btnReceiptSave;
+    private javax.swing.JButton btnRemoveImage;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSaveCache;
     private javax.swing.JButton btnSaveSecurity;

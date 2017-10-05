@@ -5019,7 +5019,10 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public File getLoginBackground() throws IOException {
+    public File getLoginBackground() throws IOException, JTillException {
+        if (getSetting("bg_url").equals("NONE")) {
+            throw new JTillException("None set");
+        }
         return new File(getSetting("bg_url"));
     }
 

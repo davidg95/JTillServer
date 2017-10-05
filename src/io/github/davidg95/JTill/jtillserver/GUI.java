@@ -127,8 +127,7 @@ public class GUI extends JFrame implements GUIInterface {
         LOG.addHandler(new LogHandler());
         try {
             image = ImageIO.read(dc.getLoginBackground());
-        } catch (IOException ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | JTillException ex) {
         }
     }
 
