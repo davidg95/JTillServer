@@ -1,18 +1,15 @@
-JTill log Thu Oct 05 14:07:33 BST 2017
-[14:07:33] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[14:07:33] [INFO] Column ENABLED already exists in STAFF, no need to change database.
-[14:07:33] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
-[14:07:33] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
-[14:07:33] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
-[14:07:33] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
-[14:07:33] [INFO] ERROR
-[14:07:33] [INFO] ERROR
-[14:07:37] [INFO] David Grant has logged in from DAVID-PC
-[14:08:10] [INFO] David Grant has logged out
-[14:08:18] [INFO] David Grant has logged in from DAVID-PC
-[14:08:27] [WARNING] 1 is below minimum stock level
-[14:08:30] [WARNING] 1 is below minimum stock level
-[14:08:41] [WARNING] 1 is below minimum stock level
-[14:08:57] [WARNING] 1 is below minimum stock level
-[14:09:02] [WARNING] 1 is below minimum stock level
-[14:09:17] [INFO] David Grant has logged out
+JTill log Thu Oct 05 14:19:23 BST 2017
+[14:19:23] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[14:19:23] [INFO] Column ENABLED already exists in STAFF, no need to change database.
+[14:19:24] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
+[14:19:24] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
+[14:19:24] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
+[14:19:24] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
+[14:19:24] [INFO] ERROR
+[14:19:24] [INFO] ERROR
+[14:19:28] [INFO] David Grant has logged in from DAVID-PC
+[14:19:42] [INFO] David Grant has logged out
+[14:19:58] [INFO] David Grant has logged in
+[14:20:04] [INFO] Stopping JTIll Server
+[14:20:04] [INFO] Saving properties
+[14:20:04] [INFO] Stopping
