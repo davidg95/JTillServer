@@ -872,13 +872,18 @@ public class ConnectionHandler {
         return dc.getTillStaff(id);
     }
 
-    @JConnMethod("ZSALES")
-    public List<Sale> getZSales(@JConnParameter("SESSION") long session) throws IOException, SQLException, JTillException {
-        return dc.getZSales(session);
+    @JConnMethod("ZREPORT")
+    public TillReport zReport(@JConnParameter("TERMINAL") int terminal, @JConnParameter("DECLARED") BigDecimal declared) throws IOException, SQLException, JTillException {
+        return dc.zReport(terminal, declared);
     }
-    
+
+    @JConnMethod("XREPORT")
+    public TillReport xReport(@JConnParameter("TERMINAL") int terminal, @JConnParameter("DECLARED") BigDecimal declared) throws IOException, SQLException, JTillException {
+        return dc.xReport(terminal, declared);
+    }
+
     @JConnMethod("PURGE")
-    public void purgeDatabase() throws IOException, SQLException{
+    public void purgeDatabase() throws IOException, SQLException {
         dc.purgeDatabase();
     }
 }

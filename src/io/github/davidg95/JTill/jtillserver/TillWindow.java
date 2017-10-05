@@ -82,20 +82,6 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
     private void xReport(Till t) {
         try {
-            TillReport report = new TillReport();
-            List<Sale> sales = dc.getTerminalSales(t.getId(), true);
-            if (sales.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "This till has no sales since the last cash up", "Cash up till", JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }
-            for (Sale s : sales) {
-                report.actualTakings = report.actualTakings.add(s.getTotal());
-                for (SaleItem si : s.getSaleItems()) {
-                    report.tax = report.tax.add(si.getTaxValue());
-                }
-            }
-            report.actualTakings = report.actualTakings.setScale(2);
-            report.tax = report.tax.setScale(2, RoundingMode.HALF_UP);
             String strVal = JOptionPane.showInputDialog(this, "Enter value of money counted", "Cash up till " + t.getName(), JOptionPane.PLAIN_MESSAGE);
             if (strVal == null) {
                 return;
@@ -107,36 +93,10 @@ public class TillWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showInputDialog(this, "You must enter a number greater than zero", "Cash up till " + t.getName(), JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            report.declared = new BigDecimal(strVal);
-            report.declared = report.declared.setScale(2);
-            report.difference = report.declared.subtract(report.actualTakings);
-            report.difference = report.difference.setScale(2);
-            report.transactions = sales.size();
-            report.averageSpend = report.actualTakings.divide(new BigDecimal(report.transactions));
 
-            if (JOptionPane.showConfirmDialog(this, "Do you want the report emailed?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                String message = "Cashup for terminal " + t.getName()
-                        + "\nValue counted: £" + report.declared.toString()
-                        + "\nActual takings: £" + report.actualTakings.toString()
-                        + "\nDifference: £" + report.difference.toString();
-                final ModalDialog mDialog = new ModalDialog(this, "Email", "Emailing...");
-                final Runnable run = new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            dc.sendEmail(message);
-                            mDialog.hide();
-                            JOptionPane.showInputDialog(TillWindow.this, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
-                        } catch (IOException ex) {
-                            mDialog.hide();
-                            JOptionPane.showInputDialog(TillWindow.this, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                };
-                final Thread thread = new Thread(run);
-                thread.start();
-                mDialog.show();
-            }
+            BigDecimal declared = new BigDecimal(strVal);
+
+            final TillReport report = dc.xReport(t.getId(), declared);
             TillReportDialog.showDialog(this, report);
         } catch (Exception ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -237,6 +197,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
         });
 
         btnZ.setText("Z Report");
+        btnZ.setEnabled(false);
         btnZ.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnZActionPerformed(evt);
@@ -377,20 +338,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
     private void btnZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZActionPerformed
         if (JOptionPane.showInternalConfirmDialog(this, "This will take a report for all tills and reset the session, continue?", "Z Report", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            try {
-                long session = Long.parseLong(dc.getSetting("SESSION", Long.toString(new Date().getTime())));
-                List<Sale> sales = dc.getZSales(session);
-                BigDecimal takings = BigDecimal.ZERO;
-                for (Sale s : sales) {
-                    for (SaleItem si : s.getSaleItems()) {
-                        takings = takings.add(si.getPrice().multiply(new BigDecimal(Integer.toString(si.getQuantity()))));
-                    }
-                }
-                dc.setSetting("SESSION", Long.toString(new Date().getTime()));
-                JOptionPane.showInternalMessageDialog(this, "Got " + sales.size() + " sales\nTotal takings: £" + takings, "Z Report", JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException | SQLException | JTillException ex) {
-                JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            
         }
     }//GEN-LAST:event_btnZActionPerformed
 

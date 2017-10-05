@@ -116,7 +116,7 @@ public class TillDialog extends javax.swing.JDialog {
         lblStaff = new javax.swing.JLabel();
         txtUncashedTakings = new javax.swing.JTextField();
         txtStaff = new javax.swing.JTextField();
-        btnCashup = new javax.swing.JButton();
+        btnXReport = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         btnLogout = new javax.swing.JButton();
@@ -130,6 +130,7 @@ public class TillDialog extends javax.swing.JDialog {
         txtDefaultScreen = new javax.swing.JTextField();
         btnChange = new javax.swing.JButton();
         btnSendData = new javax.swing.JButton();
+        btnZReport = new javax.swing.JButton();
 
         lblTakings.setText("Uncashed Takings: ");
 
@@ -146,10 +147,10 @@ public class TillDialog extends javax.swing.JDialog {
 
         txtStaff.setEditable(false);
 
-        btnCashup.setText("Cash Up");
-        btnCashup.addActionListener(new java.awt.event.ActionListener() {
+        btnXReport.setText("X Report");
+        btnXReport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCashupActionPerformed(evt);
+                btnXReportActionPerformed(evt);
             }
         });
 
@@ -248,6 +249,13 @@ public class TillDialog extends javax.swing.JDialog {
             }
         });
 
+        btnZReport.setText("Z Report");
+        btnZReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnZReportActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -261,16 +269,19 @@ public class TillDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSendData)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnXReport))
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(lblStaff)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtStaff)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnLogout))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addComponent(jLabel1)
@@ -280,10 +291,13 @@ public class TillDialog extends javax.swing.JDialog {
                                         .addComponent(lblTakings)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(txtUncashedTakings)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(btnCashup)
-                                    .addComponent(btnChange))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(10, 10, 10)
+                                        .addComponent(btnChange))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnZReport)))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
                 .addContainerGap())
@@ -307,13 +321,15 @@ public class TillDialog extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblTakings)
                             .addComponent(txtUncashedTakings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnCashup))
+                            .addComponent(btnZReport))
+                        .addGap(1, 1, 1)
+                        .addComponent(btnXReport)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
                             .addComponent(txtDefaultScreen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnChange))
-                        .addGap(126, 126, 126)
+                        .addGap(104, 104, 104)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnClose)
                             .addComponent(btnSendData))
@@ -327,72 +343,28 @@ public class TillDialog extends javax.swing.JDialog {
         setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 
-    private void btnCashupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCashupActionPerformed
+    private void btnXReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXReportActionPerformed
         try {
-            TillReport report = new TillReport();
-            List<Sale> sales = dc.getTerminalSales(till.getId(), true);
-            if (sales.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "This till has no sales since the last cash up", "Cash up till", JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }
-            for (Sale s : sales) {
-                report.actualTakings = report.actualTakings.add(s.getTotal());
-                for (SaleItem si : s.getSaleItems()) {
-                    report.tax = report.tax.add(si.getTaxValue());
-                }
-            }
-            report.actualTakings = report.actualTakings.setScale(2);
-            report.tax = report.tax.setScale(2, RoundingMode.HALF_UP);
-            String strVal = JOptionPane.showInputDialog(this, "Enter value of money counted", "Cash up till " + till.getName(), JOptionPane.PLAIN_MESSAGE);
+            String strVal = JOptionPane.showInputDialog(this, "Enter value of money counted", "X Report for " + till.getName(), JOptionPane.PLAIN_MESSAGE);
             if (strVal == null) {
                 return;
             }
             if (strVal.equals("")) {
-                JOptionPane.showMessageDialog(this, "You must enter a value", "Cash up till", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "You must enter a value", "X Report for " + till.getName(), JOptionPane.ERROR_MESSAGE);
             }
             if (!Utilities.isNumber(strVal)) {
-                JOptionPane.showInputDialog(this, "You must enter a number greater than zero", "Cash up till " + till.getName(), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInputDialog(this, "You must enter a number greater than zero", "X Report for " + till.getName(), JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            report.declared = new BigDecimal(strVal);
-            report.difference = report.declared.subtract(report.actualTakings);
-            report.transactions = sales.size();
-            report.averageSpend = report.actualTakings.divide(new BigDecimal(report.transactions), RoundingMode.HALF_DOWN);
 
-            model.setRowCount(0);
-
-            dc.cashUncashedSales(till.getId());
-
-            if (JOptionPane.showConfirmDialog(this, "Do you want the report emailed?", "Cash up", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                String message = "Cashup for terminal " + till.getName()
-                        + "\nValue counted: £" + report.declared.toString()
-                        + "\nActual takings: £" + report.actualTakings.toString()
-                        + "\nDifference: £" + report.difference.toString();
-                final ModalDialog mDialog = new ModalDialog(this, "Email", "Emailing...");
-                final Runnable run = new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            dc.sendEmail(message);
-                            mDialog.hide();
-                            JOptionPane.showInputDialog(TillDialog.this, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
-                        } catch (IOException ex) {
-                            mDialog.hide();
-                            JOptionPane.showInputDialog(TillDialog.this, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                };
-                final Thread thread = new Thread(run);
-                thread.start();
-                mDialog.show();
-            }
-            txtUncashedTakings.setText("£0.00");
+            BigDecimal declared = new BigDecimal(strVal);
+            final TillReport report = dc.xReport(this.till.getId(), declared);
             TillReportDialog.showDialog(this, report);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(TillDialog.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         }
-    }//GEN-LAST:event_btnCashupActionPerformed
+    }//GEN-LAST:event_btnXReportActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         try {
@@ -446,13 +418,62 @@ public class TillDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btnSendDataActionPerformed
 
+    private void btnZReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZReportActionPerformed
+        try {
+            String strVal = JOptionPane.showInputDialog(this, "Enter value of money counted", "Z Report for " + till.getName(), JOptionPane.PLAIN_MESSAGE);
+            if (strVal == null) {
+                return;
+            }
+            if (strVal.equals("")) {
+                JOptionPane.showMessageDialog(this, "You must enter a value", "Z Report for " + till.getName(), JOptionPane.ERROR_MESSAGE);
+            }
+            if (!Utilities.isNumber(strVal)) {
+                JOptionPane.showInputDialog(this, "You must enter a number greater than zero", "Z Report for " + till.getName(), JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            BigDecimal declared = new BigDecimal(strVal);
+            final TillReport report = dc.zReport(this.till.getId(), declared);
+
+            if (JOptionPane.showConfirmDialog(this, "Do you want the report emailed?", "Z Report for " + till.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                String message = "Cashup for terminal " + till.getName()
+                        + "\nValue counted: £" + report.getDeclared().toString()
+                        + "\nActual takings: £" + report.getExpected().toString()
+                        + "\nDifference: £" + report.getDifference().toString();
+                final ModalDialog mDialog = new ModalDialog(this, "Email", "Emailing...");
+                final Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            dc.sendEmail(message);
+                            mDialog.hide();
+                            JOptionPane.showInputDialog(TillDialog.this, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (IOException ex) {
+                            mDialog.hide();
+                            JOptionPane.showInputDialog(TillDialog.this, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                };
+                final Thread thread = new Thread(run);
+                thread.start();
+                mDialog.show();
+            }
+            txtUncashedTakings.setText("£0.00");
+            TillReportDialog.showDialog(this, report);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(TillDialog.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        }
+    }//GEN-LAST:event_btnZReportActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCashup;
     private javax.swing.JButton btnChange;
     private javax.swing.JButton btnChangeName;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnSendData;
+    private javax.swing.JButton btnXReport;
+    private javax.swing.JButton btnZReport;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;

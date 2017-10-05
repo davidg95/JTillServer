@@ -27,12 +27,12 @@ public class TillReportDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setTitle("Till Report");
         setLocationRelativeTo(parent);
-        declared.setText("£" + report.declared);
-        actual.setText("£" + report.actualTakings);
-        diff.setText("£" + report.difference);
-        transactions.setText(report.transactions + "");
-        average.setText("£" + report.averageSpend);
-        tax.setText("£" + report.tax);
+        declared.setText("£" + report.getDeclared());
+        actual.setText("£" + report.getExpected());
+        diff.setText("£" + report.getDifference());
+        transactions.setText(report.getTransactions() + "");
+        average.setText("£" + report.getAverageSpend());
+        tax.setText("£" + report.getTax());
     }
 
     public static void showDialog(Component parent, TillReport report) {

@@ -5243,21 +5243,43 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public List<Sale> getZSales(long session) throws IOException, SQLException, JTillException {
-        String query = "SELECT * FROM SALES s, CUSTOMERS c, TILLS t, STAFF st WHERE c.ID = s.CUSTOMER AND st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.TIMESTAMP >=" + session;
+    public TillReport zReport(int terminal, BigDecimal declared) throws IOException, SQLException, JTillException {
+        final TillReport report = xReport(terminal, declared);
+        final String query = "UPDATE SALES SET CASHED=TRUE WHERE TERMINAL=" + terminal;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
-            List<Sale> sales = new LinkedList<>();
             try {
-                ResultSet set = stmt.executeQuery(query);
-                sales = getSalesFromResultSet(set);
+                stmt.executeUpdate(query);
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
                 LOG.log(Level.SEVERE, null, ex);
                 throw ex;
             }
-            return sales;
+        }
+        return report;
+    }
+
+    @Override
+    public TillReport xReport(int terminal, BigDecimal declared) throws IOException, SQLException, JTillException {
+        final String query = "SELECT * FROM SALES s, CUSTOMERS c, TILLS t, STAFF st WHERE c.ID = s.CUSTOMER AND st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.CASHED = FALSE AND s.TERMINAL = " + terminal;
+        try (Connection con = getNewConnection()) {
+            Statement stmt = con.createStatement();
+            List<Sale> sales = new LinkedList<>();
+            try {
+                ResultSet set = stmt.executeQuery(query);
+                sales = getSalesFromResultSet(set);
+                if (sales.isEmpty()) {
+                    throw new JTillException("No sales since last Z report.");
+                }
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+            Till t = this.getTill(terminal);
+            return new TillReport(t.getName(), sales, declared);
         }
     }
 
