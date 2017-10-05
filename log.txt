@@ -1,15 +1,18 @@
-JTill log Thu Oct 05 14:19:23 BST 2017
-[14:19:23] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[14:19:23] [INFO] Column ENABLED already exists in STAFF, no need to change database.
-[14:19:24] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
-[14:19:24] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
-[14:19:24] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
-[14:19:24] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
-[14:19:24] [INFO] ERROR
-[14:19:24] [INFO] ERROR
-[14:19:28] [INFO] David Grant has logged in from DAVID-PC
-[14:19:42] [INFO] David Grant has logged out
-[14:19:58] [INFO] David Grant has logged in
-[14:20:04] [INFO] Stopping JTIll Server
-[14:20:04] [INFO] Saving properties
-[14:20:04] [INFO] Stopping
+JTill log Thu Oct 05 14:49:45 BST 2017
+[14:49:45] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[14:49:46] [INFO] Column ENABLED already exists in STAFF, no need to change database.
+[14:49:46] [INFO] Table RECEIVED_REPORTS already exists, no need to change database.
+[14:49:46] [INFO] Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.
+[14:49:46] [INFO] Column PAID already exists in RECEIVED_REPORTS, no need to change database.
+[14:49:46] [INFO] Column INHERITS already exists in SCREENS, no need to change database.
+[14:49:46] [INFO] ERROR
+[14:49:46] [INFO] ERROR
+[14:49:46] [INFO] ERROR
+[14:49:50] [INFO] David Grant has logged in
+[14:50:53] [INFO] David Grant has logged in from DAVID-PC
+[14:50:54] [INFO] David Grant has logged out
+[14:51:25] [INFO] David Grant has logged in from DAVID-PC
+[14:51:40] [INFO] David Grant has logged out
+[14:51:41] [INFO] David Grant has logged in from DAVID-PC
+[14:51:57] [INFO] Temp has logged in from DAVID-PC
+[14:52:26] [INFO] Temp has logged out

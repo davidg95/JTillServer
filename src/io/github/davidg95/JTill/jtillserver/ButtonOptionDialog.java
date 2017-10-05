@@ -90,6 +90,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         txtColor.setText(button.getColorValue());
         txtFontColor.setBackground(TillButton.hex2Rgb(button.getFontColor()));
         txtFontColor.setText(button.getFontColor());
+        cmbAccess.setSelectedIndex(button.getAccessLevel() - 1);
     }
 
     /**
@@ -139,6 +140,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         txtFontColor = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         cmbFunction = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        cmbAccess = new javax.swing.JComboBox<>();
 
         setResizable(false);
 
@@ -173,6 +176,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                 txtHeightKeyReleased(evt);
             }
         });
+
+        txtItem.setMaximumSize(new java.awt.Dimension(6, 20));
 
         jLabel3.setText("Label Text:");
 
@@ -210,6 +215,10 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             }
         });
 
+        jLabel7.setText("Access:");
+
+        cmbAccess.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Assisstant", "Supervisor", "Manager", "Area Manager" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -232,18 +241,22 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7)
+                            .addComponent(btnClose, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
                             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtWidth, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
-                            .addComponent(txtItem)
-                            .addComponent(txtHeight, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(btnClose, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)))
+                            .addComponent(cmbAccess, 0, 135, Short.MAX_VALUE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtWidth, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                                .addComponent(txtItem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtHeight, javax.swing.GroupLayout.Alignment.TRAILING)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -262,7 +275,11 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2)))
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(cmbAccess, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
@@ -363,6 +380,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         } else {
             button.setName(txtItem.getText());
         }
+
+        button.setAccessLevel(cmbAccess.getSelectedIndex() + 1);
         setVisible(false);
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -430,13 +449,17 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
         if (func.equals("Product") || func.equals("Screen")) {
             btnChangeButton.setEnabled(true);
+            cmbAccess.setEnabled(true);
+
         } else {
             btnChangeButton.setEnabled(false);
+            cmbAccess.setEnabled(false);
+
         }
-        
-        if(func.equals("Product")){
+
+        if (func.equals("Product")) {
             btnChangeButton.setText("Change Product");
-        } else if(func.equals("Screen")){
+        } else if (func.equals("Screen")) {
             btnChangeButton.setText("Change Screen");
         }
     }//GEN-LAST:event_cmbFunctionActionPerformed
@@ -445,6 +468,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnChangeButton;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnSave;
+    private javax.swing.JComboBox<String> cmbAccess;
     private javax.swing.JComboBox<String> cmbFunction;
     private javax.swing.ButtonGroup colorGroup;
     private javax.swing.JLabel jLabel1;
@@ -453,6 +477,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JTextField txtColor;
     private javax.swing.JTextField txtFontColor;
     private javax.swing.JTextField txtHeight;
