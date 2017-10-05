@@ -137,6 +137,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         txtTotalSales = new javax.swing.JFormattedTextField();
         txtTax = new javax.swing.JFormattedTextField();
         jLabel11 = new javax.swing.JLabel();
+        btnRemoveCashed = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Transaction Viewer");
@@ -339,6 +340,13 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
 
         jLabel11.setText("Total Tax:");
 
+        btnRemoveCashed.setText("Remove Cashed Sales");
+        btnRemoveCashed.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveCashedActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -353,10 +361,12 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                             .addComponent(jLabel9)
                             .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtTax)
-                            .addComponent(txtTotalValue, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
-                            .addComponent(txtTotalSales))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnRemoveCashed)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtTax)
+                                .addComponent(txtTotalValue, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                                .addComponent(txtTotalSales)))))
                 .addGap(2, 2, 2)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 688, Short.MAX_VALUE)
                 .addContainerGap())
@@ -380,8 +390,9 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtTax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel11))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnRemoveCashed))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 494, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -496,8 +507,25 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         init();
     }//GEN-LAST:event_btnClearActionPerformed
 
+    private void btnRemoveCashedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveCashedActionPerformed
+        if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove cashed sales?", "Remove Cashed Sales", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            try {
+                int val = dc.removeCashedSales();
+                if (val == 0) {
+                    JOptionPane.showInternalMessageDialog(this, "No sales to remove", "Remove Cashed Sales", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+                init();
+                JOptionPane.showInternalMessageDialog(this, "Remove " + val + " sales", "Remove Cashed Sales", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showInternalMessageDialog(this, ex, "Remove Cashed Sales", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnRemoveCashedActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnRemoveCashed;
     private javax.swing.JButton btnSearch;
     private javax.swing.JCheckBox chkAllStaff;
     private javax.swing.JCheckBox chkAllTills;

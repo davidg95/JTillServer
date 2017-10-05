@@ -5309,4 +5309,31 @@ public class DBConnect implements DataConnect {
             }
         }
     }
+
+    @Override
+    public int removeCashedSales() throws IOException, SQLException {
+        String query = "SELECT ID FROM SALES WHERE CASHED = TRUE";
+        try (Connection con = getNewConnection()) {
+            Statement stmt = con.createStatement();
+            try {
+                ResultSet set = stmt.executeQuery(query);
+                List<Integer> ids = new LinkedList<>();
+                while (set.next()) {
+                    ids.add(set.getInt("ID"));
+                }
+                for(int id: ids){
+                    String query2 = "DELETE FROM SALEITEMS WHERE SALE_ID = " + id;
+                    stmt.executeUpdate(query2);
+                }
+                String query3 = "DELETE FROM SALES WHERE CASHED = TRUE";
+                int val = stmt.executeUpdate(query3);
+                con.commit();
+                return val;
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
 }

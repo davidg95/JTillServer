@@ -813,7 +813,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("GETBGIMAGE")
-    public File getBackgroundImage() throws IOException {
+    public File getBackgroundImage() throws IOException, JTillException {
         return dc.getLoginBackground();
     }
 
@@ -880,5 +880,10 @@ public class ConnectionHandler {
     @JConnMethod("PURGE")
     public void purgeDatabase() throws IOException, SQLException {
         dc.purgeDatabase();
+    }
+
+    @JConnMethod("REMOVECASHED")
+    public int removeCashedSales() throws IOException, SQLException {
+        return dc.removeCashedSales();
     }
 }
