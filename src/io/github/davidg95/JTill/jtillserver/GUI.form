@@ -233,7 +233,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemPluSettings">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Edit Plu Settings"/>
+                <Property name="text" type="java.lang.String" value="Edit Barcode Settings"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemPluSettingsActionPerformed"/>
