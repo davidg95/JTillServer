@@ -326,7 +326,7 @@ public class DBConnect implements DataConnect {
                 try {
                     Statement stmt2 = con.createStatement();
                     int res2 = stmt2.executeUpdate("UPDATE PRODUCTS SET BARCODE = (SELECT CODE FROM PLUS WHERE PLUS.PRODUCT = PRODUCTS.ID)");
-                    LOG.log(Level.INFO, "Updated barcodes," + res2 + " rows affected");
+                    LOG.log(Level.INFO, "Updated ," + res2 + " rows affected");
                     con.commit();
                     try {
                         Statement stmt3 = con.createStatement();
@@ -341,6 +341,20 @@ public class DBConnect implements DataConnect {
                     con.rollback();
                     throw ex;
                 }
+            } catch (SQLException ex) {
+                con.rollback();
+                throw ex;
+            }
+        } catch (SQLException ex) {
+            LOG.log(Level.INFO, "ERROR");
+        }
+
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                int res = stmt.executeUpdate("ALTER TABLE BUTTONS ADD LINK VARCHAR(50)");
+                LOG.log(Level.INFO, "Added LINK to BUTTONS, " + res + " rows affected");
+                con.commit();
             } catch (SQLException ex) {
                 con.rollback();
                 throw ex;
@@ -592,7 +606,8 @@ public class DBConnect implements DataConnect {
                 + "     XPOS INT,\n"
                 + "     YPOS INT,\n"
                 + "     ACCESS_LEVEL INT,\n"
-                + "     SCREEN_ID INT not null references SCREENS(ID)\n"
+                + "     SCREEN_ID INT not null references SCREENS(ID),\n"
+                + "     LINK VARCHAR(50)\n"
                 + ")";
         String wasteReports = "create table \"APP\".WASTEREPORTS\n"
                 + "(\n"
@@ -874,7 +889,7 @@ public class DBConnect implements DataConnect {
             int x = 1;
             int y = 1;
             for (int i = 0; i < 50; i++) {
-                TillButton bu = addButton(new TillButton("[SPACE]", 0, TillButton.SPACE, s.getId(), "000000", "ffffff", 1, 1, x, y, 1));
+                TillButton bu = addButton(new TillButton("[SPACE]", 0, TillButton.SPACE, s.getId(), "000000", "ffffff", 1, 1, x, y, 1, ""));
                 x++;
                 if (x == 6) {
                     x = 1;
@@ -2677,7 +2692,8 @@ public class DBConnect implements DataConnect {
             int x = set.getInt("XPOS");
             int y = set.getInt("YPOS");
             int accessLevel = set.getInt("ACCESS_LEVEL");
-            TillButton b = new TillButton(name, p, type, s, color, fontColor, id, width, height, x, y, accessLevel);
+            String link = set.getString("LINK");
+            TillButton b = new TillButton(name, p, type, s, color, fontColor, id, width, height, x, y, accessLevel, link);
 
             buttons.add(b);
         }
@@ -2709,7 +2725,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public TillButton addButton(TillButton b) throws SQLException {
-        String query = "INSERT INTO BUTTONS (NAME, PRODUCT, TYPE, COLOR, FONT_COLOR, SCREEN_ID, WIDTH, HEIGHT, XPOS, YPOS, ACCESS_LEVEL) VALUES (" + b.getSQLInsertString() + ")";
+        String query = "INSERT INTO BUTTONS (NAME, PRODUCT, TYPE, COLOR, FONT_COLOR, SCREEN_ID, WIDTH, HEIGHT, XPOS, YPOS, ACCESS_LEVEL, LINK) VALUES (" + b.getSQLInsertString() + ")";
         try (Connection con = getNewConnection()) {
             PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             try {
@@ -2907,7 +2923,8 @@ public class DBConnect implements DataConnect {
                     int height = set.getInt("HEIGHT");
                     int x = set.getInt("XPOS");
                     int y = set.getInt("YPOS");
-                    TillButton b = new TillButton(name, p, type, s, color, fontColor, id, width, height, x, y);
+                    String link = set.getString("LINK");
+                    TillButton b = new TillButton(name, p, type, s, color, fontColor, id, width, height, x, y, link);
                     buttons.add(b);
                 }
                 con.commit();
@@ -2944,8 +2961,9 @@ public class DBConnect implements DataConnect {
                     int x = set.getInt("XPOS");
                     int y = set.getInt("YPOS");
                     int accessLevel = set.getInt("ACCESS_LEVEL");
+                    String link = set.getString("LINK");
 
-                    TillButton b = new TillButton(name, i, type, s.getId(), color, fontColor, id, width, height, x, y, accessLevel);
+                    TillButton b = new TillButton(name, i, type, s.getId(), color, fontColor, id, width, height, x, y, accessLevel, link);
 
                     buttons.add(b);
                 }

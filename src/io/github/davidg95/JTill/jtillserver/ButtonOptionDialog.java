@@ -79,6 +79,10 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             btnChangeButton.setEnabled(false);
             cmbFunction.setSelectedItem("Void");
             txtItem.setText(button.getName());
+        } else if (button.getType() == TillButton.LINK) {
+            btnChangeButton.setEnabled(true);
+            cmbFunction.setSelectedItem("Link");
+            txtItem.setText(button.getName());
         } else {
             btnChangeButton.setText("Change Screen");
             cmbFunction.setSelectedItem("Screen");
@@ -213,7 +217,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
         jLabel6.setText("Function:");
 
-        cmbFunction.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Space", "Product", "Screen", "Back", "Main", "Logoff", "Payment", "Void" }));
+        cmbFunction.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Space", "Product", "Screen", "Back", "Main", "Logoff", "Payment", "Void", "Link" }));
         cmbFunction.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbFunctionActionPerformed(evt);
@@ -348,6 +352,13 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                 txtItem.setText(s.getName());
             }
             button.setType(TillButton.SCREEN);
+        } else if (func.equals("Link")) {
+            String link = JOptionPane.showInputDialog(this, "Enter URL", "Link", JOptionPane.PLAIN_MESSAGE);
+            if (link.length() > 50) {
+                JOptionPane.showMessageDialog(this, "Link must be 50 characters or less", "Link", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            button.setLink(link);
         }
     }//GEN-LAST:event_btnChangeButtonActionPerformed
 
@@ -399,6 +410,9 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         } else if (func.equals("Void")) {
             button.setName(txtItem.getText());
             button.setType(TillButton.VOID);
+        } else if (func.equals("Link")) {
+            button.setName(txtItem.getText());
+            button.setType(TillButton.LINK);
         } else {
             button.setName(txtItem.getText());
         }
@@ -436,20 +450,21 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             txtItem.setText(func);
         }
 
-        if (func.equals("Product") || func.equals("Screen")) {
+        if (func.equals("Product") || func.equals("Screen") || func.equals("Link")) {
             btnChangeButton.setEnabled(true);
             cmbAccess.setEnabled(true);
 
         } else {
             btnChangeButton.setEnabled(false);
             cmbAccess.setEnabled(false);
-
         }
 
         if (func.equals("Product")) {
             btnChangeButton.setText("Change Product");
         } else if (func.equals("Screen")) {
             btnChangeButton.setText("Change Screen");
+        } else if (func.equals("Link")) {
+            btnChangeButton.setText("Change Link");
         }
     }//GEN-LAST:event_cmbFunctionActionPerformed
 
@@ -498,24 +513,24 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         txtColorSet();
     }//GEN-LAST:event_txtColorFocusLost
 
-    private void txtColorSet(){
+    private void txtColorSet() {
         String hex = txtColor.getText();
         if (validateHex(hex)) {
             txtColor.setBackground(TillButton.hex2Rgb(hex));
-        } else{
+        } else {
             JOptionPane.showMessageDialog(this, "Not a valid hex number", "Color", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    private void txtFontSet(){
+
+    private void txtFontSet() {
         String hex = txtFontColor.getText();
         if (validateHex(hex)) {
             txtFontColor.setBackground(TillButton.hex2Rgb(hex));
-        } else{
+        } else {
             JOptionPane.showMessageDialog(this, "Not a valid hex number", "Font Color", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private boolean validateHex(String hex) {
         if (hex.length() != 6) {
             return false;
