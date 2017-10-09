@@ -205,11 +205,6 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
         jLabel5.setText("Font Color:");
 
-        txtFontColor.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtFontColorFocusLost(evt);
-            }
-        });
         txtFontColor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtFontColorActionPerformed(evt);
@@ -505,10 +500,6 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     private void txtColorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtColorFocusLost
         txtColorSet();
     }//GEN-LAST:event_txtColorFocusLost
-
-    private void txtFontColorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFontColorFocusLost
-        txtFontSet();
-    }//GEN-LAST:event_txtFontColorFocusLost
 
     private void txtColorSet(){
         String hex = txtColor.getText();
