@@ -142,6 +142,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         cmbFunction = new javax.swing.JComboBox<>();
         jLabel7 = new javax.swing.JLabel();
         cmbAccess = new javax.swing.JComboBox<>();
+        btnColorButton = new javax.swing.JButton();
+        btnColorFont = new javax.swing.JButton();
 
         setResizable(false);
 
@@ -190,19 +192,17 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
         jLabel4.setText("Color:");
 
-        txtColor.setEditable(false);
-        txtColor.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                txtColorMouseClicked(evt);
+        txtColor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtColorActionPerformed(evt);
             }
         });
 
         jLabel5.setText("Font Color:");
 
-        txtFontColor.setEditable(false);
-        txtFontColor.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                txtFontColorMouseClicked(evt);
+        txtFontColor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFontColorActionPerformed(evt);
             }
         });
 
@@ -219,81 +219,100 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
         cmbAccess.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Assisstant", "Supervisor", "Manager", "Area Manager" }));
 
+        btnColorButton.setText("Color Picker");
+        btnColorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnColorButtonActionPerformed(evt);
+            }
+        });
+
+        btnColorFont.setText("Color Picker");
+        btnColorFont.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnColorFontActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel5))
+                        .addComponent(btnSave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtFontColor)
-                            .addComponent(cmbFunction, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtColor)
-                            .addComponent(btnChangeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addComponent(btnClose, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)))
+                        .addComponent(btnClose))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(cmbAccess, 0, 135, Short.MAX_VALUE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtWidth, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
-                                .addComponent(txtItem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtHeight, javax.swing.GroupLayout.Alignment.TRAILING)))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(9, 9, 9)
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cmbFunction, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnChangeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel5)
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING))
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(jLabel2))
+                                            .addComponent(txtColor, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtFontColor, javax.swing.GroupLayout.Alignment.LEADING))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtHeight)
+                                            .addComponent(btnColorButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(btnColorFont, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addComponent(txtItem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cmbAccess, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
-                            .addComponent(cmbAccess, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(cmbFunction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnChangeButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(txtColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtFontColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(cmbFunction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnChangeButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addGap(7, 7, 7)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(btnColorButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtFontColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(btnColorFont))
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmbAccess, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSave)
@@ -305,6 +324,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
+        button = null;
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 
@@ -385,21 +405,6 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         setVisible(false);
     }//GEN-LAST:event_btnSaveActionPerformed
 
-    private void txtWidthKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtWidthKeyReleased
-        if (Utilities.isNumber(txtWidth.getText())) {
-            int val = Integer.parseInt(txtWidth.getText());
-            if (val < 1 || val > maxWidth) {
-                JOptionPane.showMessageDialog(this, "This must be greater than 0 and less than " + maxWidth + ", which is the maximum width for this item", "Button", JOptionPane.ERROR_MESSAGE);
-                txtWidth.setSelectionStart(0);
-                txtWidth.setSelectionEnd(txtWidth.getText().length());
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "You must enter a number", "Button", JOptionPane.ERROR_MESSAGE);
-            txtWidth.setSelectionStart(0);
-            txtWidth.setSelectionEnd(txtWidth.getText().length());
-        }
-    }//GEN-LAST:event_txtWidthKeyReleased
-
     private void txtHeightKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHeightKeyReleased
         if (Utilities.isNumber(txtHeight.getText())) {
             int val = Integer.parseInt(txtHeight.getText());
@@ -414,24 +419,6 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             txtHeight.setSelectionEnd(txtHeight.getText().length());
         }
     }//GEN-LAST:event_txtHeightKeyReleased
-
-    private void txtColorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtColorMouseClicked
-        Color c = JColorChooser.showDialog(this, "Select background color", TillButton.hex2Rgb(button.getColorValue()));
-        if (c == null) {
-            return;
-        }
-        txtColor.setBackground(c);
-        txtColor.setText(TillButton.rbg2Hex(c));
-    }//GEN-LAST:event_txtColorMouseClicked
-
-    private void txtFontColorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtFontColorMouseClicked
-        Color c = JColorChooser.showDialog(this, "Select font color", TillButton.hex2Rgb(button.getFontColor()));
-        if (c == null) {
-            return;
-        }
-        txtFontColor.setBackground(c);
-        txtFontColor.setText(TillButton.rbg2Hex(c));
-    }//GEN-LAST:event_txtFontColorMouseClicked
 
     private void cmbFunctionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbFunctionActionPerformed
         String func = (String) cmbFunction.getSelectedItem();
@@ -464,9 +451,71 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_cmbFunctionActionPerformed
 
+    private void txtWidthKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtWidthKeyReleased
+        if (Utilities.isNumber(txtWidth.getText())) {
+            int val = Integer.parseInt(txtWidth.getText());
+            if (val < 1 || val > maxWidth) {
+                JOptionPane.showMessageDialog(this, "This must be greater than 0 and less than " + maxWidth + ", which is the maximum height for this item", "Button", JOptionPane.ERROR_MESSAGE);
+                txtWidth.setSelectionStart(0);
+                txtWidth.setSelectionEnd(txtWidth.getText().length());
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "You must enter a number", "Button", JOptionPane.ERROR_MESSAGE);
+            txtWidth.setSelectionStart(0);
+            txtWidth.setSelectionEnd(txtWidth.getText().length());
+        }
+    }//GEN-LAST:event_txtWidthKeyReleased
+
+    private void btnColorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColorButtonActionPerformed
+        Color c = JColorChooser.showDialog(this, "Select background color", TillButton.hex2Rgb(button.getColorValue()));
+        if (c == null) {
+            return;
+        }
+        txtColor.setBackground(c);
+        txtColor.setText(TillButton.rbg2Hex(c));
+    }//GEN-LAST:event_btnColorButtonActionPerformed
+
+    private void btnColorFontActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColorFontActionPerformed
+        Color c = JColorChooser.showDialog(this, "Select font color", TillButton.hex2Rgb(button.getFontColor()));
+        if (c == null) {
+            return;
+        }
+        txtFontColor.setBackground(c);
+        txtFontColor.setText(TillButton.rbg2Hex(c));
+    }//GEN-LAST:event_btnColorFontActionPerformed
+
+    private void txtColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtColorActionPerformed
+        String hex = txtColor.getText();
+        if (validateHex(hex)) {
+            txtColor.setBackground(TillButton.hex2Rgb(hex));
+        } else{
+            JOptionPane.showMessageDialog(this, "Not a valid hex number", "Color", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_txtColorActionPerformed
+
+    private void txtFontColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFontColorActionPerformed
+        String hex = txtFontColor.getText();
+        if (validateHex(hex)) {
+            txtFontColor.setBackground(TillButton.hex2Rgb(hex));
+        } else{
+            JOptionPane.showMessageDialog(this, "Not a valid hex number", "Font Color", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_txtFontColorActionPerformed
+
+    private boolean validateHex(String hex) {
+        if (hex.length() != 6) {
+            return false;
+        }
+        if (hex.matches("[0-9a-fA-F]+")) {
+            return true;
+        }
+        return false;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChangeButton;
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnColorButton;
+    private javax.swing.JButton btnColorFont;
     private javax.swing.JButton btnSave;
     private javax.swing.JComboBox<String> cmbAccess;
     private javax.swing.JComboBox<String> cmbFunction;

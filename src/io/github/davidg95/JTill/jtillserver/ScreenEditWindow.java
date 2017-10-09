@@ -395,12 +395,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     private void showButtonOptions() {
         currentButton = ButtonOptionDialog.showDialog(this, currentButton, currentScreen.getWidth() - currentButton.getX() + 1, currentScreen.getHeight() - currentButton.getY() + 1);
         if (currentButton == null) { //If it is null then the button is getting removed.
-            try {
-                currentButton.setName("[SPACE]");
-                dc.updateButton(currentButton);
-            } catch (IOException | SQLException | JTillException ex) {
-                showError(ex);
-            }
+            return;
         } else { //If it is not null then it is being edited or nothing has happening to it
             try {
                 dc.updateButton(currentButton); //This will update the ucrrent button in the database
