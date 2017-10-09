@@ -316,6 +316,38 @@ public class DBConnect implements DataConnect {
         } catch (SQLException ex) {
             LOG.log(Level.INFO, "ERROR");
         }
+
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                int res = stmt.executeUpdate("ALTER TABLE PRODUCTS ADD BARCODE VARCHAR(15)");
+                LOG.log(Level.INFO, "BARCODE added to PRODUCTS table, " + res + " rows affected");
+                con.commit();
+                try {
+                    Statement stmt2 = con.createStatement();
+                    int res2 = stmt2.executeUpdate("UPDATE PRODUCTS SET BARCODE = (SELECT CODE FROM PLUS WHERE PLUS.PRODUCT = PRODUCTS.ID)");
+                    LOG.log(Level.INFO, "Updated barcodes," + res2 + " rows affected");
+                    con.commit();
+                    try {
+                        Statement stmt3 = con.createStatement();
+                        int res3 = stmt3.executeUpdate("DROP TABLES PLUS");
+                        LOG.log(Level.INFO, "REmoved PLUS table");
+                        con.commit();
+                    } catch (SQLException ex) {
+                        con.rollback();
+                        throw ex;
+                    }
+                } catch (SQLException ex) {
+                    con.rollback();
+                    throw ex;
+                }
+            } catch (SQLException ex) {
+                con.rollback();
+                throw ex;
+            }
+        } catch (SQLException ex) {
+            LOG.log(Level.INFO, "ERROR");
+        }
     }
 
     /**
@@ -488,15 +520,8 @@ public class DBConnect implements DataConnect {
                 + "	COST_PRICE DOUBLE,\n"
                 + "	MIN_PRODUCT_LEVEL INTEGER,\n"
                 + "	MAX_PRODUCT_LEVEL INTEGER,\n"
-                + "     PACK_SIZE INT\n"
-                + ")";
-        String plus = "create table APP.PLUS\n"
-                + "(\n"
-                + "	ID INT not null primary key\n"
-                + "        GENERATED ALWAYS AS IDENTITY\n"
-                + "        (START WITH 1, INCREMENT BY 1),\n"
-                + "     CODE VARCHAR(20),\n"
-                + "     PRODUCT INT not null references PRODUCTS(ID)\n"
+                + "     PACK_SIZE INT,\n"
+                + "     BARCODE VARCHAR(15)\n"
                 + ")";
         String discounts = "create table \"APP\".DISCOUNTS\n"
                 + "(\n"
@@ -703,14 +728,6 @@ public class DBConnect implements DataConnect {
                 error(ex);
             }
             TillSplashScreen.addBar(2);
-            try {
-                stmt.execute(plus);
-                LOG.log(Level.INFO, "Created plus table");
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-                error(ex);
-            }
             TillSplashScreen.addBar(2);
             try {
                 stmt.execute(discounts);
@@ -895,7 +912,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<Product> getAllProducts() throws SQLException {
-        String query = "SELECT ID as pId, ORDER_CODE, p.NAME as pName, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL FROM PRODUCTS p";
+        String query = "SELECT ID as pId, ORDER_CODE, p.NAME as pName, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL, BARCODE FROM PRODUCTS p";
         List<Product> products;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
@@ -918,8 +935,9 @@ public class DBConnect implements DataConnect {
                     int packSize = set.getInt("PACK_SIZE");
                     int minStock = set.getInt("MIN_PRODUCT_LEVEL");
                     int maxStock = set.getInt("MAX_PRODUCT_LEVEL");
+                    String barcode = set.getString("BARCODE");
 
-                    Product p = new Product(name, shortName, order_code, cid, dId, comments, taxID, open, price, costPrice, packSize, stock, minStock, maxStock, code);
+                    Product p = new Product(name, shortName, barcode, order_code, cid, dId, comments, taxID, open, price, costPrice, packSize, stock, minStock, maxStock, code);
                     p.setCategory(this.getCategory(p.getCategoryID()));
                     p.setDepartment(this.getDepartment(p.getDepartmentID()));
                     p.setTax(this.getTax(p.getTaxID()));
@@ -957,8 +975,9 @@ public class DBConnect implements DataConnect {
             int packSize = set.getInt("PACK_SIZE");
             int minStock = set.getInt("MIN_PRODUCT_LEVEL");
             int maxStock = set.getInt("MAX_PRODUCT_LEVEL");
+            String barcode = set.getString("BARCODE");
 
-            Product p = new Product(name, shortName, order_code, categoryID, dId, comments, taxID, open, price, costPrice, packSize, stock, minStock, maxStock, code);
+            Product p = new Product(name, shortName, barcode, order_code, categoryID, dId, comments, taxID, open, price, costPrice, packSize, stock, minStock, maxStock, code);
 
             products.add(p);
         }
@@ -1177,7 +1196,7 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public Product getProduct(int code) throws SQLException, ProductNotFoundException {
-        String query = "SELECT p.ID as pId, p.ORDER_CODE, p.NAME as pName, p.OPEN_PRICE, p.PRICE, p.STOCK, p.COMMENTS, p.SHORT_NAME, p.CATEGORY_ID, p.DEPARTMENT_ID, p.TAX_ID, p.COST_PRICE, p.PACK_SIZE, p.MIN_PRODUCT_LEVEL, p.MAX_PRODUCT_LEVEL FROM PRODUCTS p WHERE p.ID=" + code;
+        String query = "SELECT p.ID as pId, p.ORDER_CODE, p.NAME as pName, p.OPEN_PRICE, p.PRICE, p.STOCK, p.COMMENTS, p.SHORT_NAME, p.CATEGORY_ID, p.DEPARTMENT_ID, p.TAX_ID, p.COST_PRICE, p.PACK_SIZE, p.MIN_PRODUCT_LEVEL, p.MAX_PRODUCT_LEVEL, p.BARCODE FROM PRODUCTS p WHERE p.ID=" + code;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             List<Product> products = new LinkedList<>();
@@ -1220,7 +1239,7 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public Product getProductByBarcode(String barcode) throws SQLException, ProductNotFoundException {
-        String query = "SELECT p.ID as pId, p.ORDER_CODE, p.NAME as pName, p.OPEN_PRICE, p.PRICE, p.STOCK, p.COMMENTS, p.SHORT_NAME, p.DEPARTMENT_ID, p.CATEGORY_ID, p.TAX_ID, p.COST_PRICE, p.PACK_SIZE, p.MIN_PRODUCT_LEVEL, p.MAX_PRODUCT_LEVEL, pl.ID as plId, pl.CODE as plCode, pl.PRODUCT as plProduct FROM PRODUCTS p, PLUS pl WHERE p.ID = pl.PRODUCT AND pl.CODE='" + barcode + "'";
+        String query = "SELECT p.ID as pId, p.ORDER_CODE, p.NAME as pName, p.OPEN_PRICE, p.PRICE, p.STOCK, p.COMMENTS, p.SHORT_NAME, p.DEPARTMENT_ID, p.CATEGORY_ID, p.TAX_ID, p.COST_PRICE, p.PACK_SIZE, p.MIN_PRODUCT_LEVEL, p.MAX_PRODUCT_LEVEL, p.BARCODE, pl.ID as plId, pl.CODE as plCode, pl.PRODUCT as plProduct FROM PRODUCTS p, PLUS pl WHERE p.ID = pl.PRODUCT AND pl.CODE='" + barcode + "'";
         List<Product> products = new LinkedList<>();
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
@@ -3277,176 +3296,6 @@ public class DBConnect implements DataConnect {
         return systemSettings.getSetting(key);
     }
 
-    private List<Plu> getPlusFromResultSet(ResultSet set) throws SQLException {
-        List<Plu> plus = new LinkedList<>();
-        while (set.next()) {
-            int id = set.getInt(1);
-            String code = set.getString(2);
-            int product = set.getInt(3);
-            final Plu plu = new Plu(id, code, product);
-            int pid = set.getInt(4);
-            int order_code = set.getInt(5);
-            String name = set.getString(6);
-            boolean open = set.getBoolean(7);
-            BigDecimal price = new BigDecimal(Double.toString(set.getDouble(8)));
-            int stock = set.getInt(9);
-            String comments = set.getString(10);
-            String shortName = set.getString(11);
-            int categoryID = set.getInt(12);
-            int dId = set.getInt(13);
-            int taxID = set.getInt(14);
-            BigDecimal costPrice = new BigDecimal(Double.toString(set.getDouble(15)));
-            int minStock = set.getInt(16);
-            int maxStock = set.getInt(17);
-            final Product p = new Product(name, shortName, order_code, categoryID, dId, comments, taxID, open, price, costPrice, stock, minStock, maxStock, pid);
-            plu.setProduct(p);
-            plus.add(plu);
-        }
-        return plus;
-    }
-
-    @Override
-    public Plu addPlu(Plu plu) throws IOException, SQLException {
-        String query = "INSERT INTO APP.PLUS (CODE, PRODUCT) values ('" + plu.getCode() + "'," + plu.getProductID() + ")";
-        try (Connection con = getNewConnection()) {
-            PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            try {
-                stmt.executeUpdate();
-                ResultSet set = stmt.getGeneratedKeys();
-                while (set.next()) {
-                    int id = set.getInt(1);
-                    plu.setId(id);
-                }
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-        }
-        return plu;
-    }
-
-    @Override
-    public void removePlu(int id) throws IOException, JTillException, SQLException {
-        String query = "DELETE FROM PLUS WHERE ID=" + id;
-        try (Connection con = getNewConnection()) {
-            Statement stmt = con.createStatement();
-            int value = 0;
-            try {
-                stmt.executeUpdate(query);
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-            if (value == 0) {
-                throw new JTillException(id + " could not be found");
-            }
-        }
-    }
-
-    @Override
-    public void removePlu(Plu p) throws IOException, JTillException, SQLException {
-        removePlu(p.getId());
-    }
-
-    @Override
-    public Plu getPlu(int id) throws IOException, JTillException, SQLException {
-        String query = "SELECT * FROM PLUS pl, PRODUCTS p WHERE pl.PRODUCT = p.ID AND ID=" + id;
-        try (Connection con = getNewConnection()) {
-            Statement stmt = con.createStatement();
-            List<Plu> plus = new LinkedList<>();
-            try {
-                ResultSet set = stmt.executeQuery(query);
-                plus = getPlusFromResultSet(set);
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-
-            if (plus.isEmpty()) {
-                throw new JTillException(id + " could not be found");
-            }
-            return plus.get(0);
-        }
-    }
-
-    @Override
-    public Plu getPluByCode(String code) throws IOException, JTillException, SQLException {
-        String query = "SELECT * FROM PLUS WHERE CODE='" + code + "'";
-        try (Connection con = getNewConnection()) {
-            Statement stmt = con.createStatement();
-            List<Plu> plus = new LinkedList<>();
-            try {
-                ResultSet set = stmt.executeQuery(query);
-                plus = getPlusFromResultSet(set);
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-            if (plus.isEmpty()) {
-                throw new JTillException("Plu " + code + " not found");
-            }
-
-            return plus.get(0);
-        }
-    }
-
-    @Override
-    public List<Plu> getAllPlus() throws IOException, SQLException {
-        final String query = "SELECT * FROM PLUS pl, PRODUCTS p WHERE pl.PRODUCT = p.ID";
-        try (Connection con = getNewConnection()) {
-            final Statement stmt = con.createStatement();
-            List<Plu> plus = new LinkedList<>();
-            try {
-                final ResultSet set = stmt.executeQuery(query);
-                plus = getPlusFromResultSet(set);
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-
-            for (Plu p : plus) {
-                try {
-                    p.setProduct(this.getProductByBarcode(p.getCode()));
-                } catch (ProductNotFoundException ex) {
-                    Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            return plus;
-        }
-    }
-
-    @Override
-    public Plu updatePlu(Plu p) throws IOException, JTillException, SQLException {
-        String query = "UPDATE PLUS SET CODE='" + p.getCode() + "', PRODUCT=" + p.getProductID() + " WHERE ID=" + p.getId();
-        try (Connection con = getNewConnection()) {
-            Statement stmt = con.createStatement();
-            int value;
-            try {
-                value = stmt.executeUpdate(query);
-                con.commit();
-                if (value == 0) {
-                    throw new JTillException("Plu " + p.getId() + " not found");
-                }
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-        }
-        return p;
-    }
-
     @Override
     public boolean isTillLoggedIn(Staff s) throws IOException, StaffNotFoundException, SQLException {
         return loggedIn.contains(s);
@@ -4204,8 +4053,9 @@ public class DBConnect implements DataConnect {
                     BigDecimal costPrice = new BigDecimal(Double.toString(set.getDouble(19)));
                     int minStock = set.getInt(20);
                     int maxStock = set.getInt(21);
+                    String barcode = set.getString(22);
 
-                    Product p = new Product(name, shortName, order_code, categoryID, dId, comments, taxID, open, pprice, costPrice, stock, minStock, maxStock, pcode);
+                    Product p = new Product(name, shortName, barcode, order_code, categoryID, dId, comments, taxID, open, pprice, costPrice, stock, minStock, maxStock, pcode);
                     i.setItem(p);
                     items.add(i);
                 }
@@ -4779,68 +4629,6 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public Product addProductAndPlu(Product p, Plu pl) throws IOException, SQLException {
-        try (Connection con = getNewConnection()) {
-            try {
-                String productAdd = "INSERT INTO PRODUCTS (ORDER_CODE, NAME, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL) VALUES (" + p.getSQLInsertString() + ")";
-                PreparedStatement productStmt = con.prepareStatement(productAdd, Statement.RETURN_GENERATED_KEYS);
-                productStmt.executeUpdate();
-                ResultSet product = productStmt.getGeneratedKeys();
-                while (product.next()) {
-                    int id = product.getInt(1);
-                    p.setId(id);
-                    pl.setProductID(id);
-                }
-                String pluAdd = "INSERT INTO PLUS (CODE, PRODUCT) VALUES ('" + pl.getCode() + "'," + pl.getProductID() + ")";
-                PreparedStatement pluStmt = con.prepareStatement(pluAdd, Statement.RETURN_GENERATED_KEYS);
-                pluStmt.executeUpdate();
-                ResultSet plu = pluStmt.getGeneratedKeys();
-                while (plu.next()) {
-                    int id = plu.getInt(1);
-                    pl.setId(id);
-                }
-                con.commit();
-                return p;
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-        }
-    }
-
-    @Override
-    public Plu getPluByProduct(int product) throws IOException, JTillException {
-        String query = "SELECT * FROM PLUS WHERE PRODUCT=" + product;
-        try (Connection con = getNewConnection()) {
-            try {
-                Statement stmt = con.createStatement();
-                ResultSet set = stmt.executeQuery(query);
-                Plu p = null;
-                while (set.next()) {
-                    int id = set.getInt("ID");
-                    String code = set.getString("CODE");
-                    p = new Plu(id, code, product);
-                }
-                con.commit();
-                if (p == null) {
-                    throw new JTillException("No matcing plu found");
-                }
-                return p;
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(DBConnect.class
-                    .getName()).log(Level.SEVERE, null, ex);
-            throw new JTillException("Error getting Plu");
-        }
-    }
-
-    @Override
     public List<SaleItem> searchSaleItems(int department, int category, Date start, Date end) throws IOException, SQLException, JTillException {
         long startL = start.getTime();
         long endL = end.getTime();
@@ -4880,8 +4668,9 @@ public class DBConnect implements DataConnect {
                     int minStock = set.getInt(20);
                     int maxStock = set.getInt(21);
                     int packSize = set.getInt(22);
+                    String barcode = set.getString(23);
 
-                    Product p = new Product(name, shortName, order_code, categoryID, dId, comments, taxID, open, pprice, costPrice, packSize, stock, minStock, maxStock, pcode);
+                    Product p = new Product(name, shortName, barcode, order_code, categoryID, dId, comments, taxID, open, pprice, costPrice, packSize, stock, minStock, maxStock, pcode);
                     i.setItem(p);
                     items.add(i);
                 }
@@ -4953,8 +4742,9 @@ public class DBConnect implements DataConnect {
                     BigDecimal costPrice = new BigDecimal(Double.toString(set.getDouble("COST_PRICE")));
                     int minStock = set.getInt("MIN_PRODUCT_LEVEL");
                     int maxStock = set.getInt("MAX_PRODUCT_LEVEL");
+                    String barcode = set.getString("BARCODE");
 
-                    Product p = new Product(name, shortName, order_code, categoryID, dId, comments, taxID, open, price, costPrice, stock, minStock, maxStock, code);
+                    Product p = new Product(name, shortName, barcode, order_code, categoryID, dId, comments, taxID, open, price, costPrice, stock, minStock, maxStock, code);
 
                     products.add(p);
                 }
@@ -5321,7 +5111,7 @@ public class DBConnect implements DataConnect {
                 while (set.next()) {
                     ids.add(set.getInt("ID"));
                 }
-                for(int id: ids){
+                for (int id : ids) {
                     String query2 = "DELETE FROM SALEITEMS WHERE SALE_ID = " + id;
                     stmt.executeUpdate(query2);
                 }

@@ -1226,7 +1226,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemTaxes);
 
-        itemPluSettings.setText("Edit Plu Settings");
+        itemPluSettings.setText("Edit Barcode Settings");
         itemPluSettings.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemPluSettingsActionPerformed(evt);
@@ -1622,7 +1622,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemStockTakeActionPerformed
 
     private void itemPluSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPluSettingsActionPerformed
-        PluSettings.showWindow(dc);
+        BarcodeSettings.showWindow(dc);
     }//GEN-LAST:event_itemPluSettingsActionPerformed
 
     private void btnManageStockMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnManageStockMouseEntered

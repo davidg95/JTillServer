@@ -18,29 +18,29 @@ import javax.swing.JOptionPane;
  *
  * @author David
  */
-public class PluSettings extends javax.swing.JInternalFrame {
+public class BarcodeSettings extends javax.swing.JInternalFrame {
 
-    private static PluSettings window;
+    private static BarcodeSettings window;
 
     private final DataConnect dc;
 
     /**
      * Creates new form PluSettings
      */
-    public PluSettings(DataConnect dc) {
+    public BarcodeSettings(DataConnect dc) {
         this.dc = dc;
         initComponents();
 //        setIconImage(icon);
         super.setClosable(true);
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
-        setTitle("PLU Settings");
+        setTitle("Barcode Settings");
         init();
     }
 
     public static void showWindow(DataConnect dc) {
         if (window == null || window.isClosed()) {
-            window = new PluSettings(dc);
+            window = new BarcodeSettings(dc);
             GUI.gui.internal.add(window);
         }
         window.setVisible(true);
@@ -48,7 +48,7 @@ public class PluSettings extends javax.swing.JInternalFrame {
             window.setIcon(false);
             window.setSelected(true);
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(PluSettings.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(BarcodeSettings.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -70,7 +70,7 @@ public class PluSettings extends javax.swing.JInternalFrame {
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(PluSettings.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(BarcodeSettings.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -244,7 +244,7 @@ public class PluSettings extends javax.swing.JInternalFrame {
             dc.setSetting("NEXT_PLU", "0");
             init();
         } catch (IOException ex) {
-            Logger.getLogger(PluSettings.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(BarcodeSettings.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnResetActionPerformed
 

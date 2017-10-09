@@ -28,7 +28,7 @@ import javax.swing.JOptionPane;
 public final class ProductEntryDialog extends javax.swing.JDialog {
 
     private final DataConnect dc;
-    private Plu plu;
+    private String barcode;
     private Product product;
     private Category selectedCategory;
     private Department selectedDepartment;
@@ -632,9 +632,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        product = new Product(name, shortName, orderCode, category.getId(), dep.getId(), comments, tax.getId(), false, price, costPrice, packSize, 0, minStock, maxStock, 0);
+        product = new Product(name, shortName, barcode, orderCode, category.getId(), dep.getId(), comments, tax.getId(), false, price, costPrice, packSize, 0, minStock, maxStock, 0);
         try {
-            product = dc.addProductAndPlu(product, plu);
+            product = dc.addProduct(product);
             if (nextBarcode != null) {
                 dc.setSetting("NEXT_PLU", nextBarcode);
                 nextBarcode = null;
@@ -690,7 +690,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                         }
                         String barcode = upc + ref; //Join them all together
                         if (!dc.checkBarcode(barcode)) { //Check the barcode is not already int use
-                            plu = new Plu(barcode, 0); //Create the new PLU
+                            this.barcode = barcode;
                             break; //break from the while loop
                         } else {
                             dc.setSetting("NEXT_PLU", nextBarcode); //If it is in use, set the next plu and loop again
@@ -717,7 +717,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "Barcode is already in use", "Barcode in use", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                plu = new Plu(txtPlu.getText(), 0);
+                barcode = txtPlu.getText();
             }
             //Check what kinda of product they want to create
             if (radNew.isSelected()) { //Create a new standard product
@@ -734,8 +734,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 Product toCopy = ProductSelectDialog.showDialog(this); //Copy details from an existing product
                 if (toCopy != null) {
                     toCopy.setStock(0);
+                    toCopy.setBarcode(txtPlu.getText());
                     try {
-                        dc.addProductAndPlu(toCopy, plu);
+                        dc.addProduct(toCopy);
                         JOptionPane.showMessageDialog(this, "New Plu created", "New Plu", JOptionPane.INFORMATION_MESSAGE);
                         txtPlu.setText("");
                         radNew.setSelected(true);
@@ -801,9 +802,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "All fields must be filled out", "Create Product", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            product = new Product(name, shortName, 0, category.getId(), dep.getId(), comments, tax.getId(), true);
-            plu.setProductID(product.getId());
-            product = dc.addProductAndPlu(product, plu);
+            product = new Product(name, shortName, barcode, 0, category.getId(), dep.getId(), comments, tax.getId(), true);
+            product = dc.addProduct(product);
             if (chkNext.isSelected()) {
                 dc.setSetting("NEXT_PLU", nextBarcode);
             }

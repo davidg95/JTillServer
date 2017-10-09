@@ -32,8 +32,8 @@ public class ProductDialog extends javax.swing.JDialog {
     private static Product product; //The product that is getting returned.
 
     private final DataConnect dc;
-    private Plu plu;
-
+    private Product p;
+    
     private final boolean editMode;
 
     private Category selectedCategory; //The selected category for the product.
@@ -48,10 +48,10 @@ public class ProductDialog extends javax.swing.JDialog {
      * @param p
      * @param stock stock level to set the field to.
      */
-    public ProductDialog(Window parent, DataConnect dc, Plu p, int stock) {
+    public ProductDialog(Window parent, DataConnect dc, Product p, int stock) {
         super(parent);
         this.dc = dc;
-        this.plu = p;
+        this.p = p;
         initComponents();
         try {
             selectedCategory = dc.getCategory(1);
@@ -68,7 +68,7 @@ public class ProductDialog extends javax.swing.JDialog {
         txtStock.setText(stock + "");
         txtMinStock.setText("0");
         txtMaxStock.setText("0");
-        txtBarcode.setText(p.getCode());
+        txtBarcode.setText(p.getBarcode());
     }
 
     public ProductDialog(Window parent, DataConnect dc, Product p) {
@@ -81,9 +81,9 @@ public class ProductDialog extends javax.swing.JDialog {
             setModal(true);
             txtName.setText(p.getLongName());
             txtShortName.setText(p.getName());
-            plu = dc.getPluByProduct(p.getId());
+            this.p = dc.getProduct(p.getId());
             txtOrderCode.setText(p.getOrder_code() + "");
-            txtBarcode.setText(plu.getCode());
+            txtBarcode.setText(p.getBarcode());
             txtPrice.setText(p.getPrice() + "");
             txtCostPrice.setText(p.getCostPrice() + "");
             txtStock.setText(p.getStock() + "");
@@ -98,7 +98,7 @@ public class ProductDialog extends javax.swing.JDialog {
             btnSelectDepartment.setText(d.getName());
             btnAddProduct.setText("Save Changes");
             setTitle("Edit Product " + p.getName());
-        } catch (IOException | SQLException | JTillException ex) {
+        } catch (IOException | SQLException | JTillException | ProductNotFoundException ex) {
             showError(ex);
         }
     }
@@ -110,7 +110,7 @@ public class ProductDialog extends javax.swing.JDialog {
      * @param parent the parent component.
      * @return new Product object.
      */
-    public static Product showNewProductDialog(Component parent, DataConnect dc, Plu p, int stock) {
+    public static Product showNewProductDialog(Component parent, DataConnect dc, Product p, int stock) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
@@ -377,11 +377,12 @@ public class ProductDialog extends javax.swing.JDialog {
         Tax tax = selectedTax;
         Department dep = selectedDepartment;
         String comments = txtComments.getText();
+        String barcode = txtBarcode.getText();
         try {
-            Plu p = dc.addPlu(plu);
+            Product p = dc.addProduct(product);
             if (chkOpen.isSelected()) {
                 try {
-                    product = new Product(name, shortName, orderCode, category.getId(), dep.getId(), comments, tax.getId(), true);
+                    product = new Product(name, shortName, barcode, orderCode, category.getId(), dep.getId(), comments, tax.getId(), true);
                     product = dc.addProduct(product);
 //                    ReceivedReport rep = new ReceivedReport();
 //                    dc.addReceivedItem(new ReceivedItem(product.getId(), product.getStock(), product.getCostPrice()));
@@ -397,7 +398,7 @@ public class ProductDialog extends javax.swing.JDialog {
                 int maxStock = Integer.parseInt(txtMaxStock.getText());
 
                 if (!editMode) {
-                    product = new Product(name, shortName, orderCode, category.getId(), dep.getId(), comments, tax.getId(), false, price, costPrice, stock, minStock, maxStock, p.getId());
+                    product = new Product(name, shortName, barcode, orderCode, category.getId(), dep.getId(), comments, tax.getId(), false, price, costPrice, stock, minStock, maxStock, p.getId());
 //                    dc.addReceivedItem(new ReceivedItem(product.getId(), product.getStock(), product.getCostPrice()));
                     product = dc.addProduct(product);
                 } else {

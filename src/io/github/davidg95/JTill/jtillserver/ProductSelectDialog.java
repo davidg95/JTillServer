@@ -68,7 +68,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      */
     public static Product showDialog(Component parent, boolean showOpen) {
         Window window = null;
-        if(parent instanceof Dialog || parent instanceof Frame){
+        if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
         final ProductSelectDialog dialog = new ProductSelectDialog(window, showOpen);
@@ -299,17 +299,12 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                     newList.add(p);
                 }
             } else {
-                try {
-                    if (!Utilities.isNumber(search)) {
-                        JOptionPane.showMessageDialog(this, "Barcode must be a number", "Search", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    final Plu plu = dc.getPluByProduct(p.getId());
-                    if (plu.getCode().equals(search)) {
-                        newList.add(p);
-                    }
-                } catch (IOException | JTillException ex) {
-                    Logger.getLogger(ProductSelectDialog.class.getName()).log(Level.SEVERE, null, ex);
+                if (!Utilities.isNumber(search)) {
+                    JOptionPane.showMessageDialog(this, "Barcode must be a number", "Search", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (p.getBarcode().equals(search)) {
+                    newList.add(p);
                 }
             }
         }
