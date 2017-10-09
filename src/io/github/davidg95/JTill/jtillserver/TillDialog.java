@@ -187,6 +187,12 @@ public class TillDialog extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Terminal Info"));
 
+        txtName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNameActionPerformed(evt);
+            }
+        });
+
         lblID.setText("Terminal ID:");
 
         txtID.setEditable(false);
@@ -478,6 +484,10 @@ public class TillDialog extends javax.swing.JDialog {
             Logger.getLogger(TillDialog.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         }
     }//GEN-LAST:event_btnZReportActionPerformed
+
+    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
+        btnChangeName.doClick();
+    }//GEN-LAST:event_txtNameActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChange;

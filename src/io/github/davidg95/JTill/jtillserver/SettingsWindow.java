@@ -156,7 +156,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         btnSave = new javax.swing.JButton();
         txtOutgoingAddress = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
-        btnPermissions = new javax.swing.JButton();
         panelGeneral = new javax.swing.JPanel();
         chkSendProducts = new javax.swing.JCheckBox();
         jLabel13 = new javax.swing.JLabel();
@@ -400,7 +399,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                     .addComponent(jLabel9)
                     .addComponent(chkUnlock)
                     .addComponent(txtUnlockCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                 .addComponent(btnSaveSecurity))
         );
 
@@ -455,13 +454,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSave))
         );
-
-        btnPermissions.setText("Edit Setting Values");
-        btnPermissions.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPermissionsActionPerformed(evt);
-            }
-        });
 
         panelGeneral.setBorder(javax.swing.BorderFactory.createTitledBorder("General Settings"));
 
@@ -734,10 +726,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                             .addComponent(btnEditDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(btnDatabaseCancel)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnPermissions)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClose)))
+                    .addComponent(btnClose, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -759,18 +748,15 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnEditDatabase)
                             .addComponent(btnDatabaseCancel))
-                        .addGap(16, 16, 16)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnClose)
-                            .addComponent(btnPermissions, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(34, 34, 34))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnClose))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(panelSecurity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         pack();
@@ -923,18 +909,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Error saving settings", "Email Settings", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSaveActionPerformed
-
-    private void btnPermissionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPermissionsActionPerformed
-        try {
-            if (GUI.staff.getPosition() < Integer.parseInt(dc.getSetting("SETTINGS_EDIT"))) {
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You do not have authority to use this screen", "Settings", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            PermissionsWindow.showDialog(dc);
-        } catch (IOException ex) {
-            LOG.log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnPermissionsActionPerformed
 
     private void btnSaveCacheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveCacheActionPerformed
         boolean error = false;
@@ -1160,7 +1134,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnEditNetwork;
     private javax.swing.JButton btnImage;
     private javax.swing.JButton btnNetworkCancel;
-    private javax.swing.JButton btnPermissions;
     private javax.swing.JButton btnReceiptSave;
     private javax.swing.JButton btnRemoveImage;
     private javax.swing.JButton btnSave;
