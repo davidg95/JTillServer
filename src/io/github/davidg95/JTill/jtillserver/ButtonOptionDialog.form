@@ -206,6 +206,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtColor">
       <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtColorFocusLost"/>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtColorActionPerformed"/>
       </Events>
     </Component>
@@ -216,6 +217,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtFontColor">
       <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtFontColorFocusLost"/>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtFontColorActionPerformed"/>
       </Events>
     </Component>

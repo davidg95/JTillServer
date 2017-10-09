@@ -192,6 +192,11 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
         jLabel4.setText("Color:");
 
+        txtColor.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtColorFocusLost(evt);
+            }
+        });
         txtColor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtColorActionPerformed(evt);
@@ -200,6 +205,11 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
         jLabel5.setText("Font Color:");
 
+        txtFontColor.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtFontColorFocusLost(evt);
+            }
+        });
         txtFontColor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtFontColorActionPerformed(evt);
@@ -485,23 +495,39 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnColorFontActionPerformed
 
     private void txtColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtColorActionPerformed
+        txtColorSet();
+    }//GEN-LAST:event_txtColorActionPerformed
+
+    private void txtFontColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFontColorActionPerformed
+        txtFontSet();
+    }//GEN-LAST:event_txtFontColorActionPerformed
+
+    private void txtColorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtColorFocusLost
+        txtColorSet();
+    }//GEN-LAST:event_txtColorFocusLost
+
+    private void txtFontColorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFontColorFocusLost
+        txtFontSet();
+    }//GEN-LAST:event_txtFontColorFocusLost
+
+    private void txtColorSet(){
         String hex = txtColor.getText();
         if (validateHex(hex)) {
             txtColor.setBackground(TillButton.hex2Rgb(hex));
         } else{
             JOptionPane.showMessageDialog(this, "Not a valid hex number", "Color", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_txtColorActionPerformed
-
-    private void txtFontColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFontColorActionPerformed
+    }
+    
+    private void txtFontSet(){
         String hex = txtFontColor.getText();
         if (validateHex(hex)) {
             txtFontColor.setBackground(TillButton.hex2Rgb(hex));
         } else{
             JOptionPane.showMessageDialog(this, "Not a valid hex number", "Font Color", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_txtFontColorActionPerformed
-
+    }
+    
     private boolean validateHex(String hex) {
         if (hex.length() != 6) {
             return false;
