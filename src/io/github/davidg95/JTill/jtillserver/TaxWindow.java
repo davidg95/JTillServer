@@ -35,22 +35,22 @@ public class TaxWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form TaxWindow
      */
-    public TaxWindow(DataConnect dc, Image icon) {
+    public TaxWindow(DataConnect dc) {
         dbConn = dc;
 //        this.setIconImage(icon);
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
-        super.setFrameIcon(new ImageIcon(icon));
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         showAllTaxes();
     }
 
-    public static void showTaxWindow(DataConnect dc, Image icon) {
+    public static void showTaxWindow(DataConnect dc) {
         if (frame == null || frame.isClosed()) {
-            frame = new TaxWindow(dc, icon);
+            frame = new TaxWindow(dc);
             GUI.gui.internal.add(frame);
         }
         update();

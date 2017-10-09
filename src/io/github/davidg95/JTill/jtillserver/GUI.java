@@ -593,6 +593,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemStaffReporting = new javax.swing.JMenuItem();
         itemWasteReports = new javax.swing.JMenuItem();
         itemReceivedReports = new javax.swing.JMenuItem();
+        itemDeclarations = new javax.swing.JMenuItem();
         menuHelp = new javax.swing.JMenu();
         itemAbout = new javax.swing.JMenuItem();
         itemHelp = new javax.swing.JMenuItem();
@@ -1326,6 +1327,14 @@ public class GUI extends JFrame implements GUIInterface {
         });
         jMenu1.add(itemReceivedReports);
 
+        itemDeclarations.setText("Declaration Reports");
+        itemDeclarations.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemDeclarationsActionPerformed(evt);
+            }
+        });
+        jMenu1.add(itemDeclarations);
+
         jMenuBar1.add(jMenu1);
 
         menuHelp.setText("Help");
@@ -1394,11 +1403,11 @@ public class GUI extends JFrame implements GUIInterface {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnManageStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStockActionPerformed
-        ProductsWindow.showProductsListWindow(dc, icon);
+        ProductsWindow.showProductsListWindow();
     }//GEN-LAST:event_btnManageStockActionPerformed
 
     private void itemStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStockActionPerformed
-        ProductsWindow.showProductsListWindow(dc, icon);
+        ProductsWindow.showProductsListWindow();
     }//GEN-LAST:event_itemStockActionPerformed
 
     private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
@@ -1486,11 +1495,11 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemDiscountsActionPerformed
 
     private void itemCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCategorysActionPerformed
-        CategorysWindow.showCategoryWindow(dc, icon);
+        CategorysWindow.showCategoryWindow(dc);
     }//GEN-LAST:event_itemCategorysActionPerformed
 
     private void itemTaxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTaxesActionPerformed
-        TaxWindow.showTaxWindow(dc, icon);
+        TaxWindow.showTaxWindow(dc);
     }//GEN-LAST:event_itemTaxesActionPerformed
 
     private void btnDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiscountsActionPerformed
@@ -1498,7 +1507,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnDiscountsActionPerformed
 
     private void btnCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategorysActionPerformed
-        CategorysWindow.showCategoryWindow(dc, icon);
+        CategorysWindow.showCategoryWindow(dc);
     }//GEN-LAST:event_btnCategorysActionPerformed
 
     private void itemServerOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemServerOptionsActionPerformed
@@ -1587,7 +1596,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemSuppliersActionPerformed
 
     private void itemDepartmentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDepartmentsActionPerformed
-        DepartmentsWindow.showWindow(dc, icon);
+        DepartmentsWindow.showWindow(dc);
     }//GEN-LAST:event_itemDepartmentsActionPerformed
 
     private void itemSalesReportingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSalesReportingActionPerformed
@@ -1603,7 +1612,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemLabelPrintingActionPerformed
 
     private void itemCreateNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCreateNewProductActionPerformed
-        ProductEntryDialog.showDialog(this, icon);
+        ProductEntryDialog.showDialog(this);
     }//GEN-LAST:event_itemCreateNewProductActionPerformed
 
     private void itemNewStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNewStaffActionPerformed
@@ -1806,7 +1815,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnTerminalsActionPerformed
 
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
-        ProductEntryDialog.showDialog(this, icon);
+        ProductEntryDialog.showDialog(this);
     }//GEN-LAST:event_btnNewProductActionPerformed
 
     private void btnWasteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWasteStockActionPerformed
@@ -1876,6 +1885,10 @@ public class GUI extends JFrame implements GUIInterface {
         new HelpPage().setVisible(true);
     }//GEN-LAST:event_itemHelpActionPerformed
 
+    private void itemDeclarationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDeclarationsActionPerformed
+        DeclarationReportWindow.showWindow();
+    }//GEN-LAST:event_itemDeclarationsActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
     private javax.swing.JButton btnCategorys;
@@ -1904,6 +1917,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemCreateNewProduct;
     private javax.swing.JMenuItem itemCustomers;
     private javax.swing.JMenuItem itemDatabase;
+    private javax.swing.JMenuItem itemDeclarations;
     private javax.swing.JMenuItem itemDepartments;
     private javax.swing.JMenuItem itemDiscounts;
     private javax.swing.JMenuItem itemEnquiry;

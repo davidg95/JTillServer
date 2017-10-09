@@ -40,9 +40,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
      * Creates new form ProductEntryDialog.
      *
      * @param parent the parent component.
-     * @param icon the frame icon.
      */
-    public ProductEntryDialog(Window parent, Image icon) {
+    public ProductEntryDialog(Window parent) {
         super(parent);
         this.dc = GUI.gui.dc;
         initComponents();
@@ -64,12 +63,12 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         c.show(jPanel1, "card2");
     }
 
-    public static void showDialog(Component parent, Image icon) {
+    public static void showDialog(Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        ProductEntryDialog dialog = new ProductEntryDialog(window, icon);
+        ProductEntryDialog dialog = new ProductEntryDialog(window);
         dialog.setVisible(true);
     }
 

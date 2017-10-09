@@ -42,15 +42,14 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
      * Creates new form CategoryWindow
      *
      * @param dc the data connection.
-     * @param icon the frame icon.
      */
-    public CategorysWindow(DataConnect dc, Image icon) {
+    public CategorysWindow(DataConnect dc) {
         this.dc = dc;
 //        this.setIconImage(icon);
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
-        super.setFrameIcon(new ImageIcon(icon));
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
@@ -62,11 +61,10 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
      * called, it will first construct the window.
      *
      * @param dc the data connection.
-     * @param icon the frame icon.
      */
-    public static void showCategoryWindow(DataConnect dc, Image icon) {
+    public static void showCategoryWindow(DataConnect dc) {
         if (frame == null || frame.isClosed()) {
-            frame = new CategorysWindow(dc, icon);
+            frame = new CategorysWindow(dc);
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {

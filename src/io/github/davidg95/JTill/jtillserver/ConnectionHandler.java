@@ -828,13 +828,13 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("ZREPORT")
-    public TillReport zReport(@JConnParameter("TERMINAL") int terminal, @JConnParameter("DECLARED") BigDecimal declared) throws IOException, SQLException, JTillException {
-        return dc.zReport(terminal, declared);
+    public TillReport zReport(@JConnParameter("TERMINAL") Till terminal, @JConnParameter("DECLARED") BigDecimal declared, @JConnParameter("STAFF") Staff staff) throws IOException, SQLException, JTillException {
+        return dc.zReport(terminal, declared, staff);
     }
 
     @JConnMethod("XREPORT")
-    public TillReport xReport(@JConnParameter("TERMINAL") int terminal, @JConnParameter("DECLARED") BigDecimal declared) throws IOException, SQLException, JTillException {
-        return dc.xReport(terminal, declared);
+    public TillReport xReport(@JConnParameter("TERMINAL") Till terminal, @JConnParameter("DECLARED") BigDecimal declared, @JConnParameter("STAFF") Staff staff) throws IOException, SQLException, JTillException {
+        return dc.xReport(terminal, declared, staff);
     }
 
     @JConnMethod("PURGE")
@@ -845,5 +845,10 @@ public class ConnectionHandler {
     @JConnMethod("REMOVECASHED")
     public int removeCashedSales() throws IOException, SQLException {
         return dc.removeCashedSales();
+    }
+
+    @JConnMethod("DECLARATIONREPORTS")
+    public List<TillReport> getDeclarationReports(@JConnParameter("TERMINAL") int terminal) throws IOException, SQLException {
+        return dc.getDeclarationReports(terminal);
     }
 }

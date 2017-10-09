@@ -56,21 +56,16 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private DefaultComboBoxModel taxesModel;
     private DefaultComboBoxModel categorysModel;
 
-    private final Image icon;
-
     private Category searchC;
     private Department searchD;
 
     /**
      * Creates new form ProductsWindow
-     *
-     * @param dc the data source.
      */
-    public ProductsWindow(DataConnect dc, Image icon) {
-        this.dc = dc;
-        this.icon = icon;
+    public ProductsWindow() {
+        this.dc = GUI.gui.dc;
         initComponents();
-        super.setFrameIcon(new ImageIcon(icon));
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
@@ -83,12 +78,10 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     /**
      * Method to showing the products list window. This will create the window
      * if needed.
-     *
-     * @param dc the data source.
      */
-    public static void showProductsListWindow(DataConnect dc, Image icon) {
+    public static void showProductsListWindow() {
         if (frame == null || frame.isClosed()) {
-            frame = new ProductsWindow(dc, icon);
+            frame = new ProductsWindow();
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {
@@ -880,7 +873,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSaveChangesActionPerformed
 
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
-        ProductEntryDialog.showDialog(this, icon);
+        ProductEntryDialog.showDialog(this);
         showAllProducts();
         setCurrentProduct(null);
     }//GEN-LAST:event_btnNewProductActionPerformed
@@ -891,12 +884,12 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tableProductsMousePressed
 
     private void btnShowCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowCategorysActionPerformed
-        CategorysWindow.showCategoryWindow(dc, icon);
+        CategorysWindow.showCategoryWindow(dc);
         init();
     }//GEN-LAST:event_btnShowCategorysActionPerformed
 
     private void btnShowTaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowTaxActionPerformed
-        TaxWindow.showTaxWindow(dc, icon);
+        TaxWindow.showTaxWindow(dc);
         init();
     }//GEN-LAST:event_btnShowTaxActionPerformed
 
@@ -966,7 +959,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnWasteStockActionPerformed
 
     private void btnChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChartActionPerformed
-        StockGraphWindow.showWindow(dc, icon);
+        StockGraphWindow.showWindow(dc);
     }//GEN-LAST:event_btnChartActionPerformed
 
     private void btnCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCSVActionPerformed
@@ -1011,7 +1004,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_radCodeActionPerformed
 
     private void btnDepartmentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartmentsActionPerformed
-        DepartmentsWindow.showWindow(dc, icon);
+        DepartmentsWindow.showWindow(dc);
     }//GEN-LAST:event_btnDepartmentsActionPerformed
 
     private void btnAdvancedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdvancedActionPerformed

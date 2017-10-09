@@ -377,7 +377,7 @@ public class TillDialog extends javax.swing.JDialog {
             }
 
             BigDecimal declared = new BigDecimal(strVal);
-            final TillReport report = dc.xReport(this.till.getId(), declared);
+            final TillReport report = dc.xReport(this.till, declared, GUI.staff);
             TillReportDialog.showDialog(this, report);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -452,7 +452,7 @@ public class TillDialog extends javax.swing.JDialog {
             }
 
             BigDecimal declared = new BigDecimal(strVal);
-            final TillReport report = dc.zReport(this.till.getId(), declared);
+            final TillReport report = dc.zReport(this.till, declared, GUI.staff);
 
             if (JOptionPane.showConfirmDialog(this, "Do you want the report emailed?", "Z Report for " + till.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 String message = "Cashup for terminal " + till.getName()

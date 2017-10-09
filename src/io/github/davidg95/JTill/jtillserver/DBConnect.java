@@ -170,7 +170,6 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         } catch (SQLException ex) {
-            LOG.log(Level.INFO, "Column ENABLED already exists in STAFF, no need to change database.");
         }
 
         try (final Connection con = getNewConnection()) {
@@ -194,7 +193,6 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         } catch (SQLException ex) {
-            LOG.log(Level.INFO, "Table RECEIVED_REPORTS already exists, no need to change database.");
         }
 
         try (final Connection con = getNewConnection()) {
@@ -208,7 +206,6 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         } catch (SQLException ex) {
-            LOG.log(Level.INFO, "Column RECEIVED_REPORT already exists in RECEIVEDITEMS, no need to change database.");
         }
 
         try (final Connection con = getNewConnection()) {
@@ -222,7 +219,6 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         } catch (SQLException ex) {
-            LOG.log(Level.INFO, "Column PAID already exists in RECEIVED_REPORTS, no need to change database.");
         }
 
         try (final Connection con = getNewConnection()) {
@@ -245,7 +241,6 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         } catch (SQLException ex) {
-            LOG.log(Level.INFO, "Column INHERITS already exists in SCREENS, no need to change database.");
         }
 
         try (final Connection con = getNewConnection()) {
@@ -268,7 +263,6 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         } catch (SQLException ex) {
-            LOG.log(Level.INFO, "ERROR");
         }
 
         try (final Connection con = getNewConnection()) {
@@ -291,7 +285,6 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         } catch (SQLException ex) {
-            LOG.log(Level.INFO, "ERROR");
         }
 
         try (final Connection con = getNewConnection()) {
@@ -314,7 +307,6 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         } catch (SQLException ex) {
-            LOG.log(Level.INFO, "ERROR");
         }
 
         try (final Connection con = getNewConnection()) {
@@ -346,7 +338,6 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         } catch (SQLException ex) {
-            LOG.log(Level.INFO, "ERROR");
         }
 
         try (final Connection con = getNewConnection()) {
@@ -360,7 +351,32 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         } catch (SQLException ex) {
-            LOG.log(Level.INFO, "ERROR");
+        }
+
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                String declarations = "create table \"APP\".DECLARATIONS\n"
+                        + "(\n"
+                        + "     ID INT not null primary key\n"
+                        + "         GENERATED ALWAYS AS IDENTITY\n"
+                        + "         (START WITH 1, INCREMENT BY 1),\n"
+                        + "     TERMINAL INT not null references TILLS(ID),\n"
+                        + "     DECLARED DOUBLE,\n"
+                        + "     EXPECTED DOUBLE,\n"
+                        + "     TRANSACTIONS int,\n"
+                        + "     TAX DOUBLE,\n"
+                        + "     STAFF INT not null references STAFF(ID),\n"
+                        + "     TIME bigint\n"
+                        + ")";
+                int res = stmt.executeUpdate(declarations);
+                LOG.log(Level.INFO, "Created table declarations");
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                throw ex;
+            }
+        } catch (SQLException ex) {
         }
     }
 
@@ -669,6 +685,19 @@ public class DBConnect implements DataConnect {
                 + "     NAME VARCHAR(50),\n"
                 + "     URL VARCHAR(200)\n"
                 + ")";
+        String declarations = "create table \"APP\".DECLARATIONS\n"
+                + "(\n"
+                + "     ID INT not null primary key\n"
+                + "         GENERATED ALWAYS AS IDENTITY\n"
+                + "         (START WITH 1, INCREMENT BY 1),\n"
+                + "     TERMINAL INT not null references TILLS(ID),\n"
+                + "     DECLARED DOUBLE,\n"
+                + "     EXPECTED DOUBLE,\n"
+                + "     TRANSACTIONS int,\n"
+                + "     TAX DOUBLE,\n"
+                + "     STAFF INT not null references STAFF(ID),\n"
+                + "     TIME bigint\n"
+                + ")";
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             try {
@@ -870,6 +899,14 @@ public class DBConnect implements DataConnect {
                 error(ex);
             }
             TillSplashScreen.addBar(2);
+            try {
+                stmt.execute(declarations);
+                LOG.log(Level.INFO, "Created table declarations");
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                error(ex);
+            }
 
             try {
                 String addCategory = "INSERT INTO CATEGORYS (NAME, TIME_RESTRICT, MINIMUM_AGE) VALUES ('Default','FALSE',0)";
@@ -2978,47 +3015,6 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public void deleteAllScreensAndButtons() throws IOException, SQLException {
-        try (Connection con = getNewConnection()) {
-            try {
-                String buttons = "DROP TABLE BUTTONS";
-                String screens = "DROP TABLE SCREENS";
-                Statement stmt = con.createStatement();
-                stmt.execute(buttons);
-                stmt.execute(screens);
-                String cscreens = "create table \"APP\".SCREENS\n"
-                        + "(\n"
-                        + "     ID INT not null primary key\n"
-                        + "         GENERATED ALWAYS AS IDENTITY\n"
-                        + "         (START WITH 1, INCREMENT BY 1),\n"
-                        + "     NAME VARCHAR(50) not null,\n"
-                        + "     POSITION INTEGER,\n"
-                        + "     COLOR INT\n"
-                        + ")";
-                String cbuttons = "create table \"APP\".BUTTONS\n"
-                        + "(\n"
-                        + "     ID INT not null primary key\n"
-                        + "         GENERATED ALWAYS AS IDENTITY\n"
-                        + "         (START WITH 1, INCREMENT BY 1),\n"
-                        + "     NAME VARCHAR(50) not null,\n"
-                        + "     PRODUCT INT not null,\n"
-                        + "     COLOR INT,\n"
-                        + "     ACCESS_LEVEL INT,\n"
-                        + "     SCREEN_ID INT not null references SCREENS(ID)\n"
-                        + ")";
-                stmt.execute(cscreens);
-                LOG.log(Level.INFO, "Created screens table");
-                stmt.execute(cbuttons);
-                LOG.log(Level.INFO, "Created buttons table");
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-                throw ex;
-            }
-        }
-    }
-
-    @Override
     public void setGUI(GUIInterface g) {
         this.g = g;
     }
@@ -5056,13 +5052,14 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public TillReport zReport(int terminal, BigDecimal declared) throws IOException, SQLException, JTillException {
-        final TillReport report = xReport(terminal, declared);
-        final String query = "UPDATE SALES SET CASHED=TRUE WHERE TERMINAL=" + terminal;
+    public TillReport zReport(Till terminal, BigDecimal declared, Staff staff) throws IOException, SQLException, JTillException {
+        final TillReport report = xReport(terminal, declared, staff);
+        final String query = "UPDATE SALES SET CASHED=TRUE WHERE TERMINAL=" + terminal.getId();
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             try {
                 stmt.executeUpdate(query);
+                stmt.executeUpdate("INSERT INTO DECLARATIONS (TERMINAL, DECLARED, EXPECTED, TRANSACTIONS, TAX, STAFF, TIME) VALUES (" + report.getInsert() + ")");
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
@@ -5074,8 +5071,8 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public TillReport xReport(int terminal, BigDecimal declared) throws IOException, SQLException, JTillException {
-        final String query = "SELECT * FROM SALES s, CUSTOMERS c, TILLS t, STAFF st WHERE c.ID = s.CUSTOMER AND st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.CASHED = FALSE AND s.TERMINAL = " + terminal;
+    public TillReport xReport(Till terminal, BigDecimal declared, Staff staff) throws IOException, SQLException, JTillException {
+        final String query = "SELECT * FROM SALES s, CUSTOMERS c, TILLS t, STAFF st WHERE c.ID = s.CUSTOMER AND st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.CASHED = FALSE AND s.TERMINAL = " + terminal.getId();
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             List<Sale> sales = new LinkedList<>();
@@ -5091,8 +5088,7 @@ public class DBConnect implements DataConnect {
                 LOG.log(Level.SEVERE, null, ex);
                 throw ex;
             }
-            Till t = this.getTill(terminal);
-            return new TillReport(t.getName(), sales, declared);
+            return new TillReport(terminal, sales, declared, staff, new Date().getTime());
         }
     }
 
@@ -5142,6 +5138,59 @@ public class DBConnect implements DataConnect {
                 LOG.log(Level.SEVERE, null, ex);
                 throw ex;
             }
+        }
+    }
+
+    @Override
+    public List<TillReport> getDeclarationReports(int terminal) throws SQLException {
+        String query;
+        if (terminal == -1) {
+            query = "SELECT * FROM DECLARATIONS d, STAFF s, TILLS t WHERE d.TERMINAL = t.ID AND d.STAFF = s.ID";
+        } else {
+            query = "SELECT * FROM DECLARATIONS d, STAFF s, TILLS t WHERE d.TERMINAL = t.ID AND d.STAFF = s.ID AND d.TERMINAL = " + terminal;
+        }
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet set = stmt.executeQuery(query);
+                List<TillReport> reports = new LinkedList<>();
+                while (set.next()) {
+                    int tId = set.getInt(16);
+                    UUID uuid = UUID.fromString(set.getString(17));
+                    String name = set.getString(18);
+                    BigDecimal uncashed = set.getBigDecimal(19);
+                    int defaultScreen = set.getInt(20);
+
+                    Till till = new Till(name, uncashed, tId, uuid, defaultScreen);
+
+                    int sId = set.getInt(9);
+                    String sName = set.getString(10);
+                    int pos = set.getInt(11);
+                    String un = set.getString(12);
+                    String pw = set.getString(13);
+                    boolean enabled = set.getBoolean(14);
+                    double wage = set.getDouble(15);
+
+                    Staff staff = new Staff(sId, sName, pos, un, pw, wage, enabled);
+
+                    BigDecimal declared = set.getBigDecimal(3);
+                    BigDecimal expected = set.getBigDecimal(4);
+                    int transactions = set.getInt(5);
+                    BigDecimal tax = set.getBigDecimal(6);
+                    long time = set.getLong(8);
+
+                    TillReport report = new TillReport(till, declared, expected, transactions, tax, staff, time);
+                    reports.add(report);
+                }
+                con.commit();
+                return reports;
+            } catch (SQLException ex) {
+                con.rollback();
+                throw ex;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
+            throw ex;
         }
     }
 }

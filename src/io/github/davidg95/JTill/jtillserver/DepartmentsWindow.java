@@ -33,21 +33,21 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form DepartmentWindow
      */
-    public DepartmentsWindow(DataConnect dc, Image icon) {
+    public DepartmentsWindow(DataConnect dc) {
         this.dc = dc;
 //        this.setIconImage(icon);
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
-        super.setFrameIcon(new ImageIcon(icon));
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
         model = (DefaultTableModel) tblDep.getModel();
         updateTable();
     }
 
-    public static void showWindow(DataConnect dc, Image icon) {
+    public static void showWindow(DataConnect dc) {
         if (window == null || window.isClosed()) {
-            window = new DepartmentsWindow(dc, icon);
+            window = new DepartmentsWindow(dc);
             GUI.gui.internal.add(window);
         }
         window.setVisible(true);

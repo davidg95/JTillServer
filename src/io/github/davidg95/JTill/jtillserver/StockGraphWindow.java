@@ -32,17 +32,17 @@ public class StockGraphWindow extends JFrame {
 
     private GraphPanel graph;
 
-    public StockGraphWindow(DataConnect dc, Image icon) {
+    public StockGraphWindow(DataConnect dc) {
         super();
         this.dc = dc;
         init();
-        setIconImage(icon);
+        setIconImage(GUI.icon);
         setTitle("Stock Graph");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
-    public static void showWindow(DataConnect dc, Image icon) {
-        window = new StockGraphWindow(dc, icon);
+    public static void showWindow(DataConnect dc) {
+        window = new StockGraphWindow(dc);
         window.setVisible(true);
     }
 

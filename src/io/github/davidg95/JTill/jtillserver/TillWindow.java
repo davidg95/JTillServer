@@ -94,7 +94,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
             BigDecimal declared = new BigDecimal(strVal);
 
-            final TillReport report = dc.xReport(t.getId(), declared);
+            final TillReport report = dc.xReport(t, declared, GUI.staff);
             TillReportDialog.showDialog(this, report);
         } catch (Exception ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -117,7 +117,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
             BigDecimal declared = new BigDecimal(strVal);
 
-            final TillReport report = dc.zReport(t.getId(), declared);
+            final TillReport report = dc.zReport(t, declared, GUI.staff);
             TillReportDialog.showDialog(this, report);
         } catch (Exception ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
