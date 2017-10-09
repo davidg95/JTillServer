@@ -44,10 +44,10 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
 
-    private Plu plu;
+    private Product product;
 
     private final DefaultTableModel model;
-    private List<Plu> currentTableContents;
+    private List<Product> currentTableContents;
 
     private List<Department> departments;
     private List<Tax> taxes;
@@ -95,7 +95,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             frame.toFront();
         } else {
             update();
-            frame.setCurrentPlu(null);
+            frame.setCurrentProduct(null);
             frame.setVisible(true);
         }
         try {
@@ -152,9 +152,8 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private void updateTable() {
         model.setRowCount(0);
 
-        for (Plu p : currentTableContents) {
-            final Product product = p.getProduct();
-            Object[] s = new Object[]{product.getId(), p.getCode(), product.getLongName(), (product.isOpen() ? "Open Price" : product.getPrice().setScale(2)), (product.isOpen() ? "N/A" : product.getStock())};
+        for (Product p : currentTableContents) {
+            Object[] s = new Object[]{p.getId(), p.getBarcode(), p.getLongName(), (p.isOpen() ? "Open Price" : p.getPrice().setScale(2)), (p.isOpen() ? "N/A" : p.getStock())};
             model.addRow(s);
         }
 
@@ -166,7 +165,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
      */
     private void showAllProducts() {
         try {
-            currentTableContents = dc.getAllPlus();
+            currentTableContents = dc.getAllProducts();
         } catch (IOException | SQLException ex) {
             showError(ex);
         }
@@ -178,7 +177,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
      *
      * @param p the product to show.
      */
-    private void setCurrentPlu(Plu p) {
+    private void setCurrentProduct(Product p) {
         if (p == null) { //If product is null then clear all the fields.
             txtName.setText("");
             txtShortName.setText("");
@@ -193,7 +192,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             cmbTax.setSelectedIndex(0);
             cmbCategory.setSelectedIndex(0);
             cmbDepartments.setSelectedIndex(0);
-            plu = null;
+            product = null;
             for (Component c : panelCurrent.getComponents()) {
                 c.setEnabled(false);
             }
@@ -201,8 +200,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             for (Component c : panelCurrent.getComponents()) {
                 c.setEnabled(true);
             }
-            this.plu = p;
-            final Product product = plu.getProduct();
+            this.product = p;
             txtName.setText(product.getLongName());
             txtShortName.setText(product.getName());
             if (product.isOpen()) { //Check if price is open.
@@ -219,7 +217,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 jLabel10.setEnabled(false);
                 jLabel11.setEnabled(false);
                 jLabel14.setEnabled(false);
-                txtBarcode.setText(plu.getCode());
+                txtBarcode.setText(product.getBarcode());
                 txtPrice.setText("OPEN");
                 txtCostPrice.setText("OPEN");
                 txtPackSize.setText("0");
@@ -244,7 +242,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 jLabel10.setEnabled(true);
                 jLabel11.setEnabled(true);
                 jLabel14.setEnabled(true);
-                txtBarcode.setText(plu.getCode());
+                txtBarcode.setText(product.getBarcode());
                 txtPrice.setText(product.getPrice().setScale(2) + "");
                 txtCostPrice.setText(product.getCostPrice().setScale(2) + "");
                 txtPackSize.setValue(product.getPackSize());
@@ -800,7 +798,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                     dc.removeProduct(currentTableContents.get(index).getId());
                     GUI.getInstance().updateLables();
                     showAllProducts();
-                    setCurrentPlu(null);
+                    setCurrentProduct(null);
                     txtName.requestFocus();
                     JOptionPane.showInternalMessageDialog(this, "Product has been removed", "Remove Product", JOptionPane.INFORMATION_MESSAGE);
                 } catch (ProductNotFoundException | IOException | SQLException ex) {
@@ -830,7 +828,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             dep = departments.get(cmbDepartments.getSelectedIndex());
         }
         String comments = txtComments.getText();
-        final Product product = plu.getProduct();
         if (product.isOpen()) {
             product.setLongName(name);
             product.setName(shortName);
@@ -885,12 +882,12 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
         ProductEntryDialog.showDialog(this, icon);
         showAllProducts();
-        setCurrentPlu(null);
+        setCurrentProduct(null);
     }//GEN-LAST:event_btnNewProductActionPerformed
 
     private void tableProductsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProductsMousePressed
-        Plu p = currentTableContents.get(tableProducts.getSelectedRow());
-        setCurrentPlu(p);
+        Product p = currentTableContents.get(tableProducts.getSelectedRow());
+        setCurrentProduct(p);
     }//GEN-LAST:event_tableProductsMousePressed
 
     private void btnShowCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowCategorysActionPerformed
@@ -923,24 +920,24 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         } else {
             option = 3;
         }
-        final List<Plu> newList = new ArrayList<>();
+        final List<Product> newList = new ArrayList<>();
         switch (option) {
             case 1:
-                for (Plu p : currentTableContents) {
+                for (Product p : currentTableContents) {
                     if ((p.getId() + "").contains(terms)) {
                         newList.add(p);
                     }
                 }
                 break;
             case 2:
-                for (Plu p : currentTableContents) {
-                    if (plu.getCode().equals(terms)) {
+                for (Product p : currentTableContents) {
+                    if (p.getBarcode().equals(terms)) {
                         newList.add(p);
                     }
                 }
                 break;
             default:
-                currentTableContents.stream().filter((p) -> (p.getProduct().getLongName().toLowerCase().contains(terms.toLowerCase()) || p.getProduct().getName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((p) -> {
+                currentTableContents.stream().filter((p) -> (p.getLongName().toLowerCase().contains(terms.toLowerCase()) || p.getName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((p) -> {
                     newList.add(p);
                 });
                 break;
@@ -954,7 +951,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             txtSearch.setText("");
             currentTableContents = newList;
             if (newList.size() == 1) {
-                setCurrentPlu(newList.get(0));
+                setCurrentProduct(newList.get(0));
             }
         }
         updateTable();
@@ -983,17 +980,16 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             try {
                 final PrintWriter pw = new PrintWriter(file);
 
-                for (Plu p : currentTableContents) {
-                    final Product product = p.getProduct();
+                for (Product p : currentTableContents) {
                     pw.println(p.getId() + ","
-                            + product.getLongName() + ","
-                            + product.getCategoryID() + ","
-                            + product.getCostPrice() + ","
-                            + product.getMaxStockLevel() + ","
-                            + product.getMinStockLevel() + ","
-                            + product.getPrice() + ","
-                            + product.getStock() + ","
-                            + product.getTaxID());
+                            + p.getLongName() + ","
+                            + p.getCategoryID() + ","
+                            + p.getCostPrice() + ","
+                            + p.getMaxStockLevel() + ","
+                            + p.getMinStockLevel() + ","
+                            + p.getPrice() + ","
+                            + p.getStock() + ","
+                            + p.getTaxID());
                 }
                 pw.close();
             } catch (FileNotFoundException ex) {

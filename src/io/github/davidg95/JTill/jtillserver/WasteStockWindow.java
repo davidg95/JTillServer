@@ -718,8 +718,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                             val = val.add(w.getProduct().getPrice().setScale(2).multiply(new BigDecimal(w.getQuantity())));
                         }
                         lblValue.setText("Total Value: £" + new DecimalFormat("#.00").format(val));
-                        final Plu plu = dc.getPluByProduct(product.getId());
-                        model.addRow(new Object[]{product.getId(), product.getName(), plu.getCode(), amount, wi.getReason()});
+                        model.addRow(new Object[]{product.getId(), product.getName(), product.getBarcode(), amount, wi.getReason()});
                     } catch (ProductNotFoundException ex) {
                         errors = true;
                     }
@@ -729,7 +728,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 }
             } catch (FileNotFoundException ex) {
                 JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "The file could not be found", "Open File", JOptionPane.ERROR_MESSAGE);
-            } catch (IOException | SQLException | JTillException ex) {
+            } catch (IOException | SQLException ex) {
                 JOptionPane.showInternalMessageDialog(WasteStockWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }

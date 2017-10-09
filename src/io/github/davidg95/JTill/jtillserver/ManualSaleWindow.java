@@ -5,13 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DataConnect;
-import io.github.davidg95.JTill.jtill.JTillException;
-import io.github.davidg95.JTill.jtill.Plu;
-import io.github.davidg95.JTill.jtill.Product;
-import io.github.davidg95.JTill.jtill.Sale;
-import io.github.davidg95.JTill.jtill.SaleItem;
-import io.github.davidg95.JTill.jtill.Till;
+import io.github.davidg95.JTill.jtill.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -145,16 +139,11 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
         model.setRowCount(0);
         BigDecimal total = BigDecimal.ZERO;
         for (SaleItem si : sale.getSaleItems()) {
-            try {
-                final Product p = (Product) si.getItem();
-                final Plu pl = dc.getPluByProduct(p.getId());
-                si.setTotalPrice(p.getPrice().multiply(new BigDecimal(si.getQuantity())).setScale(2).toString());
-                Object[] s = new Object[]{pl.getCode(), p.getLongName(), si.getQuantity(), si.getTotalPrice()};
-                total = total.add(si.getPrice().multiply(new BigDecimal(si.getQuantity())));
-                model.addRow(s);
-            } catch (IOException | JTillException ex) {
-                Logger.getLogger(ManualSaleWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            final Product p = (Product) si.getItem();
+            si.setTotalPrice(p.getPrice().multiply(new BigDecimal(si.getQuantity())).setScale(2).toString());
+            Object[] s = new Object[]{p.getBarcode(), p.getLongName(), si.getQuantity(), si.getTotalPrice()};
+            total = total.add(si.getPrice().multiply(new BigDecimal(si.getQuantity())));
+            model.addRow(s);
         }
         lblTotal.setText("Total: £" + total.setScale(2).toString());
     }

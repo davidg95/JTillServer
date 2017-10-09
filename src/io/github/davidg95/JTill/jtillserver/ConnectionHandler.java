@@ -471,36 +471,6 @@ public class ConnectionHandler {
         return dc.getSetting(key, def_value);
     }
 
-    @JConnMethod("ADDPLU")
-    public Plu addPlu(@JConnParameter("PLU") Plu p) throws IOException, SQLException {
-        return dc.addPlu(p);
-    }
-
-    @JConnMethod("REMOVEPLU")
-    public void removePlu(@JConnParameter("PLU") Plu p) throws IOException, SQLException, JTillException {
-        dc.removePlu(p);
-    }
-
-    @JConnMethod("GETPLU")
-    public Plu getPlu(@JConnParameter("ID") int id) throws IOException, SQLException, JTillException {
-        return dc.getPlu(id);
-    }
-
-    @JConnMethod("GETPLUBYCODE")
-    public Plu getPluByCode(@JConnParameter("CODE") String code) throws IOException, SQLException, JTillException {
-        return dc.getPluByCode(code);
-    }
-
-    @JConnMethod("GETALLPLUS")
-    public List<Plu> getAllPlus() throws IOException, SQLException {
-        return dc.getAllPlus();
-    }
-
-    @JConnMethod("UPDATEPLU")
-    public Plu updatePlu(@JConnParameter("PLU") Plu plu) throws IOException, SQLException, JTillException {
-        return dc.updatePlu(plu);
-    }
-
     @JConnMethod("ISTILLLOGGEDIN")
     public boolean isTillLoggedIn(@JConnParameter("STAFF") Staff s) throws IOException, StaffNotFoundException, SQLException {
         return dc.isTillLoggedIn(s);
@@ -764,16 +734,6 @@ public class ConnectionHandler {
     @JConnMethod("GETUNCASHEDTERMINALSALES")
     public List<Sale> getUncashedTerminalSales(@JConnParameter("ID") int id) throws IOException, SQLException, JTillException {
         return dc.getUncachedTillSales(id);
-    }
-
-    @JConnMethod("ADDPRODUCTANDPLU")
-    public Product addProductAndPlu(@JConnParameter("PRODUCT") Product p, @JConnParameter("PLU") Plu pl) throws IOException, SQLException, JTillException {
-        return dc.addProductAndPlu(p, pl);
-    }
-
-    @JConnMethod("GETPLUBYPRODUCT")
-    public Plu getPluByProduct(@JConnParameter("ID") int id) throws IOException, SQLException, JTillException {
-        return dc.getPluByProduct(id);
     }
 
     @JConnMethod("SEARCHSALEITEMS")

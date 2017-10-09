@@ -197,11 +197,10 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         val.setScale(2);
         for (ReceivedItem pr : products) {
             try {
-                final Product pro = dc.getProduct(pr.getProduct());
-                final Plu p = dc.getPluByProduct(pro.getId());
-                model.addRow(new Object[]{pro.getId(), pro.getLongName(), p.getCode(), pr.getQuantity()});
-                val = val.add(pro.getCostPrice().divide(new BigDecimal(Integer.toString(pro.getPackSize()))).multiply(new BigDecimal(pr.getQuantity())));
-            } catch (IOException | JTillException | ProductNotFoundException | SQLException ex) {
+                final Product p = dc.getProduct(pr.getProduct());
+                model.addRow(new Object[]{p.getId(), p.getLongName(), p.getBarcode(), pr.getQuantity()});
+                val = val.add(p.getCostPrice().divide(new BigDecimal(Integer.toString(p.getPackSize()))).multiply(new BigDecimal(pr.getQuantity())));
+            } catch (IOException | ProductNotFoundException | SQLException ex) {
                 Logger.getLogger(ReceiveItemsWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -506,18 +505,18 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             qu.setFont(boldFont);
             JMenuItem rem = new JMenuItem("Remove");
             qu.addActionListener((ActionEvent e) -> {
-                    String input = JOptionPane.showInternalInputDialog(ReceiveItemsWindow.this, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
-                    if (!Utilities.isNumber(input)) {
-                        JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "A number must be entered", "Receive Items", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    int val = Integer.parseInt(input);
-                    if (val > 0) {
-                        product.setQuantity(val);
-                        updateTable();
-                    } else {
-                        JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
-                    }
+                String input = JOptionPane.showInternalInputDialog(ReceiveItemsWindow.this, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
+                if (!Utilities.isNumber(input)) {
+                    JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "A number must be entered", "Receive Items", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                int val = Integer.parseInt(input);
+                if (val > 0) {
+                    product.setQuantity(val);
+                    updateTable();
+                } else {
+                    JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
+                }
             });
             rem.addActionListener((ActionEvent e) -> {
                 if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Remove this item?", "Remove Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
@@ -565,18 +564,10 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                         product.setStock(quantity);
 
                         products.add(new ReceivedItem(product.getId(), quantity, product.getCostPrice()));
-                        try {
-                            final Plu plu = dc.getPluByProduct(product.getId());
-                            model.addRow(new Object[]{product.getId(), product.getName(), plu.getCode(), product.getStock()});
-                        } catch (JTillException ex) {
-                            JOptionPane.showMessageDialog(this, ex);
-                        }
+                        model.addRow(new Object[]{product.getId(), product.getName(), product.getBarcode(), product.getStock()});
                     } catch (ProductNotFoundException ex) {
                         if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                            Plu p = new Plu(barcode, 0);
-                            product = ProductDialog.showNewProductDialog(this, dc, p, quantity);
-                            p.setProductID(product.getId());
-                            JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, product.getLongName() + " has now been added to the system with given stock level, there is no need to receive it here.", "Added", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(this, "Feature not yet implemented, must add manually", "Not Found", JOptionPane.WARNING_MESSAGE);
                         }
                     }
                 }

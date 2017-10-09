@@ -113,10 +113,9 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
                 //Print product info.
                 g2.drawString("ID: " + p.getId(), x, y);
                 y += s;
-                final Plu plu = dc.getPluByProduct(p.getId());
                 final Category cat = dc.getCategory(p.getCategoryID());
                 final Department dep = dc.getDepartment(p.getDepartmentID());
-                g2.drawString("Plu: " + plu.getCode(), x, y);
+                g2.drawString("Barcode: " + p.getBarcode(), x, y);
                 y += s;
                 g2.drawString("Name: " + p.getLongName(), x, y);
                 y += s;
@@ -531,7 +530,6 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             if (product == null) {
                 return;
             }
-            final Plu plu = dc.getPluByProduct(product.getId());
             final Department dep = dc.getDepartment(product.getDepartmentID());
             final Category cat = dc.getCategory(product.getCategoryID());
             //Total sold and value sold
@@ -556,7 +554,7 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
                 totalSpent = BigDecimal.ZERO;
             }
             txtProduct.setText(product.getLongName());
-            txtPlu.setText(plu.getCode());
+            txtPlu.setText(product.getBarcode());
             if (product.getOrder_code() == 0) {
                 txtOrderCode.setText("N/A");
             } else {

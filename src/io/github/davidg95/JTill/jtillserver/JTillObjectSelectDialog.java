@@ -121,10 +121,6 @@ public class JTillObjectSelectDialog extends javax.swing.JDialog {
                     objects.addAll(dc.getAllStaff());
                     continue;
                 }
-                if (Plu.class.equals(E)) {
-                    objects.addAll(dc.getAllPlus());
-                    continue;
-                }
                 if (Discount.class.equals(E)) {
                     objects.addAll(dc.getAllDiscounts());
                     continue;

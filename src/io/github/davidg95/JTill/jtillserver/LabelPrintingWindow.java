@@ -173,14 +173,9 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
          * @param y the y position.
          */
         public void print(Graphics2D g, int x, int y) {
-            try {
-                g.drawString(p.getName(), x + 1, y + 20); //Print the name.
-                g.drawString("£" + p.getPrice(), x + 1, y + 45); //Print the price.
-                final Plu plu = dc.getPluByProduct(p.getId()); //Get the barcode.
-                g.drawString(plu.getCode(), x + 1, y + 65); //Print the barcode.
-            } catch (IOException | JTillException ex) {
-                Logger.getLogger(LabelPrintingWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            g.drawString(p.getName(), x + 1, y + 20); //Print the name.
+            g.drawString("£" + p.getPrice(), x + 1, y + 45); //Print the price.
+            g.drawString(p.getBarcode(), x + 1, y + 65); //Print the barcode.
         }
 
         @Override

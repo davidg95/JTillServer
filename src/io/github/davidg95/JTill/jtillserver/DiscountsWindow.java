@@ -211,10 +211,9 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
         for (Trigger t : currentTriggerContents) {
             try {
                 final Product p = dc.getProduct(t.getProduct());
-                final Plu plu = dc.getPluByProduct(p.getId());
-                Object[] row = new Object[]{p.getName(), plu.getCode(), t.getQuantityRequired()};
+                Object[] row = new Object[]{p.getName(), p.getBarcode(), t.getQuantityRequired()};
                 trigModel.addRow(row);
-            } catch (ProductNotFoundException | JTillException | IOException | SQLException ex) {
+            } catch (ProductNotFoundException | IOException | SQLException ex) {
                 Logger.getLogger(DiscountsWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
