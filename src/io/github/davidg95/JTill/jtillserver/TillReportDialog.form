@@ -31,12 +31,12 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="average" pref="79" max="32767" attributes="0"/>
+                  <Component id="average" pref="153" max="32767" attributes="0"/>
                   <Component id="transactions" max="32767" attributes="0"/>
                   <Component id="diff" max="32767" attributes="0"/>
                   <Component id="actual" alignment="0" max="32767" attributes="0"/>
-                  <Component id="declared" max="32767" attributes="0"/>
                   <Component id="tax" alignment="0" max="32767" attributes="0"/>
+                  <Component id="declared" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>

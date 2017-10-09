@@ -24,6 +24,7 @@ public class TillReportDialog extends javax.swing.JDialog {
     public TillReportDialog(Window parent, TillReport report) {
         super(parent);
         initComponents();
+        this.setIconImage(GUI.icon);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setTitle("Till Report");
         setLocationRelativeTo(parent);
@@ -66,8 +67,6 @@ public class TillReportDialog extends javax.swing.JDialog {
         tax = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         btnClose = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("Total Takings Declared:");
 
@@ -115,12 +114,12 @@ public class TillReportDialog extends javax.swing.JDialog {
                     .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(average, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                    .addComponent(average, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
                     .addComponent(transactions)
                     .addComponent(diff)
                     .addComponent(actual)
-                    .addComponent(declared)
-                    .addComponent(tax))
+                    .addComponent(tax)
+                    .addComponent(declared))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -158,8 +157,6 @@ public class TillReportDialog extends javax.swing.JDialog {
                 .addComponent(btnClose)
                 .addContainerGap())
         );
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
