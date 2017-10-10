@@ -123,6 +123,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
      * Method to init the discounts, categories and taxes.
      */
     private void init() {
+        tableProducts.setSelectionModel(new ForcedListSelectionModel());
         try {
             departments = dc.getAllDepartments();
             taxes = dc.getAllTax();
