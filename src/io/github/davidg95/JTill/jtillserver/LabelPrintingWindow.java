@@ -88,6 +88,7 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
+        table.setSelectionModel(new ForcedListSelectionModel());
         this.addInternalFrameListener(new InternalFrameAdapter() {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {

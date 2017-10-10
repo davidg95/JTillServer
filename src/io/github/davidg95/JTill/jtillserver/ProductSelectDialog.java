@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -14,8 +15,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -57,6 +56,12 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         model = (DefaultTableModel) table.getModel();
         showAllProducts();
         txtSearch.requestFocus();
+        initTable();
+    }
+    
+    private void initTable(){
+        table.getColumnModel().getColumn(0).setMaxWidth(40);
+        table.setSelectionModel(new ForcedListSelectionModel());
     }
 
     /**

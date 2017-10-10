@@ -14,8 +14,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -48,6 +50,7 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
     }
 
     private void initTable() {
+        table.setSelectionModel(new ForcedListSelectionModel());
         table.getColumnModel().getColumn(0).setMaxWidth(70);
         table.getColumnModel().getColumn(2).setMaxWidth(70);
         table.getColumnModel().getColumn(3).setMaxWidth(70);

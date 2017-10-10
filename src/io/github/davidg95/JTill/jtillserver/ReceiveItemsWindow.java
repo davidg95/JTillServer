@@ -143,6 +143,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
+        tblProducts.getColumnModel().getColumn(0).setMaxWidth(40);
+        tblProducts.setSelectionModel(new ForcedListSelectionModel());
         this.addInternalFrameListener(new InternalFrameAdapter() {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
@@ -246,6 +248,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         txtInvoice = new javax.swing.JTextField();
         chkPaid = new javax.swing.JCheckBox();
+
+        setResizable(true);
 
         tblProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

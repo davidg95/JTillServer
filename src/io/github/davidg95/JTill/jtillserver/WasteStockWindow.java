@@ -171,6 +171,8 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
+        tblProducts.setSelectionModel(new ForcedListSelectionModel());
+        tblProducts.getColumnModel().getColumn(0).setMaxWidth(40);
         this.addInternalFrameListener(new InternalFrameAdapter() {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
@@ -360,6 +362,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         dateSpin = new javax.swing.JSpinner();
 
+        setResizable(true);
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/tillIcon.png"))); // NOI18N
 
         tblProducts.setModel(new javax.swing.table.DefaultTableModel(
