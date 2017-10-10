@@ -3187,10 +3187,13 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public Till connectTill(String name, UUID uuid, Staff staff) {
+    public Till connectTill(String name, UUID uuid, Staff staff) throws JTillException {
         try {
             if (uuid == null) {
                 throw new JTillException("No UUID");
+            }
+            if (isTillConnected(uuid)) {
+                throw new JTillException("This till is already connected to the server");
             }
             Till till = this.getTillByUUID(uuid);
             till.setConnected(true);
@@ -3199,17 +3202,30 @@ public class DBConnect implements DataConnect {
         } catch (SQLException ex) {
             LOG.log(Level.SEVERE, "There has been an error adding a till to the database", ex);
         } catch (JTillException ex) {
-            Till till = g.showTillSetupWindow(name);
-            if (till != null) { //If the connection was allowed
-                try {
-                    addTill(till);
-                } catch (IOException | SQLException ex1) {
-                    LOG.log(Level.SEVERE, "There has been an error connecting a till the server", ex);
+            if (ex.getMessage().equals("No UUID")) {
+                Till till = g.showTillSetupWindow(name);
+                if (till != null) { //If the connection was allowed
+                    try {
+                        addTill(till);
+                    } catch (IOException | SQLException ex1) {
+                        LOG.log(Level.SEVERE, "There has been an error connecting a till the server", ex);
+                    }
+                    return till;
                 }
-                return till;
+            } else {
+                throw ex;
             }
         }
         return null;
+    }
+
+    private boolean isTillConnected(UUID uuid) {
+        for (Till t : getConnectedTills()) {
+            if (t.getUuid().equals(uuid)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

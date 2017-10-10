@@ -43,13 +43,13 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("CONNECT")
-    public Till initialConnection(@JConnParameter("UUID") UUID uuid, @JConnParameter("NAME") String name) {
+    public Till initialConnection(@JConnParameter("UUID") UUID uuid, @JConnParameter("NAME") String name) throws JTillException {
         till = dc.connectTill(name, uuid, null);
         return till;
     }
 
     @JConnMethod("RECONNECT")
-    public void reconnect(@JConnParameter("UUID") UUID uuid, @JConnParameter("SITE") String site, @JConnParameter("STAFF") Staff staff) {
+    public void reconnect(@JConnParameter("UUID") UUID uuid, @JConnParameter("SITE") String site, @JConnParameter("STAFF") Staff staff) throws JTillException {
         till = dc.connectTill(site, uuid, staff);
         this.staff = staff;
     }
@@ -447,7 +447,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("CONNECTTILL")
-    public Till connectTill(@JConnParameter("NAME") String name, @JConnParameter("UUID") UUID uuid) throws IOException, SQLException {
+    public Till connectTill(@JConnParameter("NAME") String name, @JConnParameter("UUID") UUID uuid) throws IOException, SQLException, JTillException {
         return dc.connectTill(name, uuid, null);
     }
 
