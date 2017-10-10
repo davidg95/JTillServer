@@ -5,13 +5,11 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DataConnect;
-import io.github.davidg95.JTill.jtill.JTillException;
-import io.github.davidg95.JTill.jtill.Till;
-import io.github.davidg95.JTill.jtill.TillReport;
+import io.github.davidg95.JTill.jtill.*;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -46,6 +44,15 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
         super.setIconifiable(true);
         super.setClosable(true);
         model = (DefaultTableModel) table.getModel();
+        initTable();
+    }
+
+    private void initTable() {
+        table.getColumnModel().getColumn(0).setMaxWidth(70);
+        table.getColumnModel().getColumn(2).setMaxWidth(70);
+        table.getColumnModel().getColumn(3).setMaxWidth(70);
+        table.getColumnModel().getColumn(4).setMaxWidth(70);
+        table.getColumnModel().getColumn(5).setMinWidth(50);
     }
 
     public static void showWindow() {
@@ -73,8 +80,9 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
         model.setRowCount(0);
         try {
             reports = dc.getDeclarationReports(-1);
+            DecimalFormat df = new DecimalFormat("0.00");
             for (TillReport r : reports) {
-                Object[] row = new Object[]{r.getTerminal().getName(), new Date(r.getTime()).toString(), r.getDeclared(), r.getExpected(), r.getDifference(), r.getStaff()};
+                Object[] row = new Object[]{r.getTerminal().getName(), new Date(r.getTime()).toString(), "£" + df.format(r.getDeclared()), "£" + df.format(r.getExpected()), "£" + df.format(r.getDifference()), r.getStaff()};
                 model.addRow(row);
             }
         } catch (IOException | SQLException ex) {
@@ -95,16 +103,15 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         btnClose = new javax.swing.JButton();
+        btnView = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(true);
         setTitle("Declaration Report Viewer");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
                 "Terminal", "Time", "Declared", "Expected", "Difference", "Staff"
@@ -126,10 +133,17 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
         jScrollPane1.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
             table.getColumnModel().getColumn(0).setResizable(false);
+            table.getColumnModel().getColumn(0).setHeaderValue("Terminal");
             table.getColumnModel().getColumn(1).setResizable(false);
+            table.getColumnModel().getColumn(1).setHeaderValue("Time");
             table.getColumnModel().getColumn(2).setResizable(false);
+            table.getColumnModel().getColumn(2).setHeaderValue("Declared");
             table.getColumnModel().getColumn(3).setResizable(false);
+            table.getColumnModel().getColumn(3).setHeaderValue("Expected");
+            table.getColumnModel().getColumn(4).setResizable(false);
+            table.getColumnModel().getColumn(4).setHeaderValue("Difference");
             table.getColumnModel().getColumn(5).setResizable(false);
+            table.getColumnModel().getColumn(5).setHeaderValue("Staff");
         }
 
         btnClose.setText("Close");
@@ -139,16 +153,24 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        btnView.setText("View");
+        btnView.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 594, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnView)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
         );
@@ -156,10 +178,12 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnClose)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClose)
+                    .addComponent(btnView))
+                .addContainerGap())
         );
 
         pack();
@@ -182,8 +206,18 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableMouseClicked
 
+    private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
+        int i = table.getSelectedRow();
+        if (i == -1) {
+            return;
+        }
+        TillReport report = reports.get(i);
+        TillReportDialog.showDialog(this, report);
+    }//GEN-LAST:event_btnViewActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnView;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables

@@ -10,6 +10,8 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.text.DecimalFormat;
+import java.util.Date;
 import javax.swing.JDialog;
 
 /**
@@ -28,12 +30,15 @@ public class TillReportDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setTitle("Till Report");
         setLocationRelativeTo(parent);
-        declared.setText("£" + report.getDeclared());
-        actual.setText("£" + report.getExpected());
-        diff.setText("£" + report.getDifference());
+        DecimalFormat df = new DecimalFormat("0.00");
+        txtTime.setText(new Date(report.getTime()).toString());
+        txtStaff.setText(report.getStaff().toString());
+        declared.setText("£" + df.format(report.getDeclared()));
+        actual.setText("£" + df.format(report.getExpected()));
+        diff.setText("£" + df.format(report.getDifference()));
         transactions.setText(report.getTransactions() + "");
-        average.setText("£" + report.getAverageSpend());
-        tax.setText("£" + report.getTax());
+        average.setText("£" + df.format(report.getAverageSpend()));
+        tax.setText("£" + df.format(report.getTax()));
     }
 
     public static void showDialog(Component parent, TillReport report) {
@@ -67,10 +72,14 @@ public class TillReportDialog extends javax.swing.JDialog {
         tax = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         btnClose = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        txtTime = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        txtStaff = new javax.swing.JTextField();
 
         jLabel1.setText("Total Takings Declared:");
 
-        jLabel2.setText("Actual Takings:");
+        jLabel2.setText("Expected Takings:");
 
         jLabel3.setText("Difference:");
 
@@ -99,13 +108,27 @@ public class TillReportDialog extends javax.swing.JDialog {
             }
         });
 
+        jLabel7.setText("Data/Time:");
+
+        txtTime.setEditable(false);
+
+        jLabel8.setText("Staff Member:");
+
+        txtStaff.setEditable(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnClose)
+                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel7)
                     .addComponent(jLabel3)
                     .addComponent(jLabel2)
                     .addComponent(jLabel1)
@@ -119,17 +142,23 @@ public class TillReportDialog extends javax.swing.JDialog {
                     .addComponent(diff)
                     .addComponent(actual)
                     .addComponent(tax)
-                    .addComponent(declared))
+                    .addComponent(declared)
+                    .addComponent(txtTime)
+                    .addComponent(txtStaff))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnClose)
-                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(txtTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(txtStaff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(declared, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -175,7 +204,11 @@ public class TillReportDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JTextField tax;
     private javax.swing.JTextField transactions;
+    private javax.swing.JTextField txtStaff;
+    private javax.swing.JTextField txtTime;
     // End of variables declaration//GEN-END:variables
 }
