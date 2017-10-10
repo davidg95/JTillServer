@@ -142,30 +142,22 @@ public class DBConnect implements DataConnect {
 
     private void updates() {
         try (final Connection con = getNewConnection()) {
+            Statement stmt = con.createStatement();
             try {
-                Statement stmt = con.createStatement();
                 int res = stmt.executeUpdate("ALTER TABLE STAFF ADD ENABLED BOOLEAN");
                 LOG.log(Level.INFO, "New fields added to staff table, " + res + " rows affected");
                 con.commit();
                 try {
-                    Statement stmt2 = con.createStatement();
-                    int res2 = stmt2.executeUpdate("UPDATE STAFF SET STAFF.ENABLED = TRUE");
+                    int res2 = stmt.executeUpdate("UPDATE STAFF SET STAFF.ENABLED = TRUE");
                     LOG.log(Level.INFO, "Staff enabled fields set to TRUE, " + res2 + " rows affected");
                     con.commit();
                 } catch (SQLException ex) {
                     con.rollback();
-                    throw ex;
                 }
             } catch (SQLException ex) {
                 con.rollback();
-                throw ex;
             }
-        } catch (SQLException ex) {
-        }
-
-        try (final Connection con = getNewConnection()) {
             try {
-                Statement stmt = con.createStatement();
                 String received_reports = "create table APP.RECEIVED_REPORTS\n"
                         + "(\n"
                         + "     ID INT not null primary key\n"
@@ -181,90 +173,55 @@ public class DBConnect implements DataConnect {
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
-                throw ex;
             }
-        } catch (SQLException ex) {
-        }
-
-        try (final Connection con = getNewConnection()) {
             try {
-                Statement stmt = con.createStatement();
                 int res = stmt.executeUpdate("ALTER TABLE RECEIVEDITEMS ADD RECEIVED_REPORT INT");
                 LOG.log(Level.INFO, "New fields added to RECEIVEDITEMS table, " + res + " rows affected");
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
-                throw ex;
             }
-        } catch (SQLException ex) {
-        }
-
-        try (final Connection con = getNewConnection()) {
             try {
-                Statement stmt = con.createStatement();
                 int res = stmt.executeUpdate("ALTER TABLE RECEIVED_REPORTS ADD PAID BOOLEAN");
                 LOG.log(Level.INFO, "New fields added to RECEIVED_REPORTS table, " + res + " rows affected");
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
-                throw ex;
             }
-        } catch (SQLException ex) {
-        }
-
-        try (final Connection con = getNewConnection()) {
             try {
-                Statement stmt = con.createStatement();
                 int res = stmt.executeUpdate("ALTER TABLE SCREENS ADD INHERITS INT");
                 LOG.log(Level.INFO, "New fields added to SCREENS table, " + res + " rows affected");
                 con.commit();
                 try {
-                    Statement stmt2 = con.createStatement();
-                    int res2 = stmt2.executeUpdate("UPDATE STAFF SET INHERITS = -1");
+                    int res2 = stmt.executeUpdate("UPDATE STAFF SET INHERITS = -1");
                     LOG.log(Level.INFO, "Set inherits to -1, " + res2 + " rows affected");
                     con.commit();
                 } catch (SQLException ex) {
                     con.rollback();
-                    throw ex;
                 }
             } catch (SQLException ex) {
                 con.rollback();
-                throw ex;
             }
-        } catch (SQLException ex) {
-        }
-
-        try (final Connection con = getNewConnection()) {
             try {
-                Statement stmt = con.createStatement();
                 int res = stmt.executeUpdate("ALTER TABLE BUTTONS ADD FONT_COLOR VARCHAR(7)");
                 LOG.log(Level.INFO, "New field added to BUTTONS table, " + res + " rows affected");
                 con.commit();
                 try {
-                    Statement stmt2 = con.createStatement();
-                    int res2 = stmt2.executeUpdate("UPDATE BUTTONS SET FONT_COLOR = '000000'");
+                    int res2 = stmt.executeUpdate("UPDATE BUTTONS SET FONT_COLOR = '000000'");
                     LOG.log(Level.INFO, "Set FONT_COLOR to 'ffffff', " + res2 + " rows affected");
                     con.commit();
                 } catch (SQLException ex) {
                     con.rollback();
-                    throw ex;
                 }
             } catch (SQLException ex) {
                 con.rollback();
-                throw ex;
             }
-        } catch (SQLException ex) {
-        }
-
-        try (final Connection con = getNewConnection()) {
             try {
-                Statement stmt = con.createStatement();
                 int res = stmt.executeUpdate("ALTER TABLE PRODUCTS ADD PACK_SIZE INT");
                 LOG.log(Level.INFO, "New field added to PRODUCTS table, " + res + " rows affected");
                 con.commit();
                 try {
-                    Statement stmt2 = con.createStatement();
-                    int res2 = stmt2.executeUpdate("UPDATE PRODUCTS SET PACK_SIZE = 1");
+                    int res2 = stmt.executeUpdate("UPDATE PRODUCTS SET PACK_SIZE = 1");
                     LOG.log(Level.INFO, "Set PACK_SIZE to 1, " + res2 + " rows affected");
                     con.commit();
                 } catch (SQLException ex) {
@@ -273,80 +230,50 @@ public class DBConnect implements DataConnect {
                 }
             } catch (SQLException ex) {
                 con.rollback();
-                throw ex;
             }
-        } catch (SQLException ex) {
-        }
-
-        try (final Connection con = getNewConnection()) {
             try {
-                Statement stmt = con.createStatement();
                 int res = stmt.executeUpdate("ALTER TABLE BUTTONS ADD ACCESS_LEVEL INT");
                 LOG.log(Level.INFO, "New field added to BUTTONS table, " + res + " rows affected");
                 con.commit();
                 try {
-                    Statement stmt2 = con.createStatement();
-                    int res2 = stmt2.executeUpdate("UPDATE BUTTONS SET ACCESS_LEVEL = 1");
+                    int res2 = stmt.executeUpdate("UPDATE BUTTONS SET ACCESS_LEVEL = 1");
                     LOG.log(Level.INFO, "Set ACCESS_LEVEL to 1, " + res2 + " rows affected");
                     con.commit();
                 } catch (SQLException ex) {
                     con.rollback();
-                    throw ex;
                 }
             } catch (SQLException ex) {
                 con.rollback();
-                throw ex;
             }
-        } catch (SQLException ex) {
-        }
-
-        try (final Connection con = getNewConnection()) {
             try {
-                Statement stmt = con.createStatement();
                 int res = stmt.executeUpdate("ALTER TABLE PRODUCTS ADD BARCODE VARCHAR(15)");
                 LOG.log(Level.INFO, "BARCODE added to PRODUCTS table, " + res + " rows affected");
                 con.commit();
                 try {
-                    Statement stmt2 = con.createStatement();
-                    int res2 = stmt2.executeUpdate("UPDATE PRODUCTS SET BARCODE = (SELECT CODE FROM PLUS WHERE PLUS.PRODUCT = PRODUCTS.ID)");
+                    int res2 = stmt.executeUpdate("UPDATE PRODUCTS SET BARCODE = (SELECT CODE FROM PLUS WHERE PLUS.PRODUCT = PRODUCTS.ID)");
                     LOG.log(Level.INFO, "Updated ," + res2 + " rows affected");
                     con.commit();
                     try {
-                        Statement stmt3 = con.createStatement();
-                        int res3 = stmt3.executeUpdate("DROP TABLES PLUS");
+                        int res3 = stmt.executeUpdate("DROP TABLES PLUS");
                         LOG.log(Level.INFO, "REmoved PLUS table");
                         con.commit();
                     } catch (SQLException ex) {
                         con.rollback();
-                        throw ex;
                     }
                 } catch (SQLException ex) {
                     con.rollback();
-                    throw ex;
                 }
             } catch (SQLException ex) {
                 con.rollback();
-                throw ex;
             }
-        } catch (SQLException ex) {
-        }
-
-        try (final Connection con = getNewConnection()) {
             try {
-                Statement stmt = con.createStatement();
                 int res = stmt.executeUpdate("ALTER TABLE BUTTONS ADD LINK VARCHAR(50)");
                 LOG.log(Level.INFO, "Added LINK to BUTTONS, " + res + " rows affected");
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
-                throw ex;
             }
-        } catch (SQLException ex) {
-        }
-
-        try (final Connection con = getNewConnection()) {
             try {
-                Statement stmt = con.createStatement();
                 String declarations = "create table \"APP\".DECLARATIONS\n"
                         + "(\n"
                         + "     ID INT not null primary key\n"
@@ -365,7 +292,16 @@ public class DBConnect implements DataConnect {
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
-                throw ex;
+            }
+            try {
+                stmt.executeUpdate("ALTER TABLE PRODUCTS ADD SCALE DOUBLE");
+                stmt.executeUpdate("UPDATE PRODUCTS SET SCALE=1");
+                int res = stmt.executeUpdate("ALTER TABLE PRODUCTS ADD SCALE_NAME VARCHAR(20)");
+                stmt.executeUpdate("UPDATE PRODUCTS SET SCALE_NAME='PRICE'");
+                con.commit();
+                LOG.log(Level.INFO, "Added SCALE and SCALE_NAME to PRODUCTS, " + res + " rows affected");
+            } catch (SQLException ex) {
+                con.rollback();
             }
         } catch (SQLException ex) {
         }
@@ -925,6 +861,7 @@ public class DBConnect implements DataConnect {
                 }
             }
         }
+        updates();
     }
 
     private void error(SQLException ex) {
@@ -955,7 +892,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<Product> getAllProducts() throws SQLException {
-        String query = "SELECT ID as pId, ORDER_CODE, p.NAME as pName, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL, BARCODE FROM PRODUCTS p";
+        String query = "SELECT ID as pId, ORDER_CODE, p.NAME as pName, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL, PACK_SIZE, BARCODE, SCALE, SCALE_NAME FROM PRODUCTS p";
         List<Product> products;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
@@ -979,8 +916,15 @@ public class DBConnect implements DataConnect {
                     int minStock = set.getInt("MIN_PRODUCT_LEVEL");
                     int maxStock = set.getInt("MAX_PRODUCT_LEVEL");
                     String barcode = set.getString("BARCODE");
+                    double scale = set.getDouble("SCALE");
+                    String scaleName = set.getString("SCALE_NAME");
 
-                    Product p = new Product(name, shortName, barcode, order_code, cid, dId, comments, taxID, open, price, costPrice, packSize, stock, minStock, maxStock, code);
+                    Product p;
+                    if (!open) {
+                        p = new Product(name, shortName, barcode, order_code, cid, dId, comments, taxID, price, costPrice, packSize, stock, minStock, maxStock, code);
+                    } else {
+                        p = new Product(name, shortName, barcode, order_code, cid, dId, comments, taxID, scale, scaleName, code);
+                    }
                     p.setCategory(this.getCategory(p.getCategoryID()));
                     p.setDepartment(this.getDepartment(p.getDepartmentID()));
                     p.setTax(this.getTax(p.getTaxID()));
@@ -1011,7 +955,7 @@ public class DBConnect implements DataConnect {
             int stock = set.getInt("STOCK");
             String comments = set.getString("COMMENTS");
             String shortName = set.getString("SHORT_NAME");
-            int categoryID = set.getInt("CATEGORY_ID");
+            int cid = set.getInt("CATEGORY_ID");
             int dId = set.getInt("DEPARTMENT_ID");
             int taxID = set.getInt("TAX_ID");
             BigDecimal costPrice = new BigDecimal(Double.toString(set.getDouble("COST_PRICE")));
@@ -1019,8 +963,15 @@ public class DBConnect implements DataConnect {
             int minStock = set.getInt("MIN_PRODUCT_LEVEL");
             int maxStock = set.getInt("MAX_PRODUCT_LEVEL");
             String barcode = set.getString("BARCODE");
+            double scale = set.getDouble("SCALE");
+            String scaleName = set.getString("SCALE_NAME");
 
-            Product p = new Product(name, shortName, barcode, order_code, categoryID, dId, comments, taxID, open, price, costPrice, packSize, stock, minStock, maxStock, code);
+            Product p;
+            if (!open) {
+                p = new Product(name, shortName, barcode, order_code, cid, dId, comments, taxID, price, costPrice, packSize, stock, minStock, maxStock, code);
+            } else {
+                p = new Product(name, shortName, barcode, order_code, cid, dId, comments, taxID, scale, scaleName, code);
+            }
 
             products.add(p);
         }
@@ -1037,7 +988,7 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public Product addProduct(Product p) throws SQLException {
-        String query = "INSERT INTO PRODUCTS (ORDER_CODE, NAME, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL) VALUES (" + p.getSQLInsertString() + ")";
+        String query = "INSERT INTO PRODUCTS (ORDER_CODE, NAME, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL, SCALE, SCALE_NAME) VALUES (" + p.getSQLInsertString() + ")";
         try (Connection con = getNewConnection()) {
             try (PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
                 long stamp = productLock.writeLock();
@@ -1239,7 +1190,7 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public Product getProduct(int code) throws SQLException, ProductNotFoundException {
-        String query = "SELECT p.ID as pId, p.ORDER_CODE, p.NAME as pName, p.OPEN_PRICE, p.PRICE, p.STOCK, p.COMMENTS, p.SHORT_NAME, p.CATEGORY_ID, p.DEPARTMENT_ID, p.TAX_ID, p.COST_PRICE, p.PACK_SIZE, p.MIN_PRODUCT_LEVEL, p.MAX_PRODUCT_LEVEL, p.BARCODE FROM PRODUCTS p WHERE p.ID=" + code;
+        String query = "SELECT p.ID as pId, p.ORDER_CODE, p.NAME as pName, p.OPEN_PRICE, p.PRICE, p.STOCK, p.COMMENTS, p.SHORT_NAME, p.CATEGORY_ID, p.DEPARTMENT_ID, p.TAX_ID, p.COST_PRICE, p.PACK_SIZE, p.MIN_PRODUCT_LEVEL, p.MAX_PRODUCT_LEVEL, p.PACK_SIZE, p.BARCODE, p.SCALE_NAME, p.SCALE FROM PRODUCTS p WHERE p.ID=" + code;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             List<Product> products = new LinkedList<>();
@@ -4058,15 +4009,23 @@ public class DBConnect implements DataConnect {
                     int stock = set.getInt(13);
                     String comments = set.getString(14);
                     String shortName = set.getString(15);
-                    int categoryID = set.getInt(16);
+                    int cid = set.getInt(16);
                     int dId = set.getInt(17);
                     int taxID = set.getInt(18);
                     BigDecimal costPrice = new BigDecimal(Double.toString(set.getDouble(19)));
                     int minStock = set.getInt(20);
                     int maxStock = set.getInt(21);
-                    String barcode = set.getString(22);
+                    int packSize = set.getInt(22);
+                    String barcode = set.getString(23);
+                    double scale = set.getDouble(24);
+                    String scaleName = set.getString(25);
 
-                    Product p = new Product(name, shortName, barcode, order_code, categoryID, dId, comments, taxID, open, pprice, costPrice, stock, minStock, maxStock, pcode);
+                    Product p;
+                    if (!open) {
+                        p = new Product(name, shortName, barcode, order_code, cid, dId, comments, taxID, price, costPrice, packSize, stock, minStock, maxStock, pcode);
+                    } else {
+                        p = new Product(name, shortName, barcode, order_code, cid, dId, comments, taxID, scale, scaleName, pcode);
+                    }
                     i.setItem(p);
                     items.add(i);
                 }
@@ -4672,7 +4631,7 @@ public class DBConnect implements DataConnect {
                     int stock = set.getInt(13);
                     String comments = set.getString(14);
                     String shortName = set.getString(15);
-                    int categoryID = set.getInt(16);
+                    int cid = set.getInt(16);
                     int dId = set.getInt(17);
                     int taxID = set.getInt(18);
                     BigDecimal costPrice = new BigDecimal(Double.toString(set.getDouble(19)));
@@ -4680,8 +4639,15 @@ public class DBConnect implements DataConnect {
                     int maxStock = set.getInt(21);
                     int packSize = set.getInt(22);
                     String barcode = set.getString(23);
+                    double scale = set.getDouble(24);
+                    String scaleName = set.getString(25);
 
-                    Product p = new Product(name, shortName, barcode, order_code, categoryID, dId, comments, taxID, open, pprice, costPrice, packSize, stock, minStock, maxStock, pcode);
+                    Product p;
+                    if (!open) {
+                        p = new Product(name, shortName, barcode, order_code, cid, dId, comments, taxID, price, costPrice, packSize, stock, minStock, maxStock, pcode);
+                    } else {
+                        p = new Product(name, shortName, barcode, order_code, cid, dId, comments, taxID, scale, scaleName, pcode);
+                    }
                     i.setItem(p);
                     items.add(i);
                 }
@@ -4747,15 +4713,23 @@ public class DBConnect implements DataConnect {
                     int stock = set.getInt("STOCK");
                     String comments = set.getString("COMMENTS");
                     String shortName = set.getString("SHORT_NAME");
-                    int categoryID = set.getInt("CATEGORY_ID");
+                    int cid = set.getInt("CATEGORY_ID");
                     int dId = set.getInt("DEPARTMENT_ID");
                     int taxID = set.getInt("TAX_ID");
                     BigDecimal costPrice = new BigDecimal(Double.toString(set.getDouble("COST_PRICE")));
                     int minStock = set.getInt("MIN_PRODUCT_LEVEL");
                     int maxStock = set.getInt("MAX_PRODUCT_LEVEL");
+                    int packSize = set.getInt("PACK_SIZE");
                     String barcode = set.getString("BARCODE");
+                    double scale = set.getDouble("SCALE");
+                    String scaleName = set.getString("SCALE_NAME");
 
-                    Product p = new Product(name, shortName, barcode, order_code, categoryID, dId, comments, taxID, open, price, costPrice, stock, minStock, maxStock, code);
+                    Product p;
+                    if (!open) {
+                        p = new Product(name, shortName, barcode, order_code, cid, dId, comments, taxID, price, costPrice, packSize, stock, minStock, maxStock, code);
+                    } else {
+                        p = new Product(name, shortName, barcode, order_code, cid, dId, comments, taxID, scale, scaleName, code);
+                    }
 
                     products.add(p);
                 }
