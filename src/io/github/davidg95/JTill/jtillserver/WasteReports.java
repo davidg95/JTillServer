@@ -115,8 +115,6 @@ public class WasteReports extends javax.swing.JInternalFrame {
         btnShowAll = new javax.swing.JButton();
         lblValue = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
         tblReports.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
@@ -136,6 +134,7 @@ public class WasteReports extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblReports.getTableHeader().setReorderingAllowed(false);
         tblReports.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblReportsMouseClicked(evt);

@@ -132,6 +132,7 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblReports.getTableHeader().setReorderingAllowed(false);
         tblReports.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblReportsMouseClicked(evt);

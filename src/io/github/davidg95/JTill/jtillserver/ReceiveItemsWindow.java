@@ -274,6 +274,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblProducts.getTableHeader().setReorderingAllowed(false);
         tblProducts.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblProductsMouseClicked(evt);

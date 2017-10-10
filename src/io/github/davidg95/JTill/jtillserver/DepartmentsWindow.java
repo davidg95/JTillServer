@@ -114,6 +114,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblDep.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblDep);
         if (tblDep.getColumnModel().getColumnCount() > 0) {
             tblDep.getColumnModel().getColumn(0).setResizable(false);

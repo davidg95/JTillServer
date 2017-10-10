@@ -239,6 +239,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        tableStaff.getTableHeader().setReorderingAllowed(false);
         tableStaff.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableStaffMouseClicked(evt);

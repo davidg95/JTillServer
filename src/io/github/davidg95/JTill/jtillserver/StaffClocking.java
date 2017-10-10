@@ -167,9 +167,7 @@ public class StaffClocking extends javax.swing.JInternalFrame {
         txtHours = new javax.swing.JTextField();
         btnClose = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Staff Hours");
-        setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Filter"));
 
@@ -234,6 +232,7 @@ public class StaffClocking extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        table.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
             table.getColumnModel().getColumn(0).setResizable(false);
