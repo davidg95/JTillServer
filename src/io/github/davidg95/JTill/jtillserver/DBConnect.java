@@ -31,9 +31,6 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.StampedLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -87,8 +84,6 @@ public class DBConnect implements DataConnect {
 
     private final LogFileHandler handler; //Handler object for the logger.
 
-    private final ObservableList<Till> connectedTills; //List of connected tills.
-
     private final List<Integer> clockedOn;
     private final StampedLock clockLock;
 
@@ -117,10 +112,6 @@ public class DBConnect implements DataConnect {
         systemSettings = Settings.getInstance();
         loggedIn = new LinkedList<>();
         loggedInSem = new Semaphore(1);
-        connectedTills = FXCollections.observableArrayList();
-        connectedTills.addListener((ListChangeListener.Change<? extends Till> c) -> {
-            g.updateTills();
-        });
         handler = LogFileHandler.getInstance();
         Logger.getGlobal().addHandler(handler);
         clockedOn = new LinkedList<>();
@@ -3253,7 +3244,6 @@ public class DBConnect implements DataConnect {
             Till till = this.getTillByUUID(uuid);
             till.setConnected(true);
             g.addTill(till);
-            connectedTills.add(till);
             return till;
         } catch (SQLException ex) {
             LOG.log(Level.SEVERE, "There has been an error adding a till to the database", ex);
@@ -3265,7 +3255,6 @@ public class DBConnect implements DataConnect {
                 } catch (IOException | SQLException ex1) {
                     LOG.log(Level.SEVERE, "There has been an error connecting a till the server", ex);
                 }
-                connectedTills.add(till);
                 return till;
             }
         }
@@ -3274,7 +3263,15 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<Till> getConnectedTills() {
-        return connectedTills;
+        List<Till> tills = new LinkedList<>();
+        for (JConnThread th : TillServer.server.getClientConnections()) {
+            ConnectionHandler h = (ConnectionHandler) th.getMethodClass();
+            if (h.till == null) {
+                continue;
+            }
+            tills.add(h.till);
+        }
+        return tills;
     }
 
     private Till getTillByUUID(UUID uuid) throws SQLException, JTillException {
@@ -4609,7 +4606,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<Sale> getUncachedTillSales(int id) throws IOException, JTillException {
-        String query = "SELECT * FROM SALES WHERE TERMINAL=" + id;// + " AND CASHED=" + false;
+        String query = "SELECT * FROM SALES WHERE TERMINAL=" + id + " AND CASHED=FALSE";// + " AND CASHED=" + false;
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();

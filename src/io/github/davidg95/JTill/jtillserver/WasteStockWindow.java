@@ -198,10 +198,10 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         InputMap im = tblProducts.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = tblProducts.getActionMap();
 
-        KeyStroke enterKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+        KeyStroke deleteKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
 
-        im.put(enterKey, "Action.enter");
-        am.put("Action.enter", new AbstractAction() {
+        im.put(deleteKey, "Action.delete");
+        am.put("Action.delete", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 final int index = tblProducts.getSelectedRow();

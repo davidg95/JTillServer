@@ -7,6 +7,7 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -15,10 +16,15 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -45,6 +51,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
         super.setFrameIcon(new ImageIcon(GUI.icon));
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
+        init();
     }
 
     public static void showWindow(DataConnect dc) {
@@ -60,6 +67,26 @@ public class TillWindow extends javax.swing.JInternalFrame {
         } catch (PropertyVetoException ex) {
             Logger.getLogger(TillWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void init() {
+        InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap am = table.getActionMap();
+
+        KeyStroke deleteKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+
+        im.put(deleteKey, "Action.delete");
+        am.put("Action.delete", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                final int index = table.getSelectedRow();
+                if (index == -1) {
+                    return;
+                }
+                final Till t = contents.get(index);
+                removeTill(t);
+            }
+        });
     }
 
     private static void update() {
@@ -122,6 +149,36 @@ public class TillWindow extends javax.swing.JInternalFrame {
         } catch (Exception ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private boolean isTerminalOnline(Till t) throws IOException {
+        List<Till> tills = dc.getConnectedTills();
+        for (Till till : tills) {
+            if (till.getId() == t.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void removeTill(Till t) {
+        try {
+            if (isTerminalOnline(t)) {
+                JOptionPane.showMessageDialog(this, "This terminal is currently online. The terminal must be disconnected before it can be removed.", "Remove terminal " + t.getName(), JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (!dc.getUncachedTillSales(t.getId()).isEmpty()) {
+                JOptionPane.showMessageDialog(this, "This terminal has uncashed transactions, these must be cashed before this temrinal can be removed", "Remove terminal " + t.getName(), JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove this terminal? This will also remove any sales data associated with this terminal?", "Remove terminal " + t.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                dc.removeTill(t.getId());
+                JOptionPane.showInternalMessageDialog(this, "Terminal " + t.getName() + " has been removed from the system", "Remove Terminal", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (IOException | JTillException | SQLException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex, "Remove Terminal", JOptionPane.ERROR_MESSAGE);
+        }
+        update();
     }
 
     /**
@@ -316,13 +373,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
             JMenuItem remove = new JMenuItem("Remove");
             remove.addActionListener((ActionEvent e) -> {
-                try {
-                    dc.removeTill(t.getId());
-                    JOptionPane.showInternalMessageDialog(this, "Terminal " + t.getName() + " has been removed from the system", "Remove Terminal", JOptionPane.INFORMATION_MESSAGE);
-                } catch (IOException | JTillException | SQLException ex) {
-                    JOptionPane.showInternalMessageDialog(this, ex, "Remove Terminal", JOptionPane.ERROR_MESSAGE);
-                }
-                update();
+                removeTill(t);
             });
 
             if (!t.isConnected()) {
