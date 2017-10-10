@@ -5190,4 +5190,18 @@ public class DBConnect implements DataConnect {
             throw ex;
         }
     }
+
+    @Override
+    public boolean isTillNameUsed(String name) throws IOException, SQLException {
+        String query = "SELECT NAME FROM TILLS WHERE NAME='" + name + "'";
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                ResultSet set = stmt.executeQuery(query);
+                return set.first();
+            } finally {
+                con.commit();
+            }
+        }
+    }
 }

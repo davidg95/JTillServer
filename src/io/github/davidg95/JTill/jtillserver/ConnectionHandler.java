@@ -456,6 +456,11 @@ public class ConnectionHandler {
         return dc.getConnectedTills();
     }
 
+    @JConnMethod("CHECKTILLNAME")
+    public boolean isTillNameUsed(@JConnParameter("NAME") String name) throws IOException, SQLException {
+        return dc.isTillNameUsed(name);
+    }
+
     @JConnMethod("SETSETTING")
     public void setSetting(@JConnParameter("KEY") String key, @JConnParameter("VALUE") String value) throws IOException {
         dc.setSetting(key, value);

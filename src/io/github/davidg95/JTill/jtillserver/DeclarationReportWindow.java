@@ -136,17 +136,11 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
         jScrollPane1.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
             table.getColumnModel().getColumn(0).setResizable(false);
-            table.getColumnModel().getColumn(0).setHeaderValue("Terminal");
             table.getColumnModel().getColumn(1).setResizable(false);
-            table.getColumnModel().getColumn(1).setHeaderValue("Time");
             table.getColumnModel().getColumn(2).setResizable(false);
-            table.getColumnModel().getColumn(2).setHeaderValue("Declared");
             table.getColumnModel().getColumn(3).setResizable(false);
-            table.getColumnModel().getColumn(3).setHeaderValue("Expected");
             table.getColumnModel().getColumn(4).setResizable(false);
-            table.getColumnModel().getColumn(4).setHeaderValue("Difference");
             table.getColumnModel().getColumn(5).setResizable(false);
-            table.getColumnModel().getColumn(5).setHeaderValue("Staff");
         }
 
         btnClose.setText("Close");

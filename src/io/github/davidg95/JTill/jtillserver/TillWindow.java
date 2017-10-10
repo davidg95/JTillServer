@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
@@ -70,6 +71,8 @@ public class TillWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
+        table.getColumnModel().getColumn(0).setMaxWidth(40);
+        table.setSelectionModel(new ForcedListSelectionModel());
         InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = table.getActionMap();
 
@@ -346,6 +349,8 @@ public class TillWindow extends javax.swing.JInternalFrame {
             JPopupMenu menu = new JPopupMenu();
 
             JMenuItem view = new JMenuItem("View");
+            final Font boldFont = new Font(view.getFont().getFontName(), Font.BOLD, view.getFont().getSize());
+            view.setFont(boldFont);
             view.addActionListener((ActionEvent e) -> {
                 TillDialog.showDialog(this, t);
             });
@@ -381,6 +386,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
             }
 
             menu.add(view);
+            menu.addSeparator();
             menu.add(sendData);
             menu.add(xReport);
             menu.add(zReport);

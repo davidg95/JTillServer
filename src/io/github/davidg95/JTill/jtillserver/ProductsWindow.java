@@ -124,6 +124,9 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
      */
     private void init() {
         tableProducts.setSelectionModel(new ForcedListSelectionModel());
+        tableProducts.getColumnModel().getColumn(0).setMaxWidth(40);
+        tableProducts.getColumnModel().getColumn(3).setMaxWidth(60);
+        tableProducts.getColumnModel().getColumn(4).setMaxWidth(60);
         try {
             departments = dc.getAllDepartments();
             taxes = dc.getAllTax();
