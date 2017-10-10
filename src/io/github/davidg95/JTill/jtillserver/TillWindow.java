@@ -176,12 +176,12 @@ public class TillWindow extends javax.swing.JInternalFrame {
             }
             if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove this terminal? This will also remove any sales data associated with this terminal?", "Remove terminal " + t.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 dc.removeTill(t.getId());
+                update();
                 JOptionPane.showInternalMessageDialog(this, "Terminal " + t.getName() + " has been removed from the system", "Remove Terminal", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (IOException | JTillException | SQLException ex) {
             JOptionPane.showInternalMessageDialog(this, ex, "Remove Terminal", JOptionPane.ERROR_MESSAGE);
         }
-        update();
     }
 
     /**
