@@ -89,9 +89,6 @@ public class TillDialog extends javax.swing.JDialog {
             BigDecimal runningTotal = BigDecimal.ZERO;
             contents = dc.getTerminalSales(till.getId(), true);
             model.setRowCount(0);
-            if (till.getUncashedTakings().compareTo(BigDecimal.ZERO) == 0) {
-                lblTotal.setText("Total: £0.00");
-            }
             for (Sale s : contents) {
                 model.addRow(new Object[]{s.getDate(), s.getTotalItemCount(), s.getTotal()});
                 runningTotal = runningTotal.add(s.getTotal());

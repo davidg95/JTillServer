@@ -101,7 +101,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
             contents = dc.getAllTills();
             model.setRowCount(0);
             for (Till t : contents) {
-                model.addRow(new Object[]{t.getId(), t.getName(), new DecimalFormat("0.00").format(t.getUncashedTakings()), (t.isConnected() ? "Online" : "Offline")});
+                model.addRow(new Object[]{t.getId(), t.getName(), (t.isConnected() ? "Online" : "Offline")});
             }
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, "Error loading form", "Error", JOptionPane.ERROR_MESSAGE);
@@ -209,11 +209,11 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Terminal Name", "Uncashed Takings", "Status"
+                "ID", "Terminal Name", "Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -230,7 +230,6 @@ public class TillWindow extends javax.swing.JInternalFrame {
             table.getColumnModel().getColumn(0).setResizable(false);
             table.getColumnModel().getColumn(1).setResizable(false);
             table.getColumnModel().getColumn(2).setResizable(false);
-            table.getColumnModel().getColumn(3).setResizable(false);
         }
 
         btnClose.setText("Close");
