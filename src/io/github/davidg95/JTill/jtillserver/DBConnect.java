@@ -3190,7 +3190,16 @@ public class DBConnect implements DataConnect {
     public Till connectTill(String name, UUID uuid, Staff staff) throws JTillException {
         try {
             if (uuid == null) {
-                throw new JTillException("No UUID");
+                Till till = g.showTillSetupWindow(name);
+                if (till != null) { //If the connection was allowed
+                    try {
+                        addTill(till);
+                    } catch (IOException | SQLException ex) {
+                        LOG.log(Level.SEVERE, "There has been an error connecting a till the server", ex);
+                    }
+                    return till;
+                }
+                return null;
             }
             if (isTillConnected(uuid)) {
                 throw new JTillException("This till is already connected to the server");
@@ -3201,20 +3210,6 @@ public class DBConnect implements DataConnect {
             return till;
         } catch (SQLException ex) {
             LOG.log(Level.SEVERE, "There has been an error adding a till to the database", ex);
-        } catch (JTillException ex) {
-            if (ex.getMessage().equals("No UUID")) {
-                Till till = g.showTillSetupWindow(name);
-                if (till != null) { //If the connection was allowed
-                    try {
-                        addTill(till);
-                    } catch (IOException | SQLException ex1) {
-                        LOG.log(Level.SEVERE, "There has been an error connecting a till the server", ex);
-                    }
-                    return till;
-                }
-            } else {
-                throw ex;
-            }
         }
         return null;
     }
