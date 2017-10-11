@@ -3110,6 +3110,9 @@ public class DBConnect implements DataConnect {
             Statement stmt = con.createStatement();
             int value;
             try {
+                stmt.executeUpdate("DELETE FROM DECLARATIONS WHERE TERMINAL=" + id);
+                stmt.executeUpdate("DELETE FROM SALEITEMS WHERE SALE_ID IN(SELECT ID FROM SALES WHERE ID=SALEITEMS.SALE_ID)");
+                stmt.executeUpdate("DELETE FROM SALES WHERE TERMINAL=" + id);
                 value = stmt.executeUpdate(query);
                 con.commit();
                 if (value == 0) {

@@ -174,7 +174,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "This terminal has uncashed transactions, these must be cashed before this temrinal can be removed", "Remove terminal " + t.getName(), JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove this terminal? This will also remove any sales data associated with this terminal?", "Remove terminal " + t.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove this terminal? This will also remove any sales data associated with this terminal along with declaration reports?", "Remove terminal " + t.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 dc.removeTill(t.getId());
                 update();
                 JOptionPane.showInternalMessageDialog(this, "Terminal " + t.getName() + " has been removed from the system", "Remove Terminal", JOptionPane.INFORMATION_MESSAGE);
