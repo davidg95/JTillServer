@@ -3740,7 +3740,7 @@ public class DBConnect implements DataConnect {
     @Override
     public SaleItem addSaleItem(Sale s, SaleItem i) throws IOException, SQLException {
         i.setSale(s.getId());
-        String query = "INSERT INTO SALEITEMS (PRODUCT_ID, TYPE, QUANTITY, PRICE, TAX, SALE_ID) VALUES(" + i.getSQLInsertStatement() + ")";
+        String query = "INSERT INTO SALEITEMS (PRODUCT_ID, TYPE, QUANTITY, PRICE, TAX, SALE_ID, COST) VALUES(" + i.getSQLInsertStatement() + ")";
         try (Connection con = getNewConnection()) {
             try {
                 PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
