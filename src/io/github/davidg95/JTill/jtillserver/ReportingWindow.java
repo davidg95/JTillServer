@@ -96,7 +96,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     private void updateTable() {
         model.setRowCount(0);
         for (SaleItem i : items) {
-            final Product p = (Product) i.getItem();
+            final Product p = (Product) i.getProduct();
             model.addRow(new Object[]{i.getId(), p.getName(), i.getQuantity(), new DecimalFormat("#.00").format(i.getPrice().multiply(new BigDecimal(i.getQuantity())))});
         }
     }
@@ -183,10 +183,10 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
             //Print the sale items.
             for (SaleItem it : items) {
                 if (it.getType() == SaleItem.PRODUCT) {
-                    final Product product = (Product) it.getItem();
+                    final Product product = (Product) it.getProduct();
                     g2.drawString(product.getName(), itemCol, y);
                 } else {
-                    final Discount discount = (Discount) it.getItem();
+                    final Discount discount = (Discount) it.getProduct();
                     g2.drawString(discount.getName(), itemCol, y);
                 }
                 g2.drawString("" + it.getQuantity(), quantityCol, y);
@@ -503,7 +503,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
 
                 for (SaleItem i : saleItems) {
                     if (i.getType() == SaleItem.PRODUCT) {
-                        final Product product = (Product) i.getItem();
+                        final Product product = (Product) i.getProduct();
                         final BigDecimal in = i.getPrice().multiply(new BigDecimal(i.getQuantity()));
                         final BigDecimal individualCost = product.getCostPrice().divide(new BigDecimal(Integer.toString(product.getPackSize())));
                         final BigDecimal out = individualCost.multiply(new BigDecimal(i.getQuantity()));

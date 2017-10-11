@@ -670,7 +670,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        product = new Product(name, shortName, barcode, orderCode, category.getId(), dep.getId(), comments, tax.getId(), price, costPrice, packSize, 0, minStock, maxStock, 0);
+        product = new Product(name, shortName, barcode, orderCode, category, dep, comments, tax, price, costPrice, packSize, 0, minStock, maxStock, 0);
         try {
             product = dc.addProduct(product);
             if (nextBarcode != null) {
@@ -858,7 +858,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "All fields must be filled out", "Create Product", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            product = new Product(name, shortName, barcode, 0, category.getId(), dep.getId(), comments, tax.getId(), scale, scaleName);
+            product = new Product(name, shortName, barcode, 0, category, dep, comments, tax, scale, scaleName);
             product = dc.addProduct(product);
             if (chkNext.isSelected()) {
                 dc.setSetting("NEXT_PLU", nextBarcode);

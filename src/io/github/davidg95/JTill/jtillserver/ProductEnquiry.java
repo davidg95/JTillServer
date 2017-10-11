@@ -109,36 +109,30 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             int x = 70;
             int s = 30;
 
-            try {
-                //Print product info.
-                g2.drawString("ID: " + p.getId(), x, y);
-                y += s;
-                final Category cat = dc.getCategory(p.getCategoryID());
-                final Department dep = dc.getDepartment(p.getDepartmentID());
-                g2.drawString("Barcode: " + p.getBarcode(), x, y);
-                y += s;
-                g2.drawString("Name: " + p.getLongName(), x, y);
-                y += s;
-                g2.drawString("Category: " + cat.getName(), x, y);
-                y += s;
-                g2.drawString("Department: " + dep.getName(), x, y);
-                y += s;
-                g2.drawString("Price: £" + p.getPrice(), x, y);
-                y += s;
-                g2.drawString("Cost Price: £" + p.getCostPrice(), x, y);
-                y += s;
-                g2.drawString("Stock: " + p.getStock(), x, y);
-                y += s;
-                g2.drawString("Total units sold: " + ts, x, y);
-                y += s;
-                g2.drawString("Total value sold: £" + vs, x, y);
-                y += s;
-                g2.drawString("Total units wasted: " + tw, x, y);
-                y += s;
-                g2.drawString("Total value wasted: £" + vw, x, y);
-            } catch (IOException | SQLException | JTillException ex) {
-                JOptionPane.showMessageDialog(ProductEnquiry.this, "Page could not be printed in full");
-            }
+            //Print product info.
+            g2.drawString("ID: " + p.getId(), x, y);
+            y += s;
+            g2.drawString("Barcode: " + p.getBarcode(), x, y);
+            y += s;
+            g2.drawString("Name: " + p.getLongName(), x, y);
+            y += s;
+            g2.drawString("Category: " + p.getCategory().getName(), x, y);
+            y += s;
+            g2.drawString("Department: " + p.getDepartment().getName(), x, y);
+            y += s;
+            g2.drawString("Price: £" + p.getPrice(), x, y);
+            y += s;
+            g2.drawString("Cost Price: £" + p.getCostPrice(), x, y);
+            y += s;
+            g2.drawString("Stock: " + p.getStock(), x, y);
+            y += s;
+            g2.drawString("Total units sold: " + ts, x, y);
+            y += s;
+            g2.drawString("Total value sold: £" + vs, x, y);
+            y += s;
+            g2.drawString("Total units wasted: " + tw, x, y);
+            y += s;
+            g2.drawString("Total value wasted: £" + vw, x, y);
 
             return PAGE_EXISTS;
         }
@@ -530,8 +524,6 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             if (product == null) {
                 return;
             }
-            final Department dep = dc.getDepartment(product.getDepartmentID());
-            final Category cat = dc.getCategory(product.getCategoryID());
             //Total sold and value sold
             try {
                 totalSold = dc.getTotalSoldOfItem(product.getId());
@@ -563,8 +555,8 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             DecimalFormat df = new DecimalFormat("0.00");
             txtName.setText(product.getLongName());
             txtShortName.setText(product.getName());
-            txtDep.setText(dep.getName());
-            txtCat.setText(cat.getName());
+            txtDep.setText(product.getDepartment().getName());
+            txtCat.setText(product.getCategory().getName());
             txtStock.setText(product.getStock() + "");
             txtMinStock.setText(product.getMinStockLevel() + "");
             txtMaxStock.setText(product.getMaxStockLevel() + "");
@@ -591,8 +583,8 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
                 bMargin = bMargin.setScale(2, RoundingMode.HALF_UP);
                 txtMarginToDate.setText(bMargin.toString());
             }
-        } catch (IOException | JTillException | SQLException ex) {
-            JOptionPane.showMessageDialog(ProductEnquiry.this, ex);
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(ProductEnquiry.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnProductSelectActionPerformed
 
