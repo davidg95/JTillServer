@@ -871,7 +871,13 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                     setCurrentProduct(null);
                     txtName.requestFocus();
                     JOptionPane.showInternalMessageDialog(this, "Product has been removed", "Remove Product", JOptionPane.INFORMATION_MESSAGE);
-                } catch (ProductNotFoundException | IOException | SQLException ex) {
+                } catch (SQLException ex) {
+                    if (ex.getErrorCode() == 20000) {
+                        JOptionPane.showMessageDialog(this, "This product is still being refernced in either a received report or a sale report, these reports must be cleared before the product can be deleted", "Remove Product", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        showError(ex);
+                    }
+                } catch (ProductNotFoundException | IOException ex) {
                     showError(ex);
                 }
             }

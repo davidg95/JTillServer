@@ -246,21 +246,11 @@ public class DBConnect implements DataConnect {
             try {
                 int res = stmt.executeUpdate("ALTER TABLE PRODUCTS ADD BARCODE VARCHAR(15)");
                 LOG.log(Level.INFO, "BARCODE added to PRODUCTS table, " + res + " rows affected");
+                int res2 = stmt.executeUpdate("UPDATE PRODUCTS SET BARCODE = (SELECT CODE FROM PLUS WHERE PLUS.PRODUCT = PRODUCTS.ID)");
+                LOG.log(Level.INFO, "Updated ," + res2 + " rows affected");
+                int res3 = stmt.executeUpdate("DROP TABLES PLUS");
+                LOG.log(Level.INFO, "Removed PLUS table");
                 con.commit();
-                try {
-                    int res2 = stmt.executeUpdate("UPDATE PRODUCTS SET BARCODE = (SELECT CODE FROM PLUS WHERE PLUS.PRODUCT = PRODUCTS.ID)");
-                    LOG.log(Level.INFO, "Updated ," + res2 + " rows affected");
-                    con.commit();
-                    try {
-                        int res3 = stmt.executeUpdate("DROP TABLES PLUS");
-                        LOG.log(Level.INFO, "REmoved PLUS table");
-                        con.commit();
-                    } catch (SQLException ex) {
-                        con.rollback();
-                    }
-                } catch (SQLException ex) {
-                    con.rollback();
-                }
             } catch (SQLException ex) {
                 con.rollback();
             }
@@ -305,6 +295,14 @@ public class DBConnect implements DataConnect {
                 int res = stmt.executeUpdate("ALTER TABLE SALEITEMS ADD COST DOUBLE");
                 con.commit();
                 LOG.log(Level.INFO, "Added COST to SALEITEMS, " + res + " rows affected");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
+
+            try {
+                stmt.executeUpdate("DROP TABLE PLUS");
+                con.commit();
+                LOG.log(Level.INFO, "Removed PLUS table");
             } catch (SQLException ex) {
                 con.rollback();
             }
@@ -1069,38 +1067,16 @@ public class DBConnect implements DataConnect {
     public void removeProduct(int id) throws SQLException, ProductNotFoundException {
         String query = "DELETE FROM PRODUCTS WHERE PRODUCTS.ID = " + id;
         String iQuery = "DELETE FROM WASTEITEMS WHERE PRODUCT = " + id;
-        String pQuery = "DELETE FROM PLUS WHERE PRODUCT = " + id;
         try (Connection con = getNewConnection()) {
-            Statement stmt = con.createStatement();
-            int value;
             try {
+                Statement stmt = con.createStatement();
                 stmt.executeUpdate(iQuery);
+                stmt.executeUpdate("DELETE FROM TRIGGERS WHERE PRODUCT=" + id);
+                stmt.executeUpdate(query);
                 con.commit();
             } catch (SQLException ex) {
-                con.rollback();
                 LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-            try {
-                value = stmt.executeUpdate(pQuery);
-                if (value == 0) {
-                    throw new ProductNotFoundException(id + "");
-                }
-                con.commit();
-            } catch (SQLException ex) {
                 con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-            try {
-                value = stmt.executeUpdate(query);
-                if (value == 0) {
-                    throw new ProductNotFoundException(id + "");
-                }
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
                 throw ex;
             }
         }

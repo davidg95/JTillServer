@@ -1,6 +1,4 @@
-JTill log Wed Oct 11 13:48:11 BST 2017
-[13:48:11] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[13:48:16] [INFO] David Grant has logged in
-[13:48:48] [INFO] Stopping JTIll Server
-[13:48:48] [INFO] Saving properties
-[13:48:48] [INFO] Stopping
+JTill log Wed Oct 11 14:00:48 BST 2017
+[14:00:48] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[14:00:52] [INFO] David Grant has logged in
+[14:00:57] [SEVERE] java.sql.SQLIntegrityConstraintViolationException: DELETE on table 'PRODUCTS' caused a violation of foreign key constraint 'SQL171003161915321' for key (4).  The statement has been rolled back.
