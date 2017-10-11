@@ -3662,7 +3662,7 @@ public class DBConnect implements DataConnect {
             try {
                 Statement stmt = con.createStatement();
                 stmt.executeUpdate("UPDATE PRODUCTS SET DEPARTMENT_ID = 1 WHERE DEPARTMENT_ID = " + id);
-                int value = stmt.executeUpdate("DELETE FROM DEPARTMENTS WHERE ID='" + id + "'");
+                int value = stmt.executeUpdate("DELETE FROM DEPARTMENTS WHERE ID=" + id);
                 con.commit();
                 if (value == 0) {
                     throw new JTillException("Department " + id + " not found");

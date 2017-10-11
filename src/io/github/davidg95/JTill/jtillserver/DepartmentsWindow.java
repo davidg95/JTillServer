@@ -6,7 +6,6 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Image;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -35,7 +34,6 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
      */
     public DepartmentsWindow(DataConnect dc) {
         this.dc = dc;
-//        this.setIconImage(icon);
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
@@ -72,6 +70,18 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         }
     }
 
+    private void removeDepartment(Department dep) {
+        try {
+            if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove " + dep.getName() + "?", "Remove Department", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                dc.removeDepartment(dep.getId());
+                updateTable();
+                JOptionPane.showMessageDialog(this, "Department " + dep.getName() + " removed", "Remove Department", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (IOException | SQLException | JTillException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -84,16 +94,14 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDep = new javax.swing.JTable();
         btnNewDepartment = new javax.swing.JButton();
+        btnRemove = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Edit Departments");
 
         tblDep.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "ID", "Name"
@@ -117,7 +125,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         tblDep.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblDep);
         if (tblDep.getColumnModel().getColumnCount() > 0) {
-            tblDep.getColumnModel().getColumn(0).setResizable(false);
+            tblDep.getColumnModel().getColumn(0).setMaxWidth(40);
             tblDep.getColumnModel().getColumn(1).setResizable(false);
         }
 
@@ -128,27 +136,37 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        btnRemove.setText("Remove Selected");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(102, Short.MAX_VALUE)
-                .addComponent(btnNewDepartment)
-                .addGap(96, 96, 96)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnNewDepartment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnRemove, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(168, 168, 168)
+                .addGap(99, 99, 99)
                 .addComponent(btnNewDepartment)
-                .addContainerGap(218, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnRemove)
+                .addContainerGap(156, Short.MAX_VALUE))
         );
 
         pack();
@@ -173,8 +191,18 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnNewDepartmentActionPerformed
 
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        int row = tblDep.getSelectedRow();
+        if (row == -1) {
+            return;
+        }
+        Department dep = ctc.get(row);
+        removeDepartment(dep);
+    }//GEN-LAST:event_btnRemoveActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNewDepartment;
+    private javax.swing.JButton btnRemove;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblDep;
     // End of variables declaration//GEN-END:variables
