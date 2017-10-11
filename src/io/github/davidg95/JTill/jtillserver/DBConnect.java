@@ -1065,14 +1065,12 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public void removeProduct(int id) throws SQLException, ProductNotFoundException {
-        String query = "DELETE FROM PRODUCTS WHERE PRODUCTS.ID = " + id;
-        String iQuery = "DELETE FROM WASTEITEMS WHERE PRODUCT = " + id;
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
-                stmt.executeUpdate(iQuery);
+                stmt.executeUpdate("DELETE FROM WASTEITEMS WHERE PRODUCT = " + id);
                 stmt.executeUpdate("DELETE FROM TRIGGERS WHERE PRODUCT=" + id);
-                stmt.executeUpdate(query);
+                stmt.executeUpdate("DELETE FROM PRODUCTS WHERE PRODUCTS.ID = " + id);
                 con.commit();
             } catch (SQLException ex) {
                 LOG.log(Level.SEVERE, null, ex);
@@ -1094,18 +1092,16 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public int purchaseProduct(int id, int amount) throws SQLException, OutOfStockException, ProductNotFoundException {
-        String query = "SELECT * FROM PRODUCTS WHERE PRODUCTS.ID=" + id;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             try {
-                ResultSet res = stmt.executeQuery(query);
+                ResultSet res = stmt.executeQuery("SELECT ID, STOCK, MIN_PRODUCT_LEVEL FROM PRODUCTS WHERE PRODUCTS.ID=" + id);
                 while (res.next()) {
                     int stock = res.getInt("STOCK");
                     stock -= amount;
                     int minStock = res.getInt("MIN_PRODUCT_LEVEL");
                     res.close();
                     String update = "UPDATE PRODUCTS SET STOCK=" + stock + " WHERE PRODUCTS.ID=" + id;
-                    stmt = con.createStatement();
                     stmt.executeUpdate(update);
                     if (stock < minStock) {
                         LOG.log(Level.WARNING, id + " is below minimum stock level");
@@ -1149,7 +1145,6 @@ public class DBConnect implements DataConnect {
                 LOG.log(Level.SEVERE, null, ex);
                 throw ex;
             }
-            final Product product = products.get(0);
             return products.get(0);
         }
     }
@@ -1203,26 +1198,7 @@ public class DBConnect implements DataConnect {
             List<Customer> customers = new LinkedList<>();
             try {
                 ResultSet set = stmt.executeQuery(query);
-                customers = new LinkedList<>();
-                while (set.next()) {
-                    int id = set.getInt("ID");
-                    String name = set.getString("NAME");
-                    String phone = set.getString("PHONE");
-                    String mobile = set.getString("MOBILE");
-                    String email = set.getString("EMAIL");
-                    String address1 = set.getString("ADDRESS_LINE_1");
-                    String address2 = set.getString("ADDRESS_LINE_2");
-                    String town = set.getString("TOWN");
-                    String county = set.getString("COUNTY");
-                    String country = set.getString("COUNTRY");
-                    String postcode = set.getString("POSTCODE");
-                    String notes = set.getString("NOTES");
-                    int loyaltyPoints = set.getInt("LOYALTY_POINTS");
-                    BigDecimal moneyDue = new BigDecimal(Double.toString(set.getDouble("MONEY_DUE")));
-                    Customer c = new Customer(id, name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, loyaltyPoints, moneyDue);
-                    c = (Customer) Encryptor.decrypt(c);
-                    customers.add(c);
-                }
+                customers = getCustomersFromResultSet(set);
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
@@ -1236,23 +1212,21 @@ public class DBConnect implements DataConnect {
     public List<Customer> getCustomersFromResultSet(ResultSet set) throws SQLException {
         List<Customer> customers = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt("ID");
-            String name = set.getString("NAME");
-            String phone = set.getString("PHONE");
-            String mobile = set.getString("MOBILE");
-            String email = set.getString("EMAIL");
-            String address1 = set.getString("ADDRESS_LINE_1");
-            String address2 = set.getString("ADDRESS_LINE_2");
-            String town = set.getString("TOWN");
-            String county = set.getString("COUNTY");
-            String country = set.getString("COUNTRY");
-            String postcode = set.getString("POSTCODE");
-            String notes = set.getString("NOTES");
-            int loyaltyPoints = set.getInt("LOYALTY_POINTS");
-            BigDecimal moneyDue = new BigDecimal(set.getDouble("MONEY_DUE"));
-
+            int id = set.getInt(1);
+            String name = set.getString(2);
+            String phone = set.getString(3);
+            String mobile = set.getString(4);
+            String email = set.getString(5);
+            String address1 = set.getString(6);
+            String address2 = set.getString(7);
+            String town = set.getString(8);
+            String county = set.getString(9);
+            String country = set.getString(10);
+            String postcode = set.getString(11);
+            String notes = set.getString(12);
+            int loyaltyPoints = set.getInt(13);
+            BigDecimal moneyDue = set.getBigDecimal(14);
             Customer c = new Customer(id, name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, loyaltyPoints, moneyDue);
-
             c = (Customer) Encryptor.decrypt(c);
             customers.add(c);
         }
@@ -1418,19 +1392,7 @@ public class DBConnect implements DataConnect {
             List<Staff> staff = new LinkedList<>();
             try {
                 ResultSet set = stmt.executeQuery(query);
-                staff = new LinkedList<>();
-                while (set.next()) {
-                    int id = set.getInt("ID");
-                    String name = set.getString("NAME");
-                    int position = set.getInt("POSITION");
-                    String uname = set.getString("USERNAME");
-                    String pword = set.getString("PASSWORD");
-                    String dPword = Encryptor.decrypt(pword);
-                    boolean enabled = set.getBoolean("ENABLED");
-                    double wage = set.getDouble("WAGE");
-                    Staff s = new Staff(id, name, position, uname, dPword, wage, enabled);
-                    staff.add(s);
-                }
+                staff = getStaffFromResultSet(set);
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
@@ -1445,14 +1407,14 @@ public class DBConnect implements DataConnect {
     public List<Staff> getStaffFromResultSet(ResultSet set) throws SQLException {
         List<Staff> staff = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt("ID");
-            String name = set.getString("NAME");
-            int position = set.getInt("POSITION");
-            String uname = set.getString("USERNAME");
-            String pword = set.getString("PASSWORD");
+            int id = set.getInt(1);
+            String name = set.getString(2);
+            int position = set.getInt(3);
+            String uname = set.getString(4);
+            String pword = set.getString(5);
             String dPass = Encryptor.decrypt(pword);
-            boolean enabled = set.getBoolean("ENABLED");
-            double wage = set.getDouble("WAGE");
+            boolean enabled = set.getBoolean(6);
+            double wage = set.getDouble(7);
             Staff s = new Staff(id, name, position, uname, dPass, wage, enabled);
 
             staff.add(s);
@@ -1617,20 +1579,7 @@ public class DBConnect implements DataConnect {
             List<Discount> discounts = new LinkedList<>();
             try {
                 ResultSet set = stmt.executeQuery(query);
-                discounts = new LinkedList<>();
-                while (set.next()) {
-                    int id = set.getInt("ID");
-                    String name = set.getString("NAME");
-                    double percentage = set.getDouble("PERCENTAGE");
-                    BigDecimal price = new BigDecimal(Double.toString(set.getDouble("PRICE")));
-                    int a = set.getInt("ACTION");
-                    int c = set.getInt("CONDITION");
-                    long start = set.getLong("STARTT");
-                    long end = set.getLong("ENDT");
-                    Discount d = new Discount(id, name, percentage, price, a, c, start, end);
-
-                    discounts.add(d);
-                }
+                discounts = getDiscountsFromResultSet(set);
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
@@ -1644,14 +1593,14 @@ public class DBConnect implements DataConnect {
     public List<Discount> getDiscountsFromResultSet(ResultSet set) throws SQLException {
         List<Discount> discounts = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt("ID");
-            String name = set.getString("NAME");
-            double percentage = set.getDouble("PERCENTAGE");
-            BigDecimal price = new BigDecimal(Double.toString(set.getDouble("PRICE")));
-            int a = set.getInt("ACTION");
-            int c = set.getInt("CONDITION");
-            long start = set.getLong("STARTT");
-            long end = set.getLong("ENDT");
+            int id = set.getInt(1);
+            String name = set.getString(2);
+            double percentage = set.getDouble(3);
+            BigDecimal price = new BigDecimal(Double.toString(set.getDouble(4)));
+            int a = set.getInt(5);
+            int c = set.getInt(6);
+            long start = set.getLong(7);
+            long end = set.getLong(8);
             Discount d = new Discount(id, name, percentage, price, a, c, start, end);
 
             discounts.add(d);
@@ -1760,14 +1709,7 @@ public class DBConnect implements DataConnect {
             List<Tax> tax = new LinkedList<>();
             try {
                 ResultSet set = stmt.executeQuery(query);
-                tax = new LinkedList<>();
-                while (set.next()) {
-                    int id = set.getInt("ID");
-                    String name = set.getString("NAME");
-                    double value = set.getDouble("VALUE");
-                    Tax t = new Tax(id, name, value);
-                    tax.add(t);
-                }
+                tax = getTaxFromResultSet(set);
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
@@ -1782,9 +1724,9 @@ public class DBConnect implements DataConnect {
     public List<Tax> getTaxFromResultSet(ResultSet set) throws SQLException {
         List<Tax> tax = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt("ID");
-            String name = set.getString("NAME");
-            double value = set.getDouble("VALUE");
+            int id = set.getInt(1);
+            String name = set.getString(2);
+            double value = set.getDouble(3);
             Tax t = new Tax(id, name, value);
 
             tax.add(t);
@@ -1842,21 +1784,12 @@ public class DBConnect implements DataConnect {
 
     @Override
     public void removeTax(int id) throws SQLException, JTillException {
-        List<Product> products = this.getProductsInTax(id);
-        final Tax DEFAULT_TAX = this.getTax(1);
-        for (Product p : products) {
-            p.setTax(DEFAULT_TAX);
-            try {
-                this.updateProduct(p);
-            } catch (ProductNotFoundException ex) {
-            }
-        }
-        String query = "DELETE FROM TAX WHERE TAX.ID = " + id;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             int value;
             try {
-                value = stmt.executeUpdate(query);
+                stmt.executeUpdate("UPDATE PRODUCTS SET TAX_ID = 1 WHERE TAX_ID = " + id);
+                value = stmt.executeUpdate("DELETE FROM TAX WHERE TAX.ID = " + id);
                 con.commit();
                 if (value == 0) {
                     throw new JTillException(id + "");
@@ -1922,17 +1855,7 @@ public class DBConnect implements DataConnect {
             List<Category> categorys = new LinkedList<>();
             try {
                 ResultSet set = stmt.executeQuery(query);
-                categorys = new LinkedList<>();
-                while (set.next()) {
-                    int id = set.getInt("ID");
-                    String name = set.getString("NAME");
-                    Time startSell = set.getTime("SELL_START");
-                    Time endSell = set.getTime("SELL_END");
-                    boolean timeRestrict = set.getBoolean("TIME_RESTRICT");
-                    int minAge = set.getInt("MINIMUM_AGE");
-                    Category c = new Category(id, name, startSell, endSell, timeRestrict, minAge);
-                    categorys.add(c);
-                }
+                categorys = getCategorysFromResultSet(set);
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
@@ -1946,12 +1869,12 @@ public class DBConnect implements DataConnect {
     public List<Category> getCategorysFromResultSet(ResultSet set) throws SQLException {
         List<Category> categorys = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt("ID");
-            String name = set.getString("NAME");
-            Time startSell = set.getTime("SELL_START");
-            Time endSell = set.getTime("SELL_END");
-            boolean timeRestrict = set.getBoolean("TIME_RESTRICT");
-            int minAge = set.getInt("MINIMUM_AGE");
+            int id = set.getInt(1);
+            String name = set.getString(2);
+            Time startSell = set.getTime(3);
+            Time endSell = set.getTime(4);
+            boolean timeRestrict = set.getBoolean(5);
+            int minAge = set.getInt(6);
             Category c = new Category(id, name, startSell, endSell, timeRestrict, minAge);
             categorys.add(c);
         }
@@ -2008,21 +1931,12 @@ public class DBConnect implements DataConnect {
 
     @Override
     public void removeCategory(int id) throws SQLException, JTillException {
-        List<Product> products = getProductsInCategory(id);
-        final Category DEFAULT_CATEGORY = getCategory(1);
-        for (Product p : products) {
-            p.setCategory(DEFAULT_CATEGORY);
-            try {
-                updateProduct(p);
-            } catch (ProductNotFoundException ex) {
-            }
-        }
-        String query = "DELETE FROM CATEGORYS WHERE CATEGORYS.ID = " + id;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             int value;
             try {
-                value = stmt.executeUpdate(query);
+                stmt.executeUpdate("UPDATE PRODUCTS SET CATEGORY_ID=1 WHERE CATEGORY_ID=" + id);
+                value = stmt.executeUpdate("DELETE FROM CATEGORYS WHERE CATEGORYS.ID = " + id);
                 con.commit();
                 if (value == 0) {
                     throw new JTillException(id + "");
@@ -3744,11 +3658,11 @@ public class DBConnect implements DataConnect {
 
     @Override
     public void removeDepartment(int id) throws IOException, SQLException, JTillException {
-        String query = "DELETE FROM DEPARTMENTS WHERE ID='" + id + "'";
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
-                int value = stmt.executeUpdate(query);
+                stmt.executeUpdate("UPDATE PRODUCTS SET DEPARTMENT_ID = 1 WHERE DEPARTMENT_ID = " + id);
+                int value = stmt.executeUpdate("DELETE FROM DEPARTMENTS WHERE ID='" + id + "'");
                 con.commit();
                 if (value == 0) {
                     throw new JTillException("Department " + id + " not found");
