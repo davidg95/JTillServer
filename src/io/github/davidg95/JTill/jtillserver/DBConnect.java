@@ -1022,7 +1022,7 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public boolean checkBarcode(String barcode) throws SQLException {
-        String query = "SELECT * FROM PLUS WHERE CODE = '" + barcode + "'";
+        String query = "SELECT BARCODE FROM PRODUCTS WHERE BARCODE = '" + barcode + "'";
         ResultSet res;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();

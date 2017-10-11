@@ -1,4 +1,4 @@
-JTill log Wed Oct 11 14:00:48 BST 2017
-[14:00:48] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[14:00:52] [INFO] David Grant has logged in
-[14:00:57] [SEVERE] java.sql.SQLIntegrityConstraintViolationException: DELETE on table 'PRODUCTS' caused a violation of foreign key constraint 'SQL171003161915321' for key (4).  The statement has been rolled back.
+JTill log Wed Oct 11 14:02:42 BST 2017
+[14:02:42] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[14:02:45] [INFO] David Grant has logged in
+[14:02:48] [SEVERE] java.sql.SQLSyntaxErrorException: Table/View 'PLUS' does not exist.
