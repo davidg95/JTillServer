@@ -8,7 +8,7 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -16,10 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -54,6 +59,28 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) tableStaff.getModel();
         showAllStaff();
+    }
+
+    private void init() {
+        tableStaff.getColumnModel().getColumn(0).setMaxWidth(40);
+        tableStaff.setSelectionModel(new ForcedListSelectionModel());
+        InputMap im = tableStaff.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap am = tableStaff.getActionMap();
+
+        KeyStroke deleteKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+
+        im.put(deleteKey, "Action.delete");
+        am.put("Action.delete", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                final int index = tableStaff.getSelectedRow();
+                if (index == -1) {
+                    return;
+                }
+                final Staff s = currentTableContents.get(index);
+                removeStaff(s);
+            }
+        });
     }
 
     public static void showStaffListWindow(DataConnect dc, Image icon) {
@@ -173,6 +200,32 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             }
         } else {
             JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You cannot change users passwords", "Password", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void removeStaff(Staff s) {
+        if (s.equals(GUI.staff)) {
+            JOptionPane.showMessageDialog(this, "You cannot remove yourself as you are currently logged in.", "Remove", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        try {
+            if (dc.isTillLoggedIn(s)) {
+                JOptionPane.showMessageDialog(this, "You cannot remove this member of staff as they are currently logged in", "Remove", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (IOException | StaffNotFoundException | SQLException ex) {
+            log.log(Level.INFO, null, ex);
+        }
+        int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following staff member?\n" + s, "Remove Staff", JOptionPane.YES_NO_OPTION);
+        if (opt == JOptionPane.YES_OPTION) {
+            try {
+                dc.removeStaff(s.getId());
+                showAllStaff();
+                setCurrentStaff(null);
+                JOptionPane.showMessageDialog(this, "Staff member removed", "Remove Staff", JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException | StaffNotFoundException | IOException ex) {
+                showError(ex);
+            }
         }
     }
 
@@ -465,30 +518,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
     private void btnRemoveStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveStaffActionPerformed
         int index = tableStaff.getSelectedRow();
         Staff selected = currentTableContents.get(index);
-        if (selected.equals(GUI.staff)) {
-            JOptionPane.showMessageDialog(this, "You cannot remove yourself as you are currently logged in.", "Remove", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        try {
-            if (dc.isTillLoggedIn(selected)) {
-                JOptionPane.showMessageDialog(this, "You cannot remove this member of staff as they are currently logged in", "Remove", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        } catch (IOException | StaffNotFoundException | SQLException ex) {
-            log.log(Level.INFO, null, ex);
-        }
-        if (index != -1) {
-            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following staff member?\n" + selected, "Remove Staff", JOptionPane.YES_NO_OPTION);
-            if (opt == JOptionPane.YES_OPTION) {
-                try {
-                    dc.removeStaff(selected.getId());
-                } catch (SQLException | StaffNotFoundException | IOException ex) {
-                    showError(ex);
-                }
-                showAllStaff();
-                setCurrentStaff(null);
-            }
-        }
+        removeStaff(selected);
     }//GEN-LAST:event_btnRemoveStaffActionPerformed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
@@ -545,6 +575,10 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         setCurrentStaff(currentTableContents.get(tableStaff.getSelectedRow()));
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
+            JMenuItem view = new JMenuItem("View");
+            view.addActionListener((ActionEvent e) -> {
+                editStaff();
+            });
             JMenuItem pass = new JMenuItem("Change Password");
             pass.addActionListener((ActionEvent e) -> {
                 changePassword(staff);
@@ -553,6 +587,10 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             if (!staff.isEnabled()) {
                 enable.setText("Enable Account");
             }
+            JMenuItem remove = new JMenuItem("Remove");
+            remove.addActionListener((ActionEvent e) -> {
+                removeStaff(staff);
+            });
             enable.addActionListener((ActionEvent e) -> {
                 staff.setEnabled(!staff.isEnabled());
                 try {

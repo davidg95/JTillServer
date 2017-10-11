@@ -43,6 +43,7 @@ public class StaffDialog extends javax.swing.JDialog {
         super(parent);
         editMode = false;
         this.dc = dc;
+        this.setIconImage(GUI.icon);
         initComponents();
         if (manager) {
             cmbPosition.setSelectedIndex(2);
@@ -134,6 +135,7 @@ public class StaffDialog extends javax.swing.JDialog {
         chkEnabled = new javax.swing.JCheckBox();
 
         setTitle("New Staff");
+        setResizable(false);
 
         cmbPosition.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Assisstant", "Supervisor", "Manager", "Area Manager"}));
 

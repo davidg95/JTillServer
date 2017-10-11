@@ -927,9 +927,9 @@ public class DBConnect implements DataConnect {
             int dId = set.getInt(10);
             int taxID = set.getInt(11);
             BigDecimal costPrice = set.getBigDecimal(12);
-            int packSize = set.getInt(13);
-            int minStock = set.getInt(14);
-            int maxStock = set.getInt(15);
+            int minStock = set.getInt(13);
+            int maxStock = set.getInt(14);
+            int packSize = set.getInt(15);
             String barcode = set.getString(16);
             double scale = set.getDouble(17);
             String scaleName = set.getString(18);

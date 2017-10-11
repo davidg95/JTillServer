@@ -232,12 +232,12 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         for (WasteItem wi : wasteItems) {
             try {
                 WasteReason wr = dc.getWasteReason(wi.getReason());
-                Object[] row = new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + wi.getProduct().getCostPrice().divide(new BigDecimal(wi.getProduct().getPackSize())).multiply(new BigDecimal(wi.getQuantity())).setScale(2), wr.getReason()};
+                Object[] row = new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + wi.getProduct().getCostPrice().divide(new BigDecimal(wi.getProduct().getPackSize()), BigDecimal.ROUND_HALF_EVEN).multiply(new BigDecimal(wi.getQuantity())).setScale(2), wr.getReason()};
                 model.addRow(row);
             } catch (IOException | SQLException | JTillException ex) {
                 Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
-            val = val.add(wi.getProduct().getCostPrice().divide(new BigDecimal(wi.getProduct().getPackSize())).setScale(2).multiply(new BigDecimal(wi.getQuantity())));
+            val = val.add(wi.getProduct().getCostPrice().divide(new BigDecimal(wi.getProduct().getPackSize()), BigDecimal.ROUND_HALF_EVEN).setScale(2).multiply(new BigDecimal(wi.getQuantity())));
         }
         if (val == BigDecimal.ZERO) {
             lblValue.setText("Total Value: £0.00");
