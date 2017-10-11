@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -59,6 +60,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) tableStaff.getModel();
         showAllStaff();
+        init();
     }
 
     private void init() {
@@ -222,7 +224,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                 dc.removeStaff(s.getId());
                 showAllStaff();
                 setCurrentStaff(null);
-                JOptionPane.showMessageDialog(this, "Staff member removed", "Remove Staff", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Staff member removed", "Remove Staff", JOptionPane.INFORMATION_MESSAGE);
             } catch (SQLException | StaffNotFoundException | IOException ex) {
                 showError(ex);
             }
@@ -576,6 +578,8 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem view = new JMenuItem("View");
+            final Font boldFont = new Font(view.getFont().getFontName(), Font.BOLD, view.getFont().getSize());
+            view.setFont(boldFont);
             view.addActionListener((ActionEvent e) -> {
                 editStaff();
             });
@@ -587,10 +591,6 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             if (!staff.isEnabled()) {
                 enable.setText("Enable Account");
             }
-            JMenuItem remove = new JMenuItem("Remove");
-            remove.addActionListener((ActionEvent e) -> {
-                removeStaff(staff);
-            });
             enable.addActionListener((ActionEvent e) -> {
                 staff.setEnabled(!staff.isEnabled());
                 try {
@@ -600,8 +600,15 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                     JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Staff", JOptionPane.ERROR_MESSAGE);
                 }
             });
+            JMenuItem remove = new JMenuItem("Remove");
+            remove.addActionListener((ActionEvent e) -> {
+                removeStaff(staff);
+            });
+            menu.add(view);
             menu.add(pass);
             menu.add(enable);
+            menu.addSeparator();
+            menu.add(remove);
             menu.show(tableStaff, evt.getX(), evt.getY());
         } else if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
