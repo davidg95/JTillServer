@@ -3105,7 +3105,6 @@ public class DBConnect implements DataConnect {
 
     @Override
     public void removeTill(int id) throws IOException, SQLException, JTillException {
-        String query = "DELETE FROM TILLS WHERE TILLS.ID = " + id;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             int value;
@@ -3113,7 +3112,7 @@ public class DBConnect implements DataConnect {
                 stmt.executeUpdate("DELETE FROM DECLARATIONS WHERE TERMINAL=" + id);
                 stmt.executeUpdate("DELETE FROM SALEITEMS WHERE SALE_ID IN(SELECT ID FROM SALES WHERE ID=SALEITEMS.SALE_ID)");
                 stmt.executeUpdate("DELETE FROM SALES WHERE TERMINAL=" + id);
-                value = stmt.executeUpdate(query);
+                value = stmt.executeUpdate("DELETE FROM TILLS WHERE TILLS.ID=" + id);
                 con.commit();
                 if (value == 0) {
                     throw new JTillException(id + " could not be found");
