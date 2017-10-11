@@ -3212,6 +3212,20 @@ public class DBConnect implements DataConnect {
             return till;
         } catch (SQLException ex) {
             LOG.log(Level.SEVERE, "There has been an error adding a till to the database", ex);
+        } catch (JTillException ex) {
+            if (ex.getMessage().equals("This till is already connected to the server")) {
+                throw ex;
+            }
+            Till till = g.showTillSetupWindow(name);
+            if (till != null) { //If the connection was allowed
+                try {
+                    addTill(till);
+                } catch (IOException | SQLException ex1) {
+                    LOG.log(Level.SEVERE, "There has been an error connecting a till the server", ex1);
+                }
+                return till;
+            }
+            return null;
         }
         return null;
     }
