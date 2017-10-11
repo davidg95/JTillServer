@@ -451,9 +451,15 @@ public class GUI extends JFrame implements GUIInterface {
     }
 
     @Override
-    public Till showTillSetupWindow(String name) {
+    public Till showTillSetupWindow(String name) throws JTillException {
+        if (staff == null) {
+            throw new JTillException("The server is not ready to accept new connections");
+        }
         Till till = new Till(name, 1);
-        TillDialog.showDialog(this, till);
+        till = TillInitialSetupDialog.showDialog(this, till);
+        if (till == null) {
+            throw new JTillException("Connection cancelled by server");
+        }
         return till;
     }
 
