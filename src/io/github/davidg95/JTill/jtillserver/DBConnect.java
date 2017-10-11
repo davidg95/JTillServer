@@ -949,7 +949,7 @@ public class DBConnect implements DataConnect {
             String tName = set.getString(28);
             double value = set.getDouble(29);
 
-            Tax t = new Tax(tName, value);
+            Tax t = new Tax(taxID, tName, value);
 
             Product p;
             if (!open) {
