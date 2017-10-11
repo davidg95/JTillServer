@@ -72,7 +72,6 @@ public class DBConnect implements DataConnect {
     //Concurrent locks
     private final StampedLock susL;
     private final StampedLock supL;
-    private final StampedLock productLock;
 
     private GUIInterface g; //A reference to the GUI.
 
@@ -116,7 +115,6 @@ public class DBConnect implements DataConnect {
         Logger.getGlobal().addHandler(handler);
         clockedOn = new LinkedList<>();
         clockLock = new StampedLock();
-        productLock = new StampedLock();
     }
 
     public void setServer(JConnServer server) {
@@ -991,18 +989,13 @@ public class DBConnect implements DataConnect {
         String query = "INSERT INTO PRODUCTS (ORDER_CODE, NAME, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL, SCALE, SCALE_NAME) VALUES (" + p.getSQLInsertString() + ")";
         try (Connection con = getNewConnection()) {
             try (PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-                long stamp = productLock.writeLock();
-                try {
-                    stmt.executeUpdate();
-                    ResultSet set = stmt.getGeneratedKeys();
-                    while (set.next()) {
-                        int id = set.getInt(1);
-                        p.setId(id);
-                    }
-                    con.commit();
-                } finally {
-                    productLock.unlockWrite(stamp);
+                stmt.executeUpdate();
+                ResultSet set = stmt.getGeneratedKeys();
+                while (set.next()) {
+                    int id = set.getInt(1);
+                    p.setId(id);
                 }
+                con.commit();
             } catch (SQLException ex) {
                 con.rollback();
                 LOG.log(Level.SEVERE, null, ex);
@@ -1019,16 +1012,11 @@ public class DBConnect implements DataConnect {
             Statement stmt = con.createStatement();
             int value;
             try {
-                long stamp = productLock.writeLock();
-                try {
-                    value = stmt.executeUpdate(query);
-                    if (value == 0) {
-                        throw new ProductNotFoundException("Product id " + p.getId() + " could not be found");
-                    }
-                    con.commit();
-                } finally {
-                    productLock.unlockWrite(stamp);
+                value = stmt.executeUpdate(query);
+                if (value == 0) {
+                    throw new ProductNotFoundException("Product id " + p.getId() + " could not be found");
                 }
+                con.commit();
             } catch (SQLException ex) {
                 con.rollback();
                 LOG.log(Level.SEVERE, null, ex);
@@ -1116,16 +1104,11 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
             try {
-                long stamp = productLock.writeLock();
-                try {
-                    value = stmt.executeUpdate(query);
-                    if (value == 0) {
-                        throw new ProductNotFoundException(id + "");
-                    }
-                    con.commit();
-                } finally {
-                    productLock.unlockWrite(stamp);
+                value = stmt.executeUpdate(query);
+                if (value == 0) {
+                    throw new ProductNotFoundException(id + "");
                 }
+                con.commit();
             } catch (SQLException ex) {
                 con.rollback();
                 LOG.log(Level.SEVERE, null, ex);
@@ -1150,26 +1133,21 @@ public class DBConnect implements DataConnect {
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             try {
-                long stamp = productLock.writeLock();
-                try {
-                    ResultSet res = stmt.executeQuery(query);
-                    while (res.next()) {
-                        int stock = res.getInt("STOCK");
-                        stock -= amount;
-                        int minStock = res.getInt("MIN_PRODUCT_LEVEL");
-                        res.close();
-                        String update = "UPDATE PRODUCTS SET STOCK=" + stock + " WHERE PRODUCTS.ID=" + id;
-                        stmt = con.createStatement();
-                        stmt.executeUpdate(update);
-                        if (stock < minStock) {
-                            LOG.log(Level.WARNING, id + " is below minimum stock level");
-                            g.logWarning("WARNING- Product " + id + " is below is minimum level!");
-                        }
-                        con.commit();
-                        return stock;
+                ResultSet res = stmt.executeQuery(query);
+                while (res.next()) {
+                    int stock = res.getInt("STOCK");
+                    stock -= amount;
+                    int minStock = res.getInt("MIN_PRODUCT_LEVEL");
+                    res.close();
+                    String update = "UPDATE PRODUCTS SET STOCK=" + stock + " WHERE PRODUCTS.ID=" + id;
+                    stmt = con.createStatement();
+                    stmt.executeUpdate(update);
+                    if (stock < minStock) {
+                        LOG.log(Level.WARNING, id + " is below minimum stock level");
+                        g.logWarning("WARNING- Product " + id + " is below is minimum level!");
                     }
-                } finally {
-                    productLock.unlockWrite(stamp);
+                    con.commit();
+                    return stock;
                 }
             } catch (SQLException ex) {
                 con.rollback();
@@ -1195,16 +1173,11 @@ public class DBConnect implements DataConnect {
             Statement stmt = con.createStatement();
             List<Product> products = new LinkedList<>();
             try {
-                long stamp = productLock.readLock();
-                try {
-                    ResultSet res = stmt.executeQuery(query);
-                    products = getProductsFromResultSet(res);
-                    con.commit();
-                    if (products.isEmpty()) {
-                        throw new ProductNotFoundException("Product " + code + " could not be found");
-                    }
-                } finally {
-                    productLock.unlockRead(stamp);
+                ResultSet res = stmt.executeQuery(query);
+                products = getProductsFromResultSet(res);
+                con.commit();
+                if (products.isEmpty()) {
+                    throw new ProductNotFoundException("Product " + code + " could not be found");
                 }
             } catch (SQLException ex) {
                 con.rollback();
@@ -1238,7 +1211,6 @@ public class DBConnect implements DataConnect {
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             try {
-                long stamp = productLock.readLock();
                 try {
                     ResultSet res = stmt.executeQuery(query);
                     products = getProductsFromResultSet(res);
@@ -1250,8 +1222,6 @@ public class DBConnect implements DataConnect {
                     products.get(0).setTax(this.getTax(products.get(0).getTaxID()));
                 } catch (JTillException ex) {
                     Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
-                } finally {
-                    productLock.unlockRead(stamp);
                 }
             } catch (SQLException ex) {
                 con.rollback();
