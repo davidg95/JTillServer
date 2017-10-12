@@ -180,6 +180,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             txtBarcode.setText("");
             txtPrice.setText("");
             txtCostPrice.setText("");
+            jLabel9.setText("Cost (£):");
             txtPackSize.setText("");
             txtStock.setText("");
             txtMinStock.setText("");
@@ -212,7 +213,9 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 txtMinStock.setEnabled(false);
                 txtMaxStock.setEnabled(false);
                 jLabel3.setEnabled(false);
-                jLabel9.setEnabled(false);
+                jLabel9.setEnabled(true);
+                jLabel9.setText("Cost %:");
+                txtCostPrice.setEnabled(true);
                 jLabel2.setEnabled(false);
                 jLabel4.setEnabled(false);
                 jLabel10.setEnabled(false);
@@ -237,13 +240,13 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 chkIncVat.setEnabled(false);
                 txtBarcode.setText(product.getBarcode());
                 txtPrice.setText("OPEN");
-                txtCostPrice.setText("OPEN");
+                txtCostPrice.setText(product.getCostPercentage().toString());
                 txtPackSize.setText("0");
                 txtScaleName.setText(p.getScaleName());
                 txtScale.setText(p.getScale() + "");
                 txtPackSize.setEnabled(false);
                 txtPrice.setEditable(false);
-                txtCostPrice.setEditable(false);
+                txtCostPrice.setEditable(true);
                 txtStock.setText("");
                 txtMinStock.setText("");
                 txtMaxStock.setText("");
@@ -257,6 +260,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 txtMaxStock.setEnabled(true);
                 jLabel3.setEnabled(true);
                 jLabel9.setEnabled(true);
+                jLabel9.setText("Cost (£):");
                 jLabel2.setEnabled(true);
                 jLabel4.setEnabled(true);
                 jLabel10.setEnabled(true);
@@ -561,7 +565,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
         cmbDepartments.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jLabel9.setText("Cost Price (£):");
+        jLabel9.setText("Cost (£):");
 
         btnDepartments.setText("Departments");
         btnDepartments.addActionListener(new java.awt.event.ActionListener() {
@@ -757,7 +761,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                     .addComponent(jLabel5)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnSaveChanges)
                     .addComponent(btnRemoveProduct))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -907,6 +911,13 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             product.setDepartment(dep);
             product.setTax(tax);
             product.setComments(comments);
+            String strCost = txtCostPrice.getText();
+            if (!Utilities.isNumber(strCost)) {
+                JOptionPane.showMessageDialog(this, "Must enter a number for cost percentage", "Save Changes", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            BigDecimal cost = new BigDecimal(strCost);
+            product.setCostPercentage(cost);
             if (chkScale.isSelected()) {
                 if (txtScaleName.getText().isEmpty() || txtScale.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this, "You msut fill out all fields", "Save Changes", JOptionPane.ERROR_MESSAGE);

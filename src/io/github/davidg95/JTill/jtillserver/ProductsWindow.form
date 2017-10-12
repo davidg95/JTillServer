@@ -455,7 +455,7 @@
                       <Component id="jScrollPane2" min="-2" pref="130" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="btnSaveChanges" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="btnRemoveProduct" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -574,7 +574,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel9">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Cost Price (&#xa3;):"/>
+            <Property name="text" type="java.lang.String" value="Cost (&#xa3;):"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btnDepartments">

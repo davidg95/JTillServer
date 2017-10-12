@@ -963,7 +963,7 @@ public class DBConnect implements DataConnect {
             if (!open) {
                 p = new Product(name, shortName, barcode, order_code, c, d, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code);
             } else {
-                p = new Product(name, shortName, barcode, order_code, c, d, comments, t, scale, scaleName, code);
+                p = new Product(name, shortName, barcode, order_code, c, d, comments, t, scale, scaleName, costPrice, code);
             }
 
             products.add(p);
@@ -4420,7 +4420,7 @@ public class DBConnect implements DataConnect {
                     BigDecimal price = new BigDecimal(Double.toString(set.getDouble(5)));
                     int iSa = set.getInt(7);
                     BigDecimal tax = set.getBigDecimal(6);
-                    BigDecimal cost = set.getBigDecimal(7);
+                    BigDecimal cost = set.getBigDecimal(8);
                     SaleItem i = new SaleItem(iSa, pid, qu, id, price, 1, tax, cost);
                     items.add(i);
                 }
