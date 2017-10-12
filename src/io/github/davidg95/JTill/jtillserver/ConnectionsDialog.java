@@ -172,7 +172,7 @@ public class ConnectionsDialog extends javax.swing.JInternalFrame {
                 } catch (JTillException ex) {
                     Logger.getLogger(ConnectionsDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                TillDialog.showDialog(this, t);
+                TillDialog.showDialog(t);
                 dc.updateTill(t);
             } catch (IOException | SQLException | JTillException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
