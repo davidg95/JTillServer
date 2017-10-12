@@ -99,7 +99,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
         model.setRowCount(0);
-        cmbModel = (DefaultComboBoxModel) cmbReason.getModel();
+        cmbModel = new DefaultComboBoxModel();
         cmbReason.setModel(cmbModel);
         init();
     }
@@ -561,8 +561,8 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             if (amount == 0) {
                 return;
             }
-            int reason = cmbReason.getSelectedIndex() + 1;
-            WasteItem wi = new WasteItem(product, amount, reason);
+            WasteReason wr = (WasteReason) cmbReason.getSelectedItem();
+            WasteItem wi = new WasteItem(product, amount, wr.getId());
             wasteItems.add(wi);
             updateTable();
         } else {

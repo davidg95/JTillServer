@@ -74,7 +74,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
         model.setRowCount(0);
-        cmbModel = (DefaultComboBoxModel) cmbSuppliers.getModel();
+        cmbModel = new DefaultComboBoxModel();
         cmbSuppliers.setModel(cmbModel);
         init();
     }
