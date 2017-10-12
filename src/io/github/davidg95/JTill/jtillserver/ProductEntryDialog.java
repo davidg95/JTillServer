@@ -15,8 +15,10 @@ import java.awt.Window;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -29,11 +31,12 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private final DataConnect dc;
     private String barcode;
     private Product product;
-    private Category selectedCategory;
-    private Department selectedDepartment;
-    private Tax selectedTax;
 
     private String nextBarcode;
+
+    private DefaultComboBoxModel taxModel;
+    private DefaultComboBoxModel depModel;
+    private DefaultComboBoxModel catModel;
 
     /**
      * Creates new form ProductEntryDialog.
@@ -43,23 +46,36 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     public ProductEntryDialog(Window parent) {
         super(parent);
         this.dc = GUI.gui.dc;
+        taxModel = new DefaultComboBoxModel();
+        depModel = new DefaultComboBoxModel();
+        catModel = new DefaultComboBoxModel();
+        initCombos();
         initComponents();
         this.setIconImage(GUI.icon);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(parent);
         setModal(true);
-        try {
-            selectedCategory = dc.getCategory(1);
-            selectedTax = dc.getTax(1);
-            selectedDepartment = dc.getDepartment(1);
-            btnSelectCategory.setText(selectedCategory.getName());
-            btnSelectTax.setText(selectedTax.getName());
-            btnSelectDepartment.setText(selectedDepartment.getName());
-        } catch (IOException | SQLException | JTillException ex) {
-            Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
         CardLayout c = (CardLayout) jPanel1.getLayout();
         c.show(jPanel1, "card2");
+    }
+
+    private void initCombos() {
+        try {
+            List<Tax> taxes = dc.getAllTax();
+            for (Tax t : taxes) {
+                taxModel.addElement(t);
+            }
+            List<Department> deps = dc.getAllDepartments();
+            for (Department d : deps) {
+                depModel.addElement(d);
+            }
+            List<Category> cats = dc.getAllCategorys();
+            for (Category c : cats) {
+                catModel.addElement(c);
+            }
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static void showDialog(Component parent) {
@@ -72,14 +88,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     }
 
     private void resetPanels() {
-        try {
-            selectedCategory = dc.getCategory(1);
-            selectedTax = dc.getTax(1);
-            selectedDepartment = dc.getDepartment(1);
-        } catch (IOException | SQLException | JTillException ex) {
-            Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
         txtPlu.setText("");
 
         txtName.setText("");
@@ -90,16 +98,18 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         txtMinStock.setText("0");
         txtMaxStock.setText("0");
         txtComments.setText("");
-        btnSelectCategory.setText(selectedCategory.getName());
-        btnSelectTax.setText(selectedTax.getName());
-        btnSelectDepartment.setText(selectedDepartment.getName());
 
         txtOpenName.setText("");
         txtOpenShort.setText("");
         txtOpenComments.setText("");
-        btnOpenCategory.setText(selectedCategory.getName());
-        btnOpenTax.setText(selectedTax.getName());
-        btnOpenDepartment.setText(selectedDepartment.getName());
+
+        cmbVat.setSelectedIndex(0);
+        cmbDep.setSelectedIndex(0);
+        cmbCat.setSelectedIndex(0);
+
+        cmbOpenVAT.setSelectedIndex(0);
+        cmbOpenDep.setSelectedIndex(0);
+        cmbOpenCat.setSelectedIndex(0);
     }
 
     /**
@@ -114,7 +124,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         panProduct = new javax.swing.JPanel();
-        btnSelectDepartment = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
         txtOrderCode = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
@@ -125,7 +134,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         txtShortName = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         txtCostPrice = new javax.swing.JTextField();
         txtMinStock = new javax.swing.JTextField();
@@ -134,13 +142,16 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         txtMaxStock = new javax.swing.JTextField();
         txtName = new javax.swing.JTextField();
-        btnSelectCategory = new javax.swing.JButton();
-        btnSelectTax = new javax.swing.JButton();
         txtPrice = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
         txtPackSize = new javax.swing.JFormattedTextField();
+        chkIncVat = new javax.swing.JCheckBox();
+        jLabel22 = new javax.swing.JLabel();
+        cmbVat = new javax.swing.JComboBox<>();
+        cmbDep = new javax.swing.JComboBox<>();
+        cmbCat = new javax.swing.JComboBox<>();
         panOpenProduct = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtOpenName = new javax.swing.JTextField();
@@ -148,10 +159,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         txtOpenShort = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
-        btnOpenDepartment = new javax.swing.JButton();
-        btnOpenCategory = new javax.swing.JButton();
-        btnOpenTax = new javax.swing.JButton();
         jLabel18 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtOpenComments = new javax.swing.JTextArea();
@@ -162,6 +169,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         jLabel21 = new javax.swing.JLabel();
         txtScale = new javax.swing.JTextField();
         chkScale = new javax.swing.JCheckBox();
+        jLabel8 = new javax.swing.JLabel();
+        cmbOpenVAT = new javax.swing.JComboBox<>();
+        cmbOpenDep = new javax.swing.JComboBox<>();
+        cmbOpenCat = new javax.swing.JComboBox<>();
         panBarcode = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txtPlu = new javax.swing.JTextField();
@@ -175,13 +186,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         setTitle("Create New Product");
 
         jPanel1.setLayout(new java.awt.CardLayout());
-
-        btnSelectDepartment.setText("Select Department");
-        btnSelectDepartment.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSelectDepartmentActionPerformed(evt);
-            }
-        });
 
         jLabel13.setText("Order Code:");
 
@@ -211,8 +215,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
         jLabel7.setText("Category:");
 
-        jLabel8.setText("Tax Class:");
-
         jLabel9.setText("Cost Price (£):");
 
         txtMinStock.setText("0");
@@ -225,20 +227,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
         txtMaxStock.setText("0");
 
-        btnSelectCategory.setText("Select Category");
-        btnSelectCategory.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSelectCategoryActionPerformed(evt);
-            }
-        });
-
-        btnSelectTax.setText("Select Tax");
-        btnSelectTax.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSelectTaxActionPerformed(evt);
-            }
-        });
-
         jLabel12.setText("Department:");
 
         jLabel14.setText("Price (£):");
@@ -246,6 +234,16 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         jLabel19.setText("Pack Size:");
 
         txtPackSize.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+
+        chkIncVat.setText("Price includes VAT (if applicable)");
+
+        jLabel22.setText("VAT:");
+
+        cmbVat.setModel(taxModel);
+
+        cmbDep.setModel(depModel);
+
+        cmbCat.setModel(catModel);
 
         javax.swing.GroupLayout panProductLayout = new javax.swing.GroupLayout(panProduct);
         panProduct.setLayout(panProductLayout);
@@ -255,54 +253,56 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panProductLayout.createSequentialGroup()
                         .addContainerGap()
+                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(307, 307, 307)
+                        .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panProductLayout.createSequentialGroup()
+                        .addGap(33, 33, 33)
                         .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(txtCostPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panProductLayout.createSequentialGroup()
-                                .addComponent(jLabel10)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel13)
+                            .addComponent(jLabel14)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel12)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtOrderCode, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panProductLayout.createSequentialGroup()
+                                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtMinStock, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtShortName, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panProductLayout.createSequentialGroup()
+                                .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtPrice)
+                                    .addComponent(txtCostPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(panProductLayout.createSequentialGroup()
+                                        .addComponent(chkIncVat)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel22)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(cmbVat, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(panProductLayout.createSequentialGroup()
+                                        .addComponent(jLabel19)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtPackSize, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(panProductLayout.createSequentialGroup()
+                                .addComponent(txtMinStock, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel11)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtMaxStock, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panProductLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panProductLayout.createSequentialGroup()
-                            .addGap(16, 16, 16)
-                            .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel2)
-                                .addComponent(jLabel13)
-                                .addComponent(jLabel14)
-                                .addComponent(jLabel5)
-                                .addComponent(jLabel8)
-                                .addComponent(jLabel7)
-                                .addComponent(jLabel12))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(panProductLayout.createSequentialGroup()
-                                    .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jLabel9)
-                                    .addGap(110, 110, 110)
-                                    .addComponent(jLabel19)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtPackSize))
-                                .addComponent(txtOrderCode, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(panProductLayout.createSequentialGroup()
-                                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jLabel6)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtShortName, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(btnSelectDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnSelectCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnSelectTax, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(46, Short.MAX_VALUE))
+                                .addComponent(txtMaxStock, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(cmbCat, javax.swing.GroupLayout.Alignment.LEADING, 0, 103, Short.MAX_VALUE)
+                                .addComponent(cmbDep, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         panProductLayout.setVerticalGroup(
             panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -321,6 +321,11 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
                     .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkIncVat)
+                    .addComponent(jLabel22)
+                    .addComponent(cmbVat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(txtCostPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel19)
@@ -333,21 +338,17 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     .addComponent(txtMaxStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSelectDepartment)
-                    .addComponent(jLabel12))
+                    .addComponent(jLabel12)
+                    .addComponent(cmbDep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSelectCategory)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSelectTax)
-                    .addComponent(jLabel8))
+                    .addComponent(jLabel7)
+                    .addComponent(cmbCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
                 .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -363,29 +364,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         jLabel15.setText("Department:");
 
         jLabel16.setText("Category:");
-
-        jLabel17.setText("Tax:");
-
-        btnOpenDepartment.setText("Select Department");
-        btnOpenDepartment.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOpenDepartmentActionPerformed(evt);
-            }
-        });
-
-        btnOpenCategory.setText("Select Category");
-        btnOpenCategory.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOpenCategoryActionPerformed(evt);
-            }
-        });
-
-        btnOpenTax.setText("Select Tax");
-        btnOpenTax.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOpenTaxActionPerformed(evt);
-            }
-        });
 
         jLabel18.setText("Comments:");
 
@@ -424,6 +402,14 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             }
         });
 
+        jLabel8.setText("VAT:");
+
+        cmbOpenVAT.setModel(taxModel);
+
+        cmbOpenDep.setModel(depModel);
+
+        cmbOpenCat.setModel(catModel);
+
         javax.swing.GroupLayout panOpenProductLayout = new javax.swing.GroupLayout(panOpenProduct);
         panOpenProduct.setLayout(panOpenProductLayout);
         panOpenProductLayout.setHorizontalGroup(
@@ -439,20 +425,20 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                         .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel20)
                             .addComponent(jLabel3)
+                            .addComponent(jLabel8)
                             .addComponent(jLabel15)
                             .addComponent(jLabel16)
-                            .addComponent(jLabel17)
                             .addComponent(jLabel18))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnOpenDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnOpenCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnOpenTax, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(panOpenProductLayout.createSequentialGroup()
-                                .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtOpenName, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
-                                    .addComponent(txtScaleName))
+                                .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(cmbOpenCat, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cmbOpenDep, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtOpenName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                                    .addComponent(txtScaleName, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cmbOpenVAT, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(panOpenProductLayout.createSequentialGroup()
@@ -485,25 +471,22 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     .addComponent(txtScale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(chkScale))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(cmbOpenVAT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel15)
+                    .addComponent(cmbOpenDep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel16)
+                    .addComponent(cmbOpenCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panOpenProductLayout.createSequentialGroup()
-                        .addGap(87, 87, 87)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panOpenProductLayout.createSequentialGroup()
-                        .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel15)
-                            .addComponent(btnOpenDepartment))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel16)
-                            .addComponent(btnOpenCategory))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel17)
-                            .addComponent(btnOpenTax))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel18)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                    .addComponent(jLabel18)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnAddOpen, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
                     .addComponent(btnBack2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -608,14 +591,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSelectDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectDepartmentActionPerformed
-        Department d = DepartmentSelectDialog.showDialog(this);
-        if (d != null) {
-            selectedDepartment = d;
-            btnSelectDepartment.setText(selectedDepartment.getName());
-        }
-    }//GEN-LAST:event_btnSelectDepartmentActionPerformed
-
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         String name = txtName.getText();
         String shortName = txtShortName.getText();
@@ -625,9 +600,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             return;
         }
         int orderCode = Integer.parseInt(val);
-        Category category = selectedCategory;
-        Tax tax = selectedTax;
-        Department dep = selectedDepartment;
+        Category category = (Category) cmbCat.getSelectedItem();
+        Tax tax = (Tax) cmbVat.getSelectedItem();
+        Department dep = (Department) cmbDep.getSelectedItem();
         String comments = txtComments.getText();
         if (!Utilities.isNumber(txtPrice.getText())) {
             JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
@@ -670,7 +645,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        product = new Product(name, shortName, barcode, orderCode, category, dep, comments, tax, price, costPrice, packSize, 0, minStock, maxStock, 0);
+        boolean incVat = chkIncVat.isSelected();
+        product = new Product(name, shortName, barcode, orderCode, category, dep, comments, tax, price, costPrice, incVat, packSize, 0, minStock, maxStock, 0);
         try {
             product = dc.addProduct(product);
             if (nextBarcode != null) {
@@ -691,24 +667,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         CardLayout c = (CardLayout) jPanel1.getLayout();
         c.show(jPanel1, "card2");
     }//GEN-LAST:event_btnBackActionPerformed
-
-    private void btnSelectCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectCategoryActionPerformed
-        new Thread(() -> {
-            Category c = CategorySelectDialog.showDialog(this);
-            if (c != null) {
-                selectedCategory = c;
-                btnSelectCategory.setText(selectedCategory.getName());
-            }
-        }).start();
-    }//GEN-LAST:event_btnSelectCategoryActionPerformed
-
-    private void btnSelectTaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectTaxActionPerformed
-        Tax t = TaxSelectDialog.showDialog(this);
-        if (t != null) {
-            selectedTax = t;
-            btnSelectTax.setText(selectedTax.getName());
-        }
-    }//GEN-LAST:event_btnSelectTaxActionPerformed
 
     private void btnEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnterActionPerformed
         try {
@@ -804,36 +762,12 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         c.show(jPanel1, "card2");
     }//GEN-LAST:event_btnBack2ActionPerformed
 
-    private void btnOpenDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenDepartmentActionPerformed
-        Department d = DepartmentSelectDialog.showDialog(this);
-        if (d != null) {
-            selectedDepartment = d;
-            btnOpenDepartment.setText(selectedDepartment.getName());
-        }
-    }//GEN-LAST:event_btnOpenDepartmentActionPerformed
-
-    private void btnOpenCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenCategoryActionPerformed
-        Category c = CategorySelectDialog.showDialog(this);
-        if (c != null) {
-            selectedCategory = c;
-            btnOpenCategory.setText(selectedCategory.getName());
-        }
-    }//GEN-LAST:event_btnOpenCategoryActionPerformed
-
-    private void btnOpenTaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenTaxActionPerformed
-        Tax t = TaxSelectDialog.showDialog(this);
-        if (t != null) {
-            selectedTax = t;
-            btnOpenTax.setText(selectedTax.getName());
-        }
-    }//GEN-LAST:event_btnOpenTaxActionPerformed
-
     private void btnAddOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOpenActionPerformed
         String name = txtOpenName.getText();
         String shortName = txtOpenShort.getText();
-        Category category = selectedCategory;
-        Tax tax = selectedTax;
-        Department dep = selectedDepartment;
+        Category category = (Category) cmbOpenCat.getSelectedItem();
+        Tax tax = (Tax) cmbVat.getSelectedItem();
+        Department dep = (Department) cmbOpenDep.getSelectedItem();
         String comments = txtOpenComments.getText();
         try {
             String scaleName;
@@ -889,15 +823,16 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnBack2;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnEnter;
-    private javax.swing.JButton btnOpenCategory;
-    private javax.swing.JButton btnOpenDepartment;
-    private javax.swing.JButton btnOpenTax;
-    private javax.swing.JButton btnSelectCategory;
-    private javax.swing.JButton btnSelectDepartment;
-    private javax.swing.JButton btnSelectTax;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JCheckBox chkIncVat;
     private javax.swing.JCheckBox chkNext;
     private javax.swing.JCheckBox chkScale;
+    private javax.swing.JComboBox<String> cmbCat;
+    private javax.swing.JComboBox<String> cmbDep;
+    private javax.swing.JComboBox<String> cmbOpenCat;
+    private javax.swing.JComboBox<String> cmbOpenDep;
+    private javax.swing.JComboBox<String> cmbOpenVAT;
+    private javax.swing.JComboBox<String> cmbVat;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -906,12 +841,12 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

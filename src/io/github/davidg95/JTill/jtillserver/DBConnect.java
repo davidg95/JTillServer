@@ -275,7 +275,7 @@ public class DBConnect implements DataConnect {
                         + "     STAFF INT not null references STAFF(ID),\n"
                         + "     TIME bigint\n"
                         + ")";
-                int res = stmt.executeUpdate(declarations);
+                stmt.executeUpdate(declarations);
                 LOG.log(Level.INFO, "Created table declarations");
                 con.commit();
             } catch (SQLException ex) {
@@ -298,11 +298,18 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
-
             try {
                 stmt.executeUpdate("DROP TABLE PLUS");
                 con.commit();
                 LOG.log(Level.INFO, "Removed PLUS table");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
+            try {
+                stmt.executeUpdate("ALTER TABLE PRODUCTS ADD INCVAT BOOLEAN");
+                stmt.executeUpdate("UPDATE PRODUCTS SET INCVAT = FALSE");
+                con.commit();
+                LOG.log(Level.INFO, "Added INCVAT to PRODUCTS table and set to FALSE");
             } catch (SQLException ex) {
                 con.rollback();
             }
@@ -933,27 +940,28 @@ public class DBConnect implements DataConnect {
             String barcode = set.getString(16);
             double scale = set.getDouble(17);
             String scaleName = set.getString(18);
+            boolean incVat = set.getBoolean(19);
 
-            String cName = set.getString(20);
-            Time start = set.getTime(21);
-            Time end = set.getTime(22);
-            boolean restrict = set.getBoolean(23);
-            int age = set.getInt(24);
+            String cName = set.getString(21);
+            Time start = set.getTime(22);
+            Time end = set.getTime(23);
+            boolean restrict = set.getBoolean(24);
+            int age = set.getInt(25);
 
             Category c = new Category(cId, cName, start, end, restrict, age);
 
-            String dName = set.getString(26);
+            String dName = set.getString(27);
 
             Department d = new Department(dId, dName);
 
-            String tName = set.getString(28);
-            double value = set.getDouble(29);
+            String tName = set.getString(29);
+            double value = set.getDouble(30);
 
             Tax t = new Tax(taxID, tName, value);
 
             Product p;
             if (!open) {
-                p = new Product(name, shortName, barcode, order_code, c, d, comments, t, price, costPrice, packSize, stock, minStock, maxStock, code);
+                p = new Product(name, shortName, barcode, order_code, c, d, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code);
             } else {
                 p = new Product(name, shortName, barcode, order_code, c, d, comments, t, scale, scaleName, code);
             }
@@ -973,7 +981,7 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public Product addProduct(Product p) throws SQLException {
-        String query = "INSERT INTO PRODUCTS (ORDER_CODE, NAME, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL, BARCODE, SCALE, SCALE_NAME) VALUES (" + p.getSQLInsertString() + ")";
+        String query = "INSERT INTO PRODUCTS (ORDER_CODE, NAME, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL, BARCODE, SCALE, SCALE_NAME, INCVAT) VALUES (" + p.getSQLInsertString() + ")";
         try (Connection con = getNewConnection()) {
             try (PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.executeUpdate();
