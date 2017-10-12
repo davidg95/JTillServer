@@ -67,6 +67,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
         }
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
+        table.setSelectionModel(new ForcedListSelectionModel());
         getAllSales();
     }
 
@@ -157,6 +158,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        table.getTableHeader().setReorderingAllowed(false);
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableMouseClicked(evt);

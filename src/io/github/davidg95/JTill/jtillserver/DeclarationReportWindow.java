@@ -6,6 +6,8 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -14,8 +16,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -44,16 +51,34 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
         super.setIconifiable(true);
         super.setClosable(true);
         model = (DefaultTableModel) table.getModel();
-        initTable();
+        init();
     }
 
-    private void initTable() {
+    private void init() {
         table.setSelectionModel(new ForcedListSelectionModel());
         table.getColumnModel().getColumn(0).setMaxWidth(70);
         table.getColumnModel().getColumn(2).setMaxWidth(70);
         table.getColumnModel().getColumn(3).setMaxWidth(70);
         table.getColumnModel().getColumn(4).setMaxWidth(70);
         table.getColumnModel().getColumn(5).setMinWidth(50);
+
+        InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap am = table.getActionMap();
+
+        KeyStroke deleteKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+
+        im.put(deleteKey, "Action.delete");
+        am.put("Action.delete", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                int row = table.getSelectedRow();
+                if (row == -1) {
+                    return;
+                }
+                TillReport report = reports.get(row);
+                deleteReport(report);
+            }
+        });
     }
 
     public static void showWindow() {
