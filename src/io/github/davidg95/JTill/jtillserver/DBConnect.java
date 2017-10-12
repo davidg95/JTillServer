@@ -4440,22 +4440,12 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<Sale> getTerminalSales(int terminal, boolean uncashedOnly) throws IOException, SQLException, JTillException {
-        String query = "SELECT * FROM SALES WHERE TERMINAL = " + terminal + (uncashedOnly ? " AND CASHED = FALSE" : "");
+        String query = "SELECT * FROM SALES s, CUSTOMERS c, TILLS t, STAFF st WHERE c.ID = s.CUSTOMER AND st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.TERMINAL = " + terminal + (uncashedOnly ? " AND s.CASHED = FALSE" : "");
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
                 ResultSet set = stmt.executeQuery(query);
-                List<Sale> sales = new ArrayList<>();
-                while (set.next()) {
-                    int id = set.getInt("ID");
-                    BigDecimal price = new BigDecimal(Double.toString(set.getDouble("PRICE")));
-                    int customerid = set.getInt("CUSTOMER");
-                    Date date = new Date(set.getLong("TIMESTAMP"));
-                    boolean cashed = set.getBoolean("CASHED");
-                    int sId = set.getInt("STAFF");
-                    Sale s = new Sale(id, price, customerid, date, terminal, cashed, sId);
-                    sales.add(s);
-                }
+                List<Sale> sales = getSalesFromResultSet(set);
                 con.commit();
                 for (Sale s : sales) {
                     s.setProducts(getItemsInSale(s));

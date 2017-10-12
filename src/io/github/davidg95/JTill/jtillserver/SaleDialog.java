@@ -10,6 +10,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Window;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterAbortException;
@@ -80,7 +81,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         Calendar c = Calendar.getInstance();
         c.setTime(sale.getDate());
         lblTime.setText("Time: " + c.getTime().toString());
-        if (sale.getCustomerID() != 0) {
+        if (sale.getCustomerID() != 1) {
             lblCustomer.setText("Customer: " + sale.getCustomer().getName());
         }
         lblTerminal.setText("Terminal: " + sale.getTerminal().getName());

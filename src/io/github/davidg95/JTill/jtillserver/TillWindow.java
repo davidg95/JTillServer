@@ -326,7 +326,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
             return;
         }
         Till t = contents.get(index);
-        TillDialog.showDialog(this, t);
+        TillDialog.showDialog(t);
     }//GEN-LAST:event_btnViewActionPerformed
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
@@ -337,7 +337,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
                     return;
                 }
                 Till t = contents.get(index);
-                TillDialog.showDialog(this, t);
+                TillDialog.showDialog(t);
             }
         } else if (SwingUtilities.isRightMouseButton(evt)) {
             int index = table.getSelectedRow();
@@ -351,7 +351,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
             final Font boldFont = new Font(view.getFont().getFontName(), Font.BOLD, view.getFont().getSize());
             view.setFont(boldFont);
             view.addActionListener((ActionEvent e) -> {
-                TillDialog.showDialog(this, t);
+                TillDialog.showDialog(t);
             });
 
             JMenuItem sendData = new JMenuItem("Send Data");

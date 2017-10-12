@@ -6,10 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.Window;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -17,15 +14,16 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDialog;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author David
  */
-public class TillDialog extends javax.swing.JDialog {
+public class TillDialog extends javax.swing.JInternalFrame {
 
     private Till till;
     private final DataConnect dc;
@@ -35,18 +33,16 @@ public class TillDialog extends javax.swing.JDialog {
     /**
      * Creates new form TillDialog
      *
-     * @param parent the parent window.
      * @param t the till.
      */
-    public TillDialog(Window parent, Till t) {
-        super(parent);
+    public TillDialog(Till t) {
         this.till = t;
         this.dc = GUI.gui.dc;
         initComponents();
-        setModal(true);
-        setLocationRelativeTo(parent);
+        super.setClosable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         setTitle(till.getName());
-        setIconImage(GUI.icon);
         txtUUID.setText(till.getUuid().toString());
         txtID.setText("" + till.getId());
         txtName.setText(till.getName());
@@ -74,14 +70,15 @@ public class TillDialog extends javax.swing.JDialog {
         getAllSales();
     }
 
-    public static void showDialog(Component parent, Till till) {
-        Window window = null;
-        if (window instanceof Frame || window instanceof Dialog) {
-            window = (Window) parent;
-        }
-        final TillDialog dialog = new TillDialog(window, till);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    public static void showDialog(Till till) {
+        final TillDialog dialog = new TillDialog(till);
+        GUI.gui.internal.add(dialog);
         dialog.setVisible(true);
+        try {
+            dialog.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void getAllSales() {
@@ -90,7 +87,7 @@ public class TillDialog extends javax.swing.JDialog {
             contents = dc.getTerminalSales(till.getId(), true);
             model.setRowCount(0);
             for (Sale s : contents) {
-                model.addRow(new Object[]{s.getDate(), s.getTotalItemCount(), s.getTotal()});
+                model.addRow(new Object[]{s.getDate(), s.getTotalItemCount(), s.getTotal().setScale(2, 6)});
                 runningTotal = runningTotal.add(s.getTotal());
             }
             lblTotal.setText("Total: £" + new DecimalFormat("0.00").format(runningTotal));
@@ -158,6 +155,11 @@ public class TillDialog extends javax.swing.JDialog {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(table);
@@ -396,7 +398,7 @@ public class TillDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "You must enter a name", "Name", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if(name.equals(till.getName())){
+        if (name.equals(till.getName())) {
             return;
         }
         try {
@@ -461,6 +463,7 @@ public class TillDialog extends javax.swing.JDialog {
                 mDialog.show();
             }
             lblTotal.setText("Total: £0.00");
+            getAllSales();
             TillReportDialog.showDialog(this, report);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -471,6 +474,19 @@ public class TillDialog extends javax.swing.JDialog {
     private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
         btnChangeName.doClick();
     }//GEN-LAST:event_txtNameActionPerformed
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            return;
+        }
+        Sale s = contents.get(row);
+        if (SwingUtilities.isLeftMouseButton(evt)) {
+            if (evt.getClickCount() == 2) {
+                SaleDialog.showSaleDialog(s);
+            }
+        }
+    }//GEN-LAST:event_tableMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChange;
