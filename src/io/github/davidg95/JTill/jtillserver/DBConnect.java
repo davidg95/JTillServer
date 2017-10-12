@@ -4880,13 +4880,14 @@ public class DBConnect implements DataConnect {
 
                     Staff staff = new Staff(sId, sName, pos, un, pw, wage, enabled);
 
+                    int rid = set.getInt(1);
                     BigDecimal declared = set.getBigDecimal(3);
                     BigDecimal expected = set.getBigDecimal(4);
                     int transactions = set.getInt(5);
                     BigDecimal tax = set.getBigDecimal(6);
                     long time = set.getLong(8);
 
-                    TillReport report = new TillReport(till, declared, expected, transactions, tax, staff, time);
+                    TillReport report = new TillReport(rid, till, declared, expected, transactions, tax, staff, time);
                     reports.add(report);
                 }
                 con.commit();
@@ -4911,6 +4912,21 @@ public class DBConnect implements DataConnect {
                 return set.first();
             } finally {
                 con.commit();
+            }
+        }
+    }
+
+    @Override
+    public void removeDeclarationReport(int id) throws IOException, SQLException {
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("DELETE FROM DECLARATIONS WHERE ID=" + id);
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
             }
         }
     }

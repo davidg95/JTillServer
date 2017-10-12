@@ -36,7 +36,7 @@ import javax.swing.table.DefaultTableModel;
  * @author David
  */
 public final class ReportingWindow extends javax.swing.JInternalFrame {
-
+    
     private final DataConnect dc;
 
     //Table
@@ -63,7 +63,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
         updateTable();
         init();
     }
-
+    
     private void init() {
         try {
             final List<Department> departments = dc.getAllDepartments();
@@ -74,7 +74,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
             Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     private void sortList(List<SaleItem> saleItems) {
         items.clear();
         for (SaleItem item : saleItems) {
@@ -92,12 +92,16 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
             }
         }
     }
-
+    
     private void updateTable() {
         model.setRowCount(0);
         for (SaleItem i : items) {
-            final Product p = (Product) i.getProduct();
-            model.addRow(new Object[]{i.getId(), p.getName(), i.getQuantity(), new DecimalFormat("#.00").format(i.getPrice().multiply(new BigDecimal(i.getQuantity())))});
+            try {
+                final Product p = dc.getProduct(i.getItem());
+                model.addRow(new Object[]{i.getId(), p.getName(), i.getQuantity(), new DecimalFormat("#.00").format(i.getPrice().multiply(new BigDecimal(i.getQuantity())))});
+            } catch (IOException | ProductNotFoundException | SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -117,21 +121,21 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
             Logger.getLogger(ReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     public class ReportPrinter implements Printable {
-
+        
         private final List<SaleItem> items;
         public PrinterJob job;
         public boolean ready;
         private final String dep;
         private final String cat;
-
+        
         public ReportPrinter(List<SaleItem> items, String d, String c) {
             this.items = items;
             this.dep = d;
             this.cat = c;
         }
-
+        
         public void printReport() {
             job = PrinterJob.getPrinterJob();
             ready = job.printDialog();
@@ -144,20 +148,20 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                 }
             }
         }
-
+        
         @Override
         public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
             if (pageIndex > 0) {
                 return NO_SUCH_PAGE;
             }
-
+            
             String header = "Sales Report";
-
+            
             Graphics2D g2 = (Graphics2D) graphics;
             g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-
+            
             Font oldFont = graphics.getFont();
-
+            
             g2.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
             g2.drawString(header, 70, 60);
             g2.setFont(oldFont); //Chagne back to the old font.
@@ -166,7 +170,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
             g2.drawString("Items: " + items.size(), 70, 90);
             g2.drawString("Department: " + dep, 70, 110);
             g2.drawString("Category: " + cat, 70, 130);
-
+            
             final int itemCol = 100;
             final int quantityCol = 300;
             final int totalCol = 420;
@@ -177,7 +181,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
             g2.drawString("Quantity", quantityCol, y);
             g2.drawString("Total", totalCol, y);
             g2.drawLine(itemCol - 30, y + 10, totalCol + 100, y + 10);
-
+            
             y += 30;
 
             //Print the sale items.
@@ -194,10 +198,10 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                 y += 30;
             }
             g2.drawLine(itemCol - 30, y - 20, totalCol + 100, y - 20);
-
+            
             return PAGE_EXISTS;
         }
-
+        
     }
 
     /**
@@ -468,7 +472,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
-
+                
             }
         }
     }//GEN-LAST:event_tableMouseClicked
@@ -495,15 +499,15 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                     JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No results", "Sales Reporting", JOptionPane.INFORMATION_MESSAGE);
                     return;
                 }
-
+                
                 int itemsSold = 0;
                 BigDecimal sales = BigDecimal.ZERO;
                 BigDecimal expenses = BigDecimal.ZERO;
                 BigDecimal tax = BigDecimal.ZERO;
-
+                
                 for (SaleItem i : saleItems) {
                     if (i.getType() == SaleItem.PRODUCT) {
-                        final Product product = (Product) i.getProduct();
+                        final Product product = dc.getProduct(i.getItem());
                         final BigDecimal in = i.getPrice().multiply(new BigDecimal(i.getQuantity()));
                         final BigDecimal individualCost = product.getCostPrice().divide(new BigDecimal(Integer.toString(product.getPackSize())));
                         final BigDecimal out = individualCost.multiply(new BigDecimal(i.getQuantity()));
@@ -513,7 +517,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                         tax = tax.add(i.getTaxValue());
                     }
                 }
-
+                
                 final BigDecimal profitBeforeTax = sales.subtract(expenses);
                 sortList(saleItems);
                 updateTable();
@@ -522,7 +526,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                 txtProfitPreTax.setText("£" + new DecimalFormat("0.00").format(profitBeforeTax));
                 txtTax.setText("£" + new DecimalFormat("0.00").format(tax));
                 txtNet.setText("£" + new DecimalFormat("0.00").format(profitBeforeTax.subtract(tax)));
-            } catch (IOException | SQLException | JTillException ex) {
+            } catch (IOException | SQLException | JTillException | ProductNotFoundException ex) {
                 JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             } finally {
                 panelSearch.setEnabled(true);

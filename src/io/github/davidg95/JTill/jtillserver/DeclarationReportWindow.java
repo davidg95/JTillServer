@@ -14,10 +14,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -94,6 +92,18 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
         }
     }
 
+    private void deleteReport(TillReport report) {
+        if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove this report?", "Remove Report", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_NO_OPTION) {
+            try {
+                dc.removeDeclarationReport(report.getId());
+                update();
+                JOptionPane.showInternalMessageDialog(this, "Report deleted", "Remove Report", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -107,6 +117,7 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
         table = new javax.swing.JTable();
         btnClose = new javax.swing.JButton();
         btnView = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(true);
@@ -158,6 +169,13 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        btnDelete.setText("Delete Selected");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -168,6 +186,8 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnView)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDelete)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
@@ -180,7 +200,8 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
-                    .addComponent(btnView))
+                    .addComponent(btnView)
+                    .addComponent(btnDelete))
                 .addContainerGap())
         );
 
@@ -213,8 +234,18 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
         TillReportDialog.showDialog(this, report);
     }//GEN-LAST:event_btnViewActionPerformed
 
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            return;
+        }
+        TillReport report = reports.get(row);
+        deleteReport(report);
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnView;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;

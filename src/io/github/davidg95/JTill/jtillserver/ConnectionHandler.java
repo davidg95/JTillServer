@@ -856,4 +856,9 @@ public class ConnectionHandler {
     public List<TillReport> getDeclarationReports(@JConnParameter("TERMINAL") int terminal) throws IOException, SQLException {
         return dc.getDeclarationReports(terminal);
     }
+
+    @JConnMethod("REMOVEDECLARATIONREPORT")
+    public void removeDeclarationReport(@JConnParameter("ID") int id) throws IOException, SQLException {
+        dc.removeDeclarationReport(id);
+    }
 }
