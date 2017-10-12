@@ -56,6 +56,7 @@ public class ConnectionHandler {
 
     @JConnMethod("PROPERTIES")
     public Properties getProperties() {
+        LOG.log(Level.INFO, till.getName() + " is retreiving settings");
         return Settings.getInstance().getProperties();
     }
 

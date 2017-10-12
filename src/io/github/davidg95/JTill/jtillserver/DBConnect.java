@@ -3019,9 +3019,11 @@ public class DBConnect implements DataConnect {
     public Till connectTill(String name, UUID uuid, Staff staff) throws JTillException {
         try {
             if (uuid == null) {
+                LOG.log(Level.INFO, "New terminal connected");
                 newTill(name);
             }
             if (isTillConnected(uuid)) {
+                LOG.log(Level.WARNING, "Terminal already connected");
                 throw new JTillException("This till is already connected to the server");
             }
             Till till;
@@ -3030,6 +3032,7 @@ public class DBConnect implements DataConnect {
             } catch (JTillException ex) {
                 till = newTill(name);
             }
+            LOG.log(Level.INFO, "Terminal " + name + " has connected");
             till.setConnected(true);
             g.addTill(till);
             return till;
