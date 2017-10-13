@@ -24,7 +24,7 @@ import javax.swing.JOptionPane;
  *
  * @author David
  */
-public class ConsolodatedReportingDialog extends javax.swing.JDialog {
+public class ConsolidatedReportingDialog extends javax.swing.JDialog {
 
     private static JDialog dialog;
 
@@ -35,7 +35,7 @@ public class ConsolodatedReportingDialog extends javax.swing.JDialog {
     /**
      * Creates new form ConsolodatedReportingDialog
      */
-    public ConsolodatedReportingDialog(Window parent) {
+    public ConsolidatedReportingDialog(Window parent) {
         super(parent);
         this.dc = GUI.gui.dc;
         init();
@@ -51,7 +51,7 @@ public class ConsolodatedReportingDialog extends javax.swing.JDialog {
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new ConsolodatedReportingDialog(window);
+        dialog = new ConsolidatedReportingDialog(window);
         dialog.setVisible(true);
     }
 
@@ -63,7 +63,7 @@ public class ConsolodatedReportingDialog extends javax.swing.JDialog {
                 model.addElement(t);
             }
         } catch (IOException | SQLException ex) {
-            Logger.getLogger(ConsolodatedReportingDialog.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ConsolidatedReportingDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -87,7 +87,7 @@ public class ConsolodatedReportingDialog extends javax.swing.JDialog {
         chkAll = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Consolodated");
+        setTitle("Consolidated");
         setResizable(false);
 
         jLabel1.setText("Start:");
@@ -198,7 +198,7 @@ public class ConsolodatedReportingDialog extends javax.swing.JDialog {
         try {
             List<Sale> sales = dc.consolodated(start, end, till);
             this.setVisible(false);
-            ConsolodatedReportingWindow.showWindow(sales);
+            ConsolidatedReportingWindow.showWindow(sales);
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Consolodated report", JOptionPane.ERROR_MESSAGE);
         }

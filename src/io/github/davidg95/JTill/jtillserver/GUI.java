@@ -1342,7 +1342,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
         itemConsolodated.add(itemDeclarations);
 
-        jMenuItem1.setText("Consolodated Report");
+        jMenuItem1.setText("Consolidated Report");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
@@ -1908,7 +1908,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemDeclarationsActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        ConsolodatedReportingDialog.showDialog(this);
+        ConsolidatedReportingDialog.showDialog(this);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

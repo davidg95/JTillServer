@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class ConsolodatedReportingWindow extends javax.swing.JFrame {
+public class ConsolidatedReportingWindow extends javax.swing.JFrame {
 
     private final List<Sale> sales;
 
@@ -27,7 +27,7 @@ public class ConsolodatedReportingWindow extends javax.swing.JFrame {
     /**
      * Creates new form ConsolodatedReportingWindow
      */
-    public ConsolodatedReportingWindow(List<Sale> sales) {
+    public ConsolidatedReportingWindow(List<Sale> sales) {
         this.sales = sales;
         this.dc = GUI.gui.dc;
         initComponents();
@@ -36,7 +36,7 @@ public class ConsolodatedReportingWindow extends javax.swing.JFrame {
     }
 
     public static void showWindow(List<Sale> sales) {
-        new ConsolodatedReportingWindow(sales).setVisible(true);
+        new ConsolidatedReportingWindow(sales).setVisible(true);
     }
 
     private void init() {
@@ -46,7 +46,9 @@ public class ConsolodatedReportingWindow extends javax.swing.JFrame {
             BigDecimal total = BigDecimal.ZERO;
             BigDecimal cost = BigDecimal.ZERO;
             BigDecimal tax = BigDecimal.ZERO;
+
             List<Department> departments = dc.getAllDepartments();
+            List<Category> categorys = dc.getAllCategorys();
             List<Tax> taxes = dc.getAllTax();
 
             for (Sale s : sales) {
@@ -54,20 +56,51 @@ public class ConsolodatedReportingWindow extends javax.swing.JFrame {
                 for (SaleItem si : s.getSaleItems()) {
                     cost = cost.add(si.getCost().multiply(new BigDecimal(si.getQuantity())));
                     for (Department d : departments) {
-                        if (d.equals(si.getItem())) {
+                        final Product p = (Product) si.getItem();
+                        if (d.equals(p.getDepartment())) {
                             d.addToSales(si.getPrice().multiply(new BigDecimal(si.getQuantity())));
+                        }
+                    }
+                    for (Category c : categorys) {
+                        final Product p = (Product) si.getItem();
+                        if (c.equals(p.getCategory())) {
+                            c.addToSales(si.getPrice().multiply(new BigDecimal(si.getQuantity())));
+                        }
+                    }
+                    for (Tax t : taxes) {
+                        final Product p = (Product) si.getItem();
+                        if (t.getId() == p.getTax().getId()) {
+                            t.addToSales(si.getTaxValue());
                         }
                     }
                     tax = tax.add(si.getTaxValue());
                 }
             }
 
-            DefaultTableModel model = new DefaultTableModel();
-            depsTable.setModel(model);
+            DefaultTableModel dModel = (DefaultTableModel) depsTable.getModel();
+            depsTable.setModel(dModel);
+            depsTable.setSelectionModel(new ForcedListSelectionModel());
             for (Department d : departments) {
                 Object[] o = new Object[]{d.getName(), "£" + d.getSales().toString()};
-                model.addRow(o);
+                dModel.addRow(o);
             }
+
+            DefaultTableModel cModel = (DefaultTableModel) catTable.getModel();
+            catTable.setModel(cModel);
+            catTable.setSelectionModel(new ForcedListSelectionModel());
+            for (Category c : categorys) {
+                Object[] o = new Object[]{c.getName(), "£" + c.getSales().toString()};
+                cModel.addRow(o);
+            }
+
+            DefaultTableModel tModel = (DefaultTableModel) taxTable.getModel();
+            taxTable.setModel(tModel);
+            taxTable.setSelectionModel(new ForcedListSelectionModel());
+            for (Tax t : taxes) {
+                Object[] o = new Object[]{t.getName(), "£" + t.getSales().toString()};
+                tModel.addRow(o);
+            }
+
             BigDecimal net = total.subtract(cost).subtract(tax);
 
             txtTxn.setText(transactions + "");
@@ -76,7 +109,7 @@ public class ConsolodatedReportingWindow extends javax.swing.JFrame {
             txtTax.setText(tax.toString());
             txtNet.setText(net.toString());
         } catch (IOException | SQLException ex) {
-            Logger.getLogger(ConsolodatedReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ConsolidatedReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -107,9 +140,12 @@ public class ConsolodatedReportingWindow extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         depsTable = new javax.swing.JTable();
+        jPanel4 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        catTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Consolodated");
+        setTitle("Consolidated");
 
         btnClose.setText("Close");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
@@ -159,7 +195,7 @@ public class ConsolodatedReportingWindow extends javax.swing.JFrame {
                     .addComponent(txtCost)
                     .addComponent(txtTax)
                     .addComponent(txtNet, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addContainerGap(74, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -184,7 +220,7 @@ public class ConsolodatedReportingWindow extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(txtNet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(126, Short.MAX_VALUE))
+                .addContainerGap(113, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tax Breakdown"));
@@ -252,14 +288,52 @@ public class ConsolodatedReportingWindow extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Categories Breakdown"));
+
+        catTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Category", "Sales"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        catTable.getTableHeader().setReorderingAllowed(false);
+        jScrollPane3.setViewportView(catTable);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -269,28 +343,32 @@ public class ConsolodatedReportingWindow extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnClose)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnClose)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnClose)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -302,6 +380,7 @@ public class ConsolodatedReportingWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
+    private javax.swing.JTable catTable;
     private javax.swing.JTable depsTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -311,8 +390,10 @@ public class ConsolodatedReportingWindow extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable taxTable;
     private javax.swing.JTextField txtCost;
     private javax.swing.JTextField txtNet;
