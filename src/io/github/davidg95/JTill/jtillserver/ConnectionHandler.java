@@ -401,7 +401,7 @@ public class ConnectionHandler {
     public void assisstance(@JConnParameter("MESSAGE") String message) throws IOException {
         dc.assisstance(staff.getName() + " on terminal " + till.getName() + " has requested assistance with message:\n" + message);
     }
-    
+
     @JConnMethod("UNCASHEDSALES")
     public List<Sale> getUncashedSales(@JConnParameter("NAME") String terminal) throws IOException, SQLException {
         return dc.getUncashedSales(terminal);
@@ -859,7 +859,12 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("TOTALRECEIVED")
-    public int getTotalReceivedOfItem(@JConnParameter("ID")int id) throws IOException, SQLException {
+    public int getTotalReceivedOfItem(@JConnParameter("ID") int id) throws IOException, SQLException {
         return dc.getTotalReceivedOfItem(id);
+    }
+
+    @JConnMethod("CONSOLODATED")
+    public List<Sale> consolodated(@JConnParameter("START") Date start, @JConnParameter("END") Date end, @JConnParameter("TILL") int till) throws IOException, SQLException {
+        return dc.consolodated(start, end, till);
     }
 }

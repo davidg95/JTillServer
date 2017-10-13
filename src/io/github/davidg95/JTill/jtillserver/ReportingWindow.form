@@ -188,14 +188,14 @@
         <Component class="javax.swing.JSpinner" name="spinStart">
           <Properties>
             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-              <SpinnerModel initial="-3600000" stepSize="5" type="date"/>
+              <SpinnerModel initial="-3600000" maximum="now" stepSize="5" type="date"/>
             </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JSpinner" name="spinEnd">
           <Properties>
             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-              <SpinnerModel initial="now" stepSize="5" type="date"/>
+              <SpinnerModel initial="now" maximum="now" stepSize="5" type="date"/>
             </Property>
           </Properties>
         </Component>

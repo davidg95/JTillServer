@@ -9,6 +9,7 @@ import io.github.davidg95.JTill.jtill.*;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -296,7 +297,7 @@ public class StaffReportingWindow extends javax.swing.JInternalFrame {
             txtSalesValue.setText(salesValue.toString());
             txtAverageValue.setText(average.toString());
 
-        } catch (IOException | StaffNotFoundException ex) {
+        } catch (SQLException | IOException | StaffNotFoundException ex) {
             JOptionPane.showInternalMessageDialog(this, ex, "Staff search error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSearchActionPerformed

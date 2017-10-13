@@ -4846,4 +4846,23 @@ public class DBConnect implements DataConnect {
             }
         }
     }
+
+    @Override
+    public List<Sale> consolodated(Date start, Date end, int t) throws IOException, SQLException {
+        long s = start.getTime();
+        long e = end.getTime();
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet set = stmt.executeQuery("SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID AND TIMESTAMP >= " + s + " AND TIMESTAMP <= " + e + (t != -1 ? "AND TERMINAL = " + t : ""));
+                List<Sale> sales = getSalesFromResultSet(set);
+                con.commit();
+                return sales;
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
 }

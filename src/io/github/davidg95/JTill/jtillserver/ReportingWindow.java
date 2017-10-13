@@ -260,9 +260,9 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
 
         cmbCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        spinStart.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(-3600000L), null, null, java.util.Calendar.DAY_OF_MONTH));
+        spinStart.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(-3600000L), null, new java.util.Date(), java.util.Calendar.DAY_OF_MONTH));
 
-        spinEnd.setModel(new javax.swing.SpinnerDateModel());
+        spinEnd.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(), null, new java.util.Date(), java.util.Calendar.DAY_OF_MONTH));
 
         chkAllDep.setText("All");
         chkAllDep.addActionListener(new java.awt.event.ActionListener() {
