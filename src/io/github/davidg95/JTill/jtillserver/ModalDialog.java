@@ -25,6 +25,7 @@ import javax.swing.border.Border;
 public class ModalDialog {
 
     private JDialog dialog; //The dialog.
+    private Component parent; //The parent component.
     private JPanel panel; //The panel for the components.
     private JLabel label; //The message label.
 
@@ -44,6 +45,7 @@ public class ModalDialog {
         this.title = title;
         this.text = text;
         this.hidden = false;
+        this.parent = parent;
         init();
     }
 
@@ -81,7 +83,7 @@ public class ModalDialog {
         dialog.setTitle(title);
         dialog.setContentPane(panel);
         dialog.pack();
-        dialog.setLocation((GUI.gui.internal.getSize().width/2) - dialog.getSize().width/2, (GUI.gui.internal.getSize().height/2) - dialog.getSize().height/2);
+        dialog.setLocation((parent.getSize().width / 2) - dialog.getSize().width / 2, (parent.getSize().height / 2) - dialog.getSize().height / 2);
     }
 
     /**
