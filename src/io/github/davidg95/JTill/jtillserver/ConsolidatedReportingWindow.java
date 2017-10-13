@@ -104,10 +104,10 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             BigDecimal net = total.subtract(cost).subtract(tax);
 
             txtTxn.setText(transactions + "");
-            txtSales.setText(total.toString());
-            txtCost.setText(cost.toString());
-            txtTax.setText(tax.toString());
-            txtNet.setText(net.toString());
+            txtSales.setText("£" + total.toString());
+            txtCost.setText("£" + cost.toString());
+            txtTax.setText("£" + tax.toString());
+            txtNet.setText("£" + net.toString());
         } catch (IOException | SQLException ex) {
             Logger.getLogger(ConsolidatedReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
