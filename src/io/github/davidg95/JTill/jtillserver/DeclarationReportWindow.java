@@ -245,7 +245,7 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
         TillReport report = reports.get(i);
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
-                TillReportDialog.showDialog(this, report);
+                TillReportDialog.showDialog(report);
             }
         }
     }//GEN-LAST:event_tableMouseClicked
@@ -256,7 +256,7 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
             return;
         }
         TillReport report = reports.get(i);
-        TillReportDialog.showDialog(this, report);
+        TillReportDialog.showDialog(report);
     }//GEN-LAST:event_btnViewActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed

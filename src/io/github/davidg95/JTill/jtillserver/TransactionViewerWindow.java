@@ -61,6 +61,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
+        table.setSelectionModel(new ForcedListSelectionModel());
         try {
             tableContents = dc.getAllSales();
             setTable();

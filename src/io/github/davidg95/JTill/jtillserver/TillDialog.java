@@ -360,7 +360,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
 
             BigDecimal declared = new BigDecimal(strVal);
             final TillReport report = dc.xReport(this.till, declared, GUI.staff);
-            TillReportDialog.showDialog(this, report);
+            TillReportDialog.showDialog(report);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(TillDialog.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
@@ -468,7 +468,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
             }
             lblTotal.setText("Total: £0.00");
             getAllSales();
-            TillReportDialog.showDialog(this, report);
+            TillReportDialog.showDialog(report);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(TillDialog.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
