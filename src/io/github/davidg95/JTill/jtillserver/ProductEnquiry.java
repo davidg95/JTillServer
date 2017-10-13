@@ -37,7 +37,8 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
     private BigDecimal valueSold;
     private int totalWasted;
     private BigDecimal valueWasted;
-    private BigDecimal totalSpent;
+    private int totalReceived;
+    private BigDecimal valueSpent;
 
     /**
      * Creates new form ProductEnquiry
@@ -525,26 +526,17 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
                 return;
             }
             //Total sold and value sold
-            try {
-                totalSold = dc.getTotalSoldOfItem(product.getId());
-                valueSold = dc.getTotalValueSold(product.getId()).setScale(2);
-            } catch (ProductNotFoundException ex) {
-                totalSold = 0;
-                valueSold = BigDecimal.ZERO;
-            }
+            totalSold = dc.getTotalSoldOfItem(product.getId());
+            valueSold = dc.getTotalValueSold(product.getId()).setScale(2);
+
             //Total wasted and value wasted
-            try {
-                totalWasted = dc.getTotalWastedOfItem(product.getId());
-                valueWasted = dc.getValueWastedOfItem(product.getId()).setScale(2);
-            } catch (ProductNotFoundException ex) {
-                totalWasted = 0;
-                valueWasted = BigDecimal.ZERO;
-            }
-            try {
-                totalSpent = dc.getValueSpentOnItem(product.getId()).setScale(2);
-            } catch (ProductNotFoundException ex) {
-                totalSpent = BigDecimal.ZERO;
-            }
+            totalWasted = dc.getTotalWastedOfItem(product.getId());
+            valueWasted = dc.getValueWastedOfItem(product.getId()).setScale(2);
+
+            //Total and value received.
+            valueSpent = dc.getValueSpentOnItem(product.getId()).setScale(2);
+            totalReceived = dc.getTotalReceivedOfItem(product.getId());
+            
             txtProduct.setText(product.getLongName());
             txtPlu.setText(product.getBarcode());
             if (product.getOrder_code() == 0) {
@@ -567,13 +559,14 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             txtPrice.setText("£" + df.format(product.getPrice()));
             txtCostPrice.setText("£" + df.format(product.getCostPrice()));
             txtPackSize.setText(product.getPackSize() + "");
-            txtValReceived.setText(totalSpent.toString());
+            txtValReceived.setText(valueSpent.toString());
+            txtReceived.setText(totalReceived + "");
             double expectedMargin = (product.getCostPrice().divide(new BigDecimal(Integer.toString(product.getPackSize()))).doubleValue() / product.getPrice().doubleValue()) * 100;
             BigDecimal bExpectedMargin = new BigDecimal(expectedMargin);
             bExpectedMargin = bExpectedMargin.setScale(2, RoundingMode.HALF_UP);
             txtExpectedMargin.setText(bExpectedMargin.toString());
-            txtProfit.setText("£" + valueSold.subtract(totalSpent));
-            double margin = (totalSpent.doubleValue() / valueSold.doubleValue()) * 100;
+            txtProfit.setText("£" + valueSold.subtract(valueSpent));
+            double margin = (valueSpent.doubleValue() / valueSold.doubleValue()) * 100;
             if (Double.isNaN(margin)) {
                 txtMarginToDate.setText("---");
             } else if (Double.isInfinite(margin)) {

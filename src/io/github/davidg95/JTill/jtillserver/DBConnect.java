@@ -3908,22 +3908,17 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public int getTotalSoldOfItem(int id) throws IOException, SQLException, ProductNotFoundException {
+    public int getTotalSoldOfItem(int id) throws IOException, SQLException {
         String query = "SELECT QUANTITY, PRODUCT_ID FROM SALEITEMS WHERE PRODUCT_ID=" + id;
         int quantity = 0;
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
                 ResultSet set = stmt.executeQuery(query);
-                boolean found = false;
                 while (set.next()) {
-                    found = true;
                     quantity += set.getInt("QUANTITY");
                 }
                 con.commit();
-                if (!found) {
-                    throw new ProductNotFoundException("Product " + id + " not found");
-                }
                 return quantity;
             } catch (SQLException ex) {
                 con.rollback();
@@ -3934,22 +3929,17 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public BigDecimal getTotalValueSold(int id) throws IOException, SQLException, ProductNotFoundException {
+    public BigDecimal getTotalValueSold(int id) throws IOException, SQLException {
         String query = "SELECT PRICE, PRODUCT_ID, QUANTITY FROM SALEITEMS WHERE PRODUCT_ID=" + id;
         BigDecimal val = BigDecimal.ZERO;
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
                 ResultSet set = stmt.executeQuery(query);
-                boolean found = false;
                 while (set.next()) {
-                    found = true;
                     String value = Double.toString(set.getDouble("PRICE"));
                     int quantity = set.getInt("QUANTITY");
                     val = val.add(new BigDecimal(value).multiply(new BigDecimal(quantity)));
-                }
-                if (!found) {
-                    throw new ProductNotFoundException("Product " + id + " not found");
                 }
                 con.commit();
                 return val;
@@ -3962,20 +3952,15 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public int getTotalWastedOfItem(int id) throws IOException, SQLException, ProductNotFoundException {
+    public int getTotalWastedOfItem(int id) throws IOException, SQLException {
         String query = "SELECT PRODUCT, QUANTITY FROM WASTEITEMS WHERE PRODUCT=" + id;
         int quantity = 0;
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
                 ResultSet set = stmt.executeQuery(query);
-                boolean found = false;
                 while (set.next()) {
-                    found = true;
                     quantity += set.getInt("QUANTITY");
-                }
-                if (!found) {
-                    throw new ProductNotFoundException("Product " + id + " not found");
                 }
                 con.commit();
                 return quantity;
@@ -3988,23 +3973,18 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public BigDecimal getValueWastedOfItem(int id) throws IOException, SQLException, ProductNotFoundException {
+    public BigDecimal getValueWastedOfItem(int id) throws IOException, SQLException {
         String query = "SELECT WASTEITEMS.ID AS wId, PRODUCT, QUANTITY, PRODUCTS.ID as pId, PRICE FROM PRODUCTS, WASTEITEMS WHERE WASTEITEMS.PRODUCT = PRODUCTS.ID AND WASTEITEMS.PRODUCT=" + id;
         BigDecimal val = BigDecimal.ZERO;
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
                 ResultSet set = stmt.executeQuery(query);
-                boolean found = false;
                 while (set.next()) {
-                    found = true;
                     double dval = set.getDouble("PRICE");
                     dval *= set.getInt("QUANTITY");
                     String value = Double.toString(dval);
                     val = val.add(new BigDecimal(value));
-                }
-                if (!found) {
-                    throw new ProductNotFoundException("Product " + id + " not found");
                 }
                 con.commit();
                 return val;
@@ -4033,23 +4013,18 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public BigDecimal getValueSpentOnItem(int id) throws IOException, SQLException, ProductNotFoundException {
+    public BigDecimal getValueSpentOnItem(int id) throws IOException, SQLException {
         String query = "SELECT * FROM RECEIVEDITEMS WHERE PRODUCT=" + id;
         BigDecimal value = BigDecimal.ZERO;
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
                 ResultSet set = stmt.executeQuery(query);
-                boolean found = false;
                 while (set.next()) {
-                    found = true;
                     String p = Double.toString(set.getDouble("PRICE"));
                     value = value.add(new BigDecimal(p).multiply(new BigDecimal(set.getInt("QUANTITY"))));
                 }
                 con.commit();
-                if (!found) {
-                    throw new ProductNotFoundException("Product " + id + " not found");
-                }
                 return value;
             } catch (SQLException ex) {
                 con.rollback();
@@ -4927,6 +4902,26 @@ public class DBConnect implements DataConnect {
                 Statement stmt = con.createStatement();
                 stmt.executeUpdate("DELETE FROM DECLARATIONS WHERE ID=" + id);
                 con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
+
+    @Override
+    public int getTotalReceivedOfItem(int id) throws IOException, SQLException {
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet set = stmt.executeQuery("SELECT PRODUCT, QUANTITY FROM RECEIVEDITEMS WHERE PRODUCT =" + id);
+                int quantity = 0;
+                while (set.next()) {
+                    quantity += set.getInt(2);
+                }
+                con.commit();
+                return quantity;
             } catch (SQLException ex) {
                 con.rollback();
                 LOG.log(Level.SEVERE, null, ex);

@@ -862,4 +862,9 @@ public class ConnectionHandler {
     public void removeDeclarationReport(@JConnParameter("ID") int id) throws IOException, SQLException {
         dc.removeDeclarationReport(id);
     }
+
+    @JConnMethod("TOTALRECEIVED")
+    public int getTotalReceivedOfItem(@JConnParameter("ID")int id) throws IOException, SQLException {
+        return dc.getTotalReceivedOfItem(id);
+    }
 }
