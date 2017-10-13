@@ -352,9 +352,10 @@ public class TillDialog extends javax.swing.JInternalFrame {
             }
             if (strVal.equals("")) {
                 JOptionPane.showMessageDialog(this, "You must enter a value", "X Report for " + till.getName(), JOptionPane.ERROR_MESSAGE);
+                return;
             }
             if (!Utilities.isNumber(strVal)) {
-                JOptionPane.showInputDialog(this, "You must enter a number greater than zero", "X Report for " + till.getName(), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "You must enter a number greater than zero", "X Report for " + till.getName(), JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -432,9 +433,10 @@ public class TillDialog extends javax.swing.JInternalFrame {
             }
             if (strVal.equals("")) {
                 JOptionPane.showMessageDialog(this, "You must enter a value", "Z Report for " + till.getName(), JOptionPane.ERROR_MESSAGE);
+                return;
             }
             if (!Utilities.isNumber(strVal)) {
-                JOptionPane.showInputDialog(this, "You must enter a number greater than zero", "Z Report for " + till.getName(), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "You must enter a number greater than zero", "Z Report for " + till.getName(), JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
