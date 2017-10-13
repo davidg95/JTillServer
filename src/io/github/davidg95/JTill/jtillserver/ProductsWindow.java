@@ -7,6 +7,7 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -26,10 +27,13 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -321,6 +325,28 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         }
     }
 
+    private void removeProduct(Product p) {
+        int opt = JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove the following product?\n" + p, "Remove Product", JOptionPane.YES_NO_OPTION);
+        if (opt == JOptionPane.YES_OPTION) {
+            try {
+                dc.removeProduct(p.getId());
+                GUI.getInstance().updateLables();
+                showAllProducts();
+                setCurrentProduct(null);
+                txtName.requestFocus();
+                JOptionPane.showInternalMessageDialog(this, "Product has been removed", "Remove Product", JOptionPane.INFORMATION_MESSAGE);
+            } catch (SQLException ex) {
+                if (ex.getErrorCode() == 20000) {
+                    JOptionPane.showMessageDialog(this, "This product is still being refernced in either a received report or a sale report, these reports must be cleared before the product can be deleted", "Remove Product", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    showError(ex);
+                }
+            } catch (ProductNotFoundException | IOException ex) {
+                showError(ex);
+            }
+        }
+    }
+
     /**
      * Method to show an error.
      *
@@ -425,6 +451,9 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         });
         tableProducts.getTableHeader().setReorderingAllowed(false);
         tableProducts.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableProductsMouseClicked(evt);
+            }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 tableProductsMousePressed(evt);
             }
@@ -862,27 +891,11 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
     private void btnRemoveProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveProductActionPerformed
         int index = tableProducts.getSelectedRow();
-        if (index != -1) {
-            int opt = JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove the following product?\n" + currentTableContents.get(index), "Remove Product", JOptionPane.YES_NO_OPTION);
-            if (opt == JOptionPane.YES_OPTION) {
-                try {
-                    dc.removeProduct(currentTableContents.get(index).getId());
-                    GUI.getInstance().updateLables();
-                    showAllProducts();
-                    setCurrentProduct(null);
-                    txtName.requestFocus();
-                    JOptionPane.showInternalMessageDialog(this, "Product has been removed", "Remove Product", JOptionPane.INFORMATION_MESSAGE);
-                } catch (SQLException ex) {
-                    if (ex.getErrorCode() == 20000) {
-                        JOptionPane.showMessageDialog(this, "This product is still being refernced in either a received report or a sale report, these reports must be cleared before the product can be deleted", "Remove Product", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        showError(ex);
-                    }
-                } catch (ProductNotFoundException | IOException ex) {
-                    showError(ex);
-                }
-            }
+        if (index == -1) {
+            return;
         }
+        Product p = currentTableContents.get(index);
+        removeProduct(p);
     }//GEN-LAST:event_btnRemoveProductActionPerformed
 
     private void btnSaveChangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesActionPerformed
@@ -918,7 +931,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 return;
             }
             BigDecimal cost = new BigDecimal(strCost);
-            if(cost.compareTo(BigDecimal.ZERO) == -1 || cost.compareTo(new BigDecimal(100)) == 1){
+            if (cost.compareTo(BigDecimal.ZERO) == -1 || cost.compareTo(new BigDecimal(100)) == 1) {
                 JOptionPane.showMessageDialog(this, "Cost % must be between 0 and 100", "Save Changes", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -1194,6 +1207,34 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         txtScale.setEnabled(chkScale.isSelected());
         txtScaleName.setEnabled(chkScale.isSelected());
     }//GEN-LAST:event_chkScaleActionPerformed
+
+    private void tableProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProductsMouseClicked
+        int row = tableProducts.getSelectedRow();
+        if (row == -1) {
+            return;
+        }
+        Product p = currentTableContents.get(row);
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem enquiry = new JMenuItem("Enquiry");
+            final Font boldFont = new Font(enquiry.getFont().getFontName(), Font.BOLD, enquiry.getFont().getSize());
+            enquiry.setFont(boldFont);
+            enquiry.addActionListener((ActionEvent e) -> {
+                ProductEnquiry.showWindow(p);
+            });
+            JMenuItem remove = new JMenuItem("Remove");
+            remove.addActionListener((ActionEvent e) -> {
+                removeProduct(p);
+            });
+            menu.add(enquiry);
+            menu.add(remove);
+            menu.show(tableProducts, evt.getX(), evt.getY());
+        } else {
+            if (evt.getClickCount() == 2) {
+                ProductEnquiry.showWindow(p);
+            }
+        }
+    }//GEN-LAST:event_tableProductsMouseClicked
 
     private void searchFieldClick(int opt, JTextField f) {
         if (opt == 1) {

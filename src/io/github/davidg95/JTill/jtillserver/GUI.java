@@ -1610,7 +1610,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemSalesReportingActionPerformed
 
     private void itemEnquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEnquiryActionPerformed
-        ProductEnquiry.showWindow(icon);
+        ProductEnquiry.showWindow();
     }//GEN-LAST:event_itemEnquiryActionPerformed
 
     private void itemLabelPrintingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLabelPrintingActionPerformed
@@ -1883,7 +1883,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnEnquiryMouseExited
 
     private void btnEnquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnquiryActionPerformed
-        ProductEnquiry.showWindow(icon);
+        ProductEnquiry.showWindow();
     }//GEN-LAST:event_btnEnquiryActionPerformed
 
     private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
