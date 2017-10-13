@@ -98,14 +98,16 @@ public class TillServer {
             TillSplashScreen.setLabel("Starting server socket");
             server = JConnServer.start(PORT_IN_USE, ConnectionHandler.class);
             dc.setServer(server);
-            TillSplashScreen.addBar(10);
+            TillSplashScreen.addBar(20);
         } catch (IOException ex) {
         }
-        TillSplashScreen.addBar(24);
+        TillSplashScreen.addBar(10);
+        GUI.getInstance().updateLables();
+        TillSplashScreen.setLabel("Checking for update");
+        g.checkUpdate();
+        TillSplashScreen.addBar(10);
         TillSplashScreen.hideSplashScreen();
         g.setVisible(true);
-        GUI.getInstance().updateLables();
-        g.checkUpdate();
         g.login();
     }
 

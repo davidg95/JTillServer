@@ -783,6 +783,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             return;
         }
         BigDecimal cost = new BigDecimal(strCost);
+        if (cost.compareTo(BigDecimal.ZERO) == -1 || cost.compareTo(new BigDecimal(100)) == 1) {
+            JOptionPane.showMessageDialog(this, "Cost % must be between 0 and 100", "Open Product", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         try {
             String scaleName;
             double scale;

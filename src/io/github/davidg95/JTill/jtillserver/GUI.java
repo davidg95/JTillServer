@@ -279,7 +279,7 @@ public class GUI extends JFrame implements GUIInterface {
                         JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
-                TillSplashScreen.addBar(56); //Update the splash screen
+                TillSplashScreen.addBar(20);
             } catch (SQLException ex) {
                 initialSetup(); //If there was an issue connecting to the database, go to the initial setup.
             } catch (IOException ex) {
@@ -1756,16 +1756,19 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemUpdateActionPerformed
 
     private void itemTransactionViewerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTransactionViewerActionPerformed
-        final ModalDialog mDialog = new ModalDialog(this, "Transactions", "Loading tranactions...");
+        final ModalDialog md = new ModalDialog(this, "Transactions", "Loading tranactions...");
         final Runnable run = () -> {
-            TransactionViewerWindow.showWindow();
-            mDialog.hide();
-            this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            try {
+                TransactionViewerWindow.showWindow();
+            } finally {
+                md.hide();
+                this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
         };
         final Thread thread = new Thread(run, "TransactionWindow");
         thread.start();
         this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-        mDialog.show();
+        md.show();
     }//GEN-LAST:event_itemTransactionViewerActionPerformed
 
     private void itemStaffReportingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffReportingActionPerformed

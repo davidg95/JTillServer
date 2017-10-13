@@ -135,12 +135,14 @@ public class DBConnect implements DataConnect {
         this.username = username;
         this.password = password;
         connected = true;
+        TillSplashScreen.addBar(10);
         updates();
     }
 
     private void updates() {
         try (final Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
+            TillSplashScreen.setLabel("Updating database");
             try {
                 int res = stmt.executeUpdate("ALTER TABLE STAFF ADD ENABLED BOOLEAN");
                 LOG.log(Level.INFO, "New fields added to staff table, " + res + " rows affected");
@@ -313,6 +315,7 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+            TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
         }
     }

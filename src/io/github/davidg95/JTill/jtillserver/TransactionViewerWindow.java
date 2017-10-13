@@ -468,6 +468,8 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                 this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 mDialog.hide();
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } finally {
+                mDialog.hide();
             }
         };
         final Thread thread = new Thread(run); //Create the worker thread
@@ -526,6 +528,8 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                 } catch (IOException | SQLException ex) {
                     mDialog.hide();
                     JOptionPane.showInternalMessageDialog(TransactionViewerWindow.this, ex, "Remove Cashed Sales", JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    mDialog.hide();
                 }
             };
             new Thread(run, "RemoveSales").start();

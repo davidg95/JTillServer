@@ -397,6 +397,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         btnAdvanced = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setResizable(true);
         setTitle("Stock Managment");
 
         tableProducts.setModel(new javax.swing.table.DefaultTableModel(
@@ -917,6 +918,10 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 return;
             }
             BigDecimal cost = new BigDecimal(strCost);
+            if(cost.compareTo(BigDecimal.ZERO) == -1 || cost.compareTo(new BigDecimal(100)) == 1){
+                JOptionPane.showMessageDialog(this, "Cost % must be between 0 and 100", "Save Changes", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             product.setCostPercentage(cost);
             if (chkScale.isSelected()) {
                 if (txtScaleName.getText().isEmpty() || txtScale.getText().isEmpty()) {
