@@ -6,7 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -16,7 +16,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -38,13 +41,12 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form CustomersWindow
      */
-    public CustomersWindow(DataConnect dc, Image icon) {
-        this.dc = dc;
-//        this.setIconImage(icon);
+    public CustomersWindow() {
+        this.dc = GUI.gui.dc;
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
-        super.setFrameIcon(new ImageIcon(icon));
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
@@ -55,12 +57,10 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
     /**
      * Method to show the customers window. If this is the first time it is
      * being called, then it will create the window.
-     *
-     * @param dc a reference to the data source.
      */
-    public static void showCustomersListWindow(DataConnect dc, Image icon) {
+    public static void showCustomersListWindow() {
         if (frame == null || frame.isClosed()) {
-            frame = new CustomersWindow(dc, icon);
+            frame = new CustomersWindow();
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {
@@ -173,6 +173,35 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
         }
     }
 
+    private void removeCustomer(Customer c) {
+        int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following customer?\n" + c, "Remove Customer", JOptionPane.YES_NO_OPTION);
+        if (opt == JOptionPane.YES_OPTION) {
+            try {
+                dc.removeCustomer(c.getId());
+            } catch (SQLException | CustomerNotFoundException | IOException ex) {
+                showError(ex);
+            }
+            showAllCustomers();
+            setCurrentCustomer(null);
+        }
+    }
+
+    private void takePayment(Customer c) {
+        if (c != null) {
+            double val = PaymentDialog.showPaymentDialog(this, c);
+            if (val > 0) {
+                JOptionPane.showMessageDialog(this, "Payment of " + val + " accepted", "Payment accepted", JOptionPane.INFORMATION_MESSAGE);
+            }
+            try {
+                dc.updateCustomer(c);
+                updateTable();
+                setCurrentCustomer(c);
+            } catch (IOException | CustomerNotFoundException | SQLException ex) {
+                showError(ex);
+            }
+        }
+    }
+
     /**
      * Method to show an error.
      *
@@ -268,13 +297,20 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
         });
         table.getTableHeader().setReorderingAllowed(false);
         table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
+            }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 tableMousePressed(evt);
             }
         });
         jScrollPane1.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
+            table.getColumnModel().getColumn(0).setMinWidth(40);
+            table.getColumnModel().getColumn(0).setMaxWidth(40);
             table.getColumnModel().getColumn(1).setResizable(false);
+            table.getColumnModel().getColumn(2).setResizable(false);
+            table.getColumnModel().getColumn(3).setResizable(false);
         }
 
         btnAdd.setText("Add Customer");
@@ -701,18 +737,11 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         int index = table.getSelectedRow();
-        if (index != -1) {
-            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following customer?\n" + currentTableContents.get(index), "Remove Customer", JOptionPane.YES_NO_OPTION);
-            if (opt == JOptionPane.YES_OPTION) {
-                try {
-                    dc.removeCustomer(currentTableContents.get(index).getId());
-                } catch (SQLException | CustomerNotFoundException | IOException ex) {
-                    showError(ex);
-                }
-                showAllCustomers();
-                setCurrentCustomer(null);
-            }
+        if (index == -1) {
+            return;
         }
+        Customer c = currentTableContents.get(index);
+        removeCustomer(c);
     }//GEN-LAST:event_btnRemoveActionPerformed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
@@ -778,19 +807,7 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtSearchActionPerformed
 
     private void btnTakePaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTakePaymentActionPerformed
-        if (customer != null) {
-            double val = PaymentDialog.showPaymentDialog(this, customer);
-            if (val > 0) {
-                JOptionPane.showMessageDialog(this, "Payment of " + val + " accepted", "Payment accepted", JOptionPane.INFORMATION_MESSAGE);
-            }
-            try {
-                dc.updateCustomer(customer);
-                updateTable();
-                setCurrentCustomer(customer);
-            } catch (IOException | CustomerNotFoundException | SQLException ex) {
-                showError(ex);
-            }
-        }
+        takePayment(customer);
     }//GEN-LAST:event_btnTakePaymentActionPerformed
 
     private void btnOweActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOweActionPerformed
@@ -807,6 +824,29 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
         currentTableContents = newList;
         updateTable();
     }//GEN-LAST:event_btnOweActionPerformed
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        int index = table.getSelectedRow();
+        if (index == -1) {
+            return;
+        }
+        Customer c = currentTableContents.get(index);
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem payment = new JMenuItem("Take Payment");
+            payment.addActionListener((ActionEvent e) -> {
+                takePayment(c);
+            });
+            JMenuItem remove = new JMenuItem("Remove");
+            remove.addActionListener((ActionEvent e) -> {
+
+                removeCustomer(c);
+            });
+            menu.add(payment);
+            menu.add(remove);
+            menu.show(table, evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_tableMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;

@@ -1436,11 +1436,11 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemExitActionPerformed
 
     private void itemCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCustomersActionPerformed
-        CustomersWindow.showCustomersListWindow(dc, icon);
+        CustomersWindow.showCustomersListWindow();
     }//GEN-LAST:event_itemCustomersActionPerformed
 
     private void btnManageCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageCustomersActionPerformed
-        CustomersWindow.showCustomersListWindow(dc, icon);
+        CustomersWindow.showCustomersListWindow();
     }//GEN-LAST:event_btnManageCustomersActionPerformed
 
     private void itemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLoginActionPerformed

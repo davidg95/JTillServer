@@ -80,19 +80,12 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         BigDecimal totalValue = BigDecimal.ZERO;
         BigDecimal totalTax = BigDecimal.ZERO;
         for (Sale s : tableContents) {
-            try {
-                final Staff staff = dc.getStaff(s.getStaffID());
-                s.setStaff(staff);
-                final Customer customer = dc.getCustomer(s.getCustomerID());
-                s.setCustomer(customer);
-                final Till till = s.getTerminal();
-                model.addRow(new Object[]{s.getId(), s.getDate(), s.getTotal().setScale(2), staff.getName(), till.getName()});
-                totalValue = totalValue.add(s.getTotal());
-                for (SaleItem si : s.getSaleItems()) {
-                    totalTax = totalTax.add(si.getTaxValue());
-                }
-            } catch (IOException | StaffNotFoundException | SQLException | CustomerNotFoundException ex) {
-                JOptionPane.showInternalConfirmDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            final Staff staff = s.getStaff();
+            final Till till = s.getTill();
+            model.addRow(new Object[]{s.getId(), s.getDate(), s.getTotal().setScale(2), staff.getName(), till.getName()});
+            totalValue = totalValue.add(s.getTotal());
+            for (SaleItem si : s.getSaleItems()) {
+                totalTax = totalTax.add(si.getTaxValue());
             }
         }
         txtTotalSales.setValue(totalSales);
@@ -448,7 +441,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                     final List<Sale> newList = new LinkedList<>(); //Create a list for the filtered sales
                     //Check each sale and make sure it matches the criteria
                     for (Sale s : sales) {
-                        if ((allTills || s.getTerminalID() == terminal.getId()) && (allStaff || s.getStaffID() == staff.getId()) && s.getTotal().compareTo(new BigDecimal(minVal)) >= 0 && s.getTotal().compareTo(new BigDecimal(maxVal)) <= 0 && s.getDate().after(startDate) && s.getDate().before(endDate) && (s.getId() >= startID && s.getId() <= endID)) {
+                        if ((allTills || s.getTill().getId() == terminal.getId()) && (allStaff || s.getStaff().getId() == staff.getId()) && s.getTotal().compareTo(new BigDecimal(minVal)) >= 0 && s.getTotal().compareTo(new BigDecimal(maxVal)) <= 0 && s.getDate().after(startDate) && s.getDate().before(endDate) && (s.getId() >= startID && s.getId() <= endID)) {
                             newList.add(s);
                         }
                     }

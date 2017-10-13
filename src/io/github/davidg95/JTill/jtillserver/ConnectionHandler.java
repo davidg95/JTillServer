@@ -401,12 +401,7 @@ public class ConnectionHandler {
     public void assisstance(@JConnParameter("MESSAGE") String message) throws IOException {
         dc.assisstance(staff.getName() + " on terminal " + till.getName() + " has requested assistance with message:\n" + message);
     }
-
-    @JConnMethod("GETTAKINGS")
-    public BigDecimal getTakings(@JConnParameter("TERMINAL") int terminal) throws IOException, SQLException {
-        return dc.getTillTakings(terminal);
-    }
-
+    
     @JConnMethod("UNCASHEDSALES")
     public List<Sale> getUncashedSales(@JConnParameter("NAME") String terminal) throws IOException, SQLException {
         return dc.getUncashedSales(terminal);

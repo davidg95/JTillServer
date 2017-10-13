@@ -88,7 +88,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
             contents = dc.getTerminalSales(till.getId(), true);
             model.setRowCount(0);
             for (Sale s : contents) {
-                model.addRow(new Object[]{s.getDate(), s.getTotalItemCount(), s.getTotal().setScale(2, 6)});
+                model.addRow(new Object[]{s.getDate(), s.getTotalItemCount(), "£" + s.getTotal().setScale(2, 6)});
                 runningTotal = runningTotal.add(s.getTotal());
             }
             lblTotal.setText("Total: £" + new DecimalFormat("0.00").format(runningTotal));

@@ -36,6 +36,7 @@ public class PaymentDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setModal(true);
         setTitle("Payment from " + customer.getName());
+        setIconImage(GUI.icon);
         init();
         txtPayment.requestFocus();
     }
@@ -82,6 +83,7 @@ public class PaymentDialog extends javax.swing.JDialog {
         btnCancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jLabel2.setText("Amount Due:");
 
@@ -99,14 +101,14 @@ public class PaymentDialog extends javax.swing.JDialog {
 
         txtID.setEditable(false);
 
-        btnPayment.setText("Make Payment");
+        btnPayment.setText("Take Payment");
         btnPayment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPaymentActionPerformed(evt);
             }
         });
 
-        btnCancel.setText("Cancel");
+        btnCancel.setText("Cancel Payment");
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelActionPerformed(evt);

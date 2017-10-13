@@ -70,7 +70,7 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, ex);
         }
         cmbTerminal.setModel(cmbModel);
-        sale = new Sale(((Till) cmbTerminal.getSelectedItem()).getId(), GUI.staff.getId());
+        sale = new Sale(((Till) cmbTerminal.getSelectedItem()), GUI.staff);
         lblTotal.setText("Total: £0.00");
     }
 
@@ -299,7 +299,7 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
         try {
             sale.complete();
             sale.setDate(new Date());
-            sale.setCustomerID(1);
+            sale.setCustomer(null);
             sale.setStaff(GUI.staff);
             sale.setMop(Sale.MOP_CASH);
             dc.addSale(sale);

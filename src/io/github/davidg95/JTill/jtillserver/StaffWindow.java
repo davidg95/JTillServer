@@ -574,7 +574,11 @@ public class StaffWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnPasswordActionPerformed
 
     private void tableStaffMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStaffMouseClicked
-        setCurrentStaff(currentTableContents.get(tableStaff.getSelectedRow()));
+        int index = tableStaff.getSelectedRow();
+        if (index == -1) {
+            return;
+        }
+        setCurrentStaff(currentTableContents.get(index));
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem view = new JMenuItem("View");

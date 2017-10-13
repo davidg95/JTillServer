@@ -77,16 +77,24 @@ public class SaleDialog extends javax.swing.JInternalFrame {
     }
 
     private void init() {
-        lblSaleID.setText("Sale ID: " + sale.getId());
-        Calendar c = Calendar.getInstance();
-        c.setTime(sale.getDate());
-        lblTime.setText("Time: " + c.getTime().toString());
-        if (sale.getCustomerID() != 1) {
-            lblCustomer.setText("Customer: " + sale.getCustomer().getName());
+        try {
+            if (!Boolean.getBoolean(dc.getSetting("USE_EMAIL"))) {
+                btnEmail.setEnabled(false);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
-        lblTerminal.setText("Terminal: " + sale.getTerminal().getName());
-        lblStaff.setText("Staff: " + sale.getStaff().getName());
-        lblTotal.setText("Sale Total: £" + sale.getTotal().setScale(2));
+        tableItems.setSelectionModel(new ForcedListSelectionModel());
+        txtId.setText(sale.getId() + "");
+        txtTime.setText(sale.getDate().toString());
+        if (sale.getCustomer() != null) {
+            txtCustomer.setText(sale.getCustomer().getName());
+        } else {
+            txtCustomer.setText("N/A");
+        }
+        txtTill.setText(sale.getTill().getName());
+        txtStaff.setText(sale.getStaff().getName());
+        lblTotal.setText("Total: £" + sale.getTotal().setScale(2));
 
         model.setRowCount(0);
 
@@ -104,7 +112,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
                 final Product p;
                 try {
                     p = dc.getProduct(item.getItem());
-                    s = new Object[]{item.getQuantity(), p.getName(), df.format(item.getPrice().doubleValue() * item.getQuantity())};
+                    s = new Object[]{p.getName(), item.getQuantity(), "£" + df.format(item.getPrice().doubleValue() * item.getQuantity())};
                 } catch (IOException | ProductNotFoundException | SQLException ex) {
                     Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -119,7 +127,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             }
             model.addRow(s);
         }
-        lblTaxValue.setText("Tax Value: £" + new DecimalFormat("0.00").format(taxValue.doubleValue()));
+        lblTax.setText("Tax: £" + new DecimalFormat("0.00").format(taxValue.doubleValue()));
         tableItems.setModel(model);
     }
 
@@ -179,12 +187,8 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             //Print sale info.
             g2.drawString("Receipt for sale: " + toPrint.getId(), 70, 140);
             g2.drawString("Time: " + toPrint.getDate(), 70, 160);
-            try {
-                final Staff staff = dc.getStaff(toPrint.getStaffID());
-                g2.drawString("Served by " + staff, 70, 180);
-            } catch (IOException | StaffNotFoundException | SQLException ex) {
-                g2.drawString("Served by " + toPrint.getStaffID(), 70, 180);
-            }
+            final Staff staff = toPrint.getStaff();
+            g2.drawString("Served by " + staff.getName(), 70, 180);
 
             final int item = 100;
             final int quantity = 300;
@@ -272,10 +276,15 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         tableItems = new javax.swing.JTable();
         lblTerminal = new javax.swing.JLabel();
         btnEmail = new javax.swing.JButton();
-        lblTotal = new javax.swing.JLabel();
         btnPrint = new javax.swing.JButton();
         lblStaff = new javax.swing.JLabel();
-        lblTaxValue = new javax.swing.JLabel();
+        txtId = new javax.swing.JTextField();
+        txtTime = new javax.swing.JTextField();
+        txtCustomer = new javax.swing.JTextField();
+        txtTill = new javax.swing.JTextField();
+        txtStaff = new javax.swing.JTextField();
+        lblTotal = new javax.swing.JLabel();
+        lblTax = new javax.swing.JLabel();
 
         btnClose.setText("Close");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
@@ -288,17 +297,14 @@ public class SaleDialog extends javax.swing.JInternalFrame {
 
         lblTime.setText("Time: ");
 
-        lblCustomer.setText("Customer: NO CUSTOMER");
+        lblCustomer.setText("Customer:");
 
         tableItems.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
-                "Qty.", "Item", "Price"
+                "Item", "Qty.", "Price"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -309,7 +315,15 @@ public class SaleDialog extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        tableItems.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(tableItems);
+        if (tableItems.getColumnModel().getColumnCount() > 0) {
+            tableItems.getColumnModel().getColumn(0).setResizable(false);
+            tableItems.getColumnModel().getColumn(1).setMinWidth(40);
+            tableItems.getColumnModel().getColumn(1).setMaxWidth(40);
+            tableItems.getColumnModel().getColumn(2).setMinWidth(100);
+            tableItems.getColumnModel().getColumn(2).setMaxWidth(100);
+        }
 
         lblTerminal.setText("Terminal:");
 
@@ -320,8 +334,6 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             }
         });
 
-        lblTotal.setText("Sale Total: ");
-
         btnPrint.setText("Print Receipt");
         btnPrint.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -331,7 +343,19 @@ public class SaleDialog extends javax.swing.JInternalFrame {
 
         lblStaff.setText("Staff: ");
 
-        lblTaxValue.setText("Tax Value:");
+        txtId.setEditable(false);
+
+        txtTime.setEditable(false);
+
+        txtCustomer.setEditable(false);
+
+        txtTill.setEditable(false);
+
+        txtStaff.setEditable(false);
+
+        lblTotal.setText("Total: £0.00");
+
+        lblTax.setText("Tax: £0.00");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -341,24 +365,37 @@ public class SaleDialog extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(lblSaleID)
-                                .addComponent(lblTime)
-                                .addComponent(lblCustomer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lblTerminal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lblTotal)
-                                .addComponent(lblStaff, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(lblTaxValue))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnPrint)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnEmail)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 311, Short.MAX_VALUE)
+                        .addComponent(btnClose))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lblTime)
+                                    .addComponent(lblSaleID)
+                                    .addComponent(lblTerminal)
+                                    .addComponent(lblStaff)))
+                            .addComponent(lblCustomer))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClose)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtCustomer, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                                .addComponent(txtTill)
+                                .addComponent(txtStaff))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(txtId, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                                .addComponent(txtTime)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblTotal)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblTax))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -366,27 +403,38 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblSaleID)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblSaleID)
+                            .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblTime)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblTime)
+                            .addComponent(txtTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblCustomer)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblCustomer))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblTerminal)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblTerminal)
+                            .addComponent(txtTill, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblStaff)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblTotal)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblTaxValue)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblStaff)
+                            .addComponent(txtStaff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 137, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTax)
+                    .addComponent(lblTotal))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
                     .addComponent(btnEmail)
                     .addComponent(btnPrint))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -398,44 +446,40 @@ public class SaleDialog extends javax.swing.JInternalFrame {
 
     private void btnEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmailActionPerformed
         String email;
-        try {
-            if (sale.getCustomerID() != 1) {
-                final Customer c = dc.getCustomer(sale.getCustomerID());
-                email = c.getEmail();
-                if (email == null) {
-                    email = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
-                }
-
-            } else {
+        if (sale.getCustomer() != null) {
+            final Customer c = sale.getCustomer();
+            email = c.getEmail();
+            if (email == null) {
                 email = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
             }
-            if (email == null) {
-                return;
-            }
-            final ModalDialog mDialog = new ModalDialog(this, "Email...", "Sending email...");
-            final String fEmail = email;
-            final Runnable run = () -> {
-                try {
-                    boolean result = dc.emailReceipt(fEmail, sale);
-                    mDialog.hide();
-                    if (result) {
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Email not sent", "Email Receipt", JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (IOException | MessagingException ex) {
-                    mDialog.hide();
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Error sending email", "Email Receipt", JOptionPane.ERROR_MESSAGE);
-                } finally {
-                    mDialog.hide();
-                }
-            };
-            final Thread th = new Thread(run);
-            th.start();
-            mDialog.show();
-        } catch (IOException | CustomerNotFoundException | SQLException ex) {
-            Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
+
+        } else {
+            email = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
         }
+        if (email == null) {
+            return;
+        }
+        final ModalDialog mDialog = new ModalDialog(this, "Email...", "Sending email...");
+        final String fEmail = email;
+        final Runnable run = () -> {
+            try {
+                boolean result = dc.emailReceipt(fEmail, sale);
+                mDialog.hide();
+                if (result) {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Email not sent", "Email Receipt", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (IOException | MessagingException ex) {
+                mDialog.hide();
+                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Error sending email", "Email Receipt", JOptionPane.ERROR_MESSAGE);
+            } finally {
+                mDialog.hide();
+            }
+        };
+        final Thread th = new Thread(run);
+        th.start();
+        mDialog.show();
     }//GEN-LAST:event_btnEmailActionPerformed
 
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
@@ -479,10 +523,15 @@ public class SaleDialog extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lblCustomer;
     private javax.swing.JLabel lblSaleID;
     private javax.swing.JLabel lblStaff;
-    private javax.swing.JLabel lblTaxValue;
+    private javax.swing.JLabel lblTax;
     private javax.swing.JLabel lblTerminal;
     private javax.swing.JLabel lblTime;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JTable tableItems;
+    private javax.swing.JTextField txtCustomer;
+    private javax.swing.JTextField txtId;
+    private javax.swing.JTextField txtStaff;
+    private javax.swing.JTextField txtTill;
+    private javax.swing.JTextField txtTime;
     // End of variables declaration//GEN-END:variables
 }
