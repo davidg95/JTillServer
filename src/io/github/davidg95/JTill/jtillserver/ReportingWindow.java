@@ -96,12 +96,8 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     private void updateTable() {
         model.setRowCount(0);
         for (SaleItem i : items) {
-            try {
-                final Product p = dc.getProduct(i.getItem());
-                model.addRow(new Object[]{i.getId(), p.getName(), i.getQuantity(), new DecimalFormat("#.00").format(i.getPrice().multiply(new BigDecimal(i.getQuantity())))});
-            } catch (IOException | ProductNotFoundException | SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            final Product p = (Product) i.getItem();
+            model.addRow(new Object[]{i.getId(), p.getName(), i.getQuantity(), new DecimalFormat("#.00").format(i.getPrice().multiply(new BigDecimal(i.getQuantity())))});
         }
     }
 
@@ -187,11 +183,11 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
             //Print the sale items.
             for (SaleItem it : items) {
                 if (it.getType() == SaleItem.PRODUCT) {
-                    final Product product = (Product) it.getProduct();
+                    final Product product = (Product) it.getItem();
                     g2.drawString(product.getName(), itemCol, y);
                 } else {
-                    final Discount discount = (Discount) it.getProduct();
-                    g2.drawString(discount.getName(), itemCol, y);
+//                    final Discount discount = (Discount) it.getProduct();
+//                    g2.drawString(discount.getName(), itemCol, y);
                 }
                 g2.drawString("" + it.getQuantity(), quantityCol, y);
                 g2.drawString("£" + it.getPrice(), totalCol, y);
@@ -491,7 +487,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                 if (chkAllCat.isSelected()) { //Check if all categories was selected
                     catid = -1;
                 }
-                
+
                 final Date startDate = (Date) spinStart.getValue(); //Get the selected start date
                 final Date endDate = (Date) spinEnd.getValue(); //Get the selected end date
 
@@ -519,7 +515,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                         tax = tax.add(i.getTaxValue());
                     }
                 }
-                
+
                 sortList(saleItems);
                 updateTable();
                 txtItems.setText(itemsSold + "");

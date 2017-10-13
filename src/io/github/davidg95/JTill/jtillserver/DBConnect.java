@@ -2088,7 +2088,7 @@ public class DBConnect implements DataConnect {
             addSaleItem(s, p);
             try {
                 if (p.getType() == SaleItem.PRODUCT) {
-                    final Product pr = this.getProduct(p.getItem());
+                    final Product pr = (Product) p.getItem();
                     if (!pr.isOpen()) {
                         purchaseProduct(pr.getId(), p.getQuantity());
                     }
@@ -2228,7 +2228,7 @@ public class DBConnect implements DataConnect {
     }
 
     private List<SaleItem> getItemsInSale(Sale sale) throws SQLException {
-        final String query = "SELECT * FROM APP.SALEITEMS WHERE SALEITEMS.SALE_ID = " + sale.getId();
+        final String query = "SELECT * FROM SALEITEMS, PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE SALEITEMS.PRODUCT_ID = PRODUCTS.ID AND PRODUCTS.DEPARTMENT_ID = DEPARTMENTS.ID AND PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.TAX_ID = TAX.ID AND SALEITEMS.SALE_ID = " + sale.getId();
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
@@ -2247,15 +2247,60 @@ public class DBConnect implements DataConnect {
     private List<SaleItem> getSaleItemsFromResultSet(ResultSet set) throws SQLException {
         final List<SaleItem> sales = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt("ID");
-            int item = set.getInt("PRODUCT_ID");
-            int type = set.getInt("TYPE");
-            int quantity = set.getInt("QUANTITY");
-            int saleId = set.getInt("SALE_ID");
-            BigDecimal price = set.getBigDecimal("PRICE");
-            BigDecimal tax = set.getBigDecimal("TAX");
-            BigDecimal cost = set.getBigDecimal("COST");
-            SaleItem s = new SaleItem(saleId, item, quantity, id, price, type, tax, cost);
+            int id = set.getInt(1);
+            int item = set.getInt(2);
+            int type = set.getInt(3);
+            int quantity = set.getInt(4);
+            BigDecimal price = set.getBigDecimal(5);
+            BigDecimal tax = set.getBigDecimal(6);
+            int saleId = set.getInt(7);
+            BigDecimal cost = set.getBigDecimal(8);
+
+            int code = set.getInt(9);
+            int order_code = set.getInt(10);
+            String name = set.getString(11);
+            boolean open = set.getBoolean(12);
+            BigDecimal pPrice = set.getBigDecimal(13);
+            int stock = set.getInt(14);
+            String comments = set.getString(15);
+            String shortName = set.getString(16);
+            int cId = set.getInt(17);
+            int dId = set.getInt(18);
+            int taxID = set.getInt(19);
+            BigDecimal costPrice = set.getBigDecimal(20);
+            int minStock = set.getInt(21);
+            int maxStock = set.getInt(22);
+            int packSize = set.getInt(23);
+            String barcode = set.getString(24);
+            double scale = set.getDouble(25);
+            String scaleName = set.getString(26);
+            boolean incVat = set.getBoolean(27);
+
+            String cName = set.getString(29);
+            Time start = set.getTime(30);
+            Time end = set.getTime(31);
+            boolean restrict = set.getBoolean(32);
+            int age = set.getInt(33);
+
+            Category c = new Category(cId, cName, start, end, restrict, age);
+
+            String dName = set.getString(35);
+
+            Department d = new Department(dId, dName);
+
+            String tName = set.getString(37);
+            double value = set.getDouble(38);
+
+            Tax t = new Tax(taxID, tName, value);
+
+            Product p;
+            if (!open) {
+                p = new Product(name, shortName, barcode, order_code, c, d, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code);
+            } else {
+                p = new Product(name, shortName, barcode, order_code, c, d, comments, t, scale, scaleName, costPrice, code);
+            }
+
+            SaleItem s = new SaleItem(saleId, p, quantity, id, price, type, tax, cost);
             sales.add(s);
         }
         return sales;
@@ -3730,24 +3775,18 @@ public class DBConnect implements DataConnect {
 
     @Override
     public SaleItem getSaleItem(int id) throws IOException, SQLException, JTillException {
-        String query = "SELECT * FROM SALEITEMS WHERE ID = " + id;
+        String query = "SELECT * FROM SALEITEMS, PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE SALEITEMS.PRODUCT = PRODUCTS.ID AND PRODUCTS.DEPARTNENT_ID = DEPARTMENTS.ID AND PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.TAX_ID = TAX.ID AND ID = " + id;
         SaleItem i = null;
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
                 ResultSet set = stmt.executeQuery(query);
-                while (set.next()) {
-                    int product_id = set.getInt("PRODUCT_ID");
-                    int type = set.getInt("TYPE");
-                    int quantity = set.getInt("QUANTITY");
-                    BigDecimal price = new BigDecimal(set.getDouble("PRICE"));
-                    int sale_id = set.getInt("SALE_ID");
-                    BigDecimal tax = set.getBigDecimal("TAX");
-                    BigDecimal cost = set.getBigDecimal("COST");
-                    i = new SaleItem(sale_id, product_id, quantity, id, price, type, tax, cost);
-                }
+                List<SaleItem> items = getSaleItemsFromResultSet(set);
                 con.commit();
-                return i;
+                if (items.isEmpty()) {
+                    throw new JTillException("Item not found");
+                }
+                return items.get(0);
             } catch (SQLException ex) {
                 con.rollback();
                 LOG.log(Level.SEVERE, null, ex);
@@ -3758,25 +3797,13 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<SaleItem> getAllSaleItems() throws IOException, SQLException {
-        String query = "SELECT * FROM SALEITEMS WHERE i.TYPE = 1";
+        String query = "SELECT * FROM SALEITEMS, PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE SALEITEMS.PRODUCT = PRODUCTS.ID AND PRODUCTS.DEPARTNENT_ID = DEPARTMENTS.ID AND PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.TAX_ID = TAX.ID AND SALEITEMS.TYPE = 1";
         List<SaleItem> items = new LinkedList<>();
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
                 ResultSet set = stmt.executeQuery(query);
-                while (set.next()) {
-                    int id = set.getInt(1);
-                    int item = set.getInt(2);
-                    int type = set.getInt(3);
-                    int quantity = set.getInt(4);
-                    BigDecimal price = new BigDecimal(Double.toString(set.getDouble(5)));
-                    BigDecimal tax = new BigDecimal(Double.toString(set.getDouble(6)));
-                    int sale_id = set.getInt(7);
-                    BigDecimal cost = set.getBigDecimal(8);
-                    SaleItem i = new SaleItem(sale_id, item, quantity, id, price, type, tax, cost);
-
-                    items.add(i);
-                }
+                items = getSaleItemsFromResultSet(set);
                 con.commit();
                 return items;
             } catch (SQLException ex) {
@@ -3793,7 +3820,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<SaleItem> submitSaleItemQuery(String q) throws SQLException {
-        String query = "SELECT * FROM SALEITEMS " + q;
+        String query = "SELECT * FROM SALEITEMS, PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE SALEITEMS.PRODUCT = PRODUCTS.ID AND PRODUCTS.DEPARTNENT_ID = DEPARTMENTS.ID AND PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.TAX_ID = TAX.ID AND " + q;
         List<SaleItem> items = new LinkedList<>();
         int product_id;
         int sale_id;
@@ -3802,18 +3829,7 @@ public class DBConnect implements DataConnect {
             try {
                 Statement stmt = con.createStatement();
                 ResultSet set = stmt.executeQuery(query);
-                while (set.next()) {
-                    int id = set.getInt("ID");
-                    product_id = set.getInt("PRODUCT_ID");
-                    type = set.getInt("TYPE");
-                    int quantity = set.getInt("QUANTITY");
-                    BigDecimal price = new BigDecimal(set.getDouble("PRICE"));
-                    sale_id = set.getInt("SALE_ID");
-                    BigDecimal tax = set.getBigDecimal("TAX");
-                    BigDecimal cost = set.getBigDecimal("COST");
-                    SaleItem i = new SaleItem(sale_id, product_id, quantity, id, price, type, tax, cost);
-                    items.add(i);
-                }
+                items = getSaleItemsFromResultSet(set);
                 con.commit();
                 return items;
             } catch (SQLException ex) {
@@ -4305,7 +4321,7 @@ public class DBConnect implements DataConnect {
     public List<SaleItem> searchSaleItems(int department, int category, Date start, Date end) throws IOException, SQLException, JTillException {
         long startL = start.getTime();
         long endL = end.getTime();
-        String pQuery = "SELECT * FROM SALEITEMS i, PRODUCTS p, SALES s WHERE p.ID = i.PRODUCT_ID AND i.SALE_ID = s.ID AND i.TYPE = 1 AND s.TIMESTAMP >= " + startL + " AND s.TIMESTAMP <= " + endL;
+        String pQuery = "SELECT * FROM SALEITEMS i, PRODUCTS p, CATEGORYS c, DEPARTMENTS d, TAX t, SALES s WHERE i.PRODUCT = p.ID AND p.CATEGORY_ID = c.ID AND p.DEPARTMENT_ID = d.ID AND p.TAX_ID = t.ID AND p.ID = i.PRODUCT_ID AND i.SALE_ID = s.ID AND i.TYPE = 1 AND s.TIMESTAMP >= " + startL + " AND s.TIMESTAMP <= " + endL;
         if (department > -1) {
             pQuery = pQuery.concat(" AND p.DEPARTMENT_ID = " + department);
         }
@@ -4316,18 +4332,7 @@ public class DBConnect implements DataConnect {
             try {
                 Statement stmt = con.createStatement();
                 ResultSet set = stmt.executeQuery(pQuery);
-                List<SaleItem> items = new LinkedList<>();
-                while (set.next()) {
-                    int id = set.getInt(1);
-                    int pid = set.getInt(2);
-                    int qu = set.getInt(4);
-                    BigDecimal price = new BigDecimal(Double.toString(set.getDouble(5)));
-                    int iSa = set.getInt(7);
-                    BigDecimal tax = set.getBigDecimal(6);
-                    BigDecimal cost = set.getBigDecimal(8);
-                    SaleItem i = new SaleItem(iSa, pid, qu, id, price, 1, tax, cost);
-                    items.add(i);
-                }
+                List<SaleItem> items = getSaleItemsFromResultSet(set);
                 con.commit();
                 return items;
             } catch (SQLException ex) {

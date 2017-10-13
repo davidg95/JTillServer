@@ -109,21 +109,16 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             }
             Object[] s = null;
             if (item.getType() == SaleItem.PRODUCT) {
-                final Product p;
-                try {
-                    p = dc.getProduct(item.getItem());
-                    s = new Object[]{p.getName(), item.getQuantity(), "£" + df.format(item.getPrice().doubleValue() * item.getQuantity())};
-                } catch (IOException | ProductNotFoundException | SQLException ex) {
-                    Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                final Product p = (Product) item.getItem();
+                s = new Object[]{p.getName(), item.getQuantity(), "£" + df.format(item.getPrice().doubleValue() * item.getQuantity())};
             } else {
-                final Discount d;
-                try {
-                    d = dc.getDiscount(item.getItem());
-                    s = new Object[]{item.getQuantity(), d.getName(), df.format(item.getPrice().doubleValue() * item.getQuantity())};
-                } catch (IOException | SQLException | DiscountNotFoundException ex) {
-                    Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
-                }
+//                final Discount d;
+//                try {
+//                    d = dc.getDiscount(item.getItem());
+//                    s = new Object[]{item.getQuantity(), d.getName(), df.format(item.getPrice().doubleValue() * item.getQuantity())};
+//                } catch (IOException | SQLException | DiscountNotFoundException ex) {
+//                    Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
+//                }
             }
             model.addRow(s);
         }
@@ -206,11 +201,11 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             //Print the sale items.
             for (SaleItem it : toPrint.getSaleItems()) {
                 if (it.getType() == SaleItem.PRODUCT) {
-                    final Product p = (Product) it.getProduct();
+                    final Product p = (Product) it.getItem();
                     g2.drawString(p.getName(), item, y);
                 } else {
-                    final Discount d = (Discount) it.getProduct();
-                    g2.drawString(d.getName(), item, y);
+//                    final Discount d = (Discount) it.getProduct();
+//                    g2.drawString(d.getName(), item, y);
                 }
                 g2.drawString("" + it.getQuantity(), quantity, y);
                 g2.drawString("£" + it.getPrice().setScale(2), total, y);
