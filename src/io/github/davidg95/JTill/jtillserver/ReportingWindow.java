@@ -232,12 +232,12 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
         txtItems = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         txtSales = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        txtCosts = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
         txtTax = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
         txtNet = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        txtProfitPreTax = new javax.swing.JTextField();
 
         panelSearch.setBorder(javax.swing.BorderFactory.createTitledBorder("Search By"));
 
@@ -378,68 +378,70 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
         txtSales.setEditable(false);
         txtSales.setText("£0.00");
 
-        jLabel7.setText("Tax Payable:");
+        jLabel11.setText("Total Costs:");
+
+        txtCosts.setEditable(false);
+        txtCosts.setText("£0.00");
+
+        jLabel12.setText("Taxes:");
 
         txtTax.setEditable(false);
         txtTax.setText("£0.00");
 
-        jLabel8.setText("Net Profit");
+        jLabel7.setText("Net:");
 
         txtNet.setEditable(false);
         txtNet.setText("£0.00");
-
-        jLabel9.setText("Profit Before Tax:");
-
-        txtProfitPreTax.setEditable(false);
-        txtProfitPreTax.setText("£0.00");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtItems)
-                    .addComponent(txtSales, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
-                    .addComponent(txtProfitPreTax))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel8))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtTax)
-                    .addComponent(txtNet, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(19, 19, 19)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTax, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtNet, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtSales, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCosts, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtItems, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(462, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(txtItems, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtSales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
-                    .addComponent(txtSales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel11)
+                    .addComponent(txtCosts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(txtProfitPreTax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(txtTax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
-                    .addComponent(txtTax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(txtNet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(txtNet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(146, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -489,6 +491,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                 if (chkAllCat.isSelected()) { //Check if all categories was selected
                     catid = -1;
                 }
+                
                 final Date startDate = (Date) spinStart.getValue(); //Get the selected start date
                 final Date endDate = (Date) spinEnd.getValue(); //Get the selected end date
 
@@ -502,7 +505,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
 
                 int itemsSold = 0;
                 BigDecimal sales = BigDecimal.ZERO;
-                BigDecimal expenses = BigDecimal.ZERO;
+                BigDecimal costs = BigDecimal.ZERO;
                 BigDecimal tax = BigDecimal.ZERO;
 
                 for (SaleItem i : saleItems) {
@@ -510,21 +513,20 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                         final BigDecimal in = i.getPrice().multiply(new BigDecimal(i.getQuantity()));
                         final BigDecimal individualCost = i.getCost();
                         final BigDecimal out = individualCost.multiply(new BigDecimal(i.getQuantity()));
-                        expenses = expenses.add(out);
+                        costs = costs.add(out);
                         itemsSold += i.getQuantity();
                         sales = sales.add(in);
                         tax = tax.add(i.getTaxValue());
                     }
                 }
-
-                final BigDecimal profitBeforeTax = sales.subtract(expenses);
+                
                 sortList(saleItems);
                 updateTable();
                 txtItems.setText(itemsSold + "");
                 txtSales.setText("£" + new DecimalFormat("0.00").format(sales));
-                txtProfitPreTax.setText("£" + new DecimalFormat("0.00").format(profitBeforeTax));
+                txtCosts.setText("£" + new DecimalFormat("0.00").format(costs));
                 txtTax.setText("£" + new DecimalFormat("0.00").format(tax));
-                txtNet.setText("£" + new DecimalFormat("0.00").format(profitBeforeTax.subtract(tax)));
+                txtNet.setText("£" + new DecimalFormat("0.00").format(sales.subtract(costs).subtract(tax)));
             } catch (IOException | SQLException | JTillException ex) {
                 JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             } finally {
@@ -565,23 +567,23 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     private javax.swing.JComboBox<String> cmbCategory;
     private javax.swing.JComboBox<String> cmbDepartment;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelSearch;
     private javax.swing.JSpinner spinEnd;
     private javax.swing.JSpinner spinStart;
     private javax.swing.JTable table;
+    private javax.swing.JTextField txtCosts;
     private javax.swing.JTextField txtItems;
     private javax.swing.JTextField txtNet;
-    private javax.swing.JTextField txtProfitPreTax;
     private javax.swing.JTextField txtSales;
     private javax.swing.JTextField txtTax;
     // End of variables declaration//GEN-END:variables
