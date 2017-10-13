@@ -82,7 +82,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         for (Sale s : tableContents) {
             final Staff staff = s.getStaff();
             final Till till = s.getTill();
-            model.addRow(new Object[]{s.getId(), s.getDate(), s.getTotal().setScale(2), staff.getName(), till.getName()});
+            model.addRow(new Object[]{s.getId(), s.getDate(), "£" + s.getTotal().setScale(2), staff.getName(), till.getName()});
             totalValue = totalValue.add(s.getTotal());
             for (SaleItem si : s.getSaleItems()) {
                 totalTax = totalTax.add(si.getTaxValue());
