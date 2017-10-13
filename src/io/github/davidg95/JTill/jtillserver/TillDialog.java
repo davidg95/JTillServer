@@ -441,28 +441,30 @@ public class TillDialog extends javax.swing.JInternalFrame {
             BigDecimal declared = new BigDecimal(strVal);
             final TillReport report = dc.zReport(this.till, declared, GUI.staff);
 
-            if (JOptionPane.showConfirmDialog(this, "Do you want the report emailed?", "Z Report for " + till.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                String message = "Cashup for terminal " + till.getName()
-                        + "\nValue counted: £" + report.getDeclared().toString()
-                        + "\nActual takings: £" + report.getExpected().toString()
-                        + "\nDifference: £" + report.getDifference().toString();
-                final ModalDialog mDialog = new ModalDialog(this, "Email", "Emailing...");
-                final Runnable run = new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            dc.sendEmail(message);
-                            mDialog.hide();
-                            JOptionPane.showInputDialog(TillDialog.this, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
-                        } catch (IOException ex) {
-                            mDialog.hide();
-                            JOptionPane.showInputDialog(TillDialog.this, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
+            if (Boolean.getBoolean(dc.getSetting("USE_EMAIL"))) {
+                if (JOptionPane.showConfirmDialog(this, "Do you want the report emailed?", "Z Report for " + till.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    String message = "Cashup for terminal " + till.getName()
+                            + "\nValue counted: £" + report.getDeclared().toString()
+                            + "\nActual takings: £" + report.getExpected().toString()
+                            + "\nDifference: £" + report.getDifference().toString();
+                    final ModalDialog mDialog = new ModalDialog(this, "Email", "Emailing...");
+                    final Runnable run = new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                dc.sendEmail(message);
+                                mDialog.hide();
+                                JOptionPane.showInputDialog(TillDialog.this, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
+                            } catch (IOException ex) {
+                                mDialog.hide();
+                                JOptionPane.showInputDialog(TillDialog.this, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
+                            }
                         }
-                    }
-                };
-                final Thread thread = new Thread(run);
-                thread.start();
-                mDialog.show();
+                    };
+                    final Thread thread = new Thread(run);
+                    thread.start();
+                    mDialog.show();
+                }
             }
             lblTotal.setText("Total: £0.00");
             getAllSales();

@@ -83,6 +83,16 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             } else {
                 chkSendProducts.setSelected(false);
             }
+            boolean useEmail = Boolean.getBoolean(dc.getSetting("USE_EMAIL", Boolean.toString(false)));
+            chkEmail.setSelected(useEmail);
+            if (!useEmail) {
+                for (Component c : panelEmail.getComponents()) {
+                    if (c == btnSave || c == chkEmail) {
+                        continue;
+                    }
+                    c.setEnabled(false);
+                }
+            }
             txtOutMail.setText(dc.getSetting("mail.smtp.host"));
             txtOutgoingAddress.setText(dc.getSetting("OUTGOING_MAIL_ADDRESS"));
             txtMailAddress.setText(dc.getSetting("MAIL_ADDRESS"));
@@ -148,7 +158,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         chkUnlock = new javax.swing.JCheckBox();
         txtLogoutTimeout = new javax.swing.JSpinner();
         txtUnlockCode = new javax.swing.JTextField();
-        jPanel1 = new javax.swing.JPanel();
+        panelEmail = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         txtOutMail = new javax.swing.JTextField();
@@ -156,6 +166,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         btnSave = new javax.swing.JButton();
         txtOutgoingAddress = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
+        chkEmail = new javax.swing.JCheckBox();
         panelGeneral = new javax.swing.JPanel();
         chkSendProducts = new javax.swing.JCheckBox();
         jLabel13 = new javax.swing.JLabel();
@@ -403,7 +414,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 .addComponent(btnSaveSecurity))
         );
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Email Settings"));
+        panelEmail.setBorder(javax.swing.BorderFactory.createTitledBorder("Email Settings"));
 
         jLabel10.setText("Outgoing mail server:");
 
@@ -418,41 +429,52 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
 
         jLabel12.setText("Outgoing address:");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        chkEmail.setText("Use email");
+        chkEmail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkEmailActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelEmailLayout = new javax.swing.GroupLayout(panelEmail);
+        panelEmail.setLayout(panelEmailLayout);
+        panelEmailLayout.setHorizontalGroup(
+            panelEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelEmailLayout.createSequentialGroup()
                 .addGap(102, 102, 102)
                 .addComponent(btnSave)
-                .addContainerGap(162, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(chkEmail)
+                .addContainerGap())
+            .addGroup(panelEmailLayout.createSequentialGroup()
+                .addGroup(panelEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel11)
                     .addComponent(jLabel10)
                     .addComponent(jLabel12))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panelEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtOutMail)
                     .addComponent(txtOutgoingAddress)
                     .addComponent(txtMailAddress)))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        panelEmailLayout.setVerticalGroup(
+            panelEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelEmailLayout.createSequentialGroup()
+                .addGroup(panelEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(txtOutMail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(panelEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtOutgoingAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(panelEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
                     .addComponent(txtMailAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnSave))
+                .addGroup(panelEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSave)
+                    .addComponent(chkEmail)))
         );
 
         panelGeneral.setBorder(javax.swing.BorderFactory.createTitledBorder("General Settings"));
@@ -710,7 +732,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(panelSecurity, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelEmail, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelGeneral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -753,7 +775,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(panelSecurity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(panelEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -901,6 +923,13 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         try {
+            dc.setSetting("USE_EMAIL", Boolean.toString(chkEmail.isSelected()));
+            if (chkEmail.isSelected()) {
+                if (txtOutMail.getText().isEmpty() || txtOutgoingAddress.getText().isEmpty() || txtMailAddress.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Must fill out all fields", "Email settings", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
             dc.setSetting("mail.smtp.host", txtOutMail.getText());
             dc.setSetting("OUTGOING_MAIL_ADDRESS", txtOutgoingAddress.getText());
             dc.setSetting("MAIL_ADDRESS", txtMailAddress.getText());
@@ -1123,6 +1152,15 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnRemoveImageActionPerformed
 
+    private void chkEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkEmailActionPerformed
+        for (Component c : panelEmail.getComponents()) {
+            if (c == btnSave || c == chkEmail) {
+                continue;
+            }
+            c.setEnabled(chkEmail.isSelected());
+        }
+    }//GEN-LAST:event_chkEmailActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnColor;
@@ -1141,6 +1179,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnSaveSecurity;
     private javax.swing.JCheckBox chkAddress;
     private javax.swing.JCheckBox chkApproveNew;
+    private javax.swing.JCheckBox chkEmail;
     private javax.swing.JCheckBox chkEmailPrompt;
     private javax.swing.JCheckBox chkLogOut;
     private javax.swing.JCheckBox chkSendProducts;
@@ -1167,9 +1206,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel panelDatabase;
+    private javax.swing.JPanel panelEmail;
     private javax.swing.JPanel panelGeneral;
     private javax.swing.JPanel panelNetwork;
     private javax.swing.JPanel panelSecurity;
