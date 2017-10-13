@@ -455,10 +455,25 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPrintable(new ReportPrinter(new Date(), new Date(), null));
         boolean ok = job.printDialog();
-        try {
-            job.print();
-        } catch (PrinterException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR);
+        final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing report...", job);
+        if (ok) {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        job.print();
+                    } catch (PrinterException ex) {
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(ConsolidatedReportingWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                    } finally {
+                        mDialog.hide();
+                    }
+                }
+            };
+            Thread th = new Thread(runnable);
+            th.start();
+            mDialog.show();
+            JOptionPane.showMessageDialog(ConsolidatedReportingWindow.this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnPrintActionPerformed
 
