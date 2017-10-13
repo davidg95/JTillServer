@@ -474,7 +474,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 return;
             }
 
-            products.add(new ReceivedItem(product.getId(), amount, product.getCostPrice().divide(new BigDecimal(Integer.toString(product.getPackSize())), BigDecimal.ROUND_HALF_EVEN)));
+            products.add(new ReceivedItem(product.getId(), amount, product.getCostPrice().divide(new BigDecimal(Integer.toString(product.getPackSize())), 2, 6)));
             updateTable();
         } else {
             JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);

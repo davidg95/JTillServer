@@ -95,9 +95,11 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         txtOrderCode.setText("0");
         txtPrice.setText("");
         txtCostPrice.setText("");
+        txtPackSize.setText("");
         txtMinStock.setText("0");
         txtMaxStock.setText("0");
         txtComments.setText("");
+        chkIncVat.setSelected(false);
 
         txtOpenName.setText("");
         txtOpenShort.setText("");
