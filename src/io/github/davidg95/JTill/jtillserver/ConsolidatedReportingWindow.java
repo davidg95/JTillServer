@@ -113,7 +113,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             BigDecimal net = total.subtract(cost).subtract(tax);
 
             txtTxn.setText(transactions + "");
-            txtSales.setText("£" + total.toString());
+            txtSales.setText("£" + total.setScale(2, 6).toString());
             txtCost.setText("£" + cost.toString());
             txtTax.setText("£" + tax.toString());
             txtNet.setText("£" + net.toString());
