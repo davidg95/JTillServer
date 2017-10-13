@@ -65,6 +65,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
+        table.setSelectionModel(new ForcedListSelectionModel());
         try {
             final List<Department> departments = dc.getAllDepartments();
             final List<Category> categories = dc.getAllCategorys();
@@ -97,7 +98,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
         model.setRowCount(0);
         for (SaleItem i : items) {
             final Product p = (Product) i.getItem();
-            model.addRow(new Object[]{i.getId(), p.getName(), i.getQuantity(), new DecimalFormat("#.00").format(i.getPrice().multiply(new BigDecimal(i.getQuantity())))});
+            model.addRow(new Object[]{i.getId(), p.getName(), i.getQuantity(), "£" + new DecimalFormat("0.00").format(i.getPrice().multiply(new BigDecimal(i.getQuantity())))});
         }
     }
 
@@ -332,13 +333,10 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "ID", "Name", "Quantity", "Total Value"
+                "ID", "Name", "Qty.", "Total Value"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -357,9 +355,11 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
-            table.getColumnModel().getColumn(0).setResizable(false);
+            table.getColumnModel().getColumn(0).setMinWidth(40);
+            table.getColumnModel().getColumn(0).setMaxWidth(40);
             table.getColumnModel().getColumn(1).setResizable(false);
-            table.getColumnModel().getColumn(2).setResizable(false);
+            table.getColumnModel().getColumn(2).setMinWidth(40);
+            table.getColumnModel().getColumn(2).setMaxWidth(40);
         }
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Breakdown"));
@@ -437,7 +437,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                     .addComponent(txtTax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
                     .addComponent(txtNet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(146, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -458,7 +458,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(panelSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -495,7 +495,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
 
                 if (saleItems.isEmpty()) {
                     mDialog.hide();
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No results", "Sales Reporting", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(this, "No results", "Sales Reporting", JOptionPane.INFORMATION_MESSAGE);
                     return;
                 }
 
