@@ -593,6 +593,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
                 public void run() {
                     try {
                         job.print();
+                        JOptionPane.showMessageDialog(ConsolidatedReportingWindow.this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
                     } catch (PrinterException ex) {
                         mDialog.hide();
                         JOptionPane.showMessageDialog(ConsolidatedReportingWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -604,7 +605,6 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             Thread th = new Thread(runnable);
             th.start();
             mDialog.show();
-            JOptionPane.showMessageDialog(ConsolidatedReportingWindow.this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnPrintActionPerformed
 
