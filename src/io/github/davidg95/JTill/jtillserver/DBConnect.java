@@ -4942,4 +4942,26 @@ public class DBConnect implements DataConnect {
             }
         }
     }
+
+    @Override
+    public BigDecimal getWastage(Date start, Date end) throws IOException, SQLException {
+        long s = start.getTime();
+        long e = end.getTime();
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet set = stmt.executeQuery("SELECT VALUE, TIMESTAMP FROM WASTEREPORTS WHERE TIMESTAMP >= " + s + " AND TIMESTAMP <= " + e);
+                BigDecimal total = BigDecimal.ZERO;
+                while (set.next()) {
+                    total = total.add(set.getBigDecimal(1));
+                }
+                con.commit();
+                return total;
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
 }

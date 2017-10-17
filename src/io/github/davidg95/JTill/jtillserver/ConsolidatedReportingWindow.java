@@ -43,6 +43,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
     private BigDecimal cost = BigDecimal.ZERO;
     private BigDecimal tax = BigDecimal.ZERO;
     private BigDecimal refunds = BigDecimal.ZERO;
+    private BigDecimal wastage = BigDecimal.ZERO;
 
     private final DataConnect dc;
 
@@ -77,11 +78,12 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
                 try {
                     if (till == null) {
                         sales = dc.consolidated(start, end, -1);
-                        refunds = dc.getRefunds(start, end, -1);
+                        refunds = dc.getRefunds(start, end, -1).setScale(2, 6);
                     } else {
                         sales = dc.consolidated(start, end, till.getId());
-                        refunds = dc.getRefunds(start, end, till.getId());
+                        refunds = dc.getRefunds(start, end, till.getId()).setScale(2, 6);
                     }
+                    wastage = dc.getWastage(start, end).setScale(2, 6);
                 } catch (IOException | SQLException ex) {
                     mDialog.hide();
                     JOptionPane.showMessageDialog(GUI.gui, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -165,7 +167,8 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             txtCost.setText("£" + cost.toString());
             txtTax.setText("£" + tax.toString());
             txtNet.setText("£" + net.toString());
-            txtRefunds.setText("£" + refunds.setScale(2, 6).toString());
+            txtRefunds.setText("£" + refunds.toString());
+            txtWastage.setText("£" + wastage.toString());
         } catch (IOException | SQLException ex) {
             Logger.getLogger(ConsolidatedReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -268,6 +271,8 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             g2.drawString("Net Sales: £" + total.subtract(cost).subtract(tax).toString(), x, y);
             y += lineSpace;
             g2.drawString("Refunds: £" + refunds, x, y);
+            y += lineSpace;
+            g2.drawString("Wastage: £" + wastage, x, y);
 
             return PAGE_EXISTS;
         }
@@ -297,6 +302,8 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         txtRefunds = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtWastage = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         taxTable = new javax.swing.JTable();
@@ -344,6 +351,10 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
 
         txtRefunds.setEditable(false);
 
+        jLabel7.setText("Wastage:");
+
+        txtWastage.setEditable(false);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -351,6 +362,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel7)
                     .addComponent(jLabel6)
                     .addComponent(jLabel5)
                     .addComponent(jLabel4)
@@ -364,7 +376,8 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
                     .addComponent(txtCost)
                     .addComponent(txtTax)
                     .addComponent(txtNet, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
-                    .addComponent(txtRefunds))
+                    .addComponent(txtRefunds)
+                    .addComponent(txtWastage))
                 .addContainerGap(74, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -394,7 +407,11 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(txtRefunds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(93, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(txtWastage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(73, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tax Breakdown"));
@@ -601,6 +618,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -615,5 +633,6 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
     private javax.swing.JTextField txtSales;
     private javax.swing.JTextField txtTax;
     private javax.swing.JTextField txtTxn;
+    private javax.swing.JTextField txtWastage;
     // End of variables declaration//GEN-END:variables
 }

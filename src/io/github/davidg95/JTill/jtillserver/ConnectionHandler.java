@@ -872,4 +872,9 @@ public class ConnectionHandler {
     public BigDecimal refunds(@JConnParameter("START") Date start, @JConnParameter("END") Date end, @JConnParameter("TILL") int till) throws IOException, SQLException {
         return dc.getRefunds(start, end, till);
     }
+
+    @JConnMethod("GETWASTAGE")
+    public BigDecimal getWasage(@JConnParameter("START") Date start, @JConnParameter("END") Date end) throws IOException, SQLException {
+        return dc.getWastage(start, end);
+    }
 }
