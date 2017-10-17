@@ -3952,7 +3952,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public void addReceivedItem(ReceivedItem i, int report) throws IOException, SQLException {
-        String query = "INSERT INTO RECEIVEDITEMS (PRODUCT, QUANTITY, PRICE, RECEIVED_REPORT) VALUES (" + i.getProduct() + "," + i.getQuantity() + "," + i.getPrice().doubleValue() + "," + report + ")";
+        String query = "INSERT INTO RECEIVEDITEMS (PRODUCT, QUANTITY, PRICE, RECEIVED_REPORT) VALUES (" + i.getProduct().getId() + "," + i.getQuantity() + "," + i.getPrice().doubleValue() + "," + report + ")";
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
@@ -3975,8 +3975,8 @@ public class DBConnect implements DataConnect {
                 Statement stmt = con.createStatement();
                 ResultSet set = stmt.executeQuery(query);
                 while (set.next()) {
-                    String p = Double.toString(set.getDouble("PRICE"));
-                    value = value.add(new BigDecimal(p).multiply(new BigDecimal(set.getInt("QUANTITY"))));
+                    BigDecimal p = set.getBigDecimal("PRICE");
+                    value = value.add(p);
                 }
                 con.commit();
                 return value;
@@ -4532,7 +4532,8 @@ public class DBConnect implements DataConnect {
     }
 
     private List<ReceivedItem> getItemsInReport(int id) throws SQLException {
-        String query = "SELECT * FROM RECEIVEDITEMS WHERE RECEIVED_REPORT=" + id;
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, RECEIVEDITEMS WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.DEPARTMENT_ID = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID NAD RECEIVEDITEMS.PRODUCT = PRODUCT.ID AND RECEIVED_REPORT=" + id;
+
         List<ReceivedItem> items;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
@@ -4540,12 +4541,55 @@ public class DBConnect implements DataConnect {
                 ResultSet set = stmt.executeQuery(query);
                 items = new LinkedList<>();
                 while (set.next()) {
-                    int iid = set.getInt(1);
-                    int pro = set.getInt(2);
-                    BigDecimal price = set.getBigDecimal(3);
-                    int quantity = set.getInt(4);
+                    int code = set.getInt(1);
+                    int order_code = set.getInt(2);
+                    String name = set.getString(3);
+                    boolean open = set.getBoolean(4);
+                    BigDecimal price = set.getBigDecimal(5);
+                    int stock = set.getInt(6);
+                    String comments = set.getString(7);
+                    String shortName = set.getString(8);
+                    int cId = set.getInt(9);
+                    int dId = set.getInt(10);
+                    int taxID = set.getInt(11);
+                    BigDecimal costPrice = set.getBigDecimal(12);
+                    int minStock = set.getInt(13);
+                    int maxStock = set.getInt(14);
+                    int packSize = set.getInt(15);
+                    String barcode = set.getString(16);
+                    double scale = set.getDouble(17);
+                    String scaleName = set.getString(18);
+                    boolean incVat = set.getBoolean(19);
 
-                    ReceivedItem ri = new ReceivedItem(iid, pro, quantity, price);
+                    String cName = set.getString(21);
+                    Time start = set.getTime(22);
+                    Time end = set.getTime(23);
+                    boolean restrict = set.getBoolean(24);
+                    int age = set.getInt(25);
+
+                    Category c = new Category(cId, cName, start, end, restrict, age);
+
+                    String dName = set.getString(27);
+
+                    Department d = new Department(dId, dName);
+
+                    String tName = set.getString(29);
+                    double value = set.getDouble(30);
+
+                    Tax t = new Tax(taxID, tName, value);
+
+                    Product p;
+                    if (!open) {
+                        p = new Product(name, shortName, barcode, order_code, c, d, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code);
+                    } else {
+                        p = new Product(name, shortName, barcode, order_code, c, d, comments, t, scale, scaleName, costPrice, code);
+                    }
+
+                    int iid = set.getInt(31);
+                    BigDecimal riPrice = set.getBigDecimal(33);
+                    int quantity = set.getInt(34);
+
+                    ReceivedItem ri = new ReceivedItem(iid, p, quantity, riPrice);
 
                     items.add(ri);
                 }

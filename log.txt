@@ -1,25 +1,6 @@
-JTill log Tue Oct 17 10:42:31 BST 2017
-[10:42:31] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[10:42:34] [INFO] David Grant has logged in
-[10:43:16] [INFO] Terminal DAVID-PC has connected
-[10:43:16] [INFO] DAVID-PC is retreiving settings
-[10:43:20] [INFO] David Grant has logged in from DAVID-PC
-[10:43:26] [WARNING] 1 is below minimum stock level
-[10:43:46] [INFO] David Grant has logged out
-[10:43:46] [INFO] DAVID-PC is retreiving settings
-[10:43:49] [INFO] David Grant has logged in from DAVID-PC
-[10:44:11] [WARNING] 1 is below minimum stock level
-[10:44:12] [INFO] David Grant has logged out
-[10:46:35] [INFO] Terminal DAVID-PC has connected
-[10:46:35] [INFO] DAVID-PC is retreiving settings
-[10:46:37] [INFO] David Grant has logged in from DAVID-PC
-[10:46:54] [INFO] DAVID-PC is retreiving settings
-[10:46:54] [INFO] David Grant has logged out
-[10:46:56] [INFO] David Grant has logged in from DAVID-PC
-[10:47:07] [INFO] David Grant has logged out
-[10:47:07] [INFO] DAVID-PC is retreiving settings
-[10:47:09] [INFO] David Grant has logged in from DAVID-PC
-[10:47:38] [INFO] David Grant has logged out
-[10:47:38] [INFO] DAVID-PC is retreiving settings
-[10:47:39] [INFO] David Grant has logged in from DAVID-PC
-[10:47:45] [INFO] David Grant has logged out
+JTill log Tue Oct 17 11:23:38 BST 2017
+[11:23:38] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[11:23:41] [INFO] David Grant has logged in
+[11:27:13] [INFO] Terminal DAVID-PC has connected
+[11:27:13] [INFO] DAVID-PC is retreiving settings
+[11:27:16] [INFO] David Grant has logged in from DAVID-PC

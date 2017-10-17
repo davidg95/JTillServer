@@ -167,7 +167,9 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
-            table.getColumnModel().getColumn(0).setResizable(false);
+            table.getColumnModel().getColumn(0).setMinWidth(40);
+            table.getColumnModel().getColumn(0).setPreferredWidth(40);
+            table.getColumnModel().getColumn(0).setMaxWidth(40);
             table.getColumnModel().getColumn(1).setResizable(false);
             table.getColumnModel().getColumn(2).setResizable(false);
         }

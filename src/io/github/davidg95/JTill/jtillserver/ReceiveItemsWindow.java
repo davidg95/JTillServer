@@ -143,7 +143,6 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
-        tblProducts.getColumnModel().getColumn(0).setMaxWidth(40);
         tblProducts.setSelectionModel(new ForcedListSelectionModel());
         this.addInternalFrameListener(new InternalFrameAdapter() {
             @Override
@@ -180,17 +179,20 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 final int index = tblProducts.getSelectedRow();
-                final ReceivedItem p = products.get(index);
                 if (index == -1) {
                     return;
                 }
-                if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Are you sure you want to remove this item?\n" + p, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    model.removeRow(index);
-                    products.remove(index);
-                }
-                updateTable();
+                final ReceivedItem p = products.get(index);
+                removeItem(p);
             }
         });
+    }
+
+    private void removeItem(ReceivedItem i) {
+        if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Are you sure you want to remove this item?\n" + i, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            products.remove(i);
+        }
+        updateTable();
     }
 
     private void updateTable() {
@@ -198,13 +200,9 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         BigDecimal val = BigDecimal.ZERO;
         val.setScale(2);
         for (ReceivedItem pr : products) {
-            try {
-                final Product p = dc.getProduct(pr.getProduct());
-                model.addRow(new Object[]{p.getId(), p.getLongName(), p.getBarcode(), pr.getQuantity()});
-                val = val.add(pr.getPrice().multiply(new BigDecimal(pr.getQuantity())));
-            } catch (IOException | ProductNotFoundException | SQLException ex) {
-                Logger.getLogger(ReceiveItemsWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            final Product p = pr.getProduct();
+            model.addRow(new Object[]{p.getId(), p.getLongName(), pr.getQuantity()});
+            val = val.add(pr.getPrice());
         }
         if (val == BigDecimal.ZERO) {
             lblValue.setText("Total Value: £0.00");
@@ -256,14 +254,14 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Product", "Barcode", "Stock In"
+                "ID", "Product", "Qty."
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -282,10 +280,13 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tblProducts);
         if (tblProducts.getColumnModel().getColumnCount() > 0) {
-            tblProducts.getColumnModel().getColumn(0).setResizable(false);
+            tblProducts.getColumnModel().getColumn(0).setMinWidth(40);
+            tblProducts.getColumnModel().getColumn(0).setPreferredWidth(40);
+            tblProducts.getColumnModel().getColumn(0).setMaxWidth(40);
             tblProducts.getColumnModel().getColumn(1).setResizable(false);
-            tblProducts.getColumnModel().getColumn(2).setResizable(false);
-            tblProducts.getColumnModel().getColumn(3).setResizable(false);
+            tblProducts.getColumnModel().getColumn(2).setMinWidth(40);
+            tblProducts.getColumnModel().getColumn(2).setPreferredWidth(40);
+            tblProducts.getColumnModel().getColumn(2).setMaxWidth(40);
         }
 
         btnReceive.setText("Receive");
@@ -408,7 +409,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         ReceivedReport report = new ReceivedReport(txtInvoice.getText(), supplier.getId());
         products.forEach((p) -> {
             try {
-                Product product = dc.getProduct(p.getProduct());
+                Product product = p.getProduct();
                 product.addStock(p.getQuantity());
                 dc.updateProduct(product);
             } catch (IOException | ProductNotFoundException | SQLException ex) {
@@ -474,7 +475,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 return;
             }
 
-            products.add(new ReceivedItem(product.getId(), amount, product.getCostPrice().divide(new BigDecimal(Integer.toString(product.getPackSize())), 2, 6)));
+            products.add(new ReceivedItem(product, amount));
             updateTable();
         } else {
             JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
@@ -524,10 +525,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 }
             });
             rem.addActionListener((ActionEvent e) -> {
-                if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Remove this item?", "Remove Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    products.remove(tblProducts.getSelectedRow());
-                    updateTable();
-                }
+                removeItem(product);
             });
             menu.add(qu);
             menu.add(rem);
@@ -568,7 +566,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
                         product.setStock(quantity);
 
-                        products.add(new ReceivedItem(product.getId(), quantity, product.getCostPrice()));
+                        products.add(new ReceivedItem(product, quantity));
                         model.addRow(new Object[]{product.getId(), product.getName(), product.getBarcode(), product.getStock()});
                     } catch (ProductNotFoundException ex) {
                         if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {

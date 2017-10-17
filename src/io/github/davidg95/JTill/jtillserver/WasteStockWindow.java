@@ -172,7 +172,6 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
 
     private void init() {
         tblProducts.setSelectionModel(new ForcedListSelectionModel());
-        tblProducts.getColumnModel().getColumn(0).setMaxWidth(40);
         this.addInternalFrameListener(new InternalFrameAdapter() {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
@@ -370,7 +369,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Product", "Quantity", "Total Value", "Reason"
+                "ID", "Product", "Qty.", "Total Value", "Reason"
             }
         ) {
             Class[] types = new Class [] {
@@ -396,9 +395,13 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tblProducts);
         if (tblProducts.getColumnModel().getColumnCount() > 0) {
-            tblProducts.getColumnModel().getColumn(0).setResizable(false);
+            tblProducts.getColumnModel().getColumn(0).setMinWidth(40);
+            tblProducts.getColumnModel().getColumn(0).setPreferredWidth(40);
+            tblProducts.getColumnModel().getColumn(0).setMaxWidth(40);
             tblProducts.getColumnModel().getColumn(1).setResizable(false);
-            tblProducts.getColumnModel().getColumn(2).setResizable(false);
+            tblProducts.getColumnModel().getColumn(2).setMinWidth(40);
+            tblProducts.getColumnModel().getColumn(2).setPreferredWidth(40);
+            tblProducts.getColumnModel().getColumn(2).setMaxWidth(40);
             tblProducts.getColumnModel().getColumn(3).setResizable(false);
             tblProducts.getColumnModel().getColumn(4).setResizable(false);
         }

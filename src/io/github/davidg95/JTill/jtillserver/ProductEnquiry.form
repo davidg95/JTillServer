@@ -58,7 +58,6 @@
                                           <Component id="jLabel19" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace min="-2" max="-2" attributes="0"/>
                                           <Component id="txtOrderCode" min="-2" pref="82" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <Component id="txtCat" alignment="0" min="-2" pref="146" max="-2" attributes="0"/>
