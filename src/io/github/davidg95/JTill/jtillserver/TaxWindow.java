@@ -26,7 +26,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
 
     public static TaxWindow frame;
 
-    private final DataConnect dbConn;
+    private final DataConnect dc;
     private Tax tax;
 
     private final DefaultTableModel model;
@@ -36,7 +36,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
      * Creates new form TaxWindow
      */
     public TaxWindow(DataConnect dc) {
-        dbConn = dc;
+        this.dc = dc;
 //        this.setIconImage(icon);
         super.setClosable(true);
         super.setMaximizable(true);
@@ -57,7 +57,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         frame.setCurrentTax(null);
         frame.setVisible(true);
         try {
-        frame.setIcon(false);
+            frame.setIcon(false);
             frame.setSelected(true);
         } catch (PropertyVetoException ex) {
             Logger.getLogger(TaxWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -84,7 +84,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
 
     private void showAllTaxes() {
         try {
-            currentTableContents = dbConn.getAllTax();
+            currentTableContents = dc.getAllTax();
             updateTable();
         } catch (IOException | SQLException ex) {
             showError(ex);
@@ -310,7 +310,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
                 } else {
                     t = new Tax(name, value);
                     try {
-                        Tax ta = dbConn.addTax(t);
+                        Tax ta = dc.addTax(t);
                         showAllTaxes();
                         setCurrentTax(null);
                     } catch (IOException | SQLException ex) {
@@ -332,10 +332,13 @@ public class TaxWindow extends javax.swing.JInternalFrame {
             } else {
                 tax.setName(name);
                 tax.setValue(value);
+                dc.updateTax(tax);
                 updateTable();
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Fill out all required fields", "Tax", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException | SQLException | JTillException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -349,7 +352,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
             int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following tax?\n-" + currentTableContents.get(index) + "\nAll products in this ta will be set to the default tax (0%)", "Remove Tax", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
-                    dbConn.removeTax(currentTableContents.get(index).getId());
+                    dc.removeTax(currentTableContents.get(index).getId());
                 } catch (IOException | SQLException | JTillException ex) {
                     showError(ex);
                 }
