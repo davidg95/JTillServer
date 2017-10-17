@@ -94,7 +94,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         }
         txtTill.setText(sale.getTill().getName());
         txtStaff.setText(sale.getStaff().getName());
-        lblTotal.setText("Total: £" + sale.getTotal().setScale(2));
+        lblTotal.setText("Total: £" + sale.getTotal().setScale(2, 6));
 
         model.setRowCount(0);
 
