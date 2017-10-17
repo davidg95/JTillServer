@@ -92,15 +92,12 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
         this.addInternalFrameListener(new InternalFrameAdapter() {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
-                if (!labels.isEmpty()) {
-                    int res = JOptionPane.showInternalConfirmDialog(LabelPrintingWindow.this, "Do you want to save the current report?", "Save", JOptionPane.YES_NO_OPTION);
-                    if (res == JOptionPane.YES_OPTION) {
-                        GUI.gui.savedReports.put("LAB", labels);
-                    }
-                }
+                GUI.gui.savedReports.put("LAB", labels);
             }
-        });
-        if (GUI.gui.savedReports.containsKey("LAB")) {
+        }
+        );
+        if (GUI.gui.savedReports.containsKey(
+                "LAB")) {
             labels = GUI.gui.savedReports.get("LAB");
             updateTable();
             GUI.gui.savedReports.remove("LAB");
@@ -110,10 +107,13 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
 
         KeyStroke enterKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
 
-        im.put(enterKey, "Action.enter");
-        am.put("Action.enter", new AbstractAction() {
+        im.put(enterKey,
+                "Action.enter");
+        am.put(
+                "Action.enter", new AbstractAction() {
             @Override
-            public void actionPerformed(ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt
+            ) {
                 final int index = table.getSelectedRow();
                 final Label l = labels.get(index);
                 if (index == -1) {
@@ -125,7 +125,8 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
                     updateTable();
                 }
             }
-        });
+        }
+        );
     }
 
     /**
@@ -145,6 +146,7 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
             btnPrint.setEnabled(false);
         }
         lblAmount.setText("Lables to print: " + amount);
+
     }
 
     /**
@@ -258,7 +260,7 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
                 {null, null}
             },
             new String [] {
-                "Product", "Amount"
+                "Product", "Qty."
             }
         ) {
             Class[] types = new Class [] {
@@ -285,7 +287,9 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
         jScrollPane1.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
             table.getColumnModel().getColumn(0).setResizable(false);
-            table.getColumnModel().getColumn(1).setResizable(false);
+            table.getColumnModel().getColumn(1).setMinWidth(40);
+            table.getColumnModel().getColumn(1).setPreferredWidth(40);
+            table.getColumnModel().getColumn(1).setMaxWidth(40);
         }
 
         btnClose.setText("Close");
@@ -360,8 +364,10 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
         try {
             setClosed(true);
+
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(LabelPrintingWindow.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LabelPrintingWindow.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnCloseActionPerformed
 
