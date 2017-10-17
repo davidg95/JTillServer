@@ -44,6 +44,7 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setIconImage(GUI.icon);
+        btnGenerate.requestFocus();
     }
 
     public static void showDialog(Component parent) {

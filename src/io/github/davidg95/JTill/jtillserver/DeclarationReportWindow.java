@@ -122,7 +122,6 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
             try {
                 dc.removeDeclarationReport(report.getId());
                 update();
-                JOptionPane.showInternalMessageDialog(this, "Report deleted", "Remove Report", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException | SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }

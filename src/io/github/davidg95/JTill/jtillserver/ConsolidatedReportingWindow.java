@@ -165,7 +165,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             txtCost.setText("£" + cost.toString());
             txtTax.setText("£" + tax.toString());
             txtNet.setText("£" + net.toString());
-            txtRefunds.setText("£" + refunds.toString());
+            txtRefunds.setText("£" + refunds.setScale(2, 6).toString());
         } catch (IOException | SQLException ex) {
             Logger.getLogger(ConsolidatedReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
