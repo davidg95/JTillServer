@@ -81,7 +81,13 @@ public class TillServer {
         dc = DBConnect.getInstance();
         TillSplashScreen.setLabel("Loading configurations");
         TillSplashScreen.addBar(5);
-        settings.loadProperties();
+        boolean init = settings.loadProperties();
+        if (!init) {
+            init = InitialSetupWindow.showWindow();
+            if (!init) {
+                System.exit(0);
+            }
+        }
         TillSplashScreen.addBar(5);
         if (!GraphicsEnvironment.isHeadless()) {
             g = GUI.create(dc, false, icon);
