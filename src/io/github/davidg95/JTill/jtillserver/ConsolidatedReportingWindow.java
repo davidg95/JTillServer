@@ -240,11 +240,20 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             }
 
             y += lineSpace;
-            g2.drawString("Tax Breakdown:", x, y);
+            g2.drawString("Tax Sales Breakdown:", x, y);
             y += lineSpace;
 
             for (Tax t : taxes) {
                 g2.drawString(t.getName() + ": £" + t.getSales(), x, y);
+                y += lineSpace;
+            }
+
+            y += lineSpace;
+            g2.drawString("Tax Payable Breakdown:", x, y);
+            y += lineSpace;
+
+            for (Tax t : taxes) {
+                g2.drawString(t.getName() + ": £" + t.getPayable().toString(), x, y);
                 y += lineSpace;
             }
 
