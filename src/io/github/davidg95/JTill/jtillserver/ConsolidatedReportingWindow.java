@@ -56,6 +56,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
         this.end = end;
         this.till = till;
         initComponents();
+        setTitle("Consolidated Report - " + (till == null ? "All Terminals" : till.getName()));
         setIconImage(GUI.icon);
         try {
             departments = dc.getAllDepartments();
