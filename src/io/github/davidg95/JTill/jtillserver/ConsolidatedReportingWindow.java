@@ -29,57 +29,105 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ConsolidatedReportingWindow extends javax.swing.JFrame {
 
-    private final List<Sale> sales;
+    private List<Sale> sales;
+
+    private final Date start;
+    private final Date end;
+    private final Till till;
+
+    private List<Department> departments;
+    private List<Category> categorys;
+    private List<Tax> taxes;
+
+    private BigDecimal total = BigDecimal.ZERO;
+    private BigDecimal cost = BigDecimal.ZERO;
+    private BigDecimal tax = BigDecimal.ZERO;
+    private BigDecimal refunds = BigDecimal.ZERO;
 
     private final DataConnect dc;
 
     /**
      * Creates new form ConsolodatedReportingWindow
      */
-    public ConsolidatedReportingWindow(List<Sale> sales) {
-        this.sales = sales;
+    public ConsolidatedReportingWindow(Date start, Date end, Till till) {
         this.dc = GUI.gui.dc;
+        this.start = start;
+        this.end = end;
+        this.till = till;
         initComponents();
         setIconImage(GUI.icon);
-        init();
+        try {
+            departments = dc.getAllDepartments();
+            categorys = dc.getAllCategorys();
+            taxes = dc.getAllTax();
+            retrieve(start, end, till);
+            init();
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+
+        }
     }
 
-    public static void showWindow(List<Sale> sales) {
-        new ConsolidatedReportingWindow(sales).setVisible(true);
+    private void retrieve(Date start, Date end, Till till) throws IOException, SQLException {
+        final ModalDialog mDialog = new ModalDialog(GUI.gui, "Consolodated Report", "Generating report...");
+        final Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (till == null) {
+                        sales = dc.consolidated(start, end, -1);
+                        refunds = dc.getRefunds(start, end, -1);
+                    } else {
+                        sales = dc.consolidated(start, end, till.getId());
+                        refunds = dc.getRefunds(start, end, till.getId());
+                    }
+                } catch (IOException | SQLException ex) {
+                    mDialog.hide();
+                    JOptionPane.showMessageDialog(GUI.gui, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    mDialog.hide();
+                }
+            }
+        };
+        final Thread thread = new Thread(run, "Consolodate");
+        thread.start();
+        mDialog.show();
+    }
+
+    public static void showWindow(Date start, Date end, Till till) {
+        new ConsolidatedReportingWindow(start, end, till).setVisible(true);
     }
 
     private void init() {
         try {
             int transactions = sales.size();
 
-            BigDecimal total = BigDecimal.ZERO;
-            BigDecimal cost = BigDecimal.ZERO;
-            BigDecimal tax = BigDecimal.ZERO;
-
-            List<Department> departments = dc.getAllDepartments();
-            List<Category> categorys = dc.getAllCategorys();
-            List<Tax> taxes = dc.getAllTax();
+            departments = dc.getAllDepartments();
+            categorys = dc.getAllCategorys();
+            taxes = dc.getAllTax();
 
             for (Sale s : sales) {
                 total = total.add(s.getTotal());
                 for (SaleItem si : s.getSaleItems()) {
-                    cost = cost.add(si.getCost().multiply(new BigDecimal(si.getQuantity())));
+                    cost = cost.add(si.getCost());
                     for (Department d : departments) {
                         final Product p = (Product) si.getItem();
                         if (d.equals(p.getDepartment())) {
-                            d.addToSales(si.getPrice().multiply(new BigDecimal(si.getQuantity())));
+                            d.addToSales(si.getPrice());
                         }
                     }
                     for (Category c : categorys) {
                         final Product p = (Product) si.getItem();
                         if (c.equals(p.getCategory())) {
-                            c.addToSales(si.getPrice().multiply(new BigDecimal(si.getQuantity())));
+                            c.addToSales(si.getPrice());
                         }
                     }
                     for (Tax t : taxes) {
                         final Product p = (Product) si.getItem();
                         if (t.getId() == p.getTax().getId()) {
-                            t.addToSales(si.getTaxValue());
+                            t.addToSales(si.getPrice());
+                            t.addToPayable(si.getTaxValue());
                         }
                     }
                     tax = tax.add(si.getTaxValue());
@@ -106,7 +154,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             taxTable.setModel(tModel);
             taxTable.setSelectionModel(new ForcedListSelectionModel());
             for (Tax t : taxes) {
-                Object[] o = new Object[]{t.getName(), "£" + t.getSales().toString()};
+                Object[] o = new Object[]{t.getName(), "£" + t.getSales().toString(), "£" + t.getPayable().toString()};
                 tModel.addRow(o);
             }
 
@@ -117,6 +165,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             txtCost.setText("£" + cost.toString());
             txtTax.setText("£" + tax.toString());
             txtNet.setText("£" + net.toString());
+            txtRefunds.setText("£" + refunds.toString());
         } catch (IOException | SQLException ex) {
             Logger.getLogger(ConsolidatedReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -127,9 +176,9 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
      */
     private class ReportPrinter implements Printable {
 
-        private Date start;
-        private Date end;
-        private Till t;
+        private final Date start;
+        private final Date end;
+        private final Till t;
 
         public ReportPrinter(Date start, Date end, Till t) {
             this.start = start;
@@ -151,9 +200,11 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             Font oldFont = graphics.getFont();
 
             int y = 60;
+            final int x = 70;
+            final int lineSpace = 20;
 
             g2.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
-            g2.drawString(header, 70, y);
+            g2.drawString(header, x, y);
             y += 30;
             g2.setFont(oldFont); //Change back to the old font.
 
@@ -166,7 +217,48 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
                 ter = "terminal " + t.getName();
             }
 
-            g2.drawString("Consolidated report for " + ter + ".", 70, y);
+            g2.drawString("Consolidated report for " + ter + ".", x, y);
+            y += 30;
+            g2.drawString("Period " + start.toString() + " - " + end.toString(), x, y);
+
+            y += 30;
+            g2.drawString("Department Breakdown:", x, y);
+            y += lineSpace;
+
+            for (Department d : departments) {
+                g2.drawString(d.getName() + ": £" + d.getSales().toString(), x, y);
+                y += lineSpace;
+            }
+
+            y += lineSpace;
+            g2.drawString("Category Breakdown:", x, y);
+            y += lineSpace;
+
+            for (Category c : categorys) {
+                g2.drawString(c.getName() + ": £" + c.getSales(), x, y);
+                y += lineSpace;
+            }
+
+            y += lineSpace;
+            g2.drawString("Tax Breakdown:", x, y);
+            y += lineSpace;
+
+            for (Tax t : taxes) {
+                g2.drawString(t.getName() + ": £" + t.getSales(), x, y);
+                y += lineSpace;
+            }
+
+            y += lineSpace;
+
+            g2.drawString("Total sales: £" + total.setScale(2, 6).toString(), x, y);
+            y += lineSpace;
+            g2.drawString("Total cost: £" + cost.toString(), x, y);
+            y += lineSpace;
+            g2.drawString("Total tax payable: £" + tax.toString(), x, y);
+            y += lineSpace;
+            g2.drawString("Net Sales: £" + total.subtract(cost).subtract(tax).toString(), x, y);
+            y += lineSpace;
+            g2.drawString("Refunds: £" + refunds, x, y);
 
             return PAGE_EXISTS;
         }
@@ -194,6 +286,8 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtRefunds = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         taxTable = new javax.swing.JTable();
@@ -237,6 +331,10 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
 
         jLabel5.setText("Net:");
 
+        jLabel6.setText("Refunds:");
+
+        txtRefunds.setEditable(false);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -244,6 +342,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel6)
                     .addComponent(jLabel5)
                     .addComponent(jLabel4)
                     .addComponent(jLabel3)
@@ -255,7 +354,8 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
                     .addComponent(txtSales)
                     .addComponent(txtCost)
                     .addComponent(txtTax)
-                    .addComponent(txtNet, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNet, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                    .addComponent(txtRefunds))
                 .addContainerGap(74, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -281,7 +381,11 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(txtNet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(113, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtRefunds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(93, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tax Breakdown"));
@@ -291,11 +395,11 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Tax Class", "Payable"
+                "Tax Class", "Sales", "Payable"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -453,7 +557,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
 
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
         PrinterJob job = PrinterJob.getPrinterJob();
-        job.setPrintable(new ReportPrinter(new Date(), new Date(), null));
+        job.setPrintable(new ReportPrinter(start, end, till));
         boolean ok = job.printDialog();
         final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing report...", job);
         if (ok) {
@@ -487,6 +591,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -497,6 +602,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
     private javax.swing.JTable taxTable;
     private javax.swing.JTextField txtCost;
     private javax.swing.JTextField txtNet;
+    private javax.swing.JTextField txtRefunds;
     private javax.swing.JTextField txtSales;
     private javax.swing.JTextField txtTax;
     private javax.swing.JTextField txtTxn;

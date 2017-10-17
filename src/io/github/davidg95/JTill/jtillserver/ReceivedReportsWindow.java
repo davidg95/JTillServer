@@ -54,6 +54,7 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
         tblReports.setModel(model);
         reloadTable();
         txtInvoiceNo.requestFocus();
+        tblReports.setSelectionModel(new ForcedListSelectionModel());
     }
 
     public static void showWindow() {
@@ -77,7 +78,7 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
             receivedReports = new LinkedList<>();
             for (ReceivedReport rr : rrs) {
                 final Supplier s = dc.getSupplier(rr.getSupplierId());
-                Object[] row = new Object[]{rr.getId(), rr.getInvoiceId(), s.getName(), (rr.isPaid() ? "YES" : "NO")};
+                Object[] row = new Object[]{rr.getId(), rr.getInvoiceId(), s.getName(), rr.isPaid()};
                 if (chkShowUnpaid.isSelected() && !rr.isPaid()) {
                     model.addRow(row);
                     receivedReports.add(rr);
@@ -124,9 +125,16 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
                 "ID", "Invoice No.", "Supplier", "Paid"
             }
         ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+            };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false
             };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -140,10 +148,14 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tblReports);
         if (tblReports.getColumnModel().getColumnCount() > 0) {
-            tblReports.getColumnModel().getColumn(0).setResizable(false);
+            tblReports.getColumnModel().getColumn(0).setMinWidth(40);
+            tblReports.getColumnModel().getColumn(0).setPreferredWidth(40);
+            tblReports.getColumnModel().getColumn(0).setMaxWidth(40);
             tblReports.getColumnModel().getColumn(1).setResizable(false);
             tblReports.getColumnModel().getColumn(2).setResizable(false);
-            tblReports.getColumnModel().getColumn(3).setResizable(false);
+            tblReports.getColumnModel().getColumn(3).setMinWidth(40);
+            tblReports.getColumnModel().getColumn(3).setPreferredWidth(40);
+            tblReports.getColumnModel().getColumn(3).setMaxWidth(40);
         }
 
         btnClose.setText("Close");

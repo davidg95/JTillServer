@@ -92,9 +92,10 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
@@ -107,7 +108,8 @@
                       <Component id="txtSales" max="32767" attributes="0"/>
                       <Component id="txtCost" max="32767" attributes="0"/>
                       <Component id="txtTax" max="32767" attributes="0"/>
-                      <Component id="txtNet" min="-2" pref="90" max="-2" attributes="0"/>
+                      <Component id="txtNet" pref="90" max="32767" attributes="0"/>
+                      <Component id="txtRefunds" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace pref="74" max="32767" attributes="0"/>
               </Group>
@@ -141,7 +143,12 @@
                       <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtNet" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="113" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="txtRefunds" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="93" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -197,6 +204,16 @@
             <Property name="text" type="java.lang.String" value="Net:"/>
           </Properties>
         </Component>
+        <Component class="javax.swing.JLabel" name="jLabel6">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Refunds:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="txtRefunds">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="jPanel2">
@@ -239,13 +256,19 @@
             <Component class="javax.swing.JTable" name="taxTable">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="2" rowCount="0">
+                  <Table columnCount="3" rowCount="0">
                     <Column editable="false" title="Tax Class" type="java.lang.Object"/>
+                    <Column editable="false" title="Sales" type="java.lang.Object"/>
                     <Column editable="false" title="Payable" type="java.lang.Object"/>
                   </Table>
                 </Property>
                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                   <TableColumnModel selectionModel="0">
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                      <Title/>
+                      <Editor/>
+                      <Renderer/>
+                    </Column>
                     <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                       <Title/>
                       <Editor/>

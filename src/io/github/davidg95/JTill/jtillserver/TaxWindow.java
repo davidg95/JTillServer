@@ -46,6 +46,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         showAllTaxes();
+        table.setSelectionModel(new ForcedListSelectionModel());
     }
 
     public static void showTaxWindow(DataConnect dc) {

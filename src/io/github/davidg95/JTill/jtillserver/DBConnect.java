@@ -2546,10 +2546,12 @@ public class DBConnect implements DataConnect {
     public void removeScreen(Screen s) throws SQLException, ScreenNotFoundException {
         String query = "DELETE FROM SCREENS WHERE SCREENS.ID = " + s.getId();
         String buttonsQuery = "DELETE FROM BUTTONS WHERE BUTTONS.SCREEN_ID = " + s.getId();
+        String bq2 = "UPDATE BUTTONS SET BUTTONS.TYPE=" + TillButton.SPACE + " WHERE BUTTONS.TYPE=" + TillButton.SCREEN + " AND BUTTONS.PRODUCT=" + s.getId();
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             int value;
             try {
+                stmt.executeUpdate(bq2);
                 stmt.executeUpdate(buttonsQuery);
                 value = stmt.executeUpdate(query);
                 con.commit();
@@ -4532,7 +4534,7 @@ public class DBConnect implements DataConnect {
     }
 
     private List<ReceivedItem> getItemsInReport(int id) throws SQLException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, RECEIVEDITEMS WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.DEPARTMENT_ID = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID NAD RECEIVEDITEMS.PRODUCT = PRODUCT.ID AND RECEIVED_REPORT=" + id;
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, RECEIVEDITEMS WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.DEPARTMENT_ID = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND RECEIVEDITEMS.PRODUCT = PRODUCTS.ID AND RECEIVED_REPORT=" + id;
 
         List<ReceivedItem> items;
         try (Connection con = getNewConnection()) {
@@ -4897,7 +4899,7 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public List<Sale> consolodated(Date start, Date end, int t) throws IOException, SQLException {
+    public List<Sale> consolidated(Date start, Date end, int t) throws IOException, SQLException {
         long s = start.getTime();
         long e = end.getTime();
         try (final Connection con = getNewConnection()) {
@@ -4907,6 +4909,28 @@ public class DBConnect implements DataConnect {
                 List<Sale> sales = getSalesFromResultSet(set);
                 con.commit();
                 return sales;
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
+
+    @Override
+    public BigDecimal getRefunds(Date start, Date end, int t) throws IOException, SQLException {
+        long s = start.getTime();
+        long e = end.getTime();
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet set = stmt.executeQuery("SELECT SALEITEMS.PRICE, SALES.TIMESTAMP FROM SALEITEMS, SALES WHERE SALEITEMS.SALE_ID = SALES.ID AND SALES.TIMESTAMP >= " + s + " AND SALES.TIMESTAMP <= " + e + " AND SALEITEMS.PRICE < 0");
+                BigDecimal total = BigDecimal.ZERO;
+                while (set.next()) {
+                    total = total.add(set.getBigDecimal(1));
+                }
+                con.commit();
+                return total;
             } catch (SQLException ex) {
                 con.rollback();
                 LOG.log(Level.SEVERE, null, ex);

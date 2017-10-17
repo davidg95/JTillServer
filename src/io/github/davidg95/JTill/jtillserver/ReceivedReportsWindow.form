@@ -78,12 +78,12 @@
                 <Column editable="false" title="ID" type="java.lang.Object"/>
                 <Column editable="false" title="Invoice No." type="java.lang.Object"/>
                 <Column editable="false" title="Supplier" type="java.lang.Object"/>
-                <Column editable="false" title="Paid" type="java.lang.Object"/>
+                <Column editable="false" title="Paid" type="java.lang.Boolean"/>
               </Table>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="0">
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
+                <Column maxWidth="40" minWidth="40" prefWidth="40" resizable="true">
                   <Title/>
                   <Editor/>
                   <Renderer/>
@@ -98,7 +98,7 @@
                   <Editor/>
                   <Renderer/>
                 </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
+                <Column maxWidth="40" minWidth="40" prefWidth="40" resizable="true">
                   <Title/>
                   <Editor/>
                   <Renderer/>

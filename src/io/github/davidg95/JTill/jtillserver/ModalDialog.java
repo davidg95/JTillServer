@@ -84,6 +84,7 @@ public class ModalDialog {
         dialog.setContentPane(panel);
         dialog.pack();
         dialog.setLocation((parent.getSize().width / 2) - dialog.getSize().width / 2, (parent.getSize().height / 2) - dialog.getSize().height / 2);
+        dialog.setModal(true);
     }
 
     /**

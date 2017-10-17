@@ -863,8 +863,13 @@ public class ConnectionHandler {
         return dc.getTotalReceivedOfItem(id);
     }
 
-    @JConnMethod("CONSOLODATED")
-    public List<Sale> consolodated(@JConnParameter("START") Date start, @JConnParameter("END") Date end, @JConnParameter("TILL") int till) throws IOException, SQLException {
-        return dc.consolodated(start, end, till);
+    @JConnMethod("CONSOLIDATED")
+    public List<Sale> consolidated(@JConnParameter("START") Date start, @JConnParameter("END") Date end, @JConnParameter("TILL") int till) throws IOException, SQLException {
+        return dc.consolidated(start, end, till);
+    }
+
+    @JConnMethod("GETREFUNDS")
+    public BigDecimal refunds(@JConnParameter("START") Date start, @JConnParameter("END") Date end, @JConnParameter("TILL") int till) throws IOException, SQLException {
+        return dc.getRefunds(start, end, till);
     }
 }

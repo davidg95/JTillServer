@@ -188,20 +188,14 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Start date must be before end", "Consolodated report", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        int till;
+        Till till;
         if (chkAll.isSelected()) {
-            till = -1;
+            till = null;
         } else {
-            till = ((Till) cmbTill.getSelectedItem()).getId();
+            till = ((Till) cmbTill.getSelectedItem());
         }
-
-        try {
-            List<Sale> sales = dc.consolodated(start, end, till);
-            this.setVisible(false);
-            ConsolidatedReportingWindow.showWindow(sales);
-        } catch (IOException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Consolodated report", JOptionPane.ERROR_MESSAGE);
-        }
+        this.setVisible(false);
+        ConsolidatedReportingWindow.showWindow(start, end, till);
     }//GEN-LAST:event_btnGenerateActionPerformed
 
     private void chkAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkAllActionPerformed
