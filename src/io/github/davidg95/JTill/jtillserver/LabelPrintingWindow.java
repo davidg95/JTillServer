@@ -438,9 +438,17 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
                 public void run() {
                     try {
                         job.print();
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(LabelPrintingWindow.this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
+                        if (JOptionPane.showInternalConfirmDialog(LabelPrintingWindow.this, "Do you want to clear the labels?", "Labels", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                            labels.clear();
+                            SwingUtilities.invokeLater(() -> {
+                                updateTable();
+                            });
+                        }
                     } catch (PrinterException ex) {
                         mDialog.hide();
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(LabelPrintingWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                     } finally {
                         mDialog.hide();
                     }
@@ -449,7 +457,6 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
             Thread th = new Thread(runnable);
             th.start();
             mDialog.show();
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnPrintActionPerformed
 
@@ -458,6 +465,9 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
                 String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter quantity to print", "Quantity", JOptionPane.PLAIN_MESSAGE);
+                if(input == null || input.isEmpty()){
+                    return;
+                }
                 if (!Utilities.isNumber(input)) {
                     JOptionPane.showInternalMessageDialog(GUI.gui.internal, "A number must be entered", "Quantity", JOptionPane.ERROR_MESSAGE);
                     return;

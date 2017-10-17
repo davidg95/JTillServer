@@ -593,6 +593,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
                 public void run() {
                     try {
                         job.print();
+                        mDialog.hide();
                         JOptionPane.showMessageDialog(ConsolidatedReportingWindow.this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
                     } catch (PrinterException ex) {
                         mDialog.hide();
