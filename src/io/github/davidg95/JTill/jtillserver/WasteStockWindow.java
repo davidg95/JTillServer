@@ -94,7 +94,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         cb.set(Calendar.SECOND, c.get(Calendar.SECOND));
         cb.set(Calendar.MILLISECOND, c.get(Calendar.MILLISECOND));
         Date t = cb.getTime();
-        dateSpin.setValue(d);
+        pickDate.setDate(new Date());
         timeSpin.setValue(t);
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
@@ -129,10 +129,9 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         cb.set(Calendar.HOUR_OF_DAY, c.get(Calendar.HOUR_OF_DAY));
         cb.set(Calendar.MINUTE, c.get(Calendar.MINUTE));
         Date t = cb.getTime();
-        dateSpin.setValue(d);
+        pickDate.setDate(wr.getDate());
         timeSpin.setValue(t);
         setTitle("Waste Report " + report.getId());
-//        setIconImage(icon);
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
@@ -359,7 +358,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         timeSpin = new javax.swing.JSpinner();
         jLabel2 = new javax.swing.JLabel();
-        dateSpin = new javax.swing.JSpinner();
+        pickDate = new org.jdesktop.swingx.JXDatePicker();
 
         setResizable(true);
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/tillIcon.png"))); // NOI18N
@@ -457,13 +456,6 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
 
         jLabel2.setText("Date:");
 
-        SpinnerDateModel modelDate = new SpinnerDateModel();
-        modelDate.setCalendarField(Calendar.MINUTE);
-
-        dateSpin = new JSpinner();
-        dateSpin.setModel(modelDate);
-        dateSpin.setEditor(new JSpinner.DateEditor(dateSpin, "dd/MM/yyyy"));
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -490,8 +482,8 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(dateSpin, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-                            .addComponent(timeSpin))
+                            .addComponent(timeSpin, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                            .addComponent(pickDate, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblReason)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -506,13 +498,13 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     .addComponent(lblReason)
                     .addComponent(cmbReason, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(dateSpin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pickDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(timeSpin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
@@ -543,7 +535,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         }
 
         product = (Product) product.clone();
-        
+
         String str = JOptionPane.showInternalInputDialog(WasteStockWindow.this, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
 
         if (str == null || str.isEmpty()) {
@@ -577,7 +569,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         if (wasteItems.isEmpty()) {
             return;
         }
-        long d = ((Date) dateSpin.getValue()).getTime();
+        long d = pickDate.getDate().getTime();
         long t = ((Date) timeSpin.getValue()).getTime();
         date = new Date(d + t);
         Calendar c = Calendar.getInstance();
@@ -774,12 +766,12 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnPrint;
     private javax.swing.JButton btnWaste;
     private javax.swing.JComboBox<String> cmbReason;
-    private javax.swing.JSpinner dateSpin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblReason;
     private javax.swing.JLabel lblValue;
+    private org.jdesktop.swingx.JXDatePicker pickDate;
     private javax.swing.JTable tblProducts;
     private javax.swing.JSpinner timeSpin;
     // End of variables declaration//GEN-END:variables

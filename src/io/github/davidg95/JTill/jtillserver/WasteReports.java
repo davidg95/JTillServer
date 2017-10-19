@@ -391,11 +391,6 @@ public class WasteReports extends javax.swing.JInternalFrame {
                 }
                 break;
             case DAY:
-                date = DateSelectDialog.showDialog(this);
-                if (date != null) {
-                    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-                    txtSearch.setText(df.format(date));
-                }
                 break;
             default:
                 break;

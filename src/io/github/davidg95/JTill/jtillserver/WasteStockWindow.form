@@ -49,8 +49,8 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="dateSpin" pref="109" max="32767" attributes="0"/>
-                          <Component id="timeSpin" max="32767" attributes="0"/>
+                          <Component id="timeSpin" pref="109" max="32767" attributes="0"/>
+                          <Component id="pickDate" pref="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="lblReason" min="-2" max="-2" attributes="0"/>
@@ -70,7 +70,7 @@
                   <Component id="lblReason" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cmbReason" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="dateSpin" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="pickDate" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -78,7 +78,7 @@
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="285" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="287" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnClose" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -227,10 +227,7 @@
         <Property name="text" type="java.lang.String" value="Date:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JSpinner" name="dateSpin">
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="SpinnerDateModel modelDate = new SpinnerDateModel();&#xa;        modelDate.setCalendarField(Calendar.MINUTE);&#xa;&#xa;        dateSpin = new JSpinner();&#xa;        dateSpin.setModel(modelDate);&#xa;        dateSpin.setEditor(new JSpinner.DateEditor(dateSpin, &quot;dd/MM/yyyy&quot;));"/>
-      </AuxValues>
+    <Component class="org.jdesktop.swingx.JXDatePicker" name="pickDate">
     </Component>
   </SubComponents>
 </Form>

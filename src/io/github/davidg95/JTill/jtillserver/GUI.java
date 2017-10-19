@@ -601,6 +601,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemReceivedReports = new javax.swing.JMenuItem();
         itemDeclarations = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
+        itemStockReport = new javax.swing.JMenuItem();
         menuHelp = new javax.swing.JMenu();
         itemAbout = new javax.swing.JMenuItem();
         itemHelp = new javax.swing.JMenuItem();
@@ -1350,6 +1351,14 @@ public class GUI extends JFrame implements GUIInterface {
         });
         itemConsolodated.add(jMenuItem1);
 
+        itemStockReport.setText("Stock Report");
+        itemStockReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemStockReportActionPerformed(evt);
+            }
+        });
+        itemConsolodated.add(itemStockReport);
+
         jMenuBar1.add(itemConsolodated);
 
         menuHelp.setText("Help");
@@ -1911,6 +1920,10 @@ public class GUI extends JFrame implements GUIInterface {
         ConsolidatedReportingDialog.showDialog(this);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void itemStockReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStockReportActionPerformed
+        StockReportDialog.showDialog(this);
+    }//GEN-LAST:event_itemStockReportActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
     private javax.swing.JButton btnCategorys;
@@ -1963,6 +1976,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemStaffClocking;
     private javax.swing.JMenuItem itemStaffReporting;
     private javax.swing.JMenuItem itemStock;
+    private javax.swing.JMenuItem itemStockReport;
     private javax.swing.JMenuItem itemStockTake;
     private javax.swing.JMenuItem itemSuppliers;
     private javax.swing.JMenuItem itemTaxes;
