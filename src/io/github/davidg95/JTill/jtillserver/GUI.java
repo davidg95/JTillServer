@@ -591,7 +591,6 @@ public class GUI extends JFrame implements GUIInterface {
         itemSendData = new javax.swing.JMenuItem();
         itemTerminals = new javax.swing.JMenuItem();
         itemDatabase = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
         itemConsolodated = new javax.swing.JMenu();
         itemSalesReporting = new javax.swing.JMenuItem();
         itemTransactionViewer = new javax.swing.JMenuItem();
@@ -1276,14 +1275,6 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemDatabase);
 
-        jMenuItem2.setText("Browser");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
-            }
-        });
-        menuSetup.add(jMenuItem2);
-
         jMenuBar1.add(menuSetup);
 
         itemConsolodated.setText("Report");
@@ -1933,10 +1924,6 @@ public class GUI extends JFrame implements GUIInterface {
         StockReportDialog.showDialog(this);
     }//GEN-LAST:event_itemStockReportActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        new BrowserWindow().setVisible(true);
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
     private javax.swing.JButton btnCategorys;
@@ -2002,7 +1989,6 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;

@@ -71,7 +71,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
-//        tree.setModel(treeModel);
+        tree.setModel(treeModel);
     }
 
     private void initTable() {
@@ -202,9 +202,14 @@ public class ProductSelectDialog extends javax.swing.JDialog {
 
         @Override
         public Object getChild(Object parent, int index) {
-            for (DepartmentNode n : root.getChildren()) {
-                if (n.equals(parent)) {
-                    return n.getChildAt(index);
+            if (parent instanceof RootNode) {
+                return root.getChildAt(index);
+            }
+            if (parent instanceof DepartmentNode) {
+                for (DepartmentNode n : root.getChildren()) {
+                    if (n.equals(parent)) {
+                        return n.getChildAt(index);
+                    }
                 }
             }
             return null;
@@ -212,7 +217,15 @@ public class ProductSelectDialog extends javax.swing.JDialog {
 
         @Override
         public int getChildCount(Object parent) {
-            return root.getChildren().size();
+            if (parent.equals(root)) {
+                return root.getChildCount();
+            }
+            for (DepartmentNode d : root.getChildren()) {
+                if (parent.equals(d)) {
+                    return d.getChildCount();
+                }
+            }
+            return -1;
         }
 
         @Override
@@ -536,6 +549,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 treeMouseClicked(evt);
             }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                treeMousePressed(evt);
+            }
         });
         jScrollPane2.setViewportView(tree);
 
@@ -661,7 +677,14 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnSelectActionPerformed
 
     private void treeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMouseClicked
+
+    }//GEN-LAST:event_treeMouseClicked
+
+    private void treeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMousePressed
         TreePath path = tree.getSelectionModel().getSelectionPath();
+        if (path == null) {
+            return;
+        }
         TreeNode node = (TreeNode) path.getLastPathComponent();
         if (path.getPathCount() == 3) {
             TreeNode par = (TreeNode) path.getPathComponent(path.getPathCount() - 2);
@@ -669,7 +692,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         } else {
             setTitle("Select Product - " + node.toString());
         }
-    }//GEN-LAST:event_treeMouseClicked
+    }//GEN-LAST:event_treeMousePressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
