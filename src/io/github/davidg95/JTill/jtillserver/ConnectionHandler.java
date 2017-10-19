@@ -877,4 +877,9 @@ public class ConnectionHandler {
     public BigDecimal getWasage(@JConnParameter("START") Date start, @JConnParameter("END") Date end) throws IOException, SQLException {
         return dc.getWastage(start, end);
     }
+
+    @JConnMethod("SUBMITSTOCKTAKE")
+    public void submitStockTake(@JConnParameter("PRODUCTS") List<Product> products, @JConnParameter("ZEROREST") boolean zeroRest) throws IOException, SQLException {
+        dc.submitStockTake(products, zeroRest);
+    }
 }

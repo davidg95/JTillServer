@@ -40,6 +40,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class StockTakeWindow extends javax.swing.JInternalFrame {
 
+    private static StockTakeWindow window;
+
     private final DataConnect dc;
     private List<Product> currentTableContents;
     private final DefaultTableModel model;
@@ -50,7 +52,6 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     public StockTakeWindow(DataConnect dc) {
         this.dc = dc;
         initComponents();
-//        setIconImage(icon);
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
@@ -62,7 +63,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     }
 
     public static void showWindow(DataConnect dc) {
-        StockTakeWindow window = new StockTakeWindow(dc);
+        window = new StockTakeWindow(dc);
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {
@@ -176,7 +177,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Product", "Plu", "New Quantity"
+                "ID", "Product", "Barcode", "Qty."
             }
         ) {
             Class[] types = new Class [] {
@@ -202,10 +203,14 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
-            table.getColumnModel().getColumn(0).setResizable(false);
+            table.getColumnModel().getColumn(0).setMinWidth(40);
+            table.getColumnModel().getColumn(0).setPreferredWidth(40);
+            table.getColumnModel().getColumn(0).setMaxWidth(40);
             table.getColumnModel().getColumn(1).setResizable(false);
             table.getColumnModel().getColumn(2).setResizable(false);
-            table.getColumnModel().getColumn(3).setResizable(false);
+            table.getColumnModel().getColumn(3).setMinWidth(40);
+            table.getColumnModel().getColumn(3).setPreferredWidth(40);
+            table.getColumnModel().getColumn(3).setMaxWidth(40);
         }
 
         jLabel1.setText("Search:");
@@ -412,16 +417,15 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
             return;
         }
         if (JOptionPane.showInternalConfirmDialog(StockTakeWindow.this, "Are you sure you want to submit this stock take?", "Stock Take", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            for (Product p : currentTableContents) {
-                try {
-                    dc.updateProduct(p);
-                } catch (IOException | ProductNotFoundException | SQLException ex) {
-                    Logger.getLogger(StockTakeWindow.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            boolean zeroRest = JOptionPane.showInternalConfirmDialog(this, "Do you want unadded items to have the stock level set to zero?", "Stock Take", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+            try {
+                dc.submitStockTake(currentTableContents, zeroRest);
+                currentTableContents.clear();
+                updateTable();
+                JOptionPane.showInternalMessageDialog(StockTakeWindow.this, "Stock take submitted", "Complete", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex + "\nStock take not submitted", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            currentTableContents.clear();
-            updateTable();
-            JOptionPane.showInternalMessageDialog(StockTakeWindow.this, "Stock take submitted", "Complete", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnSubmitActionPerformed
 

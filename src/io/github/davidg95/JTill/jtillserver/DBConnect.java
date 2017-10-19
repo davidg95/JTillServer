@@ -4964,4 +4964,24 @@ public class DBConnect implements DataConnect {
             }
         }
     }
+
+    @Override
+    public void submitStockTake(List<Product> products, boolean zeroRest) throws IOException, SQLException {
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                if (zeroRest) {
+                    stmt.executeUpdate("UPDATE PRODUCTS SET STOCK = 0");
+                }
+                for (Product p : products) {
+                    stmt.executeUpdate("UPDATE PRODUCTS SET STOCK=" + p.getStock() + " WHERE ID=" + p.getId());
+                }
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
 }
