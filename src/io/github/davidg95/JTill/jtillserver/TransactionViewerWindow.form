@@ -183,12 +183,12 @@
                                   </Group>
                               </Group>
                               <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="pickStart" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="pickEnd" alignment="0" max="32767" attributes="0"/>
                                   <Component id="spinIdEnd" alignment="0" max="32767" attributes="0"/>
                                   <Component id="spinIdStart" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="spinEnd" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="spinStart" alignment="0" max="32767" attributes="0"/>
                                   <Component id="spinMoneyMax" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="spinMoneyMin" alignment="0" min="-2" pref="132" max="-2" attributes="0"/>
+                                  <Component id="spinMoneyMin" alignment="0" pref="132" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -231,12 +231,12 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="spinStart" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="pickStart" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="spinEnd" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="pickEnd" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -321,13 +321,6 @@
             <Property name="text" type="java.lang.String" value="ID end"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JSpinner" name="spinStart">
-          <Properties>
-            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-              <SpinnerModel initial="-3600000" stepSize="5" type="date"/>
-            </Property>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JSpinner" name="spinIdStart">
         </Component>
         <Component class="javax.swing.JSpinner" name="spinMoneyMin">
@@ -371,13 +364,6 @@
             <Property name="text" type="java.lang.String" value="Start date:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JSpinner" name="spinEnd">
-          <Properties>
-            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-              <SpinnerModel initial="now" stepSize="5" type="date"/>
-            </Property>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JSpinner" name="spinIdEnd">
           <Properties>
             <Property name="value" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
@@ -407,6 +393,10 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSearchActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="org.jdesktop.swingx.JXDatePicker" name="pickEnd">
+        </Component>
+        <Component class="org.jdesktop.swingx.JXDatePicker" name="pickStart">
         </Component>
       </SubComponents>
     </Container>

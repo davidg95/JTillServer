@@ -62,6 +62,8 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
         table.setModel(model);
         updateTable();
         init();
+        pickStart.setDate(new Date(0));
+        pickEnd.setDate(new Date());
     }
 
     private void init() {
@@ -218,10 +220,10 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
         btnGenerate = new javax.swing.JButton();
         cmbDepartment = new javax.swing.JComboBox<>();
         cmbCategory = new javax.swing.JComboBox<>();
-        spinStart = new javax.swing.JSpinner();
-        spinEnd = new javax.swing.JSpinner();
         chkAllDep = new javax.swing.JCheckBox();
         chkAllCat = new javax.swing.JCheckBox();
+        pickStart = new org.jdesktop.swingx.JXDatePicker();
+        pickEnd = new org.jdesktop.swingx.JXDatePicker();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
@@ -256,10 +258,6 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
         cmbDepartment.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         cmbCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        spinStart.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(-3600000L), null, new java.util.Date(), java.util.Calendar.DAY_OF_MONTH));
-
-        spinEnd.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(), null, new java.util.Date(), java.util.Calendar.DAY_OF_MONTH));
 
         chkAllDep.setText("All");
         chkAllDep.addActionListener(new java.awt.event.ActionListener() {
@@ -297,10 +295,10 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                     .addComponent(jLabel4)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(spinStart)
-                    .addComponent(spinEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pickStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pickEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(48, 48, 48)
                 .addComponent(btnGenerate, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(121, Short.MAX_VALUE))
         );
@@ -313,11 +311,11 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                         .addGroup(panelSearchLayout.createSequentialGroup()
                             .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel3)
-                                .addComponent(spinStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(pickStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel4)
-                                .addComponent(spinEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(pickEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(panelSearchLayout.createSequentialGroup()
                         .addGroup(panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
@@ -458,7 +456,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(panelSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -488,8 +486,8 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                     catid = -1;
                 }
 
-                final Date startDate = (Date) spinStart.getValue(); //Get the selected start date
-                final Date endDate = (Date) spinEnd.getValue(); //Get the selected end date
+                final Date startDate = pickStart.getDate();
+                final Date endDate = pickEnd.getDate();
 
                 final List<SaleItem> saleItems = dc.searchSaleItems(depid, catid, startDate, endDate); //Get a list of all the sale items that match the search
 
@@ -524,8 +522,10 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                 txtTax.setText("£" + new DecimalFormat("0.00").format(tax));
                 txtNet.setText("£" + new DecimalFormat("0.00").format(sales.subtract(costs).subtract(tax)));
             } catch (IOException | SQLException | JTillException ex) {
+                mDialog.hide();
                 JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             } finally {
+                mDialog.hide();
                 panelSearch.setEnabled(true);
                 for (Component comp : panelSearch.getComponents()) {
                     comp.setEnabled(true);
@@ -536,7 +536,6 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
                 if (chkAllDep.isSelected()) {
                     cmbDepartment.setEnabled(false);
                 }
-                mDialog.hide();
             }
         };
         final Thread thread = new Thread(run);
@@ -548,13 +547,13 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
         mDialog.show();
     }//GEN-LAST:event_btnGenerateActionPerformed
 
-    private void chkAllDepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkAllDepActionPerformed
-        cmbDepartment.setEnabled(!chkAllDep.isSelected());
-    }//GEN-LAST:event_chkAllDepActionPerformed
-
     private void chkAllCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkAllCatActionPerformed
         cmbCategory.setEnabled(!chkAllCat.isSelected());
     }//GEN-LAST:event_chkAllCatActionPerformed
+
+    private void chkAllDepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkAllDepActionPerformed
+        cmbDepartment.setEnabled(!chkAllDep.isSelected());
+    }//GEN-LAST:event_chkAllDepActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGenerate;
@@ -574,8 +573,8 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelSearch;
-    private javax.swing.JSpinner spinEnd;
-    private javax.swing.JSpinner spinStart;
+    private org.jdesktop.swingx.JXDatePicker pickEnd;
+    private org.jdesktop.swingx.JXDatePicker pickStart;
     private javax.swing.JTable table;
     private javax.swing.JTextField txtCosts;
     private javax.swing.JTextField txtItems;

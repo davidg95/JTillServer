@@ -882,4 +882,14 @@ public class ConnectionHandler {
     public void submitStockTake(@JConnParameter("PRODUCTS") List<Product> products, @JConnParameter("ZEROREST") boolean zeroRest) throws IOException, SQLException {
         dc.submitStockTake(products, zeroRest);
     }
+
+    @JConnMethod("CATSINDEP")
+    public void getCategoriesInDepartment(@JConnParameter("DEP") int department) throws IOException, SQLException {
+        dc.getCategoriesInDepartment(department);
+    }
+
+    @JConnMethod("GETPRODUCTSINDEPARTMENT")
+    public void getProductsInDepartment(@JConnParameter("ID") int id) throws IOException, SQLException {
+        dc.getProductsInDepartment(id);
+    }
 }

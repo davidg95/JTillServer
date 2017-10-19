@@ -34,6 +34,8 @@ public class ModalDialog {
     private PrinterJob job; //The printer job (if any) associated with this message.
     private boolean hidden;
 
+    private boolean modal;
+
     /**
      * Constructor which creates the dialog.
      *
@@ -46,6 +48,23 @@ public class ModalDialog {
         this.text = text;
         this.hidden = false;
         this.parent = parent;
+        this.modal = true;
+        init();
+    }
+
+    /**
+     * Constructor which creates the dialog.
+     *
+     * @param parent the parent component.
+     * @param title the title.
+     * @param text the message.
+     */
+    public ModalDialog(Component parent, String title, String text, boolean modal) {
+        this.title = title;
+        this.text = text;
+        this.hidden = false;
+        this.parent = parent;
+        this.modal = modal;
         init();
     }
 
@@ -84,7 +103,7 @@ public class ModalDialog {
         dialog.setContentPane(panel);
         dialog.pack();
         dialog.setLocation((parent.getSize().width / 2) - dialog.getSize().width / 2, (parent.getSize().height / 2) - dialog.getSize().height / 2);
-        dialog.setModal(true);
+        dialog.setModal(modal);
     }
 
     /**

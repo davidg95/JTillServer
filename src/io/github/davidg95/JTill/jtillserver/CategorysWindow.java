@@ -90,6 +90,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
     public static void update() {
         if (frame != null) {
             frame.showAllCategorys();
+            frame.init();
         }
     }
 
@@ -111,6 +112,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
 
     private void init() {
         try {
+            depsModel.removeAllElements();
             List<Department> deps = dc.getAllDepartments();
             for (Department d : deps) {
                 depsModel.addElement(d);
@@ -158,7 +160,6 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             endH.setValue(0);
             spinAge.setValue(0);
             category = null;
-            cmbDepartment.setEnabled(false);
         } else {
             category = c;
             txtName.setText(c.getName());

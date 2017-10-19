@@ -1910,7 +1910,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public Category addCategory(Category c) throws SQLException {
-        String query = "INSERT INTO CATEGORYS (NAME, SELL_START, SELL_END, TIME_RESTRICT, MINIMUM_AGE) VALUES (" + c.getSQLInsertString() + ")";
+        String query = "INSERT INTO CATEGORYS (NAME, SELL_START, SELL_END, TIME_RESTRICT, MINIMUM_AGE, DEPARTMENT) VALUES (" + c.getSQLInsertString() + ")";
         try (Connection con = getNewConnection()) {
             PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             try {
@@ -2244,7 +2244,7 @@ public class DBConnect implements DataConnect {
     }
 
     private List<SaleItem> getItemsInSale(Sale sale) throws SQLException {
-        final String query = "SELECT * FROM SALEITEMS, PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE SALEITEMS.PRODUCT_ID = PRODUCTS.ID AND CATEGORYSS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.TAX_ID = TAX.ID AND SALEITEMS.SALE_ID = " + sale.getId();
+        final String query = "SELECT * FROM SALEITEMS, PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE SALEITEMS.PRODUCT_ID = PRODUCTS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.TAX_ID = TAX.ID AND SALEITEMS.SALE_ID = " + sale.getId();
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
@@ -4339,9 +4339,9 @@ public class DBConnect implements DataConnect {
     public List<SaleItem> searchSaleItems(int department, int category, Date start, Date end) throws IOException, SQLException, JTillException {
         long startL = start.getTime();
         long endL = end.getTime();
-        String pQuery = "SELECT * FROM SALEITEMS i, PRODUCTS p, CATEGORYS c, DEPARTMENTS d, TAX t, SALES s WHERE i.PRODUCT_ID = p.ID AND p.CATEGORY_ID = c.ID AND p.DEPARTMENT_ID = d.ID AND p.TAX_ID = t.ID AND p.ID = i.PRODUCT_ID AND i.SALE_ID = s.ID AND i.TYPE = 1 AND s.TIMESTAMP >= " + startL + " AND s.TIMESTAMP <= " + endL;
+        String pQuery = "SELECT * FROM SALEITEMS i, PRODUCTS p, CATEGORYS c, DEPARTMENTS d, TAX t, SALES s WHERE i.PRODUCT_ID = p.ID AND p.CATEGORY_ID = c.ID AND c.DEPARTMENT = d.ID AND p.TAX_ID = t.ID AND p.ID = i.PRODUCT_ID AND i.SALE_ID = s.ID AND i.TYPE = 1 AND s.TIMESTAMP >= " + startL + " AND s.TIMESTAMP <= " + endL;
         if (department > -1) {
-            pQuery = pQuery.concat(" AND p.DEPARTMENT_ID = " + department);
+            pQuery = pQuery.concat(" AND d.ID = " + department);
         }
         if (category > -1) {
             pQuery = pQuery.concat(" AND p.CATEGORY_ID = " + category);
@@ -4996,6 +4996,40 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
                 LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
+
+    @Override
+    public List<Category> getCategoriesInDepartment(int department) throws IOException, SQLException {
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet set = stmt.executeQuery("SELECT * FROM CATEGORYS, DEPARTMENTS WHERE CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND DEPARTMENTS.ID = " + department);
+                List<Category> c = getCategorysFromResultSet(set);
+                con.commit();
+                return c;
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
+
+    @Override
+    public List<Product> getProductsInDepartment(int id) throws IOException, SQLException {
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet set = stmt.executeQuery("SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEAPRTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND DEPARTMENT.ID = " + id);
+                List<Product> products = getProductsFromResultSet(set);
+                con.commit();
+                return products;
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.INFO, null, ex);
                 throw ex;
             }
         }

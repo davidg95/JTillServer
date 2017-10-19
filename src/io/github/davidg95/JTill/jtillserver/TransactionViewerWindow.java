@@ -46,6 +46,8 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         this.setFrameIcon(new ImageIcon(GUI.icon));
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
+        pickStart.setDate(new Date(0));
+        pickEnd.setDate(new Date());
         setVisible(true);
         GUI.gui.internal.add(this);
         init();
@@ -113,18 +115,18 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         btnClear = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        spinStart = new javax.swing.JSpinner();
         spinIdStart = new javax.swing.JSpinner();
         spinMoneyMin = new javax.swing.JSpinner();
         cmbStaff = new javax.swing.JComboBox<>();
         spinMoneyMax = new javax.swing.JSpinner();
         jLabel5 = new javax.swing.JLabel();
-        spinEnd = new javax.swing.JSpinner();
         spinIdEnd = new javax.swing.JSpinner();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         btnSearch = new javax.swing.JButton();
+        pickEnd = new org.jdesktop.swingx.JXDatePicker();
+        pickStart = new org.jdesktop.swingx.JXDatePicker();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         txtTotalValue = new javax.swing.JFormattedTextField();
@@ -204,8 +206,6 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
 
         jLabel8.setText("ID end");
 
-        spinStart.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(-3600000L), null, null, java.util.Calendar.DAY_OF_MONTH));
-
         spinMoneyMin.setModel(new javax.swing.SpinnerNumberModel(0.0d, null, null, 1.0d));
         spinMoneyMin.setValue(-99999.99);
 
@@ -216,8 +216,6 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         spinMoneyMax.setValue(99999.99);
 
         jLabel5.setText("Start date:");
-
-        spinEnd.setModel(new javax.swing.SpinnerDateModel());
 
         spinIdEnd.setValue(9999999);
 
@@ -262,12 +260,12 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                                     .addComponent(chkAllTills)
                                     .addComponent(chkAllStaff)))
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(pickStart, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(pickEnd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(spinIdEnd, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(spinIdStart, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(spinEnd, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(spinStart, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(spinMoneyMax, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(spinMoneyMin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(spinMoneyMin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(8, 8, 8)
                         .addComponent(btnSearch)
@@ -299,11 +297,11 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(spinStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pickStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(spinEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pickEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(spinIdStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -409,8 +407,8 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                 final double minVal = (double) spinMoneyMin.getValue(); //Get the minimum sale value
                 final double maxVal = (double) spinMoneyMax.getValue(); //Get the maximum sale value
 
-                final Date startDate = (Date) spinStart.getValue(); //Get the start date
-                final Date endDate = (Date) spinEnd.getValue(); //Get the end date
+                final Date startDate = pickStart.getDate();
+                final Date endDate = pickEnd.getDate();
 
                 final int startID = (int) spinIdStart.getValue(); //Get the start ID
                 final int endID = (int) spinIdEnd.getValue(); //Get the end ID
@@ -497,8 +495,8 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         chkAllStaff.setSelected(true);
         spinMoneyMin.setValue(-99999.99);
         spinMoneyMax.setValue(99999.99);
-        spinStart.setValue(new Date(0));
-        spinEnd.setValue(new Date());
+        pickStart.setDate(new Date(0));
+        pickEnd.setDate(new Date());
         spinIdStart.setValue(0);
         spinIdEnd.setValue(9999999);
         init();
@@ -552,12 +550,12 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSpinner spinEnd;
+    private org.jdesktop.swingx.JXDatePicker pickEnd;
+    private org.jdesktop.swingx.JXDatePicker pickStart;
     private javax.swing.JSpinner spinIdEnd;
     private javax.swing.JSpinner spinIdStart;
     private javax.swing.JSpinner spinMoneyMax;
     private javax.swing.JSpinner spinMoneyMin;
-    private javax.swing.JSpinner spinStart;
     private javax.swing.JTable table;
     private javax.swing.JFormattedTextField txtTax;
     private javax.swing.JFormattedTextField txtTotalSales;

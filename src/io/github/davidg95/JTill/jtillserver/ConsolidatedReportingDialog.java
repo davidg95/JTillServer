@@ -12,7 +12,6 @@ import java.awt.Frame;
 import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,11 +25,11 @@ import javax.swing.JOptionPane;
  * @author David
  */
 public class ConsolidatedReportingDialog extends javax.swing.JDialog {
-
+    
     private static JDialog dialog;
-
+    
     private final DataConnect dc;
-
+    
     private DefaultComboBoxModel model;
 
     /**
@@ -46,8 +45,10 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setIconImage(GUI.icon);
         btnGenerate.requestFocus();
+        pickStart.setDate(new Date(0));
+        pickEnd.setDate(new Date());
     }
-
+    
     public static void showDialog(Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
@@ -56,7 +57,7 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
         dialog = new ConsolidatedReportingDialog(window);
         dialog.setVisible(true);
     }
-
+    
     private void init() {
         model = new DefaultComboBoxModel();
         try {

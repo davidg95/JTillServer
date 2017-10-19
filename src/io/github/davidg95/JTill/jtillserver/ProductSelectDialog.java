@@ -13,10 +13,17 @@ import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
-import javafx.scene.input.KeyCode;
+import java.util.Vector;
 import javax.swing.JOptionPane;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 /**
  * Dialog which allows a product to be selected.
@@ -35,6 +42,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     private final boolean showOpen;
 
     protected boolean closedFlag;
+
+    private MyTreeModel treeModel;
 
     /**
      * Creates new form ProductSelectDialog
@@ -57,10 +66,33 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         showAllProducts();
         txtSearch.requestFocus();
         initTable();
+        try {
+            init();
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+//        tree.setModel(treeModel);
     }
-    
-    private void initTable(){
+
+    private void initTable() {
         table.setSelectionModel(new ForcedListSelectionModel());
+    }
+
+    private void init() throws IOException, SQLException {
+        RootNode top = new RootNode();
+        treeModel = new MyTreeModel(top);
+        createNodes();
+    }
+
+    private void createNodes() throws IOException, SQLException {
+        List<Department> departments = dc.getAllDepartments();
+        for (Department d : departments) {
+            treeModel.insertDepartment(d);
+            List<Category> categorys = dc.getCategoriesInDepartment(d.getId());
+            for (Category c : categorys) {
+                treeModel.insertCategory(c);
+            }
+        }
     }
 
     /**
@@ -136,6 +168,269 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         JOptionPane.showMessageDialog(this, e, "Products", JOptionPane.ERROR_MESSAGE);
     }
 
+    private class MyTreeModel implements TreeModel {
+
+        private final RootNode root;
+
+        private final List<TreeModelListener> listeners;
+
+        public MyTreeModel(RootNode root) {
+            this.root = root;
+            listeners = new LinkedList<>();
+        }
+
+        public void insertDepartment(Department d) {
+            DepartmentNode n = new DepartmentNode(root, d);
+            root.addNode(n);
+            alertAll();
+        }
+
+        public void insertCategory(Category c) {
+            for (DepartmentNode n : root.getChildren()) {
+                if (c.getDepartment().getId() == n.getDepartment().getId()) {
+                    CategoryNode cn = new CategoryNode(n, c);
+                    n.addCategory(cn);
+                }
+            }
+            alertAll();
+        }
+
+        @Override
+        public Object getRoot() {
+            return root;
+        }
+
+        @Override
+        public Object getChild(Object parent, int index) {
+            for (DepartmentNode n : root.getChildren()) {
+                if (n.equals(parent)) {
+                    return n.getChildAt(index);
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public int getChildCount(Object parent) {
+            return root.getChildren().size();
+        }
+
+        @Override
+        public boolean isLeaf(Object node) {
+            return node instanceof CategoryNode;
+        }
+
+        @Override
+        public void valueForPathChanged(TreePath path, Object newValue) {
+
+        }
+
+        @Override
+        public int getIndexOfChild(Object parent, Object child) {
+            for (int i = 0; i < root.getChildCount(); i++) {
+                if (getChild(parent, i).equals(child)) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private void alertAll() {
+            for (TreeModelListener l : listeners) {
+                l.treeNodesInserted(new TreeModelEvent(this, new TreePath(root)));
+            }
+        }
+
+        @Override
+        public void addTreeModelListener(TreeModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTreeModelListener(TreeModelListener l) {
+            listeners.remove(l);
+        }
+
+    }
+
+    private class RootNode implements TreeNode {
+
+        private final List<DepartmentNode> children;
+
+        public RootNode() {
+            this.children = new LinkedList<>();
+        }
+
+        public void addNode(DepartmentNode node) {
+            children.add(node);
+        }
+
+        public List<DepartmentNode> getChildren() {
+            return children;
+        }
+
+        @Override
+        public TreeNode getChildAt(int childIndex) {
+            return children.get(childIndex);
+        }
+
+        @Override
+        public int getChildCount() {
+            return children.size();
+        }
+
+        @Override
+        public TreeNode getParent() {
+            return null;
+        }
+
+        @Override
+        public int getIndex(TreeNode node) {
+            return children.indexOf(node);
+        }
+
+        @Override
+        public boolean getAllowsChildren() {
+            return true;
+        }
+
+        @Override
+        public boolean isLeaf() {
+            return false;
+        }
+
+        @Override
+        public Enumeration children() {
+            return new Vector(children).elements();
+        }
+
+        @Override
+        public String toString() {
+            return "All";
+        }
+    }
+
+    private class CategoryNode implements TreeNode {
+
+        private final Category category;
+        private final DepartmentNode parent;
+
+        public CategoryNode(DepartmentNode parent, Category c) {
+            this.category = c;
+            this.parent = parent;
+        }
+
+        public Category getCategory() {
+            return category;
+        }
+
+        @Override
+        public TreeNode getChildAt(int childIndex) {
+            return null;
+        }
+
+        @Override
+        public int getChildCount() {
+            return 0;
+        }
+
+        @Override
+        public TreeNode getParent() {
+            return parent;
+        }
+
+        @Override
+        public int getIndex(TreeNode node) {
+            return -1;
+        }
+
+        @Override
+        public boolean getAllowsChildren() {
+            return false;
+        }
+
+        @Override
+        public boolean isLeaf() {
+            return true;
+        }
+
+        @Override
+        public Enumeration children() {
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return category.getName();
+        }
+    }
+
+    private class DepartmentNode implements TreeNode {
+
+        private final Department department;
+        private final TreeNode parent;
+
+        private final List<CategoryNode> children;
+
+        public DepartmentNode(TreeNode parent, Department d) {
+            this.department = d;
+            this.parent = parent;
+            children = new LinkedList<>();
+        }
+
+        public Department getDepartment() {
+            return department;
+        }
+
+        public List<CategoryNode> getChildren() {
+            return children;
+        }
+
+        public void addCategory(CategoryNode cn) {
+            children.add(cn);
+        }
+
+        @Override
+        public TreeNode getChildAt(int childIndex) {
+            return children.get(childIndex);
+        }
+
+        @Override
+        public int getChildCount() {
+            return children.size();
+        }
+
+        @Override
+        public TreeNode getParent() {
+            return parent;
+        }
+
+        @Override
+        public int getIndex(TreeNode node) {
+            return children.indexOf(node);
+        }
+
+        @Override
+        public boolean getAllowsChildren() {
+            return true;
+        }
+
+        @Override
+        public boolean isLeaf() {
+            return false;
+        }
+
+        @Override
+        public Enumeration children() {
+            return new Vector(children).elements();
+        }
+
+        @Override
+        public String toString() {
+            return department.getName();
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -155,8 +450,10 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         radName = new javax.swing.JRadioButton();
         radBarcode = new javax.swing.JRadioButton();
         btnSelect = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tree = new javax.swing.JTree();
 
-        setTitle("Select Product");
+        setTitle("Select Product - All");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -235,14 +532,24 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             }
         });
 
+        tree.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                treeMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tree);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -253,7 +560,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                         .addComponent(radBarcode)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 184, Short.MAX_VALUE)
                         .addComponent(btnSelect)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnClose)))
@@ -263,7 +570,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
@@ -351,16 +660,29 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         setVisible(false);
     }//GEN-LAST:event_btnSelectActionPerformed
 
+    private void treeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMouseClicked
+        TreePath path = tree.getSelectionModel().getSelectionPath();
+        TreeNode node = (TreeNode) path.getLastPathComponent();
+        if (path.getPathCount() == 3) {
+            TreeNode par = (TreeNode) path.getPathComponent(path.getPathCount() - 2);
+            setTitle("Select Product - " + par.toString() + " - " + node.toString());
+        } else {
+            setTitle("Select Product - " + node.toString());
+        }
+    }//GEN-LAST:event_treeMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSelect;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JRadioButton radBarcode;
     private javax.swing.JRadioButton radName;
     private javax.swing.ButtonGroup searchButtonGroup;
     private javax.swing.JTable table;
+    private javax.swing.JTree tree;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

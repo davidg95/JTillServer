@@ -59,9 +59,6 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
         setTitle("Consolidated Report - " + (till == null ? "All Terminals" : till.getName()));
         setIconImage(GUI.icon);
         try {
-            departments = dc.getAllDepartments();
-            categorys = dc.getAllCategorys();
-            taxes = dc.getAllTax();
             retrieve(start, end, till);
             init();
         } catch (IOException | SQLException ex) {
