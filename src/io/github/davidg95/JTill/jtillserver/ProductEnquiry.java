@@ -112,7 +112,7 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             DecimalFormat df = new DecimalFormat("0.00");
             txtName.setText(product.getLongName());
             txtShortName.setText(product.getName());
-            txtDep.setText(product.getDepartment().getName());
+            txtDep.setText(product.getCategory().getDepartment().getName());
             txtCat.setText(product.getCategory().getName());
             txtStock.setText(product.getStock() + "");
             txtMinStock.setText(product.getMinStockLevel() + "");
@@ -194,7 +194,7 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             y += s;
             g2.drawString("Category: " + p.getCategory().getName(), x, y);
             y += s;
-            g2.drawString("Department: " + p.getDepartment().getName(), x, y);
+            g2.drawString("Department: " + p.getCategory().getDepartment().getName(), x, y);
             y += s;
             g2.drawString("Price: £" + p.getPrice(), x, y);
             y += s;

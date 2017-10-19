@@ -55,7 +55,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private List<Department> departments;
     private List<Tax> taxes;
     private List<Category> categorys;
-    private DefaultComboBoxModel departmentsModel;
+
     private DefaultComboBoxModel taxesModel;
     private DefaultComboBoxModel categorysModel;
 
@@ -127,17 +127,12 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
      */
     private void init() {
         tableProducts.setSelectionModel(new ForcedListSelectionModel());
-        tableProducts.getColumnModel().getColumn(0).setMaxWidth(40);
-        tableProducts.getColumnModel().getColumn(3).setMaxWidth(60);
-        tableProducts.getColumnModel().getColumn(4).setMaxWidth(60);
         try {
             departments = dc.getAllDepartments();
             taxes = dc.getAllTax();
             categorys = dc.getAllCategorys();
-            departmentsModel = new DefaultComboBoxModel(departments.toArray());
             taxesModel = new DefaultComboBoxModel(taxes.toArray());
             categorysModel = new DefaultComboBoxModel(categorys.toArray());
-            cmbDepartments.setModel(departmentsModel);
             cmbTax.setModel(taxesModel);
             cmbCategory.setModel(categorysModel);
         } catch (SQLException | IOException ex) {
@@ -194,7 +189,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             txtScale.setText("");
             cmbTax.setSelectedIndex(0);
             cmbCategory.setSelectedIndex(0);
-            cmbDepartments.setSelectedIndex(0);
+            txtDepartment.setText("");
             chkScale.setEnabled(false);
             chkScale.setSelected(false);
             chkIncVat.setSelected(false);
@@ -291,37 +286,9 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 txtCostPrice.setEditable(true);
             }
             txtComments.setText(product.getComments());
-            int index = 0;
-            //Set the Category combo box.
-            int c = product.getCategory().getId();
-            index = 0;
-            for (int i = 0; i < categorys.size(); i++) {
-                if (categorys.get(i).getId() == c) {
-                    index = i;
-                    break;
-                }
-            }
-            cmbCategory.setSelectedIndex(index);
-            //Set the Tax combo box.
-            int t = product.getTax().getId();
-            index = 0;
-            for (int i = 0; i < taxes.size(); i++) {
-                if (taxes.get(i).getId() == t) {
-                    index = i;
-                    break;
-                }
-            }
-            cmbTax.setSelectedIndex(index);
-            //Set the Department combo box.
-            int d = product.getDepartment().getId();
-            index = 0;
-            for (int i = 0; i < departments.size(); i++) {
-                if (departments.get(i).getId() == d) {
-                    index = i;
-                    break;
-                }
-            }
-            cmbDepartments.setSelectedIndex(index);
+            cmbCategory.setSelectedItem(product.getCategory());
+            cmbTax.setSelectedItem(product.getTax());
+            txtDepartment.setText(product.getCategory().getDepartment().toString());
         }
     }
 
@@ -398,7 +365,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         txtMinStock = new javax.swing.JTextField();
         txtCostPrice = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        cmbDepartments = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
         btnDepartments = new javax.swing.JButton();
         cmbCategory = new javax.swing.JComboBox<>();
@@ -420,6 +386,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         chkIncVat = new javax.swing.JCheckBox();
         btnSaveChanges = new javax.swing.JButton();
         btnRemoveProduct = new javax.swing.JButton();
+        txtDepartment = new javax.swing.JTextField();
         btnAdvanced = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -460,11 +427,17 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tableProducts);
         if (tableProducts.getColumnModel().getColumnCount() > 0) {
-            tableProducts.getColumnModel().getColumn(0).setResizable(false);
+            tableProducts.getColumnModel().getColumn(0).setMinWidth(40);
+            tableProducts.getColumnModel().getColumn(0).setPreferredWidth(40);
+            tableProducts.getColumnModel().getColumn(0).setMaxWidth(40);
             tableProducts.getColumnModel().getColumn(1).setResizable(false);
             tableProducts.getColumnModel().getColumn(2).setResizable(false);
-            tableProducts.getColumnModel().getColumn(3).setResizable(false);
-            tableProducts.getColumnModel().getColumn(4).setResizable(false);
+            tableProducts.getColumnModel().getColumn(3).setMinWidth(60);
+            tableProducts.getColumnModel().getColumn(3).setPreferredWidth(60);
+            tableProducts.getColumnModel().getColumn(3).setMaxWidth(60);
+            tableProducts.getColumnModel().getColumn(4).setMinWidth(60);
+            tableProducts.getColumnModel().getColumn(4).setPreferredWidth(60);
+            tableProducts.getColumnModel().getColumn(4).setMaxWidth(60);
         }
 
         btnClose.setText("Close");
@@ -593,8 +566,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
         jLabel3.setText("Price (£):");
 
-        cmbDepartments.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel9.setText("Cost (£):");
 
         btnDepartments.setText("Departments");
@@ -650,6 +621,8 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 btnRemoveProductActionPerformed(evt);
             }
         });
+
+        txtDepartment.setEditable(false);
 
         javax.swing.GroupLayout panelCurrentLayout = new javax.swing.GroupLayout(panelCurrent);
         panelCurrent.setLayout(panelCurrentLayout);
@@ -724,8 +697,8 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnRemoveProduct))
                             .addGroup(panelCurrentLayout.createSequentialGroup()
-                                .addComponent(cmbDepartments, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnDepartments, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
@@ -783,9 +756,9 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                     .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmbDepartments, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12)
-                    .addComponent(btnDepartments))
+                    .addComponent(btnDepartments)
+                    .addComponent(txtDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
@@ -913,16 +886,11 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         if (!taxes.isEmpty()) {
             tax = taxes.get(cmbTax.getSelectedIndex());
         }
-        Department dep = null;
-        if (!departments.isEmpty()) {
-            dep = departments.get(cmbDepartments.getSelectedIndex());
-        }
         String comments = txtComments.getText();
         if (product.isOpen()) {
             product.setLongName(name);
             product.setName(shortName);
             product.setCategory(category);
-            product.setDepartment(dep);
             product.setTax(tax);
             product.setComments(comments);
             String strCost = txtCostPrice.getText();
@@ -986,7 +954,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             product.setLongName(name);
             product.setName(shortName);
             product.setCategory(category);
-            product.setDepartment(dep);
             product.setTax(tax);
             product.setPrice(price);
             product.setCostPrice(costPrice);
@@ -1115,8 +1082,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                             + p.getMinStockLevel() + ","
                             + p.getPrice() + ","
                             + p.getStock() + ","
-                            + p.getTax().getId() + ","
-                            + p.getDepartment().getId());
+                            + p.getTax().getId());
                 }
                 pw.close();
             } catch (FileNotFoundException ex) {
@@ -1268,7 +1234,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JCheckBox chkIncVat;
     private javax.swing.JCheckBox chkScale;
     private javax.swing.JComboBox<String> cmbCategory;
-    private javax.swing.JComboBox<String> cmbDepartments;
     private javax.swing.JComboBox<String> cmbTax;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1296,6 +1261,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtBarcode;
     private javax.swing.JTextArea txtComments;
     private javax.swing.JTextField txtCostPrice;
+    private javax.swing.JTextField txtDepartment;
     private javax.swing.JTextField txtMaxStock;
     private javax.swing.JTextField txtMinStock;
     private javax.swing.JTextField txtName;

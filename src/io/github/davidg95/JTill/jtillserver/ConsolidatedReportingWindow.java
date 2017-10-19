@@ -116,7 +116,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
                     cost = cost.add(si.getCost());
                     for (Department d : departments) {
                         final Product p = (Product) si.getItem();
-                        if (d.equals(p.getDepartment())) {
+                        if (d.equals(p.getCategory().getDepartment())) {
                             d.addToSales(si.getPrice());
                         }
                     }

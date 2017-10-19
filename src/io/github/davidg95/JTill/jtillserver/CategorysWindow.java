@@ -6,8 +6,6 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import static io.github.davidg95.JTill.jtillserver.SettingsWindow.frame;
-import java.awt.Image;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -18,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -38,6 +36,8 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
     private final DefaultTableModel model;
     private List<Category> currentTableContents;
 
+    private final DefaultComboBoxModel depsModel;
+
     /**
      * Creates new form CategoryWindow
      *
@@ -45,7 +45,6 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
      */
     public CategorysWindow(DataConnect dc) {
         this.dc = dc;
-//        this.setIconImage(icon);
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
@@ -53,6 +52,8 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         initComponents();
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
+        depsModel = new DefaultComboBoxModel();
+        init();
         showAllCategorys();
     }
 
@@ -100,12 +101,24 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         model.setRowCount(0);
 
         for (Category c : currentTableContents) {
-            Object[] s = new Object[]{c.getId(), c.getName()};
+            Object[] s = new Object[]{c.getId(), c.getName(), c.getDepartment().getName()};
             model.addRow(s);
         }
 
         table.setModel(model);
         ProductsWindow.update();
+    }
+
+    private void init() {
+        try {
+            List<Department> deps = dc.getAllDepartments();
+            for (Department d : deps) {
+                depsModel.addElement(d);
+            }
+            cmbDepartment.setModel(depsModel);
+        } catch (IOException | SQLException ex) {
+            showError(ex);
+        }
     }
 
     /**
@@ -145,6 +158,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             endH.setValue(0);
             spinAge.setValue(0);
             category = null;
+            cmbDepartment.setEnabled(false);
         } else {
             category = c;
             txtName.setText(c.getName());
@@ -164,6 +178,8 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
                 startH.setValue(c.getStartSell().getHours());
                 endM.setValue(c.getEndSell().getMinutes());
                 endH.setValue(c.getEndSell().getHours());
+                cmbDepartment.setEnabled(true);
+                cmbDepartment.setSelectedItem(category.getDepartment());
             } else {
                 chkTime.setSelected(false);
                 lblTime.setEnabled(false);
@@ -179,6 +195,8 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
                 startH.setValue(0);
                 endM.setValue(0);
                 endH.setValue(0);
+                cmbDepartment.setEnabled(true);
+                cmbDepartment.setSelectedItem(category.getDepartment());
             }
             spinAge.setValue(c.getMinAge());
         }
@@ -227,26 +245,28 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         btnSave = new javax.swing.JButton();
         endM = new javax.swing.JSpinner();
         lblS = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        cmbDepartment = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Categorys");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "ID", "Name"
+                "ID", "Name", "Department"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -350,6 +370,8 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
 
         lblS.setText(":");
 
+        jLabel4.setText("Department:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -388,11 +410,17 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
                             .addGap(37, 37, 37)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(14, 14, 14)
-                        .addComponent(jLabel2)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnSave)
-                            .addComponent(spinAge, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(cmbDepartment, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnSave)
+                                    .addComponent(spinAge, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -421,9 +449,13 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(spinAge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(cmbDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addComponent(btnSave)
-                .addContainerGap())
+                .addGap(20, 20, 20))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -436,7 +468,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
                         .addContainerGap()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(67, 67, 67)
+                        .addGap(70, 70, 70)
                         .addComponent(btnAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRemove)))
@@ -458,10 +490,10 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAdd)
                             .addComponent(btnRemove))
@@ -492,10 +524,11 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
                     endSell = new Time(sdf.parse(endH.getValue() + ":" + endM.getValue() + ":00").getTime());
                 }
                 int minAge = (int) spinAge.getValue();
+                Department dep = (Department) cmbDepartment.getSelectedItem();
                 if (name.equals("")) {
                     JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Category", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    c = new Category(name, startSell, endSell, time, minAge);
+                    c = new Category(name, startSell, endSell, time, minAge, dep);
                     try {
                         Category cat = dc.addCategory(c);
                         showAllCategorys();
@@ -527,6 +560,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
                 endSell = new Time(sdf.parse(endH.getValue() + ":" + endM.getValue() + ":00").getTime());
             }
             int minAge = (int) spinAge.getValue();
+            Department dep = (Department) cmbDepartment.getSelectedItem();
             if (name.equals("")) {
                 JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Category", JOptionPane.ERROR_MESSAGE);
             } else {
@@ -535,6 +569,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
                 category.setEndSell(endSell);
                 category.setTimeRestrict(time);
                 category.setMinAge(minAge);
+                category.setDepartment(dep);
 
                 try {
                     dc.updateCategory(category);
@@ -631,11 +666,13 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
     private javax.swing.JCheckBox chkTime;
+    private javax.swing.JComboBox<String> cmbDepartment;
     private javax.swing.JSpinner endH;
     private javax.swing.JSpinner endM;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblE;

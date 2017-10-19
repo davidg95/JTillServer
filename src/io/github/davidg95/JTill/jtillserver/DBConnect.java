@@ -315,6 +315,17 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+            try {
+                int r1 = stmt.executeUpdate("ALTER TABLE PRODUCTS DROP COLUMN DEPARTMENT_ID");
+                int r2 = stmt.executeUpdate("ALTER TABLE CATEGORYS ADD DEPARTMENT INT REFERENCES DEPARTMENTS(ID)");
+                stmt.executeUpdate("UPDATE CATEGORYS SET DEPARTMENT = 1");
+                con.commit();
+                LOG.log(Level.INFO, "Removed DEPARTMENT column from PRODUCTS, " + r1 + " rows affected");
+                LOG.log(Level.INFO, "Added column DEPARTMENT to CATEGORYS, " + r2 + " rows affected");
+                LOG.log(Level.INFO, "Set DEPARTMENT in CATEGORYS to 1, " + r2 + " rows affected");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
         }
@@ -905,7 +916,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<Product> getAllProducts() throws SQLException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.DEPARTMENT_ID = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID";
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID";
         List<Product> products;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
@@ -934,28 +945,28 @@ public class DBConnect implements DataConnect {
             String comments = set.getString(7);
             String shortName = set.getString(8);
             int cId = set.getInt(9);
-            int dId = set.getInt(10);
-            int taxID = set.getInt(11);
-            BigDecimal costPrice = set.getBigDecimal(12);
-            int minStock = set.getInt(13);
-            int maxStock = set.getInt(14);
-            int packSize = set.getInt(15);
-            String barcode = set.getString(16);
-            double scale = set.getDouble(17);
-            String scaleName = set.getString(18);
-            boolean incVat = set.getBoolean(19);
+            int taxID = set.getInt(10);
+            BigDecimal costPrice = set.getBigDecimal(11);
+            int minStock = set.getInt(12);
+            int maxStock = set.getInt(13);
+            int packSize = set.getInt(14);
+            String barcode = set.getString(15);
+            double scale = set.getDouble(16);
+            String scaleName = set.getString(17);
+            boolean incVat = set.getBoolean(18);
 
-            String cName = set.getString(21);
-            Time start = set.getTime(22);
-            Time end = set.getTime(23);
-            boolean restrict = set.getBoolean(24);
-            int age = set.getInt(25);
-
-            Category c = new Category(cId, cName, start, end, restrict, age);
+            String cName = set.getString(20);
+            Time start = set.getTime(21);
+            Time end = set.getTime(22);
+            boolean restrict = set.getBoolean(23);
+            int age = set.getInt(24);
+            int department = set.getInt(25);
 
             String dName = set.getString(27);
 
-            Department d = new Department(dId, dName);
+            Department d = new Department(department, dName);
+
+            Category c = new Category(cId, cName, start, end, restrict, age, d);
 
             String tName = set.getString(29);
             double value = set.getDouble(30);
@@ -964,9 +975,9 @@ public class DBConnect implements DataConnect {
 
             Product p;
             if (!open) {
-                p = new Product(name, shortName, barcode, order_code, c, d, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code);
             } else {
-                p = new Product(name, shortName, barcode, order_code, c, d, comments, t, scale, scaleName, costPrice, code);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, code);
             }
 
             products.add(p);
@@ -1140,7 +1151,7 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public Product getProduct(int code) throws SQLException, ProductNotFoundException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.DEPARTMENT_ID = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND PRODUCTS.ID=" + code;
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND PRODUCTS.ID=" + code;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             List<Product> products = new LinkedList<>();
@@ -1170,7 +1181,7 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public Product getProductByBarcode(String barcode) throws SQLException, ProductNotFoundException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.DEPARTMENT_ID = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND BARCODE='" + barcode + "'";
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND BARCODE='" + barcode + "'";
         List<Product> products = new LinkedList<>();
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
@@ -1839,7 +1850,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<Product> getProductsInTax(int id) throws SQLException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.DEPARTMENT_ID = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND TAX_ID = " + id;
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND TAX_ID = " + id;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             List<Product> products = new LinkedList<>();
@@ -1860,7 +1871,7 @@ public class DBConnect implements DataConnect {
     //Category Methods
     @Override
     public List<Category> getAllCategorys() throws SQLException {
-        String query = "SELECT * FROM CATEGORYS";
+        String query = "SELECT * FROM CATEGORYS, DEPARTMENTS WHERE CATEGORYS.DEPARTMENT = DEPARTMENTS.ID";
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             List<Category> categorys = new LinkedList<>();
@@ -1886,7 +1897,12 @@ public class DBConnect implements DataConnect {
             Time endSell = set.getTime(4);
             boolean timeRestrict = set.getBoolean(5);
             int minAge = set.getInt(6);
-            Category c = new Category(id, name, startSell, endSell, timeRestrict, minAge);
+            int department = set.getInt(7);
+
+            String dName = set.getString(9);
+
+            Department d = new Department(department, dName);
+            Category c = new Category(id, name, startSell, endSell, timeRestrict, minAge, d);
             categorys.add(c);
         }
         return categorys;
@@ -1962,7 +1978,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public Category getCategory(int id) throws SQLException, JTillException {
-        String query = "SELECT * FROM CATEGORYS WHERE CATEGORYS.ID = " + id;
+        String query = "SELECT * FROM CATEGORYS, DEPARTMENTS WHERE CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND CATEGORYS.ID = " + id;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             List<Category> categorys = new LinkedList<>();
@@ -2166,7 +2182,7 @@ public class DBConnect implements DataConnect {
                     return true;
                 }
             } else if (o instanceof Department) {
-                final Department dep = pr.getDepartment();
+                final Department dep = pr.getCategory().getDepartment();
                 if (((Department) o).equals(dep)) {
                     return true;
                 }
@@ -2228,7 +2244,7 @@ public class DBConnect implements DataConnect {
     }
 
     private List<SaleItem> getItemsInSale(Sale sale) throws SQLException {
-        final String query = "SELECT * FROM SALEITEMS, PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE SALEITEMS.PRODUCT_ID = PRODUCTS.ID AND PRODUCTS.DEPARTMENT_ID = DEPARTMENTS.ID AND PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.TAX_ID = TAX.ID AND SALEITEMS.SALE_ID = " + sale.getId();
+        final String query = "SELECT * FROM SALEITEMS, PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE SALEITEMS.PRODUCT_ID = PRODUCTS.ID AND CATEGORYSS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.TAX_ID = TAX.ID AND SALEITEMS.SALE_ID = " + sale.getId();
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
@@ -2265,28 +2281,28 @@ public class DBConnect implements DataConnect {
             String comments = set.getString(15);
             String shortName = set.getString(16);
             int cId = set.getInt(17);
-            int dId = set.getInt(18);
-            int taxID = set.getInt(19);
-            BigDecimal costPrice = set.getBigDecimal(20);
-            int minStock = set.getInt(21);
-            int maxStock = set.getInt(22);
-            int packSize = set.getInt(23);
-            String barcode = set.getString(24);
-            double scale = set.getDouble(25);
-            String scaleName = set.getString(26);
-            boolean incVat = set.getBoolean(27);
+            int taxID = set.getInt(18);
+            BigDecimal costPrice = set.getBigDecimal(19);
+            int minStock = set.getInt(20);
+            int maxStock = set.getInt(21);
+            int packSize = set.getInt(22);
+            String barcode = set.getString(23);
+            double scale = set.getDouble(24);
+            String scaleName = set.getString(25);
+            boolean incVat = set.getBoolean(26);
 
-            String cName = set.getString(29);
-            Time start = set.getTime(30);
-            Time end = set.getTime(31);
-            boolean restrict = set.getBoolean(32);
-            int age = set.getInt(33);
-
-            Category c = new Category(cId, cName, start, end, restrict, age);
+            String cName = set.getString(28);
+            Time start = set.getTime(29);
+            Time end = set.getTime(30);
+            boolean restrict = set.getBoolean(31);
+            int age = set.getInt(32);
+            int department = set.getInt(33);
 
             String dName = set.getString(35);
 
-            Department d = new Department(dId, dName);
+            Department d = new Department(department, dName);
+
+            Category c = new Category(cId, cName, start, end, restrict, age, d);
 
             String tName = set.getString(37);
             double value = set.getDouble(38);
@@ -2295,9 +2311,9 @@ public class DBConnect implements DataConnect {
 
             Product p;
             if (!open) {
-                p = new Product(name, shortName, barcode, order_code, c, d, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code);
             } else {
-                p = new Product(name, shortName, barcode, order_code, c, d, comments, t, scale, scaleName, costPrice, code);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, code);
             }
 
             SaleItem s = new SaleItem(saleId, p, quantity, id, price, type, tax, cost);
@@ -4372,7 +4388,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<Product> getProductsAdvanced(String WHERE) throws IOException, SQLException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX " + WHERE + " AND PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.DEPARTMENT_ID = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID";
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX " + WHERE + " AND PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID";
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             try {
@@ -4538,7 +4554,7 @@ public class DBConnect implements DataConnect {
     }
 
     private List<ReceivedItem> getItemsInReport(int id) throws SQLException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, RECEIVEDITEMS WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.DEPARTMENT_ID = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND RECEIVEDITEMS.PRODUCT = PRODUCTS.ID AND RECEIVED_REPORT=" + id;
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, RECEIVEDITEMS WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND RECEIVEDITEMS.PRODUCT = PRODUCTS.ID AND RECEIVED_REPORT=" + id;
 
         List<ReceivedItem> items;
         try (Connection con = getNewConnection()) {
@@ -4556,28 +4572,28 @@ public class DBConnect implements DataConnect {
                     String comments = set.getString(7);
                     String shortName = set.getString(8);
                     int cId = set.getInt(9);
-                    int dId = set.getInt(10);
-                    int taxID = set.getInt(11);
-                    BigDecimal costPrice = set.getBigDecimal(12);
-                    int minStock = set.getInt(13);
-                    int maxStock = set.getInt(14);
-                    int packSize = set.getInt(15);
-                    String barcode = set.getString(16);
-                    double scale = set.getDouble(17);
-                    String scaleName = set.getString(18);
-                    boolean incVat = set.getBoolean(19);
+                    int taxID = set.getInt(10);
+                    BigDecimal costPrice = set.getBigDecimal(11);
+                    int minStock = set.getInt(12);
+                    int maxStock = set.getInt(13);
+                    int packSize = set.getInt(14);
+                    String barcode = set.getString(15);
+                    double scale = set.getDouble(16);
+                    String scaleName = set.getString(17);
+                    boolean incVat = set.getBoolean(18);
 
-                    String cName = set.getString(21);
-                    Time start = set.getTime(22);
-                    Time end = set.getTime(23);
-                    boolean restrict = set.getBoolean(24);
-                    int age = set.getInt(25);
-
-                    Category c = new Category(cId, cName, start, end, restrict, age);
+                    String cName = set.getString(20);
+                    Time start = set.getTime(21);
+                    Time end = set.getTime(22);
+                    boolean restrict = set.getBoolean(23);
+                    int age = set.getInt(24);
+                    int department = set.getInt(25);
 
                     String dName = set.getString(27);
 
-                    Department d = new Department(dId, dName);
+                    Department d = new Department(department, dName);
+
+                    Category c = new Category(cId, cName, start, end, restrict, age, d);
 
                     String tName = set.getString(29);
                     double value = set.getDouble(30);
@@ -4586,9 +4602,9 @@ public class DBConnect implements DataConnect {
 
                     Product p;
                     if (!open) {
-                        p = new Product(name, shortName, barcode, order_code, c, d, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code);
+                        p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code);
                     } else {
-                        p = new Product(name, shortName, barcode, order_code, c, d, comments, t, scale, scaleName, costPrice, code);
+                        p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, code);
                     }
 
                     int iid = set.getInt(31);
