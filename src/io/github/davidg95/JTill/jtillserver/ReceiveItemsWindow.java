@@ -129,6 +129,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }
 
     private void setReport() {
+        tblProducts.setSelectionModel(new ForcedListSelectionModel());
         try {
             products = rr.getItems();
             updateTable();

@@ -13,9 +13,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -26,7 +25,7 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
     private static SupplierWindow window;
 
     private final DataConnect dc;
-    private final DefaultListModel model;
+    private final DefaultTableModel model;
     private List<Supplier> currentTableContents;
 
     /**
@@ -39,10 +38,11 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(icon));
         setTitle("Suppliers");
-        model = new DefaultListModel();
+        model = (DefaultTableModel) table.getModel();
+        table.setSelectionModel(new ForcedListSelectionModel());
         try {
             currentTableContents = dc.getAllSuppliers();
-            lstSuppliers.setModel(model);
+            table.setModel(model);
             setList();
         } catch (IOException | SQLException ex) {
             Logger.getLogger(SupplierWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -64,9 +64,9 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
     }
 
     private void setList() {
-        model.setSize(0);
+        model.setRowCount(0);
         for (Supplier s : currentTableContents) {
-            model.addElement(s);
+            model.addRow(new Object[]{s.getName(), s.getAddress(), s.getContactNumber()});
         }
     }
 
@@ -79,24 +79,12 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane2 = new javax.swing.JScrollPane();
-        lstSuppliers = new javax.swing.JList<>();
         btnAdd = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        table = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-
-        lstSuppliers.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        lstSuppliers.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lstSuppliersMouseClicked(evt);
-            }
-        });
-        jScrollPane2.setViewportView(lstSuppliers);
 
         btnAdd.setText("Add New");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -112,6 +100,33 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Name", "Contact", "Address"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        table.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(table);
+        if (table.getColumnModel().getColumnCount() > 0) {
+            table.getColumnModel().getColumn(0).setResizable(false);
+            table.getColumnModel().getColumn(1).setResizable(false);
+            table.getColumnModel().getColumn(2).setResizable(false);
+        }
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -119,10 +134,10 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAdd)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 538, Short.MAX_VALUE)
                         .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -130,7 +145,7 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
@@ -155,23 +170,10 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
-    private void lstSuppliersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstSuppliersMouseClicked
-        if (SwingUtilities.isLeftMouseButton(evt)) {
-            if (evt.getClickCount() == 2) {
-                int row = lstSuppliers.getSelectedIndex();
-                if (row == -1) {
-                    return;
-                }
-                Supplier sup = currentTableContents.get(row);
-                SupplierDialog.showDialog(this, sup);
-            }
-        }
-    }//GEN-LAST:event_lstSuppliersMouseClicked
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClose;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JList<String> lstSuppliers;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 }

@@ -93,6 +93,7 @@ public class SupplierDialog extends javax.swing.JDialog {
         btnAdd = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setIconImage(GUI.icon);
         setResizable(false);
 
         jLabel1.setText("Supplier Name:");
@@ -172,11 +173,11 @@ public class SupplierDialog extends javax.swing.JDialog {
         String name = txtName.getText();
         String address = txtAddress.getText();
         String phone = txtNumber.getText();
-        if(name.length() == 0 || address.length() == 0 || phone.length() == 0){
+        if (name.length() == 0 || address.length() == 0 || phone.length() == 0) {
             JOptionPane.showMessageDialog(this, "Not all fields have been filled out", "New Supplier", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if(!Utilities.isNumber(phone)){
+        if (!Utilities.isNumber(phone)) {
             JOptionPane.showMessageDialog(this, "Letter not allowed in phone number", "New supplier", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -184,11 +185,9 @@ public class SupplierDialog extends javax.swing.JDialog {
             Supplier sup = new Supplier(name, address, phone);
             try {
                 dc.addSupplier(sup);
-                JOptionPane.showMessageDialog(this, "New Supplier added", "Added", JOptionPane.INFORMATION_MESSAGE);
+                setVisible(false);
             } catch (IOException | SQLException | JTillException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            } finally {
-                setVisible(false);
             }
         } else {
             s.setName(name);
@@ -196,10 +195,10 @@ public class SupplierDialog extends javax.swing.JDialog {
             s.setContactNumber(phone);
             try {
                 dc.updateSupplier(s);
+                JOptionPane.showMessageDialog(this, "Supplier Updated", "Supplier", JOptionPane.INFORMATION_MESSAGE);
+                setVisible(false);
             } catch (IOException | SQLException | JTillException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            } finally {
-                setVisible(false);
             }
         }
     }//GEN-LAST:event_btnAddActionPerformed
