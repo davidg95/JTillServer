@@ -732,7 +732,7 @@ public class ConnectionHandler {
         return dc.updateBucket(b);
     }
 
-    @JConnMethod("GETUNCASHEDTERMINALSALES")
+    @JConnMethod("GETUNCASHEDTILLSALES")
     public List<Sale> getUncashedTerminalSales(@JConnParameter("ID") int id) throws IOException, SQLException, JTillException {
         return dc.getUncachedTillSales(id);
     }
