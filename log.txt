@@ -1,3 +1,4 @@
-JTill log Fri Oct 20 11:51:38 BST 2017
-[11:51:38] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[11:51:42] [INFO] David Grant has logged in
+JTill log Fri Oct 20 12:26:41 BST 2017
+[12:26:42] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[12:26:42] [SEVERE] java.sql.SQLSyntaxErrorException: 'VALUE' is not a column in table or VTI 'WASTEREPORTS'.
+[12:26:45] [INFO] David Grant has logged in

@@ -326,6 +326,16 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+            try {
+                int r1 = stmt.executeUpdate("ALTER TABLE WASTEREPORTS DROP COLUMN VALUE");
+                int r2 = stmt.executeUpdate("ALTER TABLE WASTEITEMS ADD VALUE DOUBLE");
+                con.commit();
+                LOG.log(Level.INFO, "Removed VALUE from WASTEREPORTS, " + r1 + " records affected");
+                LOG.log(Level.INFO, "Added VALUE to WASTEITEMS, " + r2 + " records affected");
+            } catch (SQLException ex) {
+                LOG.log(Level.SEVERE, null, ex);
+                con.rollback();
+            }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
         }
@@ -995,7 +1005,7 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public Product addProduct(Product p) throws SQLException {
-        String query = "INSERT INTO PRODUCTS (ORDER_CODE, NAME, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, DEPARTMENT_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL, BARCODE, SCALE, SCALE_NAME, INCVAT) VALUES (" + p.getSQLInsertString() + ")";
+        String query = "INSERT INTO PRODUCTS (ORDER_CODE, NAME, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL, BARCODE, SCALE, SCALE_NAME, INCVAT) VALUES (" + p.getSQLInsertString() + ")";
         try (Connection con = getNewConnection()) {
             try (PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.executeUpdate();
@@ -3151,16 +3161,15 @@ public class DBConnect implements DataConnect {
         List<WasteReport> wrs = new LinkedList<>();
         while (set.next()) {
             int id = set.getInt("ID");
-            BigDecimal value = new BigDecimal(Double.toString(set.getDouble("VALUE")));
             Date date = new Date(set.getLong("TIMESTAMP"));
-            wrs.add(new WasteReport(id, value, date));
+            wrs.add(new WasteReport(id, date));
         }
         return wrs;
     }
 
     @Override
     public WasteReport addWasteReport(WasteReport wr) throws IOException, SQLException, JTillException {
-        String query = "INSERT INTO APP.WASTEREPORTS (VALUE, TIMESTAMP) values (" + wr.getTotalValue().doubleValue() + "," + wr.getDate().getTime() + ")";
+        String query = "INSERT INTO APP.WASTEREPORTS (TIMESTAMP) values (" + wr.getDate().getTime() + ")";
         try (Connection con = getNewConnection()) {
             PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             try {

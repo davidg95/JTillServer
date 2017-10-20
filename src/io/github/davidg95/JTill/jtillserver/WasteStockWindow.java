@@ -230,12 +230,12 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         for (WasteItem wi : wasteItems) {
             try {
                 WasteReason wr = dc.getWasteReason(wi.getReason());
-                Object[] row = new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + wi.getProduct().getCostPrice().divide(new BigDecimal(wi.getProduct().getPackSize()), BigDecimal.ROUND_HALF_EVEN).multiply(new BigDecimal(wi.getQuantity())).setScale(2), wr.getReason()};
+                Object[] row = new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + wi.getTotalValue(), wr.getReason()};
                 model.addRow(row);
             } catch (IOException | SQLException | JTillException ex) {
                 Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
-            val = val.add(wi.getProduct().getCostPrice().divide(new BigDecimal(wi.getProduct().getPackSize()), BigDecimal.ROUND_HALF_EVEN).setScale(2).multiply(new BigDecimal(wi.getQuantity())));
+            val = val.add(wi.getTotalValue());
         }
         if (val == BigDecimal.ZERO) {
             lblValue.setText("Total Value: £0.00");
@@ -260,7 +260,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         for (WasteItem wi : report.getItems()) {
             try {
                 WasteReason wr = dc.getWasteReason(wi.getReason());
-                Object[] row = new Object[]{wi.getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + wi.getProduct().getPrice().multiply(new BigDecimal(wi.getQuantity())), wr.getReason()};
+                Object[] row = new Object[]{wi.getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + wi.getTotalValue(), wr.getReason()};
                 model.addRow(row);
             } catch (IOException | SQLException | JTillException ex) {
                 Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -583,13 +583,12 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 Product product = dc.getProduct(wi.getProduct().getId());
                 product.removeStock(wi.getQuantity());
                 dc.updateProduct(product);
-                total = total.add(product.getPrice().multiply(new BigDecimal(wi.getQuantity())));
+                total = total.add(product.getIndividualCost().multiply(new BigDecimal(wi.getQuantity())));
             } catch (IOException | ProductNotFoundException | SQLException ex) {
                 JOptionPane.showInternalMessageDialog(WasteStockWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         total.setScale(2);
-        wr.setTotalValue(total);
         wr.setItems(wasteItems);
         try {
             dc.addWasteReport(wr);
