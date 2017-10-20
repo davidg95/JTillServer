@@ -25,11 +25,11 @@ import javax.swing.JOptionPane;
  * @author David
  */
 public class ConsolidatedReportingDialog extends javax.swing.JDialog {
-    
+
     private static JDialog dialog;
-    
+
     private final DataConnect dc;
-    
+
     private DefaultComboBoxModel model;
 
     /**
@@ -48,7 +48,7 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
         pickStart.setDate(new Date(0));
         pickEnd.setDate(new Date());
     }
-    
+
     public static void showDialog(Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
@@ -57,7 +57,7 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
         dialog = new ConsolidatedReportingDialog(window);
         dialog.setVisible(true);
     }
-    
+
     private void init() {
         model = new DefaultComboBoxModel();
         try {
@@ -183,7 +183,7 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
 
     private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
         Date start = pickStart.getDate();
-        Date end = pickEnd.getDate();
+        Date end = new Date(pickEnd.getDate().getTime() + 86399999L);
         if (!start.before(end)) {
             JOptionPane.showMessageDialog(this, "Start date must be before end", "Consolodated report", JOptionPane.ERROR_MESSAGE);
             return;
