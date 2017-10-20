@@ -179,6 +179,8 @@ public class StockReportDialog extends javax.swing.JDialog {
             } finally {
                 mDialog.hide();
             }
+        } else{
+            mDialog.hide();
         }
     }
     private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed

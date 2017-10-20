@@ -333,7 +333,6 @@ public class DBConnect implements DataConnect {
                 LOG.log(Level.INFO, "Removed VALUE from WASTEREPORTS, " + r1 + " records affected");
                 LOG.log(Level.INFO, "Added VALUE to WASTEITEMS, " + r2 + " records affected");
             } catch (SQLException ex) {
-                LOG.log(Level.SEVERE, null, ex);
                 con.rollback();
             }
             TillSplashScreen.addBar(20);
@@ -3307,7 +3306,8 @@ public class DBConnect implements DataConnect {
                 Product p = this.getProduct(set.getInt("PRODUCT"));
                 int quantity = set.getInt("QUANTITY");
                 int wreason = set.getInt("REASON");
-                wis.add(new WasteItem(id, p, quantity, wreason));
+                BigDecimal value = set.getBigDecimal("VALUE");
+                wis.add(new WasteItem(id, p, quantity, wreason, value));
             } catch (ProductNotFoundException ex) {
                 LOG.log(Level.SEVERE, null, ex);
             }
@@ -3317,7 +3317,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public WasteItem addWasteItem(WasteReport wr, WasteItem wi) throws IOException, SQLException, JTillException {
-        String query = "INSERT INTO APP.WASTEITEMS (REPORT_ID, PRODUCT, QUANTITY, REASON) values (" + wr.getId() + "," + wi.getProduct().getId() + "," + wi.getQuantity() + "," + wi.getReason() + ")";
+        String query = "INSERT INTO APP.WASTEITEMS (REPORT_ID, PRODUCT, QUANTITY, REASON, VALUE) values (" + wr.getId() + "," + wi.getProduct().getId() + "," + wi.getQuantity() + "," + wi.getReason() + "," + wi.getTotalValue() + ")";
         try (Connection con = getNewConnection()) {
             PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             try {
@@ -4975,10 +4975,10 @@ public class DBConnect implements DataConnect {
         try (final Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
-                ResultSet set = stmt.executeQuery("SELECT VALUE, TIMESTAMP FROM WASTEREPORTS WHERE TIMESTAMP >= " + s + " AND TIMESTAMP <= " + e);
+                ResultSet set = stmt.executeQuery("SELECT * FROM WASTEREPORTS, WASTEITEMS WHERE WASTEREPORTS.ID = WASTEITEMS.REPORT_ID AND TIMESTAMP >= " + s + " AND TIMESTAMP <= " + e);
                 BigDecimal total = BigDecimal.ZERO;
                 while (set.next()) {
-                    total = total.add(set.getBigDecimal(1));
+                    total = total.add(set.getBigDecimal(8));
                 }
                 con.commit();
                 return total;
