@@ -1,3 +1,16 @@
-JTill log Fri Oct 20 14:16:52 BST 2017
-[14:16:52] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[14:16:57] [INFO] David Grant has logged in
+JTill log Fri Oct 20 16:11:16 BST 2017
+[16:11:16] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[16:11:23] [INFO] David Grant has logged in
+[16:11:34] [INFO] Terminal DAVID-PC has connected
+[16:11:34] [INFO] Till 1 is retreiving settings
+[16:11:37] [INFO] David Grant has logged in from Till 1
+[16:11:54] [INFO] David Grant has logged out
+[16:11:56] [INFO] Till 1 is retreiving settings
+[16:11:59] [INFO] David Grant has logged in from Till 1
+[16:12:30] [INFO] David Grant has logged out
+[16:12:30] [INFO] Till 1 is retreiving settings
+[16:12:32] [INFO] David Grant has logged in from Till 1
+[16:12:40] [WARNING] 7 is below minimum stock level
+[16:13:00] [INFO] David Grant has logged out
+[16:13:00] [INFO] Till 1 is retreiving settings
+[16:13:01] [INFO] David Grant has logged in from Till 1

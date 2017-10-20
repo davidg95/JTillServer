@@ -892,4 +892,24 @@ public class ConnectionHandler {
     public void getProductsInDepartment(@JConnParameter("ID") int id) throws IOException, SQLException {
         dc.getProductsInDepartment(id);
     }
+
+    @JConnMethod("ADDCONDIMENT")
+    public Condiment addCondiment(@JConnParameter("C") Condiment c) throws IOException, SQLException {
+        return dc.addCondiment(c);
+    }
+
+    @JConnMethod("GETPRODUCTSCONDIMENTS")
+    public List<Condiment> getProductsCondiments(@JConnParameter("ID") int id) throws IOException, SQLException {
+        return dc.getProductsCondiments(id);
+    }
+
+    @JConnMethod("UPDATECONDIMENT")
+    public Condiment updateCondiment(@JConnParameter("C") Condiment c) throws IOException, SQLException {
+        return dc.updateCondiment(c);
+    }
+
+    @JConnMethod("REMOVECONDIMENT")
+    public void removeCondiment(@JConnParameter("ID") int id) throws IOException, SQLException {
+        dc.removeCondiment(id);
+    }
 }

@@ -40,11 +40,9 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form CategoryWindow
-     *
-     * @param dc the data connection.
      */
-    public CategorysWindow(DataConnect dc) {
-        this.dc = dc;
+    public CategorysWindow() {
+        this.dc = GUI.gui.dc;
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
@@ -60,12 +58,10 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
     /**
      * Method to show the category window. If this is the first time it is being
      * called, it will first construct the window.
-     *
-     * @param dc the data connection.
      */
-    public static void showCategoryWindow(DataConnect dc) {
+    public static void showCategoryWindow() {
         if (frame == null || frame.isClosed()) {
-            frame = new CategorysWindow(dc);
+            frame = new CategorysWindow();
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {
@@ -111,6 +107,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
+        table.setSelectionModel(new ForcedListSelectionModel());
         try {
             depsModel.removeAllElements();
             List<Department> deps = dc.getAllDepartments();

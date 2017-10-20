@@ -387,6 +387,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         btnSaveChanges = new javax.swing.JButton();
         btnRemoveProduct = new javax.swing.JButton();
         txtDepartment = new javax.swing.JTextField();
+        btnCondiments = new javax.swing.JButton();
         btnAdvanced = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -624,6 +625,13 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
         txtDepartment.setEditable(false);
 
+        btnCondiments.setText("Condiments");
+        btnCondiments.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCondimentsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelCurrentLayout = new javax.swing.GroupLayout(panelCurrent);
         panelCurrent.setLayout(panelCurrentLayout);
         panelCurrentLayout.setHorizontalGroup(
@@ -657,7 +665,9 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                                 .addGroup(panelCurrentLayout.createSequentialGroup()
                                     .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(chkIncVat)))
+                                    .addComponent(chkIncVat)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnCondiments)))
                             .addGroup(panelCurrentLayout.createSequentialGroup()
                                 .addComponent(txtStock, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -722,7 +732,8 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(chkIncVat))
+                    .addComponent(chkIncVat)
+                    .addComponent(btnCondiments))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtCostPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -837,7 +848,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnCSV)
                             .addComponent(btnChart))
-                        .addGap(0, 44, Short.MAX_VALUE)))
+                        .addGap(0, 45, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
@@ -984,7 +995,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tableProductsMousePressed
 
     private void btnShowCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowCategorysActionPerformed
-        CategorysWindow.showCategoryWindow(dc);
+        CategorysWindow.showCategoryWindow();
         init();
     }//GEN-LAST:event_btnShowCategorysActionPerformed
 
@@ -1202,6 +1213,10 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableProductsMouseClicked
 
+    private void btnCondimentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCondimentsActionPerformed
+        CondimentWindow.showWindow(product);
+    }//GEN-LAST:event_btnCondimentsActionPerformed
+
     private void searchFieldClick(int opt, JTextField f) {
         if (opt == 1) {
             searchC = CategorySelectDialog.showDialog(this);
@@ -1220,6 +1235,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnCSV;
     private javax.swing.JButton btnChart;
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnCondiments;
     private javax.swing.JButton btnDepartments;
     private javax.swing.JButton btnNewProduct;
     private javax.swing.JButton btnReceiveStock;

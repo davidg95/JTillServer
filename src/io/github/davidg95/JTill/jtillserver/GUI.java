@@ -1519,7 +1519,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemDiscountsActionPerformed
 
     private void itemCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCategorysActionPerformed
-        CategorysWindow.showCategoryWindow(dc);
+        CategorysWindow.showCategoryWindow();
     }//GEN-LAST:event_itemCategorysActionPerformed
 
     private void itemTaxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTaxesActionPerformed
@@ -1531,7 +1531,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnDiscountsActionPerformed
 
     private void btnCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategorysActionPerformed
-        CategorysWindow.showCategoryWindow(dc);
+        CategorysWindow.showCategoryWindow();
     }//GEN-LAST:event_btnCategorysActionPerformed
 
     private void itemServerOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemServerOptionsActionPerformed

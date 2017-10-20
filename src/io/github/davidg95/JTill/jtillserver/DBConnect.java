@@ -335,6 +335,32 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+            try {
+                String condiments = "create table \"APP\".CONDIMENTS\n"
+                        + "(\n"
+                        + "     ID INT not null primary key\n"
+                        + "         GENERATED ALWAYS AS IDENTITY\n"
+                        + "         (START WITH 1, INCREMENT BY 1),\n"
+                        + "     NAME VARCHAR(30),\n"
+                        + "     PRODUCT INT not null references PRODUCTS(ID),\n"
+                        + "     VALUE DOUBLE,\n"
+                        + "     STOCK int\n"
+                        + ")";
+                stmt.executeUpdate(condiments);
+                con.commit();
+                LOG.log(Level.INFO, "Created table CONDIMENTS");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
+            try {
+                int r1 = stmt.executeUpdate("ALTER TABLE PRODUCTS ADD COLUMN MAXCON INT");
+                int r2 = stmt.executeUpdate("ALTER TABLE PRODUCTS ADD COLUMN MINCON INT");
+                con.commit();
+                LOG.log(Level.INFO, "Added MAXCON to PRODUCTS, " + r1 + " records affected");
+                LOG.log(Level.INFO, "Added MINCON to PRODUCTS, " + r2 + " records affected");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
         }
@@ -963,28 +989,30 @@ public class DBConnect implements DataConnect {
             double scale = set.getDouble(16);
             String scaleName = set.getString(17);
             boolean incVat = set.getBoolean(18);
+            int maxCon = set.getInt(19);
+            int minCon = set.getInt(20);
 
-            String cName = set.getString(20);
-            Time start = set.getTime(21);
-            Time end = set.getTime(22);
-            boolean restrict = set.getBoolean(23);
-            int age = set.getInt(24);
-            int department = set.getInt(25);
+            String cName = set.getString(22);
+            Time start = set.getTime(23);
+            Time end = set.getTime(24);
+            boolean restrict = set.getBoolean(25);
+            int age = set.getInt(26);
+            int department = set.getInt(27);
 
-            String dName = set.getString(27);
+            String dName = set.getString(29);
 
             Department d = new Department(department, dName);
 
             Category c = new Category(cId, cName, start, end, restrict, age, d);
 
-            String tName = set.getString(29);
-            double value = set.getDouble(30);
+            String tName = set.getString(31);
+            double value = set.getDouble(32);
 
             Tax t = new Tax(taxID, tName, value);
 
             Product p;
             if (!open) {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon);
             } else {
                 p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, code);
             }
@@ -2299,28 +2327,30 @@ public class DBConnect implements DataConnect {
             double scale = set.getDouble(24);
             String scaleName = set.getString(25);
             boolean incVat = set.getBoolean(26);
+            int maxCon = set.getInt(27);
+            int minCon = set.getInt(28);
 
-            String cName = set.getString(28);
-            Time start = set.getTime(29);
-            Time end = set.getTime(30);
-            boolean restrict = set.getBoolean(31);
-            int age = set.getInt(32);
-            int department = set.getInt(33);
+            String cName = set.getString(30);
+            Time start = set.getTime(31);
+            Time end = set.getTime(32);
+            boolean restrict = set.getBoolean(33);
+            int age = set.getInt(34);
+            int department = set.getInt(35);
 
-            String dName = set.getString(35);
+            String dName = set.getString(37);
 
             Department d = new Department(department, dName);
 
             Category c = new Category(cId, cName, start, end, restrict, age, d);
 
-            String tName = set.getString(37);
-            double value = set.getDouble(38);
+            String tName = set.getString(39);
+            double value = set.getDouble(40);
 
             Tax t = new Tax(taxID, tName, value);
 
             Product p;
             if (!open) {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon);
             } else {
                 p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, code);
             }
@@ -4590,28 +4620,30 @@ public class DBConnect implements DataConnect {
                     double scale = set.getDouble(16);
                     String scaleName = set.getString(17);
                     boolean incVat = set.getBoolean(18);
+                    int maxCon = set.getInt(19);
+                    int minCon = set.getInt(20);
 
-                    String cName = set.getString(20);
-                    Time start = set.getTime(21);
-                    Time end = set.getTime(22);
-                    boolean restrict = set.getBoolean(23);
-                    int age = set.getInt(24);
-                    int department = set.getInt(25);
+                    String cName = set.getString(22);
+                    Time start = set.getTime(23);
+                    Time end = set.getTime(24);
+                    boolean restrict = set.getBoolean(25);
+                    int age = set.getInt(26);
+                    int department = set.getInt(27);
 
-                    String dName = set.getString(27);
+                    String dName = set.getString(29);
 
                     Department d = new Department(department, dName);
 
                     Category c = new Category(cId, cName, start, end, restrict, age, d);
 
-                    String tName = set.getString(29);
-                    double value = set.getDouble(30);
+                    String tName = set.getString(31);
+                    double value = set.getDouble(32);
 
                     Tax t = new Tax(taxID, tName, value);
 
                     Product p;
                     if (!open) {
-                        p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code);
+                        p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon);
                     } else {
                         p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, code);
                     }
@@ -5039,6 +5071,82 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
                 LOG.log(Level.INFO, null, ex);
+                throw ex;
+            }
+        }
+    }
+
+    @Override
+    public Condiment addCondiment(Condiment c) throws IOException, SQLException {
+        String query = "INSERT INTO CONDIMENTS (NAME, PRODUCT, VALUE) VALUES ('" + c.getName() + "'," + c.getProduct() + "," + c.getValue().doubleValue() + ")";
+        try (final Connection con = getNewConnection()) {
+            try (PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.executeUpdate();
+                ResultSet set = stmt.getGeneratedKeys();
+                while (set.next()) {
+                    int id = set.getInt(1);
+                    c.setId(id);
+                }
+                con.commit();
+                return c;
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
+
+    @Override
+    public List<Condiment> getProductsCondiments(int product) throws IOException, SQLException {
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet set = stmt.executeQuery("SELECT * FROM CONDIMENTS WHERE PRODUCT = " + product);
+                List<Condiment> condiments = new LinkedList<>();
+                while (set.next()) {
+                    int id = set.getInt(1);
+                    String name = set.getString(2);
+                    BigDecimal value = set.getBigDecimal(4).setScale(2, 6);
+                    int stock = set.getInt(5);
+                    condiments.add(new Condiment(id, name, product, value, stock));
+                }
+                con.commit();
+                return condiments;
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
+
+    @Override
+    public Condiment updateCondiment(Condiment c) throws IOException, SQLException {
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("UPDATE CONDIMENTS SET NAME='" + c.getName() + "', VALUE=" + c.getValue().doubleValue() + ", PRODUCT=" + c.getProduct() + ", STOCK=" + c.getStock() + " WHERE ID=" + c.getId());
+                con.commit();
+                return c;
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
+
+    @Override
+    public void removeCondiment(int id) throws IOException, SQLException {
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("DELETE FROM CONDIMENTS WHERE ID=" + id);
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
                 throw ex;
             }
         }

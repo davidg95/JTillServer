@@ -620,7 +620,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             return;
         }
         boolean incVat = chkIncVat.isSelected();
-        product = new Product(name, shortName, barcode, orderCode, category, comments, tax, price, costPrice, incVat, packSize, 0, minStock, maxStock, 0);
+        product = new Product(name, shortName, barcode, orderCode, category, comments, tax, price, costPrice, incVat, packSize, 0, minStock, maxStock, 0, 0, 0);
         try {
             product = dc.addProduct(product);
             if (nextBarcode != null) {
