@@ -5,8 +5,8 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DataConnect;
-import io.github.davidg95.JTill.jtill.Product;
+import io.github.davidg95.JTill.jtill.*;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Font;
@@ -68,6 +68,8 @@ public class StockReportDialog extends javax.swing.JDialog {
         private final List<Product> products;
         private final String info;
 
+        private final int x = 70;
+
         public StockPrintable(List<Product> products, String info) {
             this.products = products;
             this.info = info;
@@ -75,35 +77,53 @@ public class StockReportDialog extends javax.swing.JDialog {
 
         @Override
         public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-            if (pageIndex > 0) {
-                return NO_SUCH_PAGE;
-            }
+            try {
+                if (pageIndex > 0) {
+                    return NO_SUCH_PAGE;
+                }
 
-            Graphics2D g = (Graphics2D) graphics;
-            g.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+                Graphics2D g = (Graphics2D) graphics;
+                g.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 
-            Font oldFont = graphics.getFont();
+                Font oldFont = g.getFont();
 
-            int y = 60;
-            final int x = 70;
-            final int lineSpace = 20;
+                int y = 60;
+                final int lineSpace = 20;
 
-            g.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
+                g.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
 
-            g.drawString("Stock Report", x, y);
-            g.setFont(oldFont);
-            y += lineSpace;
-            g.drawString(info, x, y);
-
-            y += lineSpace;
-
-            for (Product p : products) {
-                g.drawString(p.getId() + "", x, y);
-                g.drawString(p.getLongName(), x + 30, y);
-                g.drawString(p.getStock() + "", x + 230, y);
+                g.drawString("Stock Report", x, y);
+                g.setFont(oldFont);
                 y += lineSpace;
+                g.drawString(info, x, y);
+
+                y += lineSpace;
+
+                List<Department> departments = dc.getAllDepartments();
+                for (Department d : departments) {
+                    printDepartmentHeader(g, d, y, (int) pageFormat.getWidth() - 140);
+                    y += 50;
+                    for (Product p : products) {
+                        if (p.getCategory().getDepartment().equals(d)) {
+                            g.drawString(p.getId() + "", x, y);
+                            g.drawString(p.getLongName(), x + 30, y);
+                            g.drawString(p.getStock() + "", x + 230, y);
+                            y += lineSpace;
+                        }
+                    }
+                }
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showMessageDialog(StockReportDialog.this, ex);
             }
             return PAGE_EXISTS;
+        }
+
+        private void printDepartmentHeader(Graphics g, Department d, int y, int width) {
+            g.setColor(Color.LIGHT_GRAY);
+            g.fillRect(x, y, width, 30);
+            g.setColor(Color.BLACK);
+            g.drawRect(x, y, width, 30);
+            g.drawString(d.getName(), x + 20, y + 20);
         }
 
     }
@@ -179,7 +199,7 @@ public class StockReportDialog extends javax.swing.JDialog {
             } finally {
                 mDialog.hide();
             }
-        } else{
+        } else {
             mDialog.hide();
         }
     }
