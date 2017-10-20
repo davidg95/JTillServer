@@ -128,8 +128,8 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
         btnCreate = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtMax = new javax.swing.JTextField();
         txtMin = new javax.swing.JTextField();
+        txtMax = new javax.swing.JTextField();
         btnSave = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
 
@@ -211,8 +211,8 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
                                     .addComponent(jLabel2))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtMax, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(txtMin, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(txtMin, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txtMax, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(btnCreate)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(54, 54, 54)
@@ -236,11 +236,11 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
                         .addComponent(btnCreate)
                         .addGap(43, 43, 43)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSave)
@@ -287,12 +287,12 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        if (txtMax.getText().isEmpty() || txtMin.getText().isEmpty()) {
+        if (txtMin.getText().isEmpty() || txtMax.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Fill out all fields", "Condiemnts", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        if (!Utilities.isNumber(txtMax.getText()) || !Utilities.isNumber(txtMin.getText())) {
+        if (!Utilities.isNumber(txtMin.getText()) || !Utilities.isNumber(txtMax.getText())) {
             JOptionPane.showMessageDialog(this, "Must enter numbers", "Condiemnts", JOptionPane.ERROR_MESSAGE);
             return;
         }

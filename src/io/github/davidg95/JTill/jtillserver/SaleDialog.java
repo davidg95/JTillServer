@@ -212,7 +212,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
                 y += 30;
             }
             g2.drawLine(item - 30, y - 20, total + 100, y - 20);
-            g2.drawString("Total: £" + toPrint.getTotal().setScale(2), total, y);
+            g2.drawString("Total: £" + toPrint.getTotal().setScale(2, 6), total, y);
 
             //Print the footer.
             g2.setFont(new Font("Arial", Font.BOLD, 20));
