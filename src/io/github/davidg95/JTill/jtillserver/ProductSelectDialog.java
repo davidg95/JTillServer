@@ -17,6 +17,8 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -37,6 +39,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     private final DataConnect dc;
 
     private final DefaultTableModel model;
+    private List<Product> allProducts;
     private List<Product> currentTableContents;
 
     private final boolean showOpen;
@@ -62,6 +65,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setModal(true);
         currentTableContents = new ArrayList<>();
+        allProducts = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         showAllProducts();
         txtSearch.requestFocus();
@@ -138,25 +142,30 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         ProductsWindow.update();
     }
 
-    /**
-     * Method to show all products in the list.
-     */
     private void showAllProducts() {
         try {
-            currentTableContents = dc.getAllProducts();
-            List<Product> newList = new ArrayList<>();
-            if (!showOpen) {
-                for (Product p : currentTableContents) {
-                    if (!p.isOpen()) {
-                        newList.add(p);
-                    }
-                }
-                currentTableContents = newList;
-            }
-            updateTable();
+            allProducts = dc.getAllProducts();
+            currentTableContents = allProducts;
+            setTable();
         } catch (IOException | SQLException ex) {
             showError(ex);
         }
+    }
+
+    /**
+     * Method to show all products in the list.
+     */
+    private void setTable() {
+        List<Product> newList = new ArrayList<>();
+        if (!showOpen) {
+            for (Product p : currentTableContents) {
+                if (!p.isOpen()) {
+                    newList.add(p);
+                }
+            }
+            currentTableContents = newList;
+        }
+        updateTable();
     }
 
     /**
@@ -444,6 +453,26 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         }
     }
 
+    private void filterCategory(Category c) {
+        currentTableContents.clear();
+        for (Product p : allProducts) {
+            if (p.getCategory().equals(c)) {
+                currentTableContents.add(p);
+            }
+        }
+        setTable();
+    }
+
+    private void filterDepartment(Department d) {
+        currentTableContents.clear();
+        for (Product p : allProducts) {
+            if (p.getCategory().getDepartment().equals(d)) {
+                currentTableContents.add(p);
+            }
+        }
+        setTable();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -686,11 +715,18 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             return;
         }
         TreeNode node = (TreeNode) path.getLastPathComponent();
-        if (path.getPathCount() == 3) {
+        if (path.getPathCount() == 3) { //Category
             TreeNode par = (TreeNode) path.getPathComponent(path.getPathCount() - 2);
             setTitle("Select Product - " + par.toString() + " - " + node.toString());
-        } else {
+            CategoryNode catNode = (CategoryNode) node;
+            filterCategory(catNode.getCategory());
+        } else if (path.getPathCount() == 2) { //Department
             setTitle("Select Product - " + node.toString());
+            DepartmentNode depNode = (DepartmentNode) node;
+            filterDepartment(depNode.getDepartment());
+        } else { //All
+            setTitle("Select Product - All");
+            showAllProducts();
         }
     }//GEN-LAST:event_treeMousePressed
 
