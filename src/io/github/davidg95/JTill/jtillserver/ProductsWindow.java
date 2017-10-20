@@ -51,8 +51,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
     private final DefaultTableModel model;
     private List<Product> currentTableContents;
-
-    private List<Department> departments;
+    
     private List<Tax> taxes;
     private List<Category> categorys;
 
@@ -128,7 +127,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private void init() {
         tableProducts.setSelectionModel(new ForcedListSelectionModel());
         try {
-            departments = dc.getAllDepartments();
             taxes = dc.getAllTax();
             categorys = dc.getAllCategorys();
             taxesModel = new DefaultComboBoxModel(taxes.toArray());
@@ -536,7 +534,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
         txtComments.setColumns(20);
         txtComments.setRows(5);
-        txtComments.setEnabled(false);
         jScrollPane2.setViewportView(txtComments);
 
         txtBarcode.setEditable(false);

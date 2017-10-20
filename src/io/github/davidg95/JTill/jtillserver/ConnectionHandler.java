@@ -884,13 +884,13 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("CATSINDEP")
-    public void getCategoriesInDepartment(@JConnParameter("DEP") int department) throws IOException, SQLException {
-        dc.getCategoriesInDepartment(department);
+    public List<Category> getCategoriesInDepartment(@JConnParameter("DEP") int department) throws IOException, SQLException {
+        return dc.getCategoriesInDepartment(department);
     }
 
     @JConnMethod("GETPRODUCTSINDEPARTMENT")
-    public void getProductsInDepartment(@JConnParameter("ID") int id) throws IOException, SQLException {
-        dc.getProductsInDepartment(id);
+    public List<Product> getProductsInDepartment(@JConnParameter("ID") int id) throws IOException, SQLException {
+        return dc.getProductsInDepartment(id);
     }
 
     @JConnMethod("ADDCONDIMENT")
