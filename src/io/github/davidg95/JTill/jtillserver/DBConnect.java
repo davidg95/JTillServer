@@ -950,7 +950,7 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public List<Product> getAllProducts() throws SQLException {
+    public List<Product> getAllProducts() throws SQLException, IOException {
         String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID";
         List<Product> products;
         try (Connection con = getNewConnection()) {
@@ -964,6 +964,9 @@ public class DBConnect implements DataConnect {
                 LOG.log(Level.SEVERE, null, ex);
                 throw ex;
             }
+        }
+        for (Product p : products) {
+            p.setCondiments(getProductsCondiments(p.getId()));
         }
         return products;
     }
@@ -1187,7 +1190,7 @@ public class DBConnect implements DataConnect {
      * @throws ProductNotFoundException if the product could not be found.
      */
     @Override
-    public Product getProduct(int code) throws SQLException, ProductNotFoundException {
+    public Product getProduct(int code) throws SQLException, ProductNotFoundException, IOException {
         String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND PRODUCTS.ID=" + code;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
@@ -1204,6 +1207,7 @@ public class DBConnect implements DataConnect {
                 LOG.log(Level.SEVERE, null, ex);
                 throw ex;
             }
+            products.get(0).setCondiments(getProductsCondiments(products.get(0).getId()));
             return products.get(0);
         }
     }
@@ -2154,7 +2158,7 @@ public class DBConnect implements DataConnect {
         return s;
     }
 
-    private boolean checkLoyalty(Product pr) {
+    private boolean checkLoyalty(Product pr) throws IOException {
         final List<JTillObject> contents = new ArrayList<>();
         try (Scanner inDep = new Scanner(new File("departments.loyalty"))) {
             while (inDep.hasNext()) {
@@ -3267,7 +3271,7 @@ public class DBConnect implements DataConnect {
         }
     }
 
-    private List<WasteItem> getWasteItemsInReport(int id) throws SQLException {
+    private List<WasteItem> getWasteItemsInReport(int id) throws SQLException, IOException {
         String query = "SELECT * FROM WASTEITEMS WHERE REPORT_ID=" + id;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
@@ -3328,7 +3332,7 @@ public class DBConnect implements DataConnect {
         return wr;
     }
 
-    private List<WasteItem> getWasteItemsFromResultSet(ResultSet set) throws SQLException {
+    private List<WasteItem> getWasteItemsFromResultSet(ResultSet set) throws SQLException, IOException {
         List<WasteItem> wis = new LinkedList<>();
         while (set.next()) {
             try {

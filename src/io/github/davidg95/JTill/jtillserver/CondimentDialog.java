@@ -72,6 +72,12 @@ public class CondimentDialog extends javax.swing.JDialog {
 
         jLabel1.setText("Name:");
 
+        txtValue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtValueActionPerformed(evt);
+            }
+        });
+
         jLabel2.setText("Value:");
 
         btnCreate.setText("Create");
@@ -148,6 +154,10 @@ public class CondimentDialog extends javax.swing.JDialog {
         c = new Condiment(name, p.getId(), value.setScale(2, 6));
         setVisible(false);
     }//GEN-LAST:event_btnCreateActionPerformed
+
+    private void txtValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtValueActionPerformed
+        btnCreate.doClick();
+    }//GEN-LAST:event_txtValueActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
