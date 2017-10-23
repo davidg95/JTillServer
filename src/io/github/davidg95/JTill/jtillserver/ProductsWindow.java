@@ -1025,7 +1025,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         switch (option) {
             case 1:
                 for (Product p : currentTableContents) {
-                    if ((p.getId() + "").contains(terms)) {
+                    if ((p.getId() + "").equals(terms)) {
                         newList.add(p);
                     }
                 }
