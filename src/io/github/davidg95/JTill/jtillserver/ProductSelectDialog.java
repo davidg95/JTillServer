@@ -17,8 +17,6 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -33,6 +31,8 @@ import javax.swing.tree.TreePath;
  * @author David
  */
 public class ProductSelectDialog extends javax.swing.JDialog {
+
+    private static ProductSelectDialog dialog;
 
     private static Product product;
 
@@ -111,7 +111,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        final ProductSelectDialog dialog = new ProductSelectDialog(window, showOpen);
+        dialog = new ProductSelectDialog(window, showOpen);
         product = null;
         dialog.setVisible(true);
         return product;
@@ -157,12 +157,12 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      */
     private void setTable() {
         List<Product> newList = new ArrayList<>();
-            for (Product p : currentTableContents) {
-                if (!p.isOpen()) {
-                    newList.add(p);
-                }
+        for (Product p : currentTableContents) {
+            if (!p.isOpen()) {
+                newList.add(p);
             }
-            currentTableContents = newList;
+        }
+        currentTableContents = newList;
         updateTable();
     }
 
@@ -638,9 +638,13 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
-        product = currentTableContents.get(table.getSelectedRow());
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            return;
+        }
         btnSelect.setEnabled(true);
         if (evt.getClickCount() == 2) {
+            product = currentTableContents.get(row);
             closedFlag = true;
             this.setVisible(false);
         }
@@ -699,6 +703,13 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_radBarcodeActionPerformed
 
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            return;
+        }
+        if (table.hasFocus()) {
+            product = currentTableContents.get(row);
+        }
         closedFlag = true;
         setVisible(false);
     }//GEN-LAST:event_btnSelectActionPerformed

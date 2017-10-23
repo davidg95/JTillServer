@@ -371,6 +371,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         try {
             dc.logoutTill(till.getId());
+            btnLogout.setEnabled(false);
         } catch (IOException | JTillException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }

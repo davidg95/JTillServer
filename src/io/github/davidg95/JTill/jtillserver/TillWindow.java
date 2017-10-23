@@ -70,7 +70,6 @@ public class TillWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
-        table.getColumnModel().getColumn(0).setMaxWidth(40);
         table.setSelectionModel(new ForcedListSelectionModel());
         InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = table.getActionMap();
@@ -227,9 +226,13 @@ public class TillWindow extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
-            table.getColumnModel().getColumn(0).setResizable(false);
+            table.getColumnModel().getColumn(0).setMinWidth(40);
+            table.getColumnModel().getColumn(0).setPreferredWidth(40);
+            table.getColumnModel().getColumn(0).setMaxWidth(40);
             table.getColumnModel().getColumn(1).setResizable(false);
-            table.getColumnModel().getColumn(2).setResizable(false);
+            table.getColumnModel().getColumn(2).setMinWidth(100);
+            table.getColumnModel().getColumn(2).setPreferredWidth(100);
+            table.getColumnModel().getColumn(2).setMaxWidth(100);
         }
 
         btnClose.setText("Close");
