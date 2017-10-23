@@ -1,7 +1,3 @@
-JTill log Mon Oct 23 12:35:04 BST 2017
-[12:35:04] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[12:35:05] [INFO] Terminal DAVID-PC has connected
-[12:35:05] [INFO] Till 1 is retreiving settings
-[12:35:07] [INFO] David Grant has logged in
-[12:35:10] [INFO] David Grant has logged in from Till 1
-[12:35:35] [INFO] David Grant has logged out
+JTill log Mon Oct 23 12:43:50 BST 2017
+[12:43:51] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[12:43:54] [INFO] David Grant has logged in

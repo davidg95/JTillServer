@@ -157,14 +157,12 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      */
     private void setTable() {
         List<Product> newList = new ArrayList<>();
-        if (!showOpen) {
             for (Product p : currentTableContents) {
                 if (!p.isOpen()) {
                     newList.add(p);
                 }
             }
             currentTableContents = newList;
-        }
         updateTable();
     }
 
