@@ -151,7 +151,6 @@ public class CondimentDialog extends javax.swing.JDialog {
         }
         String name = txtName.getText();
         BigDecimal value = new BigDecimal(txtValue.getText());
-        c = new Condiment(name, p.getId(), value.setScale(2, 6));
         setVisible(false);
     }//GEN-LAST:event_btnCreateActionPerformed
 

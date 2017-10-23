@@ -96,7 +96,7 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
             contents = dc.getProductsCondiments(product.getId());
             model.setRowCount(0);
             for (Condiment c : contents) {
-                model.addRow(new Object[]{c.getId(), c.getName(), "£" + c.getValue(), c.getStock()});
+                model.addRow(new Object[]{c.getId(), c.getProduct_con().getLongName()});
             }
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -133,18 +133,16 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
         btnSave = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "Name", "Value", "Stock"
+                "ID", "Product"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -163,12 +161,6 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
             table.getColumnModel().getColumn(0).setPreferredWidth(40);
             table.getColumnModel().getColumn(0).setMaxWidth(40);
             table.getColumnModel().getColumn(1).setResizable(false);
-            table.getColumnModel().getColumn(2).setMinWidth(80);
-            table.getColumnModel().getColumn(2).setPreferredWidth(80);
-            table.getColumnModel().getColumn(2).setMaxWidth(80);
-            table.getColumnModel().getColumn(3).setMinWidth(50);
-            table.getColumnModel().getColumn(3).setPreferredWidth(50);
-            table.getColumnModel().getColumn(3).setMaxWidth(50);
         }
 
         btnCreate.setText("Create new Condiment");
@@ -253,11 +245,12 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        Condiment c = CondimentDialog.showDialog(this, product);
-        if (c == null) {
+        Product p = ProductSelectDialog.showDialog(this);
+        if (p == null) {
             return;
         }
         try {
+            Condiment c = new Condiment(this.product.getId(), p);
             dc.addCondiment(c);
             setTable();
         } catch (IOException | SQLException ex) {
