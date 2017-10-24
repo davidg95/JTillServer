@@ -2056,7 +2056,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<Product> getProductsInCategory(int id) throws SQLException {
-        String query = "SELECT * FROM PRODUCTS WHERE PRODUCTS.CATEGORY_ID = " + id;
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND CATEGORYS.ID = " + id;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             List<Product> products = new LinkedList<>();
@@ -5081,7 +5081,7 @@ public class DBConnect implements DataConnect {
         try (final Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
-                ResultSet set = stmt.executeQuery("SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEAPRTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND DEPARTMENT.ID = " + id);
+                ResultSet set = stmt.executeQuery("SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND DEPARTMENTS.ID = " + id);
                 List<Product> products = getProductsFromResultSet(set);
                 con.commit();
                 return products;

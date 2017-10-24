@@ -10,15 +10,13 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
-import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -45,6 +43,7 @@ public final class CategorySelectDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setIconImage(GUI.icon);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         init();
@@ -57,7 +56,7 @@ public final class CategorySelectDialog extends javax.swing.JDialog {
      * @return the category that was selected by the user.
      */
     public static Category showDialog(Component parent) {
-        Window window = null;
+        Window window = JOptionPane.getFrameForComponent(parent);
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
@@ -122,14 +121,12 @@ public final class CategorySelectDialog extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
-        txtSearch = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        btnSearch = new javax.swing.JButton();
+        btnSelect = new javax.swing.JButton();
 
         setTitle("Select Category");
         setResizable(false);
 
-        btnClose.setText("Close");
+        btnClose.setText("Cancel");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCloseActionPerformed(evt);
@@ -186,18 +183,10 @@ public final class CategorySelectDialog extends javax.swing.JDialog {
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
         );
 
-        txtSearch.addActionListener(new java.awt.event.ActionListener() {
+        btnSelect.setText("Select");
+        btnSelect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtSearchActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setText("Search:");
-
-        btnSearch.setText("Search");
-        btnSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearchActionPerformed(evt);
+                btnSelectActionPerformed(evt);
             }
         });
 
@@ -211,15 +200,11 @@ public final class CategorySelectDialog extends javax.swing.JDialog {
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSearch)
+                .addComponent(btnSelect)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addContainerGap(403, Short.MAX_VALUE)
+                    .addContainerGap(397, Short.MAX_VALUE)
                     .addComponent(btnClose)
                     .addContainerGap()))
         );
@@ -229,10 +214,7 @@ public final class CategorySelectDialog extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSearch))
+                .addComponent(btnSelect)
                 .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
@@ -245,58 +227,34 @@ public final class CategorySelectDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
-        category = currentTableContents.get(table.getSelectedRow());
-        if (evt.getClickCount() == 2) {
-            this.setVisible(false);
-        }
-    }//GEN-LAST:event_tableMousePressed
-
-    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
-        btnSearch.doClick();
-    }//GEN-LAST:event_txtSearchActionPerformed
-
-    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        String terms = txtSearch.getText();
-
-        if (terms.isEmpty()) {
-            showAllCategorys();
+        int row = table.getSelectedRow();
+        if (row == -1) {
             return;
         }
-
-        List<Category> newList = new ArrayList<>();
-
-        for (Category c : currentTableContents) {
-            if (c.getName().toLowerCase().contains(terms.toLowerCase())) {
-                newList.add(c);
-            }
-        }
-
-        if (newList.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.PLAIN_MESSAGE);
-        } else {
-            currentTableContents = newList;
-            if (newList.size() == 1) {
-                category = newList.get(0);
+        if (SwingUtilities.isLeftMouseButton(evt)) {
+            category = currentTableContents.get(row);
+            if (evt.getClickCount() == 2) {
                 this.setVisible(false);
             }
         }
-        updateTable();
-    }//GEN-LAST:event_btnSearchActionPerformed
+    }//GEN-LAST:event_tableMousePressed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        if (table.getSelectedRow() != -1) {
-            category = currentTableContents.get(table.getSelectedRow());
-        }
+        category = null;
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 
+    private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
+        if (category != null) {
+            setVisible(false);
+        }
+    }//GEN-LAST:event_btnSelectActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
-    private javax.swing.JButton btnSearch;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JButton btnSelect;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
-    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

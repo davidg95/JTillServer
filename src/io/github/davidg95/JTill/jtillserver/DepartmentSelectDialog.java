@@ -10,7 +10,6 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
-import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,6 +17,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -43,14 +44,15 @@ public class DepartmentSelectDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setIconImage(GUI.icon);
         ctc = new ArrayList<>();
         model = (DefaultTableModel) tblDep.getModel();
         init();
     }
 
     public static Department showDialog(Component parent) {
-        Window window = null;
-        if(parent instanceof Dialog || parent instanceof Frame){
+        Window window = JOptionPane.getFrameForComponent(parent);
+        if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
         final DepartmentSelectDialog dialog = new DepartmentSelectDialog(window);
@@ -58,8 +60,8 @@ public class DepartmentSelectDialog extends javax.swing.JDialog {
         dialog.setVisible(true);
         return department;
     }
-    
-    private void init(){
+
+    private void init() {
         tblDep.setSelectionModel(new ForcedListSelectionModel());
         showAllDepartments();
     }
@@ -136,7 +138,7 @@ public class DepartmentSelectDialog extends javax.swing.JDialog {
             tblDep.getColumnModel().getColumn(1).setResizable(false);
         }
 
-        btnClose.setText("Close");
+        btnClose.setText("Cancel");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCloseActionPerformed(evt);
@@ -144,6 +146,11 @@ public class DepartmentSelectDialog extends javax.swing.JDialog {
         });
 
         jButton1.setText("Select");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -175,21 +182,28 @@ public class DepartmentSelectDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        if (tblDep.getSelectedRow() != -1) {
-            department = ctc.get(tblDep.getSelectedRow());
-        }
+        department = null;
         setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void tblDepMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDepMouseClicked
-        if (tblDep.getSelectedRow() == -1) {
+        int row = tblDep.getSelectedRow();
+        if (row == -1) {
             return;
         }
-        if (evt.getClickCount() == 2) {
-            department = ctc.get(tblDep.getSelectedRow());
-            setVisible(false);
+        if (SwingUtilities.isLeftMouseButton(evt)) {
+            department = ctc.get(row);
+            if (evt.getClickCount() == 2) {
+                setVisible(false);
+            }
         }
     }//GEN-LAST:event_tblDepMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (department != null) {
+            setVisible(false);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
