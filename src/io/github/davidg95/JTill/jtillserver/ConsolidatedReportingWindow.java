@@ -201,7 +201,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             Graphics2D g2 = (Graphics2D) graphics;
             g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 
-            Font oldFont = graphics.getFont();
+            Font font = graphics.getFont();
 
             int y = 60;
             int width = (int) (pageFormat.getWidth() - 140);
@@ -209,7 +209,10 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             g2.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
             g2.drawString(header, x, y);
             y += 30;
-            g2.setFont(oldFont); //Change back to the old font.
+            g2.setFont(font); //Change back to the old font.
+
+            String page = "Page " + (pageIndex + 1);
+            g2.drawString(page, (int) (pageFormat.getWidth() / 2) - (g2.getFontMetrics(font).stringWidth(page) / 2), (int) pageFormat.getHeight() - 10);
 
             //Print report info.
             String ter = "";
@@ -246,10 +249,10 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
                         y += lineSpace;
                     }
                 }
-                g2.setFont(new Font("Arial", Font.BOLD, oldFont.getSize()));
+                g2.setFont(new Font("Arial", Font.BOLD, font.getSize()));
                 g2.drawString("Total", x + 10, y - 5);
                 g2.drawString("£" + d.getSales(), x2 + 10, y - 5);
-                g2.setFont(oldFont);
+                g2.setFont(font);
                 g2.drawLine(x2, y1 + lineSpace, x2, y);
                 g2.drawRect(x, y1, width, y - y1);
             }

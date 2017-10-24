@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -81,19 +82,21 @@ public class StockReportDialog extends javax.swing.JDialog {
                 if (pageIndex > 0) {
                     return NO_SUCH_PAGE;
                 }
-
                 Graphics2D g = (Graphics2D) graphics;
                 g.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 
-                Font oldFont = g.getFont();
+                Font font = g.getFont();
 
                 int y = 60;
-                final int lineSpace = 20;
+                FontMetrics metrics = graphics.getFontMetrics(font);
+                final int lineSpace = metrics.getHeight() + 5;
 
                 g.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
 
                 g.drawString("Stock Report", x, y);
-                g.setFont(oldFont);
+                g.setFont(font);
+                String page = "Page " + (pageIndex + 1);
+                g.drawString(page, (int) (pageFormat.getWidth() / 2) - (g.getFontMetrics(font).stringWidth(page) / 2), (int) pageFormat.getHeight() - 10);
                 y += lineSpace;
                 g.drawString(info, x, y);
 
@@ -101,6 +104,9 @@ public class StockReportDialog extends javax.swing.JDialog {
 
                 List<Department> departments = dc.getAllDepartments();
                 for (Department d : departments) {
+                    if (y + 40 > pageFormat.getHeight()) {
+                        continue;
+                    }
                     printDepartmentHeader(g, d, y, (int) pageFormat.getWidth() - 140);
                     y += 50;
                     for (Product p : products) {
