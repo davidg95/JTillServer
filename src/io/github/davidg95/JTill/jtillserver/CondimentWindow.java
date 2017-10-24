@@ -126,12 +126,14 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         btnCreate = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        txtMin = new javax.swing.JTextField();
-        txtMax = new javax.swing.JTextField();
-        btnSave = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        btnSave = new javax.swing.JButton();
+        txtMin = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        txtMax = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        chkUnlimit = new javax.swing.JCheckBox();
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -170,9 +172,14 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        jLabel1.setText("Minimum condiments:");
+        btnClose.setText("Close");
+        btnClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCloseActionPerformed(evt);
+            }
+        });
 
-        jLabel2.setText("Maximum condiments:");
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Condiment Settings"));
 
         btnSave.setText("Save");
         btnSave.addActionListener(new java.awt.event.ActionListener() {
@@ -181,12 +188,53 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        btnClose.setText("Close");
-        btnClose.addActionListener(new java.awt.event.ActionListener() {
+        jLabel2.setText("Maximum condiments:");
+
+        jLabel1.setText("Minimum condiments:");
+
+        chkUnlimit.setText("Allow Unlimited");
+        chkUnlimit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCloseActionPerformed(evt);
+                chkUnlimitActionPerformed(evt);
             }
         });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chkUnlimit)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnSave)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtMin, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtMax, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chkUnlimit)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnSave)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -195,25 +243,16 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel2))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtMin, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(txtMax, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(btnCreate)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(54, 54, 54)
-                        .addComponent(btnSave))
+                        .addGap(32, 32, 32)
+                        .addComponent(btnCreate))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(btnClose)))
+                        .addComponent(btnClose))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -227,16 +266,8 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
                         .addGap(38, 38, 38)
                         .addComponent(btnCreate)
                         .addGap(43, 43, 43)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSave)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 135, Short.MAX_VALUE)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
         );
@@ -280,19 +311,36 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        if (txtMin.getText().isEmpty() || txtMax.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Fill out all fields", "Condiemnts", JOptionPane.ERROR_MESSAGE);
+        if (contents.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "You must enter some condiments first", "Condiments", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (txtMin.getText().isEmpty() || (txtMax.getText().isEmpty() && !chkUnlimit.isSelected())) {
+            JOptionPane.showMessageDialog(this, "Fill out all fields", "Condiments", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        if (!Utilities.isNumber(txtMin.getText()) || !Utilities.isNumber(txtMax.getText())) {
-            JOptionPane.showMessageDialog(this, "Must enter numbers", "Condiemnts", JOptionPane.ERROR_MESSAGE);
+        if (!Utilities.isNumber(txtMin.getText()) || (!chkUnlimit.isSelected() && !Utilities.isNumber(txtMax.getText()))) {
+            JOptionPane.showMessageDialog(this, "Must enter numbers", "Condiments", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        int max = Integer.parseInt(txtMax.getText());
+        int max;
+        if (chkUnlimit.isSelected()) {
+            max = -2;
+        } else {
+            max = Integer.parseInt(txtMax.getText());
+            if (max < 0) {
+                JOptionPane.showMessageDialog(this, "Must enter a value of 0 or greater", "Condiments", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
         int min = Integer.parseInt(txtMin.getText());
 
+        if (min < 0) {
+            JOptionPane.showMessageDialog(this, "Must enter a value of 0 or greater", "Condiments", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         product.setMaxCon(max);
         product.setMinCon(min);
         try {
@@ -302,12 +350,18 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
+    private void chkUnlimitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkUnlimitActionPerformed
+        txtMax.setEnabled(!chkUnlimit.isSelected());
+    }//GEN-LAST:event_chkUnlimitActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnSave;
+    private javax.swing.JCheckBox chkUnlimit;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
     private javax.swing.JTextField txtMax;
