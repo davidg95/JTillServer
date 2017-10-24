@@ -6,14 +6,26 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JTable;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -39,14 +51,8 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
         super.setFrameIcon(new ImageIcon(icon));
         setTitle("Suppliers");
         model = (DefaultTableModel) table.getModel();
-        table.setSelectionModel(new ForcedListSelectionModel());
-        try {
-            currentTableContents = dc.getAllSuppliers();
-            table.setModel(model);
-            setList();
-        } catch (IOException | SQLException ex) {
-            Logger.getLogger(SupplierWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        table.setModel(model);
+        init();
     }
 
     public static void showWindow(DataConnect dc, Image icon) {
@@ -63,10 +69,49 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
         }
     }
 
+    private void init() {
+        table.setSelectionModel(new ForcedListSelectionModel());
+        InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap am = table.getActionMap();
+
+        KeyStroke deleteKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+
+        im.put(deleteKey, "Action.delete");
+        am.put("Action.delete", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                int row = table.getSelectedRow();
+                if (row == -1) {
+                    return;
+                }
+                Supplier s = currentTableContents.get(row);
+                removeSupplier(s);
+            }
+        });
+        setList();
+    }
+
     private void setList() {
-        model.setRowCount(0);
-        for (Supplier s : currentTableContents) {
-            model.addRow(new Object[]{s.getName(), s.getAddress(), s.getContactNumber()});
+        try {
+            currentTableContents = dc.getAllSuppliers();
+            model.setRowCount(0);
+            for (Supplier s : currentTableContents) {
+                model.addRow(new Object[]{s.getName(), s.getAddress(), s.getContactNumber()});
+            }
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void removeSupplier(Supplier s) {
+        if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove this supplier?", "Remove Supplier", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+            return;
+        }
+        try {
+            dc.removeSupplier(s.getId());
+            setList();
+        } catch (IOException | SQLException | JTillException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -83,6 +128,7 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
         btnClose = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
+        btnRemove = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
@@ -120,12 +166,28 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
             }
         });
         table.getTableHeader().setReorderingAllowed(false);
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
-            table.getColumnModel().getColumn(0).setResizable(false);
-            table.getColumnModel().getColumn(1).setResizable(false);
+            table.getColumnModel().getColumn(0).setMinWidth(130);
+            table.getColumnModel().getColumn(0).setPreferredWidth(130);
+            table.getColumnModel().getColumn(0).setMaxWidth(130);
+            table.getColumnModel().getColumn(1).setMinWidth(130);
+            table.getColumnModel().getColumn(1).setPreferredWidth(130);
+            table.getColumnModel().getColumn(1).setMaxWidth(130);
             table.getColumnModel().getColumn(2).setResizable(false);
         }
+
+        btnRemove.setText("Remove");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -134,10 +196,12 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 688, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAdd)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 538, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRemove)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -149,7 +213,8 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
-                    .addComponent(btnAdd))
+                    .addComponent(btnAdd)
+                    .addComponent(btnRemove))
                 .addContainerGap())
         );
 
@@ -162,17 +227,46 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         SupplierDialog.showDialog(this);
-        try {
-            currentTableContents = dc.getAllSuppliers();
-            setList();
-        } catch (IOException | SQLException ex) {
-            Logger.getLogger(SupplierWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        setList();
     }//GEN-LAST:event_btnAddActionPerformed
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            return;
+        }
+        Supplier s = currentTableContents.get(row);
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem edit = new JMenuItem("Edit");
+            final Font boldFont = new Font(edit.getFont().getFontName(), Font.BOLD, edit.getFont().getSize());
+            edit.setFont(boldFont);
+            edit.addActionListener((event) -> {
+                SupplierDialog.showDialog(this, s);
+            });
+            JMenuItem remove = new JMenuItem("Remove");
+            remove.addActionListener((event) -> {
+                removeSupplier(s);
+            });
+            menu.add(edit);
+            menu.add(remove);
+            menu.show(table, evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_tableMouseClicked
+
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            return;
+        }
+        Supplier s = currentTableContents.get(row);
+        removeSupplier(s);
+    }//GEN-LAST:event_btnRemoveActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnRemove;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
