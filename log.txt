@@ -1,4 +1,4 @@
-JTill log Tue Oct 24 16:39:16 BST 2017
-[16:39:16] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[16:39:19] [INFO] David Grant has logged in
-[16:39:22] [SEVERE] java.sql.SQLSyntaxErrorException: Table/View 'SUPPDASDLIERS' does not exist.
+JTill log Tue Oct 24 17:07:55 BST 2017
+[17:07:56] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[17:07:58] [INFO] David Grant has logged in
+[17:08:08] [INFO] David Grant has logged out
