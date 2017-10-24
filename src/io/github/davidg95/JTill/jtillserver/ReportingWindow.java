@@ -46,11 +46,10 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form ReportingWindow
      *
-     * @param dc the data connection.
      * @param icon the frame icon.
      */
-    public ReportingWindow(DataConnect dc, Image icon) {
-        this.dc = dc;
+    public ReportingWindow(Image icon) {
+        this.dc = GUI.gui.dc;
         initComponents();
         super.setClosable(true);
         super.setMaximizable(true);
@@ -107,11 +106,10 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
     /**
      * Method to show the reporting window.
      *
-     * @param dc the data connection.
      * @param icon the icon for the window.
      */
-    public static void showWindow(DataConnect dc, Image icon) {
-        ReportingWindow window = new ReportingWindow(dc, icon);
+    public static void showWindow(Image icon) {
+        ReportingWindow window = new ReportingWindow(icon);
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {

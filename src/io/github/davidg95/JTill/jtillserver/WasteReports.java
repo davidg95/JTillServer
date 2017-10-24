@@ -250,7 +250,7 @@ public class WasteReports extends javax.swing.JInternalFrame {
         if (evt.getClickCount() == 2) {
             if (index != -1) {
                 WasteReport wr = wasteReports.get(index);
-                WasteStockWindow.showWindow(dc, wr);
+                WasteStockWindow.showWindow(wr);
             }
         }
     }//GEN-LAST:event_tblReportsMouseClicked
@@ -360,7 +360,7 @@ public class WasteReports extends javax.swing.JInternalFrame {
         wasteReports = newList;
         reloadTable();
         if (wasteReports.size() == 1) {
-            WasteStockWindow.showWindow(dc, wasteReports.get(0));
+            WasteStockWindow.showWindow(wasteReports.get(0));
         }
         if (wasteReports.isEmpty()) {
             JOptionPane.showInternalMessageDialog(this, "No results", "Waste Reports", JOptionPane.INFORMATION_MESSAGE);

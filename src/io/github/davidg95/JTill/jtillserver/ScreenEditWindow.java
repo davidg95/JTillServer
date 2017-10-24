@@ -64,11 +64,10 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form ScreenEditWindow
      *
-     * @param dc reference to the data connect class.
      * @param icon the icon for the window.
      */
-    public ScreenEditWindow(DataConnect dc, Image icon) {
-        this.dc = dc;
+    public ScreenEditWindow(Image icon) {
+        this.dc = GUI.gui.dc;
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
@@ -146,12 +145,11 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     /**
      * Show the screen edit window.
      *
-     * @param dc the database connection.
      * @param icon the icon for the window.
      */
-    public static void showScreenEditWindow(DataConnect dc, Image icon) {
+    public static void showScreenEditWindow(Image icon) {
         if (frame == null || frame.isClosed()) {
-            frame = new ScreenEditWindow(dc, icon);
+            frame = new ScreenEditWindow(icon);
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {

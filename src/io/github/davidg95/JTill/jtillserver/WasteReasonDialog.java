@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JOptionPane;
@@ -41,9 +40,9 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
     /**
      * Creates new form WasteReasonDialog
      */
-    public WasteReasonDialog(DataConnect dc, Image icon) {
+    public WasteReasonDialog(Image icon) {
         super();
-        this.dc = dc;
+        this.dc = GUI.gui.dc;
         initComponents();
         setTitle("Waste Reasons");
 //        setModal(true);
@@ -56,9 +55,9 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showDialog(DataConnect dc, Image icon) {
+    public static void showDialog(Image icon) {
         if (dialog == null) {
-            dialog = new WasteReasonDialog(dc, icon);
+            dialog = new WasteReasonDialog(icon);
             GUI.gui.internal.add(dialog);
         }
         dialog.setVisible(true);

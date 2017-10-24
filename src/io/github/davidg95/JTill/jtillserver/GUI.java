@@ -1551,7 +1551,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemInfoActionPerformed
 
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
-        ReportingWindow.showWindow(dc, icon);
+        ReportingWindow.showWindow(icon);
     }//GEN-LAST:event_btnReportsActionPerformed
 
     private void btnSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsActionPerformed
@@ -1559,15 +1559,15 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnSettingsActionPerformed
 
     private void btnScreensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScreensActionPerformed
-        ScreenEditWindow.showScreenEditWindow(dc, icon);
+        ScreenEditWindow.showScreenEditWindow(icon);
     }//GEN-LAST:event_btnScreensActionPerformed
 
     private void itemReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReceiveActionPerformed
-        ReceiveItemsWindow.showWindow(dc);
+        ReceiveItemsWindow.showWindow();
     }//GEN-LAST:event_itemReceiveActionPerformed
 
     private void itemWasteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemWasteStockActionPerformed
-        WasteStockWindow.showWindow(dc);
+        WasteStockWindow.showWindow();
     }//GEN-LAST:event_itemWasteStockActionPerformed
 
     private void chkSevereActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkSevereActionPerformed
@@ -1587,11 +1587,11 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemWasteReportsActionPerformed
 
     private void itemReasonsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReasonsActionPerformed
-        WasteReasonDialog.showDialog(dc, icon);
+        WasteReasonDialog.showDialog(icon);
     }//GEN-LAST:event_itemReasonsActionPerformed
 
     private void itemTillScreensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTillScreensActionPerformed
-        ScreenEditWindow.showScreenEditWindow(dc, icon);
+        ScreenEditWindow.showScreenEditWindow(icon);
     }//GEN-LAST:event_itemTillScreensActionPerformed
 
     private void txtLogMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtLogMouseClicked
@@ -1860,7 +1860,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnNewProductActionPerformed
 
     private void btnWasteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWasteStockActionPerformed
-        WasteStockWindow.showWindow(dc);
+        WasteStockWindow.showWindow();
     }//GEN-LAST:event_btnWasteStockActionPerformed
 
     private void btnNewProductMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNewProductMouseEntered
@@ -1903,7 +1903,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnReceiveStockMouseExited
 
     private void btnReceiveStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiveStockActionPerformed
-        ReceiveItemsWindow.showWindow(dc);
+        ReceiveItemsWindow.showWindow();
     }//GEN-LAST:event_btnReceiveStockActionPerformed
 
     private void btnEnquiryMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEnquiryMouseEntered

@@ -59,11 +59,9 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form ReceiveItemsWindow
-     *
-     * @param dc the data connection.
      */
-    public ReceiveItemsWindow(DataConnect dc) {
-        this.dc = dc;
+    public ReceiveItemsWindow() {
+        this.dc = GUI.gui.dc;
         this.products = new ArrayList<>();
         initComponents();
         setTitle("Receive Stock");
@@ -97,11 +95,11 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         setReport();
     }
 
-    public static void showWindow(DataConnect dc) {
-        ReceiveItemsWindow window = new ReceiveItemsWindow(dc);
+    public static void showWindow() {
+        ReceiveItemsWindow window = new ReceiveItemsWindow();
         GUI.gui.internal.add(window);
         try {
-            List<Supplier> suppliers = dc.getAllSuppliers();
+            List<Supplier> suppliers = GUI.gui.dc.getAllSuppliers();
             if (suppliers.isEmpty()) {
                 JOptionPane.showMessageDialog(window, "You must set up at least one supplier before receiving stock. Go to Setup -> Edit Suppliers to do this", "No Suppliers Set", JOptionPane.WARNING_MESSAGE);
                 return;

@@ -3658,7 +3658,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<Supplier> getAllSuppliers() throws IOException, SQLException {
-        String query = "SELECT * FROM SUPPLIERS";
+        String query = "SELECT * FROM SUPPdasdLIERS";
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             long stamp = supL.readLock();

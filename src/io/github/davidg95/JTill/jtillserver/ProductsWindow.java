@@ -1072,15 +1072,15 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnReceiveStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiveStockActionPerformed
-        ReceiveItemsWindow.showWindow(dc);
+        ReceiveItemsWindow.showWindow();
     }//GEN-LAST:event_btnReceiveStockActionPerformed
 
     private void btnWasteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWasteStockActionPerformed
-        WasteStockWindow.showWindow(dc);
+        WasteStockWindow.showWindow();
     }//GEN-LAST:event_btnWasteStockActionPerformed
 
     private void btnChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChartActionPerformed
-        StockGraphWindow.showWindow(dc);
+        StockGraphWindow.showWindow();
     }//GEN-LAST:event_btnChartActionPerformed
 
     private void btnCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCSVActionPerformed

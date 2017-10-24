@@ -64,8 +64,8 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form WasteStockWindow
      */
-    public WasteStockWindow(DataConnect dc) {
-        this.dc = dc;
+    public WasteStockWindow() {
+        this.dc = GUI.gui.dc;
         wasteItems = new ArrayList<>();
         initComponents();
         btnPrint.setEnabled(false);
@@ -104,9 +104,9 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         init();
     }
 
-    public WasteStockWindow(DataConnect dc, WasteReport wr) {
+    public WasteStockWindow(WasteReport wr) {
         this.report = wr;
-        this.dc = dc;
+        this.dc = GUI.gui.dc;
         wasteItems = new ArrayList<>();
         initComponents();
         btnAddProduct.setEnabled(false);
@@ -145,8 +145,8 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showWindow(DataConnect dc) {
-        WasteStockWindow window = new WasteStockWindow(dc);
+    public static void showWindow() {
+        WasteStockWindow window = new WasteStockWindow();
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {
@@ -157,8 +157,8 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         }
     }
 
-    public static void showWindow(DataConnect dc, WasteReport wr) {
-        WasteStockWindow window = new WasteStockWindow(dc, wr);
+    public static void showWindow(WasteReport wr) {
+        WasteStockWindow window = new WasteStockWindow(wr);
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {

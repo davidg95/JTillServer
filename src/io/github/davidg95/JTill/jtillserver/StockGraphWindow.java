@@ -5,123 +5,96 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.*;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import io.github.davidg95.JTill.jtill.JTillException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
+import org.jdesktop.swingx.JXStatusBar;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  *
  * @author David
  */
-public class StockGraphWindow extends JFrame {
+public class StockGraphWindow extends javax.swing.JFrame {
 
-    private final Logger log = Logger.getGlobal();
+    private JProgressBar pbar;
+    private JLabel label;
 
-    private static StockGraphWindow window;
-
-    private final DataConnect dc;
-
-    private GraphPanel graph;
-
-    public StockGraphWindow(DataConnect dc) {
-        super();
-        this.dc = dc;
+    /**
+     * Creates new form StockGraphWindow
+     */
+    public StockGraphWindow() {
+        initComponents();
+        pbar = new JProgressBar();
+        label = new JLabel("Loading...");
         init();
-        setIconImage(GUI.icon);
-        setTitle("Stock Graph");
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
-    public static void showWindow(DataConnect dc) {
-        window = new StockGraphWindow(dc);
+    public static void showWindow() {
+        StockGraphWindow window = new StockGraphWindow();
         window.setVisible(true);
+        window.run();
+        //window.init();
     }
 
     private void init() {
-        try {
-            graph = new GraphPanel(1500, 768);
-            graph.setList(dc.getAllProducts());
-            this.add(graph);
-            pack();
-            validate();
-        } catch (IOException | SQLException ex) {
-            log.log(Level.SEVERE, null, ex);
-        }
+        JXStatusBar.Constraint c1 = new JXStatusBar.Constraint();
+        c1.setFixedWidth(100);
+        bar.add(label, c1);
+        JXStatusBar.Constraint c2 = new JXStatusBar.Constraint(JXStatusBar.Constraint.ResizeBehavior.FILL);
+        bar.add(pbar, c2);
     }
 
-    private class GraphPanel extends JPanel {
-
-        private List<Product> products;
-
-        private int bar_width;
-        private int no_bars;
-
-        private final int GRAPH_WIDTH;
-        private final int GRAPH_HEIGHT;
-
-        public GraphPanel(int width, int height) {
-            super();
-            super.setSize(width, height);
-            this.GRAPH_WIDTH = width - 20;
-            this.GRAPH_HEIGHT = height - 20;
-            products = new ArrayList<>();
-        }
-
-        @Override
-        public void paintComponent(Graphics g) {
-            for (int i = 0; i < products.size(); i++) {
-                if (products.get(i).isOpen()) {
-                    products.remove(i);
+    private void run() {
+        final Runnable run = () -> {
+            int value = 0;
+            while (value != 100) {
+                value++;
+                pbar.setValue(value);
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(StockGraphWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            no_bars = products.size();
-            bar_width = GRAPH_WIDTH / no_bars;
-            int maxStock = 0;
-            int currentPos = 0;
-            for (Product p : products) {
-                if (p.getStock() > maxStock) {
-                    maxStock = p.getStock();
-                }
-            }
-            int pixlesPerStock = GRAPH_HEIGHT / maxStock;
-            g.setColor(Color.BLACK);
-            g.drawRect(0, 0, GRAPH_WIDTH, GRAPH_HEIGHT);
-            g.drawString("-" + maxStock, GRAPH_WIDTH, 10);
-            g.drawString("-" + (maxStock / 2), GRAPH_WIDTH, GRAPH_HEIGHT / 2);
-            g.drawLine(0, GRAPH_HEIGHT / 2, GRAPH_WIDTH, GRAPH_HEIGHT / 2);
-            for (Product p : products) {
-                int h = p.getStock() * pixlesPerStock;
-                if (p.getMinStockLevel() > 0 && (p.getStock() < p.getMinStockLevel())) {
-                    g.setColor(Color.ORANGE);
-                } else if (p.getStock() <= 0) {
-                    g.setColor(Color.RED);
-                } else {
-                    g.setColor(Color.BLUE);
-                }
-                g.fillRect(currentPos, GRAPH_HEIGHT - h, bar_width - 2, h);
-                g.setColor(Color.BLACK);
-                g.drawString(p.getName(), currentPos + 2, GRAPH_HEIGHT + 20);
-                g.drawString("" + p.getStock(), currentPos + 2, GRAPH_HEIGHT + 40);
-                currentPos += bar_width;
-            }
-        }
-
-        public void addProduct(Product p) {
-            products.add(p);
-        }
-
-        public void setList(List<Product> products) {
-            this.products = products;
-        }
+            label.setText("Ready");
+            pbar.setValue(0);
+        };
+        final Thread thread = new Thread(run, "Bar");
+        thread.start();
     }
 
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        bar = new org.jdesktop.swingx.JXStatusBar();
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(bar, javax.swing.GroupLayout.DEFAULT_SIZE, 939, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(495, Short.MAX_VALUE)
+                .addComponent(bar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.jdesktop.swingx.JXStatusBar bar;
+    // End of variables declaration//GEN-END:variables
 }
