@@ -7,6 +7,7 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.TillSplashScreen;
 import io.github.davidg95.JTill.jtill.*;
+import io.github.davidg95.JTill.jtillserver.salereportdialogs.SaleReportDialog;
 import io.github.davidg95.jconn.JConnData;
 import java.awt.AlphaComposite;
 import java.awt.Cursor;
@@ -1624,7 +1625,20 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemDepartmentsActionPerformed
 
     private void itemSalesReportingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSalesReportingActionPerformed
-        ReportingWindow.showWindow(dc, icon);
+        int resp = SaleReportDialog.showDialog(this);
+        switch (resp) {
+            case SaleReportDialog.DEPARTMENT_REPORT:
+                Department d = DepartmentSelectDialog.showDialog(this);
+                break;
+            case SaleReportDialog.CATEGORY_REPORT:
+                Category c = CategorySelectDialog.showDialog(this);
+                break;
+            case SaleReportDialog.CLERK_REPORT:
+                Staff s = StaffSelectDialog.showDialog(this);
+                break;
+            default:
+                break;
+        }
     }//GEN-LAST:event_itemSalesReportingActionPerformed
 
     private void itemEnquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEnquiryActionPerformed

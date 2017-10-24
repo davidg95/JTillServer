@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -41,9 +42,10 @@ public class DepartmentSelectDialog extends javax.swing.JDialog {
         initComponents();
         setLocationRelativeTo(parent);
         setModal(true);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         ctc = new ArrayList<>();
         model = (DefaultTableModel) tblDep.getModel();
-        showAllDepartments();
+        init();
     }
 
     public static Department showDialog(Component parent) {
@@ -55,6 +57,11 @@ public class DepartmentSelectDialog extends javax.swing.JDialog {
         department = null;
         dialog.setVisible(true);
         return department;
+    }
+    
+    private void init(){
+        tblDep.setSelectionModel(new ForcedListSelectionModel());
+        showAllDepartments();
     }
 
     private void showAllDepartments() {
@@ -86,8 +93,8 @@ public class DepartmentSelectDialog extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDep = new javax.swing.JTable();
         btnClose = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Select Department");
 
         tblDep.setModel(new javax.swing.table.DefaultTableModel(
@@ -123,7 +130,9 @@ public class DepartmentSelectDialog extends javax.swing.JDialog {
         });
         jScrollPane1.setViewportView(tblDep);
         if (tblDep.getColumnModel().getColumnCount() > 0) {
-            tblDep.getColumnModel().getColumn(0).setResizable(false);
+            tblDep.getColumnModel().getColumn(0).setMinWidth(40);
+            tblDep.getColumnModel().getColumn(0).setPreferredWidth(40);
+            tblDep.getColumnModel().getColumn(0).setMaxWidth(40);
             tblDep.getColumnModel().getColumn(1).setResizable(false);
         }
 
@@ -134,6 +143,8 @@ public class DepartmentSelectDialog extends javax.swing.JDialog {
             }
         });
 
+        jButton1.setText("Select");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -143,7 +154,8 @@ public class DepartmentSelectDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
         );
@@ -153,7 +165,9 @@ public class DepartmentSelectDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnClose)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClose)
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
 
@@ -179,6 +193,7 @@ public class DepartmentSelectDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblDep;
     // End of variables declaration//GEN-END:variables

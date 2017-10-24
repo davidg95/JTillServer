@@ -6,10 +6,15 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -29,22 +34,33 @@ public class StaffSelectDialog extends javax.swing.JDialog {
     /**
      * Creates new form StaffSelectDialog
      */
-    public StaffSelectDialog() {
-        super();
+    public StaffSelectDialog(Window parent) {
+        super(parent);
         this.dc = GUI.gui.dc;
         initComponents();
         setModal(true);
+        setLocationRelativeTo(parent);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
-        showAllStaff();
+        init();
         txtSearch.requestFocus();
     }
 
-    public static Staff showDialog() {
-        final StaffSelectDialog dialog = new StaffSelectDialog();
+    public static Staff showDialog(Component parent) {
+        Window window = null;
+        if(parent instanceof Dialog || parent instanceof Frame){
+            window = (Window) parent;
+        }
+        final StaffSelectDialog dialog = new StaffSelectDialog(window);
         staff = null;
         dialog.setVisible(true);
         return staff;
+    }
+
+    private void init() {
+        table.setSelectionModel(new ForcedListSelectionModel());
+        showAllStaff();
     }
 
     /**
@@ -102,6 +118,7 @@ public class StaffSelectDialog extends javax.swing.JDialog {
         radBarcode = new javax.swing.JRadioButton();
 
         setTitle("Select Staff");
+        setResizable(false);
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -113,13 +130,27 @@ public class StaffSelectDialog extends javax.swing.JDialog {
             new String [] {
                 "ID", "Name"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 tableMousePressed(evt);
             }
         });
         jScrollPane1.setViewportView(table);
+        if (table.getColumnModel().getColumnCount() > 0) {
+            table.getColumnModel().getColumn(0).setMinWidth(40);
+            table.getColumnModel().getColumn(0).setPreferredWidth(40);
+            table.getColumnModel().getColumn(0).setMaxWidth(40);
+            table.getColumnModel().getColumn(1).setResizable(false);
+        }
 
         btnClose.setText("Close");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
@@ -167,7 +198,7 @@ public class StaffSelectDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -186,7 +217,7 @@ public class StaffSelectDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)

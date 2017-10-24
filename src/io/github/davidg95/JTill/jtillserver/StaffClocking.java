@@ -347,7 +347,7 @@ public class StaffClocking extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        staff = StaffSelectDialog.showDialog();
+        staff = StaffSelectDialog.showDialog(this);
         if (staff == null) {
             return;
         }

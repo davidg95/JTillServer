@@ -255,7 +255,7 @@ public class StaffReportingWindow extends javax.swing.JInternalFrame {
 
     private void txtStaffMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtStaffMouseClicked
         if (SwingUtilities.isLeftMouseButton(evt)) { //Check it was a left mouse click
-            final Staff s = StaffSelectDialog.showDialog(); //Display the dialog to search the member of staff
+            final Staff s = StaffSelectDialog.showDialog(this); //Display the dialog to search the member of staff
             if (s == null) { //Check if a member of staff was selected
                 btnSearch.setEnabled(false);
                 return;

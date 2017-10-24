@@ -44,9 +44,10 @@ public final class CategorySelectDialog extends javax.swing.JDialog {
         initComponents();
         setLocationRelativeTo(parent);
         setModal(true);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
-        showAllCategorys();
+        init();
     }
 
     /**
@@ -57,7 +58,7 @@ public final class CategorySelectDialog extends javax.swing.JDialog {
      */
     public static Category showDialog(Component parent) {
         Window window = null;
-        if(parent instanceof Dialog || parent instanceof Frame){
+        if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
         final CategorySelectDialog dialog = new CategorySelectDialog(window);
@@ -65,6 +66,11 @@ public final class CategorySelectDialog extends javax.swing.JDialog {
         category = null;
         dialog.setVisible(true);
         return category;
+    }
+
+    private void init() {
+        table.setSelectionModel(new ForcedListSelectionModel());
+        showAllCategorys();
     }
 
     /**
@@ -120,7 +126,6 @@ public final class CategorySelectDialog extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
         btnSearch = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Select Category");
         setResizable(false);
 
@@ -163,6 +168,12 @@ public final class CategorySelectDialog extends javax.swing.JDialog {
             }
         });
         jScrollPane1.setViewportView(table);
+        if (table.getColumnModel().getColumnCount() > 0) {
+            table.getColumnModel().getColumn(0).setMinWidth(40);
+            table.getColumnModel().getColumn(0).setPreferredWidth(40);
+            table.getColumnModel().getColumn(0).setMaxWidth(40);
+            table.getColumnModel().getColumn(1).setResizable(false);
+        }
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
