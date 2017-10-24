@@ -182,7 +182,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
         private final Date end;
         private final Till t;
         private final int x = 70;
-        private final int lineSpace = 20;
+        private final int tableLineSpace = 20;
 
         public ReportPrinter(Date start, Date end, Till t) {
             this.start = start;
@@ -196,8 +196,6 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
                 return NO_SUCH_PAGE;
             }
 
-            String header = "Consolidated Report";
-
             Graphics2D g2 = (Graphics2D) graphics;
             g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 
@@ -207,9 +205,11 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             int width = (int) (pageFormat.getWidth() - 140);
 
             g2.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
-            g2.drawString(header, x, y);
+            g2.drawString("Consolidated Report", x, y);
             y += 30;
             g2.setFont(font); //Change back to the old font.
+
+            int lineSpace = g2.getFontMetrics(font).getHeight() + 5;
 
             String page = "Page " + (pageIndex + 1);
             g2.drawString(page, (int) (pageFormat.getWidth() / 2) - (g2.getFontMetrics(font).stringWidth(page) / 2), (int) pageFormat.getHeight() - 10);
@@ -224,48 +224,51 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             }
 
             g2.drawString("Consolidated report for " + ter + ".", x, y);
-            y += 30;
+            y += lineSpace;
             g2.drawString("Period " + start.toString() + " - " + end.toString(), x, y);
+            y += lineSpace;
+            g2.drawString("Staff Member: " + GUI.staff.getName(), x, y);
 
-            y += 30;
+            y += lineSpace;
+            y += lineSpace;
             g2.drawString("Department Breakdown:", x, y);
             y += lineSpace;
 
             //Print departments
             for (Department d : departments) {
                 g2.setColor(Color.LIGHT_GRAY);
-                g2.fillRect(x, y, width, lineSpace);
+                g2.fillRect(x, y, width, tableLineSpace);
                 g2.setColor(Color.BLACK);
-                g2.drawRect(x, y, width, lineSpace);
+                g2.drawRect(x, y, width, tableLineSpace);
                 g2.drawString(d.getName(), x + 10, y + 15);
                 int y1 = y;
                 int x2 = width / 2;
-                y += lineSpace * 2;
+                y += tableLineSpace * 2;
                 for (Category c : categorys) {
                     if (c.getDepartment().equals(d)) {
                         g2.drawString(c.getName(), x + 10, y - 5);
                         g2.drawString("£" + c.getSales(), x2 + 10, y - 5);
                         g2.drawLine(x, y, x + width, y);
-                        y += lineSpace;
+                        y += tableLineSpace;
                     }
                 }
                 g2.setFont(new Font("Arial", Font.BOLD, font.getSize()));
                 g2.drawString("Total", x + 10, y - 5);
                 g2.drawString("£" + d.getSales(), x2 + 10, y - 5);
                 g2.setFont(font);
-                g2.drawLine(x2, y1 + lineSpace, x2, y);
+                g2.drawLine(x2, y1 + tableLineSpace, x2, y);
                 g2.drawRect(x, y1, width, y - y1);
             }
 
-            y += lineSpace;
+            y += tableLineSpace;
             g2.drawString("Tax Sales Breakdown:", x, y);
-            y += lineSpace;
+            y += tableLineSpace;
 
             //Print taxes
             g2.setColor(Color.LIGHT_GRAY);
-            g2.fillRect(x, y, width, lineSpace);
+            g2.fillRect(x, y, width, tableLineSpace);
             g2.setColor(Color.BLACK);
-            g2.drawRect(x, y, width, lineSpace);
+            g2.drawRect(x, y, width, tableLineSpace);
             g2.drawString("Tax", x + 10, y + 15);
             int y1 = y;
             int w = width / 3;
@@ -273,7 +276,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             int x3 = x2 + w;
             g2.drawString("Sales", x2 + 10, y + 15);
             g2.drawString("Payable", x3 + 10, y + 15);
-            y += lineSpace * 2;
+            y += tableLineSpace * 2;
             int y2 = y;
             for (Tax t : taxes) {
                 g2.drawString(t.getName(), x + 10, y - 5);
@@ -281,13 +284,13 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
                 g2.drawString("£" + t.getPayable(), x3 + 10, y - 5);
                 g2.drawLine(x, y, x + width, y);
                 y2 = y;
-                y += lineSpace;
+                y += tableLineSpace;
             }
             g2.drawLine(x2, y1, x2, y2);
             g2.drawLine(x3, y1, x3, y2);
-            g2.drawRect(x, y1, width, y - y1 - lineSpace);
+            g2.drawRect(x, y1, width, y - y1 - tableLineSpace);
 
-            y += lineSpace;
+            y += tableLineSpace;
 
             g2.drawString("Total sales: £" + total.setScale(2, 6).toString(), x, y);
             y += lineSpace;
@@ -298,17 +301,19 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
             g2.drawString("Net Sales: £" + total.subtract(cost).subtract(tax).toString(), x, y);
             y += lineSpace;
             g2.drawString("Refunds: £" + refunds, x, y);
-            y += lineSpace;
-            g2.drawString("Wastage: £" + wastage, x, y);
+            if (t == null) {
+                y += lineSpace;
+                g2.drawString("Wastage: £" + wastage, x, y);
+            }
 
             return PAGE_EXISTS;
         }
 
         private void printDepartmentHeader(Graphics g, Department d, int y, int width) {
             g.setColor(Color.LIGHT_GRAY);
-            g.fillRect(x, y, width, lineSpace);
+            g.fillRect(x, y, width, tableLineSpace);
             g.setColor(Color.BLACK);
-            g.drawRect(x, y, width, lineSpace);
+            g.drawRect(x, y, width, tableLineSpace);
             g.drawString(d.getName(), x + 10, y + 15);
         }
 
