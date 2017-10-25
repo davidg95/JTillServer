@@ -104,11 +104,12 @@
     <Component class="javax.swing.JComboBox" name="cmbSearch">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="containing item"/>
-            <StringItem index="1" value="department"/>
-            <StringItem index="2" value="category"/>
-            <StringItem index="3" value="with reason"/>
+          <StringArray count="5">
+            <StringItem index="0" value="all"/>
+            <StringItem index="1" value="containing item"/>
+            <StringItem index="2" value="department"/>
+            <StringItem index="3" value="category"/>
+            <StringItem index="4" value="with reason"/>
           </StringArray>
         </Property>
       </Properties>

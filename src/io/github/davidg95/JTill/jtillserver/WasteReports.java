@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Font;
@@ -37,10 +38,11 @@ public class WasteReports extends javax.swing.JDialog {
 
     private final DataConnect dc;
 
-    private static final int CONTAINING = 0;
-    private static final int DEPARTMENT = 1;
-    private static final int CATEGORY = 2;
-    private static final int REASON = 3;
+    private static final int ALL = 0;
+    private static final int CONTAINING = 1;
+    private static final int DEPARTMENT = 2;
+    private static final int CATEGORY = 3;
+    private static final int REASON = 4;
 
     /**
      * Creates new form WasteReports
@@ -54,6 +56,7 @@ public class WasteReports extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        btnSearch.requestFocus();
     }
 
     public static void showWindow(Component parent) {
@@ -65,7 +68,7 @@ public class WasteReports extends javax.swing.JDialog {
         wr.setVisible(true);
     }
 
-    private void print(Date start, Date end, List<WasteItem> items) {
+    private void print(Date start, Date end, List<WasteItem> items) throws IOException, SQLException {
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPrintable(new WastePrinter(start, end, items));
         boolean ok = job.printDialog();
@@ -98,10 +101,15 @@ public class WasteReports extends javax.swing.JDialog {
         private final Date end;
         private final List<WasteItem> items;
 
-        public WastePrinter(Date start, Date end, List<WasteItem> items) {
+        private final List<Department> departments;
+        private final List<Category> categorys;
+
+        public WastePrinter(Date start, Date end, List<WasteItem> items) throws IOException, SQLException {
             this.start = start;
             this.end = end;
             this.items = items;
+            departments = dc.getAllDepartments();
+            categorys = dc.getAllCategorys();
         }
 
         @Override
@@ -111,6 +119,8 @@ public class WasteReports extends javax.swing.JDialog {
                 return NO_SUCH_PAGE;
             }
             final int x = 70;
+
+            final int width = (int) (pageFormat.getWidth() - x - x);
 
             Font font = graphics.getFont();
 
@@ -128,12 +138,39 @@ public class WasteReports extends javax.swing.JDialog {
             g.drawString("Start date: " + start.toString(), x, y);
             y += lineSpace;
             g.drawString("End date: " + end.toString(), x, y);
-            y += 50;
+            y += 30;
 
-            for (WasteItem i : items) {
-                g.drawString(i.getProduct().getLongName() + ", " + i.getQuantity() + ", " + i.getReason(), x, y);
-                y += lineSpace;
+            g.setColor(Color.lightGray);
+            g.fillRect(x, y, width, lineSpace);
+            g.setColor(Color.BLACK);
+            g.drawRect(x, y, width, lineSpace);
+            final int topX = x;
+            final int topY = y;
+            final int pCol = x + 10;
+            final int qCol = x + 200;
+            final int rCol = x + 300;
+            g.drawString("Product", pCol, y + lineSpace - 5);
+            g.drawString("Qty.", qCol, y + lineSpace - 5);
+            g.drawString("Reason", rCol, y + lineSpace - 5);
+            y += lineSpace;
+            for (Department d : departments) {
+                g.setColor(Color.lightGray);
+                g.fillRect(x, y, width, lineSpace);
+                g.setColor(Color.BLACK);
+                g.drawRect(x, y, width, lineSpace);
+                g.drawString(d.getName(), x + 10, y + lineSpace - 5);
+                y += lineSpace + lineSpace;
+                for (WasteItem i : items) {
+                    g.drawString(i.getProduct().getLongName(), pCol, y);
+                    g.drawString(i.getQuantity() + "", qCol, y);
+                    g.drawString(i.getReason().getReason(), rCol, y);
+                    y += lineSpace;
+                }
             }
+
+            g.drawRect(topX, topY, width, y - topY - lineSpace + 5);
+            g.drawLine(qCol - 5, topY, qCol - 5, y - lineSpace + 5);
+            g.drawLine(rCol - 5, topY, rCol - 5, y - lineSpace + 5);
 
             return PAGE_EXISTS;
         }
@@ -171,7 +208,7 @@ public class WasteReports extends javax.swing.JDialog {
 
         jLabel1.setText("Search for reports");
 
-        cmbSearch.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "containing item", "department", "category", "with reason" }));
+        cmbSearch.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "all", "containing item", "department", "category", "with reason" }));
 
         btnSearch.setText("Search");
         btnSearch.addActionListener(new java.awt.event.ActionListener() {
@@ -249,7 +286,7 @@ public class WasteReports extends javax.swing.JDialog {
             Date start = dateStart.getDate();
             Date end = new Date(dateEnd.getDate().getTime() + 86399999L);
 
-            List<WasteReport> allItems = dc.getAllWasteReports();
+            List<WasteItem> allItems = dc.getAllWasteItems();
             List<WasteItem> items = new LinkedList<>();
 
             switch (reason) {
@@ -258,12 +295,10 @@ public class WasteReports extends javax.swing.JDialog {
                     if (p == null) {
                         return;
                     }
-                    for (WasteReport wr : allItems) {
-                        if (wr.getDate().before(end) && wr.getDate().after(start)) {
-                            for (WasteItem i : wr.getItems()) {
-                                if (i.getProduct().equals(p)) {
-                                    items.add(i);
-                                }
+                    for (WasteItem i : allItems) {
+                        if (i.getTimestamp().before(end) && i.getTimestamp().after(start)) {
+                            if (i.getProduct().equals(p)) {
+                                items.add(i);
                             }
                         }
                     }
@@ -275,12 +310,10 @@ public class WasteReports extends javax.swing.JDialog {
                     if (d == null) {
                         return;
                     }
-                    for (WasteReport wr : allItems) {
-                        if (wr.getDate().before(end) && wr.getDate().after(start)) {
-                            for (WasteItem i : wr.getItems()) {
-                                if (i.getProduct().getCategory().getDepartment().equals(d)) {
-                                    items.add(i);
-                                }
+                    for (WasteItem i : allItems) {
+                        if (i.getTimestamp().before(end) && i.getTimestamp().after(start)) {
+                            if (i.getProduct().getCategory().getDepartment().equals(d)) {
+                                items.add(i);
                             }
                         }
                     }
@@ -292,12 +325,10 @@ public class WasteReports extends javax.swing.JDialog {
                     if (c == null) {
                         return;
                     }
-                    for (WasteReport wr : allItems) {
-                        if (wr.getDate().before(end) && wr.getDate().after(start)) {
-                            for (WasteItem i : wr.getItems()) {
-                                if (i.getProduct().getCategory().equals(c)) {
-                                    items.add(i);
-                                }
+                    for (WasteItem i : allItems) {
+                        if (i.getTimestamp().before(end) && i.getTimestamp().after(start)) {
+                            if (i.getProduct().getCategory().equals(c)) {
+                                items.add(i);
                             }
                         }
                     }
@@ -305,6 +336,15 @@ public class WasteReports extends javax.swing.JDialog {
                     break;
                 }
                 case REASON: {
+                    break;
+                }
+                case ALL: {
+                    for (WasteItem i : allItems) {
+                        if (i.getTimestamp().before(end) && i.getTimestamp().after(start)) {
+                            items.add(i);
+                        }
+                    }
+                    print(start, end, items);
                     break;
                 }
                 default: {

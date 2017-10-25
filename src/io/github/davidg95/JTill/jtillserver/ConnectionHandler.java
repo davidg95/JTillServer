@@ -483,33 +483,12 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("ADDWASTEREPORT")
-    public WasteReport addWasteReport(@JConnParameter("WASTE") WasteReport wr) throws IOException, SQLException, JTillException {
-        return dc.addWasteReport(wr);
+    public void addWasteReport(@JConnParameter("WASTE") List<WasteItem> items) throws IOException, SQLException, JTillException {
+        dc.addWasteReport(items);
     }
-
-    @JConnMethod("REMOVEWASTEREPORT")
-    public void removeWasteReport(@JConnParameter("ID") int id) throws IOException, SQLException, JTillException {
-        dc.removeWasteReport(id);
-    }
-
-    @JConnMethod("GETWASTEREPORT")
-    public WasteReport getWasteReport(@JConnParameter("ID") int id) throws IOException, SQLException, JTillException {
-        return dc.getWasteReport(id);
-    }
-
-    @JConnMethod("GETALLWASTEREPORTS")
-    public List<WasteReport> getAllWasteReports() throws IOException, SQLException, JTillException {
-        return dc.getAllWasteReports();
-    }
-
-    @JConnMethod("UPDATEWASTEREPORT")
-    public WasteReport updateWasteReport(@JConnParameter("WASTE") WasteReport wr) throws IOException, SQLException, JTillException {
-        return dc.updateWasteReport(wr);
-    }
-
     @JConnMethod("ADDWASTEITEM")
-    public WasteItem addWasteItem(@JConnParameter("WASTE") WasteReport wr, @JConnParameter("ITEM") WasteItem wi) throws IOException, SQLException, JTillException {
-        return dc.addWasteItem(wr, wi);
+    public WasteItem addWasteItem(@JConnParameter("ITEM") WasteItem wi) throws IOException, SQLException, JTillException {
+        return dc.addWasteItem(wi);
     }
 
     @JConnMethod("REMOVEWASTEITEM")
@@ -525,11 +504,6 @@ public class ConnectionHandler {
     @JConnMethod("GETALLWASTEITEMS")
     public List<WasteItem> getAllWasteItems() throws IOException, SQLException, JTillException {
         return dc.getAllWasteItems();
-    }
-
-    @JConnMethod("UPDATEWASTEITEM")
-    public WasteItem updateWasteItem(@JConnParameter("WASTE") WasteItem wi) throws IOException, SQLException, JTillException {
-        return dc.updateWasteItem(wi);
     }
 
     @JConnMethod("ADDWASTEREASON")

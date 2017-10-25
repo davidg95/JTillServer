@@ -374,9 +374,26 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+            try {
+                int i1 = stmt.executeUpdate("ALTER TABLE WASTEITEMS ADD COLUMN TIMESTAMP BIGINT");
+                int i2 = stmt.executeUpdate("UPDATE WASTEITEMS SET TIMESTAMP=(SELECT TIMESTAMP FROM WASTEREPORTS WHERE ID=WASTEITEMS.REPORT_ID)");
+                int i3 = stmt.executeUpdate("ALTER TABLE WASTEITEMS DROP COLUMN REPORT_ID");
+                int i4 = stmt.executeUpdate("DROP TABLE WASTEREPORTS");
+                con.commit();
+                log("Added TIMESTAMP to WASTEITEMS, " + i1 + " rows affected");
+                log("Set TIMESTAMP in WASTEITEMS, " + i2 + " rows affected");
+                log("Dropped column REPORT_ID in WASTEITEMS, " + i3 + " rows affected");
+                log("Dropped table WASTEREPORTS, " + i4 + " rows affected");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
         }
+    }
+
+    private void log(String message) {
+        LOG.log(Level.INFO, message);
     }
 
     /**
@@ -3203,27 +3220,18 @@ public class DBConnect implements DataConnect {
         return this.g;
     }
 
-    private List<WasteReport> getWasteReportsFromResultSet(ResultSet set) throws SQLException {
-        List<WasteReport> wrs = new LinkedList<>();
-        while (set.next()) {
-            int id = set.getInt("ID");
-            Date date = new Date(set.getLong("TIMESTAMP"));
-            wrs.add(new WasteReport(id, date));
-        }
-        return wrs;
-    }
-
     @Override
-    public WasteReport addWasteReport(WasteReport wr) throws IOException, SQLException, JTillException {
-        String query = "INSERT INTO APP.WASTEREPORTS (TIMESTAMP) values (" + wr.getDate().getTime() + ")";
+    public void addWasteReport(List<WasteItem> items) throws IOException, SQLException, JTillException {
         try (Connection con = getNewConnection()) {
-            PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             try {
-                stmt.executeUpdate();
-                ResultSet set = stmt.getGeneratedKeys();
-                while (set.next()) {
-                    int id = set.getInt(1);
-                    wr.setId(id);
+                for (WasteItem i : items) {
+                    PreparedStatement stmt = con.prepareStatement("INSERT INTO APP.WASTEITEMS (PRODUCT, QUANTITY, REASON, VALUE, TIMESTAMP) values (" + i.getProduct().getId() + "," + i.getQuantity() + "," + i.getReason() + "," + i.getTotalValue() + "," + i.getTimestamp().getTime() + ")", Statement.RETURN_GENERATED_KEYS);
+                    stmt.executeUpdate();
+                    ResultSet set = stmt.getGeneratedKeys();
+                    while (set.next()) {
+                        int id = set.getInt(1);
+                        i.setId(id);
+                    }
                 }
                 con.commit();
             } catch (SQLException ex) {
@@ -3232,129 +3240,23 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         }
-        for (WasteItem wi : wr.getItems()) {
-            addWasteItem(wr, wi);
-        }
-        return wr;
-    }
-
-    @Override
-    public void removeWasteReport(int id) throws IOException, SQLException, JTillException {
-        String query = "DELETE FROM WASTEREPORTS WHERE ID=" + id;
-        try (Connection con = getNewConnection()) {
-            Statement stmt = con.createStatement();
-            int value = 0;
-            try {
-                stmt.executeUpdate(query);
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-            if (value == 0) {
-                throw new JTillException(id + " could not be found");
-            }
-        }
-    }
-
-    @Override
-    public WasteReport getWasteReport(int id) throws IOException, SQLException, JTillException {
-        String query = "SELECT * FROM WASTEREPORTS WHERE ID=" + id;
-        try (Connection con = getNewConnection()) {
-            Statement stmt = con.createStatement();
-            List<WasteReport> wrs = new LinkedList<>();
-            try {
-                ResultSet set = stmt.executeQuery(query);
-                wrs = getWasteReportsFromResultSet(set);
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-
-            if (wrs.isEmpty()) {
-                throw new JTillException(id + " could not be found");
-            }
-
-            WasteReport wr = wrs.get(0);
-            wr.setItems(getWasteItemsInReport(id));
-            return wr;
-        }
-    }
-
-    private List<WasteItem> getWasteItemsInReport(int id) throws SQLException, IOException {
-        String query = "SELECT * FROM WASTEITEMS WHERE REPORT_ID=" + id;
-        try (Connection con = getNewConnection()) {
-            Statement stmt = con.createStatement();
-            List<WasteItem> wis = new LinkedList<>();
-            try {
-                ResultSet set = stmt.executeQuery(query);
-                wis = getWasteItemsFromResultSet(set);
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-            return wis;
-        }
-    }
-
-    @Override
-    public List<WasteReport> getAllWasteReports() throws IOException, SQLException {
-        String query = "SELECT * FROM WASTEREPORTS";
-        try (Connection con = getNewConnection()) {
-            Statement stmt = con.createStatement();
-            List<WasteReport> wrs = new LinkedList<>();
-            try {
-                ResultSet set = stmt.executeQuery(query);
-                wrs = getWasteReportsFromResultSet(set);
-                for (WasteReport wr : wrs) {
-                    wr.setItems(getWasteItemsInReport(wr.getId()));
-                }
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-            return wrs;
-        }
-    }
-
-    @Override
-    public WasteReport updateWasteReport(WasteReport wr) throws IOException, SQLException, JTillException {
-        String query = "UPDATE WASTEREPORTS SET VALUE=" + wr.getTotalValue().doubleValue() + ", TIMESTAMP=" + wr.getDate().getTime() + " WHERE ID=" + wr.getId();
-        try (Connection con = getNewConnection()) {
-            Statement stmt = con.createStatement();
-            int value;
-            try {
-                value = stmt.executeUpdate(query);
-                con.commit();
-                if (value == 0) {
-                    throw new JTillException("Waste Report " + wr.getId() + " not found");
-                }
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-        }
-        return wr;
     }
 
     private List<WasteItem> getWasteItemsFromResultSet(ResultSet set) throws SQLException, IOException {
         List<WasteItem> wis = new LinkedList<>();
         while (set.next()) {
             try {
-                int id = set.getInt("ID");
-                Product p = this.getProduct(set.getInt("PRODUCT"));
-                int quantity = set.getInt("QUANTITY");
-                int wreason = set.getInt("REASON");
-                BigDecimal value = set.getBigDecimal("VALUE");
-                wis.add(new WasteItem(id, p, quantity, wreason, value));
+                int id = set.getInt(1);
+                Product p = this.getProduct(set.getInt(2));
+                int quantity = set.getInt(3);
+                int wreason = set.getInt(4);
+                BigDecimal value = set.getBigDecimal(5);
+                Date date = new Date(set.getLong(6));
+                
+                String reason = set.getString(8);
+                
+                WasteReason wr = new WasteReason(wreason, reason);
+                wis.add(new WasteItem(id, p, quantity, wr, value, date));
             } catch (ProductNotFoundException ex) {
                 LOG.log(Level.SEVERE, null, ex);
             }
@@ -3363,8 +3265,8 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public WasteItem addWasteItem(WasteReport wr, WasteItem wi) throws IOException, SQLException, JTillException {
-        String query = "INSERT INTO APP.WASTEITEMS (REPORT_ID, PRODUCT, QUANTITY, REASON, VALUE) values (" + wr.getId() + "," + wi.getProduct().getId() + "," + wi.getQuantity() + "," + wi.getReason() + "," + wi.getTotalValue() + ")";
+    public WasteItem addWasteItem(WasteItem wi) throws IOException, SQLException, JTillException {
+        String query = "INSERT INTO APP.WASTEITEMS (PRODUCT, QUANTITY, REASON, VALUE, TIMESTAMP) values (" + wi.getProduct().getId() + "," + wi.getQuantity() + "," + wi.getReason() + "," + wi.getTotalValue() + "," + wi.getTimestamp().getTime() + ")";
         try (Connection con = getNewConnection()) {
             PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             try {
@@ -3406,7 +3308,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public WasteItem getWasteItem(int id) throws IOException, SQLException, JTillException {
-        String query = "SELECT * FROM WASTEITEMS WHERE ID=" + id;
+        String query = "SELECT * FROM WASTEITEMS, WASTEREASONS WHERE WASTEITEMS.REASON = WASTEREASONS.ID AND WASTEITEMS.ID=" + id;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             List<WasteItem> wis = new LinkedList<>();
@@ -3430,7 +3332,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<WasteItem> getAllWasteItems() throws IOException, SQLException {
-        String query = "SELECT * FROM WASTEITEMS";
+        String query = "SELECT * FROM WASTEITEMS, WASTEREASONS WHERE WASTEITEMS.REASON = WASTEREASONS.ID";
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             List<WasteItem> wis = new LinkedList<>();
@@ -3446,27 +3348,6 @@ public class DBConnect implements DataConnect {
 
             return wis;
         }
-    }
-
-    @Override
-    public WasteItem updateWasteItem(WasteItem wi) throws IOException, SQLException, JTillException {
-        String query = "UPDATE WASTEREPORTS SET PRODUCT=" + wi.getProduct().getId() + ", quantity=" + wi.getQuantity() + ", REASON='" + wi.getReason() + "', WHERE ID=" + wi.getId();
-        try (Connection con = getNewConnection()) {
-            Statement stmt = con.createStatement();
-            int value;
-            try {
-                value = stmt.executeUpdate(query);
-                con.commit();
-                if (value == 0) {
-                    throw new JTillException("Waste Report " + wi.getId() + " not found");
-                }
-            } catch (SQLException ex) {
-                con.rollback();
-                LOG.log(Level.SEVERE, null, ex);
-                throw ex;
-            }
-        }
-        return wi;
     }
 
     private List<WasteReason> getWasteReasonsFromResultSet(ResultSet set) throws SQLException {

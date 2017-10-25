@@ -55,7 +55,6 @@ import javax.swing.table.DefaultTableModel;
 public class WasteStockWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
-    private WasteReport report;
     private List<WasteItem> wasteItems;
     private final DefaultTableModel model;
     private final DefaultComboBoxModel cmbModel;
@@ -163,81 +162,55 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         });
     }
 
-    private void print() {
-        PrinterJob job = PrinterJob.getPrinterJob();
-        job.setPrintable(new WasteReportPrintout(report));
-        boolean ok = job.printDialog();
-        final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing report...", job);
-        if (ok) {
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        job.print();
-                    } catch (PrinterException ex) {
-                        mDialog.hide();
-                        JOptionPane.showInternalMessageDialog(WasteStockWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-                    } finally {
-                        mDialog.hide();
-                    }
-                }
-            };
-            Thread th = new Thread(runnable);
-            th.start();
-            mDialog.show();
-            JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
-
     private void addCSV() {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Select Waste File");
-        int returnVal = chooser.showOpenDialog(WasteStockWindow.this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = chooser.getSelectedFile();
-            try {
-                FileReader fr = new FileReader(file);
-                BufferedReader br = new BufferedReader(fr);
-                boolean errors = false;
-                while (true) {
-                    try {
-                        String line = br.readLine();
-
-                        if (line == null) {
-                            break;
-                        }
-
-                        String[] item = line.split(",");
-
-                        if (item.length != 3) {
-                            JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-
-                        Product product = dc.getProductByBarcode(item[0]);
-                        int amount = Integer.parseInt(item[1]);
-                        int reason = Integer.parseInt(item[2]);
-                        WasteItem wi = new WasteItem(product, amount, reason);
-                        wasteItems.add(wi);
-                        BigDecimal val = BigDecimal.ZERO;
-                        for (WasteItem w : wasteItems) {
-                            val = val.add(w.getProduct().getPrice().setScale(2).multiply(new BigDecimal(w.getQuantity())));
-                        }
-                        lblValue.setText("Total Value: £" + new DecimalFormat("#.00").format(val));
-                        model.addRow(new Object[]{product.getId(), product.getName(), product.getBarcode(), amount, wi.getReason()});
-                    } catch (ProductNotFoundException ex) {
-                        errors = true;
-                    }
-                }
-                if (errors) {
-                    JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "Not all products could be found", "Waste", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (FileNotFoundException ex) {
-                JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "The file could not be found", "Open File", JOptionPane.ERROR_MESSAGE);
-            } catch (IOException | SQLException ex) {
-                JOptionPane.showInternalMessageDialog(WasteStockWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+//        JFileChooser chooser = new JFileChooser();
+//        chooser.setDialogTitle("Select Waste File");
+//        int returnVal = chooser.showOpenDialog(WasteStockWindow.this);
+//        if (returnVal == JFileChooser.APPROVE_OPTION) {
+//            File file = chooser.getSelectedFile();
+//            try {
+//                FileReader fr = new FileReader(file);
+//                BufferedReader br = new BufferedReader(fr);
+//                boolean errors = false;
+//                while (true) {
+//                    try {
+//                        String line = br.readLine();
+//
+//                        if (line == null) {
+//                            break;
+//                        }
+//
+//                        String[] item = line.split(",");
+//
+//                        if (item.length != 3) {
+//                            JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
+//                            return;
+//                        }
+//
+//                        Product product = dc.getProductByBarcode(item[0]);
+//                        int amount = Integer.parseInt(item[1]);
+//                        int reason = Integer.parseInt(item[2]);
+//                        WasteItem wi = new WasteItem(product, amount, reason, getSelectedDate());
+//                        wasteItems.add(wi);
+//                        BigDecimal val = BigDecimal.ZERO;
+//                        for (WasteItem w : wasteItems) {
+//                            val = val.add(w.getProduct().getPrice().setScale(2).multiply(new BigDecimal(w.getQuantity())));
+//                        }
+//                        lblValue.setText("Total Value: £" + new DecimalFormat("#.00").format(val));
+//                        model.addRow(new Object[]{product.getId(), product.getName(), product.getBarcode(), amount, wi.getReason()});
+//                    } catch (ProductNotFoundException ex) {
+//                        errors = true;
+//                    }
+//                }
+//                if (errors) {
+//                    JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "Not all products could be found", "Waste", JOptionPane.ERROR_MESSAGE);
+//                }
+//            } catch (FileNotFoundException ex) {
+//                JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "The file could not be found", "Open File", JOptionPane.ERROR_MESSAGE);
+//            } catch (IOException | SQLException ex) {
+//                JOptionPane.showInternalMessageDialog(WasteStockWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+//            }
+//        }
     }
 
     private void updateTable() {
@@ -250,13 +223,8 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         model.setRowCount(0);
         BigDecimal val = BigDecimal.ZERO;
         for (WasteItem wi : wasteItems) {
-            try {
-                WasteReason wr = dc.getWasteReason(wi.getReason());
-                Object[] row = new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + wi.getTotalValue(), wr.getReason()};
-                model.addRow(row);
-            } catch (IOException | SQLException | JTillException ex) {
-                Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Object[] row = new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + wi.getTotalValue(), wi.getReason().getReason()};
+            model.addRow(row);
             val = val.add(wi.getTotalValue());
         }
         if (val == BigDecimal.ZERO) {
@@ -271,72 +239,16 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         }
     }
 
-    private class WasteReportPrintout implements Printable {
+    private Date getSelectedDate() {
 
-        private final WasteReport wr;
-
-        public WasteReportPrintout(WasteReport wr) {
-            this.wr = wr;
-        }
-
-        @Override
-        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-            if (pageIndex > 0) {
-                return NO_SUCH_PAGE;
-            }
-
-            String header = "Waste Report";
-
-            Graphics2D g2 = (Graphics2D) graphics;
-            g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-
-            Font oldFont = graphics.getFont();
-
-            int y = 60;
-
-            g2.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
-            g2.drawString(header, 70, y);
-            y += 30;
-            g2.setFont(oldFont); //Chagne back to the old font.
-
-            //Print sale info.
-            g2.drawString("Time: " + wr.getDate(), 70, y);
-
-            final int item = 100;
-            final int quantity = 240;
-            final int reason = 340;
-            final int total = 440;
-
-            y += 30;
-
-            //Print collumn headers.
-            g2.drawString("Item", item, y);
-            g2.drawString("Quantity", quantity, y);
-            g2.drawString("Total", total, y);
-            g2.drawString("Reason", reason, y);
-            g2.drawLine(item - 30, y + 10, total + 100, y + 10);
-
-            y += 30;
-
-            try {
-                //Print the sale items.
-                for (WasteItem wi : wr.getItems()) {
-                    g2.drawString(wi.getName(), item, y);
-                    g2.drawString("" + wi.getQuantity(), quantity, y);
-                    g2.drawString("£" + wi.getProduct().getPrice().multiply(new BigDecimal(wi.getQuantity())), total, y);
-                    final WasteReason wr = dc.getWasteReason(wi.getReason());
-                    g2.drawString(wr.getName(), reason, y);
-                    y += 30;
-                }
-                g2.drawLine(item - 30, y - 20, total + 100, y - 20);
-                g2.drawString("Total: £" + wr.getTotalValue().setScale(2), total, y);
-            } catch (IOException | SQLException | JTillException ex) {
-                JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "Page could not be printed in full");
-            }
-
-            return PAGE_EXISTS;
-        }
-
+        long d = pickDate.getDate().getTime();
+        long t = ((Date) timeSpin.getValue()).getTime();
+        date = new Date(d + t);
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.set(Calendar.HOUR_OF_DAY, c.get(Calendar.HOUR_OF_DAY) + 1);
+        date = c.getTime();
+        return date;
     }
 
     /**
@@ -566,7 +478,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 return;
             }
             WasteReason wr = (WasteReason) cmbReason.getSelectedItem();
-            WasteItem wi = new WasteItem(product, amount, wr.getId());
+            WasteItem wi = new WasteItem(product, amount, wr, getSelectedDate());
             wasteItems.add(wi);
             txtBarcode.setText("");
             updateTable();
@@ -579,14 +491,6 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         if (wasteItems.isEmpty()) {
             return;
         }
-        long d = pickDate.getDate().getTime();
-        long t = ((Date) timeSpin.getValue()).getTime();
-        date = new Date(d + t);
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        c.set(Calendar.HOUR_OF_DAY, c.get(Calendar.HOUR_OF_DAY) + 1);
-        date = c.getTime();
-        WasteReport wr = new WasteReport(date);
         BigDecimal total = BigDecimal.ZERO;
         for (WasteItem wi : wasteItems) {
             try {
@@ -599,17 +503,13 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             }
         }
         total.setScale(2);
-        wr.setItems(wasteItems);
         try {
-            dc.addWasteReport(wr);
+            dc.addWasteReport(wasteItems);
             model.setRowCount(0);
             wasteItems.clear();
             lblValue.setText("Total: £0.00");
             btnWaste.setEnabled(false);
             JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "All items have been wasted", "Waste", JOptionPane.INFORMATION_MESSAGE);
-            if (JOptionPane.showInternalConfirmDialog(WasteStockWindow.this, "Do you want to print this report?", "Print", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                print();
-            }
         } catch (IOException | SQLException | JTillException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }

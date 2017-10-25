@@ -133,9 +133,6 @@ public class JTillObjectSelectDialog extends javax.swing.JDialog {
                     objects.addAll(dc.getAllWasteReasons());
                     continue;
                 }
-                if (WasteReport.class.equals(E)) {
-                    objects.addAll(dc.getAllWasteReports());
-                }
             }
             reloadTable();
         } catch (IOException | SQLException ex) {
