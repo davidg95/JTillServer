@@ -4905,10 +4905,10 @@ public class DBConnect implements DataConnect {
         try (final Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
-                ResultSet set = stmt.executeQuery("SELECT * FROM WASTEREPORTS, WASTEITEMS WHERE WASTEREPORTS.ID = WASTEITEMS.REPORT_ID AND TIMESTAMP >= " + s + " AND TIMESTAMP <= " + e);
+                ResultSet set = stmt.executeQuery("SELECT TIMESTAMP, VALUE FROM WASTEITEMS WHERE TIMESTAMP >= " + s + " AND TIMESTAMP <= " + e);
                 BigDecimal total = BigDecimal.ZERO;
                 while (set.next()) {
-                    total = total.add(set.getBigDecimal(8));
+                    total = total.add(set.getBigDecimal(2));
                 }
                 con.commit();
                 return total;

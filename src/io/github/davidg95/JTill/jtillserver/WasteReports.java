@@ -23,7 +23,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -148,10 +147,12 @@ public class WasteReports extends javax.swing.JDialog {
             final int topY = y;
             final int pCol = x + 10;
             final int qCol = x + 200;
-            final int rCol = x + 300;
+            final int rCol = x + 240;
+            final int vCol = x + 320;
             g.drawString("Product", pCol, y + lineSpace - 5);
             g.drawString("Qty.", qCol, y + lineSpace - 5);
             g.drawString("Reason", rCol, y + lineSpace - 5);
+            g.drawString("Total Value", vCol, y + lineSpace - 5);
             y += lineSpace;
             for (Department d : departments) {
                 g.setColor(Color.lightGray);
@@ -161,16 +162,20 @@ public class WasteReports extends javax.swing.JDialog {
                 g.drawString(d.getName(), x + 10, y + lineSpace - 5);
                 y += lineSpace + lineSpace;
                 for (WasteItem i : items) {
-                    g.drawString(i.getProduct().getLongName(), pCol, y);
-                    g.drawString(i.getQuantity() + "", qCol, y);
-                    g.drawString(i.getReason().getReason(), rCol, y);
-                    y += lineSpace;
+                    if (i.getProduct().getCategory().getDepartment().equals(d)) {
+                        g.drawString(i.getProduct().getLongName(), pCol, y);
+                        g.drawString(i.getQuantity() + "", qCol, y);
+                        g.drawString(i.getReason().getReason(), rCol, y);
+                        g.drawString("£" + i.getTotalValue().setScale(2, 6).toString(), vCol, y);
+                        y += lineSpace;
+                    }
                 }
             }
 
             g.drawRect(topX, topY, width, y - topY - lineSpace + 5);
             g.drawLine(qCol - 5, topY, qCol - 5, y - lineSpace + 5);
             g.drawLine(rCol - 5, topY, rCol - 5, y - lineSpace + 5);
+            g.drawLine(vCol - 5, topY, vCol - 5, y - lineSpace + 5);
 
             return PAGE_EXISTS;
         }
