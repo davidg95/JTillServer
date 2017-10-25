@@ -216,12 +216,60 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }
 
     private void setViewMode() {
-        btnAddCSV.setEnabled(false);
         btnAddProduct.setEnabled(false);
         btnReceive.setEnabled(false);
         cmbSuppliers.setEnabled(false);
         txtInvoice.setEditable(false);
         viewMode = true;
+    }
+
+    private void addCSV() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Select Receive File");
+        int returnVal = chooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+
+                while (true) {
+                    String line = br.readLine();
+
+                    if (line == null) {
+                        break;
+                    }
+
+                    String[] items = line.split(",");
+
+                    if (items.length != 2) {
+                        JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    String barcode = items[0];
+                    int quantity = Integer.parseInt(items[1]);
+
+                    Product product;
+                    try {
+                        product = dc.getProductByBarcode(barcode);
+
+                        product.setStock(quantity);
+
+                        products.add(new ReceivedItem(product, quantity));
+                        model.addRow(new Object[]{product.getId(), product.getName(), product.getBarcode(), product.getStock()});
+                    } catch (ProductNotFoundException ex) {
+                        if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                            JOptionPane.showMessageDialog(this, "Feature not yet implemented, must add manually", "Not Found", JOptionPane.WARNING_MESSAGE);
+                        }
+                    }
+                }
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, ex, "File Not Found", JOptionPane.ERROR_MESSAGE);
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     /**
@@ -238,13 +286,13 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         btnReceive = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
         btnAddProduct = new javax.swing.JButton();
-        btnAddCSV = new javax.swing.JButton();
         lblValue = new javax.swing.JLabel();
         cmbSuppliers = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtInvoice = new javax.swing.JTextField();
         chkPaid = new javax.swing.JCheckBox();
+        txtBarcode = new javax.swing.JTextField();
 
         setResizable(true);
 
@@ -310,13 +358,6 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        btnAddCSV.setText("Add CSV File");
-        btnAddCSV.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddCSVActionPerformed(evt);
-            }
-        });
-
         lblValue.setText("Total Value: £0.00");
 
         cmbSuppliers.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -329,6 +370,12 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         chkPaid.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkPaidActionPerformed(evt);
+            }
+        });
+
+        txtBarcode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBarcodeActionPerformed(evt);
             }
         });
 
@@ -345,7 +392,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chkPaid)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnAddCSV)
+                        .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddProduct)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -372,15 +419,15 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     .addComponent(jLabel2)
                     .addComponent(txtInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnReceive)
                     .addComponent(btnClose)
                     .addComponent(btnAddProduct)
-                    .addComponent(btnAddCSV)
                     .addComponent(lblValue)
-                    .addComponent(chkPaid))
+                    .addComponent(chkPaid)
+                    .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -446,7 +493,25 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnReceiveActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        Product product = ProductSelectDialog.showDialog(this, false);
+        Product product;
+        if (txtBarcode.getText().isEmpty()) {
+            product = ProductSelectDialog.showDialog(this, false);
+        } else{
+            if(!Utilities.isNumber(txtBarcode.getText())){
+                txtBarcode.setSelectionStart(0);
+                txtBarcode.setSelectionEnd(txtBarcode.getText().length());
+                JOptionPane.showInternalMessageDialog(this, "Not a number", "Add Product", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try {
+                product = dc.getProductByBarcode(txtBarcode.getText());
+            } catch (IOException | ProductNotFoundException | SQLException ex) {
+                txtBarcode.setSelectionStart(0);
+                txtBarcode.setSelectionEnd(txtBarcode.getText().length());
+                JOptionPane.showInternalMessageDialog(this, ex, "Add Product", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
 
         if (product == null) {
             return;
@@ -475,6 +540,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             }
 
             products.add(new ReceivedItem(product, amount));
+            txtBarcode.setText("");
             updateTable();
         } else {
             JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
@@ -532,55 +598,6 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tblProductsMouseClicked
 
-    private void btnAddCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCSVActionPerformed
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Select Receive File");
-        int returnVal = chooser.showOpenDialog(this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = chooser.getSelectedFile();
-
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file));
-
-                while (true) {
-                    String line = br.readLine();
-
-                    if (line == null) {
-                        break;
-                    }
-
-                    String[] items = line.split(",");
-
-                    if (items.length != 2) {
-                        JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-
-                    String barcode = items[0];
-                    int quantity = Integer.parseInt(items[1]);
-
-                    Product product;
-                    try {
-                        product = dc.getProductByBarcode(barcode);
-
-                        product.setStock(quantity);
-
-                        products.add(new ReceivedItem(product, quantity));
-                        model.addRow(new Object[]{product.getId(), product.getName(), product.getBarcode(), product.getStock()});
-                    } catch (ProductNotFoundException ex) {
-                        if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                            JOptionPane.showMessageDialog(this, "Feature not yet implemented, must add manually", "Not Found", JOptionPane.WARNING_MESSAGE);
-                        }
-                    }
-                }
-            } catch (FileNotFoundException ex) {
-                JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, ex, "File Not Found", JOptionPane.ERROR_MESSAGE);
-            } catch (IOException | SQLException ex) {
-                JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }//GEN-LAST:event_btnAddCSVActionPerformed
-
     private void chkPaidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkPaidActionPerformed
         if (viewMode) {
             rr.setPaid(chkPaid.isSelected());
@@ -593,8 +610,11 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_chkPaidActionPerformed
 
+    private void txtBarcodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBarcodeActionPerformed
+        btnAddProduct.doClick();
+    }//GEN-LAST:event_txtBarcodeActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAddCSV;
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnReceive;
@@ -605,6 +625,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblValue;
     private javax.swing.JTable tblProducts;
+    private javax.swing.JTextField txtBarcode;
     private javax.swing.JTextField txtInvoice;
     // End of variables declaration//GEN-END:variables
 }

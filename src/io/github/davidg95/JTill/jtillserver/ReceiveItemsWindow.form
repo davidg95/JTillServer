@@ -31,7 +31,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="chkPaid" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
-                      <Component id="btnAddCSV" min="-2" max="-2" attributes="0"/>
+                      <Component id="txtBarcode" min="-2" pref="159" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnAddProduct" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -64,15 +64,15 @@
                   <Component id="txtInvoice" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="335" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="339" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnReceive" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnClose" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnAddProduct" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnAddCSV" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblValue" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="chkPaid" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtBarcode" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -150,14 +150,6 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddProductActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnAddCSV">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Add CSV File"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddCSVActionPerformed"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JLabel" name="lblValue">
       <Properties>
         <Property name="text" type="java.lang.String" value="Total Value: &#xa3;0.00"/>
@@ -196,6 +188,11 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkPaidActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtBarcode">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtBarcodeActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

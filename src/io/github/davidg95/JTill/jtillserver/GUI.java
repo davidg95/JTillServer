@@ -1583,7 +1583,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_chkInfoActionPerformed
 
     private void itemWasteReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemWasteReportsActionPerformed
-        WasteReports.showWindow();
+        WasteReports.showWindow(this);
     }//GEN-LAST:event_itemWasteReportsActionPerformed
 
     private void itemReasonsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReasonsActionPerformed

@@ -1235,7 +1235,7 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public Product getProductByBarcode(String barcode) throws SQLException, ProductNotFoundException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND BARCODE='" + barcode + "'";
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND BARCODE='" + barcode + "'";
         List<Product> products = new LinkedList<>();
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
@@ -3658,7 +3658,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<Supplier> getAllSuppliers() throws IOException, SQLException {
-        String query = "SELECT * FROM SUPPdasdLIERS";
+        String query = "SELECT * FROM SUPPLIERS";
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             long stamp = supL.readLock();

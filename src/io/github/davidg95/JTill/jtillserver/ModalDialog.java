@@ -6,7 +6,10 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.print.PrinterJob;
 import javax.swing.BorderFactory;
@@ -25,7 +28,7 @@ import javax.swing.border.Border;
 public class ModalDialog {
 
     private JDialog dialog; //The dialog.
-    private Component parent; //The parent component.
+    private Window parent; //The parent component.
     private JPanel panel; //The panel for the components.
     private JLabel label; //The message label.
 
@@ -47,7 +50,10 @@ public class ModalDialog {
         this.title = title;
         this.text = text;
         this.hidden = false;
-        this.parent = parent;
+        this.parent = null;
+        if(parent instanceof Dialog || parent instanceof Frame){
+            this.parent = (Window) parent;
+        }
         this.modal = true;
         init();
     }
@@ -63,7 +69,10 @@ public class ModalDialog {
         this.title = title;
         this.text = text;
         this.hidden = false;
-        this.parent = parent;
+        this.parent = null;
+        if(parent instanceof Dialog || parent instanceof Frame){
+            this.parent = (Window) parent;
+        }
         this.modal = modal;
         init();
     }
@@ -96,13 +105,13 @@ public class ModalDialog {
         final Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         panel.add(label);
         panel.setBorder(padding);
-        dialog = new JDialog();
+        dialog = new JDialog(parent);
         dialog.setAlwaysOnTop(true);
         dialog.setResizable(false);
         dialog.setTitle(title);
         dialog.setContentPane(panel);
         dialog.pack();
-        dialog.setLocation((parent.getSize().width / 2) - dialog.getSize().width / 2, (parent.getSize().height / 2) - dialog.getSize().height / 2);
+        dialog.setLocationRelativeTo(parent);
         dialog.setModal(modal);
     }
 
