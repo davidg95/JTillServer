@@ -19,6 +19,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
@@ -139,43 +140,48 @@ public class WasteReports extends javax.swing.JDialog {
             g.drawString("End date: " + end.toString(), x, y);
             y += 30;
 
-            g.setColor(Color.lightGray);
-            g.fillRect(x, y, width, lineSpace);
-            g.setColor(Color.BLACK);
-            g.drawRect(x, y, width, lineSpace);
             final int topX = x;
             final int topY = y;
             final int pCol = x + 10;
             final int qCol = x + 200;
             final int rCol = x + 240;
             final int vCol = x + 320;
-            g.drawString("Product", pCol, y + lineSpace - 5);
-            g.drawString("Qty.", qCol, y + lineSpace - 5);
-            g.drawString("Reason", rCol, y + lineSpace - 5);
-            g.drawString("Total Value", vCol, y + lineSpace - 5);
+
+            g.setColor(Color.lightGray);
+            g.fillRect(x, y, width, lineSpace);
+            g.setColor(Color.BLACK);
+            g.drawRect(x, y, width, lineSpace);
+            g.drawString("Product", pCol, y + lineSpace - 4);
+            g.drawString("Qty.", qCol, y + lineSpace - 4);
+            g.drawString("Reason", rCol, y + lineSpace - 4);
+            g.drawString("Total Value", vCol, y + lineSpace - 4);
+            BigDecimal total = BigDecimal.ZERO;
             y += lineSpace;
-            for (Department d : departments) {
-                g.setColor(Color.lightGray);
-                g.fillRect(x, y, width, lineSpace);
-                g.setColor(Color.BLACK);
-                g.drawRect(x, y, width, lineSpace);
-                g.drawString(d.getName(), x + 10, y + lineSpace - 5);
-                y += lineSpace + lineSpace;
-                for (WasteItem i : items) {
-                    if (i.getProduct().getCategory().getDepartment().equals(d)) {
-                        g.drawString(i.getProduct().getLongName(), pCol, y);
-                        g.drawString(i.getQuantity() + "", qCol, y);
-                        g.drawString(i.getReason().getReason(), rCol, y);
-                        g.drawString("£" + i.getTotalValue().setScale(2, 6).toString(), vCol, y);
-                        y += lineSpace;
-                    }
-                }
+            for (WasteItem i : items) {
+                y += lineSpace;
+                g.drawString(i.getProduct().getLongName(), pCol, y - 4);
+                g.drawString(i.getQuantity() + "", qCol, y - 4);
+                g.drawString(i.getReason().getReason(), rCol, y - 4);
+                g.drawString("£" + i.getTotalValue().setScale(2, 6).toString(), vCol, y - 4);
+                total = total.add(i.getTotalValue());
             }
 
-            g.drawRect(topX, topY, width, y - topY - lineSpace + 5);
-            g.drawLine(qCol - 5, topY, qCol - 5, y - lineSpace + 5);
-            g.drawLine(rCol - 5, topY, rCol - 5, y - lineSpace + 5);
-            g.drawLine(vCol - 5, topY, vCol - 5, y - lineSpace + 5);
+            g.setColor(Color.lightGray);
+            g.fillRect(x, y, width, lineSpace);
+            g.setColor(Color.BLACK);
+            g.drawRect(x, y, width, lineSpace);
+
+            g.setFont(new Font(font.getFamily(), Font.BOLD, font.getSize()));
+            g.drawString("Total", pCol, y + lineSpace - 4);
+            g.drawString("£" + total.setScale(2, 6).toString(), vCol, y + lineSpace - 4);
+            g.setFont(font);
+            
+            y += lineSpace;
+            
+            g.drawRect(topX, topY, width, y - topY);
+            g.drawLine(qCol - 5, topY, qCol - 5, y - lineSpace);
+            g.drawLine(rCol - 5, topY, rCol - 5, y - lineSpace);
+            g.drawLine(vCol - 5, topY, vCol - 5, y);
 
             return PAGE_EXISTS;
         }
