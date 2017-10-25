@@ -1,3 +1,4 @@
-JTill log Wed Oct 25 16:51:52 BST 2017
-[16:51:52] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[16:51:56] [INFO] David Grant has logged in
+JTill log Wed Oct 25 17:01:09 BST 2017
+[17:01:09] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[17:01:12] [INFO] David Grant has logged in
+[17:01:16] [SEVERE] java.sql.SQLSyntaxErrorException: Column 'SUPPLIER.ID' is either not in any table in the FROM list or appears within a join specification and is outside the scope of the join specification or appears in a HAVING clause and is not in the GROUP BY list. If this is a CREATE or ALTER TABLE  statement then 'SUPPLIER.ID' is not a column in the target table.

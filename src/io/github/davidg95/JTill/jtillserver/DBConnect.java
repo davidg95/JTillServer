@@ -4459,7 +4459,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<ReceivedReport> getAllReceivedReports() throws IOException, SQLException {
-        String query = "SELECT * FROM RECEIVED_REPORTS, SUPPLIERS WHERE RECEIVED_REPORTS.SUPPLIER_ID = SUPPLIER.ID";
+        String query = "SELECT * FROM RECEIVED_REPORTS, SUPPLIERS WHERE RECEIVED_REPORTS.SUPPLIER_ID = SUPPLIERS.ID";
         List<ReceivedReport> reports;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
