@@ -4472,9 +4472,9 @@ public class DBConnect implements DataConnect {
                     int supp = set.getInt(3);
                     boolean paid = set.getBoolean(4);
 
-                    String name = set.getString(5);
-                    String addrs = set.getString(6);
-                    String phone = set.getString(7);
+                    String name = set.getString(6);
+                    String addrs = set.getString(7);
+                    String phone = set.getString(8);
                     Supplier sup = new Supplier(supp, name, addrs, phone);
 
                     ReceivedReport rr = new ReceivedReport(id, inv, sup, paid);
