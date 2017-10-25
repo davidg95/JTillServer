@@ -4546,9 +4546,9 @@ public class DBConnect implements DataConnect {
                         p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, code);
                     }
 
-                    int iid = set.getInt(31);
-                    BigDecimal riPrice = set.getBigDecimal(33);
-                    int quantity = set.getInt(34);
+                    int iid = set.getInt(33);
+                    BigDecimal riPrice = set.getBigDecimal(34);
+                    int quantity = set.getInt(35);
 
                     ReceivedItem ri = new ReceivedItem(iid, p, quantity, riPrice);
 

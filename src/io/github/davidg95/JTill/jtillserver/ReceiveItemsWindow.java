@@ -75,6 +75,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         cmbModel = new DefaultComboBoxModel();
         cmbSuppliers.setModel(cmbModel);
         init();
+        txtBarcode.requestFocus();
     }
 
     public ReceiveItemsWindow(ReceivedReport rr) {
@@ -92,6 +93,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         model.setRowCount(0);
         cmbModel = (DefaultComboBoxModel) cmbSuppliers.getModel();
         cmbSuppliers.setModel(cmbModel);
+        txtBarcode.setEnabled(false);
         setReport();
     }
 
