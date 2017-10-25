@@ -3225,7 +3225,7 @@ public class DBConnect implements DataConnect {
         try (Connection con = getNewConnection()) {
             try {
                 for (WasteItem i : items) {
-                    PreparedStatement stmt = con.prepareStatement("INSERT INTO APP.WASTEITEMS (PRODUCT, QUANTITY, REASON, VALUE, TIMESTAMP) values (" + i.getProduct().getId() + "," + i.getQuantity() + "," + i.getReason() + "," + i.getTotalValue() + "," + i.getTimestamp().getTime() + ")", Statement.RETURN_GENERATED_KEYS);
+                    PreparedStatement stmt = con.prepareStatement("INSERT INTO APP.WASTEITEMS (PRODUCT, QUANTITY, REASON, VALUE, TIMESTAMP) values (" + i.getProduct().getId() + "," + i.getQuantity() + "," + i.getReason().getId() + "," + i.getTotalValue() + "," + i.getTimestamp().getTime() + ")", Statement.RETURN_GENERATED_KEYS);
                     stmt.executeUpdate();
                     ResultSet set = stmt.getGeneratedKeys();
                     while (set.next()) {
@@ -3252,9 +3252,9 @@ public class DBConnect implements DataConnect {
                 int wreason = set.getInt(4);
                 BigDecimal value = set.getBigDecimal(5);
                 Date date = new Date(set.getLong(6));
-                
+
                 String reason = set.getString(8);
-                
+
                 WasteReason wr = new WasteReason(wreason, reason);
                 wis.add(new WasteItem(id, p, quantity, wr, value, date));
             } catch (ProductNotFoundException ex) {
@@ -5085,6 +5085,34 @@ public class DBConnect implements DataConnect {
                 Statement stmt = con.createStatement();
                 stmt.executeUpdate("DELETE FROM CONDIMENTS WHERE ID=" + id);
                 con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
+
+    @Override
+    public List<SaleItem> getSalesByDepartment(int id) throws IOException, SQLException {
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet set = stmt.executeQuery("SELECT * FROM SALEITEMS, PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE SALEITEMS.PRODUCT_ID = PRODUCTS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.TAX_ID = TAX.ID AND DEPARTMENTS.ID=" + id);
+                List<SaleItem> items = getSaleItemsFromResultSet(set);
+                List<SaleItem> is = new LinkedList<>();
+                Main:
+                for (SaleItem item : items) {
+                    for (SaleItem i : is) {
+                        if (item.getItem().equals(i.getItem())) {
+                            i.increaseQuantity(item.getQuantity());
+                            continue Main;
+                        }
+                    }
+                    is.add(item);
+                }
+                con.commit();
+                return is;
             } catch (SQLException ex) {
                 con.rollback();
                 LOG.log(Level.SEVERE, null, ex);

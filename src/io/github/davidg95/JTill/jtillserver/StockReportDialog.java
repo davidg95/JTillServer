@@ -52,6 +52,7 @@ public class StockReportDialog extends javax.swing.JDialog {
         setModal(true);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        btnGenerate.requestFocus();
     }
 
     public static void showDialog(Component parent) {
@@ -87,6 +88,8 @@ public class StockReportDialog extends javax.swing.JDialog {
 
                 Font font = g.getFont();
 
+                final int width = (int) (pageFormat.getWidth() - x - x);
+
                 int y = 60;
                 FontMetrics metrics = graphics.getFontMetrics(font);
                 final int lineSpace = metrics.getHeight() + 5;
@@ -102,36 +105,49 @@ public class StockReportDialog extends javax.swing.JDialog {
 
                 y += lineSpace;
 
+                final int idCol = x + 10;
+                final int nCol = x + 40;
+                final int sCol = x + 200;
+
+                final int topY = y;
+                g.setColor(Color.lightGray);
+                g.fillRect(x, y, width, lineSpace);
+                g.setColor(Color.BLACK);
+                g.drawRect(x, y, width, lineSpace);
+
+                g.drawString("ID", idCol, y + lineSpace - 5);
+                g.drawString("Name", nCol, y + lineSpace - 5);
+                g.drawString("In Stock", sCol, y + lineSpace - 5);
+
+                y += lineSpace;
+
                 List<Department> departments = dc.getAllDepartments();
                 for (Department d : departments) {
-                    if (y + 40 > pageFormat.getHeight()) {
-                        continue;
-                    }
-                    printDepartmentHeader(g, d, y, (int) pageFormat.getWidth() - 140);
-                    y += 50;
+                    g.setColor(Color.LIGHT_GRAY);
+                    g.fillRect(x, y, width, lineSpace);
+                    g.setColor(Color.BLACK);
+                    g.drawRect(x, y, width, lineSpace);
+                    g.drawString(d.getName(), x + 20, y + 15);
+                    y += lineSpace;
                     for (Product p : products) {
                         if (p.getCategory().getDepartment().equals(d)) {
-                            g.drawString(p.getId() + "", x, y);
-                            g.drawString(p.getLongName(), x + 30, y);
-                            g.drawString(p.getStock() + "", x + 230, y);
                             y += lineSpace;
+                            g.drawString(p.getId() + "", idCol, y);
+                            g.drawString(p.getLongName(), nCol, y);
+                            g.drawString(p.getStock() + "", sCol, y);
                         }
                     }
+                    y += lineSpace;
                 }
+
+                g.drawRect(x, topY, width, y - topY);
+                g.drawLine(nCol - 5, topY, nCol - 5, y);
+                g.drawLine(sCol - 5, topY, sCol - 5, y);
             } catch (IOException | SQLException ex) {
                 JOptionPane.showMessageDialog(StockReportDialog.this, ex);
             }
             return PAGE_EXISTS;
         }
-
-        private void printDepartmentHeader(Graphics g, Department d, int y, int width) {
-            g.setColor(Color.LIGHT_GRAY);
-            g.fillRect(x, y, width, 30);
-            g.setColor(Color.BLACK);
-            g.drawRect(x, y, width, 30);
-            g.drawString(d.getName(), x + 20, y + 20);
-        }
-
     }
 
     /**

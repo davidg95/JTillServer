@@ -486,6 +486,7 @@ public class ConnectionHandler {
     public void addWasteReport(@JConnParameter("WASTE") List<WasteItem> items) throws IOException, SQLException, JTillException {
         dc.addWasteReport(items);
     }
+
     @JConnMethod("ADDWASTEITEM")
     public WasteItem addWasteItem(@JConnParameter("ITEM") WasteItem wi) throws IOException, SQLException, JTillException {
         return dc.addWasteItem(wi);
@@ -885,5 +886,10 @@ public class ConnectionHandler {
     @JConnMethod("REMOVECONDIMENT")
     public void removeCondiment(@JConnParameter("ID") int id) throws IOException, SQLException {
         dc.removeCondiment(id);
+    }
+
+    @JConnMethod("SALESBYDEPARTMENT")
+    public List<SaleItem> getSalesByDepartment(@JConnParameter("ID") int id) throws IOException, SQLException {
+        return dc.getSalesByDepartment(id);
     }
 }

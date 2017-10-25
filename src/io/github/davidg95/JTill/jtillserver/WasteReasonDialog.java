@@ -183,7 +183,7 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
-        String reason = JOptionPane.showInputDialog(this, "Enter new waste reason", "New Reason", JOptionPane.PLAIN_MESSAGE);
+        String reason = JOptionPane.showInternalInputDialog(this, "Enter new waste reason", "New Reason", JOptionPane.PLAIN_MESSAGE);
 
         if (reason == null) {
             return;
@@ -196,7 +196,7 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
         WasteReason wr = new WasteReason(reason);
         try {
             wr = dc.addWasteReason(wr);
-            JOptionPane.showMessageDialog(this, "New reason added\nID-" + wr.getId() + " Reason-" + wr.getReason(), "Reason Added", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showInternalMessageDialog(this, "New reason added\nID-" + wr.getId() + " Reason-" + wr.getReason(), "Reason Added", JOptionPane.INFORMATION_MESSAGE);
             init();
         } catch (IOException | SQLException | JTillException ex) {
             LOG.log(Level.SEVERE, null, ex);
