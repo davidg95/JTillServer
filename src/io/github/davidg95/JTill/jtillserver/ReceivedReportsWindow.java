@@ -77,8 +77,7 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
             model.setRowCount(0);
             receivedReports = new LinkedList<>();
             for (ReceivedReport rr : rrs) {
-                final Supplier s = dc.getSupplier(rr.getSupplierId());
-                Object[] row = new Object[]{rr.getId(), rr.getInvoiceId(), s.getName(), rr.isPaid()};
+                Object[] row = new Object[]{rr.getId(), rr.getInvoiceId(), rr.getSupplier().getName(), rr.isPaid()};
                 if (chkShowUnpaid.isSelected() && !rr.isPaid()) {
                     model.addRow(row);
                     receivedReports.add(rr);
@@ -88,7 +87,7 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
                     receivedReports.add(rr);
                 }
             }
-        } catch (IOException | SQLException | JTillException ex) {
+        } catch (IOException | SQLException ex) {
             JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(WasteReports.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -83,7 +83,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         this.rr = rr;
         this.products = new LinkedList<>();
         initComponents();
-        setTitle("Receive Stock - " + rr.getInvoiceId());
+        setTitle(rr.getSupplier().getName() + " - " + rr.getInvoiceId());
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
@@ -130,16 +130,11 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
     private void setReport() {
         tblProducts.setSelectionModel(new ForcedListSelectionModel());
-        try {
-            products = rr.getItems();
-            updateTable();
-            txtInvoice.setText(rr.getInvoiceId());
-            final Supplier sup = dc.getSupplier(rr.getSupplierId());
-            cmbModel.setSelectedItem(sup);
-            chkPaid.setSelected(rr.isPaid());
-        } catch (IOException | SQLException | JTillException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        products = rr.getItems();
+        updateTable();
+        txtInvoice.setText(rr.getInvoiceId());
+        cmbModel.setSelectedItem(rr.getSupplier());
+        chkPaid.setSelected(rr.isPaid());
         setViewMode();
     }
 
@@ -454,7 +449,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             return;
         }
         Supplier supplier = (Supplier) cmbSuppliers.getSelectedItem();
-        ReceivedReport report = new ReceivedReport(txtInvoice.getText(), supplier.getId());
+        ReceivedReport report = new ReceivedReport(txtInvoice.getText(), supplier);
         products.forEach((p) -> {
             try {
                 Product product = p.getProduct();
@@ -498,8 +493,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         Product product;
         if (txtBarcode.getText().isEmpty()) {
             product = ProductSelectDialog.showDialog(this, false);
-        } else{
-            if(!Utilities.isNumber(txtBarcode.getText())){
+        } else {
+            if (!Utilities.isNumber(txtBarcode.getText())) {
                 txtBarcode.setSelectionStart(0);
                 txtBarcode.setSelectionEnd(txtBarcode.getText().length());
                 JOptionPane.showInternalMessageDialog(this, "Not a number", "Add Product", JOptionPane.ERROR_MESSAGE);

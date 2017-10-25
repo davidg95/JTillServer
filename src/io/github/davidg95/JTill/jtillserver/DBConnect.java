@@ -4436,7 +4436,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public void addReceivedReport(ReceivedReport rep) throws SQLException, IOException {
-        String query = "INSERT INTO RECEIVED_REPORTS (INVOICE_NO, SUPPLIER_ID, PAID) VALUES ('" + rep.getInvoiceId() + "'," + rep.getSupplierId() + "," + rep.isPaid() + ")";
+        String query = "INSERT INTO RECEIVED_REPORTS (INVOICE_NO, SUPPLIER_ID, PAID) VALUES ('" + rep.getInvoiceId() + "'," + rep.getSupplier().getId() + "," + rep.isPaid() + ")";
         try (Connection con = getNewConnection()) {
             try (PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.executeUpdate();
@@ -4459,7 +4459,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public List<ReceivedReport> getAllReceivedReports() throws IOException, SQLException {
-        String query = "SELECT ID, SUPPLIER_ID, INVOICE_NO, PAID FROM RECEIVED_REPORTS";
+        String query = "SELECT * FROM RECEIVED_REPORTS, SUPPLIERS WHERE RECEIVED_REPORTS.SUPPLIER_ID = SUPPLIER.ID";
         List<ReceivedReport> reports;
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
@@ -4468,11 +4468,16 @@ public class DBConnect implements DataConnect {
                 reports = new LinkedList<>();
                 while (set.next()) {
                     int id = set.getInt(1);
-                    int supp = set.getInt(2);
-                    String inv = set.getString(3);
+                    String inv = set.getString(2);
+                    int supp = set.getInt(3);
                     boolean paid = set.getBoolean(4);
 
-                    ReceivedReport rr = new ReceivedReport(id, inv, supp, paid);
+                    String name = set.getString(5);
+                    String addrs = set.getString(6);
+                    String phone = set.getString(7);
+                    Supplier sup = new Supplier(supp, name, addrs, phone);
+
+                    ReceivedReport rr = new ReceivedReport(id, inv, sup, paid);
 
                     reports.add(rr);
                 }
