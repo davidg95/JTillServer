@@ -133,6 +133,9 @@ public class WasteReports extends javax.swing.JDialog {
             y += 30;
             g.setFont(font); //Chagne back to the old font.
 
+            String page = "Page " + (pageIndex + 1);
+            g.drawString(page, (int) (pageFormat.getWidth() / 2) - (g.getFontMetrics(font).stringWidth(page) / 2), (int) pageFormat.getHeight() - 10);
+
             int lineSpace = g.getFontMetrics(font).getHeight();
 
             g.drawString("Start date: " + start.toString(), x, y);
@@ -175,9 +178,9 @@ public class WasteReports extends javax.swing.JDialog {
             g.drawString("Total", pCol, y + lineSpace - 4);
             g.drawString("£" + total.setScale(2, 6).toString(), vCol, y + lineSpace - 4);
             g.setFont(font);
-            
+
             y += lineSpace;
-            
+
             g.drawRect(topX, topY, width, y - topY);
             g.drawLine(qCol - 5, topY, qCol - 5, y - lineSpace);
             g.drawLine(rCol - 5, topY, rCol - 5, y - lineSpace);
