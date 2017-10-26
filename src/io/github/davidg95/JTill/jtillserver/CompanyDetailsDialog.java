@@ -37,7 +37,6 @@ public class CompanyDetailsDialog extends javax.swing.JDialog {
     private String name;
     private String address;
     private String vat;
-    private File file;
 
     /**
      * Creates new form CompanyDetailsDialog
@@ -69,14 +68,10 @@ public class CompanyDetailsDialog extends javax.swing.JDialog {
             name = (properties.getProperty("NAME"));
             address = (properties.getProperty("ADDRESS"));
             vat = (properties.getProperty("VAT"));
-            String logoURL = properties.getProperty("LOGO");
-            file = new File(logoURL);
 
             txtName.setText(name);
             txtAddress.setText(address);
             txtVatNo.setText(vat);
-            Image image = ImageIO.read(file);
-            lblLogo.setIcon(new ImageIcon(image));
 
             in.close();
         } catch (FileNotFoundException | UnknownHostException ex) {
@@ -98,11 +93,6 @@ public class CompanyDetailsDialog extends javax.swing.JDialog {
         properties.setProperty("NAME", name);
         properties.setProperty("ADDRESS", address);
         properties.setProperty("VAT", vat);
-        if (file == null) {
-            properties.setProperty("LOGO", "NULL");
-        } else {
-            properties.setProperty("LOGO", file.getAbsolutePath());
-        }
         properties.store(out, null);
         out.close();
     }
@@ -123,12 +113,8 @@ public class CompanyDetailsDialog extends javax.swing.JDialog {
         txtAddress = new javax.swing.JTextArea();
         txtVatNo = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        lblLogo = new javax.swing.JLabel();
-        btnLogo = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
-        btnRemove = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -142,19 +128,6 @@ public class CompanyDetailsDialog extends javax.swing.JDialog {
         jScrollPane1.setViewportView(txtAddress);
 
         jLabel3.setText("VAT No.:");
-
-        jLabel4.setText("Company Logo:");
-
-        lblLogo.setMaximumSize(new java.awt.Dimension(166, 109));
-        lblLogo.setMinimumSize(new java.awt.Dimension(166, 109));
-        lblLogo.setPreferredSize(new java.awt.Dimension(166, 109));
-
-        btnLogo.setText("Change Logo");
-        btnLogo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLogoActionPerformed(evt);
-            }
-        });
 
         btnClose.setText("Close");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
@@ -170,23 +143,19 @@ public class CompanyDetailsDialog extends javax.swing.JDialog {
             }
         });
 
-        btnRemove.setText("Remove Logo");
-        btnRemove.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnSave)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnClose))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel4)
                             .addComponent(jLabel2)
                             .addComponent(jLabel1)
                             .addComponent(jLabel3))
@@ -194,18 +163,8 @@ public class CompanyDetailsDialog extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtVatNo)
                             .addComponent(jScrollPane1)
-                            .addComponent(txtName)
-                            .addComponent(lblLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnRemove, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnSave)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClose)))
-                .addContainerGap())
+                            .addComponent(txtName))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -222,15 +181,7 @@ public class CompanyDetailsDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtVatNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnLogo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRemove))
-                    .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
                     .addComponent(btnSave))
@@ -256,37 +207,13 @@ public class CompanyDetailsDialog extends javax.swing.JDialog {
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 
-    private void btnLogoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoActionPerformed
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Select logo");
-        int returnVal = chooser.showOpenDialog(this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            try {
-                file = chooser.getSelectedFile();
-                Image image = ImageIO.read(file);
-                lblLogo.setIcon(new ImageIcon(image));
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }//GEN-LAST:event_btnLogoActionPerformed
-
-    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-        file = null;
-        lblLogo.setIcon(null);
-    }//GEN-LAST:event_btnRemoveActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
-    private javax.swing.JButton btnLogo;
-    private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblLogo;
     private javax.swing.JTextArea txtAddress;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtVatNo;

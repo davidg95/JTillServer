@@ -573,6 +573,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemCreateNewProduct = new javax.swing.JMenuItem();
         itemStock = new javax.swing.JMenuItem();
         itemReceive = new javax.swing.JMenuItem();
+        itemOrdering = new javax.swing.JMenuItem();
         itemWasteStock = new javax.swing.JMenuItem();
         itemEnquiry = new javax.swing.JMenuItem();
         itemStockTake = new javax.swing.JMenuItem();
@@ -592,6 +593,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemLoyalty = new javax.swing.JMenuItem();
         itemSendData = new javax.swing.JMenuItem();
         itemTerminals = new javax.swing.JMenuItem();
+        itemSiteDetails = new javax.swing.JMenuItem();
         itemDatabase = new javax.swing.JMenuItem();
         itemConsolodated = new javax.swing.JMenu();
         itemSalesReporting = new javax.swing.JMenuItem();
@@ -602,7 +604,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemWasteReports = new javax.swing.JMenuItem();
         itemReceivedReports = new javax.swing.JMenuItem();
         itemDeclarations = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        itemConsolidated = new javax.swing.JMenuItem();
         itemStockReport = new javax.swing.JMenuItem();
         menuHelp = new javax.swing.JMenu();
         itemAbout = new javax.swing.JMenuItem();
@@ -1118,6 +1120,14 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuStock.add(itemReceive);
 
+        itemOrdering.setText("Ordering");
+        itemOrdering.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemOrderingActionPerformed(evt);
+            }
+        });
+        menuStock.add(itemOrdering);
+
         itemWasteStock.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
         itemWasteStock.setText("Waste Stock");
         itemWasteStock.addActionListener(new java.awt.event.ActionListener() {
@@ -1269,6 +1279,14 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemTerminals);
 
+        itemSiteDetails.setText("Site Details");
+        itemSiteDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemSiteDetailsActionPerformed(evt);
+            }
+        });
+        menuSetup.add(itemSiteDetails);
+
         itemDatabase.setText("Database");
         itemDatabase.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1345,13 +1363,13 @@ public class GUI extends JFrame implements GUIInterface {
         });
         itemConsolodated.add(itemDeclarations);
 
-        jMenuItem1.setText("Consolidated Report");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        itemConsolidated.setText("Consolidated Report");
+        itemConsolidated.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                itemConsolidatedActionPerformed(evt);
             }
         });
-        itemConsolodated.add(jMenuItem1);
+        itemConsolodated.add(itemConsolidated);
 
         itemStockReport.setText("Stock Report");
         itemStockReport.addActionListener(new java.awt.event.ActionListener() {
@@ -1931,13 +1949,21 @@ public class GUI extends JFrame implements GUIInterface {
         DeclarationReportWindow.showWindow();
     }//GEN-LAST:event_itemDeclarationsActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void itemConsolidatedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemConsolidatedActionPerformed
         ConsolidatedReportingDialog.showDialog(this);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_itemConsolidatedActionPerformed
 
     private void itemStockReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStockReportActionPerformed
         StockReportDialog.showDialog(this);
     }//GEN-LAST:event_itemStockReportActionPerformed
+
+    private void itemSiteDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSiteDetailsActionPerformed
+        CompanyDetailsDialog.showDialog(this);
+    }//GEN-LAST:event_itemSiteDetailsActionPerformed
+
+    private void itemOrderingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemOrderingActionPerformed
+        OrderingWindow.showWindow();
+    }//GEN-LAST:event_itemOrderingActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
@@ -1964,6 +1990,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemAbout;
     private javax.swing.JMenuItem itemCategorys;
     private javax.swing.JMenuItem itemCheckDatabase;
+    private javax.swing.JMenuItem itemConsolidated;
     private javax.swing.JMenu itemConsolodated;
     private javax.swing.JMenuItem itemCreateNewProduct;
     private javax.swing.JMenuItem itemCustomers;
@@ -1980,6 +2007,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemLoyalty;
     private javax.swing.JMenuItem itemManualSale;
     private javax.swing.JMenuItem itemNewStaff;
+    private javax.swing.JMenuItem itemOrdering;
     private javax.swing.JMenuItem itemPluSettings;
     private javax.swing.JMenuItem itemReasons;
     private javax.swing.JMenuItem itemReceive;
@@ -1987,6 +2015,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemSalesReporting;
     private javax.swing.JMenuItem itemSendData;
     private javax.swing.JMenuItem itemServerOptions;
+    private javax.swing.JMenuItem itemSiteDetails;
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStaffClocking;
     private javax.swing.JMenuItem itemStaffReporting;
@@ -2003,7 +2032,6 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemWasteStock;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
