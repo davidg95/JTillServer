@@ -6,11 +6,13 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import io.github.davidg95.JTill.jtillserver.printables.OrderPrintable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +39,8 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
 
     private final MyModel model;
 
+    private Supplier supplier;
+
     /**
      * Creates new form OrderingWindow
      */
@@ -55,6 +59,9 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
         txtBarcode.requestFocus();
         table.setSelectionModel(new ForcedListSelectionModel());
         table.setModel(model);
+        table.getColumnModel().getColumn(0).setMaxWidth(70);
+        table.getColumnModel().getColumn(2).setMaxWidth(40);
+        table.getColumnModel().getColumn(3).setMaxWidth(70);
         InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = table.getActionMap();
 
@@ -89,7 +96,7 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
 
     private class MyModel implements TableModel {
 
-        private final List<Product> products;
+        private final List<OrderItem> products;
         private final List<TableModelListener> listeners;
 
         public MyModel() {
@@ -97,7 +104,7 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
             listeners = new LinkedList<>();
         }
 
-        public void addProduct(Product p) {
+        public void addProduct(OrderItem p) {
             products.add(p);
             alert(products.size() - 1, products.size() - 1);
         }
@@ -107,7 +114,7 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
             alert(i, i);
         }
 
-        public List<Product> getAllProducts() {
+        public List<OrderItem> getAllProducts() {
             return products;
         }
 
@@ -168,16 +175,16 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
 
         @Override
         public Object getValueAt(int rowIndex, int i) {
-            Product p = products.get(rowIndex);
+            OrderItem p = products.get(rowIndex);
             switch (i) {
                 case 0:
-                    return p.getOrder_code();
+                    return p.getOrderCode();
                 case 1:
-                    return p.getLongName();
+                    return p.getName();
                 case 2:
-                    return p.getStock();
+                    return p.getQuantity();
                 case 3:
-                    return "£" + p.getPrice().multiply(new BigDecimal(p.getStock()));
+                    return "£" + p.getPrice();
                 default:
                     break;
             }
@@ -187,7 +194,7 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
         @Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
             if (columnIndex == 2) {
-                products.get(rowIndex).setStock((int) aValue);
+                products.get(rowIndex).setQuantity((int) aValue);
                 alert(rowIndex, rowIndex);
                 alert(rowIndex, rowIndex);
             }
@@ -227,6 +234,7 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
         btnAddProduct = new javax.swing.JButton();
         btnSend = new javax.swing.JButton();
         txtBarcode = new javax.swing.JTextField();
+        btnPrint = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Ordering");
@@ -288,6 +296,13 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        btnPrint.setText("Print Order");
+        btnPrint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrintActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -299,10 +314,12 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnSend)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnPrint)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddProduct)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 285, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 194, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
         );
@@ -316,7 +333,8 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
                     .addComponent(btnClose)
                     .addComponent(btnAddProduct)
                     .addComponent(btnSend)
-                    .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPrint))
                 .addContainerGap())
         );
 
@@ -349,8 +367,13 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
 
         String str = JOptionPane.showInternalInputDialog(this, "Enter quantity", "Add Product", JOptionPane.PLAIN_MESSAGE);
         int quantity = Integer.parseInt(str);
-        p.setStock(quantity);
-        model.addProduct(p);
+        if (p.getStock() + quantity > p.getMaxStockLevel()) {
+            if (JOptionPane.showInternalConfirmDialog(this, "Warning, this will take the item above its maximum stock level. Continue?", "Product Warning", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+                return;
+            }
+        }
+        OrderItem item = new OrderItem(p, quantity);
+        model.addProduct(item);
         txtBarcode.setText("");
     }//GEN-LAST:event_btnAddProductActionPerformed
 
@@ -376,9 +399,34 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
         dialog.show();
     }//GEN-LAST:event_btnSendActionPerformed
 
+    private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPrintable(new OrderPrintable(new Supplier("Test", "Test", "4234"), model.getAllProducts()));
+        boolean ok = job.printDialog();
+        final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing order...", job);
+        if (ok) {
+            Runnable runnable = () -> {
+                try {
+                    job.print();
+                    mDialog.hide();
+                    JOptionPane.showMessageDialog(OrderingWindow.this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
+                } catch (PrinterException ex) {
+                    mDialog.hide();
+                    JOptionPane.showMessageDialog(OrderingWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    mDialog.hide();
+                }
+            };
+            Thread th = new Thread(runnable);
+            th.start();
+            mDialog.show();
+        }
+    }//GEN-LAST:event_btnPrintActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnPrint;
     private javax.swing.JButton btnSend;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
