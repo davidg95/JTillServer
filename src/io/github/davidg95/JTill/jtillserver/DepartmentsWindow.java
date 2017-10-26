@@ -32,8 +32,8 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form DepartmentWindow
      */
-    public DepartmentsWindow(DataConnect dc) {
-        this.dc = dc;
+    public DepartmentsWindow() {
+        this.dc = GUI.gui.dc;
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
@@ -43,9 +43,9 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         updateTable();
     }
 
-    public static void showWindow(DataConnect dc) {
+    public static void showWindow() {
         if (window == null || window.isClosed()) {
-            window = new DepartmentsWindow(dc);
+            window = new DepartmentsWindow();
             GUI.gui.internal.add(window);
         }
         window.setVisible(true);

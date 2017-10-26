@@ -34,8 +34,6 @@ import javax.swing.table.DefaultTableModel;
  */
 public class SupplierWindow extends javax.swing.JInternalFrame {
 
-    private static SupplierWindow window;
-
     private final DataConnect dc;
     private final DefaultTableModel model;
     private List<Supplier> currentTableContents;
@@ -43,23 +41,21 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form SupplierWindow
      */
-    public SupplierWindow(DataConnect dc, Image icon) {
-        this.dc = dc;
+    public SupplierWindow() {
+        this.dc = GUI.gui.dc;
         initComponents();
         super.setClosable(true);
         super.setIconifiable(true);
-        super.setFrameIcon(new ImageIcon(icon));
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         setTitle("Suppliers");
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
         init();
     }
 
-    public static void showWindow(DataConnect dc, Image icon) {
-        if (window == null || window.isClosed()) {
-            window = new SupplierWindow(dc, icon);
-            GUI.gui.internal.add(window);
-        }
+    public static void showWindow() {
+        SupplierWindow window = new SupplierWindow();
+        GUI.gui.internal.add(window);
         window.setVisible(true);
         try {
             window.setIcon(false);
@@ -243,6 +239,7 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
             edit.setFont(boldFont);
             edit.addActionListener((event) -> {
                 SupplierDialog.showDialog(this, s);
+                setList();
             });
             JMenuItem remove = new JMenuItem("Remove");
             remove.addActionListener((event) -> {
@@ -251,6 +248,11 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
             menu.add(edit);
             menu.add(remove);
             menu.show(table, evt.getX(), evt.getY());
+        } else if (SwingUtilities.isLeftMouseButton(evt)) {
+            if (evt.getClickCount() == 2) {
+                SupplierDialog.showDialog(this, s);
+                setList();
+            }
         }
     }//GEN-LAST:event_tableMouseClicked
 

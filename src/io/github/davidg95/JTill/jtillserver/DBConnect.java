@@ -3568,7 +3568,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public Supplier updateSupplier(Supplier s) throws IOException, SQLException, JTillException {
-        String query = "UPDATE SUPPLIERS SET NAME='" + s.getName() + "', ADDRESS='" + s.getAddress() + "', PHONE='" + s.getContactNumber() + "'";
+        String query = "UPDATE SUPPLIERS SET NAME='" + s.getName() + "', ADDRESS='" + s.getAddress() + "', PHONE='" + s.getContactNumber() + "' WHERE ID=" + s.getId();
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             long stamp = supL.writeLock();

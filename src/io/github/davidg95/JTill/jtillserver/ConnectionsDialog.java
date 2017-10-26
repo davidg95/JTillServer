@@ -36,9 +36,9 @@ public class ConnectionsDialog extends javax.swing.JInternalFrame {
      *
      * @param dc the data connection.
      */
-    public ConnectionsDialog(DataConnect dc) {
+    public ConnectionsDialog() {
         super();
-        this.dc = dc;
+        this.dc = GUI.gui.dc;
         initComponents();
         super.setClosable(true);
         super.setIconifiable(true);
@@ -51,9 +51,9 @@ public class ConnectionsDialog extends javax.swing.JInternalFrame {
      *
      * @param dc the data connection.
      */
-    public static void showConnectionsDialog(DataConnect dc) {
+    public static void showConnectionsDialog() {
         if (dialog == null) {
-            dialog = new ConnectionsDialog(dc);
+            dialog = new ConnectionsDialog();
             GUI.gui.internal.add(dialog);
         }
         dialog.setVisible(true);

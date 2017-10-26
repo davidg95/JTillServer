@@ -34,8 +34,8 @@ public class TaxWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form TaxWindow
      */
-    public TaxWindow(DataConnect dc) {
-        this.dc = dc;
+    public TaxWindow() {
+        this.dc = GUI.gui.dc;
 //        this.setIconImage(icon);
         super.setClosable(true);
         super.setMaximizable(true);
@@ -48,9 +48,9 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         table.setSelectionModel(new ForcedListSelectionModel());
     }
 
-    public static void showTaxWindow(DataConnect dc) {
+    public static void showTaxWindow() {
         if (frame == null || frame.isClosed()) {
-            frame = new TaxWindow(dc);
+            frame = new TaxWindow();
             GUI.gui.internal.add(frame);
         }
         update();

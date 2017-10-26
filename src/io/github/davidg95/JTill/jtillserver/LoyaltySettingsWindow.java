@@ -39,14 +39,14 @@ public class LoyaltySettingsWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form LoyaltySettingsWindow
      */
-    public LoyaltySettingsWindow(Image icon) {
+    public LoyaltySettingsWindow() {
         dc = GUI.gui.dc;
         contents = new ArrayList<>();
         initComponents();
 //        setIconImage(GUI.gui.icon);
         super.setClosable(true);
         super.setIconifiable(true);
-        super.setFrameIcon(new ImageIcon(icon));
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         setTitle("Loyalty points settings");
         model = new DefaultListModel();
         list.setModel(model);
@@ -54,9 +54,9 @@ public class LoyaltySettingsWindow extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showWindow(Image icon) {
+    public static void showWindow() {
         if (window == null || window.isClosed()) {
-            window = new LoyaltySettingsWindow(icon);
+            window = new LoyaltySettingsWindow();
             GUI.gui.internal.add(window);
         }
         window.setVisible(true);

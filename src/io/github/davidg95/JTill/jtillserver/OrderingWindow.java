@@ -382,6 +382,12 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtBarcodeActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
+        if (supplier == null) {
+            supplier = SupplierSelectDialog.showDialog(this);
+            if (supplier == null) {
+                return;
+            }
+        }
         final ModalDialog dialog = new ModalDialog(this, "Send Order", "Sending order...");
         final Runnable run = () -> {
             try {
@@ -400,8 +406,14 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSendActionPerformed
 
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
+        if (supplier == null) {
+            supplier = SupplierSelectDialog.showDialog(this);
+            if (supplier == null) {
+                return;
+            }
+        }
         PrinterJob job = PrinterJob.getPrinterJob();
-        job.setPrintable(new OrderPrintable(new Supplier("Test", "Test", "4234"), model.getAllProducts()));
+        job.setPrintable(new OrderPrintable(supplier, model.getAllProducts()));
         boolean ok = job.printDialog();
         final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing order...", job);
         if (ok) {

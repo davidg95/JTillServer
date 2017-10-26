@@ -56,9 +56,9 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form LabelPrintingWindow
      */
-    public LabelPrintingWindow(DataConnect dc, Image icon) {
+    public LabelPrintingWindow() {
         this.labels = new ArrayList<>();
-        this.dc = dc;
+        this.dc = GUI.gui.dc;
         initComponents();
         super.setClosable(true);
         super.setMaximizable(true);
@@ -76,8 +76,8 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
      * @param dc the data connection.
      * @param icon the icon for the window.
      */
-    public static void showWindow(DataConnect dc, Image icon) {
-        LabelPrintingWindow window = new LabelPrintingWindow(dc, icon);
+    public static void showWindow() {
+        LabelPrintingWindow window = new LabelPrintingWindow();
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {

@@ -52,13 +52,13 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form DiscountsWindow
      */
-    public DiscountsWindow(DataConnect dc, Image icon) {
-        this.dc = dc;
+    public DiscountsWindow() {
+        this.dc = GUI.gui.dc;
 //        this.setIconImage(icon);
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
-        super.setFrameIcon(new ImageIcon(icon));
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
@@ -78,9 +78,9 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
      *
      * @param dc the data source.
      */
-    public static void showDiscountListWindow(DataConnect dc, Image icon) {
+    public static void showDiscountListWindow() {
         if (frame == null || frame.isClosed()) {
-            frame = new DiscountsWindow(dc, icon);
+            frame = new DiscountsWindow();
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {

@@ -46,8 +46,8 @@ public class StaffClocking extends javax.swing.JInternalFrame {
     /**
      * Creates new form StaffClocking
      */
-    public StaffClocking(DataConnect dc) {
-        this.dc = dc;
+    public StaffClocking() {
+        this.dc = GUI.gui.dc;
         initComponents();
         super.setClosable(true);
         super.setIconifiable(true);
@@ -58,8 +58,8 @@ public class StaffClocking extends javax.swing.JInternalFrame {
         clocked = 0;
     }
 
-    public static void showWindow(DataConnect dc) {
-        StaffClocking window = new StaffClocking(dc);
+    public static void showWindow() {
+        StaffClocking window = new StaffClocking();
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {

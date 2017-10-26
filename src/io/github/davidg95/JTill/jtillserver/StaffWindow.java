@@ -49,13 +49,12 @@ public class StaffWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form StaffWindow
      */
-    public StaffWindow(DataConnect dc, Image icon) {
-        this.dc = dc;
-//        this.setIconImage(icon);
+    public StaffWindow() {
+        this.dc = GUI.gui.dc;
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
-        super.setFrameIcon(new ImageIcon(icon));
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) tableStaff.getModel();
@@ -85,9 +84,9 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         });
     }
 
-    public static void showStaffListWindow(DataConnect dc, Image icon) {
+    public static void showStaffListWindow() {
         if (frame == null || frame.isClosed()) {
-            frame = new StaffWindow(dc, icon);
+            frame = new StaffWindow();
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {

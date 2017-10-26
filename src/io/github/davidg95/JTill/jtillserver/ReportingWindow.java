@@ -48,7 +48,7 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
      *
      * @param icon the frame icon.
      */
-    public ReportingWindow(Image icon) {
+    public ReportingWindow() {
         this.dc = GUI.gui.dc;
         initComponents();
         super.setClosable(true);
@@ -105,11 +105,9 @@ public final class ReportingWindow extends javax.swing.JInternalFrame {
 
     /**
      * Method to show the reporting window.
-     *
-     * @param icon the icon for the window.
      */
-    public static void showWindow(Image icon) {
-        ReportingWindow window = new ReportingWindow(icon);
+    public static void showWindow() {
+        ReportingWindow window = new ReportingWindow();
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {

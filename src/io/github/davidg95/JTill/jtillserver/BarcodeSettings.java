@@ -27,8 +27,8 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
     /**
      * Creates new form PluSettings
      */
-    public BarcodeSettings(DataConnect dc) {
-        this.dc = dc;
+    public BarcodeSettings() {
+        this.dc = GUI.gui.dc;
         initComponents();
 //        setIconImage(icon);
         super.setClosable(true);
@@ -38,9 +38,9 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showWindow(DataConnect dc) {
+    public static void showWindow() {
         if (window == null || window.isClosed()) {
-            window = new BarcodeSettings(dc);
+            window = new BarcodeSettings();
             GUI.gui.internal.add(window);
         }
         window.setVisible(true);

@@ -1490,16 +1490,16 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemLoginActionPerformed
 
     private void itemStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffActionPerformed
-        StaffWindow.showStaffListWindow(dc, icon);
+        StaffWindow.showStaffListWindow();
     }//GEN-LAST:event_itemStaffActionPerformed
 
     private void btnManageStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStaffActionPerformed
-        StaffWindow.showStaffListWindow(dc, icon);
+        StaffWindow.showStaffListWindow();
     }//GEN-LAST:event_btnManageStaffActionPerformed
 
     private void lblClientsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblClientsMouseClicked
         if (evt.getClickCount() == 2) {
-            ConnectionsDialog.showConnectionsDialog(dc);
+            ConnectionsDialog.showConnectionsDialog();
         }
     }//GEN-LAST:event_lblClientsMouseClicked
 
@@ -1535,7 +1535,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_lblHelpMouseClicked
 
     private void itemDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDiscountsActionPerformed
-        DiscountsWindow.showDiscountListWindow(dc, icon);
+        DiscountsWindow.showDiscountListWindow();
     }//GEN-LAST:event_itemDiscountsActionPerformed
 
     private void itemCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCategorysActionPerformed
@@ -1543,11 +1543,11 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemCategorysActionPerformed
 
     private void itemTaxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTaxesActionPerformed
-        TaxWindow.showTaxWindow(dc);
+        TaxWindow.showTaxWindow();
     }//GEN-LAST:event_itemTaxesActionPerformed
 
     private void btnDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiscountsActionPerformed
-        DiscountsWindow.showDiscountListWindow(dc, icon);
+        DiscountsWindow.showDiscountListWindow();
     }//GEN-LAST:event_btnDiscountsActionPerformed
 
     private void btnCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategorysActionPerformed
@@ -1570,7 +1570,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemInfoActionPerformed
 
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
-        ReportingWindow.showWindow(icon);
+        ReportingWindow.showWindow();
     }//GEN-LAST:event_btnReportsActionPerformed
 
     private void btnSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsActionPerformed
@@ -1578,7 +1578,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnSettingsActionPerformed
 
     private void btnScreensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScreensActionPerformed
-        ScreenEditWindow.showScreenEditWindow(icon);
+        ScreenEditWindow.showScreenEditWindow();
     }//GEN-LAST:event_btnScreensActionPerformed
 
     private void itemReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReceiveActionPerformed
@@ -1606,11 +1606,11 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemWasteReportsActionPerformed
 
     private void itemReasonsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReasonsActionPerformed
-        WasteReasonDialog.showDialog(icon);
+        WasteReasonDialog.showDialog();
     }//GEN-LAST:event_itemReasonsActionPerformed
 
     private void itemTillScreensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTillScreensActionPerformed
-        ScreenEditWindow.showScreenEditWindow(icon);
+        ScreenEditWindow.showScreenEditWindow();
     }//GEN-LAST:event_itemTillScreensActionPerformed
 
     private void txtLogMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtLogMouseClicked
@@ -1636,11 +1636,11 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_txtLogMouseClicked
 
     private void itemSuppliersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSuppliersActionPerformed
-        SupplierWindow.showWindow(dc, icon);
+        SupplierWindow.showWindow();
     }//GEN-LAST:event_itemSuppliersActionPerformed
 
     private void itemDepartmentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDepartmentsActionPerformed
-        DepartmentsWindow.showWindow(dc);
+        DepartmentsWindow.showWindow();
     }//GEN-LAST:event_itemDepartmentsActionPerformed
 
     private void itemSalesReportingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSalesReportingActionPerformed
@@ -1665,7 +1665,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemEnquiryActionPerformed
 
     private void itemLabelPrintingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLabelPrintingActionPerformed
-        LabelPrintingWindow.showWindow(dc, icon);
+        LabelPrintingWindow.showWindow();
     }//GEN-LAST:event_itemLabelPrintingActionPerformed
 
     private void itemCreateNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCreateNewProductActionPerformed
@@ -1680,15 +1680,15 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemNewStaffActionPerformed
 
     private void itemStaffClockingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffClockingActionPerformed
-        StaffClocking.showWindow(dc);
+        StaffClocking.showWindow();
     }//GEN-LAST:event_itemStaffClockingActionPerformed
 
     private void itemStockTakeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStockTakeActionPerformed
-        StockTakeWindow.showWindow(dc);
+        StockTakeWindow.showWindow();
     }//GEN-LAST:event_itemStockTakeActionPerformed
 
     private void itemPluSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPluSettingsActionPerformed
-        BarcodeSettings.showWindow(dc);
+        BarcodeSettings.showWindow();
     }//GEN-LAST:event_itemPluSettingsActionPerformed
 
     private void btnManageStockMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnManageStockMouseEntered
@@ -1756,7 +1756,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnSettingsMouseExited
 
     private void itemLoyaltyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLoyaltyActionPerformed
-        LoyaltySettingsWindow.showWindow(icon);
+        LoyaltySettingsWindow.showWindow();
     }//GEN-LAST:event_itemLoyaltyActionPerformed
 
     private void lblWarningsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblWarningsMouseClicked
@@ -1766,7 +1766,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_lblWarningsMouseClicked
 
     private void itemTerminalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTerminalsActionPerformed
-        TillWindow.showWindow(dc);
+        TillWindow.showWindow();
     }//GEN-LAST:event_itemTerminalsActionPerformed
 
     private void itemCheckDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCheckDatabaseActionPerformed
@@ -1871,7 +1871,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnTerminalsMouseExited
 
     private void btnTerminalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTerminalsActionPerformed
-        TillWindow.showWindow(dc);
+        TillWindow.showWindow();
     }//GEN-LAST:event_btnTerminalsActionPerformed
 
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed

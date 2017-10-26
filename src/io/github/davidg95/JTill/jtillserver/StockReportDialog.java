@@ -99,7 +99,7 @@ public class StockReportDialog extends javax.swing.JDialog {
                 g.drawString("Stock Report", x, y);
                 g.setFont(font);
                 String page = "Page " + (pageIndex + 1);
-                g.drawString(page, (int) (pageFormat.getWidth() / 2) - (g.getFontMetrics(font).stringWidth(page) / 2), (int) pageFormat.getHeight() - 10);
+                g.drawString(page, (int) (pageFormat.getWidth() / 2) - (g.getFontMetrics(font).stringWidth(page) / 2), (int) pageFormat.getHeight() - 20);
                 y += lineSpace;
                 g.drawString(info, x, y);
 
@@ -107,7 +107,7 @@ public class StockReportDialog extends javax.swing.JDialog {
 
                 final int idCol = x + 10;
                 final int nCol = x + 40;
-                final int sCol = x + 200;
+                final int sCol = x + width - 50;
 
                 final int topY = y;
                 g.setColor(Color.lightGray);
@@ -127,7 +127,7 @@ public class StockReportDialog extends javax.swing.JDialog {
                     g.fillRect(x, y, width, lineSpace);
                     g.setColor(Color.BLACK);
                     g.drawRect(x, y, width, lineSpace);
-                    g.drawString(d.getName(), x + 20, y + 15);
+                    g.drawString(d.getName(), nCol, y + 15);
                     y += lineSpace;
                     for (Product p : products) {
                         if (p.getCategory().getDepartment().equals(d)) {
@@ -137,7 +137,7 @@ public class StockReportDialog extends javax.swing.JDialog {
                             g.drawString(p.getStock() + "", sCol, y);
                         }
                     }
-                    y += lineSpace;
+                    y += lineSpace/2;
                 }
 
                 g.drawRect(x, topY, width, y - topY);

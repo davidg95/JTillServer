@@ -40,24 +40,22 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
     /**
      * Creates new form WasteReasonDialog
      */
-    public WasteReasonDialog(Image icon) {
+    public WasteReasonDialog() {
         super();
         this.dc = GUI.gui.dc;
         initComponents();
         setTitle("Waste Reasons");
-//        setModal(true);
-//        setLocationRelativeTo(parent);
         super.setClosable(true);
         super.setIconifiable(true);
-        super.setFrameIcon(new ImageIcon(icon));
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         model = (DefaultTableModel) table.getModel();
         table.setModel(model);
         init();
     }
 
-    public static void showDialog(Image icon) {
+    public static void showDialog() {
         if (dialog == null) {
-            dialog = new WasteReasonDialog(icon);
+            dialog = new WasteReasonDialog();
             GUI.gui.internal.add(dialog);
         }
         dialog.setVisible(true);

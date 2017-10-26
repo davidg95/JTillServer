@@ -49,8 +49,8 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form StockTakeWindow
      */
-    public StockTakeWindow(DataConnect dc) {
-        this.dc = dc;
+    public StockTakeWindow() {
+        this.dc = GUI.gui.dc;
         initComponents();
         super.setClosable(true);
         super.setMaximizable(true);
@@ -62,8 +62,8 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showWindow(DataConnect dc) {
-        window = new StockTakeWindow(dc);
+    public static void showWindow() {
+        window = new StockTakeWindow();
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {

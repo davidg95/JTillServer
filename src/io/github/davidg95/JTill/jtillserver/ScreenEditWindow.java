@@ -66,12 +66,12 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
      *
      * @param icon the icon for the window.
      */
-    public ScreenEditWindow(Image icon) {
+    public ScreenEditWindow() {
         this.dc = GUI.gui.dc;
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
-        super.setFrameIcon(new ImageIcon(icon));
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         super.setResizable(true);
         initComponents();
         categoryCards = (CardLayout) panelProducts.getLayout();
@@ -147,9 +147,9 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
      *
      * @param icon the icon for the window.
      */
-    public static void showScreenEditWindow(Image icon) {
+    public static void showScreenEditWindow() {
         if (frame == null || frame.isClosed()) {
-            frame = new ScreenEditWindow(icon);
+            frame = new ScreenEditWindow();
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {

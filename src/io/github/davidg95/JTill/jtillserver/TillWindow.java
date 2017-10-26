@@ -43,8 +43,8 @@ public class TillWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form TillWindow
      */
-    public TillWindow(DataConnect dc) {
-        this.dc = dc;
+    public TillWindow() {
+        this.dc = GUI.gui.dc;
         initComponents();
         super.setClosable(true);
         super.setIconifiable(true);
@@ -54,9 +54,9 @@ public class TillWindow extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showWindow(DataConnect dc) {
+    public static void showWindow() {
         if (window == null || window.isClosed()) {
-            window = new TillWindow(dc);
+            window = new TillWindow();
             GUI.gui.internal.add(window);
         }
         update();

@@ -1020,7 +1020,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnShowCategorysActionPerformed
 
     private void btnShowTaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowTaxActionPerformed
-        TaxWindow.showTaxWindow(dc);
+        TaxWindow.showTaxWindow();
         init();
     }//GEN-LAST:event_btnShowTaxActionPerformed
 
@@ -1136,7 +1136,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_radCodeActionPerformed
 
     private void btnDepartmentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartmentsActionPerformed
-        DepartmentsWindow.showWindow(dc);
+        DepartmentsWindow.showWindow();
     }//GEN-LAST:event_btnDepartmentsActionPerformed
 
     private void btnAdvancedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdvancedActionPerformed
