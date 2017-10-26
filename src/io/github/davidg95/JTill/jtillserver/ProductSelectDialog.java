@@ -492,6 +492,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         btnSelect = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tree = new javax.swing.JTree();
+        radOrder = new javax.swing.JRadioButton();
 
         setTitle("Select Product - All");
 
@@ -582,6 +583,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         });
         jScrollPane2.setViewportView(tree);
 
+        searchButtonGroup.add(radOrder);
+        radOrder.setText("Order Code");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -602,8 +606,10 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(radBarcode)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radOrder)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 184, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
                         .addComponent(btnSelect)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnClose)))
@@ -624,7 +630,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                     .addComponent(btnSearch)
                     .addComponent(radName)
                     .addComponent(radBarcode)
-                    .addComponent(btnSelect))
+                    .addComponent(btnSelect)
+                    .addComponent(radOrder))
                 .addContainerGap())
         );
 
@@ -666,6 +673,15 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                 if (p.getLongName().toLowerCase().contains(search.toLowerCase())) {
                     newList.add(p);
                 }
+            } else if (radOrder.isSelected()) {
+                if (!Utilities.isNumber(search)) {
+                    JOptionPane.showMessageDialog(this, "Order code must be a number", "Search", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                int order = Integer.parseInt(search);
+                if (p.getOrder_code() == order) {
+                    newList.add(p);
+                }
             } else {
                 if (!Utilities.isNumber(search)) {
                     JOptionPane.showMessageDialog(this, "Barcode must be a number", "Search", JOptionPane.ERROR_MESSAGE);
@@ -673,6 +689,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                 }
                 if (p.getBarcode().equals(search)) {
                     newList.add(p);
+                    break;
                 }
             }
         }
@@ -748,6 +765,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JRadioButton radBarcode;
     private javax.swing.JRadioButton radName;
+    private javax.swing.JRadioButton radOrder;
     private javax.swing.ButtonGroup searchButtonGroup;
     private javax.swing.JTable table;
     private javax.swing.JTree tree;

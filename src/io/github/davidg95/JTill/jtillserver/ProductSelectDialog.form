@@ -44,8 +44,10 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="radBarcode" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
+                      <Component id="radOrder" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnSearch" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="184" max="32767" attributes="0"/>
+                      <EmptySpace pref="103" max="32767" attributes="0"/>
                       <Component id="btnSelect" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnClose" min="-2" max="-2" attributes="0"/>
@@ -72,6 +74,7 @@
                   <Component id="radName" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="radBarcode" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnSelect" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="radOrder" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -191,5 +194,13 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JRadioButton" name="radOrder">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="searchButtonGroup"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Order Code"/>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>
