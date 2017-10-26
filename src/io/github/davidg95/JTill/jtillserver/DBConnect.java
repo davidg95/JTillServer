@@ -4715,14 +4715,14 @@ public class DBConnect implements DataConnect {
         String r1 = "DELETE FROM RECEIVEDITEMS";
         String r2 = "DELETE FROM RECEIVED_REPORTS";
         String w1 = "DELETE FROM WASTEITEMS";
-        String w2 = "DELETE FROM WASTEREPORTS";
+        String d1 = "DELETE FROM DECLARATIONS";
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             try {
                 stmt.executeUpdate(r1);
                 stmt.executeUpdate(r2);
                 stmt.executeUpdate(w1);
-                stmt.executeUpdate(w2);
+                stmt.executeUpdate(d1);
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
