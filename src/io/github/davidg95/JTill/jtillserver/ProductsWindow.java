@@ -1069,6 +1069,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             }
         }
         updateTable();
+        txtSearch.requestFocus();
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnReceiveStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiveStockActionPerformed
