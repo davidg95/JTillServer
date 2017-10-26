@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Properties;
@@ -56,6 +57,7 @@ public class OrderPrintable implements Printable {
 
         final int x = 70;
         int y = 70;
+        final int width = (int) (pageFormat.getWidth() - x - x);
         final int lineSpace = g.getFontMetrics().getHeight();
 
         String to = "Delivery to:";
@@ -66,7 +68,35 @@ public class OrderPrintable implements Printable {
         g.drawString(name, x1, y);
         y += lineSpace;
         g.drawString(address, x1, y);
+        y += 20;
 
+        int topy = y;
+        x1 = x + 10;
+        int x2 = x1 + 70;
+        int x4 = x + width - 70;
+        int x3 = x4 - 40;
+
+        g.drawString("Order Code", x1, y);
+        g.drawString("Description", x2, y);
+        g.drawString("Qty.", x3, y);
+        g.drawString("Total", x4, y);
+        g.drawLine(x, y + 5, x + width, y + 5);
+        y += lineSpace;
+
+        BigDecimal total = BigDecimal.ZERO;
+        for (OrderItem i : items) {
+            g.drawString(i.getOrderCode() + "", x1, y);
+            g.drawString(i.getName(), x2, y);
+            g.drawString(i.getQuantity() + "", x3, y);
+            g.drawString("£" + i.getPrice(), x4, y);
+            y += lineSpace;
+            total = total.add(i.getPrice());
+        }
+        y -= lineSpace;
+        g.drawLine(x, y + 5, x + width, y + 5);
+        y += lineSpace;
+        g.drawString("Total", x1, y);
+        g.drawString("£" + total, x4, y);
         return Printable.PAGE_EXISTS;
     }
 

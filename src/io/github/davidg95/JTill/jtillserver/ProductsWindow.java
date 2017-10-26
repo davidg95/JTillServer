@@ -8,11 +8,7 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,20 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -62,9 +54,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
     private DefaultComboBoxModel taxesModel;
     private DefaultComboBoxModel categorysModel;
-
-    private Category searchC;
-    private Department searchD;
 
     /**
      * Creates new form ProductsWindow
@@ -190,6 +179,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             txtComments.setText("");
             txtScaleName.setText("");
             txtScale.setText("");
+            txtOrder.setText("");
             cmbTax.setSelectedIndex(0);
             cmbCategory.setSelectedIndex(0);
             txtDepartment.setText("");
@@ -207,6 +197,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             this.product = p;
             txtName.setText(product.getLongName());
             txtShortName.setText(product.getName());
+            txtOrder.setText(product.getOrder_code() + "");
             if (product.isOpen()) { //Check if price is open.
                 txtPrice.setEnabled(false);
                 txtCostPrice.setEnabled(false);
@@ -401,6 +392,8 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         btnRemoveProduct = new javax.swing.JButton();
         txtDepartment = new javax.swing.JTextField();
         btnCondiments = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
+        txtOrder = new javax.swing.JTextField();
         btnAdvanced = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -646,6 +639,8 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel17.setText("Order Code:");
+
         javax.swing.GroupLayout panelCurrentLayout = new javax.swing.GroupLayout(panelCurrent);
         panelCurrent.setLayout(panelCurrentLayout);
         panelCurrentLayout.setHorizontalGroup(
@@ -671,16 +666,12 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtPackSize, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(txtBarcode, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
-                        .addComponent(txtName)
-                        .addComponent(txtShortName)
-                        .addGroup(panelCurrentLayout.createSequentialGroup()
-                            .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(chkIncVat)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnCondiments)))
+                    .addGroup(panelCurrentLayout.createSequentialGroup()
+                        .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkIncVat)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCondiments))
                     .addGroup(panelCurrentLayout.createSequentialGroup()
                         .addComponent(txtStock, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -708,7 +699,16 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                         .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnShowCategorys, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnDepartments, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
-                            .addComponent(btnShowTax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(btnShowTax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelCurrentLayout.createSequentialGroup()
+                            .addComponent(txtShortName, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel17)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtOrder))
+                        .addComponent(txtBarcode, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(txtName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCurrentLayout.createSequentialGroup()
                 .addContainerGap(33, Short.MAX_VALUE)
@@ -732,7 +732,9 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtShortName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel17)
+                    .addComponent(txtOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -899,6 +901,13 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Must enter a product name", "Save Changes", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        int orderCode = 0;
+        try {
+            orderCode = Integer.parseInt(txtOrder.getText());
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Invalid input", "Product", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         Category category = null;
         if (!categorys.isEmpty()) {
             category = categorys.get(cmbCategory.getSelectedIndex());
@@ -908,6 +917,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             tax = taxes.get(cmbTax.getSelectedIndex());
         }
         String comments = txtComments.getText();
+        product.setOrder_code(orderCode);
         if (product.isOpen()) {
             product.setLongName(name);
             product.setName(shortName);
@@ -1252,6 +1262,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1274,6 +1285,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtMaxStock;
     private javax.swing.JTextField txtMinStock;
     private javax.swing.JTextField txtName;
+    private javax.swing.JTextField txtOrder;
     private javax.swing.JFormattedTextField txtPackSize;
     private javax.swing.JTextField txtPrice;
     private javax.swing.JTextField txtScale;
