@@ -1,6 +1,32 @@
-JTill log Fri Oct 27 15:17:53 BST 2017
-[15:17:54] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[15:17:57] [INFO] Terminal DAVID-PC has connected
-[15:17:57] [INFO] Till 1 is retreiving settings
-[15:18:09] [INFO] David Grant has logged in from Till 1
-[15:18:20] [INFO] David Grant has logged out
+JTill log Fri Oct 27 15:52:41 BST 2017
+[15:52:41] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[15:52:43] [INFO] Terminal DAVID-PC has connected
+[15:52:43] [INFO] Till 1 is retreiving settings
+[15:52:53] [INFO] David Grant has logged in from Till 1
+[15:53:03] [INFO] David Grant has logged out
+[15:53:22] [INFO] Terminal DAVID-PC has connected
+[15:53:22] [INFO] Till 1 is retreiving settings
+[15:53:24] [INFO] David Grant has logged in from Till 1
+[15:53:26] [INFO] David Grant has logged out
+[15:53:29] [INFO] David Grant has logged in from Till 1
+[15:53:32] [INFO] David Grant has logged out
+[15:54:25] [INFO] Terminal DAVID-PC has connected
+[15:54:25] [INFO] Till 1 is retreiving settings
+[15:54:28] [INFO] David Grant has logged in from Till 1
+[15:54:29] [INFO] David Grant has logged out
+[15:54:38] [INFO] Terminal DAVID-PC has connected
+[15:54:38] [INFO] Till 1 is retreiving settings
+[15:54:41] [INFO] David Grant has logged in from Till 1
+[15:54:43] [INFO] David Grant has logged out
+[15:55:09] [INFO] Terminal DAVID-PC has connected
+[15:55:09] [INFO] Till 1 is retreiving settings
+[15:55:12] [INFO] David Grant has logged in from Till 1
+[15:55:14] [INFO] David Grant has logged out
+[15:56:13] [INFO] Terminal DAVID-PC has connected
+[15:56:13] [INFO] Till 1 is retreiving settings
+[15:56:15] [INFO] David Grant has logged in from Till 1
+[15:56:17] [INFO] David Grant has logged out
+[15:56:29] [INFO] Terminal DAVID-PC has connected
+[15:56:29] [INFO] Till 1 is retreiving settings
+[15:56:31] [INFO] David Grant has logged in from Till 1
+[15:56:39] [INFO] David Grant has logged out
