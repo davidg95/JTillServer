@@ -199,13 +199,13 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             txtShortName.setText(product.getName());
             txtOrder.setText(product.getOrder_code() + "");
             if (product.isOpen()) { //Check if price is open.
-                txtPrice.setEnabled(false);
+                jLabel3.setText("Price Limit (£):");
+                txtPrice.setText(product.getPriceLimit().setScale(2, 6) + "");
                 txtCostPrice.setEnabled(false);
                 txtBarcode.setEnabled(true);
                 txtStock.setEnabled(false);
                 txtMinStock.setEnabled(false);
                 txtMaxStock.setEnabled(false);
-                jLabel3.setEnabled(false);
                 jLabel9.setEnabled(true);
                 jLabel9.setText("Cost %:");
                 txtCostPrice.setEnabled(true);
@@ -232,13 +232,11 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 chkIncVat.setSelected(false);
                 chkIncVat.setEnabled(false);
                 txtBarcode.setText(product.getBarcode());
-                txtPrice.setText("OPEN");
                 txtCostPrice.setText(product.getCostPercentage().toString());
                 txtPackSize.setText("0");
                 txtScaleName.setText(p.getScaleName());
                 txtScale.setText(p.getScale() + "");
                 txtPackSize.setEnabled(false);
-                txtPrice.setEditable(false);
                 txtCostPrice.setEditable(true);
                 txtStock.setText("");
                 txtMinStock.setText("");
@@ -919,11 +917,17 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         String comments = txtComments.getText();
         product.setOrder_code(orderCode);
         if (product.isOpen()) {
+            BigDecimal price = new BigDecimal(txtPrice.getText());
+            if (!Utilities.isNumber(txtPrice.getText())) {
+                JOptionPane.showMessageDialog(this, "Must enter a number", "Create Product", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             product.setLongName(name);
             product.setName(shortName);
             product.setCategory(category);
             product.setTax(tax);
             product.setComments(comments);
+            product.setPriceLimit(price);
             String strCost = txtCostPrice.getText();
             if (!Utilities.isNumber(strCost)) {
                 JOptionPane.showMessageDialog(this, "Must enter a number for cost percentage", "Save Changes", JOptionPane.ERROR_MESSAGE);

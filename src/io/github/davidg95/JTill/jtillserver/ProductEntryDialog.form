@@ -89,11 +89,17 @@
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="txtOpenShort" min="-2" pref="111" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="cmbOpenCat" min="-2" pref="134" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Component id="cmbOpenCat" min="-2" pref="134" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="txtPriceLimit" min="-2" pref="76" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="26" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -126,6 +132,8 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel16" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cmbOpenCat" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtPriceLimit" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -259,6 +267,13 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtCostPercentage">
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel12">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Price Limit:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="txtPriceLimit">
             </Component>
           </SubComponents>
         </Container>

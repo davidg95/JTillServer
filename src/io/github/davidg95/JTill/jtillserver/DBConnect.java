@@ -425,6 +425,15 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+            try {
+                stmt = con.createStatement();
+                stmt.executeUpdate("ALTER TABLE PRODUCTS ADD COLUMN LIMIT BIGINT");
+                stmt.executeUpdate("UPDATE PRODUCTS SET LIMIT=0");
+                con.commit();
+                log("Added LIMIT to PRODUCTS");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
         }
@@ -1062,22 +1071,23 @@ public class DBConnect implements DataConnect {
             boolean incVat = set.getBoolean(18);
             int maxCon = set.getInt(19);
             int minCon = set.getInt(20);
+            BigDecimal limit = set.getBigDecimal(21);
 
-            String cName = set.getString(22);
-            Time start = set.getTime(23);
-            Time end = set.getTime(24);
-            boolean restrict = set.getBoolean(25);
-            int age = set.getInt(26);
-            int department = set.getInt(27);
+            String cName = set.getString(23);
+            Time start = set.getTime(24);
+            Time end = set.getTime(25);
+            boolean restrict = set.getBoolean(26);
+            int age = set.getInt(27);
+            int department = set.getInt(28);
 
-            String dName = set.getString(29);
+            String dName = set.getString(30);
 
             Department d = new Department(department, dName);
 
             Category c = new Category(cId, cName, start, end, restrict, age, d);
 
-            String tName = set.getString(31);
-            double value = set.getDouble(32);
+            String tName = set.getString(32);
+            double value = set.getDouble(33);
 
             Tax t = new Tax(taxID, tName, value);
 
@@ -1085,7 +1095,7 @@ public class DBConnect implements DataConnect {
             if (!open) {
                 p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon);
             } else {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, code);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
             }
 
             products.add(p);
@@ -1103,7 +1113,7 @@ public class DBConnect implements DataConnect {
      */
     @Override
     public Product addProduct(Product p) throws SQLException {
-        String query = "INSERT INTO PRODUCTS (ORDER_CODE, NAME, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL, BARCODE, SCALE, SCALE_NAME, INCVAT) VALUES (" + p.getSQLInsertString() + ")";
+        String query = "INSERT INTO PRODUCTS (ORDER_CODE, NAME, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL, BARCODE, SCALE, SCALE_NAME, INCVAT, LIMIT) VALUES (" + p.getSQLInsertString() + ")";
         try (Connection con = getNewConnection()) {
             try (PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.executeUpdate();
@@ -2401,22 +2411,23 @@ public class DBConnect implements DataConnect {
             boolean incVat = set.getBoolean(26);
             int maxCon = set.getInt(27);
             int minCon = set.getInt(28);
+            BigDecimal limit = set.getBigDecimal(29);
 
-            String cName = set.getString(30);
-            Time start = set.getTime(31);
-            Time end = set.getTime(32);
-            boolean restrict = set.getBoolean(33);
-            int age = set.getInt(34);
-            int department = set.getInt(35);
+            String cName = set.getString(31);
+            Time start = set.getTime(32);
+            Time end = set.getTime(33);
+            boolean restrict = set.getBoolean(34);
+            int age = set.getInt(35);
+            int department = set.getInt(36);
 
-            String dName = set.getString(37);
+            String dName = set.getString(38);
 
             Department d = new Department(department, dName);
 
             Category c = new Category(cId, cName, start, end, restrict, age, d);
 
-            String tName = set.getString(39);
-            double value = set.getDouble(40);
+            String tName = set.getString(40);
+            double value = set.getDouble(41);
 
             Tax t = new Tax(taxID, tName, value);
 
@@ -2424,7 +2435,7 @@ public class DBConnect implements DataConnect {
             if (!open) {
                 p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon);
             } else {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, code);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
             }
 
             SaleItem s = new SaleItem(saleId, p, quantity, id, price, type, tax, cost);
@@ -4567,22 +4578,23 @@ public class DBConnect implements DataConnect {
                     boolean incVat = set.getBoolean(18);
                     int maxCon = set.getInt(19);
                     int minCon = set.getInt(20);
+                    BigDecimal limit = set.getBigDecimal(21);
 
-                    String cName = set.getString(22);
-                    Time start = set.getTime(23);
-                    Time end = set.getTime(24);
-                    boolean restrict = set.getBoolean(25);
-                    int age = set.getInt(26);
-                    int department = set.getInt(27);
+                    String cName = set.getString(23);
+                    Time start = set.getTime(24);
+                    Time end = set.getTime(25);
+                    boolean restrict = set.getBoolean(26);
+                    int age = set.getInt(27);
+                    int department = set.getInt(28);
 
-                    String dName = set.getString(29);
+                    String dName = set.getString(30);
 
                     Department d = new Department(department, dName);
 
                     Category c = new Category(cId, cName, start, end, restrict, age, d);
 
-                    String tName = set.getString(31);
-                    double value = set.getDouble(32);
+                    String tName = set.getString(32);
+                    double value = set.getDouble(33);
 
                     Tax t = new Tax(taxID, tName, value);
 
@@ -4590,7 +4602,7 @@ public class DBConnect implements DataConnect {
                     if (!open) {
                         p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon);
                     } else {
-                        p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, code);
+                        p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
                     }
 
                     int iid = set.getInt(33);
@@ -5070,32 +5082,33 @@ public class DBConnect implements DataConnect {
                     boolean incVat = set.getBoolean(18);
                     int maxCon = set.getInt(19);
                     int minCon = set.getInt(20);
+                    BigDecimal limit = set.getBigDecimal(21);
 
-                    String cName = set.getString(22);
-                    Time start = set.getTime(23);
-                    Time end = set.getTime(24);
-                    boolean restrict = set.getBoolean(25);
-                    int age = set.getInt(26);
-                    int department = set.getInt(27);
+                    String cName = set.getString(23);
+                    Time start = set.getTime(24);
+                    Time end = set.getTime(25);
+                    boolean restrict = set.getBoolean(26);
+                    int age = set.getInt(27);
+                    int department = set.getInt(28);
 
-                    String dName = set.getString(29);
+                    String dName = set.getString(30);
 
                     Department d = new Department(department, dName);
 
                     Category c = new Category(cId, cName, start, end, restrict, age, d);
 
-                    String tName = set.getString(31);
-                    double value = set.getDouble(32);
+                    String tName = set.getString(32);
+                    double value = set.getDouble(33);
 
                     Tax t = new Tax(taxID, tName, value);
 
-                    int conId = set.getInt(33);
+                    int conId = set.getInt(34);
 
                     Product p;
                     if (!open) {
                         p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon);
                     } else {
-                        p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, code);
+                        p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
                     }
                     condiments.add(new Condiment(conId, code, p));
                 }
@@ -5262,22 +5275,23 @@ public class DBConnect implements DataConnect {
                         boolean incVat = set2.getBoolean(18);
                         int maxCon = set2.getInt(19);
                         int minCon = set2.getInt(20);
+                        BigDecimal limit = set2.getBigDecimal(21);
 
-                        String cName = set2.getString(22);
-                        Time start = set2.getTime(23);
-                        Time end = set2.getTime(24);
-                        boolean restrict = set2.getBoolean(25);
-                        int age = set2.getInt(26);
-                        int department = set2.getInt(27);
+                        String cName = set2.getString(23);
+                        Time start = set2.getTime(24);
+                        Time end = set2.getTime(25);
+                        boolean restrict = set2.getBoolean(26);
+                        int age = set2.getInt(27);
+                        int department = set2.getInt(28);
 
-                        String dName = set2.getString(29);
+                        String dName = set2.getString(30);
 
                         Department d = new Department(department, dName);
 
                         Category c = new Category(cId, cName, start, end, restrict, age, d);
 
-                        String tName = set2.getString(31);
-                        double value = set2.getDouble(32);
+                        String tName = set2.getString(32);
+                        double value = set2.getDouble(33);
 
                         Tax t = new Tax(taxID, tName, value);
 
@@ -5285,7 +5299,7 @@ public class DBConnect implements DataConnect {
                         if (!open) {
                             p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon);
                         } else {
-                            p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, code);
+                            p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
                         }
                         int o_id = set2.getInt(33);
                         int quantity = set2.getInt(36);

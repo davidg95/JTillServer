@@ -138,6 +138,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         cmbOpenCat = new javax.swing.JComboBox<>();
         jLabel17 = new javax.swing.JLabel();
         txtCostPercentage = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        txtPriceLimit = new javax.swing.JTextField();
         panBarcode = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txtPlu = new javax.swing.JTextField();
@@ -231,6 +233,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
         jLabel17.setText("Cost Percentage");
 
+        jLabel12.setText("Price Limit:");
+
         javax.swing.GroupLayout panOpenProductLayout = new javax.swing.GroupLayout(panOpenProduct);
         panOpenProduct.setLayout(panOpenProductLayout);
         panOpenProductLayout.setHorizontalGroup(
@@ -272,8 +276,13 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtOpenShort, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(cmbOpenCat, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(panOpenProductLayout.createSequentialGroup()
+                                .addComponent(cmbOpenCat, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtPriceLimit, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         panOpenProductLayout.setVerticalGroup(
             panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -300,7 +309,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
-                    .addComponent(cmbOpenCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbOpenCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12)
+                    .addComponent(txtPriceLimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panOpenProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel18)
@@ -752,6 +763,11 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Cost % must be between 0 and 100", "Open Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        if (!Utilities.isNumber(txtPriceLimit.getText())) {
+            JOptionPane.showMessageDialog(this, "Must enter a number", "Create Product", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        BigDecimal price = new BigDecimal(txtPriceLimit.getText());
         try {
             String scaleName;
             double scale;
@@ -775,7 +791,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "All fields must be filled out", "Create Product", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            product = new Product(name, shortName, barcode, 0, category, comments, tax, scale, scaleName, cost);
+            product = new Product(name, shortName, barcode, 0, category, comments, tax, scale, scaleName, cost, price);
             product = dc.addProduct(product);
             if (chkNext.isSelected()) {
                 dc.setSetting("NEXT_PLU", nextBarcode);
@@ -817,6 +833,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel16;
@@ -856,6 +873,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JFormattedTextField txtPackSize;
     private javax.swing.JTextField txtPlu;
     private javax.swing.JTextField txtPrice;
+    private javax.swing.JTextField txtPriceLimit;
     private javax.swing.JTextField txtScale;
     private javax.swing.JTextField txtScaleName;
     private javax.swing.JTextField txtShortName;
