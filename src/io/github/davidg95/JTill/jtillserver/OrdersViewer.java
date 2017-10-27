@@ -124,16 +124,16 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
     }
 
     private void createOrder() {
-        currentOrder = new Order();
         Supplier supplier = SupplierSelectDialog.showDialog(this);
         if (supplier == null) {
             return;
         }
-        currentOrder.setSupplier(supplier);
+        currentOrder = new Order(supplier, new LinkedList<>());
+        editModel.setOrder(currentOrder);
+        tabbed.setSelectedIndex(1);
     }
 
     private void saveOrder() {
-        currentOrder.setItems(editModel.getAllProducts());
         if (currentOrder.getId() == 0) {
             try {
                 currentOrder = dc.addOrder(currentOrder);
@@ -438,10 +438,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
@@ -499,10 +496,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
 
         tableEdit.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
@@ -535,16 +529,16 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
             .addGroup(panelEditLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 763, Short.MAX_VALUE)
                     .addGroup(panelEditLayout.createSequentialGroup()
                         .addComponent(btnSend)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnPrint)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtBarcode, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                        .addComponent(txtBarcode)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddProduct)
-                        .addGap(214, 214, 214)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblValue)))
                 .addContainerGap())
         );
@@ -569,7 +563,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabbed, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(tabbed)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -584,7 +578,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-
+        createOrder();
     }//GEN-LAST:event_btnCreateActionPerformed
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
@@ -632,6 +626,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
         editModel.addProduct(item);
         lblValue.setText("Total Value: £" + editModel.getTotal().setScale(2, 6));
         txtBarcode.setText("");
+        saveOrder();
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed

@@ -97,7 +97,6 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
     }
 
     private void createOrder() {
-        order = new Order();
         Supplier supplier = SupplierSelectDialog.showDialog(this);
         if (supplier == null) {
             return;

@@ -290,6 +290,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         txtInvoice = new javax.swing.JTextField();
         chkPaid = new javax.swing.JCheckBox();
         txtBarcode = new javax.swing.JTextField();
+        btnAddOrder = new javax.swing.JButton();
 
         setResizable(true);
 
@@ -376,6 +377,13 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        btnAddOrder.setText("Add Order");
+        btnAddOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddOrderActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -388,11 +396,13 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                         .addComponent(lblValue)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chkPaid)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtBarcode)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddProduct)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnAddOrder)
+                        .addGap(18, 18, 18)
                         .addComponent(btnReceive)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnClose))
@@ -416,7 +426,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     .addComponent(jLabel2)
                     .addComponent(txtInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnReceive)
@@ -424,7 +434,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     .addComponent(btnAddProduct)
                     .addComponent(lblValue)
                     .addComponent(chkPaid)
-                    .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAddOrder))
                 .addContainerGap())
         );
 
@@ -611,7 +622,27 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         btnAddProduct.doClick();
     }//GEN-LAST:event_txtBarcodeActionPerformed
 
+    private void btnAddOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOrderActionPerformed
+        Order o = OrderSelectDialog.showDialog(this);
+        if (o == null) {
+            return;
+        }
+
+        if (!o.isSent()) {
+            if (JOptionPane.showConfirmDialog(this, "This order has not been sent, continue?", "Add Order", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+                return;
+            }
+        }
+
+        for (OrderItem oi : o.getItems()) {
+            products.add(new ReceivedItem(oi.getProduct(), oi.getQuantity() * oi.getProduct().getPackSize()));
+        }
+        txtBarcode.setText("");
+        updateTable();
+    }//GEN-LAST:event_btnAddOrderActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddOrder;
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnReceive;

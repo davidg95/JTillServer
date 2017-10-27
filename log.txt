@@ -1,3 +1,3 @@
-JTill log Fri Oct 27 13:16:44 BST 2017
-[13:16:44] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[13:16:51] [INFO] David Grant has logged in
+JTill log Fri Oct 27 13:53:42 BST 2017
+[13:53:42] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[13:53:46] [INFO] David Grant has logged in
