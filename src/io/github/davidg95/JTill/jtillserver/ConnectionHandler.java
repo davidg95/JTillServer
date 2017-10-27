@@ -892,4 +892,19 @@ public class ConnectionHandler {
     public List<SaleItem> getSalesByDepartment(@JConnParameter("ID") int id) throws IOException, SQLException {
         return dc.getSalesByDepartment(id);
     }
+
+    @JConnMethod("ADDORDER")
+    public Order addOrder(@JConnParameter("ORDER") Order o) throws IOException, SQLException {
+        return dc.addOrder(o);
+    }
+
+    @JConnMethod("UPDATEORDER")
+    public void updateOrder(@JConnParameter("ORDER") Order o) throws IOException, SQLException {
+        dc.updateOrder(o);
+    }
+
+    @JConnMethod("GETALLORDERS")
+    public List<Order> getAllOrders() throws IOException, SQLException {
+        return dc.getAllOrders();
+    }
 }

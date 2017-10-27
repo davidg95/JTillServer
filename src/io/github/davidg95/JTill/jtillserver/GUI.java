@@ -1962,7 +1962,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemSiteDetailsActionPerformed
 
     private void itemOrderingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemOrderingActionPerformed
-        OrderingWindow.showWindow();
+        OrdersViewer.showWindow();
     }//GEN-LAST:event_itemOrderingActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

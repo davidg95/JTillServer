@@ -14,6 +14,7 @@ import java.awt.print.PrinterJob;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -39,7 +40,7 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
 
     private final MyModel model;
 
-    private Supplier supplier;
+    private Order order;
 
     /**
      * Creates new form OrderingWindow
@@ -89,11 +90,40 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
         try {
             window.setIcon(false);
             window.setSelected(true);
+            window.createOrder();
         } catch (PropertyVetoException ex) {
             Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    private void createOrder() {
+        order = new Order();
+        Supplier supplier = SupplierSelectDialog.showDialog(this);
+        if (supplier == null) {
+            return;
+        }
+        order.setSupplier(supplier);
+    }
+
+    private void saveOrder() {
+        order.setItems(model.getAllProducts());
+        if (order.getId() == 0) {
+            try {
+                order = dc.addOrder(order);
+                JOptionPane.showInternalMessageDialog(this, "Order saved", "Order", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            try {
+                dc.updateOrder(order);
+                JOptionPane.showInternalMessageDialog(this, "Order saved", "Order", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
     private class MyModel implements TableModel {
 
         private final List<OrderItem> products;
@@ -235,6 +265,7 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
         btnSend = new javax.swing.JButton();
         txtBarcode = new javax.swing.JTextField();
         btnPrint = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Ordering");
@@ -256,6 +287,7 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        table.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
             table.getColumnModel().getColumn(0).setMinWidth(70);
@@ -303,6 +335,13 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        btnSave.setText("Save Order");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -319,7 +358,9 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
                         .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddProduct)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 194, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSave)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
         );
@@ -334,7 +375,8 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
                     .addComponent(btnAddProduct)
                     .addComponent(btnSend)
                     .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnPrint))
+                    .addComponent(btnPrint)
+                    .addComponent(btnSave))
                 .addContainerGap())
         );
 
@@ -382,18 +424,12 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtBarcodeActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
-        if (supplier == null) {
-            supplier = SupplierSelectDialog.showDialog(this);
-            if (supplier == null) {
-                return;
-            }
-        }
         final ModalDialog dialog = new ModalDialog(this, "Send Order", "Sending order...");
         final Runnable run = () -> {
             try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(OrderingWindow.class.getName()).log(Level.SEVERE, null, ex);
+                order.setSent(true);
+                order.setSendDate(new Date());
+                saveOrder();
             } finally {
                 model.clear();
                 dialog.hide();
@@ -406,14 +442,8 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSendActionPerformed
 
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
-        if (supplier == null) {
-            supplier = SupplierSelectDialog.showDialog(this);
-            if (supplier == null) {
-                return;
-            }
-        }
         PrinterJob job = PrinterJob.getPrinterJob();
-        job.setPrintable(new OrderPrintable(supplier, model.getAllProducts()));
+        job.setPrintable(new OrderPrintable(order.getSupplier(), model.getAllProducts()));
         boolean ok = job.printDialog();
         final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing order...", job);
         if (ok) {
@@ -435,10 +465,15 @@ public class OrderingWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnPrintActionPerformed
 
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        saveOrder();
+    }//GEN-LAST:event_btnSaveActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnPrint;
+    private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSend;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;

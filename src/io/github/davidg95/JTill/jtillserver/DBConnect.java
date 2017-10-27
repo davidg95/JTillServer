@@ -387,6 +387,34 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+            try {
+                String orders = "create table ORDERS\n"
+                        + "(\n"
+                        + "     ID INT not null primary key\n"
+                        + "         GENERATED ALWAYS AS IDENTITY\n"
+                        + "         (START WITH 1, INCREMENT BY 1),\n"
+                        + "     SUPPLIER int not null references SUPPLIERS(ID),\n"
+                        + "     SENT BOOLEAN,\n"
+                        + "     SENDDATE BIGINT\n"
+                        + ")";
+                String orderItems = "create table ORDERITEMS\n"
+                        + "(\n"
+                        + "     ID INT not null primary key\n"
+                        + "         GENERATED ALWAYS AS IDENTITY\n"
+                        + "         (START WITH 1, INCREMENT BY 1),\n"
+                        + "     PRODUCT int not null references PRODUCTS(ID),\n"
+                        + "     ORDER_ID int not null references ORDERS(ID),\n"
+                        + "     QUANTITY INT,\n"
+                        + "     PRICE DOUBLE\n"
+                        + ")";
+                stmt.executeUpdate(orders);
+                stmt.executeUpdate(orderItems);
+                con.commit();
+                log("Created table ORDERS");
+                log("Created table ORDERITEMS");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
         }
@@ -5118,6 +5146,144 @@ public class DBConnect implements DataConnect {
                 }
                 con.commit();
                 return is;
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
+
+    @Override
+    public Order addOrder(Order o) throws IOException, SQLException {
+        String query = "INSERT INTO ORDERS (SUPPLIER, SENT, SENDDATE) VALUES (" + o.getSupplier().getId() + "," + o.isSent() + "," + o.getSendDate().getTime() + ")";
+        try (final Connection con = getNewConnection()) {
+            try (PreparedStatement pstmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                pstmt.executeUpdate();
+                ResultSet set = pstmt.getGeneratedKeys();
+                while (set.next()) {
+                    int id = set.getInt(1);
+                    o.setId(id);
+                }
+                for (OrderItem i : o.getItems()) {
+                    String query2 = "INSERT INTO ORDERITEMS (PRODUCT, ORDER_ID, QUANTITY, PRICE) VALUES (" + i.getProduct().getId() + "," + o.getId() + "," + i.getQuantity() + "," + i.getPrice().doubleValue() + ")";
+                    try (PreparedStatement pstmt2 = con.prepareStatement(query2, Statement.RETURN_GENERATED_KEYS)) {
+                        pstmt2.executeUpdate();
+                        ResultSet set2 = pstmt2.getGeneratedKeys();
+                        while (set2.next()) {
+                            int id = set2.getInt(1);
+                            i.setId(id);
+                        }
+                    }
+                }
+                con.commit();
+                return o;
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
+
+    @Override
+    public void updateOrder(Order o) throws IOException, SQLException {
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("UPDATE ORDERS SET SENDDATE=" + o.getSendDate().getTime() + ", SENT=" + o.isSent());
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
+
+    @Override
+    public List<Order> getAllOrders() throws IOException, SQLException {
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet set = stmt.executeQuery("SELECT * FROM ORDERS, SUPPLIERS WHERE ORDERS.SUPPLIER = SUPPLIERS.ID");
+                List<Order> orders = new LinkedList<>();
+                while (set.next()) {
+                    int id = set.getInt(1);
+                    int supplier = set.getInt(2);
+                    boolean sent = set.getBoolean(3);
+                    Date sendDate = new Date(set.getLong(4));
+
+                    String name = set.getString(6);
+                    String s_address = set.getString(7);
+                    String phone = set.getString(8);
+
+                    Supplier s = new Supplier(supplier, name, s_address, phone);
+
+                    Order o = new Order(id, s, sent, sendDate, null);
+                    orders.add(o);
+                }
+
+                for (Order o : orders) {
+                    ResultSet set2 = stmt.executeQuery("SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, ORDERITEMS WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND ORDERITEMS.PRODUCT = PRODUCTS.ID AND ORDERITEMS.ORDER_ID = " + o.getId());
+                    List<OrderItem> items = new LinkedList<>();
+                    while (set2.next()) {
+                        int code = set2.getInt(1);
+                        int order_code = set2.getInt(2);
+                        String name = set2.getString(3);
+                        boolean open = set2.getBoolean(4);
+                        BigDecimal price = set2.getBigDecimal(5);
+                        int stock = set2.getInt(6);
+                        String comments = set2.getString(7);
+                        String shortName = set2.getString(8);
+                        int cId = set2.getInt(9);
+                        int taxID = set2.getInt(10);
+                        BigDecimal costPrice = set2.getBigDecimal(11);
+                        int minStock = set2.getInt(12);
+                        int maxStock = set2.getInt(13);
+                        int packSize = set2.getInt(14);
+                        String barcode = set2.getString(15);
+                        double scale = set2.getDouble(16);
+                        String scaleName = set2.getString(17);
+                        boolean incVat = set2.getBoolean(18);
+                        int maxCon = set2.getInt(19);
+                        int minCon = set2.getInt(20);
+
+                        String cName = set2.getString(22);
+                        Time start = set2.getTime(23);
+                        Time end = set2.getTime(24);
+                        boolean restrict = set2.getBoolean(25);
+                        int age = set2.getInt(26);
+                        int department = set2.getInt(27);
+
+                        String dName = set2.getString(29);
+
+                        Department d = new Department(department, dName);
+
+                        Category c = new Category(cId, cName, start, end, restrict, age, d);
+
+                        String tName = set2.getString(31);
+                        double value = set2.getDouble(32);
+
+                        Tax t = new Tax(taxID, tName, value);
+
+                        Product p;
+                        if (!open) {
+                            p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon);
+                        } else {
+                            p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, code);
+                        }
+                        int o_id = set2.getInt(33);
+                        int quantity = set2.getInt(36);
+                        BigDecimal o_price = set2.getBigDecimal(37);
+
+                        OrderItem i = new OrderItem(o_id, p, quantity, o_price);
+                        items.add(i);
+                    }
+                    o.setItems(items);
+                }
+                con.commit();
+                return orders;
             } catch (SQLException ex) {
                 con.rollback();
                 LOG.log(Level.SEVERE, null, ex);
