@@ -40,6 +40,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
         model = (DefaultTableModel) tblDep.getModel();
+        tblDep.setSelectionModel(new ForcedListSelectionModel());
         updateTable();
     }
 

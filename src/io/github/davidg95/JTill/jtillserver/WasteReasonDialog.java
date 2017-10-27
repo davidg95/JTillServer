@@ -194,7 +194,6 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
         WasteReason wr = new WasteReason(reason);
         try {
             wr = dc.addWasteReason(wr);
-            JOptionPane.showInternalMessageDialog(this, "New reason added\nID-" + wr.getId() + " Reason-" + wr.getReason(), "Reason Added", JOptionPane.INFORMATION_MESSAGE);
             init();
         } catch (IOException | SQLException | JTillException ex) {
             LOG.log(Level.SEVERE, null, ex);
