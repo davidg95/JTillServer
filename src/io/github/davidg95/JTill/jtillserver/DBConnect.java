@@ -5291,4 +5291,20 @@ public class DBConnect implements DataConnect {
             }
         }
     }
+
+    @Override
+    public void deleteOrder(int id) throws IOException, SQLException {
+        try (final Connection con = getNewConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("DELETE FROM ORDERITEMS WHERE ORDER_ID = " + id);
+                stmt.executeUpdate("DELETE FROM ORDERS WHERE ID=" + id);
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
 }

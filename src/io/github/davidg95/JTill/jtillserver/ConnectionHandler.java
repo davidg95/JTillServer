@@ -907,4 +907,9 @@ public class ConnectionHandler {
     public List<Order> getAllOrders() throws IOException, SQLException {
         return dc.getAllOrders();
     }
+
+    @JConnMethod("DELETEORDER")
+    public void deleteOrder(@JConnParameter("ID") int id) throws IOException, SQLException {
+        dc.deleteOrder(id);
+    }
 }

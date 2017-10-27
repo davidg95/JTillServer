@@ -21,7 +21,9 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -77,6 +79,8 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
                 if (index == -1) {
                     return;
                 }
+                Order o = model.getAllOrders().get(index);
+                deleteOrder(o);
             }
         });
 
@@ -167,6 +171,10 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
         public void removeOrder(int i) {
             orders.remove(i);
             alert(i, i);
+        }
+
+        public void removeOrder(Order o) {
+            orders.remove(o);
         }
 
         public List<Order> getAllOrders() {
@@ -409,6 +417,25 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
 
     }
 
+    private void deleteOrder(Order o) {
+        if (!o.isSent()) {
+            if (JOptionPane.showInternalConfirmDialog(this, "This order has not been sent, are you sure you want to remove it?", "Remove Order", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+                return;
+            }
+        } else {
+            if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove this order?", "Remove Order", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+                return;
+            }
+        }
+
+        try {
+            dc.deleteOrder(o.getId());
+            model.removeOrder(o);
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -592,6 +619,24 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
                 editModel.setOrder(currentOrder);
                 tabbed.setSelectedIndex(1);
             }
+        } else if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem view = new JMenuItem("View");
+            view.addActionListener(event -> {
+                currentOrder = model.getAllOrders().get(row);
+                editModel.setOrder(currentOrder);
+                tabbed.setSelectedIndex(1);
+            });
+
+            JMenuItem delete = new JMenuItem("Delete");
+            delete.addActionListener(event -> {
+                Order o = model.getAllOrders().get(row);
+                deleteOrder(o);
+            });
+
+            menu.add(view);
+            menu.add(delete);
+            menu.show(this, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tableMouseClicked
 
