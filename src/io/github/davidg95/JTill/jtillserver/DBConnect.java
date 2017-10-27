@@ -415,6 +415,16 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+            try {
+                stmt = con.createStatement();
+                stmt.executeUpdate("ALTER TABLE SCREENS ADD COLUMN VGAP INT");
+                stmt.executeUpdate("ALTER TABLE SCREENS ADD COLUMN HGAP INT");
+                con.commit();
+                log("Added VGAP to SCREENS");
+                log("Added HGAP to SCREEN");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
         }
@@ -965,7 +975,7 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
-            Screen s = new Screen("DEFAULT", 5, 10, -1);
+            Screen s = new Screen("DEFAULT", 5, 10, -1, 0, 0);
             addScreen(s);
             int x = 1;
             int y = 1;
@@ -2583,7 +2593,9 @@ public class DBConnect implements DataConnect {
             int width = set.getInt("WIDTH");
             int height = set.getInt("HEIGHT");
             int inherits = set.getInt("INHERITS");
-            Screen s = new Screen(name, id, width, height, inherits);
+            int vgap = set.getInt("VGAP");
+            int hgap = set.getInt("HGAP");
+            Screen s = new Screen(name, id, width, height, inherits, vgap, hgap);
 
             screens.add(s);
         }
@@ -2617,7 +2629,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public Screen addScreen(Screen s) throws SQLException {
-        String query = "INSERT INTO SCREENS (NAME, WIDTH, HEIGHT, INHERITS) VALUES (" + s.getSQLInsertString() + ")";
+        String query = "INSERT INTO SCREENS (NAME, WIDTH, HEIGHT, INHERITS, VGAP, HGAP) VALUES (" + s.getSQLInsertString() + ")";
         try (Connection con = getNewConnection()) {
             PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             try {
@@ -2804,7 +2816,9 @@ public class DBConnect implements DataConnect {
                     int width = set.getInt("WIDTH");
                     int height = set.getInt("HEIGHT");
                     int inherits = set.getInt("INHERITS");
-                    Screen s = new Screen(name, id, width, height, inherits);
+                    int vgap = set.getInt("VGAP");
+                    int hgap = set.getInt("HGAP");
+                    Screen s = new Screen(name, id, width, height, inherits, vgap, hgap);
 
                     screens.add(s);
                 }

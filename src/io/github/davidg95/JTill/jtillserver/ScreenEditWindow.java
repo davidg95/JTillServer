@@ -448,6 +448,11 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         panelScreenProperties = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         btnInherits = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txtVGap = new javax.swing.JTextField();
+        txtHGap = new javax.swing.JTextField();
+        btnSave = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Screen Editor");
@@ -487,25 +492,58 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel1.setText("V Gap:");
+
+        jLabel2.setText("H Gap:");
+
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelScreenPropertiesLayout = new javax.swing.GroupLayout(panelScreenProperties);
         panelScreenProperties.setLayout(panelScreenPropertiesLayout);
         panelScreenPropertiesLayout.setHorizontalGroup(
             panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelScreenPropertiesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnInherits, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelScreenPropertiesLayout.createSequentialGroup()
+                        .addGroup(panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnInherits, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+                            .addComponent(txtVGap)
+                            .addComponent(txtHGap))
+                        .addContainerGap())
+                    .addGroup(panelScreenPropertiesLayout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addComponent(btnSave)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         panelScreenPropertiesLayout.setVerticalGroup(
             panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelScreenPropertiesLayout.createSequentialGroup()
-                .addGap(60, 60, 60)
+                .addContainerGap()
                 .addGroup(panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(btnInherits))
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtVGap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelScreenPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtHGap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnSave)
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -588,7 +626,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                     @Override
                     public void run() {
                         try {
-                            Screen s = new Screen(name, fw, fh, inh);
+                            Screen s = new Screen(name, fw, fh, inh, 0, 0);
                             currentScreen = dc.addScreen(s);
                             int x = 1;
                             int y = 1;
@@ -694,6 +732,8 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         } else {
             categoryCards.show(panelProducts, sc.getName());
             currentScreen = sc;
+            txtVGap.setText(currentScreen.getvGap() + "");
+            txtHGap.setText(currentScreen.gethGap() + "");
             if (sc.getInherits() != -1) {
                 try {
                     Screen parent = dc.getScreen(sc.getInherits());
@@ -744,15 +784,36 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         setButtons();
     }//GEN-LAST:event_btnInheritsActionPerformed
 
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        if (!Utilities.isNumber(txtVGap.getText()) || !Utilities.isNumber(txtHGap.getText())) {
+            JOptionPane.showMessageDialog(this, "Must enter a number", "Save", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int vgap = Integer.parseInt(txtVGap.getText());
+        int hgap = Integer.parseInt(txtHGap.getText());
+        currentScreen.setvGap(vgap);
+        currentScreen.sethGap(hgap);
+        try {
+            dc.updateScreen(currentScreen);
+        } catch (IOException | SQLException | ScreenNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Save", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSaveActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JProgressBar bar;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnInherits;
     private javax.swing.JButton btnNewScreen;
+    private javax.swing.JButton btnSave;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList<String> list;
     private javax.swing.JPanel panelProducts;
     private javax.swing.JPanel panelScreenProperties;
+    private javax.swing.JTextField txtHGap;
+    private javax.swing.JTextField txtVGap;
     // End of variables declaration//GEN-END:variables
 }
