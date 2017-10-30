@@ -408,7 +408,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                 final double maxVal = (double) spinMoneyMax.getValue(); //Get the maximum sale value
 
                 final Date startDate = pickStart.getDate();
-                final Date endDate = pickEnd.getDate();
+                final Date endDate = new Date(pickEnd.getDate().getTime() + 86399999L);
 
                 final int startID = (int) spinIdStart.getValue(); //Get the start ID
                 final int endID = (int) spinIdEnd.getValue(); //Get the end ID
