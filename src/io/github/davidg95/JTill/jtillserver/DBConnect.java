@@ -4770,6 +4770,8 @@ public class DBConnect implements DataConnect {
         String r2 = "DELETE FROM RECEIVED_REPORTS";
         String w1 = "DELETE FROM WASTEITEMS";
         String d1 = "DELETE FROM DECLARATIONS";
+        String o1 = "DELETE FROM ORDERITEMS";
+        String o2 = "DELETE FROM ORDERS";
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             try {
@@ -4777,6 +4779,8 @@ public class DBConnect implements DataConnect {
                 stmt.executeUpdate(r2);
                 stmt.executeUpdate(w1);
                 stmt.executeUpdate(d1);
+                stmt.executeUpdate(o1);
+                stmt.executeUpdate(o2);
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
@@ -5301,9 +5305,9 @@ public class DBConnect implements DataConnect {
                         } else {
                             p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
                         }
-                        int o_id = set2.getInt(33);
-                        int quantity = set2.getInt(36);
-                        BigDecimal o_price = set2.getBigDecimal(37);
+                        int o_id = set2.getInt(34);
+                        int quantity = set2.getInt(37);
+                        BigDecimal o_price = set2.getBigDecimal(38);
 
                         OrderItem i = new OrderItem(o_id, p, quantity, o_price);
                         items.add(i);
