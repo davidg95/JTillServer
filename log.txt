@@ -1,3 +1,82 @@
-JTill log Tue Oct 31 12:44:31 GMT 2017
-[12:44:31] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[12:44:35] [INFO] David Grant has logged in
+JTill log Tue Oct 31 15:27:48 GMT 2017
+[15:27:48] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[15:27:49] [INFO] Terminal DAVID-PC has connected
+[15:27:49] [INFO] Till 1 is retreiving settings
+[15:27:51] [INFO] David Grant has logged in from Till 1
+[15:28:16] [INFO] David Grant has logged out
+[15:29:56] [INFO] Terminal DAVID-PC has connected
+[15:29:56] [INFO] Till 1 is retreiving settings
+[15:29:58] [INFO] David Grant has logged in from Till 1
+[15:30:08] [INFO] David Grant has logged out
+[15:31:30] [INFO] Terminal DAVID-PC has connected
+[15:31:30] [INFO] Till 1 is retreiving settings
+[15:31:34] [INFO] David Grant has logged in from Till 1
+[15:31:39] [INFO] David Grant has logged out
+[15:32:26] [INFO] Terminal DAVID-PC has connected
+[15:32:26] [INFO] Till 1 is retreiving settings
+[15:32:29] [INFO] David Grant has logged in from Till 1
+[15:33:51] [INFO] David Grant has logged out
+[15:34:05] [INFO] Terminal DAVID-PC has connected
+[15:34:05] [INFO] Till 1 is retreiving settings
+[15:34:08] [INFO] David Grant has logged in from Till 1
+[15:34:19] [INFO] David Grant has logged out
+[15:34:49] [INFO] Terminal DAVID-PC has connected
+[15:34:49] [INFO] Till 1 is retreiving settings
+[15:34:52] [INFO] David Grant has logged in from Till 1
+[15:34:59] [INFO] David Grant has logged out
+[15:35:26] [INFO] Terminal DAVID-PC has connected
+[15:35:26] [INFO] Till 1 is retreiving settings
+[15:38:07] [INFO] David Grant has logged in from Till 1
+[15:38:12] [INFO] David Grant has logged out
+[15:39:43] [INFO] Terminal DAVID-PC has connected
+[15:39:43] [INFO] Till 1 is retreiving settings
+[15:39:45] [INFO] David Grant has logged in from Till 1
+[15:39:59] [INFO] David Grant has logged out
+[15:43:21] [INFO] Terminal DAVID-PC has connected
+[15:43:21] [INFO] Till 1 is retreiving settings
+[15:43:23] [INFO] David Grant has logged in from Till 1
+[15:43:32] [INFO] David Grant has logged out
+[15:44:11] [INFO] Terminal DAVID-PC has connected
+[15:44:11] [INFO] Till 1 is retreiving settings
+[15:44:22] [INFO] David Grant has logged in from Till 1
+[15:44:33] [INFO] David Grant has logged out
+[15:45:50] [INFO] Terminal DAVID-PC has connected
+[15:45:50] [INFO] Till 1 is retreiving settings
+[15:45:54] [INFO] David Grant has logged in from Till 1
+[15:47:17] [INFO] David Grant has logged out
+[15:48:08] [INFO] Terminal DAVID-PC has connected
+[15:48:08] [INFO] Till 1 is retreiving settings
+[15:48:10] [INFO] David Grant has logged in from Till 1
+[15:48:25] [INFO] David Grant has logged out
+[15:49:37] [INFO] Terminal DAVID-PC has connected
+[15:49:37] [INFO] Till 1 is retreiving settings
+[15:49:40] [INFO] David Grant has logged in from Till 1
+[15:49:49] [INFO] David Grant has logged out
+[15:51:42] [INFO] Terminal DAVID-PC has connected
+[15:51:42] [INFO] Till 1 is retreiving settings
+[15:51:47] [INFO] David Grant has logged in from Till 1
+[15:51:50] [INFO] David Grant has logged out
+[15:51:59] [INFO] Terminal DAVID-PC has connected
+[15:51:59] [INFO] Till 1 is retreiving settings
+[15:52:02] [INFO] David Grant has logged in from Till 1
+[15:52:06] [INFO] David Grant has logged out
+[15:54:41] [INFO] Terminal DAVID-PC has connected
+[15:54:41] [INFO] Till 1 is retreiving settings
+[15:54:43] [INFO] David Grant has logged in from Till 1
+[15:55:01] [INFO] David Grant has logged out
+[15:58:49] [INFO] Terminal DAVID-PC has connected
+[15:58:49] [INFO] Till 1 is retreiving settings
+[15:58:51] [INFO] David Grant has logged in from Till 1
+[15:58:54] [INFO] David Grant has logged out
+[15:59:11] [INFO] Terminal DAVID-PC has connected
+[15:59:11] [INFO] Till 1 is retreiving settings
+[15:59:13] [INFO] David Grant has logged in from Till 1
+[15:59:17] [INFO] David Grant has logged out
+[15:59:40] [INFO] Terminal DAVID-PC has connected
+[15:59:40] [INFO] Till 1 is retreiving settings
+[15:59:42] [INFO] David Grant has logged in from Till 1
+[15:59:55] [INFO] David Grant has logged out
+[16:00:13] [INFO] Terminal DAVID-PC has connected
+[16:00:13] [INFO] Till 1 is retreiving settings
+[16:00:15] [INFO] David Grant has logged in from Till 1
+[16:00:42] [INFO] David Grant has logged out

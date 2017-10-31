@@ -13,7 +13,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -63,8 +62,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form ScreenEditWindow
-     *
-     * @param icon the icon for the window.
      */
     public ScreenEditWindow() {
         this.dc = GUI.gui.dc;
@@ -144,8 +141,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
     /**
      * Show the screen edit window.
-     *
-     * @param icon the icon for the window.
      */
     public static void showScreenEditWindow() {
         if (frame == null || frame.isClosed()) {
@@ -626,7 +621,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                     @Override
                     public void run() {
                         try {
-                            Screen s = new Screen(name, fw, fh, inh, 0, 0);
+                            Screen s = new Screen(name, fw, fh, inh, 3, 3);
                             currentScreen = dc.addScreen(s);
                             int x = 1;
                             int y = 1;
