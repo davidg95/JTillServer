@@ -24,8 +24,6 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
     private static TillButton button;
 
-    private final DataConnect dc;
-
     private final int maxWidth;
     private final int maxHeight;
 
@@ -38,7 +36,6 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
      */
     public ButtonOptionDialog(Window parent, int maxWidth, int maxHeight) {
         super(parent);
-        this.dc = GUI.gui.dc;
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
         this.setIconImage(GUI.icon);
@@ -52,7 +49,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         txtItem.setText(button.getName());
         if (button.getType() == TillButton.SPACE) {
             btnChangeButton.setEnabled(false);
-            cmbFunction.setSelectedItem("Space");
+            cmbFunction.setSelectedItem("None");
             txtItem.setEnabled(false);
             txtItem.setText("");
         } else if (button.getType() == TillButton.ITEM) {
@@ -215,7 +212,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
         jLabel6.setText("Function:");
 
-        cmbFunction.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Space", "Product", "Screen", "Back", "Main", "Logoff", "Payment", "Void", "Link" }));
+        cmbFunction.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "None", "Product", "Screen", "Back", "Main", "Logoff", "Payment", "Void", "Link" }));
         cmbFunction.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbFunctionActionPerformed(evt);
@@ -310,10 +307,10 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
                 .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel1)))
+                        .addComponent(jLabel1)
+                        .addComponent(jLabel2)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmbAccess, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -352,7 +349,10 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             }
             button.setType(TillButton.SCREEN);
         } else if (func.equals("Link")) {
-            String link = JOptionPane.showInputDialog(this, "Enter URL", "Link", JOptionPane.PLAIN_MESSAGE);
+            String link = (String) JOptionPane.showInputDialog(this, "Enter URL", "Link", JOptionPane.PLAIN_MESSAGE, null, null, button.getLink());
+            if(link == null){
+                return;
+            }
             if (link.length() > 50) {
                 JOptionPane.showMessageDialog(this, "Link must be 50 characters or less", "Link", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -391,7 +391,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             }
         }
 
-        if (func.equals("Space")) {
+        if (func.equals("None")) {
             button.setName("[SPACE]");
             button.setType(TillButton.SPACE);
         } else if (func.equals("Back")) {
@@ -437,7 +437,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
 
     private void cmbFunctionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbFunctionActionPerformed
         String func = (String) cmbFunction.getSelectedItem();
-        if (func.equals("Space")) {
+        if (func.equals("None")) {
             txtItem.setEnabled(false);
             txtItem.setText("");
         } else {
