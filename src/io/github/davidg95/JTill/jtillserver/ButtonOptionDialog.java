@@ -336,7 +336,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     private void btnChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeButtonActionPerformed
         String func = (String) cmbFunction.getSelectedItem();
         if (func.equals("Product")) {
-            Item i = ItemSelectDialog.showDialog(this, dc);
+            Item i = ProductSelectDialog.showDialog(this);
             if (i != null) {
                 button.setItem(i.getId());
                 button.setName(i.getName());

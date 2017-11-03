@@ -35,9 +35,9 @@ public class ItemSelectDialog extends javax.swing.JDialog {
     /**
      * Creates new form ItemSelectDialog
      */
-    public ItemSelectDialog(Window parent, DataConnect dc) {
+    public ItemSelectDialog(Window parent) {
         super(parent);
-        this.dc = dc;
+        this.dc = GUI.gui.dc;
         items = new ArrayList<>();
         initComponents();
         setTitle("Select Item");
@@ -56,12 +56,12 @@ public class ItemSelectDialog extends javax.swing.JDialog {
      * @param dc the data connection.
      * @return the Item that was selected.
      */
-    public static Item showDialog(Component parent, DataConnect dc) {
+    public static Item showDialog(Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new ItemSelectDialog(window, dc);
+        dialog = new ItemSelectDialog(window);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setVisible(true);
         return item;
