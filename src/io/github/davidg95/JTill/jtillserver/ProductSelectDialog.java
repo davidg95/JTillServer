@@ -17,7 +17,9 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -83,6 +85,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     }
 
     private void init() throws IOException, SQLException {
+        UIManager.put("Tree.expandedIcon", new ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/expanded.png")).getImage());
+        UIManager.put("Tree.collapsedIcon", new ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/collapsed.png")).getImage());
         RootNode top = new RootNode();
         treeModel = new MyTreeModel(top);
         createNodes();
