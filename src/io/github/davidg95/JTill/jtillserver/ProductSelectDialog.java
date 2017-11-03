@@ -85,8 +85,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     }
 
     private void init() throws IOException, SQLException {
-        UIManager.put("Tree.expandedIcon", new ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/expanded.png")).getImage());
-        UIManager.put("Tree.collapsedIcon", new ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/collapsed.png")).getImage());
+//        UIManager.put("Tree.expandedIcon", new ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/expanded.png")).getImage());
+//        UIManager.put("Tree.collapsedIcon", new ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/collapsed.png")).getImage());
         RootNode top = new RootNode();
         treeModel = new MyTreeModel(top);
         createNodes();
