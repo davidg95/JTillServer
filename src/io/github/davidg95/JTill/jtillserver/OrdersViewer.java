@@ -65,7 +65,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
         table.getColumnModel().getColumn(0).setMaxWidth(40);
         table.getColumnModel().getColumn(2).setMaxWidth(50);
         table.getColumnModel().getColumn(3).setMaxWidth(200);
-        table.getColumnModel().getColumn(2).setMaxWidth(50);
+        table.getColumnModel().getColumn(4).setMaxWidth(70);
 
         InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = table.getActionMap();
@@ -543,6 +543,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
         jScrollPane2.setViewportView(tableEdit);
 
         btnSend.setText("Send Order");
+        btnSend.setEnabled(false);
         btnSend.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSendActionPerformed(evt);
@@ -695,9 +696,14 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
+       btnSend.setEnabled(true);
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
+        if(currentOrder.getItems().isEmpty()){
+            JOptionPane.showInternalMessageDialog(this, "No items in order", "Send Order", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         final ModalDialog dialog = new ModalDialog(this, "Send Order", "Sending order...");
         final Runnable run = () -> {
             try {
