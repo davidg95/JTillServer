@@ -574,6 +574,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemStock = new javax.swing.JMenuItem();
         itemReceive = new javax.swing.JMenuItem();
         itemOrdering = new javax.swing.JMenuItem();
+        itemOrderingWizard = new javax.swing.JMenuItem();
         itemWasteStock = new javax.swing.JMenuItem();
         itemEnquiry = new javax.swing.JMenuItem();
         itemStockTake = new javax.swing.JMenuItem();
@@ -1127,6 +1128,14 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         menuStock.add(itemOrdering);
+
+        itemOrderingWizard.setText("Ordering Wizard");
+        itemOrderingWizard.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemOrderingWizardActionPerformed(evt);
+            }
+        });
+        menuStock.add(itemOrderingWizard);
 
         itemWasteStock.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
         itemWasteStock.setText("Waste Stock");
@@ -1965,6 +1974,10 @@ public class GUI extends JFrame implements GUIInterface {
         OrdersViewer.showWindow();
     }//GEN-LAST:event_itemOrderingActionPerformed
 
+    private void itemOrderingWizardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemOrderingWizardActionPerformed
+        OrderingWizard.showDialog(this);
+    }//GEN-LAST:event_itemOrderingWizardActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
     private javax.swing.JButton btnCategorys;
@@ -2008,6 +2021,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemManualSale;
     private javax.swing.JMenuItem itemNewStaff;
     private javax.swing.JMenuItem itemOrdering;
+    private javax.swing.JMenuItem itemOrderingWizard;
     private javax.swing.JMenuItem itemPluSettings;
     private javax.swing.JMenuItem itemReasons;
     private javax.swing.JMenuItem itemReceive;
