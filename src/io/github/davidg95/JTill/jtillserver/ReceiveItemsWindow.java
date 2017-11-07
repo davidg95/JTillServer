@@ -56,6 +56,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private final DefaultComboBoxModel cmbModel;
 
     private boolean viewMode = false;
+    
+    private Order order;
 
     /**
      * Creates new form ReceiveItemsWindow
@@ -474,6 +476,10 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         report.setItems(products);
         try {
             dc.addReceivedReport(report);
+            if(order != null){
+                order.setReceived(true);
+                dc.updateOrder(order);
+            }
             lblValue.setText("Total: £0.00");
             model.setRowCount(0);
             products.clear();
@@ -627,21 +633,21 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             JOptionPane.showInternalMessageDialog(this, "You cannot add an order with other items", "Add Order", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        Order o = OrderSelectDialog.showDialog(this);
-        if (o == null) {
+        order = OrderSelectDialog.showDialog(this);
+        if (order == null) {
             return;
         }
 
-        if (!o.isSent()) {
+        if (!order.isSent()) {
             if (JOptionPane.showConfirmDialog(this, "This order has not been sent, continue?", "Add Order", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                 return;
             }
         }
 
-        for (OrderItem oi : o.getItems()) {
+        for (OrderItem oi : order.getItems()) {
             products.add(new ReceivedItem(oi.getProduct(), oi.getQuantity() * oi.getProduct().getPackSize()));
         }
-        cmbSuppliers.setSelectedItem(o.getSupplier());
+        cmbSuppliers.setSelectedItem(order.getSupplier());
         cmbSuppliers.setEnabled(false);
         btnAddProduct.setEnabled(false);
         txtBarcode.setEnabled(false);

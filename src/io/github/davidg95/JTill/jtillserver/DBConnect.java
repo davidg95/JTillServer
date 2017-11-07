@@ -434,6 +434,14 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+            try {
+                stmt = con.createStatement();
+                stmt.executeUpdate("ALTER TABLE ORDERS ADD COLUMN RECEIVED BOOLEAN");
+                con.commit();
+                log("Added RECEIVED to ORDERS");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
         }
@@ -5187,7 +5195,7 @@ public class DBConnect implements DataConnect {
 
     @Override
     public Order addOrder(Order o) throws IOException, SQLException {
-        String query = "INSERT INTO ORDERS (SUPPLIER, SENT, SENDDATE) VALUES (" + o.getSupplier().getId() + "," + o.isSent() + "," + o.getSendDate().getTime() + ")";
+        String query = "INSERT INTO ORDERS (SUPPLIER, SENT, SENDDATE, RECEIVED) VALUES (" + o.getSupplier().getId() + "," + o.isSent() + "," + o.getSendDate().getTime() + ", FALSE)";
         try (final Connection con = getNewConnection()) {
             try (PreparedStatement pstmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
                 pstmt.executeUpdate();
@@ -5222,7 +5230,7 @@ public class DBConnect implements DataConnect {
         try (final Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
-                stmt.executeUpdate("UPDATE ORDERS SET SENDDATE=" + o.getSendDate().getTime() + ", SENT=" + o.isSent());
+                stmt.executeUpdate("UPDATE ORDERS SET SENDDATE=" + o.getSendDate().getTime() + ", SENT=" + o.isSent() + ", RECEIVED=" + o.isReceived() + " WHERE ID=" + o.getId());
                 con.commit();
             } catch (SQLException ex) {
                 con.rollback();
@@ -5244,14 +5252,15 @@ public class DBConnect implements DataConnect {
                     int supplier = set.getInt(2);
                     boolean sent = set.getBoolean(3);
                     Date sendDate = new Date(set.getLong(4));
+                    boolean received = set.getBoolean(5);
 
-                    String name = set.getString(6);
-                    String s_address = set.getString(7);
-                    String phone = set.getString(8);
+                    String name = set.getString(7);
+                    String s_address = set.getString(8);
+                    String phone = set.getString(9);
 
                     Supplier s = new Supplier(supplier, name, s_address, phone);
 
-                    Order o = new Order(id, s, sent, sendDate, null);
+                    Order o = new Order(id, s, sent, sendDate, null, received);
                     orders.add(o);
                 }
 

@@ -65,6 +65,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
         table.getColumnModel().getColumn(0).setMaxWidth(40);
         table.getColumnModel().getColumn(2).setMaxWidth(50);
         table.getColumnModel().getColumn(3).setMaxWidth(200);
+        table.getColumnModel().getColumn(2).setMaxWidth(50);
 
         InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = table.getActionMap();
@@ -137,19 +138,11 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
         tabbed.setSelectedIndex(1);
     }
 
-    private void saveOrder() {
+    private void saveOrder() throws IOException, SQLException {
         if (currentOrder.getId() == 0) {
-            try {
-                currentOrder = dc.addOrder(currentOrder);
-            } catch (IOException | SQLException ex) {
-                JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            currentOrder = dc.addOrder(currentOrder);
         } else {
-            try {
-                dc.updateOrder(currentOrder);
-            } catch (IOException | SQLException ex) {
-                JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            dc.updateOrder(currentOrder);
         }
     }
 
@@ -199,7 +192,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
 
         @Override
         public int getColumnCount() {
-            return 4;
+            return 5;
         }
 
         @Override
@@ -213,6 +206,8 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
                     return "Sent";
                 case 3:
                     return "Date";
+                case 4:
+                    return "Received";
                 default:
                     break;
             }
@@ -230,6 +225,8 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
                     return Boolean.class;
                 case 3:
                     return Object.class;
+                case 4:
+                    return Boolean.class;
                 default:
                     break;
             }
@@ -253,6 +250,8 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
                     return o.isSent();
                 case 3:
                     return (o.isSent() ? o.getSendDate() : "");
+                case 4:
+                    return o.isReceived();
                 default:
                     break;
             }
@@ -691,7 +690,11 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
         editModel.addProduct(item);
         lblValue.setText("Total Value: £" + editModel.getTotal().setScale(2, 6));
         txtBarcode.setText("");
-        saveOrder();
+        try {
+            saveOrder();
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
@@ -701,6 +704,8 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
                 currentOrder.setSent(true);
                 currentOrder.setSendDate(new Date());
                 saveOrder();
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             } finally {
                 dialog.hide();
                 btnAddProduct.setEnabled(false);
