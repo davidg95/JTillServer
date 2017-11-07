@@ -623,6 +623,10 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtBarcodeActionPerformed
 
     private void btnAddOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOrderActionPerformed
+        if(!products.isEmpty()){
+            JOptionPane.showInternalMessageDialog(this, "You cannot add an order with other items", "Add Order", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         Order o = OrderSelectDialog.showDialog(this);
         if (o == null) {
             return;
@@ -637,6 +641,10 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         for (OrderItem oi : o.getItems()) {
             products.add(new ReceivedItem(oi.getProduct(), oi.getQuantity() * oi.getProduct().getPackSize()));
         }
+        cmbSuppliers.setSelectedItem(o.getSupplier());
+        cmbSuppliers.setEnabled(false);
+        btnAddProduct.setEnabled(false);
+        txtBarcode.setEnabled(false);
         txtBarcode.setText("");
         updateTable();
     }//GEN-LAST:event_btnAddOrderActionPerformed
