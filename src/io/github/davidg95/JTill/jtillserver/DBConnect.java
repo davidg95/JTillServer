@@ -992,7 +992,7 @@ public class DBConnect implements DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
-            Screen s = new Screen("DEFAULT", 5, 10, null, 0, 0);
+            Screen s = new Screen("DEFAULT", 5, 10, -1, 0, 0);
             addScreen(s);
             int x = 1;
             int y = 1;
