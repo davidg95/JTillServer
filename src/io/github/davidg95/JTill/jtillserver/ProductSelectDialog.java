@@ -85,8 +85,6 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     }
 
     private void init() throws IOException, SQLException {
-//        UIManager.put("Tree.expandedIcon", new ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/expanded.png")).getImage());
-//        UIManager.put("Tree.collapsedIcon", new ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/collapsed.png")).getImage());
         RootNode top = new RootNode();
         treeModel = new MyTreeModel(top);
         createNodes();
@@ -138,7 +136,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         model.setRowCount(0);
 
         for (Product p : currentTableContents) {
-            Object[] s = new Object[]{p.getId(), p.getLongName()};
+            Object[] s = new Object[]{p.getId(), p.getLongName(), p.getBarcode()};
             model.addRow(s);
         }
 
@@ -500,18 +498,20 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         tree = new javax.swing.JTree();
         radOrder = new javax.swing.JRadioButton();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Select Product - All");
+        setResizable(false);
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "Name"
+                "ID", "Name", "Barcode"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -529,7 +529,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             table.getColumnModel().getColumn(0).setMinWidth(40);
             table.getColumnModel().getColumn(0).setPreferredWidth(40);
             table.getColumnModel().getColumn(0).setMaxWidth(40);
-            table.getColumnModel().getColumn(1).setResizable(false);
+            table.getColumnModel().getColumn(2).setMinWidth(120);
+            table.getColumnModel().getColumn(2).setPreferredWidth(120);
+            table.getColumnModel().getColumn(2).setMaxWidth(120);
         }
 
         btnClose.setText("Cancel");

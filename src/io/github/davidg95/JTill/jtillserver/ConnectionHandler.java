@@ -784,7 +784,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("DOWNLOADTER")
-    public List<byte[]> downloadTerminalUpdate() throws Exception {
+    public byte[] downloadTerminalUpdate() throws Exception {
         return dc.downloadTerminalUpdate();
     }
 

@@ -4669,16 +4669,8 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public List<byte[]> downloadTerminalUpdate() throws Exception {
-        File file = UpdateChecker.downloadTerminalUpdate();
-        FileInputStream in = new FileInputStream(file);
-        List<byte[]> bytes = new LinkedList<>();
-        byte[] b = new byte[88 * 1024];
-        int count;
-        while ((count = in.read(b)) > 0) {
-            bytes.add(b);
-        }
-        in.close();
+    public byte[] downloadTerminalUpdate() throws Exception {
+        byte[] bytes = UpdateChecker.downloadTerminalUpdate();
         return bytes;
     }
 
