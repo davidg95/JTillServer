@@ -16,6 +16,8 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -28,22 +30,13 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class TillServer {
 
-    /**
-     * The Connection to the database.
-     */
-    public DBConnect dc;
-    /**
-     * The GUI.
-     */
-    public static GUI g;
+    private DBConnect dc;
 
-    /**
-     * The image icon for the windows.
-     */
+    private GUI g;
+
     public static Image icon;
-    /**
-     * The tray icon for the system tray.
-     */
+
+    //System tray
     public static TrayIcon trayIcon;
     public static SystemTray tray;
 
@@ -55,6 +48,8 @@ public class TillServer {
 
     public static JConnServer server;
 
+    private static TillServer tillServer;
+
     /**
      * @param args the command line arguments
      */
@@ -65,10 +60,13 @@ public class TillServer {
             Logger.getLogger(TillServer.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (GraphicsEnvironment.isHeadless()) {
-            System.out.println("Headless operation not currently supported");
+            System.out.println("***Headless operation not currently supported***");
+            System.out.println("Press any key to exit");
+            new Scanner(System.in).next();
             System.exit(0);
         }
-        new TillServer().start();
+        tillServer = new TillServer();
+        tillServer.start();
     }
 
     /**
@@ -83,16 +81,16 @@ public class TillServer {
         TillSplashScreen.addBar(5);
         boolean init = settings.loadProperties();
         if (!init) {
+            TillSplashScreen.hideSplashScreen();
             init = InitialSetupWindow.showWindow();
             if (!init) {
                 System.exit(0);
             }
+            TillSplashScreen.showSplashScreen();
         }
         TillSplashScreen.addBar(5);
-        if (!GraphicsEnvironment.isHeadless()) {
-            g = GUI.create(dc, false, icon);
-            setSystemTray();
-        }
+        g = GUI.create(dc, false, icon);
+        setSystemTray();
     }
 
     /**
@@ -139,7 +137,7 @@ public class TillServer {
 
         aboutItem.addActionListener((ActionEvent e) -> {
             JOptionPane.showMessageDialog(null, "JTill Server is running on port number "
-                    + settings.getSetting("port") + " with " + g.clientCounter + " connections.\n"
+                    + settings.getSetting("port") + "\n"
                     + dc.toString(), "JTill Server",
                     JOptionPane.INFORMATION_MESSAGE);
         });
@@ -152,8 +150,7 @@ public class TillServer {
         });
 
         statusItem.addActionListener((ActionEvent e) -> {
-            JOptionPane.showMessageDialog(null, "Connected Clients: " + g.clientCounter + "/" + settings.getSetting("max_conn")
-                    + "\nDatabase Address- " + dc.getAddress()
+            JOptionPane.showMessageDialog(null, "Database Address- " + dc.getAddress()
                     + "\nDatabase User- " + dc.getUsername(),
                     "JTill Server Status", JOptionPane.INFORMATION_MESSAGE);
         });

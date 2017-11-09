@@ -7,7 +7,6 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
@@ -155,7 +154,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             int selectedRow = tableStaff.getSelectedRow();
             if (selectedRow != -1) {
                 Staff s = currentTableContents.get(selectedRow);
-                StaffDialog.showEditStaffDialog(this, dc, s);
+                StaffDialog.showEditStaffDialog(this, s);
                 updateTable();
             }
         });
@@ -187,7 +186,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
 
     private void changePassword(Staff s) {
         if (GUI.staff.getPosition() >= 3) {
-            String password = PasswordDialog.showDialog(this, dc, s);
+            String password = PasswordDialog.showDialog(this, s);
             if (password != null) {
                 if (!password.equals("")) {
                     s.setPassword(password);
@@ -475,7 +474,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStaffActionPerformed
-        Staff s = StaffDialog.showNewStaffDialog(this, dc);
+        Staff s = StaffDialog.showNewStaffDialog(this);
         if (s != null) {
             setCurrentStaff(null);
             showAllStaff();

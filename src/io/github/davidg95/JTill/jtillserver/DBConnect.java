@@ -134,9 +134,11 @@ public class DBConnect implements DataConnect {
         this.address = database_address;
         this.username = username;
         this.password = password;
-        connected = true;
-        TillSplashScreen.addBar(10);
-        updates();
+        try (final Connection con = getNewConnection()) {
+            connected = true;
+            TillSplashScreen.addBar(10);
+            con.commit();
+        }
     }
 
     private void updates() {
@@ -979,13 +981,15 @@ public class DBConnect implements DataConnect {
                 error(ex);
             }
 
+            updates();
+
             try {
-                String addCategory = "INSERT INTO CATEGORYS (NAME, TIME_RESTRICT, MINIMUM_AGE) VALUES ('Default','FALSE',0)";
                 String addDepartment = "INSERT INTO DEPARTMENTS (NAME) VALUES ('DEFAULT')";
+                String addCategory = "INSERT INTO CATEGORYS (NAME, TIME_RESTRICT, MINIMUM_AGE, DEPARTMENT) VALUES ('Default','FALSE',0, 1)";
                 String addTax = "INSERT INTO TAX (NAME, VALUE) VALUES ('ZERO',0.0)";
                 String addReason = "INSERT INTO WASTEREASONS (REASON) VALUES ('DEFAULT')";
-                stmt.executeUpdate(addCategory);
                 stmt.executeUpdate(addDepartment);
+                stmt.executeUpdate(addCategory);
                 stmt.executeUpdate(addTax);
                 stmt.executeUpdate(addReason);
                 con.commit();

@@ -36,13 +36,12 @@ public class StaffDialog extends javax.swing.JDialog {
      * Creates new form StaffDialog
      *
      * @param parent the parent window.
-     * @param dc the data connection.
      * @param manager force the staff to be a manager.
      */
-    public StaffDialog(Window parent, DataConnect dc, boolean manager) {
+    public StaffDialog(Window parent, boolean manager) {
         super(parent);
         editMode = false;
-        this.dc = dc;
+        this.dc = GUI.gui.dc;
         this.setIconImage(GUI.icon);
         initComponents();
         if (manager) {
@@ -57,15 +56,14 @@ public class StaffDialog extends javax.swing.JDialog {
      * Creates new form StaffDialog
      *
      * @param parent parent window.
-     * @param dc the data connection.
      * @param staff staff getting edited.
      */
-    public StaffDialog(Window parent, DataConnect dc, Staff staff) {
+    public StaffDialog(Window parent, Staff staff) {
         super(parent);
         initComponents();
         editMode = true;
         this.s = staff;
-        this.dc = dc;
+        this.dc = GUI.gui.dc;
         this.setLocationRelativeTo(parent);
         this.setModal(true);
         txtName.setText(s.getName());
@@ -75,28 +73,28 @@ public class StaffDialog extends javax.swing.JDialog {
         this.setTitle("Staff Member " + staff.getName());
     }
 
-    public static Staff showNewStaffDialog(Component parent, DataConnect dc, boolean manager) {
+    public static Staff showNewStaffDialog(Component parent, boolean manager) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new StaffDialog(window, dc, manager);
+        dialog = new StaffDialog(window, manager);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         staff = null;
         dialog.setVisible(true);
         return staff;
     }
 
-    public static Staff showNewStaffDialog(Component parent, DataConnect dc) {
-        return showNewStaffDialog(parent, dc, false);
+    public static Staff showNewStaffDialog(Component parent) {
+        return showNewStaffDialog(parent, false);
     }
 
-    public static Staff showEditStaffDialog(Component parent, DataConnect dc, Staff s) {
+    public static Staff showEditStaffDialog(Component parent, Staff s) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new StaffDialog(window, dc, s);
+        dialog = new StaffDialog(window, s);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         staff = s;
         dialog.setVisible(true);

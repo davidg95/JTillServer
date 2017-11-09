@@ -22,29 +22,26 @@ public class PasswordDialog extends javax.swing.JDialog {
     private static JDialog dialog;
 
     private static String password;
-
-    private final DataConnect dc;
     private final Staff staff;
 
     /**
      * Creates new form PasswordDialog
      */
-    public PasswordDialog(Window parent, DataConnect dc, Staff s) {
+    public PasswordDialog(Window parent, Staff s) {
         super(parent);
         this.staff = s;
-        this.dc = dc;
         initComponents();
         setTitle("Set password for " + staff.getName());
         setModal(true);
         setLocationRelativeTo(parent);
     }
 
-    public static String showDialog(Component parent, DataConnect dc, Staff s) {
+    public static String showDialog(Component parent, Staff s) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new PasswordDialog(window, dc, s);
+        dialog = new PasswordDialog(window, s);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         password = "";
         dialog.setVisible(true);

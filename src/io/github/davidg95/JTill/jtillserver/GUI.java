@@ -5,23 +5,12 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.TillSplashScreen;
 import io.github.davidg95.JTill.jtill.*;
 import io.github.davidg95.JTill.jtillserver.salereportdialogs.SaleReportDialog;
 import io.github.davidg95.jconn.JConnData;
-import java.awt.AlphaComposite;
-import java.awt.Cursor;
-import java.awt.Desktop;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.SystemTray;
-import java.awt.Toolkit;
-import java.awt.TrayIcon;
+import java.awt.*;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
@@ -30,25 +19,13 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+import java.util.logging.*;
 import javax.imageio.ImageIO;
-import javax.swing.JCheckBox;
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 /**
  * The main GUI for the server.
@@ -79,9 +56,6 @@ public class GUI extends JFrame implements GUIInterface {
     private boolean isLoggedOn; //Boolean to indicate whether someone is logged on or not.
     public static Staff staff; //The current logged on staff.
 
-    public int clientCounter = 0;
-    private final ArrayList<String> connections;
-
     private final boolean remote;
 
     public static Image icon; //The icon for the frame.
@@ -107,6 +81,7 @@ public class GUI extends JFrame implements GUIInterface {
      * @param icon the icon for the frame.
      */
     public GUI(DataConnect dataConnect, boolean remote, Image icon) {
+        super();
         try {
             javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel"); //Set the look and feel.
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
@@ -121,11 +96,14 @@ public class GUI extends JFrame implements GUIInterface {
         initComponents();
         init();
         try {
-            lblServerAddress.setText("Local Server Address: " + InetAddress.getLocalHost().getHostAddress());
+            if (!remote) {
+                lblServerAddress.setText("Local Server Address: " + InetAddress.getLocalHost().getHostAddress());
+            } else {
+                lblServerAddress.setText("Server Address: " + ((ServerConnection) dc).toString());
+            }
         } catch (UnknownHostException ex) {
             lblServerAddress.setText("Local Server Address: UNKNOWN");
         }
-        connections = new ArrayList<>();
         LOG.addHandler(new LogHandler());
         try {
             image = ImageIO.read(dc.getLoginBackground());
@@ -240,7 +218,7 @@ public class GUI extends JFrame implements GUIInterface {
                 db.create(settings.getSetting("db_address") + "create=true;", settings.getSetting("db_username"), settings.getSetting("db_password")); //Create the database
                 TillSplashScreen.setLabel("Populating database");
                 db.addCustomer(new Customer("NONE", "", "", "", "", "", "", "", "", "", "", 0, BigDecimal.ZERO)); //Create a blank customer
-                Staff s = StaffDialog.showNewStaffDialog(this, db); //Show the create staff dialog
+                Staff s = StaffDialog.showNewStaffDialog(this); //Show the create staff dialog
                 if (s == null) {
                     System.exit(0); // Exit if the user clicked cancel
                 }
@@ -263,18 +241,14 @@ public class GUI extends JFrame implements GUIInterface {
      * server.
      */
     public void databaseLogin() {
-        try {
-            setTitle("JTill Server - " + dc.getSetting("SITE_NAME")); //Set the window title
-        } catch (IOException ex) {
-            LOG.log(Level.SEVERE, null, ex);
-        }
         if (!remote) { //Test if this is a remote server connection
             try {
                 DBConnect db = (DBConnect) dc;
                 TillSplashScreen.setLabel("Connecting to database"); //Update the splash screen
                 db.connect(settings.getSetting("db_address"), settings.getSetting("db_username"), settings.getSetting("db_password")); //Open a connection to the database
+                setTitle("JTill Server - " + dc.getSetting("SITE_NAME")); //Set the window title
                 if (dc.getStaffCount() == 0) { //Check to see if any staff members have been created
-                    Staff s = new Staff("JTill Admin", Staff.MANAGER, "admin", "jtill", 0.01, true); //Create the admin member of staff if they do not already exists
+                    Staff s = new Staff("JTill Admin", Staff.AREA_MANAGER, "admin", "jtill", 0.01, true); //Create the admin member of staff if they do not already exists
                     try {
                         dc.addStaff(s); //Add the member of staff
                     } catch (SQLException | IOException ex) {
@@ -293,18 +267,6 @@ public class GUI extends JFrame implements GUIInterface {
 
     public void setUpdateLabel(String text) {
         lblWarnings.setText(text);
-    }
-
-    public void increaceClientCount(String site) {
-        connections.add(site);
-        clientCounter++;
-        lblClients.setText("Connections: " + clientCounter);
-    }
-
-    public void decreaseClientCount(String site) {
-        connections.remove(site);
-        clientCounter--;
-        lblClients.setText("Connections: " + clientCounter);
     }
 
     @Override
@@ -357,9 +319,6 @@ public class GUI extends JFrame implements GUIInterface {
             LOG.log(Level.INFO, staff.getName() + " has logged in");
             isLoggedOn = true;
         } else {
-            if (dc instanceof DBConnect) {
-                settings.saveProperties();
-            }
             if (remote) {
                 try {
                     ((ServerConnection) dc).close();
@@ -1468,6 +1427,7 @@ public class GUI extends JFrame implements GUIInterface {
             if (JOptionPane.showConfirmDialog(this, "Are you sure you want to stop JTill server?", "JTill Server", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                 return;
             }
+            LOG.log(Level.INFO, "Stopping");
             LOG.log(Level.INFO, "Stopping JTIll Server");
             LOG.log(Level.INFO, "Saving properties");
             settings.saveProperties(); //Save the server properties
@@ -1478,7 +1438,6 @@ public class GUI extends JFrame implements GUIInterface {
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }
-        LOG.log(Level.INFO, "Stopping");
         System.exit(0); //Exit the application
     }//GEN-LAST:event_itemExitActionPerformed
 
@@ -1570,7 +1529,7 @@ public class GUI extends JFrame implements GUIInterface {
     private void itemInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemInfoActionPerformed
         try {
             JOptionPane.showMessageDialog(this, "JTill Server is running on port number "
-                    + dc.getSetting("port") + " with " + clientCounter + " connections.\n"
+                    + dc.getSetting("port") + "\n"
                     + dc.toString(), "JTill Server",
                     JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
@@ -1682,7 +1641,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemCreateNewProductActionPerformed
 
     private void itemNewStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNewStaffActionPerformed
-        Staff s = StaffDialog.showNewStaffDialog(this, dc);
+        Staff s = StaffDialog.showNewStaffDialog(this);
         if (s != null) {
             JOptionPane.showMessageDialog(this, "New staff member " + s + " created");
         }
@@ -1916,7 +1875,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnAddStaffMouseExited
 
     private void btnAddStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStaffActionPerformed
-        Staff s = StaffDialog.showNewStaffDialog(this, dc);
+        Staff s = StaffDialog.showNewStaffDialog(this);
         if (s != null) {
             JOptionPane.showMessageDialog(this, "New staff member " + s + " created");
         }
