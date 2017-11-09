@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -412,11 +413,11 @@ public class GUI extends JFrame implements GUIInterface {
     }
 
     @Override
-    public Till showTillSetupWindow(String name) throws JTillException {
+    public Till showTillSetupWindow(String name, UUID uuid) throws JTillException {
         if (staff == null) {
             throw new JTillException("The server is not ready to accept new connections");
         }
-        Till till = new Till(name, 1);
+        Till till = new Till(name, uuid,  1);
         till = TillInitialSetupDialog.showDialog(this, till);
         if (till == null) {
             throw new JTillException("Connection cancelled by server");

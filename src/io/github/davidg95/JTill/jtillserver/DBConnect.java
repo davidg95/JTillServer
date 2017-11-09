@@ -3160,10 +3160,6 @@ public class DBConnect implements DataConnect {
     @Override
     public Till connectTill(String name, UUID uuid, Staff staff) throws JTillException {
         try {
-            if (uuid == null) {
-                LOG.log(Level.INFO, "New terminal connected");
-                newTill(name);
-            }
             if (isTillConnected(uuid)) {
                 LOG.log(Level.WARNING, "Terminal already connected");
                 throw new JTillException("This till is already connected to the server");
@@ -3172,7 +3168,8 @@ public class DBConnect implements DataConnect {
             try {
                 till = this.getTillByUUID(uuid);
             } catch (JTillException ex) {
-                till = newTill(name);
+                LOG.log(Level.INFO, "New terminal connected");
+                till = newTill(name, uuid);
             }
             LOG.log(Level.INFO, "Terminal " + name + " has connected");
             till.setConnected(true);
@@ -3184,8 +3181,8 @@ public class DBConnect implements DataConnect {
         return null;
     }
 
-    private Till newTill(String name) throws JTillException {
-        Till till = g.showTillSetupWindow(name);
+    private Till newTill(String name, UUID uuid) throws JTillException {
+        Till till = g.showTillSetupWindow(name, uuid);
         if (till != null) { //If the connection was allowed
             try {
                 addTill(till);
