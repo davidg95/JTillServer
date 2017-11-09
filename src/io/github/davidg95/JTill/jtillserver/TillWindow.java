@@ -401,7 +401,9 @@ public class TillWindow extends javax.swing.JInternalFrame {
         try {
             dc.reinitialiseAllTills();
         } catch (IOException ex) {
-            JOptionPane.showInternalConfirmDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (JTillException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Active inits", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSendDataActionPerformed
 

@@ -8,7 +8,6 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import io.github.davidg95.jconn.*;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -87,6 +86,8 @@ public class DBConnect implements DataConnect {
     private final StampedLock clockLock;
 
     private JConnServer server;
+
+    private int inits = 0;
 
     static {
         CONNECTION = new DBConnect();
@@ -4460,20 +4461,24 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public File getLoginBackground() throws IOException, JTillException {
+    public File getLoginBackground() throws IOException {
         try {
             if (getSetting("bg_url").equals("NONE")) {
-                throw new JTillException("None set");
+                return null;
             }
             return new File(getSetting("bg_url"));
         } catch (NullPointerException e) {
-            throw new JTillException("None set");
+            return null;
         }
     }
 
     @Override
-    public void reinitialiseAllTills() throws IOException {
-        server.sendData(null, JConnData.create("SENDDATA"));
+    public void reinitialiseAllTills() throws IOException, JTillException {
+        if (inits == 0) {
+            server.sendData(null, JConnData.create("SENDDATA"));
+        } else {
+            throw new JTillException("There are " + inits + " terminals receiving data, these must finish first");
+        }
     }
 
     @Override
@@ -5340,5 +5345,31 @@ public class DBConnect implements DataConnect {
                 throw ex;
             }
         }
+    }
+
+    @Override
+    public Object[] terminalInit() throws IOException {
+        try {
+            inits++;
+            Object[] init = new Object[5];
+            init[0] = Settings.getInstance().getProperties();
+            init[1] = getValidDiscounts();
+            init[2] = getAllScreens();
+            init[3] = getLoginBackground();
+            init[4] = getAllStaff();
+            return init;
+        } catch (SQLException ex) {
+            throw new IOException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void initComplete() throws IOException {
+        inits--;
+    }
+
+    @Override
+    public int getInits() throws IOException {
+        return inits;
     }
 }

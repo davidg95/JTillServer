@@ -107,8 +107,11 @@ public class GUI extends JFrame implements GUIInterface {
         }
         LOG.addHandler(new LogHandler());
         try {
-            image = ImageIO.read(dc.getLoginBackground());
-        } catch (IOException | JTillException ex) {
+            File file = dc.getLoginBackground();
+            if (file != null) {
+                image = ImageIO.read(dc.getLoginBackground());
+            }
+        } catch (IOException ex) {
         }
     }
 
@@ -417,7 +420,7 @@ public class GUI extends JFrame implements GUIInterface {
         if (staff == null) {
             throw new JTillException("The server is not ready to accept new connections");
         }
-        Till till = new Till(name, uuid,  1);
+        Till till = new Till(name, uuid, 1);
         till = TillInitialSetupDialog.showDialog(this, till);
         if (till == null) {
             throw new JTillException("Connection cancelled by server");
@@ -1799,7 +1802,9 @@ public class GUI extends JFrame implements GUIInterface {
         try {
             dc.reinitialiseAllTills();
         } catch (IOException ex) {
-            JOptionPane.showInternalConfirmDialog(internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (JTillException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Active inits", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_itemSendDataActionPerformed
 
@@ -1819,7 +1824,9 @@ public class GUI extends JFrame implements GUIInterface {
         try {
             dc.reinitialiseAllTills();
         } catch (IOException ex) {
-            JOptionPane.showInternalConfirmDialog(internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (JTillException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Active inits", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSendDataActionPerformed
 

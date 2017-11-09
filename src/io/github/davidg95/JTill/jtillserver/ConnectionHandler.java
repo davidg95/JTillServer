@@ -754,7 +754,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("REINITTILLS")
-    public void reinitTills() throws IOException {
+    public void reinitTills() throws IOException, JTillException {
         dc.reinitialiseAllTills();
     }
 
@@ -911,5 +911,20 @@ public class ConnectionHandler {
     @JConnMethod("DELETEORDER")
     public void deleteOrder(@JConnParameter("ID") int id) throws IOException, SQLException {
         dc.deleteOrder(id);
+    }
+
+    @JConnMethod("TERMINALINIT")
+    public Object[] terminalInit() throws IOException {
+        return dc.terminalInit();
+    }
+
+    @JConnMethod("INITCOMPLETE")
+    public void initComplete() throws IOException {
+        dc.initComplete();
+    }
+    
+    @JConnMethod("GETINITS")
+    public int getInits() throws IOException{
+        return dc.getInits();
     }
 }
