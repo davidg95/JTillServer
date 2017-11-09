@@ -78,11 +78,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             txtPassword.setText(dc.getSetting("db_password"));
             chkLogOut.setSelected(dc.getSetting("AUTO_LOGOUT").equals("TRUE"));
             spinSaleCache.setValue(Integer.parseInt(dc.getSetting("MAX_CACHE_SALES")));
-            if (dc.getSetting("SEND_PRODUCTS_START").equals("TRUE")) {
-                chkSendProducts.setSelected(true);
-            } else {
-                chkSendProducts.setSelected(false);
-            }
             boolean useEmail = Boolean.getBoolean(dc.getSetting("USE_EMAIL", Boolean.toString(false)));
             chkEmail.setSelected(useEmail);
             if (!useEmail) {
@@ -168,7 +163,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         jLabel12 = new javax.swing.JLabel();
         chkEmail = new javax.swing.JCheckBox();
         panelGeneral = new javax.swing.JPanel();
-        chkSendProducts = new javax.swing.JCheckBox();
         jLabel13 = new javax.swing.JLabel();
         spinSaleCache = new javax.swing.JSpinner();
         btnSaveCache = new javax.swing.JButton();
@@ -410,7 +404,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                     .addComponent(jLabel9)
                     .addComponent(chkUnlock)
                     .addComponent(txtUnlockCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addComponent(btnSaveSecurity))
         );
 
@@ -478,8 +472,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         );
 
         panelGeneral.setBorder(javax.swing.BorderFactory.createTitledBorder("General Settings"));
-
-        chkSendProducts.setText("Send all products to terminal on startup");
 
         jLabel13.setText("Max sales to cache on terminal:");
 
@@ -578,14 +570,13 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                                 .addGap(118, 118, 118)
                                 .addComponent(btnSaveCache))
                             .addComponent(chkEmailPrompt)
-                            .addComponent(chkSendProducts)
                             .addGroup(panelGeneralLayout.createSequentialGroup()
                                 .addComponent(btnColor)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton1))
                             .addComponent(chkApproveNew)
                             .addComponent(chkShowBack))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 51, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         panelGeneralLayout.setVerticalGroup(
@@ -593,8 +584,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             .addGroup(panelGeneralLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(chkApproveNew)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkSendProducts)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chkEmailPrompt)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -622,7 +611,8 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chkUpdate)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSaveCache))
+                .addComponent(btnSaveCache)
+                .addGap(21, 21, 21))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Receipt Settings")));
@@ -777,7 +767,8 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(panelEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(23, 23, 23)))
                 .addContainerGap())
         );
 
@@ -941,21 +932,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
 
     private void btnSaveCacheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveCacheActionPerformed
         boolean error = false;
-        if (chkSendProducts.isSelected()) {
-            try {
-                dc.setSetting("SEND_PRODUCTS_START", "TRUE");
-            } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
-                error = true;
-            }
-        } else {
-            try {
-                dc.setSetting("SEND_PRODUCTS_START", "FALSE");
-            } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
-                error = true;
-            }
-        }
         try {
             dc.setSetting("MAX_CACHE_SALES", "" + (int) spinSaleCache.getValue());
         } catch (IOException ex) {
@@ -1182,7 +1158,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JCheckBox chkEmail;
     private javax.swing.JCheckBox chkEmailPrompt;
     private javax.swing.JCheckBox chkLogOut;
-    private javax.swing.JCheckBox chkSendProducts;
     private javax.swing.JCheckBox chkShowBack;
     private javax.swing.JCheckBox chkStaff;
     private javax.swing.JCheckBox chkTerminal;

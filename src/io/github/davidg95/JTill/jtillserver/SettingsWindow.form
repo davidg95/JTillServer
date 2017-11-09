@@ -88,7 +88,8 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="panelEmail" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="panelGeneral" min="-2" max="-2" attributes="0"/>
+                      <Component id="panelGeneral" min="-2" pref="280" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -373,7 +374,7 @@
                       <Component id="chkUnlock" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtUnlockCode" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="8" max="32767" attributes="0"/>
+                  <EmptySpace pref="14" max="32767" attributes="0"/>
                   <Component id="btnSaveSecurity" min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -570,7 +571,6 @@
                                   <Component id="btnSaveCache" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="chkEmailPrompt" min="-2" max="-2" attributes="0"/>
-                              <Component id="chkSendProducts" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="btnColor" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -579,7 +579,7 @@
                               <Component id="chkApproveNew" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="chkShowBack" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="51" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -591,8 +591,6 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="chkApproveNew" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="chkSendProducts" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="chkEmailPrompt" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -625,16 +623,12 @@
                   <Component id="chkUpdate" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="btnSaveCache" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JCheckBox" name="chkSendProducts">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Send all products to terminal on startup"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JLabel" name="jLabel13">
           <Properties>
             <Property name="text" type="java.lang.String" value="Max sales to cache on terminal:"/>

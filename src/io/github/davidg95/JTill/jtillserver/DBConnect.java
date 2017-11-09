@@ -5351,12 +5351,13 @@ public class DBConnect implements DataConnect {
     public Object[] terminalInit() throws IOException {
         try {
             inits++;
-            Object[] init = new Object[5];
+            Object[] init = new Object[6];
             init[0] = Settings.getInstance().getProperties();
             init[1] = getValidDiscounts();
             init[2] = getAllScreens();
             init[3] = getLoginBackground();
             init[4] = getAllStaff();
+            init[5] = getAllProducts();
             return init;
         } catch (SQLException ex) {
             throw new IOException(ex.getMessage());
