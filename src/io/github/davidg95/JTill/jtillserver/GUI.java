@@ -1235,7 +1235,7 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemLoyalty);
 
-        itemSendData.setText("Send Data to Terminals");
+        itemSendData.setText("Send Data to Terminals...");
         itemSendData.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemSendDataActionPerformed(evt);
@@ -1799,13 +1799,14 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemStaffReportingActionPerformed
 
     private void itemSendDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSendDataActionPerformed
-        try {
-            dc.reinitialiseAllTills();
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (JTillException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Active inits", JOptionPane.ERROR_MESSAGE);
-        }
+//        try {
+//            dc.reinitialiseAllTills();
+//        } catch (IOException ex) {
+//            JOptionPane.showMessageDialog(internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+//        } catch (JTillException ex) {
+//            JOptionPane.showMessageDialog(this, ex.getMessage(), "Active inits", JOptionPane.ERROR_MESSAGE);
+//        }
+        SendDataDialog.showDialog(this);
     }//GEN-LAST:event_itemSendDataActionPerformed
 
     private void itemDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDatabaseActionPerformed
