@@ -4477,7 +4477,7 @@ public class DBConnect implements DataConnect {
         if (inits == 0) {
             server.sendData(null, JConnData.create("SENDDATA"));
         } else {
-            throw new JTillException("There are " + inits + " terminals receiving data, these must finish first");
+            throw new JTillException("There " + (inits > 1 ? "are " + inits + " terminals" : "is 1 terminal") + " receiving data, these must finish first");
         }
     }
 
