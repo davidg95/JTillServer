@@ -101,8 +101,7 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             //Total and value received.
             valueSpent = dc.getValueSpentOnItem(product.getId()).setScale(2);
             totalReceived = dc.getTotalReceivedOfItem(product.getId());
-
-            txtProduct.setText(product.getLongName());
+            
             txtPlu.setText(product.getBarcode());
             if (product.getOrder_code() == 0) {
                 txtOrderCode.setText("N/A");
@@ -277,7 +276,11 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
 
         jLabel1.setText("Choose Product:");
 
-        txtProduct.setEditable(false);
+        txtProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtProductActionPerformed(evt);
+            }
+        });
 
         btnProductSelect.setText("Select Product");
         btnProductSelect.addActionListener(new java.awt.event.ActionListener() {
@@ -439,8 +442,7 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(jLabel19)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(txtOrderCode, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(0, 0, 0)))
+                                            .addComponent(txtOrderCode, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addComponent(txtCat, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -584,11 +586,25 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnProductSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductSelectActionPerformed
-        product = ProductSelectDialog.showDialog(this);
+        if (txtProduct.getText().isEmpty()) {
+            product = ProductSelectDialog.showDialog(this);
+        } else {
+            final String barcode = txtProduct.getText();
+            try {
+                product = dc.getProductByBarcode(barcode);
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ProductNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Not Found", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+        txtProduct.setSelectionStart(0);
+        txtProduct.setSelectionEnd(txtProduct.getText().length());
         if (product == null) {
             return;
         }
         setProduct();
+        txtProduct.requestFocus();
     }//GEN-LAST:event_btnProductSelectActionPerformed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
@@ -617,6 +633,10 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnPrintActionPerformed
+
+    private void txtProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProductActionPerformed
+        btnProductSelect.doClick();
+    }//GEN-LAST:event_txtProductActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
