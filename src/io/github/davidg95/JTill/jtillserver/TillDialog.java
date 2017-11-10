@@ -412,7 +412,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
             }
             till.setName(name);
             dc.updateTill(till);
-            JOptionPane.showMessageDialog(this, "Rename succesful, restart till to take effect.", "Rename", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Rename successful, data must be sent to terminal", "Rename", JOptionPane.INFORMATION_MESSAGE);
         } catch (JTillException | IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
