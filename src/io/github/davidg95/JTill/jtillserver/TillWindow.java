@@ -360,7 +360,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
             JMenuItem sendData = new JMenuItem("Send Data");
             sendData.addActionListener((ActionEvent e) -> {
                 try {
-                    dc.sendData(t.getId());
+                    dc.sendData(t.getId(), null);
                     return;
                 } catch (SQLException | IOException ex) {
                     JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);

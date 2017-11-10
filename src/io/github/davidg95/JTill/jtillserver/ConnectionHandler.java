@@ -779,8 +779,8 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("SENDDATA")
-    public void sendData(@JConnParameter("ID") int id) throws IOException, SQLException {
-        dc.sendData(id);
+    public void sendData(@JConnParameter("ID") int id, @JConnParameter("DATA") String[] data) throws IOException, SQLException {
+        dc.sendData(id, data);
     }
 
     @JConnMethod("DOWNLOADTER")
@@ -914,17 +914,17 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("TERMINALINIT")
-    public Object[] terminalInit() throws IOException {
-        return dc.terminalInit();
+    public HashMap<String, Object> terminalInit(@JConnParameter("DATA") String[] data) throws IOException {
+        return dc.terminalInit(data);
     }
 
     @JConnMethod("INITCOMPLETE")
     public void initComplete() throws IOException {
         dc.initComplete();
     }
-    
+
     @JConnMethod("GETINITS")
-    public int getInits() throws IOException{
+    public int getInits() throws IOException {
         return dc.getInits();
     }
 }

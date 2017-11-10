@@ -439,7 +439,7 @@ public class GUI extends JFrame implements GUIInterface {
     }
 
     @Override
-    public void markNewData() {
+    public void markNewData(String[] data) {
         //Nothing
     }
 

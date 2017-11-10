@@ -64,11 +64,11 @@ public class SendDataDialog extends javax.swing.JDialog {
             listeners = new LinkedList<>();
         }
 
-        public void sendToCheckedTills() {
+        public void sendToCheckedTills(String[] data) {
             for (Till t : tills) {
                 if (t.isSendData()) {
                     try {
-                        dc.sendData(t.getId());
+                        dc.sendData(t.getId(), data);
                     } catch (IOException | SQLException ex) {
                         JOptionPane.showMessageDialog(SendDataDialog.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -182,6 +182,7 @@ public class SendDataDialog extends javax.swing.JDialog {
         chkScreens = new javax.swing.JCheckBox();
         chkBackground = new javax.swing.JCheckBox();
         chkStaff = new javax.swing.JCheckBox();
+        chkProducts = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Send Data to Terminals");
@@ -232,6 +233,9 @@ public class SendDataDialog extends javax.swing.JDialog {
         chkStaff.setSelected(true);
         chkStaff.setText("Staff");
 
+        chkProducts.setSelected(true);
+        chkProducts.setText("Products");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -247,7 +251,10 @@ public class SendDataDialog extends javax.swing.JDialog {
                         .addComponent(chkScreens)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chkBackground))
-                    .addComponent(chkStaff))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(chkStaff)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkProducts)))
                 .addContainerGap(65, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -260,7 +267,9 @@ public class SendDataDialog extends javax.swing.JDialog {
                     .addComponent(chkScreens)
                     .addComponent(chkBackground))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkStaff))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkStaff)
+                    .addComponent(chkProducts)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -300,7 +309,34 @@ public class SendDataDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
-        model.sendToCheckedTills();
+        List<String> data = new LinkedList<>();
+        if (chkBackground.isSelected()) {
+            data.add("background");
+        }
+        if (chkDiscounts.isSelected()) {
+            data.add("discounts");
+        }
+        if (chkScreens.isSelected()) {
+            data.add("screens");
+        }
+        if (chkSettings.isSelected()) {
+            data.add("settings");
+        }
+        if (chkStaff.isSelected()) {
+            data.add("staff");
+        }
+        if (chkProducts.isSelected()) {
+            data.add("products");
+        }
+        String[] d = new String[data.size()];
+        if (data.isEmpty()) {
+            d = null;
+        } else {
+            for (int i = 0; i < data.size(); i++) {
+                d[i] = data.get(i);
+            }
+        }
+        model.sendToCheckedTills(d);
         setVisible(false);
     }//GEN-LAST:event_btnSendActionPerformed
 
@@ -309,6 +345,7 @@ public class SendDataDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnSend;
     private javax.swing.JCheckBox chkBackground;
     private javax.swing.JCheckBox chkDiscounts;
+    private javax.swing.JCheckBox chkProducts;
     private javax.swing.JCheckBox chkScreens;
     private javax.swing.JCheckBox chkSettings;
     private javax.swing.JCheckBox chkStaff;

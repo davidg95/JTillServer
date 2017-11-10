@@ -4655,11 +4655,11 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public void sendData(int id) throws IOException, SQLException {
+    public void sendData(int id, String[] data) throws IOException, SQLException {
         for (JConnThread th : server.getClientConnections()) {
             ConnectionHandler hand = (ConnectionHandler) th.getMethodClass();
             if (hand.till != null && hand.till.getId() == id) {
-                th.sendData(JConnData.create("SENDDATA"));
+                th.sendData(JConnData.create("SENDDATA").addParam("DATA", data));
             }
         }
     }
@@ -5348,16 +5348,34 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public Object[] terminalInit() throws IOException {
+    public HashMap<String, Object> terminalInit(String[] data) throws IOException {
         try {
             inits++;
-            Object[] init = new Object[6];
-            init[0] = Settings.getInstance().getProperties();
-            init[1] = getValidDiscounts();
-            init[2] = getAllScreens();
-            init[3] = getLoginBackground();
-            init[4] = getAllStaff();
-            init[5] = getAllProducts();
+            HashMap<String, Object> init = new HashMap<>();
+            if (data == null) {
+                init.put("settings", Settings.getInstance().getProperties());
+                init.put("discounts", getValidDiscounts());
+                init.put("screens", getAllScreens());
+                init.put("background", getLoginBackground());
+                init.put("products", getAllProducts());
+                init.put("staff", getAllStaff());
+            } else {
+                for (String s : data) {
+                    if (s.equals("settings")) {
+                        init.put(s, Settings.getInstance().getProperties());
+                    } else if (s.equals("discounts")) {
+                        init.put(s, getValidDiscounts());
+                    } else if (s.equals("screens")) {
+                        init.put(s, getAllScreens());
+                    } else if (s.equals("background")) {
+                        init.put(s, getLoginBackground());
+                    } else if (s.equals("products")) {
+                        init.put(s, getAllProducts());
+                    } else if (s.equals("staff")) {
+                        init.put(s, getAllStaff());
+                    }
+                }
+            }
             return init;
         } catch (SQLException ex) {
             throw new IOException(ex.getMessage());

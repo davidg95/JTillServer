@@ -1,5 +1,4 @@
-JTill log Thu Nov 09 16:15:07 GMT 2017
-[16:15:07] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[16:15:08] [INFO] Terminal DAVID-PC has connected
-[16:15:11] [INFO] David Grant has logged in from DAVID-PC
-[16:15:12] [INFO] David Grant has logged out
+JTill log Fri Nov 10 10:54:43 GMT 2017
+[10:54:43] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[10:54:45] [INFO] Terminal DAVID-PC has connected
+[10:54:51] [INFO] David Grant has logged in
