@@ -95,7 +95,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             txtSiteName.setText(dc.getSetting("SITE_NAME"));
             txtReceiptHeader.setText(dc.getSetting("RECEIPT_HEADER"));
             txtReceiptFooter.setText(dc.getSetting("RECEIPT_FOOTER"));
-            chkApproveNew.setSelected(dc.getSetting("APPROVE_NEW_CONNECTIONS").equals("TRUE"));
+            chkBorderScreen.setSelected(dc.getSetting("BORDER_SCREEN_BUTTON", "false").equals("true"));
             chkAddress.setSelected(dc.getSetting("SHOW_ADDRESS_RECEIPT").equals("true"));
             chkStaff.setSelected(dc.getSetting("SHOW_STAFF_RECEIPT").equals("true"));
             chkTerminal.setSelected(dc.getSetting("SHOW_TERMINAL_RECEIPT").equals("true"));
@@ -171,7 +171,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         jLabel15 = new javax.swing.JLabel();
         txtSiteName = new javax.swing.JTextField();
         btnCompanyDetails = new javax.swing.JButton();
-        chkApproveNew = new javax.swing.JCheckBox();
         chkEmailPrompt = new javax.swing.JCheckBox();
         chkUpdate = new javax.swing.JCheckBox();
         btnColor = new javax.swing.JButton();
@@ -179,6 +178,8 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         btnImage = new javax.swing.JButton();
         chkShowBack = new javax.swing.JCheckBox();
         btnRemoveImage = new javax.swing.JButton();
+        chkBorderScreen = new javax.swing.JCheckBox();
+        btnBorderColor = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
@@ -404,7 +405,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                     .addComponent(jLabel9)
                     .addComponent(chkUnlock)
                     .addComponent(txtUnlockCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(btnSaveSecurity))
         );
 
@@ -493,8 +494,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        chkApproveNew.setText("New connections require approval");
-
         chkEmailPrompt.setText("Prompt to email customer receipt");
         chkEmailPrompt.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -539,6 +538,20 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        chkBorderScreen.setText("Border round selected screen button");
+        chkBorderScreen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkBorderScreenActionPerformed(evt);
+            }
+        });
+
+        btnBorderColor.setText("Color");
+        btnBorderColor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorderColorActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelGeneralLayout = new javax.swing.GroupLayout(panelGeneral);
         panelGeneral.setLayout(panelGeneralLayout);
         panelGeneralLayout.setHorizontalGroup(
@@ -570,26 +583,31 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                                 .addGap(118, 118, 118)
                                 .addComponent(btnSaveCache))
                             .addComponent(chkEmailPrompt)
+                            .addComponent(chkShowBack)
                             .addGroup(panelGeneralLayout.createSequentialGroup()
                                 .addComponent(btnColor)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton1))
-                            .addComponent(chkApproveNew)
-                            .addComponent(chkShowBack))
-                        .addGap(0, 51, Short.MAX_VALUE)))
+                            .addGroup(panelGeneralLayout.createSequentialGroup()
+                                .addComponent(chkBorderScreen)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnBorderColor)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         panelGeneralLayout.setVerticalGroup(
             panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelGeneralLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(chkApproveNew)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap()
                 .addComponent(chkEmailPrompt)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnColor)
                     .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkBorderScreen)
+                    .addComponent(btnBorderColor))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnImage)
@@ -610,9 +628,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 .addComponent(btnCompanyDetails)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chkUpdate)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSaveCache)
-                .addGap(21, 21, 21))
+                .addContainerGap())
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Receipt Settings")));
@@ -767,8 +785,8 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(panelEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(23, 23, 23)))
+                        .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(4, 4, 4)))
                 .addContainerGap())
         );
 
@@ -955,16 +973,6 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             error = true;
         }
         try {
-            if (chkApproveNew.isSelected()) {
-                dc.setSetting("APPROVE_NEW_CONNECTIONS", "TRUE");
-            } else {
-                dc.setSetting("APPROVE_NEW_CONNECTIONS", "FALSE");
-            }
-        } catch (IOException ex) {
-            LOG.log(Level.SEVERE, null, ex);
-            error = true;
-        }
-        try {
             dc.setSetting("PROMPT_EMAIL_RECEIPT", Boolean.toString(chkEmailPrompt.isSelected()));
         } catch (IOException ex) {
             error = true;
@@ -1137,7 +1145,26 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_chkEmailActionPerformed
 
+    private void chkBorderScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBorderScreenActionPerformed
+        btnBorderColor.setEnabled(chkBorderScreen.isSelected());
+        try {
+            dc.setSetting("BORDER_SCREEN_BUTTON", Boolean.toString(chkBorderScreen.isSelected()));
+        } catch (IOException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_chkBorderScreenActionPerformed
+
+    private void btnBorderColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorderColorActionPerformed
+        Color c = JColorChooser.showDialog(this, "Screen Button Border Color", null);
+        try {
+            dc.setSetting("BORDER_COLOR", TillButton.rbg2Hex(c));
+        } catch (IOException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnBorderColorActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBorderColor;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnColor;
     private javax.swing.JButton btnCompanyDetails;
@@ -1154,7 +1181,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnSaveCache;
     private javax.swing.JButton btnSaveSecurity;
     private javax.swing.JCheckBox chkAddress;
-    private javax.swing.JCheckBox chkApproveNew;
+    private javax.swing.JCheckBox chkBorderScreen;
     private javax.swing.JCheckBox chkEmail;
     private javax.swing.JCheckBox chkEmailPrompt;
     private javax.swing.JCheckBox chkLogOut;
