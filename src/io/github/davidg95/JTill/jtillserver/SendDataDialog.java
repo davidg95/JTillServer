@@ -6,14 +6,21 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
 /**
@@ -45,6 +52,9 @@ public class SendDataDialog extends javax.swing.JDialog {
     private void init() {
         tillTable.setSelectionModel(new ForcedListSelectionModel());
         tillTable.setModel(model);
+//        tillTable.getColumnModel().getColumn(0).setCellRenderer(new StatusColumnCellRenderer());
+//        tillTable.getColumnModel().getColumn(1).setCellRenderer(new StatusColumnCellRenderer());
+//        tillTable.getColumnModel().getColumn(2).setCellRenderer(new StatusColumnCellRenderer());
         tillTable.getColumnModel().getColumn(0).setMaxWidth(40);
         tillTable.getColumnModel().getColumn(2).setMaxWidth(50);
     }
@@ -52,6 +62,35 @@ public class SendDataDialog extends javax.swing.JDialog {
     public static void showDialog(Window parent) {
         SendDataDialog dialog = new SendDataDialog(parent);
         dialog.setVisible(true);
+    }
+
+    public class StatusColumnCellRenderer extends DefaultTableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+            //Cells are by default rendered as a JLabel.
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+
+            if (value instanceof Boolean) {
+                c = new JPanel();
+                boolean v = (boolean) value;
+                JCheckBox cb = new JCheckBox();
+                cb.setSelected(v);
+                ((JPanel) c).add(cb);
+            }
+            //Get the status for the current row.
+            if (model.getOnline(row)) {
+                c.setBackground(new Color(162, 255, 150));
+//                c.setEnabled(true);
+            } else {
+                c.setBackground(new Color(255, 150, 150));
+//                c.setEnabled(false);
+            }
+
+            //Return the JLabel which renders the cell.
+            return c;
+
+        }
     }
 
     private class MyTillModel implements TableModel {
@@ -65,6 +104,10 @@ public class SendDataDialog extends javax.swing.JDialog {
                 t.setSendData(t.isConnected());
             }
             listeners = new LinkedList<>();
+        }
+
+        public boolean getOnline(int row) {
+            return tills.get(row).isConnected();
         }
 
         public void sendToCheckedTills(String[] data) {
