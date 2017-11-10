@@ -5353,24 +5353,24 @@ public class DBConnect implements DataConnect {
             inits++;
             HashMap<String, Object> init = new HashMap<>();
             if (data == null) {
-                init.put("settings", Settings.getInstance().getProperties());
-                init.put("discounts", getValidDiscounts());
-                init.put("screens", getAllScreens());
                 init.put("background", getLoginBackground());
                 init.put("products", getAllProducts());
+                init.put("discounts", getValidDiscounts());
+                init.put("settings", systemSettings.getProperties());
+                init.put("screens", getAllScreens());
                 init.put("staff", getAllStaff());
             } else {
                 for (String s : data) {
-                    if (s.equals("settings")) {
-                        init.put(s, Settings.getInstance().getProperties());
-                    } else if (s.equals("discounts")) {
-                        init.put(s, getValidDiscounts());
-                    } else if (s.equals("screens")) {
-                        init.put(s, getAllScreens());
-                    } else if (s.equals("background")) {
+                    if (s.equals("background")) {
                         init.put(s, getLoginBackground());
                     } else if (s.equals("products")) {
                         init.put(s, getAllProducts());
+                    } else if (s.equals("discounts")) {
+                        init.put(s, getValidDiscounts());
+                    } else if (s.equals("settings")) {
+                        init.put(s, systemSettings.getProperties());
+                    } else if (s.equals("screens")) {
+                        init.put(s, getAllScreens());
                     } else if (s.equals("staff")) {
                         init.put(s, getAllStaff());
                     }
