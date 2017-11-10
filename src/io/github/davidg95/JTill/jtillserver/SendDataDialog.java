@@ -61,6 +61,9 @@ public class SendDataDialog extends javax.swing.JDialog {
 
         public MyTillModel(List<Till> tills) {
             this.tills = tills;
+            for(Till t: tills){
+                t.setSendData(true);
+            }
             listeners = new LinkedList<>();
         }
 
@@ -190,10 +193,7 @@ public class SendDataDialog extends javax.swing.JDialog {
 
         tillTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
@@ -330,11 +330,11 @@ public class SendDataDialog extends javax.swing.JDialog {
         }
         String[] d = new String[data.size()];
         if (data.isEmpty()) {
-            d = null;
-        } else {
-            for (int i = 0; i < data.size(); i++) {
-                d[i] = data.get(i);
-            }
+            JOptionPane.showMessageDialog(this, "Must select at least one item", "Send Data", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        for (int i = 0; i < data.size(); i++) {
+            d[i] = data.get(i);
         }
         model.sendToCheckedTills(d);
         setVisible(false);
