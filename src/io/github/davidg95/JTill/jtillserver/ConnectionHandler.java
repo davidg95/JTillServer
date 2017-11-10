@@ -914,8 +914,8 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("TERMINALINIT")
-    public HashMap<String, Object> terminalInit(@JConnParameter("DATA") String[] data) throws IOException {
-        return dc.terminalInit(data);
+    public HashMap<String, Object> terminalInit(@JConnParameter("ID") int id, @JConnParameter("DATA") String[] data) throws IOException {
+        return dc.terminalInit(id, data);
     }
 
     @JConnMethod("INITCOMPLETE")

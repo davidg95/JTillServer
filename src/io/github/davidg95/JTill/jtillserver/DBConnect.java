@@ -5348,7 +5348,7 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public HashMap<String, Object> terminalInit(String[] data) throws IOException {
+    public HashMap<String, Object> terminalInit(int id, String[] data) throws IOException {
         try {
             inits++;
             HashMap<String, Object> init = new HashMap<>();
@@ -5359,6 +5359,7 @@ public class DBConnect implements DataConnect {
                 init.put("settings", systemSettings.getProperties());
                 init.put("screens", getAllScreens());
                 init.put("staff", getAllStaff());
+                init.put("terminal", getTill(id));
             } else {
                 for (String s : data) {
                     if (s.equals("background")) {
@@ -5373,11 +5374,13 @@ public class DBConnect implements DataConnect {
                         init.put(s, getAllScreens());
                     } else if (s.equals("staff")) {
                         init.put(s, getAllStaff());
+                    } else if (s.equals("terminal")) {
+                        init.put(s, getTill(id));
                     }
                 }
             }
             return init;
-        } catch (SQLException ex) {
+        } catch (SQLException | JTillException ex) {
             throw new IOException(ex.getMessage());
         }
     }

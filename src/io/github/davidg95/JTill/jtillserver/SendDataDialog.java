@@ -61,8 +61,8 @@ public class SendDataDialog extends javax.swing.JDialog {
 
         public MyTillModel(List<Till> tills) {
             this.tills = tills;
-            for(Till t: tills){
-                t.setSendData(true);
+            for (Till t : tills) {
+                t.setSendData(t.isConnected());
             }
             listeners = new LinkedList<>();
         }
@@ -186,6 +186,7 @@ public class SendDataDialog extends javax.swing.JDialog {
         chkBackground = new javax.swing.JCheckBox();
         chkStaff = new javax.swing.JCheckBox();
         chkProducts = new javax.swing.JCheckBox();
+        chkTerminalSettings = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Send Data to Terminals");
@@ -236,6 +237,9 @@ public class SendDataDialog extends javax.swing.JDialog {
         chkProducts.setSelected(true);
         chkProducts.setText("Products");
 
+        chkTerminalSettings.setSelected(true);
+        chkTerminalSettings.setText("Terminal Settings");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -254,7 +258,9 @@ public class SendDataDialog extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(chkStaff)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(chkProducts)))
+                        .addComponent(chkProducts)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkTerminalSettings)))
                 .addContainerGap(65, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -269,7 +275,8 @@ public class SendDataDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chkStaff)
-                    .addComponent(chkProducts)))
+                    .addComponent(chkProducts)
+                    .addComponent(chkTerminalSettings)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -328,6 +335,9 @@ public class SendDataDialog extends javax.swing.JDialog {
         if (chkProducts.isSelected()) {
             data.add("products");
         }
+        if (chkTerminalSettings.isSelected()) {
+            data.add("terminal");
+        }
         String[] d = new String[data.size()];
         if (data.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Must select at least one item", "Send Data", JOptionPane.ERROR_MESSAGE);
@@ -349,6 +359,7 @@ public class SendDataDialog extends javax.swing.JDialog {
     private javax.swing.JCheckBox chkScreens;
     private javax.swing.JCheckBox chkSettings;
     private javax.swing.JCheckBox chkStaff;
+    private javax.swing.JCheckBox chkTerminalSettings;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tillTable;

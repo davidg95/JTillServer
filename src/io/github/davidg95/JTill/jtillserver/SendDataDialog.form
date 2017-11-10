@@ -150,6 +150,8 @@
                           <Component id="chkStaff" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="chkProducts" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="chkTerminalSettings" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace pref="65" max="32767" attributes="0"/>
@@ -170,6 +172,7 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="chkStaff" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="chkProducts" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="chkTerminalSettings" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -210,6 +213,12 @@
           <Properties>
             <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="Products"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="chkTerminalSettings">
+          <Properties>
+            <Property name="selected" type="boolean" value="true"/>
+            <Property name="text" type="java.lang.String" value="Terminal Settings"/>
           </Properties>
         </Component>
       </SubComponents>
