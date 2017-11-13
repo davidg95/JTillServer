@@ -594,10 +594,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             }
         });
 
+        tree.setModel(null);
         tree.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                treeMouseClicked(evt);
-            }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 treeMousePressed(evt);
             }
@@ -752,12 +750,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         setVisible(false);
     }//GEN-LAST:event_btnSelectActionPerformed
 
-    private void treeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMouseClicked
-
-    }//GEN-LAST:event_treeMouseClicked
-
     private void treeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMousePressed
         TreePath path = tree.getSelectionModel().getSelectionPath();
+        btnSelect.setEnabled(false);
         if (path == null) {
             return;
         }
