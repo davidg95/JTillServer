@@ -17,12 +17,12 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
+import javax.swing.JTree;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -78,6 +78,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
         tree.setModel(treeModel);
+        tree.setCellRenderer(new MyTreeCellRenderer());
     }
 
     private void initTable() {
@@ -177,6 +178,18 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      */
     private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Products", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private class MyTreeCellRenderer extends DefaultTreeCellRenderer {
+
+        @Override
+        public Component getTreeCellRendererComponent(JTree tree,
+                Object value, boolean selected, boolean expanded,
+                boolean leaf, int row, boolean hasFocus) {
+            super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+            setIcon(null);
+            return this;
+        }
     }
 
     private class MyTreeModel implements TreeModel {
