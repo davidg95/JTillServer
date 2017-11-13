@@ -18,11 +18,15 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
@@ -41,9 +45,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
 
     private final DataConnect dc;
 
-    private final DefaultTableModel model;
-    private Product allProducts[];
-    private List<Product> currentTableContents;
+    private MyTableModel model;
 
     protected boolean closedFlag;
 
@@ -62,10 +64,18 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         this.setIconImage(GUI.icon);
         setLocationRelativeTo(parent);
         setModal(true);
-        currentTableContents = new ArrayList<>();
-        allProducts = new Product[]{};
-        model = (DefaultTableModel) table.getModel();
-        showAllProducts();
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        final ModalDialog mDialog = new ModalDialog(this, "Retrieving", "Retrieving...");
+        final Runnable run = () -> {
+            try {
+                setTable();
+            } finally {
+                mDialog.hide();
+            }
+        };
+        final Thread thread = new Thread(run, "GET_PRODUCTS");
+        thread.start();
+        mDialog.show();
         txtSearch.requestFocus();
         initTable();
         try {
@@ -115,27 +125,17 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         return product;
     }
 
-    /**
-     * Method to update the contents of the table.
-     */
-    private void updateTable() {
-        model.setRowCount(0);
-
-        for (Product p : currentTableContents) {
-            Object[] s = new Object[]{p.getId(), p.getLongName(), p.getBarcode()};
-            model.addRow(s);
-        }
-
-        table.setModel(model);
-        ProductsWindow.update();
-    }
-
-    private void showAllProducts() {
+    private void setTable() {
         try {
             List<Product> all = dc.getAllProducts();
+            Product allProducts[] = new Product[]{};
             allProducts = all.toArray(allProducts);
-            currentTableContents = new LinkedList<>(Arrays.asList(allProducts));
-            updateTable();
+            model = new MyTableModel(allProducts);
+            table.setModel(model);
+            table.getColumnModel().getColumn(0).setMaxWidth(40);
+            table.getColumnModel().getColumn(2).setMaxWidth(120);
+            table.getColumnModel().getColumn(0).setMinWidth(40);
+            table.getColumnModel().getColumn(2).setMinWidth(120);
         } catch (IOException | SQLException ex) {
             showError(ex);
         }
@@ -148,6 +148,141 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      */
     private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Products", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private class MyTableModel implements TableModel {
+
+        private final Product allProducts[];
+        private List<Product> products;
+        private final List<TableModelListener> listeners;
+
+        public MyTableModel(Product all[]) {
+            this.allProducts = all;
+            this.products = new LinkedList<>();
+            this.listeners = new LinkedList<>();
+            showAll();
+        }
+
+        public void showAll() {
+            products = new LinkedList<>(Arrays.asList(allProducts));
+            alertAll();
+        }
+
+        public void filterCategory(Category c) {
+            products.clear();
+            for (Product p : allProducts) {
+                if (p.getCategory().equals(c)) {
+                    products.add(p);
+                }
+            }
+            alertAll();
+        }
+
+        public void filterDepartment(Department d) {
+            products.clear();
+            for (Product p : allProducts) {
+                if (p.getCategory().getDepartment().equals(d)) {
+                    products.add(p);
+                }
+            }
+            alertAll();
+        }
+
+        public Product getSelected() {
+            final int row = table.getSelectedRow();
+            if (row == -1) {
+                return null;
+            }
+            return products.get(row);
+        }
+
+        public List<Product> getCurrentProducts() {
+            return products;
+        }
+
+        public void setCurrent(List<Product> products) {
+            this.products = products;
+            alertAll();
+        }
+
+        @Override
+        public int getRowCount() {
+            return products.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 3;
+        }
+
+        @Override
+        public String getColumnName(int i) {
+            switch (i) {
+                case 0:
+                    return "ID";
+                case 1:
+                    return "Name";
+                case 2:
+                    return "Barcode";
+                default:
+                    return "";
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int i) {
+            switch (i) {
+                case 0:
+                    return Integer.class;
+                case 1:
+                    return String.class;
+                case 2:
+                    return String.class;
+                default:
+                    return Object.class;
+            }
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            Product p = products.get(rowIndex);
+            switch (columnIndex) {
+                case 0:
+                    return p.getId();
+                case 1:
+                    return p.getLongName();
+                case 2:
+                    return p.getBarcode();
+                default:
+                    return "";
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        }
+
+        private void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
+
     }
 
     private class MyTreeCellRenderer extends DefaultTreeCellRenderer {
@@ -438,26 +573,6 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         }
     }
 
-    private void filterCategory(Category c) {
-        currentTableContents.clear();
-        for (Product p : allProducts) {
-            if (p.getCategory().equals(c)) {
-                currentTableContents.add(p);
-            }
-        }
-        updateTable();
-    }
-
-    private void filterDepartment(Department d) {
-        currentTableContents.clear();
-        for (Product p : allProducts) {
-            if (p.getCategory().getDepartment().equals(d)) {
-                currentTableContents.add(p);
-            }
-        }
-        updateTable();
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -640,7 +755,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         }
         btnSelect.setEnabled(true);
         if (evt.getClickCount() == 2) {
-            product = currentTableContents.get(row);
+            product = model.getSelected();
             closedFlag = true;
             this.setVisible(false);
         }
@@ -654,7 +769,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         }
         List<Product> newList = new ArrayList<>();
 
-        for (Product p : currentTableContents) {
+        for (Product p : model.getCurrentProducts()) {
             if (radName.isSelected()) {
                 if (p.getLongName().toLowerCase().contains(search.toLowerCase())) {
                     newList.add(p);
@@ -685,10 +800,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "No Results", "Search", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        currentTableContents = newList;
-        updateTable();
-        if (currentTableContents.size() == 1) {
-            product = currentTableContents.get(0);
+        model.setCurrent(newList);
+        if (model.getCurrentProducts().size() == 1) {
+            product = model.getCurrentProducts().get(0);
             this.setVisible(false);
         }
     }//GEN-LAST:event_btnSearchActionPerformed
@@ -711,7 +825,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             return;
         }
         if (table.hasFocus()) {
-            product = currentTableContents.get(row);
+            product = model.getSelected();
         }
         closedFlag = true;
         setVisible(false);
@@ -728,14 +842,14 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             TreeNode par = (TreeNode) path.getPathComponent(path.getPathCount() - 2);
             setTitle("Select Product - " + par.toString() + " - " + node.toString());
             CategoryNode catNode = (CategoryNode) node;
-            filterCategory(catNode.getCategory());
+            model.filterCategory(catNode.getCategory());
         } else if (path.getPathCount() == 2) { //Department
             setTitle("Select Product - " + node.toString());
             DepartmentNode depNode = (DepartmentNode) node;
-            filterDepartment(depNode.getDepartment());
+            model.filterDepartment(depNode.getDepartment());
         } else { //All
             setTitle("Select Product - All");
-            showAllProducts();
+            setTable();
         }
     }//GEN-LAST:event_treeMousePressed
 
