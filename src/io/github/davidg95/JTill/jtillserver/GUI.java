@@ -1470,9 +1470,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnManageStaffActionPerformed
 
     private void lblClientsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblClientsMouseClicked
-        if (evt.getClickCount() == 2) {
-            ConnectionsDialog.showConnectionsDialog();
-        }
+        
     }//GEN-LAST:event_lblClientsMouseClicked
 
     private void lblUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblUserMouseClicked
