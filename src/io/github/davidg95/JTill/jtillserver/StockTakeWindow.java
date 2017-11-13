@@ -323,7 +323,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        Product p = ProductSelectDialog.showDialog(this, false);
+        Product p = ProductSelectDialog.showDialog(this);
         Product pr = checkProductAlreadyExists(p);
         if (pr != null) {
             String input = JOptionPane.showInternalInputDialog(StockTakeWindow.this, "Enter new quantity", "Stock Take", JOptionPane.PLAIN_MESSAGE);

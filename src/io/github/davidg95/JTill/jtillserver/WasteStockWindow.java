@@ -423,7 +423,11 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         Product product;
         if (txtBarcode.getText().isEmpty()) {
-            product = ProductSelectDialog.showDialog(this, false);
+            product = ProductSelectDialog.showDialog(this);
+            if (product.isOpen()) {
+                JOptionPane.showMessageDialog(this, "This product cannot be wasted", "Add Product", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         } else {
             if (!Utilities.isNumber(txtBarcode.getText())) {
                 txtBarcode.setSelectionStart(0);

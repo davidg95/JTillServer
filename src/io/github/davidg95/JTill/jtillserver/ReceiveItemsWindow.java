@@ -56,7 +56,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private final DefaultComboBoxModel cmbModel;
 
     private boolean viewMode = false;
-    
+
     private Order order;
 
     /**
@@ -476,7 +476,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         report.setItems(products);
         try {
             dc.addReceivedReport(report);
-            if(order != null){
+            if (order != null) {
                 order.setReceived(true);
                 dc.updateOrder(order);
             }
@@ -509,7 +509,11 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         Product product;
         if (txtBarcode.getText().isEmpty()) {
-            product = ProductSelectDialog.showDialog(this, false);
+            product = ProductSelectDialog.showDialog(this);
+            if (product.isOpen()) {
+                JOptionPane.showMessageDialog(this, "This product cannot be received", "Add Product", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         } else {
             if (!Utilities.isNumber(txtBarcode.getText())) {
                 txtBarcode.setSelectionStart(0);
@@ -629,7 +633,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtBarcodeActionPerformed
 
     private void btnAddOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOrderActionPerformed
-        if(!products.isEmpty()){
+        if (!products.isEmpty()) {
             JOptionPane.showInternalMessageDialog(this, "You cannot add an order with other items", "Add Order", JOptionPane.ERROR_MESSAGE);
             return;
         }

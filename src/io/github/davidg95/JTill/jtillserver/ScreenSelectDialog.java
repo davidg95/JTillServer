@@ -46,6 +46,7 @@ public class ScreenSelectDialog extends javax.swing.JDialog {
         setModal(true);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setIconImage(GUI.icon);
         model = new MyListModel();
         init();
     }

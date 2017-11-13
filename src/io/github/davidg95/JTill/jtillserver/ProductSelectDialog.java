@@ -44,8 +44,6 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     private List<Product> allProducts;
     private List<Product> currentTableContents;
 
-    private final boolean showOpen;
-
     protected boolean closedFlag;
 
     private MyTreeModel treeModel;
@@ -54,13 +52,10 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * Creates new form ProductSelectDialog
      *
      * @param parent the parent window.
-     * @param showOpen indicated whether open price products should show. new
-     * product if a barcode is not found.
      */
-    public ProductSelectDialog(Window parent, boolean showOpen) {
+    public ProductSelectDialog(Window parent) {
         super(parent);
         this.dc = GUI.gui.dc;
-        this.showOpen = showOpen;
         closedFlag = false;
         initComponents();
         this.setIconImage(GUI.icon);
@@ -106,28 +101,17 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * Method to show the product select dialog.
      *
      * @param parent the parent component.
-     * @param showOpen indicates whether open products should show or not.
      * @return the product selected by the user.
      */
-    public static Product showDialog(Component parent, boolean showOpen) {
+    public static Product showDialog(Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new ProductSelectDialog(window, showOpen);
+        dialog = new ProductSelectDialog(window);
         product = null;
         dialog.setVisible(true);
         return product;
-    }
-
-    /**
-     * Method to show the product select dialog.
-     *
-     * @param parent the parent component.
-     * @return the product selected by the user.
-     */
-    public static Product showDialog(Component parent) {
-        return showDialog(parent, true);
     }
 
     /**
@@ -149,26 +133,10 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         try {
             allProducts = dc.getAllProducts();
             currentTableContents = allProducts;
-            setTable();
+            updateTable();
         } catch (IOException | SQLException ex) {
             showError(ex);
         }
-    }
-
-    /**
-     * Method to show all products in the list.
-     */
-    private void setTable() {
-        List<Product> newList = new ArrayList<>();
-        if (!showOpen) {
-            for (Product p : currentTableContents) {
-                if (!p.isOpen()) {
-                    newList.add(p);
-                }
-            }
-            currentTableContents = newList;
-        }
-        updateTable();
     }
 
     /**
@@ -475,7 +443,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                 currentTableContents.add(p);
             }
         }
-        setTable();
+        updateTable();
     }
 
     private void filterDepartment(Department d) {
@@ -485,7 +453,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                 currentTableContents.add(p);
             }
         }
-        setTable();
+        updateTable();
     }
 
     /**
@@ -685,9 +653,6 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         List<Product> newList = new ArrayList<>();
 
         for (Product p : currentTableContents) {
-            if (!showOpen && p.isOpen()) {
-                continue;
-            }
             if (radName.isSelected()) {
                 if (p.getLongName().toLowerCase().contains(search.toLowerCase())) {
                     newList.add(p);

@@ -279,7 +279,7 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        final Product p = ProductSelectDialog.showDialog(this, true);
+        final Product p = ProductSelectDialog.showDialog(this);
         if (p == null) {
             return;
         }
