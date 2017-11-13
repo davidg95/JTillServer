@@ -14,6 +14,7 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -21,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -28,7 +30,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author David
  */
-public class ConsolidatedReportingWindow extends javax.swing.JFrame {
+public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
 
     private List<Sale> sales;
 
@@ -58,7 +60,10 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
         this.till = till;
         initComponents();
         setTitle("Consolidated Report - " + (till == null ? "All Terminals" : till.getName()));
-        setIconImage(GUI.icon);
+        super.setClosable(true);
+        super.setMaximizable(true);
+        super.setIconifiable(true);
+        super.setFrameIcon(new ImageIcon(GUI.icon));
         try {
             retrieve(start, end, till);
             init();
@@ -97,7 +102,15 @@ public class ConsolidatedReportingWindow extends javax.swing.JFrame {
     }
 
     public static void showWindow(Date start, Date end, Till till) {
-        new ConsolidatedReportingWindow(start, end, till).setVisible(true);
+        ConsolidatedReportingWindow window = new ConsolidatedReportingWindow(start, end, till);
+        GUI.gui.internal.add(window);
+        window.setVisible(true);
+        try {
+            window.setIcon(false);
+            window.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(ConsolidatedReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void init() {
