@@ -237,7 +237,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         public Class<?> getColumnClass(int i) {
             switch (i) {
                 case 0:
-                    return Integer.class;
+                    return Object.class;
                 case 1:
                     return String.class;
                 case 2:
