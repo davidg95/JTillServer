@@ -510,10 +510,6 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         Product product;
         if (txtBarcode.getText().isEmpty()) {
             product = ProductSelectDialog.showDialog(this);
-            if (product.isOpen()) {
-                JOptionPane.showMessageDialog(this, "This product cannot be received", "Add Product", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
         } else {
             if (!Utilities.isNumber(txtBarcode.getText())) {
                 txtBarcode.setSelectionStart(0);
@@ -532,6 +528,11 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         }
 
         if (product == null) {
+            return;
+        }
+
+        if (product.isOpen()) {
+            JOptionPane.showMessageDialog(this, "This product cannot be received", "Add Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
 

@@ -13,6 +13,7 @@ import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,7 +42,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     private final DataConnect dc;
 
     private final DefaultTableModel model;
-    private List<Product> allProducts;
+    private Product allProducts[];
     private List<Product> currentTableContents;
 
     protected boolean closedFlag;
@@ -62,7 +63,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setModal(true);
         currentTableContents = new ArrayList<>();
-        allProducts = new ArrayList<>();
+        allProducts = new Product[]{};
         model = (DefaultTableModel) table.getModel();
         showAllProducts();
         txtSearch.requestFocus();
@@ -131,8 +132,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
 
     private void showAllProducts() {
         try {
-            allProducts = dc.getAllProducts();
-            currentTableContents = allProducts;
+            List<Product> all = dc.getAllProducts();
+            allProducts = all.toArray(allProducts);
+            currentTableContents = new LinkedList<>(Arrays.asList(allProducts));
             updateTable();
         } catch (IOException | SQLException ex) {
             showError(ex);
