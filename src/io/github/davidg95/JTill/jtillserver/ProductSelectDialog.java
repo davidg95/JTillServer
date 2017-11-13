@@ -18,6 +18,8 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
@@ -69,6 +71,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         final Runnable run = () -> {
             try {
                 setTable();
+            } catch (IOException | SQLException ex) {
+                mDialog.hide();
+                showError(ex);
             } finally {
                 mDialog.hide();
             }
@@ -125,20 +130,16 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         return product;
     }
 
-    private void setTable() {
-        try {
-            List<Product> all = dc.getAllProducts();
-            Product allProducts[] = new Product[]{};
-            allProducts = all.toArray(allProducts);
-            model = new MyTableModel(allProducts);
-            table.setModel(model);
-            table.getColumnModel().getColumn(0).setMaxWidth(40);
-            table.getColumnModel().getColumn(2).setMaxWidth(120);
-            table.getColumnModel().getColumn(0).setMinWidth(40);
-            table.getColumnModel().getColumn(2).setMinWidth(120);
-        } catch (IOException | SQLException ex) {
-            showError(ex);
-        }
+    private void setTable() throws IOException, SQLException {
+        List<Product> all = dc.getAllProducts();
+        Product allProducts[] = new Product[]{};
+        allProducts = all.toArray(allProducts);
+        model = new MyTableModel(allProducts);
+        table.setModel(model);
+        table.getColumnModel().getColumn(0).setMaxWidth(40);
+        table.getColumnModel().getColumn(2).setMaxWidth(120);
+        table.getColumnModel().getColumn(0).setMinWidth(40);
+        table.getColumnModel().getColumn(2).setMinWidth(120);
     }
 
     /**
@@ -849,7 +850,11 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             model.filterDepartment(depNode.getDepartment());
         } else { //All
             setTitle("Select Product - All");
-            setTable();
+            try {
+                setTable();
+            } catch (IOException | SQLException ex) {
+                showError(ex);
+            }
         }
     }//GEN-LAST:event_treeMousePressed
 
