@@ -9,6 +9,7 @@ import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
+import java.awt.Image;
 import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -20,6 +21,8 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
@@ -825,9 +828,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         if (row == -1) {
             return;
         }
-        if (table.hasFocus()) {
-            product = model.getSelected();
-        }
+        product = model.getSelected();
         closedFlag = true;
         setVisible(false);
     }//GEN-LAST:event_btnSelectActionPerformed
