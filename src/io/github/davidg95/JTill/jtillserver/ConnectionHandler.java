@@ -927,4 +927,9 @@ public class ConnectionHandler {
     public int getInits() throws IOException {
         return dc.getInits();
     }
+
+    @JConnMethod("ISTILLCONNECTED")
+    public boolean isTillConnected(@JConnParameter("ID") int id) throws IOException {
+        return dc.isTillConnected(id);
+    }
 }

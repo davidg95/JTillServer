@@ -29,8 +29,6 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class TillServer {
 
-    private DBConnect dc;
-
     private GUI g;
 
     public static Image icon;
@@ -75,7 +73,7 @@ public class TillServer {
         TillSplashScreen.showSplashScreen();
         icon = new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/tillIcon.png")).getImage();
         settings = Settings.getInstance();
-        dc = DBConnect.getInstance();
+        DataConnect.dataconnect = DBConnect.getInstance();
         TillSplashScreen.setLabel("Loading configurations");
         TillSplashScreen.addBar(5);
         boolean init = settings.loadProperties();
@@ -88,7 +86,13 @@ public class TillServer {
             TillSplashScreen.showSplashScreen();
         }
         TillSplashScreen.addBar(5);
-        g = GUI.create(dc, false, icon);
+        try {
+            g = GUI.create(false, icon);
+        } catch (Exception ex) {
+            TillSplashScreen.hideSplashScreen();
+            JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(TillServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         setSystemTray();
     }
 
@@ -100,7 +104,7 @@ public class TillServer {
         try {
             TillSplashScreen.setLabel("Starting server socket");
             server = JConnServer.start(PORT_IN_USE, ConnectionHandler.class);
-            dc.setServer(server);
+            DBConnect.getInstance().setServer(server);
             TillSplashScreen.addBar(20);
         } catch (IOException ex) {
         }
@@ -137,7 +141,7 @@ public class TillServer {
         aboutItem.addActionListener((ActionEvent e) -> {
             JOptionPane.showMessageDialog(null, "JTill Server is running on port number "
                     + settings.getSetting("port") + "\n"
-                    + dc.toString(), "JTill Server",
+                    + DataConnect.dataconnect.toString(), "JTill Server",
                     JOptionPane.INFORMATION_MESSAGE);
         });
 
@@ -149,8 +153,8 @@ public class TillServer {
         });
 
         statusItem.addActionListener((ActionEvent e) -> {
-            JOptionPane.showMessageDialog(null, "Database Address- " + dc.getAddress()
-                    + "\nDatabase User- " + dc.getUsername(),
+            JOptionPane.showMessageDialog(null, "Database Address- " + DBConnect.getInstance().getAddress()
+                    + "\nDatabase User- " + DBConnect.getInstance().getUsername(),
                     "JTill Server Status", JOptionPane.INFORMATION_MESSAGE);
         });
 

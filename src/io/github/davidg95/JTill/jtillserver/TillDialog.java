@@ -420,7 +420,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
 
     private void btnSendDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendDataActionPerformed
         try {
-            dc.sendData(till.getId(), null);
+            till.sendData(null);
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }

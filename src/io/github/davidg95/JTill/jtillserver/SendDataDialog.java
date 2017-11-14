@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -52,9 +51,6 @@ public class SendDataDialog extends javax.swing.JDialog {
     private void init() {
         tillTable.setSelectionModel(new ForcedListSelectionModel());
         tillTable.setModel(model);
-//        tillTable.getColumnModel().getColumn(0).setCellRenderer(new StatusColumnCellRenderer());
-//        tillTable.getColumnModel().getColumn(1).setCellRenderer(new StatusColumnCellRenderer());
-//        tillTable.getColumnModel().getColumn(2).setCellRenderer(new StatusColumnCellRenderer());
         tillTable.getColumnModel().getColumn(0).setMaxWidth(40);
         tillTable.getColumnModel().getColumn(2).setMaxWidth(50);
     }
@@ -114,7 +110,7 @@ public class SendDataDialog extends javax.swing.JDialog {
             for (Till t : tills) {
                 if (t.isSendData()) {
                     try {
-                        dc.sendData(t.getId(), data);
+                        t.sendData(data);
                     } catch (IOException | SQLException ex) {
                         JOptionPane.showMessageDialog(SendDataDialog.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                     }

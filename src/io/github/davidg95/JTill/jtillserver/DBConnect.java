@@ -47,7 +47,7 @@ import org.apache.derby.jdbc.EmbeddedDriver;
  *
  * @author David
  */
-public class DBConnect implements DataConnect {
+public class DBConnect extends DataConnect {
 
     private static final Logger LOG = Logger.getGlobal();
 
@@ -71,8 +71,6 @@ public class DBConnect implements DataConnect {
     //Concurrent locks
     private final StampedLock susL;
     private final StampedLock supL;
-
-    private GUIInterface g; //A reference to the GUI.
 
     private volatile HashMap<Staff, Sale> suspendedSales; //A hash map of suspended sales.
     private final Settings systemSettings; //The system settings.
@@ -1028,15 +1026,6 @@ public class DBConnect implements DataConnect {
 
     public String getPassword() {
         return password;
-    }
-
-    /**
-     * This method does not do anything and should not be used.
-     */
-    @Override
-    @Deprecated
-    public void close() {
-
     }
 
     @Override
@@ -2932,11 +2921,6 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public void setGUI(GUIInterface g) {
-        this.g = g;
-    }
-
-    @Override
     public void suspendSale(Sale sale, Staff staff) throws IOException {
         long stamp = susL.writeLock();
         try {
@@ -3159,6 +3143,17 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
+    public boolean isTillConnected(int id) {
+        for (JConnThread th : TillServer.server.getClientConnections()) {
+            ConnectionHandler hand = (ConnectionHandler) th.getMethodClass();
+            if (hand.till != null && id == hand.till.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public Till connectTill(String name, UUID uuid, Staff staff) throws JTillException {
         try {
             if (isTillConnected(uuid)) {
@@ -3276,11 +3271,6 @@ public class DBConnect implements DataConnect {
     @Override
     public String getSetting(String key, String value) throws IOException {
         return systemSettings.getSetting(key, value);
-    }
-
-    @Override
-    public GUIInterface getGUI() {
-        return this.g;
     }
 
     @Override
@@ -4655,7 +4645,7 @@ public class DBConnect implements DataConnect {
     }
 
     @Override
-    public void sendData(int id, String[] data) throws IOException, SQLException {
+    public void sendData(int id, String[] data) throws IOException {
         for (JConnThread th : server.getClientConnections()) {
             ConnectionHandler hand = (ConnectionHandler) th.getMethodClass();
             if (hand.till != null && hand.till.getId() == id) {

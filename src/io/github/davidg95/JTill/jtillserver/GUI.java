@@ -77,18 +77,17 @@ public class GUI extends JFrame implements GUIInterface {
     /**
      * Creates new form GUI
      *
-     * @param dataConnect
      * @param remote flag indicating whether this is a remote connection or not.
      * @param icon the icon for the frame.
      */
-    public GUI(DataConnect dataConnect, boolean remote, Image icon) {
+    public GUI(boolean remote, Image icon) throws Exception {
         super();
         try {
             javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel"); //Set the look and feel.
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        this.dc = dataConnect;
+        this.dc = DataConnect.dataconnect;
         this.remote = remote;
         GUI.icon = icon;
         if (!remote) {
@@ -141,7 +140,7 @@ public class GUI extends JFrame implements GUIInterface {
         }
     }
 
-    private void init() {
+    private void init() throws Exception {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setFocusable(true);
         setIconImage(icon);
@@ -173,13 +172,12 @@ public class GUI extends JFrame implements GUIInterface {
     /**
      * Creates a new instance of the GUI.
      *
-     * @param dataConnect the data connection.
      * @param remote if it is a remote session.
      * @param icon the icon for the windows and dialogs.
      * @return the GUI.
      */
-    public static GUI create(DataConnect dataConnect, boolean remote, Image icon) {
-        gui = new GUI(dataConnect, remote, icon);
+    public static GUI create(boolean remote, Image icon) throws Exception {
+        gui = new GUI(remote, icon);
         return gui;
     }
 
@@ -1436,11 +1434,12 @@ public class GUI extends JFrame implements GUIInterface {
             LOG.log(Level.INFO, "Saving properties");
             settings.saveProperties(); //Save the server properties
             TillServer.removeSystemTrayIcon(); //Remove the system tray icon
-        }
-        try {
-            dc.close(); //Close the Database/Server connection
-        } catch (IOException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+        } else {
+            try {
+                ((ServerConnection) dc).close(); //Close the Database/Server connection
+            } catch (IOException ex) {
+                LOG.log(Level.SEVERE, null, ex);
+            }
         }
         System.exit(0); //Exit the application
     }//GEN-LAST:event_itemExitActionPerformed
@@ -1470,7 +1469,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnManageStaffActionPerformed
 
     private void lblClientsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblClientsMouseClicked
-        
+
     }//GEN-LAST:event_lblClientsMouseClicked
 
     private void lblUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblUserMouseClicked
