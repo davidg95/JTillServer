@@ -692,7 +692,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 if (barcode.equals("")) {
                     JOptionPane.showMessageDialog(this, "You must enter a barcode", "New Product", JOptionPane.WARNING_MESSAGE);
                     return;
-                } else if (!(barcode.length() == 8 || barcode.length() == 12 || barcode.length() == 13 || barcode.length() == 14)) {
+                } else if (!Utilities.validateBarcodeLenth(barcode)) {
                     JOptionPane.showMessageDialog(this, "Barcode must be 8, 12, 13 or 14 digits long", "New Product", JOptionPane.WARNING_MESSAGE);
                     return;
                 } else if (!barcode.matches("[0-9]+")) {

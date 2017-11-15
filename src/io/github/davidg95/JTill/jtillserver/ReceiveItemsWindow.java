@@ -517,6 +517,18 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showInternalMessageDialog(this, "Not a number", "Add Product", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            if (!Utilities.validateBarcodeLenth(txtBarcode.getText())) {
+                txtBarcode.setSelectionStart(0);
+                txtBarcode.setSelectionEnd(txtBarcode.getText().length());
+                JOptionPane.showInternalMessageDialog(this, "Barcodes must be 8, 12, 13 or 14 digits long", "Add Product", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (!Utilities.validateBarcode(txtBarcode.getText())) {
+                txtBarcode.setSelectionStart(0);
+                txtBarcode.setSelectionEnd(txtBarcode.getText().length());
+                JOptionPane.showInternalMessageDialog(this, "Invalid check digit", "Add Product", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             try {
                 product = dc.getProductByBarcode(txtBarcode.getText());
             } catch (IOException | ProductNotFoundException | SQLException ex) {

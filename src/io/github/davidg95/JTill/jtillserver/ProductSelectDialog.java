@@ -783,7 +783,21 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                 }
             } else {
                 if (!Utilities.isNumber(search)) {
+                    txtSearch.setSelectionStart(0);
+                    txtSearch.setSelectionEnd(txtSearch.getText().length());
                     JOptionPane.showMessageDialog(this, "Barcode must be a number", "Search", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (!Utilities.validateBarcodeLenth(search)) {
+                    txtSearch.setSelectionStart(0);
+                    txtSearch.setSelectionEnd(txtSearch.getText().length());
+                    JOptionPane.showMessageDialog(this, "Barcodes must be 8, 12, 13, or 14 digits long", "Search", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (!Utilities.validateBarcode(search)) {
+                    txtSearch.setSelectionStart(0);
+                    txtSearch.setSelectionEnd(txtSearch.getText().length());
+                    JOptionPane.showMessageDialog(this, "Invalid check digit", "Search", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 if (p.getBarcode().equals(search)) {
