@@ -672,7 +672,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                             ref = 0 + ref; //Pad it out with zero's to make up the length
                         }
                         String barcode = upc + ref; //Join them all together
-                        int checkDigit = Utilities.CalculateCheckDigit(barcode);
+                        int checkDigit = Utilities.calculateCheckDigit(barcode);
                         barcode = barcode + checkDigit;
                         if (!dc.checkBarcode(barcode)) { //Check the barcode is not already int use
                             this.barcode = barcode;
@@ -687,18 +687,23 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 }
                 //If excecution reaches here, it means an unsude PLU as been generated
             } else {
-                //Get the PLu from the user, check what they entered is valid
-                if (txtPlu.getText().equals("")) {
+                //Get the PLU from the user, check what they entered is valid
+                String barcode = txtPlu.getText();
+                if (barcode.equals("")) {
                     JOptionPane.showMessageDialog(this, "You must enter a barcode", "New Product", JOptionPane.WARNING_MESSAGE);
                     return;
-                } else if (txtPlu.getText().length() < 8 || txtPlu.getText().length() > 15) {
-                    JOptionPane.showMessageDialog(this, "Barcodes must be between 8 and 15 characters long", "New Product", JOptionPane.WARNING_MESSAGE);
+                } else if (!(barcode.length() == 8 || barcode.length() == 12 || barcode.length() == 13 || barcode.length() == 14)) {
+                    JOptionPane.showMessageDialog(this, "Barcode must be 8, 12, 13 or 14 digits long", "New Product", JOptionPane.WARNING_MESSAGE);
                     return;
-                } else if (!txtPlu.getText().matches("[0-9]+")) {
+                } else if (!barcode.matches("[0-9]+")) {
                     JOptionPane.showMessageDialog(this, "Must only contain numbers", "New Product", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                if (dc.checkBarcode(txtPlu.getText())) {
+                if (!Utilities.validateBarcode(barcode)) {
+                    JOptionPane.showMessageDialog(this, "Invalid check digit", "New Product", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (dc.checkBarcode(barcode)) {
                     JOptionPane.showMessageDialog(this, "Barcode is already in use", "Barcode in use", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
