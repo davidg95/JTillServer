@@ -55,7 +55,7 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
     private void init() {
         try {
             txtUPC.setText(dc.getSetting("UPC_PREFIX"));
-            txtLength.setText(dc.getSetting("BARCODE_LENGTH"));
+            cmbLength.setSelectedItem(dc.getSetting("BARCODE_LENGTH"));
 
             String upc = dc.getSetting("UPC_PREFIX");
             int length = Integer.parseInt(dc.getSetting("BARCODE_LENGTH"));
@@ -94,18 +94,8 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
     }
 
     private void saveLength() {
-        if (txtLength.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "You must sepcify a length", "Length", JOptionPane.WARNING_MESSAGE);
-        } else if (!txtLength.getText().matches("[0-9]+")) {
-            JOptionPane.showMessageDialog(this, "Must only contain numbers", "Length", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        int l = Integer.parseInt(txtLength.getText());
-        if (l < 8 || l > 15) {
-            JOptionPane.showMessageDialog(this, "Length must be between 8 and 15", "Length", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        String length = txtLength.getText();
+        int l = Integer.parseInt((String) cmbLength.getSelectedItem());
+        String length = Integer.toString(l);
 
         try {
             dc.setSetting("BARCODE_LENGTH", length);
@@ -128,10 +118,10 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
         btnClose = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        txtLength = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtNext = new javax.swing.JTextField();
         btnReset = new javax.swing.JButton();
+        cmbLength = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
@@ -164,6 +154,8 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
             }
         });
 
+        cmbLength.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "8", "12", "13", "14" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -182,8 +174,8 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtUPC)
-                            .addComponent(txtLength)
-                            .addComponent(txtNext, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+                            .addComponent(txtNext, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+                            .addComponent(cmbLength, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnReset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -203,14 +195,14 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(txtLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(cmbLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(btnSave, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtNext, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnReset))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addComponent(btnClose)
                 .addContainerGap())
         );
@@ -224,12 +216,13 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         int prefixLength = txtUPC.getText().length();
-        if (!txtLength.getText().matches("[0-9]+")) {
-            JOptionPane.showMessageDialog(this, "Must only contain numbers", "Length", JOptionPane.WARNING_MESSAGE);
+
+        int barcodeLength = Integer.parseInt((String) cmbLength.getSelectedItem());
+
+        if (prefixLength < 6 || prefixLength > 10) {
+            JOptionPane.showMessageDialog(this, "UPC Prefix must be between 6 and 10 characters long", "Plu settings", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        int barcodeLength = Integer.parseInt(txtLength.getText());
-
         if (barcodeLength <= prefixLength) {
             JOptionPane.showMessageDialog(this, "Your barcode length must be greater than your UPC Prefix length", "Plu settings", JOptionPane.ERROR_MESSAGE);
             return;
@@ -252,10 +245,10 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSave;
+    private javax.swing.JComboBox<String> cmbLength;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JTextField txtLength;
     private javax.swing.JTextField txtNext;
     private javax.swing.JTextField txtUPC;
     // End of variables declaration//GEN-END:variables

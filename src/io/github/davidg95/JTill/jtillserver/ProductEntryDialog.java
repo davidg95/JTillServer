@@ -658,6 +658,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             if (chkNext.isSelected()) {
                 String upc = dc.getSetting("UPC_PREFIX"); //Get the UPC Prefix
                 int length = Integer.parseInt(dc.getSetting("BARCODE_LENGTH")); //Get the barcode length
+                length--;
                 if (!upc.equals("")) { //Check that the UPC has been set
                     while (true) {
                         int lengthToAdd = length - upc.length(); //Work out how many more digits need added
@@ -665,11 +666,14 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                         int n = Integer.parseInt(ref);
                         n++;
                         nextBarcode = Integer.toString(n); // Increase it then convert it to a String
+
                         lengthToAdd -= ref.length(); //Subtract the length to find out how many digits need added
                         for (int i = 1; i <= lengthToAdd; i++) {
                             ref = 0 + ref; //Pad it out with zero's to make up the length
                         }
                         String barcode = upc + ref; //Join them all together
+                        int checkDigit = Utilities.CalculateCheckDigit(barcode);
+                        barcode = barcode + checkDigit;
                         if (!dc.checkBarcode(barcode)) { //Check the barcode is not already int use
                             this.barcode = barcode;
                             break; //break from the while loop
