@@ -53,8 +53,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(parent);
         setModal(true);
-        CardLayout c = (CardLayout) jPanel1.getLayout();
-        c.show(jPanel1, "card2");
+        CardLayout c = (CardLayout) container.getLayout();
+        c.show(container, "card2");
     }
 
     private void initCombos() {
@@ -116,7 +116,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        jPanel1 = new javax.swing.JPanel();
+        container = new javax.swing.JPanel();
         panOpenProduct = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtOpenName = new javax.swing.JTextField();
@@ -180,7 +180,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         setTitle("Create New Product");
         setResizable(false);
 
-        jPanel1.setLayout(new java.awt.CardLayout());
+        container.setLayout(new java.awt.CardLayout());
 
         jLabel3.setText("Product Name:");
 
@@ -323,7 +323,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1.add(panOpenProduct, "card4");
+        container.add(panOpenProduct, "card4");
 
         jLabel1.setText("Enter Barcode:");
 
@@ -371,7 +371,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             .addGroup(panBarcodeLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(panBarcodeLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -386,7 +385,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                                 .addComponent(radNewOpen))
                             .addComponent(btnEnter, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(radCopy)))
+                        .addComponent(radCopy))
+                    .addComponent(btnClose))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panBarcodeLayout.setVerticalGroup(
@@ -404,12 +404,12 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     .addComponent(radNewOpen))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnEnter, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                .addComponent(btnClose)
+                .addContainerGap())
         );
 
-        jPanel1.add(panBarcode, "card2");
+        container.add(panBarcode, "card2");
 
         jLabel13.setText("Order Code:");
 
@@ -570,9 +570,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1.add(panProduct, "card3");
+        container.add(panProduct, "card3");
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(container, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -640,8 +640,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             }
             JOptionPane.showMessageDialog(this, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
             resetPanels();
-            CardLayout c = (CardLayout) jPanel1.getLayout();
-            c.show(jPanel1, "card2");
+            CardLayout c = (CardLayout) container.getLayout();
+            c.show(container, "card2");
             txtPlu.requestFocus();
         } catch (HeadlessException | IOException | NumberFormatException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
@@ -649,8 +649,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        CardLayout c = (CardLayout) jPanel1.getLayout();
-        c.show(jPanel1, "card2");
+        CardLayout c = (CardLayout) container.getLayout();
+        c.show(container, "card2");
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnterActionPerformed
@@ -712,13 +712,13 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             //Check what kinda of product they want to create
             if (radNew.isSelected()) { //Create a new standard product
                 txtPlu.setText("");
-                CardLayout c = (CardLayout) jPanel1.getLayout();
-                c.show(jPanel1, "card3");
+                CardLayout c = (CardLayout) container.getLayout();
+                c.show(container, "card3");
                 txtName.requestFocus();
             } else if (radNewOpen.isSelected()) { //Create a new open price product
                 txtPlu.setText("");
-                CardLayout c = (CardLayout) jPanel1.getLayout();
-                c.show(jPanel1, "card4");
+                CardLayout c = (CardLayout) container.getLayout();
+                c.show(container, "card4");
                 txtOpenName.requestFocus();
             } else {
                 Product toCopy = ProductSelectDialog.showDialog(this); //Copy details from an existing product
@@ -752,8 +752,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnBack2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBack2ActionPerformed
-        CardLayout c = (CardLayout) jPanel1.getLayout();
-        c.show(jPanel1, "card2");
+        CardLayout c = (CardLayout) container.getLayout();
+        c.show(container, "card2");
     }//GEN-LAST:event_btnBack2ActionPerformed
 
     private void btnAddOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOpenActionPerformed
@@ -807,8 +807,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             }
             JOptionPane.showMessageDialog(this, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
             resetPanels();
-            CardLayout c = (CardLayout) jPanel1.getLayout();
-            c.show(jPanel1, "card2");
+            CardLayout c = (CardLayout) container.getLayout();
+            c.show(container, "card2");
             txtPlu.requestFocus();
         } catch (HeadlessException | IOException | NumberFormatException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
@@ -839,6 +839,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JComboBox<String> cmbOpenCat;
     private javax.swing.JComboBox<String> cmbOpenVAT;
     private javax.swing.JComboBox<String> cmbVat;
+    private javax.swing.JPanel container;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -860,7 +861,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel panBarcode;

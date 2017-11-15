@@ -13,6 +13,7 @@ import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +27,10 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -42,8 +46,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
 
     private Staff staff;
 
-    private final DefaultTableModel model;
-    private List<Staff> currentTableContents;
+    private MyModel model;
 
     /**
      * Creates new form StaffWindow
@@ -55,8 +58,6 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         super.setClosable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
-        currentTableContents = new ArrayList<>();
-        model = (DefaultTableModel) tableStaff.getModel();
         showAllStaff();
         init();
     }
@@ -77,7 +78,10 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                 if (index == -1) {
                     return;
                 }
-                final Staff s = currentTableContents.get(index);
+                final Staff s = model.getSelected();
+                if (s == null) {
+                    return;
+                }
                 removeStaff(s);
             }
         });
@@ -114,48 +118,26 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         btnPassword.setEnabled(false);
     }
 
-    private void updateTable() {
-        model.setRowCount(0);
-
-        for (Staff s : currentTableContents) {
-            String position = "";
-            switch (s.getPosition()) {
-                case 1:
-                    position = "Assisstant";
-                    break;
-                case 2:
-                    position = "Supervisor";
-                    break;
-                case 3:
-                    position = "Manager";
-                    break;
-                default:
-                    position = "Area Manager";
-                    break;
-            }
-            Object[] str = new Object[]{s.getId(), s.getName(), position, s.getUsername()};
-            model.addRow(str);
-        }
-
-        tableStaff.setModel(model);
-    }
-
     private void showAllStaff() {
         try {
-            currentTableContents = dc.getAllStaff();
+            List<Staff> list = dc.getAllStaff();
+            model = new MyModel(list);
+            tableStaff.setModel(model);
         } catch (IOException | SQLException ex) {
             showError(ex);
         }
-        updateTable();
     }
 
     private void editStaff() {
         SwingUtilities.invokeLater(() -> {
             int selectedRow = tableStaff.getSelectedRow();
             if (selectedRow != -1) {
-                Staff s = currentTableContents.get(selectedRow);
+                Staff s = model.getSelected();
+                if (s == null) {
+                    return;
+                }
                 StaffDialog.showEditStaffDialog(this, s);
-                updateTable();
+                model.alertAll();
             }
         });
     }
@@ -229,6 +211,148 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         }
     }
 
+    private class MyModel implements TableModel {
+
+        private List<Staff> staff;
+        private final List<TableModelListener> listeners;
+
+        public MyModel(List<Staff> staff) {
+            this.staff = staff;
+            this.listeners = new LinkedList<>();
+        }
+
+        public void addStaff(Staff s) throws IOException, SQLException {
+            s = dc.addStaff(s);
+            staff.add(s);
+            alertAll();
+        }
+
+        public void removeStaff(Staff s) throws IOException, StaffNotFoundException, SQLException {
+            dc.removeStaff(s);
+            staff.remove(s);
+            alertAll();
+        }
+
+        public Staff getStaff(int id) {
+            for (Staff s : staff) {
+                if (s.getId() == id) {
+                    return s;
+                }
+            }
+            return null;
+        }
+
+        public Staff getSelected() {
+            int row = tableStaff.getSelectedRow();
+            if (row == -1) {
+                return null;
+            }
+            return staff.get(row);
+        }
+
+        public List<Staff> getAll() {
+            return staff;
+        }
+
+        public void setList(List<Staff> staff) {
+            this.staff = staff;
+            alertAll();
+        }
+
+        @Override
+        public int getRowCount() {
+            return staff.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 4;
+        }
+
+        @Override
+        public String getColumnName(int i) {
+            switch (i) {
+                case 0: {
+                    return "ID";
+                }
+                case 1: {
+                    return "Name";
+                }
+                case 2: {
+                    return "Position";
+                }
+                case 3: {
+                    return "Username";
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return Object.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            Staff s = staff.get(rowIndex);
+            switch (columnIndex) {
+                case 0: {
+                    return s.getId();
+                }
+                case 1: {
+                    return s.getName();
+                }
+                case 2: {
+                    switch (s.getPosition()) {
+                        case 1:
+                            return "Assisstant";
+                        case 2:
+                            return "Supervisor";
+                        case 3:
+                            return "Manager";
+                        default:
+                            return "Area Manager";
+                    }
+                }
+                case 3: {
+                    return s.getUsername();
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        }
+
+        public void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -242,26 +366,27 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableStaff = new javax.swing.JTable();
         btnAddStaff = new javax.swing.JButton();
-        btnRemoveStaff = new javax.swing.JButton();
-        btnSave = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
         btnShowAll = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        txtName = new javax.swing.JTextField();
-        cmbPosition = new javax.swing.JComboBox<>();
-        txtUsername = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
         radName = new javax.swing.JRadioButton();
         radID = new javax.swing.JRadioButton();
         btnSearch = new javax.swing.JButton();
-        btnPassword = new javax.swing.JButton();
-        lblPassword = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        cmbPosition = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         txtWage = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        btnRemoveStaff = new javax.swing.JButton();
         chkEnabled = new javax.swing.JCheckBox();
+        btnSave = new javax.swing.JButton();
+        btnPassword = new javax.swing.JButton();
+        lblPassword = new javax.swing.JLabel();
+        txtUsername = new javax.swing.JTextField();
+        txtName = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Manage Staff");
@@ -307,20 +432,6 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        btnRemoveStaff.setText("Remove Staff");
-        btnRemoveStaff.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveStaffActionPerformed(evt);
-            }
-        });
-
-        btnSave.setText("Save Changes");
-        btnSave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveActionPerformed(evt);
-            }
-        });
-
         btnClose.setText("Close");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -334,16 +445,6 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                 btnShowAllActionPerformed(evt);
             }
         });
-
-        jLabel3.setText("Username:");
-
-        txtName.setNextFocusableComponent(cmbPosition);
-
-        cmbPosition.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Assisstant", "Supervisor", "Manager", "Area Manager"}));
-
-        jLabel1.setText("Name:");
-
-        jLabel2.setText("Position:");
 
         jLabel6.setText("Search:");
 
@@ -361,6 +462,34 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Edit Staff Member"));
+
+        jLabel3.setText("Username:");
+
+        jLabel1.setText("Name:");
+
+        cmbPosition.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Assisstant", "Supervisor", "Manager", "Area Manager"}));
+
+        jLabel4.setText("Wage:");
+
+        jLabel2.setText("Position:");
+
+        btnRemoveStaff.setText("Remove Staff");
+        btnRemoveStaff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveStaffActionPerformed(evt);
+            }
+        });
+
+        chkEnabled.setText("Enabled");
+
+        btnSave.setText("Save Changes");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
         btnPassword.setText("Password");
         btnPassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -370,9 +499,65 @@ public class StaffWindow extends javax.swing.JInternalFrame {
 
         lblPassword.setText("Click to change password:");
 
-        jLabel4.setText("Wage:");
+        txtName.setNextFocusableComponent(cmbPosition);
 
-        chkEnabled.setText("Enabled");
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(lblPassword)
+                        .addComponent(jLabel1)
+                        .addComponent(jLabel2)
+                        .addComponent(jLabel3)
+                        .addComponent(jLabel4))
+                    .addComponent(btnSave, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chkEnabled)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnPassword)
+                        .addComponent(txtName)
+                        .addComponent(cmbPosition, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtUsername)
+                        .addComponent(txtWage, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnRemoveStaff))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmbPosition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnPassword)
+                    .addComponent(lblPassword))
+                .addGap(2, 2, 2)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(txtWage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(4, 4, 4)
+                .addComponent(chkEnabled)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnRemoveStaff)
+                    .addComponent(btnSave))
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -380,31 +565,12 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnAddStaff)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSave))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnRemoveStaff)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnShowAll))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lblPassword)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chkEnabled)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(btnPassword)
-                                .addComponent(txtName)
-                                .addComponent(cmbPosition, 0, 139, Short.MAX_VALUE)
-                                .addComponent(txtUsername)
-                                .addComponent(txtWage)))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnShowAll)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
@@ -419,7 +585,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                         .addComponent(btnSearch)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 562, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -427,37 +593,13 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cmbPosition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnPassword)
-                            .addComponent(lblPassword))
-                        .addGap(2, 2, 2)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(txtWage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(4, 4, 4)
-                        .addComponent(chkEnabled)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnAddStaff)
-                            .addComponent(btnSave))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnRemoveStaff)
-                            .addComponent(btnShowAll))
+                            .addComponent(btnShowAll)
+                            .addComponent(btnAddStaff))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -509,15 +651,17 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             staff.setWage(wage);
             staff.setEnabled(chkEnabled.isSelected());
             dc.updateStaff(staff);
+            model.alertAll();
         } catch (SQLException | StaffNotFoundException | IOException ex) {
             showError(ex);
         }
-        updateTable();
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnRemoveStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveStaffActionPerformed
-        int index = tableStaff.getSelectedRow();
-        Staff selected = currentTableContents.get(index);
+        Staff selected = model.getSelected();
+        if (selected == null) {
+            return;
+        }
         removeStaff(selected);
     }//GEN-LAST:event_btnRemoveStaffActionPerformed
 
@@ -542,13 +686,13 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         List<Staff> newList = new ArrayList<>();
 
         if (option == 1) {
-            for (Staff s : currentTableContents) {
+            for (Staff s : model.getAll()) {
                 if ((s.getId() + "").equals(terms)) {
                     newList.add(s);
                 }
             }
         } else {
-            for (Staff s : currentTableContents) {
+            for (Staff s : model.getAll()) {
                 if (s.getName().toLowerCase().contains(terms.toLowerCase())) {
                     newList.add(s);
                 }
@@ -558,12 +702,11 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         if (newList.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.PLAIN_MESSAGE);
         } else {
-            currentTableContents = newList;
+            model.setList(newList);
             if (newList.size() == 1) {
                 setCurrentStaff(newList.get(0));
             }
         }
-        updateTable();
 
     }//GEN-LAST:event_btnSearchActionPerformed
 
@@ -576,7 +719,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         if (index == -1) {
             return;
         }
-        setCurrentStaff(currentTableContents.get(index));
+        setCurrentStaff(model.getSelected());
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem view = new JMenuItem("View");
@@ -635,6 +778,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblPassword;
     private javax.swing.JRadioButton radID;
