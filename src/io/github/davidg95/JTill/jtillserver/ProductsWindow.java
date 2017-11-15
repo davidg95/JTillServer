@@ -16,7 +16,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,7 +34,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  * Window which allows for adding, editing and deleting products,
@@ -46,8 +52,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
     private Product product;
 
-    private final DefaultTableModel model;
-    private List<Product> currentTableContents;
+    private MyModel model;
 
     private List<Tax> taxes;
     private List<Category> categorys;
@@ -65,8 +70,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
-        currentTableContents = new ArrayList<>();
-        model = (DefaultTableModel) tableProducts.getModel();
         showAllProducts();
         init();
     }
@@ -133,30 +136,19 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }
 
     /**
-     * Method to update the contents of the table with the currentTableContents
-     * list.
-     */
-    private void updateTable() {
-        model.setRowCount(0);
-
-        for (Product p : currentTableContents) {
-            Object[] s = new Object[]{p.getId(), p.getBarcode(), p.getLongName(), (p.isOpen() ? "Open Price" : p.getPrice().setScale(2)), (p.isOpen() ? "N/A" : p.getStock())};
-            model.addRow(s);
-        }
-
-        tableProducts.setModel(model);
-    }
-
-    /**
      * Method to show all the products in the database.
      */
     private void showAllProducts() {
         try {
-            currentTableContents = dc.getAllProducts();
+            List<Product> products = dc.getAllProducts();
+            model = new MyModel(products);
+            tableProducts.setModel(model);
+            tableProducts.getColumnModel().getColumn(0).setMaxWidth(40);
+            tableProducts.getColumnModel().getColumn(3).setMaxWidth(60);
+            tableProducts.getColumnModel().getColumn(4).setMaxWidth(60);
         } catch (IOException | SQLException ex) {
             showError(ex);
         }
-        updateTable();
     }
 
     /**
@@ -288,9 +280,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         int opt = JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove the following product?\n" + p, "Remove Product", JOptionPane.YES_NO_OPTION);
         if (opt == JOptionPane.YES_OPTION) {
             try {
-                dc.removeProduct(p.getId());
-                GUI.getInstance().updateLables();
-                showAllProducts();
+                model.removeProduct(p);
                 setCurrentProduct(null);
                 txtName.requestFocus();
                 JOptionPane.showInternalMessageDialog(this, "Product has been removed", "Remove Product", JOptionPane.INFORMATION_MESSAGE);
@@ -306,16 +296,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         }
     }
 
-    private void filterCategory(Category c) throws IOException, SQLException, JTillException {
-        currentTableContents = dc.getProductsInCategory(c.getId());
-        updateTable();
-    }
-
-    private void filterDepartment(Department d) throws IOException, SQLException {
-        currentTableContents = dc.getProductsInDepartment(d.getId());
-        updateTable();
-    }
-
     /**
      * Method to show an error.
      *
@@ -323,6 +303,161 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
      */
     private void showError(Exception e) {
         JOptionPane.showInternalMessageDialog(this, e, "Products", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private class MyModel implements TableModel {
+
+        private Product allProducts[];
+        private List<Product> products;
+        private List<TableModelListener> listeners;
+
+        public MyModel(List<Product> products) {
+            allProducts = new Product[products.size()];
+            allProducts = products.toArray(allProducts);
+            this.products = products;
+            this.listeners = new LinkedList<>();
+        }
+
+        public void addProduct(Product p) throws IOException, SQLException {
+            dc.addProduct(p);
+            products.add(p);
+            alertAll();
+        }
+
+        public void removeProduct(Product p) throws IOException, ProductNotFoundException, SQLException {
+            dc.removeProduct(p);
+            products.remove(p);
+            alertAll();
+        }
+
+        public Product getProduct(int id) {
+            for (Product p : products) {
+                if (p.getId() == id) {
+                    return p;
+                }
+            }
+            return null;
+        }
+
+        public Product getSelected() {
+            int row = tableProducts.getSelectedRow();
+            if (row == -1) {
+                return null;
+            }
+            return products.get(row);
+        }
+
+        public void filterCategory(Category c) throws IOException, SQLException, JTillException {
+            products = dc.getProductsInCategory(c.getId());
+            alertAll();
+        }
+
+        public void filterDepartment(Department d) throws IOException, SQLException, JTillException {
+            products = dc.getProductsInDepartment(d.getId());
+            alertAll();
+        }
+
+        public List<Product> getAll() {
+            return products;
+        }
+
+        public void setList(List<Product> products) {
+            this.products = products;
+        }
+
+        @Override
+        public int getRowCount() {
+            return products.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 5;
+        }
+
+        @Override
+        public String getColumnName(int i) {
+            switch (i) {
+                case 0: {
+                    return "ID";
+                }
+                case 1: {
+                    return "Barcode";
+                }
+                case 2: {
+                    return "Name";
+                }
+                case 3: {
+                    return "Price";
+                }
+                case 4: {
+                    return "Stock";
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return Object.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            Product p = products.get(rowIndex);
+            switch (columnIndex) {
+                case 0: {
+                    return p.getId();
+                }
+                case 1: {
+                    return p.getBarcode();
+                }
+                case 2: {
+                    return p.getLongName();
+                }
+                case 3: {
+                    if (p.isOpen()) {
+                        return "Open";
+                    } else {
+                        return "£" + new DecimalFormat("0.00").format(p.getPrice());
+                    }
+                }
+                case 4: {
+                    return p.getStock();
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        }
+
+        private void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
+
     }
 
     /**
@@ -884,11 +1019,10 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnShowAllActionPerformed
 
     private void btnRemoveProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveProductActionPerformed
-        int index = tableProducts.getSelectedRow();
-        if (index == -1) {
+        Product p = model.getSelected();
+        if (p == null) {
             return;
         }
-        Product p = currentTableContents.get(index);
         removeProduct(p);
     }//GEN-LAST:event_btnRemoveProductActionPerformed
 
@@ -1014,7 +1148,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnNewProductActionPerformed
 
     private void tableProductsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProductsMousePressed
-        Product p = currentTableContents.get(tableProducts.getSelectedRow());
+        Product p = model.getSelected();
         setCurrentProduct(p);
     }//GEN-LAST:event_tableProductsMousePressed
 
@@ -1051,21 +1185,21 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         final List<Product> newList = new ArrayList<>();
         switch (option) {
             case 1:
-                for (Product p : currentTableContents) {
+                for (Product p : model.getAll()) {
                     if ((p.getId() + "").equals(terms)) {
                         newList.add(p);
                     }
                 }
                 break;
             case 2:
-                for (Product p : currentTableContents) {
+                for (Product p : model.getAll()) {
                     if (p.getBarcode().equals(terms)) {
                         newList.add(p);
                     }
                 }
                 break;
             default:
-                currentTableContents.stream().filter((p) -> (p.getLongName().toLowerCase().contains(terms.toLowerCase()) || p.getName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((p) -> {
+                model.getAll().stream().filter((p) -> (p.getLongName().toLowerCase().contains(terms.toLowerCase()) || p.getName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((p) -> {
                     newList.add(p);
                 });
                 break;
@@ -1077,12 +1211,11 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.ERROR_MESSAGE);
         } else {
             txtSearch.setText("");
-            currentTableContents = newList;
+            model.setList(newList);
             if (newList.size() == 1) {
                 setCurrentProduct(newList.get(0));
             }
         }
-        updateTable();
         txtSearch.requestFocus();
     }//GEN-LAST:event_btnSearchActionPerformed
 
@@ -1109,7 +1242,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             try {
                 final PrintWriter pw = new PrintWriter(file);
 
-                for (Product p : currentTableContents) {
+                for (Product p : model.getAll()) {
                     pw.println(p.getId() + ","
                             + p.getLongName() + ","
                             + p.getCategory().getId() + ","
@@ -1158,9 +1291,9 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 if (d == null) {
                     return;
                 }
-                filterDepartment(d);
+                model.filterDepartment(d);
                 dialog.setVisible(false);
-            } catch (IOException | SQLException ex) {
+            } catch (JTillException | IOException | SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -1171,7 +1304,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 if (c == null) {
                     return;
                 }
-                filterCategory(c);
+                model.filterCategory(c);
                 dialog.setVisible(false);
             } catch (IOException | SQLException | JTillException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -1201,11 +1334,10 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_chkScaleActionPerformed
 
     private void tableProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProductsMouseClicked
-        int row = tableProducts.getSelectedRow();
-        if (row == -1) {
+        Product p = model.getSelected();
+        if (p == null) {
             return;
         }
-        Product p = currentTableContents.get(row);
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem enquiry = new JMenuItem("Enquiry");
