@@ -4362,7 +4362,7 @@ public class DBConnect extends DataConnect {
     }
 
     @Override
-    public List<Sale> getTerminalSales(int terminal, boolean uncashedOnly) throws IOException, SQLException, JTillException {
+    public List<Sale> getTerminalSales(int terminal, boolean uncashedOnly) throws IOException, SQLException {
         String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.TERMINAL = " + terminal + (uncashedOnly ? " AND s.CASHED = FALSE" : "");
         try (Connection con = getNewConnection()) {
             try {
