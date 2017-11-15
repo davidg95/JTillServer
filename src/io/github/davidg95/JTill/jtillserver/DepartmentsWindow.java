@@ -9,12 +9,19 @@ import io.github.davidg95.JTill.jtill.*;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -26,8 +33,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
 
-    private final DefaultTableModel model;
-    private List<Department> ctc;
+    private MyModel model;
 
     /**
      * Creates new form DepartmentWindow
@@ -39,9 +45,8 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
-        model = (DefaultTableModel) tblDep.getModel();
         tblDep.setSelectionModel(new ForcedListSelectionModel());
-        updateTable();
+        setTable();
     }
 
     public static void showWindow() {
@@ -53,19 +58,18 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         try {
             window.setIcon(false);
             window.setSelected(true);
+            window.setTable();
         } catch (PropertyVetoException ex) {
             Logger.getLogger(DepartmentsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void updateTable() {
+    private void setTable() {
         try {
-            ctc = dc.getAllDepartments();
-            model.setRowCount(0);
-            for (Department d : ctc) {
-                Object[] row = new Object[]{d.getId(), d.getName()};
-                model.addRow(row);
-            }
+            List<Department> deps = dc.getAllDepartments();
+            model = new MyModel(deps);
+            tblDep.setModel(model);
+            tblDep.getColumnModel().getColumn(0).setMaxWidth(40);
         } catch (SQLException | IOException ex) {
             Logger.getLogger(DepartmentsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -74,13 +78,142 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
     private void removeDepartment(Department dep) {
         try {
             if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove " + dep.getName() + "?", "Remove Department", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                dc.removeDepartment(dep.getId());
-                updateTable();
+                model.removeDepartment(dep);
                 JOptionPane.showMessageDialog(this, "Department " + dep.getName() + " removed", "Remove Department", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (IOException | SQLException | JTillException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void renameDepartment(Department dep) {
+        String name = JOptionPane.showInternalInputDialog(this, "Enter new name for " + dep.getName(), "Rename Department", JOptionPane.PLAIN_MESSAGE);
+        if (name == null || name.isEmpty()) {
+            return;
+        }
+        dep.setName(name);
+        try {
+            model.updateDepartment(dep);
+        } catch (IOException | SQLException | JTillException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private class MyModel implements TableModel {
+
+        private final List<Department> departments;
+        private final List<TableModelListener> listeners;
+
+        public MyModel(List<Department> deps) {
+            departments = deps;
+            listeners = new LinkedList<>();
+        }
+
+        public Department getDepartment(int id) {
+            for (Department d : departments) {
+                if (d.getId() == id) {
+                    return d;
+                }
+            }
+            return null;
+        }
+
+        public Department getSelected() {
+            int row = tblDep.getSelectedRow();
+            if (row == -1) {
+                return null;
+            }
+            return departments.get(row);
+        }
+
+        public void addDepartment(Department d) throws IOException, SQLException {
+            d = dc.addDepartment(d);
+            departments.add(d);
+            alertAll();
+        }
+
+        public void removeDepartment(Department d) throws IOException, SQLException, JTillException {
+            for (int i = 0; i < departments.size(); i++) {
+                Department dep = departments.get(i);
+                if (dep.getId() == d.getId()) {
+                    dc.removeDepartment(d.getId());
+                    departments.remove(i);
+                    alertAll();
+                    return;
+                }
+            }
+        }
+
+        public void updateDepartment(Department d) throws IOException, SQLException, JTillException {
+            dc.updateDepartment(d);
+            alertAll();
+        }
+
+        @Override
+        public int getRowCount() {
+            return departments.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 2;
+        }
+
+        @Override
+        public String getColumnName(int i) {
+            switch (i) {
+                case 0:
+                    return "ID";
+                case 1:
+                    return "Name";
+                default:
+                    return "";
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return Object.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            Department d = departments.get(rowIndex);
+            switch (columnIndex) {
+                case 0:
+                    return d.getId();
+                case 1:
+                    return d.getName();
+                default:
+                    return "";
+            }
+        }
+
+        private void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
+
     }
 
     /**
@@ -96,6 +229,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         tblDep = new javax.swing.JTable();
         btnNewDepartment = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
+        btnChangeName = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Edit Departments");
@@ -124,6 +258,11 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
             }
         });
         tblDep.getTableHeader().setReorderingAllowed(false);
+        tblDep.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblDepMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblDep);
         if (tblDep.getColumnModel().getColumnCount() > 0) {
             tblDep.getColumnModel().getColumn(0).setMaxWidth(40);
@@ -144,6 +283,13 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        btnChangeName.setText("Change Name");
+        btnChangeName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChangeNameActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -152,7 +298,8 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnNewDepartment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnRemove, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnRemove, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnChangeName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
                 .addContainerGap())
@@ -166,8 +313,10 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
                 .addGap(99, 99, 99)
                 .addComponent(btnNewDepartment)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnChangeName)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnRemove)
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addContainerGap(131, Short.MAX_VALUE))
         );
 
         pack();
@@ -185,23 +334,48 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         }
 
         try {
-            dc.addDepartment(new Department(name));
-            updateTable();
+            model.addDepartment(new Department(name));
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex);
         }
     }//GEN-LAST:event_btnNewDepartmentActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-        int row = tblDep.getSelectedRow();
-        if (row == -1) {
-            return;
-        }
-        Department dep = ctc.get(row);
+        Department dep = model.getSelected();
         removeDepartment(dep);
     }//GEN-LAST:event_btnRemoveActionPerformed
 
+    private void btnChangeNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeNameActionPerformed
+        Department dep = model.getSelected();
+        renameDepartment(dep);
+    }//GEN-LAST:event_btnChangeNameActionPerformed
+
+    private void tblDepMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDepMouseClicked
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            Department d = model.getSelected();
+            if (d == null) {
+                return;
+            }
+            JPopupMenu menu = new JPopupMenu();
+
+            JMenuItem rename = new JMenuItem("Rename");
+            JMenuItem remove = new JMenuItem("Remove");
+
+            rename.addActionListener((event) -> {
+                renameDepartment(d);
+            });
+            remove.addActionListener((event) -> {
+                removeDepartment(d);
+            });
+
+            menu.add(rename);
+            menu.add(remove);
+            menu.show(tblDep, evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_tblDepMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnChangeName;
     private javax.swing.JButton btnNewDepartment;
     private javax.swing.JButton btnRemove;
     private javax.swing.JScrollPane jScrollPane1;

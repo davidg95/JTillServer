@@ -111,7 +111,7 @@ public class SendDataDialog extends javax.swing.JDialog {
                 if (t.isSendData()) {
                     try {
                         t.sendData(data);
-                    } catch (IOException | SQLException ex) {
+                    } catch (IOException ex) {
                         JOptionPane.showMessageDialog(SendDataDialog.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }

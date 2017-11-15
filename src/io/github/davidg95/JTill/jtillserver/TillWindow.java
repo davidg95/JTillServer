@@ -362,7 +362,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
                 try {
                     dc.sendData(t.getId(), null);
                     return;
-                } catch (SQLException | IOException ex) {
+                } catch (IOException ex) {
                     JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 JOptionPane.showInternalMessageDialog(this, "Till offline", "Send Data", JOptionPane.WARNING_MESSAGE);

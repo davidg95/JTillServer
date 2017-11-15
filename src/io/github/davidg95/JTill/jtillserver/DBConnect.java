@@ -2079,6 +2079,9 @@ public class DBConnect extends DataConnect {
 
     @Override
     public void removeCategory(int id) throws SQLException, JTillException {
+        if (id == 1) {
+            throw new JTillException("Cannot remove the Default category");
+        }
         try (Connection con = getNewConnection()) {
             Statement stmt = con.createStatement();
             int value;
@@ -3663,10 +3666,13 @@ public class DBConnect extends DataConnect {
 
     @Override
     public void removeDepartment(int id) throws IOException, SQLException, JTillException {
+        if (id == 1) {
+            throw new JTillException("Cannot remove the Default department");
+        }
         try (Connection con = getNewConnection()) {
             try {
                 Statement stmt = con.createStatement();
-                stmt.executeUpdate("UPDATE PRODUCTS SET DEPARTMENT_ID = 1 WHERE DEPARTMENT_ID = " + id);
+                stmt.executeUpdate("UPDATE CATEGORYS SET DEPARTMENT = 1 WHERE DEPARTMENT = " + id);
                 int value = stmt.executeUpdate("DELETE FROM DEPARTMENTS WHERE ID=" + id);
                 con.commit();
                 if (value == 0) {
