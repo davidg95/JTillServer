@@ -652,12 +652,19 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             if (chkNext.isSelected()) {
                 String upc = dc.getSetting("UPC_PREFIX"); //Get the UPC Prefix
                 int length = Integer.parseInt(dc.getSetting("BARCODE_LENGTH")); //Get the barcode length
-                length--;
                 if (!upc.equals("")) { //Check that the UPC has been set
                     while (true) {
-                        int lengthToAdd = length - upc.length(); //Work out how many more digits need added
+                        int lengthToAdd = length - upc.length() - 1; //Work out how many more digits need added
                         String ref = dc.getSetting("NEXT_PLU"); //Get the next PLU number
                         int n = Integer.parseInt(ref);
+                        int max = (int) Math.pow(10, length - upc.length() - 1);
+                        int remaining = max - n;
+                        if (remaining == 0) {
+                            JOptionPane.showMessageDialog(this, "There are no more avaliable barcodes for this UPC Prefix", "No More Barcodes", JOptionPane.WARNING_MESSAGE);
+                            chkNext.setSelected(false);
+                            txtPlu.setEnabled(true);
+                            return;
+                        }
                         n++;
                         nextBarcode = Integer.toString(n); // Increase it then convert it to a String
 
