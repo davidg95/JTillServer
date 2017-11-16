@@ -533,6 +533,7 @@ public class GUI extends JFrame implements GUIInterface {
         menuStock = new javax.swing.JMenu();
         itemCreateNewProduct = new javax.swing.JMenuItem();
         itemStock = new javax.swing.JMenuItem();
+        itemEdit = new javax.swing.JMenuItem();
         itemReceive = new javax.swing.JMenuItem();
         itemOrdering = new javax.swing.JMenuItem();
         itemOrderingWizard = new javax.swing.JMenuItem();
@@ -1072,6 +1073,14 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         menuStock.add(itemStock);
+
+        itemEdit.setText("Edit a Product");
+        itemEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemEditActionPerformed(evt);
+            }
+        });
+        menuStock.add(itemEdit);
 
         itemReceive.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
         itemReceive.setText("Receive Stock");
@@ -1943,6 +1952,10 @@ public class GUI extends JFrame implements GUIInterface {
         OrderingWizard.showDialog(this);
     }//GEN-LAST:event_itemOrderingWizardActionPerformed
 
+    private void itemEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEditActionPerformed
+        ProductEditWindow.showWindow();
+    }//GEN-LAST:event_itemEditActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
     private javax.swing.JButton btnCategorys;
@@ -1976,6 +1989,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemDeclarations;
     private javax.swing.JMenuItem itemDepartments;
     private javax.swing.JMenuItem itemDiscounts;
+    private javax.swing.JMenuItem itemEdit;
     private javax.swing.JMenuItem itemEnquiry;
     private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenuItem itemHelp;
