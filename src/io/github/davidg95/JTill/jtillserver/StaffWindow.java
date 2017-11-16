@@ -62,7 +62,6 @@ public class StaffWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
-        tableStaff.getColumnModel().getColumn(0).setMaxWidth(40);
         tableStaff.setSelectionModel(new ForcedListSelectionModel());
         InputMap im = tableStaff.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = tableStaff.getActionMap();
@@ -122,6 +121,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             List<Staff> list = dc.getAllStaff();
             model = new MyModel(list);
             tableStaff.setModel(model);
+            tableStaff.getColumnModel().getColumn(0).setMaxWidth(40);
         } catch (IOException | SQLException ex) {
             showError(ex);
         }
