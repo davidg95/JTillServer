@@ -708,7 +708,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "Barcode is already in use", "Barcode in use", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                barcode = txtPlu.getText();
+                this.barcode = txtPlu.getText();
             }
             //Check what kinda of product they want to create
             if (radNew.isSelected()) { //Create a new standard product
@@ -725,7 +725,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 Product toCopy = ProductSelectDialog.showDialog(this); //Copy details from an existing product
                 if (toCopy != null) {
                     toCopy.setStock(0);
-                    toCopy.setBarcode(txtPlu.getText());
+                    toCopy.setBarcode(this.barcode);
                     try {
                         dc.addProduct(toCopy);
                         JOptionPane.showMessageDialog(this, "New Plu created", "New Plu", JOptionPane.INFORMATION_MESSAGE);
