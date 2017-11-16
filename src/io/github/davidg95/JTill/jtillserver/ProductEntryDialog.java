@@ -668,11 +668,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                         String barcode = upc + ref; //Join them all together
                         int checkDigit = Utilities.calculateCheckDigit(barcode);
                         barcode = barcode + checkDigit;
+                        dc.setSetting("NEXT_PLU", nextBarcode);
                         if (!dc.checkBarcode(barcode)) { //Check the barcode is not already int use
                             this.barcode = barcode;
                             break; //break from the while loop
-                        } else {
-                            dc.setSetting("NEXT_PLU", nextBarcode); //If it is in use, set the next plu and loop again
                         }
                     }
                 } else {

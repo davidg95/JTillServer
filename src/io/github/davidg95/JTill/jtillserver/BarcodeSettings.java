@@ -30,7 +30,6 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
     public BarcodeSettings() {
         this.dc = GUI.gui.dc;
         initComponents();
-//        setIconImage(icon);
         super.setClosable(true);
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
@@ -54,21 +53,25 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
 
     private void init() {
         try {
-            txtUPC.setText(dc.getSetting("UPC_PREFIX"));
-            cmbLength.setSelectedItem(dc.getSetting("BARCODE_LENGTH"));
-
             String upc = dc.getSetting("UPC_PREFIX");
             int length = Integer.parseInt(dc.getSetting("BARCODE_LENGTH"));
-            if (!upc.equals("")) {
-                int lengthToAdd = length - upc.length();
-                String ref = dc.getSetting("NEXT_PLU");
-                for (int i = 1; i < lengthToAdd; i++) {
-                    ref = 0 + ref;
-                }
-                String barcode = upc + ref;
-                txtNext.setText(barcode);
-            }
+            String next = dc.getSetting("NEXT_PLU");
+            txtUPC.setText(upc);
+            cmbLength.setSelectedItem(Integer.toString(length));
 
+            int lengthToAdd = length - upc.length() - 1; //Work out how many more digits need added
+            lengthToAdd -= next.length(); //Subtract the length to find out how many digits need added
+            for (int i = 1; i <= lengthToAdd; i++) {
+                next = 0 + next; //Pad it out with zero's to make up the length
+            }
+            String barcode = upc + next; //Join them all together
+            int checkDigit = Utilities.calculateCheckDigit(barcode);
+            barcode = barcode + checkDigit;
+            txtNext.setText(barcode);
+            int max = (int) Math.pow(10, length - upc.length() - 1);
+            int remaining = max - Integer.parseInt(next);
+            lblMax.setText("Max Barcodes: " + max);
+            lblRemaining.setText("Remaining Barcodes: " + remaining);
         } catch (IOException ex) {
             Logger.getLogger(BarcodeSettings.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -122,6 +125,8 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
         txtNext = new javax.swing.JTextField();
         btnReset = new javax.swing.JButton();
         cmbLength = new javax.swing.JComboBox<>();
+        lblMax = new javax.swing.JLabel();
+        lblRemaining = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
@@ -156,6 +161,10 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
 
         cmbLength.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "8", "12", "13", "14" }));
 
+        lblMax.setText("Max Barcodes: 0");
+
+        lblRemaining.setText("Remaining Barcodes: 0");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -164,7 +173,10 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblMax)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblRemaining)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -180,7 +192,7 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnReset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnSave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 81, Short.MAX_VALUE)))
+                        .addGap(0, 94, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -202,8 +214,11 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
                     .addComponent(jLabel3)
                     .addComponent(txtNext, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnReset))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(btnClose)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClose)
+                    .addComponent(lblMax)
+                    .addComponent(lblRemaining))
                 .addContainerGap())
         );
 
@@ -249,6 +264,8 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel lblMax;
+    private javax.swing.JLabel lblRemaining;
     private javax.swing.JTextField txtNext;
     private javax.swing.JTextField txtUPC;
     // End of variables declaration//GEN-END:variables
