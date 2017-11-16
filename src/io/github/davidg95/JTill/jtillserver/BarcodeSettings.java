@@ -6,7 +6,6 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Image;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -46,6 +45,7 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
         try {
             window.setIcon(false);
             window.setSelected(true);
+            window.init();
         } catch (PropertyVetoException ex) {
             Logger.getLogger(BarcodeSettings.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -72,6 +72,9 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
             int remaining = max - Integer.parseInt(next);
             lblMax.setText("Max Barcodes: " + max);
             lblRemaining.setText("Remaining Barcodes: " + remaining);
+            if (remaining == 0) {
+                JOptionPane.showMessageDialog(this, "There are no more avaliable barcodes for this UPC Prefix", "No More Barcodes", JOptionPane.WARNING_MESSAGE);
+            }
         } catch (IOException ex) {
             Logger.getLogger(BarcodeSettings.class.getName()).log(Level.SEVERE, null, ex);
         }
