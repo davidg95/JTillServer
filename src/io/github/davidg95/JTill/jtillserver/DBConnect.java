@@ -453,6 +453,14 @@ public class DBConnect extends DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+            try {
+                stmt = con.createStatement();
+                stmt.executeUpdate("ALTER TABLE PRODUCTS REMOVE COLUMN SUPPLIER");
+                con.commit();
+                log("Removed SUPPLIER from PRODUCTS");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
         }
