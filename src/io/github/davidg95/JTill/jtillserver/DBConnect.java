@@ -455,7 +455,7 @@ public class DBConnect extends DataConnect {
             }
             try {
                 stmt = con.createStatement();
-                stmt.executeUpdate("ALTER TABLE PRODUCTS REMOVE COLUMN SUPPLIER");
+                stmt.executeUpdate("ALTER TABLE PRODUCTS DROP COLUMN SUPPLIER");
                 con.commit();
                 log("Removed SUPPLIER from PRODUCTS");
             } catch (SQLException ex) {
