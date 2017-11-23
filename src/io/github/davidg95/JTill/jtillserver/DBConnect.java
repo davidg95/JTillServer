@@ -1093,21 +1093,21 @@ public class DBConnect extends DataConnect {
             int minCon = set.getInt(20);
             BigDecimal limit = set.getBigDecimal(21);
 
-            String cName = set.getString(24);
-            Time start = set.getTime(25);
-            Time end = set.getTime(26);
-            boolean restrict = set.getBoolean(27);
-            int age = set.getInt(28);
-            int department = set.getInt(29);
+            String cName = set.getString(23);
+            Time start = set.getTime(24);
+            Time end = set.getTime(25);
+            boolean restrict = set.getBoolean(26);
+            int age = set.getInt(27);
+            int department = set.getInt(28);
 
-            String dName = set.getString(31);
+            String dName = set.getString(30);
 
             Department d = new Department(department, dName);
 
             Category c = new Category(cId, cName, start, end, restrict, age, d);
 
-            String tName = set.getString(33);
-            double value = set.getDouble(34);
+            String tName = set.getString(32);
+            double value = set.getDouble(33);
 
             Tax t = new Tax(taxID, tName, value);
 

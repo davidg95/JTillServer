@@ -1,3 +1,11 @@
-JTill log Thu Nov 23 17:12:00 GMT 2017
-[17:12:00] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[17:12:04] [INFO] David Grant has logged in
+JTill log Thu Nov 23 18:24:56 GMT 2017
+[18:24:56] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[18:24:57] [INFO] Added SUPPLIER to PRODUCTS and set to -1
+[18:24:57] [INFO] Removed SUPPLIER from PRODUCTS
+[18:24:58] [INFO] Terminal DAVID-PC has connected
+[18:25:00] [INFO] David Grant has logged in from DAVID-PC
+[18:25:18] [INFO] David Grant has logged out
+[18:25:23] [INFO] David Grant has logged in
+[18:25:32] [INFO] Stopping
+[18:25:32] [INFO] Stopping JTIll Server
+[18:25:32] [INFO] Saving properties
