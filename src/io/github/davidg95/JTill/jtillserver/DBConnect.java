@@ -138,6 +138,7 @@ public class DBConnect extends DataConnect {
             TillSplashScreen.addBar(10);
             con.commit();
         }
+        updates();
     }
 
     private void updates() {
@@ -440,6 +441,15 @@ public class DBConnect extends DataConnect {
                 stmt.executeUpdate("ALTER TABLE ORDERS ADD COLUMN RECEIVED BOOLEAN");
                 con.commit();
                 log("Added RECEIVED to ORDERS");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
+            try {
+                stmt = con.createStatement();
+                stmt.executeUpdate("ALTER TABLE PRODUCTS ADD COLUMN SUPPLIER INTEGER");
+                stmt.executeUpdate("UPDATE PRODUCTS SET SUPPLIER = -1");
+                con.commit();
+                log("Added SUPPLIER to PRODUCTS and set to -1");
             } catch (SQLException ex) {
                 con.rollback();
             }
@@ -1075,21 +1085,21 @@ public class DBConnect extends DataConnect {
             int minCon = set.getInt(20);
             BigDecimal limit = set.getBigDecimal(21);
 
-            String cName = set.getString(23);
-            Time start = set.getTime(24);
-            Time end = set.getTime(25);
-            boolean restrict = set.getBoolean(26);
-            int age = set.getInt(27);
-            int department = set.getInt(28);
+            String cName = set.getString(24);
+            Time start = set.getTime(25);
+            Time end = set.getTime(26);
+            boolean restrict = set.getBoolean(27);
+            int age = set.getInt(28);
+            int department = set.getInt(29);
 
-            String dName = set.getString(30);
+            String dName = set.getString(31);
 
             Department d = new Department(department, dName);
 
             Category c = new Category(cId, cName, start, end, restrict, age, d);
 
-            String tName = set.getString(32);
-            double value = set.getDouble(33);
+            String tName = set.getString(33);
+            double value = set.getDouble(34);
 
             Tax t = new Tax(taxID, tName, value);
 
