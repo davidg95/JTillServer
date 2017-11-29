@@ -8,7 +8,9 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import io.github.davidg95.jconn.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -30,6 +32,8 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.StampedLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -5407,5 +5411,96 @@ public class DBConnect extends DataConnect {
     @Override
     public int getInits() throws IOException {
         return inits;
+    }
+
+    private List<String> fileList;
+    private String SOURCE_FOLDER = "TillEmbedded";
+    private IOException backupException = null;
+
+    @Override
+    public void performBackup() throws IOException {
+        try {
+            final ModalDialog mDialog = new ModalDialog(GUI.gui, "Backup", "Backup in progress...");
+            final Runnable run = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        fileList = new ArrayList<>();
+                        generateFileList(new File(SOURCE_FOLDER));
+                        zipIt();
+                    } catch (IOException ex) {
+                        backupException = ex;
+                    } finally {
+                        mDialog.hide();
+                    }
+                }
+            };
+            final Thread thread = new Thread(run, "BACKUP_THREAD");
+            thread.start();
+            mDialog.show();
+            if (backupException != null) {
+                throw backupException;
+            }
+        } finally {
+            backupException = null;
+        }
+    }
+
+    private void zipIt() throws IOException {
+        String zipFile = "jtillbackup.zip";
+        byte[] buffer = new byte[1024];
+        String source = new File(SOURCE_FOLDER).getName();
+        FileOutputStream fos = null;
+        ZipOutputStream zos = null;
+        try {
+            fos = new FileOutputStream(zipFile);
+            zos = new ZipOutputStream(fos);
+
+            LOG.log(Level.INFO, "Output to Zip : " + zipFile);
+            FileInputStream in = null;
+
+            for (String file : this.fileList) {
+                LOG.log(Level.INFO, "File Added : " + file);
+                ZipEntry ze = new ZipEntry(source + File.separator + file);
+                zos.putNextEntry(ze);
+                try {
+                    in = new FileInputStream(SOURCE_FOLDER + File.separator + file);
+                    int len;
+                    while ((len = in.read(buffer)) > 0) {
+                        zos.write(buffer, 0, len);
+                    }
+                } finally {
+                    in.close();
+                }
+            }
+
+            zos.closeEntry();
+            LOG.log(Level.INFO, "Folder successfully compressed");
+
+        } finally {
+            try {
+                zos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void generateFileList(File node) {
+        // add file only
+        if (node.isFile()) {
+            fileList.add(generateZipEntry(node.toString()));
+        }
+
+        if (node.isDirectory()) {
+            String[] subNote = node.list();
+            for (String filename : subNote) {
+                generateFileList(new File(node, filename));
+            }
+        }
+    }
+
+    private String generateZipEntry(String file) {
+        return file.substring(SOURCE_FOLDER.length() + 1, file.length());
     }
 }

@@ -1977,15 +1977,13 @@ public class GUI extends JFrame implements GUIInterface {
                 @Override
                 public void run() {
                     try {
-                        fileList = new ArrayList<>();
-                        generateFileList(new File(SOURCE_FOLDER));
-                        zipIt();
+                        dc.performBackup();
                         mDialog.hide();
-                        JOptionPane.showMessageDialog(GUI.this, "Backup saved to jtill.backup", "Backup", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(GUI.this, "Backup saved to jtillbackup.zip on the server", "Backup", JOptionPane.INFORMATION_MESSAGE);
                     } catch (IOException ex) {
-                        LOG.log(Level.SEVERE, "Backup Error", ex);
                         mDialog.hide();
-                        JOptionPane.showMessageDialog(GUI.this, "Error taking backup", "Backup", JOptionPane.ERROR_MESSAGE);
+                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(GUI.this, "Error performing backup", "Backup", JOptionPane.ERROR_MESSAGE);
                     } finally {
                         mDialog.hide();
                     }
@@ -1997,66 +1995,6 @@ public class GUI extends JFrame implements GUIInterface {
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
-    private void zipIt() throws IOException {
-        String zipFile = "jtillbackup.zip";
-        byte[] buffer = new byte[1024];
-        String source = new File(SOURCE_FOLDER).getName();
-        FileOutputStream fos = null;
-        ZipOutputStream zos = null;
-        try {
-            fos = new FileOutputStream(zipFile);
-            zos = new ZipOutputStream(fos);
-
-            LOG.log(Level.INFO, "Output to Zip : " + zipFile);
-            FileInputStream in = null;
-
-            for (String file : this.fileList) {
-                LOG.log(Level.INFO, "File Added : " + file);
-                ZipEntry ze = new ZipEntry(source + File.separator + file);
-                zos.putNextEntry(ze);
-                try {
-                    in = new FileInputStream(SOURCE_FOLDER + File.separator + file);
-                    int len;
-                    while ((len = in.read(buffer)) > 0) {
-                        zos.write(buffer, 0, len);
-                    }
-                } finally {
-                    in.close();
-                }
-            }
-
-            zos.closeEntry();
-            LOG.log(Level.INFO, "Folder successfully compressed");
-
-        } finally {
-            try {
-                zos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void generateFileList(File node) {
-        // add file only
-        if (node.isFile()) {
-            fileList.add(generateZipEntry(node.toString()));
-        }
-
-        if (node.isDirectory()) {
-            String[] subNote = node.list();
-            for (String filename : subNote) {
-                generateFileList(new File(node, filename));
-            }
-        }
-    }
-
-    private String generateZipEntry(String file) {
-        return file.substring(SOURCE_FOLDER.length() + 1, file.length());
-    }
-
-    private List<String> fileList;
-    private String SOURCE_FOLDER = "TillEmbedded";
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
     private javax.swing.JButton btnCategorys;
