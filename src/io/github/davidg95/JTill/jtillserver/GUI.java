@@ -13,18 +13,23 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.beans.PropertyVetoException;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -529,6 +534,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemCheckDatabase = new javax.swing.JMenuItem();
         itemInfo = new javax.swing.JMenuItem();
         itemUpdate = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         itemExit = new javax.swing.JMenuItem();
         menuStock = new javax.swing.JMenu();
         itemCreateNewProduct = new javax.swing.JMenuItem();
@@ -1043,6 +1049,14 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         menuFile.add(itemUpdate);
+
+        jMenuItem1.setText("Backup...");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        menuFile.add(jMenuItem1);
 
         itemExit.setText("Exit");
         itemExit.addActionListener(new java.awt.event.ActionListener() {
@@ -1956,6 +1970,93 @@ public class GUI extends JFrame implements GUIInterface {
         ProductEditWindow.showWindow();
     }//GEN-LAST:event_itemEditActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        if (JOptionPane.showConfirmDialog(this, "Do you want to take a database backup?", "Backup", JOptionPane.YES_NO_OPTION) == 0) {
+            final ModalDialog mDialog = new ModalDialog(this, "Backup", "Performing backup...");
+            final Runnable run = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        fileList = new ArrayList<>();
+                        generateFileList(new File(SOURCE_FOLDER));
+                        zipIt();
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(GUI.this, "Backup saved to jtill.backup", "Backup", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (IOException ex) {
+                        LOG.log(Level.SEVERE, "Backup Error", ex);
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(GUI.this, "Error taking backup", "Backup", JOptionPane.ERROR_MESSAGE);
+                    } finally {
+                        mDialog.hide();
+                    }
+                }
+            };
+            final Thread thread = new Thread(run, "BACKUP_THREAD");
+            thread.start();
+            mDialog.show();
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void zipIt() throws IOException {
+        String zipFile = "jtillbackup.zip";
+        byte[] buffer = new byte[1024];
+        String source = new File(SOURCE_FOLDER).getName();
+        FileOutputStream fos = null;
+        ZipOutputStream zos = null;
+        try {
+            fos = new FileOutputStream(zipFile);
+            zos = new ZipOutputStream(fos);
+
+            LOG.log(Level.INFO, "Output to Zip : " + zipFile);
+            FileInputStream in = null;
+
+            for (String file : this.fileList) {
+                LOG.log(Level.INFO, "File Added : " + file);
+                ZipEntry ze = new ZipEntry(source + File.separator + file);
+                zos.putNextEntry(ze);
+                try {
+                    in = new FileInputStream(SOURCE_FOLDER + File.separator + file);
+                    int len;
+                    while ((len = in.read(buffer)) > 0) {
+                        zos.write(buffer, 0, len);
+                    }
+                } finally {
+                    in.close();
+                }
+            }
+
+            zos.closeEntry();
+            LOG.log(Level.INFO, "Folder successfully compressed");
+
+        } finally {
+            try {
+                zos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void generateFileList(File node) {
+        // add file only
+        if (node.isFile()) {
+            fileList.add(generateZipEntry(node.toString()));
+        }
+
+        if (node.isDirectory()) {
+            String[] subNote = node.list();
+            for (String filename : subNote) {
+                generateFileList(new File(node, filename));
+            }
+        }
+    }
+
+    private String generateZipEntry(String file) {
+        return file.substring(SOURCE_FOLDER.length() + 1, file.length());
+    }
+
+    private List<String> fileList;
+    private String SOURCE_FOLDER = "TillEmbedded";
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
     private javax.swing.JButton btnCategorys;
@@ -2025,6 +2126,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemWasteStock;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
