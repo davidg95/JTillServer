@@ -205,13 +205,26 @@ public class BackupDialog extends javax.swing.JDialog {
         }
         String name = list.getSelectedValue();
         if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this backup?\n" + name, "Delete Backup", JOptionPane.YES_NO_OPTION) == 0) {
-            try {
-                dc.clearBackup(name);
-                loadList();
-                JOptionPane.showMessageDialog(this, "Backup " + name + " removed", "Delete Backup", 1);
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", 6);
-            }
+            final ModalDialog mDialog = new ModalDialog(this, "Delete Backup", "Removing backup...");
+            final Runnable run = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        dc.clearBackup(name);
+                        loadList();
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(BackupDialog.this, "Backup " + name + " removed", "Delete Backup", 1);
+                    } catch (IOException ex) {
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(BackupDialog.this, ex, "Error", 6);
+                    } finally {
+                        mDialog.hide();
+                    }
+                }
+            };
+            final Thread thread = new Thread(run, "REMOVE_BACKUP");
+            thread.start();
+            mDialog.show();
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
