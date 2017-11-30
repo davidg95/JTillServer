@@ -2196,8 +2196,6 @@ public class DBConnect extends DataConnect {
             final Staff st = new Staff(stid, stname, position, uname, dPass, wage, enabled);
 
             final Sale s = new Sale(id, price, null, date, t, cashed, st);
-
-            s.setProducts(getItemsInSale(s));
             sales.add(s);
         }
         return sales;
@@ -2357,9 +2355,9 @@ public class DBConnect extends DataConnect {
     @Override
     public List<Sale> getAllSales() throws SQLException {
         String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID";
+        List<Sale> sales = new LinkedList<>();
         try (Connection con = getConnection()) {
             Statement stmt = con.createStatement();
-            List<Sale> sales = new LinkedList<>();
             try {
                 ResultSet set = stmt.executeQuery(query);
                 sales = getSalesFromResultSet(set);
@@ -2369,8 +2367,11 @@ public class DBConnect extends DataConnect {
                 LOG.log(Level.SEVERE, null, ex);
                 throw ex;
             }
-            return sales;
         }
+        for (Sale s : sales) {
+            s.setProducts(getItemsInSale(s));
+        }
+        return sales;
     }
 
     @Override
