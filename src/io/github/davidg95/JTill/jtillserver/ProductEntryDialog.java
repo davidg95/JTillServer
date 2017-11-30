@@ -12,7 +12,6 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.Window;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -837,7 +836,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
     private void chkNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkNextActionPerformed
         txtBarcode.setEnabled(!chkNext.isSelected());
-        btnEnter.setEnabled(chkNext.isSelected());
     }//GEN-LAST:event_chkNextActionPerformed
 
     private void chkScaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkScaleActionPerformed
