@@ -12,6 +12,7 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.Window;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -330,13 +331,15 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             }
         });
         txtBarcode.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtBarcodeKeyPressed(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtBarcodeKeyTyped(evt);
             }
         });
 
         btnEnter.setText("Create");
-        btnEnter.setEnabled(false);
         btnEnter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEnterActionPerformed(evt);
@@ -842,26 +845,47 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         txtScaleName.setEnabled(chkScale.isSelected());
     }//GEN-LAST:event_chkScaleActionPerformed
 
+    private void txtBarcodeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBarcodeKeyPressed
+//        char c = evt.getKeyChar();
+//        String s = Character.toString(c);
+//        if ((!(s.matches("[0-9]+"))) && !isBackspace) {
+//            evt.consume();
+//        }
+//        if (txtBarcode.getSelectionStart() < txtBarcode.getSelectionEnd()) {
+//            btnEnter.setEnabled(false);
+//            return;
+//        }
+//        int length = txtBarcode.getText().length() + 1;
+//        if (isBackspace) {
+//            length--;
+//        }
+//        if (length > 14) {
+//            evt.consume();
+//            return;
+//        }
+//        if (length == 8 || length == 12 || length == 13 || length == 14) {
+//            btnEnter.setEnabled(true);
+//        } else {
+//            btnEnter.setEnabled(false);
+//        }
+    }//GEN-LAST:event_txtBarcodeKeyPressed
+
     private void txtBarcodeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBarcodeKeyTyped
         char c = evt.getKeyChar();
         String s = Character.toString(c);
         if (!(s.matches("[0-9]+"))) {
             evt.consume();
         }
-        if (txtBarcode.getSelectionStart() < txtBarcode.getSelectionEnd()) {
-            btnEnter.setEnabled(false);
-            return;
-        }
-        int length = txtBarcode.getText().length() + 1;
-        if (length > 14) {
-            evt.consume();
-            return;
-        }
-        if (length == 8 || length == 12 || length == 13 || length == 14) {
-            btnEnter.setEnabled(true);
-        } else {
-            btnEnter.setEnabled(false);
-        }
+//        int length = txtBarcode.getText().length() + 1;
+//        if (length > 14) {
+//            evt.consume();
+//            return;
+//        }
+//        if (length == 8 || length == 12 || length == 13 || length == 14) {
+//            btnEnter.setEnabled(true);
+//        } else {
+//            btnEnter.setEnabled(false);
+//        }
     }//GEN-LAST:event_txtBarcodeKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
