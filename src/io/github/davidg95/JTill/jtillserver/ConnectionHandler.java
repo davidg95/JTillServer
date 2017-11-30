@@ -934,7 +934,7 @@ public class ConnectionHandler {
     }
     
     @JConnMethod("BACKUP")
-    public void performBackup() throws IOException{
-        dc.performBackup();
+    public String  performBackup() throws IOException{
+        return dc.performBackup();
     }
 }

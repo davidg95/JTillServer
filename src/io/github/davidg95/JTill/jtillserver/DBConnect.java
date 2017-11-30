@@ -96,8 +96,6 @@ public class DBConnect extends DataConnect {
 
     private int inits = 0;
 
-    private Timer backupTimer;
-
     static {
         CONNECTION = new DBConnect();
     }
@@ -125,7 +123,6 @@ public class DBConnect extends DataConnect {
         Logger.getGlobal().addHandler(handler);
         clockedOn = new LinkedList<>();
         clockLock = new StampedLock();
-        scheduleBackup(0, 0);
     }
 
     public void setServer(JConnServer server) {
@@ -5424,36 +5421,10 @@ public class DBConnect extends DataConnect {
     private List<String> fileList;
     private String SOURCE_FOLDER = "TillEmbedded";
     private IOException backupException = null;
-
-    private class BackupTask extends TimerTask {
-
-        @Override
-        public void run() {
-            try {
-                performBackup();
-                LOG.log(Level.INFO, "Scheduled backup complete");
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(GUI.gui, "Error performing scheduled backup", "Backup", JOptionPane.ERROR_MESSAGE);
-                LOG.log(Level.SEVERE, "Error performing scheduled backup", ex);
-            }
-        }
-    }
-
-    public void scheduleBackup(int h, int m) {
-        Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, h);
-        today.set(Calendar.MINUTE, m);
-        today.set(Calendar.SECOND, 0);
-        if (backupTimer != null) {
-            backupTimer.cancel();
-        }
-        backupTimer = new Timer();
-        backupTimer.schedule(new BackupTask(), today.getTime(), TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)); // period: 1 day
-        LOG.log(Level.INFO, "Backup scheduled at " + h + ":" + m + " every day");
-    }
+    private String path = "";
 
     @Override
-    public void performBackup() throws IOException {
+    public String performBackup() throws IOException {
         try {
             final ModalDialog mDialog = new ModalDialog(GUI.gui, "Backup", "Backup in progress...");
             final Runnable run = new Runnable() {
@@ -5462,7 +5433,7 @@ public class DBConnect extends DataConnect {
                     try {
                         fileList = new ArrayList<>();
                         generateFileList(new File(SOURCE_FOLDER));
-                        zipIt();
+                        path = zipIt();
                     } catch (IOException ex) {
                         backupException = ex;
                     } finally {
@@ -5476,12 +5447,13 @@ public class DBConnect extends DataConnect {
             if (backupException != null) {
                 throw backupException;
             }
+            return path;
         } finally {
             backupException = null;
         }
     }
 
-    private void zipIt() throws IOException {
+    private String zipIt() throws IOException {
         File dir = new File("backups");
         if (!dir.exists()) {
             LOG.log(Level.INFO, "Creating directory backups");
@@ -5489,9 +5461,9 @@ public class DBConnect extends DataConnect {
             LOG.log(Level.INFO, "Directory backups created at " + dir.getAbsolutePath());
         }
         Date now = new Date();
-        SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
-        String day = simpleDateformat.format(now);
-        String zipFile = "backups" + File.separator + "jtillbackup_" + day + ".zip";
+        SimpleDateFormat simpleDateformat = new SimpleDateFormat("ddMMyyyy");
+        String date = simpleDateformat.format(now);
+        String zipFile = "backups" + File.separator + "jtillbackup_" + date + ".zip";
         byte[] buffer = new byte[1024];
         String source = new File(SOURCE_FOLDER).getName();
         FileOutputStream fos = null;
@@ -5528,6 +5500,7 @@ public class DBConnect extends DataConnect {
                 e.printStackTrace();
             }
         }
+        return zipFile;
     }
 
     public void generateFileList(File node) {

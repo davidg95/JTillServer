@@ -1977,9 +1977,9 @@ public class GUI extends JFrame implements GUIInterface {
                 @Override
                 public void run() {
                     try {
-                        dc.performBackup();
+                        String path = dc.performBackup();
                         mDialog.hide();
-                        JOptionPane.showMessageDialog(GUI.this, "Backup saved to jtillbackup.zip on the server", "Backup", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(GUI.this, "Backup saved to " + path + " on the server", "Backup", JOptionPane.INFORMATION_MESSAGE);
                     } catch (IOException ex) {
                         mDialog.hide();
                         Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
