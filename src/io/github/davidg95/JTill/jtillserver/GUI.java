@@ -1971,28 +1971,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemEditActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        if (JOptionPane.showConfirmDialog(this, "Do you want to take a database backup?", "Backup", JOptionPane.YES_NO_OPTION) == 0) {
-            final ModalDialog mDialog = new ModalDialog(this, "Backup", "Performing backup...");
-            final Runnable run = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        String path = dc.performBackup();
-                        mDialog.hide();
-                        JOptionPane.showMessageDialog(GUI.this, "Backup saved to " + path + " on the server", "Backup", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (IOException ex) {
-                        mDialog.hide();
-                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-                        JOptionPane.showMessageDialog(GUI.this, "Error performing backup", "Backup", JOptionPane.ERROR_MESSAGE);
-                    } finally {
-                        mDialog.hide();
-                    }
-                }
-            };
-            final Thread thread = new Thread(run, "BACKUP_THREAD");
-            thread.start();
-            mDialog.show();
-        }
+        BackupDialog.showDialog(this);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

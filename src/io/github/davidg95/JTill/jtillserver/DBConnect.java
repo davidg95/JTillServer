@@ -23,13 +23,11 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Timer;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.StampedLock;
@@ -48,8 +46,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.swing.JOptionPane;
 import org.apache.derby.jdbc.EmbeddedDriver;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Database connection class which handles communication with the database.
@@ -5519,5 +5515,37 @@ public class DBConnect extends DataConnect {
 
     private String generateZipEntry(String file) {
         return file.substring(SOURCE_FOLDER.length() + 1, file.length());
+    }
+
+    @Override
+    public List<String> getBackupList() throws IOException {
+        File dir = new File("backups");
+        ArrayList<String> backups = new ArrayList<>();
+        LOG.log(Level.INFO, "Retrieving backup list");
+        if (dir.exists() && dir.isDirectory()) {
+            for (File f : dir.listFiles()) {
+                backups.add(f.getName());
+            }
+        }
+        return backups;
+    }
+
+    @Override
+    public void clearBackup(String name) throws IOException {
+        File dir = new File("backups");
+        if (dir.exists() && dir.isDirectory()) {
+            for (File f : dir.listFiles()) {
+                if (name == null) {
+                    LOG.log(Level.INFO, "Removing backup " + f.getName());
+                    f.delete();
+                    continue;
+                }
+                if (f.getName().equals(name)) {
+                    LOG.log(Level.INFO, "Removing backup " + f.getName());
+                    f.delete();
+                    return;
+                }
+            }
+        }
     }
 }

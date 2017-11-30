@@ -932,9 +932,19 @@ public class ConnectionHandler {
     public boolean isTillConnected(@JConnParameter("ID") int id) throws IOException {
         return dc.isTillConnected(id);
     }
-    
+
     @JConnMethod("BACKUP")
-    public String  performBackup() throws IOException{
+    public String performBackup() throws IOException {
         return dc.performBackup();
+    }
+
+    @JConnMethod("LISTBACKUPS")
+    public List<String> getBackupList() throws IOException {
+        return dc.getBackupList();
+    }
+
+    @JConnMethod("DELETEBACKUP")
+    public void clearBackup(@JConnParameter("NAME") String name) throws IOException {
+        dc.clearBackup(name);
     }
 }
