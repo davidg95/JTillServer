@@ -6,7 +6,6 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import io.github.davidg95.jconn.JConnData;
 import io.github.davidg95.jconn.events.*;
 import io.github.davidg95.jconn.JConnListener;
 import io.github.davidg95.jconn.JConnServer;
@@ -18,6 +17,8 @@ import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -60,7 +61,7 @@ public class TillServer implements JConnListener {
         try {
             javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            Logger.getLogger(TillServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TillServer.class.getName()).log(Level.WARNING, "Windows look and feel not supported on this system");
         }
         if (GraphicsEnvironment.isHeadless()) {
             System.out.println("***Headless operation not currently supported***");
@@ -134,7 +135,7 @@ public class TillServer implements JConnListener {
 //                            line = in.nextLine();
 //                            conn_limit = Integer.parseInt(line.substring(line.indexOf(":") + 2));
 //                            DBConnect.getInstance().setLicenseInfo(liNo, conn_limit);
-                            g.login();
+        g.login();
 //                            return;
 //                        } catch (FileNotFoundException ex) {
 //                            JOptionPane.showMessageDialog(g, "Error loading license file. JTill Server will now close.", "License", JOptionPane.ERROR_MESSAGE);
@@ -231,7 +232,7 @@ public class TillServer implements JConnListener {
 
     @Override
     public void onConnectionEstablish(JConnEvent event) {
-        if(connections >= conn_limit){
+        if (connections >= conn_limit) {
             event.setCancelled(true);
         }
         connections++;
