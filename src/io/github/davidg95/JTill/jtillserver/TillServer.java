@@ -6,6 +6,9 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import io.github.davidg95.jconn.JConnData;
+import io.github.davidg95.jconn.JConnEvent;
+import io.github.davidg95.jconn.JConnListener;
 import io.github.davidg95.jconn.JConnServer;
 import java.awt.AWTException;
 import java.awt.GraphicsEnvironment;
@@ -27,7 +30,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  *
  * @author 1301480
  */
-public class TillServer {
+public class TillServer implements JConnListener {
 
     private GUI g;
 
@@ -46,6 +49,8 @@ public class TillServer {
     public static JConnServer server;
 
     private static TillServer tillServer;
+
+    private int connections;
 
     /**
      * @param args the command line arguments
@@ -70,6 +75,7 @@ public class TillServer {
      * Initialise the server.
      */
     public TillServer() {
+        connections = 0;
         TillSplashScreen.showSplashScreen();
         icon = new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/tillIcon.png")).getImage();
         settings = Settings.getInstance();
@@ -104,6 +110,7 @@ public class TillServer {
         try {
             TillSplashScreen.setLabel("Starting server socket");
             server = JConnServer.start(PORT_IN_USE, ConnectionHandler.class);
+            server.registerListener(this);
             DBConnect.getInstance().setServer(server);
             TillSplashScreen.addBar(20);
         } catch (IOException ex) {
@@ -185,5 +192,27 @@ public class TillServer {
      */
     public static void removeSystemTrayIcon() {
         tray.remove(trayIcon);
+    }
+
+    @Override
+    public void onReceive(JConnData data) {
+    }
+
+    @Override
+    public void onConnectionDrop(JConnEvent event) {
+        connections--;
+        g.setClientLabel(connections);
+    }
+
+    @Override
+    public void onConnectionEstablish(JConnEvent event) {
+        connections++;
+        g.setClientLabel(connections);
+    }
+
+    @Override
+    public void onServerGracefulEnd() {
+        connections--;
+        g.setClientLabel(connections);
     }
 }

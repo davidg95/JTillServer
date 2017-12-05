@@ -13,23 +13,18 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.beans.PropertyVetoException;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -117,6 +112,11 @@ public class GUI extends JFrame implements GUIInterface {
             }
         } catch (IOException ex) {
         }
+    }
+
+    @Override
+    public void setClientLabel(int count) {
+        lblClients.setText("Connections: " + count);
     }
 
     /**
@@ -274,11 +274,6 @@ public class GUI extends JFrame implements GUIInterface {
 
     public void setUpdateLabel(String text) {
         lblWarnings.setText(text);
-    }
-
-    @Override
-    public void setClientLabel(String text) {
-        lblClients.setText(text);
     }
 
     /**
@@ -546,7 +541,6 @@ public class GUI extends JFrame implements GUIInterface {
         itemWasteStock = new javax.swing.JMenuItem();
         itemEnquiry = new javax.swing.JMenuItem();
         itemStockTake = new javax.swing.JMenuItem();
-        itemManualSale = new javax.swing.JMenuItem();
         menuSetup = new javax.swing.JMenu();
         itemReasons = new javax.swing.JMenuItem();
         itemSuppliers = new javax.swing.JMenuItem();
@@ -1147,14 +1141,6 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         menuStock.add(itemStockTake);
-
-        itemManualSale.setText("Manual Sale");
-        itemManualSale.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemManualSaleActionPerformed(evt);
-            }
-        });
-        menuStock.add(itemManualSale);
 
         jMenuBar1.add(menuStock);
 
@@ -1837,10 +1823,6 @@ public class GUI extends JFrame implements GUIInterface {
         ReceivedReportsWindow.showWindow();
     }//GEN-LAST:event_itemReceivedReportsActionPerformed
 
-    private void itemManualSaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemManualSaleActionPerformed
-        ManualSaleWindow.showWindow();
-    }//GEN-LAST:event_itemManualSaleActionPerformed
-
     private void btnSendDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendDataActionPerformed
         try {
             dc.reinitialiseAllTills();
@@ -2015,7 +1997,6 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemLabelPrinting;
     private javax.swing.JMenuItem itemLogin;
     private javax.swing.JMenuItem itemLoyalty;
-    private javax.swing.JMenuItem itemManualSale;
     private javax.swing.JMenuItem itemNewStaff;
     private javax.swing.JMenuItem itemOrdering;
     private javax.swing.JMenuItem itemOrderingWizard;
