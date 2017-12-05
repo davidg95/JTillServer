@@ -92,6 +92,9 @@ public class DBConnect extends DataConnect {
 
     private int inits = 0;
 
+    private String licenseNo;
+    private int conn_limit;
+
     static {
         CONNECTION = new DBConnect();
     }
@@ -5559,5 +5562,15 @@ public class DBConnect extends DataConnect {
                 }
             }
         }
+    }
+
+    @Override
+    public Object[] getLicenseInfo() throws IOException {
+        return new Object[]{licenseNo, conn_limit};
+    }
+
+    public void setLicenseInfo(String no, int connections) {
+        this.licenseNo = no;
+        this.conn_limit = connections;
     }
 }

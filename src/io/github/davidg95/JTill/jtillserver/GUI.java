@@ -1917,7 +1917,16 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnEnquiryActionPerformed
 
     private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
-        JOptionPane.showMessageDialog(this, "JTill Server version " + TillServer.VERSION, "JTill Server", JOptionPane.INFORMATION_MESSAGE);
+        try {
+            Object[] licenseInfo = dc.getLicenseInfo();
+            String number = (String) licenseInfo[0];
+            int connections = (int) licenseInfo[1];
+            JOptionPane.showMessageDialog(this, "JTill Server version " + TillServer.VERSION + "\n"
+                    + "License Number: " + number + "\n"
+                    + "Maximum Connections: " + connections, "JTill Server", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_itemAboutActionPerformed
 
     private void itemHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemHelpActionPerformed

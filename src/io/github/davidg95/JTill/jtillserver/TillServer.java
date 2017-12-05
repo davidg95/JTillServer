@@ -18,6 +18,8 @@ import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -51,6 +53,7 @@ public class TillServer implements JConnListener {
     private static TillServer tillServer;
 
     private int connections;
+    private int conn_limit = 9999;
 
     /**
      * @param args the command line arguments
@@ -122,7 +125,31 @@ public class TillServer implements JConnListener {
         TillSplashScreen.addBar(10);
         TillSplashScreen.hideSplashScreen();
         g.setVisible(true);
-        g.login();
+//        for (File r : File.listRoots()) {
+//            try {
+//                for (File f : r.listFiles()) {
+//                    if (f.getName().equals("license.txt")) {
+//                        try {
+//                            Scanner in = new Scanner(f);
+//                            String line = in.nextLine();
+//                            String liNo = line.substring(line.indexOf(":") + 2);
+//                            line = in.nextLine();
+//                            conn_limit = Integer.parseInt(line.substring(line.indexOf(":") + 2));
+//                            DBConnect.getInstance().setLicenseInfo(liNo, conn_limit);
+                            g.login();
+//                            return;
+//                        } catch (FileNotFoundException ex) {
+//                            JOptionPane.showMessageDialog(g, "Error loading license file. JTill Server will now close.", "License", JOptionPane.ERROR_MESSAGE);
+//                            System.exit(0);
+//                        }
+//                    }
+//                }
+//            } catch (Exception e) {
+//
+//            }
+//        }
+//        JOptionPane.showMessageDialog(g, "License File not detected. JTill Server will now close", "License Error", JOptionPane.ERROR_MESSAGE);
+//        System.exit(0);
     }
 
     /**
@@ -206,6 +233,9 @@ public class TillServer implements JConnListener {
 
     @Override
     public void onConnectionEstablish(JConnEvent event) {
+        if(connections >= conn_limit){
+            event.setCancelled(true);
+        }
         connections++;
         g.setClientLabel(connections);
     }

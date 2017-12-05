@@ -947,4 +947,9 @@ public class ConnectionHandler {
     public void clearBackup(@JConnParameter("NAME") String name) throws IOException {
         dc.clearBackup(name);
     }
+
+    @JConnMethod("LICENSEINFO")
+    public Object[] getLicenseInfo() throws IOException {
+        return dc.getLicenseInfo();
+    }
 }
