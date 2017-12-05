@@ -1,5 +1,7 @@
-JTill log Tue Dec 05 13:59:59 GMT 2017
-[13:59:59] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[14:00:00] [INFO] Added SUPPLIER to PRODUCTS and set to -1
-[14:00:00] [INFO] Removed SUPPLIER from PRODUCTS
-[14:00:03] [INFO] David Grant has logged in
+JTill log Tue Dec 05 14:36:03 GMT 2017
+[14:36:03] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[14:36:04] [INFO] Added SUPPLIER to PRODUCTS and set to -1
+[14:36:04] [INFO] Removed SUPPLIER from PRODUCTS
+[14:36:08] [INFO] Terminal DAVID-PC has connected
+[14:36:10] [INFO] David Grant has logged in from DAVID-PC
+[14:36:12] [INFO] David Grant has logged out

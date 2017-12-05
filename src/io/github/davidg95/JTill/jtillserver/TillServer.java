@@ -7,7 +7,7 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import io.github.davidg95.jconn.JConnData;
-import io.github.davidg95.jconn.JConnEvent;
+import io.github.davidg95.jconn.events.*;
 import io.github.davidg95.jconn.JConnListener;
 import io.github.davidg95.jconn.JConnServer;
 import java.awt.AWTException;
@@ -18,8 +18,6 @@ import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -222,7 +220,7 @@ public class TillServer implements JConnListener {
     }
 
     @Override
-    public void onReceive(JConnData data) {
+    public void onReceive(JConnReceiveEvent data) {
     }
 
     @Override
