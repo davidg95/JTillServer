@@ -4794,6 +4794,9 @@ public class DBConnect extends DataConnect {
                 LOG.log(Level.SEVERE, null, ex);
                 throw ex;
             }
+            for (Sale s : sales) {
+                s.setProducts(getItemsInSale(s));
+            }
             return new TillReport(terminal, sales, declared, staff, new Date().getTime());
         }
     }
