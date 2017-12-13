@@ -4434,7 +4434,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public List<Sale> getStaffSales(Staff s) throws IOException, SQLException, StaffNotFoundException {
-        final String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID AND SALES.STAFF = " + s.getId();
+        final String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.STAFF = " + s.getId();
         try (final Connection con = getConnection()) {
             try {
                 final Statement stmt = con.createStatement();

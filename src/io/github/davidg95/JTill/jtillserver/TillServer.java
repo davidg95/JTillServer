@@ -20,6 +20,8 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,6 +55,7 @@ public class TillServer implements JConnListener {
 
     private int connections;
     private int conn_limit = 9999;
+    private boolean licensed = true;
 
     /**
      * @param args the command line arguments
@@ -124,31 +127,98 @@ public class TillServer implements JConnListener {
         TillSplashScreen.addBar(10);
         TillSplashScreen.hideSplashScreen();
         g.setVisible(true);
-//        for (File r : File.listRoots()) {
-//            try {
-//                for (File f : r.listFiles()) {
-//                    if (f.getName().equals("license.txt")) {
-//                        try {
-//                            Scanner in = new Scanner(f);
-//                            String line = in.nextLine();
-//                            String liNo = line.substring(line.indexOf(":") + 2);
-//                            line = in.nextLine();
-//                            conn_limit = Integer.parseInt(line.substring(line.indexOf(":") + 2));
-//                            DBConnect.getInstance().setLicenseInfo(liNo, conn_limit);
-        g.login();
-//                            return;
-//                        } catch (FileNotFoundException ex) {
-//                            JOptionPane.showMessageDialog(g, "Error loading license file. JTill Server will now close.", "License", JOptionPane.ERROR_MESSAGE);
-//                            System.exit(0);
-//                        }
-//                    }
-//                }
-//            } catch (Exception e) {
-//
-//            }
+//        LicenseThread thread = new LicenseThread();
+//        thread.start();
+//        licensed = checkLicense();
+//        File f = new File("license.dat");
+//        if (f.exists()) {
+//            licensed = true;
+//        } else {
+//            LicenseWindow.showWindow(null);
+//            licensed = true;
 //        }
-//        JOptionPane.showMessageDialog(g, "License File not detected. JTill Server will now close", "License Error", JOptionPane.ERROR_MESSAGE);
-//        System.exit(0);
+        if (licensed) {
+            g.login();
+        } else {
+            JOptionPane.showMessageDialog(g, "License file not detected. JTill Server will now close", "License Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
+    }
+
+    private boolean checkLicense() {
+        for (File r : File.listRoots()) {
+            try {
+                for (File f : r.listFiles()) {
+                    if (f.getName().equals("license.txt")) {
+                        try {
+                            String hash = fileHash(f);
+                            JOptionPane.showMessageDialog(g, "License Hash-\n" + hash);
+                            Scanner in = new Scanner(f);
+                            String line = in.nextLine();
+                            String liNo = line.substring(line.indexOf(":") + 2);
+                            line = in.nextLine();
+                            conn_limit = Integer.parseInt(line.substring(line.indexOf(":") + 2));
+                            DBConnect.getInstance().setLicenseInfo(liNo, conn_limit);
+                            return true;
+                        } catch (FileNotFoundException ex) {
+                            JOptionPane.showMessageDialog(g, "Error loading license file. JTill Server will now close.", "License", JOptionPane.ERROR_MESSAGE);
+                            System.exit(0);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+
+            }
+        }
+        return false;
+    }
+
+    private String fileHash(File f) {
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            Scanner in = new Scanner(f);
+            String s = "";
+            while (in.hasNext()) {
+                s += in.next();
+            }
+            byte[] byteHash = md5.digest(s.getBytes());
+            return new String(byteHash);
+        } catch (NoSuchAlgorithmException | FileNotFoundException ex) {
+            Logger.getLogger(TillServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    private class LicenseThread extends Thread {
+
+        public LicenseThread() {
+
+        }
+
+        @Override
+        public void run() {
+            Main:
+            while (true) {
+                try {
+                    Thread.sleep(5000);
+                    for (File r : File.listRoots()) {
+                        try {
+                            for (File f : r.listFiles()) {
+                                if (f.getName().equals("license.txt")) {
+                                    continue Main;
+                                }
+                            }
+                        } catch (Exception e) {
+
+                        }
+                    }
+                    JOptionPane.showMessageDialog(g, "License file not detected. JTill Server will now close", "License Error", JOptionPane.ERROR_MESSAGE);
+                    System.exit(0);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(TillServer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
     }
 
     /**
