@@ -68,6 +68,12 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         final Runnable run = () -> {
             try {
                 setTable();
+                initTable();
+                try {
+                    init();
+                } catch (IOException | SQLException ex) {
+                    JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                }
             } catch (IOException | SQLException ex) {
                 mDialog.hide();
                 showError(ex);
@@ -79,12 +85,6 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         thread.start();
         mDialog.show();
         txtSearch.requestFocus();
-        initTable();
-        try {
-            init();
-        } catch (IOException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        }
         tree.setModel(treeModel);
         tree.setCellRenderer(new MyTreeCellRenderer());
     }
