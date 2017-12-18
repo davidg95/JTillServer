@@ -72,9 +72,10 @@ public class StaffReportingWindow extends javax.swing.JInternalFrame {
         txtStaff = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        spinStart = new javax.swing.JSpinner();
-        spinEnd = new javax.swing.JSpinner();
         btnSearch = new javax.swing.JButton();
+        btnSelect = new javax.swing.JButton();
+        dateStart = new org.jdesktop.swingx.JXDatePicker();
+        dateEnd = new org.jdesktop.swingx.JXDatePicker();
         jLabel5 = new javax.swing.JLabel();
         txtSalesCount = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
@@ -104,19 +105,10 @@ public class StaffReportingWindow extends javax.swing.JInternalFrame {
         jLabel1.setText("Staff:");
 
         txtStaff.setEditable(false);
-        txtStaff.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                txtStaffMouseClicked(evt);
-            }
-        });
 
         jLabel6.setText("Start Date:");
 
         jLabel7.setText("End Date");
-
-        spinStart.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(-3600000L), null, null, java.util.Calendar.DAY_OF_MONTH));
-
-        spinEnd.setModel(new javax.swing.SpinnerDateModel());
 
         btnSearch.setText("Search");
         btnSearch.setEnabled(false);
@@ -125,6 +117,17 @@ public class StaffReportingWindow extends javax.swing.JInternalFrame {
                 btnSearchActionPerformed(evt);
             }
         });
+
+        btnSelect.setText("Select");
+        btnSelect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSelectActionPerformed(evt);
+            }
+        });
+
+        dateStart.setDate(new Date(0));
+
+        dateEnd.setDate(new Date());
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -135,44 +138,43 @@ public class StaffReportingWindow extends javax.swing.JInternalFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtStaff, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSelect)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jLabel7))
+                    .addComponent(jLabel7)
                     .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(spinStart)
-                    .addComponent(spinEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dateStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dateEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(122, Short.MAX_VALUE))
+                .addContainerGap(88, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btnSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE))
+                    .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
-                            .addComponent(spinStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(dateStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
-                            .addComponent(spinEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(1, 1, 1)))
+                            .addComponent(dateEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(4, 4, 4)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtStaff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24))
+                    .addComponent(txtStaff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSelect))
+                .addGap(22, 22, 22))
         );
 
         jLabel5.setText("Total Sales:");
@@ -253,22 +255,9 @@ public class StaffReportingWindow extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtStaffMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtStaffMouseClicked
-        if (SwingUtilities.isLeftMouseButton(evt)) { //Check it was a left mouse click
-            final Staff s = StaffSelectDialog.showDialog(this); //Display the dialog to search the member of staff
-            if (s == null) { //Check if a member of staff was selected
-                btnSearch.setEnabled(false);
-                return;
-            }
-            btnSearch.setEnabled(true); //Activate the search button
-            txtStaff.setText(s.toString()); //Display the staff member in the text field
-            staff = s;
-        }
-    }//GEN-LAST:event_txtStaffMouseClicked
-
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        final Date startDate = (Date) spinStart.getValue(); //Get the start date
-        final Date endDate = (Date) spinEnd.getValue(); //Get the end date
+        final Date startDate = dateStart.getDate();
+        final Date endDate = dateEnd.getDate();
 
         //Fill out the text fields with the staff members details
         txtName.setText(staff.getName());
@@ -302,8 +291,22 @@ public class StaffReportingWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnSearchActionPerformed
 
+    private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
+        final Staff s = StaffSelectDialog.showDialog(this); //Display the dialog to search the member of staff
+        if (s == null) { //Check if a member of staff was selected
+            btnSearch.setEnabled(false);
+            return;
+        }
+        btnSearch.setEnabled(true); //Activate the search button
+        txtStaff.setText(s.toString()); //Display the staff member in the text field
+        staff = s;
+    }//GEN-LAST:event_btnSelectActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnSelect;
+    private org.jdesktop.swingx.JXDatePicker dateEnd;
+    private org.jdesktop.swingx.JXDatePicker dateStart;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -314,8 +317,6 @@ public class StaffReportingWindow extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JSpinner spinEnd;
-    private javax.swing.JSpinner spinStart;
     private javax.swing.JTextField txtAverageValue;
     private javax.swing.JTextField txtID;
     private javax.swing.JTextField txtName;

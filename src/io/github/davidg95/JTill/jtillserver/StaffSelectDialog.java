@@ -41,6 +41,7 @@ public class StaffSelectDialog extends javax.swing.JDialog {
         setModal(true);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        this.setIconImage(GUI.icon);
         currentTableContents = new ArrayList<>();
         model = (DefaultTableModel) table.getModel();
         init();
