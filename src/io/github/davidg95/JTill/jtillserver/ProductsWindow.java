@@ -430,7 +430,11 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                     }
                 }
                 case 4: {
-                    return p.getStock();
+                    if (p.isTrackStock()) {
+                        return p.getStock();
+                    } else {
+                        return "N/A";
+                    }
                 }
                 default: {
                     return "";

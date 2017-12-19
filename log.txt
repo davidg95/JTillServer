@@ -1,4 +1,6 @@
-JTill log Tue Dec 19 11:48:16 GMT 2017
-[11:48:16] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[11:48:16] [INFO] Added TRACK_STOCK to PRODUCTS
-[11:48:20] [INFO] David Grant has logged in
+JTill log Tue Dec 19 12:35:34 GMT 2017
+[12:35:35] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[12:35:38] [INFO] David Grant has logged in
+[12:36:00] [INFO] Stopping
+[12:36:00] [INFO] Stopping JTIll Server
+[12:36:00] [INFO] Saving properties

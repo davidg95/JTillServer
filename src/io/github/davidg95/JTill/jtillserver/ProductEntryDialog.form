@@ -465,6 +465,8 @@
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="txtMaxStock" min="-2" pref="43" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="chkTrackStock" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="txtOrderCode" alignment="0" min="-2" pref="72" max="-2" attributes="0"/>
                           </Group>
@@ -510,8 +512,9 @@
                           <Component id="txtMinStock" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="txtMaxStock" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="chkTrackStock" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cmbCat" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -672,6 +675,11 @@
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="chkTrackStock">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Track Stock"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>

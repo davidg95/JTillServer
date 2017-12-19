@@ -118,6 +118,7 @@ public class ProductEditWindow extends javax.swing.JInternalFrame {
             txtCostPrice.setText(p.getCostPrice().toString());
             txtPackSize.setText(p.getPackSize() + "");
             chkVat.setSelected(p.isPriceIncVat());
+            chkTrackStock.setSelected(p.isTrackStock());
         }
     }
 
@@ -168,6 +169,7 @@ public class ProductEditWindow extends javax.swing.JInternalFrame {
         txtMaxStock = new javax.swing.JTextField();
         btnSave = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
+        chkTrackStock = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -372,6 +374,8 @@ public class ProductEditWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        chkTrackStock.setText("Track Stock");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -411,12 +415,15 @@ public class ProductEditWindow extends javax.swing.JInternalFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtMaxStock))
                             .addComponent(panelPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 92, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkTrackStock)
+                        .addGap(0, 9, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnSave)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnCancel))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtOrderCode, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -448,7 +455,8 @@ public class ProductEditWindow extends javax.swing.JInternalFrame {
                     .addComponent(jLabel11)
                     .addComponent(txtMinStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12)
-                    .addComponent(txtMaxStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtMaxStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkTrackStock))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -503,6 +511,7 @@ public class ProductEditWindow extends javax.swing.JInternalFrame {
             p.setCostPrice(new BigDecimal(txtCostPrice.getText()));
             p.setPackSize(Integer.parseInt(txtPackSize.getText()));
             p.setPriceIncVat(chkVat.isSelected());
+            p.setTrackStock(chkTrackStock.isSelected());
         } else {
             p.setOpen(true);
             p.setPriceLimit(new BigDecimal(txtPriceLimit.getText()));
@@ -525,6 +534,7 @@ public class ProductEditWindow extends javax.swing.JInternalFrame {
     private javax.swing.ButtonGroup btnGrpPricing;
     private javax.swing.JButton btnSave;
     private javax.swing.JCheckBox chkScale;
+    private javax.swing.JCheckBox chkTrackStock;
     private javax.swing.JCheckBox chkVat;
     private javax.swing.JComboBox<String> cmbCategory;
     private javax.swing.JComboBox<String> cmbTax;

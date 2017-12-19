@@ -67,7 +67,9 @@
                           </Group>
                           <Component id="panelPrice" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="0" pref="92" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="chkTrackStock" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="9" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="btnSave" min="-2" max="-2" attributes="0"/>
@@ -75,6 +77,7 @@
                       <Component id="btnCancel" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="txtOrderCode" min="-2" pref="76" max="-2" attributes="0"/>
@@ -114,6 +117,7 @@
                   <Component id="txtMinStock" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtMaxStock" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkTrackStock" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="panelPrice" min="-2" max="-2" attributes="0"/>
@@ -495,6 +499,11 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCancelActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkTrackStock">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Track Stock"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

@@ -176,6 +176,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         jLabel22 = new javax.swing.JLabel();
         cmbVat = new javax.swing.JComboBox<>();
         cmbCat = new javax.swing.JComboBox<>();
+        chkTrackStock = new javax.swing.JCheckBox();
 
         setTitle("Create New Product");
         setResizable(false);
@@ -470,6 +471,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
         cmbCat.setModel(catModel);
 
+        chkTrackStock.setText("Track Stock");
+
         javax.swing.GroupLayout panProductLayout = new javax.swing.GroupLayout(panProduct);
         panProduct.setLayout(panProductLayout);
         panProductLayout.setHorizontalGroup(
@@ -520,7 +523,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                                     .addGap(18, 18, 18)
                                     .addComponent(jLabel11)))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtMaxStock, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtMaxStock, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(chkTrackStock))
                         .addComponent(txtOrderCode, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnAddProduct, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap(25, Short.MAX_VALUE))
@@ -556,8 +561,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     .addComponent(jLabel10)
                     .addComponent(txtMinStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11)
-                    .addComponent(txtMaxStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3)
+                    .addComponent(txtMaxStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkTrackStock))
+                .addGap(1, 1, 1)
                 .addGroup(panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(cmbCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -633,7 +639,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             return;
         }
         boolean incVat = chkIncVat.isSelected();
-        product = new Product(name, shortName, barcode, orderCode, category, comments, tax, price, costPrice, incVat, packSize, 0, minStock, maxStock, 0, 0, 0);
+        boolean trackStock = chkTrackStock.isSelected();
+        product = new Product(name, shortName, barcode, orderCode, category, comments, tax, price, costPrice, incVat, packSize, 0, minStock, maxStock, 0, 0, 0, trackStock);
         try {
             product = dc.addProduct(product);
             if (nextBarcode != null) {
@@ -897,6 +904,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JCheckBox chkIncVat;
     private javax.swing.JCheckBox chkNext;
     private javax.swing.JCheckBox chkScale;
+    private javax.swing.JCheckBox chkTrackStock;
     private javax.swing.JComboBox<String> cmbCat;
     private javax.swing.JComboBox<String> cmbOpenCat;
     private javax.swing.JComboBox<String> cmbOpenVAT;
