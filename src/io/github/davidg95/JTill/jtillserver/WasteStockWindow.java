@@ -144,7 +144,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 if (index == -1) {
                     return;
                 }
-                if (JOptionPane.showInternalConfirmDialog(WasteStockWindow.this, "Are you sure you want to remove this item?\n" + p, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                if (JOptionPane.showInternalConfirmDialog(WasteStockWindow.this, "Are you sure you want to remove this item?\n" + p.getName(), "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     wasteItems.remove(index);
                     updateTable();
                 }
@@ -514,8 +514,12 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 }
             });
             item.addActionListener((ActionEvent e) -> {
-                if (JOptionPane.showInternalConfirmDialog(WasteStockWindow.this, "Remove this item?", "Remove Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    wasteItems.remove(tblProducts.getSelectedRow());
+                final Product p = wi.getProduct();
+                if (index == -1) {
+                    return;
+                }
+                if (JOptionPane.showInternalConfirmDialog(WasteStockWindow.this, "Are you sure you want to remove this item?\n" + p.getName(), "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    wasteItems.remove(index);
                     updateTable();
                 }
             });
