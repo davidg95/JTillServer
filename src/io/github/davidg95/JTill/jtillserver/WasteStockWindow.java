@@ -405,7 +405,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         if (product == null) {
             return;
         }
-        if (product.isOpen()) {
+        if (product.isOpen() || !product.isTrackStock()) {
             JOptionPane.showMessageDialog(this, "This product cannot be wasted", "Add Product", JOptionPane.ERROR_MESSAGE);
             return;
         }

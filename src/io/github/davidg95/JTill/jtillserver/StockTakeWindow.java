@@ -326,9 +326,9 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
         Product p = ProductSelectDialog.showDialog(this);
         Product pr = checkProductAlreadyExists(p);
         if (pr != null) {
-            String input = JOptionPane.showInternalInputDialog(StockTakeWindow.this, "Enter new quantity", "Stock Take", JOptionPane.PLAIN_MESSAGE);
+            String input = JOptionPane.showInternalInputDialog(this, "Enter new quantity", "Stock Take", JOptionPane.PLAIN_MESSAGE);
             if (!Utilities.isNumber(input)) {
-                JOptionPane.showInternalMessageDialog(StockTakeWindow.this, "Must enter a number", "Stock Take", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(this, "Must enter a number", "Stock Take", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int val = Integer.parseInt(input);
@@ -337,27 +337,31 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
                 updateTable();
                 return;
             } else {
-                JOptionPane.showInternalMessageDialog(StockTakeWindow.this, "Must enter a value greater than zero", "Stock Take", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showInternalMessageDialog(this, "Must enter a value greater than zero", "Stock Take", JOptionPane.WARNING_MESSAGE);
                 return;
             }
         }
         if (p == null) {
             return;
         }
-        String val = JOptionPane.showInternalInputDialog(StockTakeWindow.this, "Enter new stock level", "Enter stock level", JOptionPane.PLAIN_MESSAGE);
+        if(p.isOpen() || !p.isTrackStock()){
+            JOptionPane.showInternalMessageDialog(this, "This items stock is not tracked", "Add Product", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String val = JOptionPane.showInternalInputDialog(this, "Enter new stock level", "Enter stock level", JOptionPane.PLAIN_MESSAGE);
         if (val == null || val.isEmpty()) {
             return;
         }
         if (Utilities.isNumber(val)) {
             int stock = Integer.parseInt(val);
             if (stock < 0) {
-                JOptionPane.showInternalMessageDialog(StockTakeWindow.this, "Value must be zero or greater", "Stock Take", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(this, "Value must be zero or greater", "Stock Take", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             p.setStock(stock);
             addRow(p);
         } else {
-            JOptionPane.showInternalMessageDialog(StockTakeWindow.this, "You must enter a number", "Stock Take", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(this, "You must enter a number", "Stock Take", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddProductActionPerformed
 

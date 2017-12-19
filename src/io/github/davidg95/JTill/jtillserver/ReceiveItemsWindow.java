@@ -543,7 +543,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             return;
         }
 
-        if (product.isOpen()) {
+        if (product.isOpen() || !product.isTrackStock()) {
             JOptionPane.showMessageDialog(this, "This product cannot be received", "Add Product", JOptionPane.ERROR_MESSAGE);
             return;
         }
