@@ -451,22 +451,33 @@ public class DBConnect extends DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+//            try {
+//                stmt = con.createStatement();
+//                stmt.executeUpdate("ALTER TABLE PRODUCTS ADD COLUMN SUPPLIER INTEGER");
+//                stmt.executeUpdate("UPDATE PRODUCTS SET SUPPLIER = -1");
+//                con.commit();
+//                log("Added SUPPLIER to PRODUCTS and set to -1");
+//            } catch (SQLException ex) {
+//                con.rollback();
+//            }
+//            try {
+//                stmt = con.createStatement();
+//                stmt.executeUpdate("ALTER TABLE PRODUCTS DROP COLUMN SUPPLIER");
+//                con.commit();
+//                log("Removed SUPPLIER from PRODUCTS");
+//            } catch (SQLException ex) {
+//                con.rollback();
+//            }
             try {
                 stmt = con.createStatement();
-                stmt.executeUpdate("ALTER TABLE PRODUCTS ADD COLUMN SUPPLIER INTEGER");
-                stmt.executeUpdate("UPDATE PRODUCTS SET SUPPLIER = -1");
+                stmt.executeUpdate("ALTER TABLE PRODUCTS ADD COLUMN TRACK_STOCK BOOLEAN");
+                stmt.executeUpdate("UPDATE PRODUCTS SET TRACK_STOCK = TRUE WHERE OPEN_PRICE = FALSE");
+                stmt.executeUpdate("UPDATE PRODUCTS SET TRACK_STOCK = FALSE WHERE OPEN_PRICE = TRUE");
                 con.commit();
-                log("Added SUPPLIER to PRODUCTS and set to -1");
+                log("Added TRACK_STOCK to PRODUCTS");
             } catch (SQLException ex) {
                 con.rollback();
-            }
-            try {
-                stmt = con.createStatement();
-                stmt.executeUpdate("ALTER TABLE PRODUCTS DROP COLUMN SUPPLIER");
-                con.commit();
-                log("Removed SUPPLIER from PRODUCTS");
-            } catch (SQLException ex) {
-                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
             }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
@@ -2226,29 +2237,6 @@ public class DBConnect extends DataConnect {
                 throw ex;
             }
         }
-//        Runnable run = () -> {
-//            try {
-//                final Customer cus = getCustomer(s.getCustomerID());
-//                s.getSaleItems().forEach((i) -> {
-//                    if (i.getType() == SaleItem.PRODUCT) {
-//                        final Product p = (Product) i.getItem();
-//                        if (checkLoyalty(p)) {
-//                            String value = getSetting("LOYALTY_VALUE");
-//                            int points = p.getPrice().divide(new BigDecimal(value)).intValue();
-//                            points = points * i.getQuantity();
-//                            cus.addLoyaltyPoints(points);
-//                        }
-//                    }
-//                });
-//                updateCustomer(cus);
-//            } catch (SQLException | CustomerNotFoundException ex) {
-//                Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        };
-//        Thread thread = new Thread(run);
-//        if (s.getCustomerID() > 1) {
-//            thread.start();
-//        }
         for (SaleItem p : s.getSaleItems()) {
             addSaleItem(s, p);
             try {
@@ -2264,85 +2252,6 @@ public class DBConnect extends DataConnect {
             }
         }
         return s;
-    }
-
-    private boolean checkLoyalty(Product pr) throws IOException {
-        final List<JTillObject> contents = new ArrayList<>();
-        try (Scanner inDep = new Scanner(new File("departments.loyalty"))) {
-            while (inDep.hasNext()) {
-                try {
-                    String line = inDep.nextLine();
-                    int id = Integer.parseInt(line);
-                    final Department d = getDepartment(id);
-                    contents.add(d);
-                } catch (SQLException | JTillException ex) {
-                    Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        } catch (FileNotFoundException e) {
-            try {
-                new File("departments.loyalty").createNewFile();
-            } catch (IOException ex) {
-                Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        try (Scanner inCat = new Scanner(new File("categorys.loyalty"))) {
-            while (inCat.hasNext()) {
-                try {
-                    String line = inCat.nextLine();
-                    int id = Integer.parseInt(line);
-                    final Category c = getCategory(id);
-                    contents.add(c);
-                } catch (SQLException | JTillException ex) {
-                    Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        } catch (FileNotFoundException e) {
-            try {
-                new File("categorys.loyalty").createNewFile();
-            } catch (IOException ex) {
-                Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        try (Scanner inPro = new Scanner(new File("products.loyalty"))) {
-            while (inPro.hasNext()) {
-                try {
-                    String line = inPro.nextLine();
-                    int id = Integer.parseInt(line);
-                    final Product p = getProduct(id);
-                    contents.add(p);
-                } catch (ProductNotFoundException | SQLException ex) {
-                    Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        } catch (FileNotFoundException e) {
-            try {
-                new File("products.loyalty").createNewFile();
-            } catch (IOException ex) {
-                Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        for (JTillObject o : contents) {
-            if (o instanceof Product) {
-                if (((Product) o).equals(pr)) {
-                    return true;
-                }
-            } else if (o instanceof Department) {
-                final Department dep = pr.getCategory().getDepartment();
-                if (((Department) o).equals(dep)) {
-                    return true;
-                }
-            } else if (o instanceof Category) {
-                final Category cat = pr.getCategory();
-                if (((Category) o).equals(cat)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private void chargeCustomerAccount(Customer c, BigDecimal amount) {

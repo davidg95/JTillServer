@@ -152,57 +152,6 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         });
     }
 
-    private void addCSV() {
-//        JFileChooser chooser = new JFileChooser();
-//        chooser.setDialogTitle("Select Waste File");
-//        int returnVal = chooser.showOpenDialog(WasteStockWindow.this);
-//        if (returnVal == JFileChooser.APPROVE_OPTION) {
-//            File file = chooser.getSelectedFile();
-//            try {
-//                FileReader fr = new FileReader(file);
-//                BufferedReader br = new BufferedReader(fr);
-//                boolean errors = false;
-//                while (true) {
-//                    try {
-//                        String line = br.readLine();
-//
-//                        if (line == null) {
-//                            break;
-//                        }
-//
-//                        String[] item = line.split(",");
-//
-//                        if (item.length != 3) {
-//                            JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
-//                            return;
-//                        }
-//
-//                        Product product = dc.getProductByBarcode(item[0]);
-//                        int amount = Integer.parseInt(item[1]);
-//                        int reason = Integer.parseInt(item[2]);
-//                        WasteItem wi = new WasteItem(product, amount, reason, getSelectedDate());
-//                        wasteItems.add(wi);
-//                        BigDecimal val = BigDecimal.ZERO;
-//                        for (WasteItem w : wasteItems) {
-//                            val = val.add(w.getProduct().getPrice().setScale(2).multiply(new BigDecimal(w.getQuantity())));
-//                        }
-//                        lblValue.setText("Total Value: £" + new DecimalFormat("#.00").format(val));
-//                        model.addRow(new Object[]{product.getId(), product.getName(), product.getBarcode(), amount, wi.getReason()});
-//                    } catch (ProductNotFoundException ex) {
-//                        errors = true;
-//                    }
-//                }
-//                if (errors) {
-//                    JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "Not all products could be found", "Waste", JOptionPane.ERROR_MESSAGE);
-//                }
-//            } catch (FileNotFoundException ex) {
-//                JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "The file could not be found", "Open File", JOptionPane.ERROR_MESSAGE);
-//            } catch (IOException | SQLException ex) {
-//                JOptionPane.showInternalMessageDialog(WasteStockWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-//            }
-//        }
-    }
-
     private void updateTable() {
         String symbol = "";
         try {

@@ -553,7 +553,6 @@ public class GUI extends JFrame implements GUIInterface {
         itemDepartments = new javax.swing.JMenuItem();
         itemTaxes = new javax.swing.JMenuItem();
         itemPluSettings = new javax.swing.JMenuItem();
-        itemLoyalty = new javax.swing.JMenuItem();
         itemSendData = new javax.swing.JMenuItem();
         itemTerminals = new javax.swing.JMenuItem();
         itemSiteDetails = new javax.swing.JMenuItem();
@@ -1234,14 +1233,6 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuSetup.add(itemPluSettings);
 
-        itemLoyalty.setText("Edit Loyalty Settings");
-        itemLoyalty.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemLoyaltyActionPerformed(evt);
-            }
-        });
-        menuSetup.add(itemLoyalty);
-
         itemSendData.setText("Send Data to Terminals...");
         itemSendData.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1732,10 +1723,6 @@ public class GUI extends JFrame implements GUIInterface {
         lblHelp.setText(HELP_TEXT);
     }//GEN-LAST:event_btnSettingsMouseExited
 
-    private void itemLoyaltyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLoyaltyActionPerformed
-        LoyaltySettingsWindow.showWindow();
-    }//GEN-LAST:event_itemLoyaltyActionPerformed
-
     private void lblWarningsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblWarningsMouseClicked
         if (evt.getClickCount() == 2) {
             WarningDialog.showDialog(warningsList);
@@ -2004,7 +1991,6 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemInfo;
     private javax.swing.JMenuItem itemLabelPrinting;
     private javax.swing.JMenuItem itemLogin;
-    private javax.swing.JMenuItem itemLoyalty;
     private javax.swing.JMenuItem itemNewStaff;
     private javax.swing.JMenuItem itemOrdering;
     private javax.swing.JMenuItem itemOrderingWizard;
