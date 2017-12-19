@@ -9,7 +9,6 @@ import io.github.davidg95.JTill.jtill.*;
 import io.github.davidg95.jconn.*;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -27,7 +26,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.StampedLock;
@@ -2242,7 +2240,12 @@ public class DBConnect extends DataConnect {
             try {
                 if (p.getType() == SaleItem.PRODUCT) {
                     final Product pr = (Product) p.getItem();
-                    if (!pr.isOpen()) {
+                    if(!pr.getCondiments().isEmpty()){
+                        for(Condiment c : pr.getCondiments()){
+                            purchaseProduct(c.getProduct(), 1);
+                        }
+                    }
+                    if (!pr.isOpen() || pr.isTrackStock()) {
                         purchaseProduct(pr.getId(), p.getQuantity());
                     }
                 }
