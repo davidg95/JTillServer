@@ -11,10 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.beans.PropertyVetoException;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -28,10 +24,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
-import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -53,7 +47,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private ReceivedReport rr;
     private List<ReceivedItem> products;
     private final DefaultTableModel model;
-    private final DefaultComboBoxModel cmbModel;
+    private Supplier supplier;
 
     private boolean viewMode = false;
 
@@ -74,8 +68,6 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
         model.setRowCount(0);
-        cmbModel = new DefaultComboBoxModel();
-        cmbSuppliers.setModel(cmbModel);
         init();
         txtBarcode.requestFocus();
     }
@@ -92,9 +84,6 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         super.setFrameIcon(new ImageIcon(GUI.icon));
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
-        model.setRowCount(0);
-        cmbModel = (DefaultComboBoxModel) cmbSuppliers.getModel();
-        cmbSuppliers.setModel(cmbModel);
         txtBarcode.setEnabled(false);
         setReport();
     }
@@ -111,11 +100,17 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             window.setVisible(true);
             window.setIcon(false);
             window.setSelected(true);
+            window.setSupplier();
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(window, "Error connecting to database", "Receive Stock", JOptionPane.ERROR_MESSAGE);
         } catch (PropertyVetoException ex) {
             Logger.getLogger(ReceiveItemsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void setSupplier() {
+        supplier = SupplierSelectDialog.showDialog(this);
+        txtSupplier.setText(supplier.getName());
     }
 
     public static void showWindow(ReceivedReport rr) {
@@ -135,7 +130,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         products = rr.getItems();
         updateTable();
         txtInvoice.setText(rr.getInvoiceId());
-        cmbModel.setSelectedItem(rr.getSupplier());
+        supplier = rr.getSupplier();
+        txtSupplier.setText(supplier.getName());
         chkPaid.setSelected(rr.isPaid());
         setViewMode();
     }
@@ -157,15 +153,6 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             products = GUI.gui.savedReports.get("REC");
             updateTable();
             GUI.gui.savedReports.remove("REC");
-        }
-        cmbModel.removeAllElements();
-        try {
-            List<Supplier> suppliers = dc.getAllSuppliers();
-            suppliers.forEach((s) -> {
-                cmbModel.addElement(s);
-            });
-        } catch (IOException | SQLException ex) {
-            Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
         InputMap im = tblProducts.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = tblProducts.getActionMap();
@@ -217,58 +204,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private void setViewMode() {
         btnAddProduct.setEnabled(false);
         btnReceive.setEnabled(false);
-        cmbSuppliers.setEnabled(false);
         txtInvoice.setEditable(false);
         viewMode = true;
-    }
-
-    private void addCSV() {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Select Receive File");
-        int returnVal = chooser.showOpenDialog(this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = chooser.getSelectedFile();
-
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file));
-
-                while (true) {
-                    String line = br.readLine();
-
-                    if (line == null) {
-                        break;
-                    }
-
-                    String[] items = line.split(",");
-
-                    if (items.length != 2) {
-                        JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-
-                    String barcode = items[0];
-                    int quantity = Integer.parseInt(items[1]);
-
-                    Product product;
-                    try {
-                        product = dc.getProductByBarcode(barcode);
-
-                        product.setStock(quantity);
-
-                        products.add(new ReceivedItem(product, quantity));
-                        model.addRow(new Object[]{product.getId(), product.getName(), product.getBarcode(), product.getStock()});
-                    } catch (ProductNotFoundException ex) {
-                        if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Barcode not found, create new product?", "Not found", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                            JOptionPane.showMessageDialog(this, "Feature not yet implemented, must add manually", "Not Found", JOptionPane.WARNING_MESSAGE);
-                        }
-                    }
-                }
-            } catch (FileNotFoundException ex) {
-                JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, ex, "File Not Found", JOptionPane.ERROR_MESSAGE);
-            } catch (IOException | SQLException ex) {
-                JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
     }
 
     /**
@@ -286,13 +223,13 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         btnClose = new javax.swing.JButton();
         btnAddProduct = new javax.swing.JButton();
         lblValue = new javax.swing.JLabel();
-        cmbSuppliers = new javax.swing.JComboBox<>();
-        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtInvoice = new javax.swing.JTextField();
         chkPaid = new javax.swing.JCheckBox();
         txtBarcode = new javax.swing.JTextField();
         btnAddOrder = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        txtSupplier = new javax.swing.JTextField();
 
         setResizable(true);
 
@@ -360,10 +297,6 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
         lblValue.setText("Total Value: £0.00");
 
-        cmbSuppliers.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel1.setText("Supplier:");
-
         jLabel2.setText("Invoice No.:");
 
         chkPaid.setText("Paid");
@@ -385,6 +318,10 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 btnAddOrderActionPerformed(evt);
             }
         });
+
+        jLabel1.setText("Supplier:");
+
+        txtSupplier.setEditable(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -412,10 +349,10 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(165, 165, 165)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbSuppliers, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtSupplier)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -423,12 +360,12 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmbSuppliers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
                     .addComponent(jLabel2)
-                    .addComponent(txtInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnReceive)
@@ -461,7 +398,6 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             txtInvoice.requestFocus();
             return;
         }
-        Supplier supplier = (Supplier) cmbSuppliers.getSelectedItem();
         ReceivedReport report = new ReceivedReport(txtInvoice.getText(), supplier);
         products.forEach((p) -> {
             try {
@@ -664,8 +600,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         for (OrderItem oi : order.getItems()) {
             products.add(new ReceivedItem(oi.getProduct(), oi.getQuantity() * oi.getProduct().getPackSize()));
         }
-        cmbSuppliers.setSelectedItem(order.getSupplier());
-        cmbSuppliers.setEnabled(false);
+        supplier = order.getSupplier();
+        txtSupplier.setText(supplier.getName());
         btnAddProduct.setEnabled(false);
         txtBarcode.setEnabled(false);
         txtBarcode.setText("");
@@ -678,7 +614,6 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnReceive;
     private javax.swing.JCheckBox chkPaid;
-    private javax.swing.JComboBox<String> cmbSuppliers;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -686,5 +621,6 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JTable tblProducts;
     private javax.swing.JTextField txtBarcode;
     private javax.swing.JTextField txtInvoice;
+    private javax.swing.JTextField txtSupplier;
     // End of variables declaration//GEN-END:variables
 }
