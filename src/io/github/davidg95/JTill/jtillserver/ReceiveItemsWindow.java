@@ -205,6 +205,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         btnAddProduct.setEnabled(false);
         btnReceive.setEnabled(false);
         txtInvoice.setEditable(false);
+        btnAddOrder.setSelected(false);
         viewMode = true;
     }
 
