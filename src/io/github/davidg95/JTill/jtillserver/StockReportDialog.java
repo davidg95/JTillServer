@@ -137,7 +137,7 @@ public class StockReportDialog extends javax.swing.JDialog {
                             g.drawString(p.getStock() + "", sCol, y);
                         }
                     }
-                    y += lineSpace/2;
+                    y += lineSpace / 2;
                 }
 
                 g.drawRect(x, topY, width, y - topY);

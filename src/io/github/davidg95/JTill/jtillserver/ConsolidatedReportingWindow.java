@@ -367,8 +367,8 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         catTable = new javax.swing.JTable();
         btnPrint = new javax.swing.JButton();
+        btnPreivew = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Consolidated");
 
         btnClose.setText("Close");
@@ -588,6 +588,13 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        btnPreivew.setText("Preview");
+        btnPreivew.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPreivewActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -597,6 +604,8 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnPrint)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnPreivew)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose))
                     .addGroup(layout.createSequentialGroup()
@@ -623,7 +632,8 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
-                    .addComponent(btnPrint))
+                    .addComponent(btnPrint)
+                    .addComponent(btnPreivew))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -661,8 +671,16 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnPrintActionPerformed
 
+    private void btnPreivewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreivewActionPerformed
+        PrinterJob job = PrinterJob.getPrinterJob();
+        javax.print.attribute.HashPrintRequestAttributeSet att
+            = new javax.print.attribute.HashPrintRequestAttributeSet();
+        new PrintPreview(new ReportPrinter(start, end, till), job.getPageFormat(att));
+    }//GEN-LAST:event_btnPreivewActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnPreivew;
     private javax.swing.JButton btnPrint;
     private javax.swing.JTable catTable;
     private javax.swing.JTable depsTable;
