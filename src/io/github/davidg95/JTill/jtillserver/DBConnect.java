@@ -4561,9 +4561,9 @@ public class DBConnect extends DataConnect {
                         p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
                     }
 
-                    int iid = set.getInt(33);
-                    BigDecimal riPrice = set.getBigDecimal(34);
-                    int quantity = set.getInt(35);
+                    int iid = set.getInt(35);
+                    BigDecimal riPrice = set.getBigDecimal(36);
+                    int quantity = set.getInt(37);
 
                     ReceivedItem ri = new ReceivedItem(iid, p, quantity, riPrice);
 
