@@ -8,9 +8,7 @@ package io.github.davidg95.JTill.jtillserver;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
-import java.awt.Image;
 import java.awt.Window;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -19,9 +17,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.UnknownHostException;
 import java.util.Properties;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -46,6 +41,7 @@ public class CompanyDetailsDialog extends javax.swing.JDialog {
         initComponents();
         setTitle("Company Details");
         setLocationRelativeTo(parent);
+        setIconImage(GUI.icon);
         properties = new Properties();
         loadFile();
     }
