@@ -177,6 +177,7 @@ class PrintPreview extends JFrame implements ActionListener, ChangeListener, Ite
         }
     }
 
+    @Override
     public void stateChanged(ChangeEvent ce) {
         double temp = (double) slider.getValue() / 100.0;
         if (temp == scale) {
