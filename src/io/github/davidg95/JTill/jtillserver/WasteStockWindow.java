@@ -46,7 +46,6 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
     private final DataConnect dc;
     private List<WasteItem> wasteItems;
     private final DefaultTableModel model;
-    private final DefaultComboBoxModel cmbModel;
     private Date date;
 
     /**
@@ -85,8 +84,6 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
         model.setRowCount(0);
-        cmbModel = new DefaultComboBoxModel();
-        cmbReason.setModel(cmbModel);
         init();
         txtBarcode.requestFocus();
     }
@@ -120,14 +117,6 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             wasteItems = GUI.gui.savedReports.get("WAS");
             updateTable();
             GUI.gui.savedReports.remove("WAS");
-        }
-        try {
-            List<WasteReason> reasons = dc.getAllWasteReasons();
-            for (WasteReason r : reasons) {
-                cmbModel.addElement(r);
-            }
-        } catch (IOException | SQLException ex) {
-            Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
         InputMap im = tblProducts.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = tblProducts.getActionMap();
@@ -204,9 +193,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         btnClose = new javax.swing.JButton();
         btnWaste = new javax.swing.JButton();
         btnAddProduct = new javax.swing.JButton();
-        lblReason = new javax.swing.JLabel();
         lblValue = new javax.swing.JLabel();
-        cmbReason = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         timeSpin = new javax.swing.JSpinner();
         jLabel2 = new javax.swing.JLabel();
@@ -280,8 +267,6 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        lblReason.setText("Reason:");
-
         lblValue.setText("Total Value: £0.00");
 
         jLabel1.setText("Time:");
@@ -308,46 +293,41 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(lblValue)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAddProduct)
+                        .addComponent(pickDate, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnWaste)
+                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClose))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(timeSpin, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-                            .addComponent(pickDate, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblReason)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbReason, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addComponent(timeSpin, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                        .addGap(277, 277, 277))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(lblValue)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnAddProduct)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnWaste)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnClose)))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblReason)
-                    .addComponent(cmbReason, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(pickDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(pickDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(timeSpin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
@@ -432,7 +412,11 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             if (amount == 0) {
                 return;
             }
-            WasteReason wr = (WasteReason) cmbReason.getSelectedItem();
+//            WasteReason wr = (WasteReason) cmbReason.getSelectedItem();
+            WasteReason wr = WasteReasonSelectDialog.showDialog(this);
+            if (wr == null) {
+                return;
+            }
             WasteItem wi = new WasteItem(product, amount, wr, getSelectedDate());
             wasteItems.add(wi);
             txtBarcode.setText("");
@@ -537,11 +521,9 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnWaste;
-    private javax.swing.JComboBox<String> cmbReason;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblReason;
     private javax.swing.JLabel lblValue;
     private org.jdesktop.swingx.JXDatePicker pickDate;
     private javax.swing.JTable tblProducts;
