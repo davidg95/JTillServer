@@ -101,6 +101,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         }
         for (String p : params) {
             String[] sPams = p.split(" ");
+            if (sPams.length == 0) {
+                return;
+            }
             if (p.charAt(p.indexOf('-') + 1) == 'd') {
                 Department d = model.filterDepartment(sPams[1]);
                 setTitle("Select Product - " + d.getName());
