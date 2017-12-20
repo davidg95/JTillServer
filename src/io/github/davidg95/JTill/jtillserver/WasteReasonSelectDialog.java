@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelListener;
@@ -68,7 +69,7 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
         dialog.setVisible(true);
         return reason;
     }
-
+    
     private class MyTableModel implements TableModel {
 
         private final List<WasteReason> reasons;

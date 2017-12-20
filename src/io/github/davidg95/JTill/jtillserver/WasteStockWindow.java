@@ -392,7 +392,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
 
         product = (Product) product.clone();
 
-        String str = JOptionPane.showInternalInputDialog(WasteStockWindow.this, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
+        String str = JOptionPane.showInputDialog(this, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
 
         if (str == null || str.isEmpty()) {
             return;
@@ -401,11 +401,11 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         if (Utilities.isNumber(str)) {
             int amount = Integer.parseInt(str);
             if (amount <= 0) {
-                JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "Value must be greater than zero", "Waste Item", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showInternalMessageDialog(this, "Value must be greater than zero", "Waste Item", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if (product.getStock() - amount < 0) {
-                if (JOptionPane.showInternalConfirmDialog(WasteStockWindow.this, "Item does not have that much in stock. Continue?", "Waste", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+                if (JOptionPane.showInternalConfirmDialog(this, "Item does not have that much in stock. Continue?", "Waste", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
                     return;
                 }
             }
@@ -422,7 +422,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             txtBarcode.setText("");
             updateTable();
         } else {
-            JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "You must enter a number", "Waste Stock", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showInternalMessageDialog(this, "You must enter a number", "Waste Stock", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddProductActionPerformed
 

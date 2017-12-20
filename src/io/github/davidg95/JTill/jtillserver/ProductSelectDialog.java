@@ -50,14 +50,18 @@ public class ProductSelectDialog extends javax.swing.JDialog {
 
     private MyTreeModel treeModel;
 
+    private final String filter;
+
     /**
      * Creates new form ProductSelectDialog
      *
      * @param parent the parent window.
+     * @param filter a filter to apply.
      */
-    public ProductSelectDialog(Window parent) {
+    public ProductSelectDialog(Window parent, String filter) {
         super(parent);
         this.dc = GUI.gui.dc;
+        this.filter = filter;
         closedFlag = false;
         initComponents();
         this.setIconImage(GUI.icon);
@@ -69,6 +73,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             try {
                 setTable();
                 initTable();
+                checkFilter();
                 try {
                     init();
                 } catch (IOException | SQLException ex) {
@@ -87,6 +92,20 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         txtSearch.requestFocus();
         tree.setModel(treeModel);
         tree.setCellRenderer(new MyTreeCellRenderer());
+    }
+
+    private void checkFilter() {
+        String[] params = filter.split(",");
+        for (String p : params) {
+            String[] sPams = p.split(" ");
+            if (p.charAt(p.indexOf('-') + 1) == 'd') {
+                Department d = model.filterDepartment(sPams[1]);
+                setTitle("Select Product - " + d.getName());
+            } else if (p.charAt(p.indexOf('-') + 1) == 'c') {
+                Category c = model.filterCategory(sPams[1]);
+                setTitle("Select Product - " + c.getDepartment().getName() + " - " + c.getDepartment().getName());
+            }
+        }
     }
 
     private void initTable() {
@@ -117,11 +136,22 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * @return the product selected by the user.
      */
     public static Product showDialog(Component parent) {
+        return showDialog(parent, "");
+    }
+
+    /**
+     * Method to show the product select dialog.
+     *
+     * @param parent the parent component.
+     * @param filter a filter to apply.
+     * @return the product selected by the user.
+     */
+    public static Product showDialog(Component parent, String filter) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new ProductSelectDialog(window);
+        dialog = new ProductSelectDialog(window, filter);
         product = null;
         dialog.setVisible(true);
         return product;
@@ -184,6 +214,32 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                 }
             }
             alertAll();
+        }
+
+        public Category filterCategory(String c) {
+            products.clear();
+            Category cat = null;
+            for (Product p : allProducts) {
+                if (p.getCategory().getName().equalsIgnoreCase(c)) {
+                    cat = p.getCategory();
+                    products.add(p);
+                }
+            }
+            alertAll();
+            return cat;
+        }
+
+        public Department filterDepartment(String d) {
+            products.clear();
+            Department dep = null;
+            for (Product p : allProducts) {
+                if (p.getCategory().getDepartment().getName().equalsIgnoreCase(d)) {
+                    dep = p.getCategory().getDepartment();
+                    products.add(p);
+                }
+            }
+            alertAll();
+            return dep;
         }
 
         public Product getSelected() {
