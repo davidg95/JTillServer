@@ -673,8 +673,10 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
 
     private void btnPreivewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreivewActionPerformed
         PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPrintable(new ReportPrinter(start, end, till));
         javax.print.attribute.HashPrintRequestAttributeSet att
-            = new javax.print.attribute.HashPrintRequestAttributeSet();
+                = new javax.print.attribute.HashPrintRequestAttributeSet();
+        job.pageDialog(att);
         new PrintPreview(new ReportPrinter(start, end, till), job.getPageFormat(att));
     }//GEN-LAST:event_btnPreivewActionPerformed
 
