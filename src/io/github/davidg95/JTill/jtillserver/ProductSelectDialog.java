@@ -95,6 +95,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     }
 
     private void checkFilter() {
+        if (filter.isEmpty()) {
+            return;
+        }
         String[] params = filter.split(",");
         if (params.length == 0) {
             return;
