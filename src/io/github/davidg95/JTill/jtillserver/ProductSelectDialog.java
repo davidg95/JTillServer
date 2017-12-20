@@ -96,6 +96,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
 
     private void checkFilter() {
         String[] params = filter.split(",");
+        if (params.length == 0) {
+            return;
+        }
         for (String p : params) {
             String[] sPams = p.split(" ");
             if (p.charAt(p.indexOf('-') + 1) == 'd') {
