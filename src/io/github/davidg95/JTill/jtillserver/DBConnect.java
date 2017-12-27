@@ -476,6 +476,15 @@ public class DBConnect extends DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+            try {
+                stmt = con.createStatement();
+                stmt.executeUpdate("ALTER TABLE WASTEREASONS ADD COLUMN PRIVILEDGE_LEVEL INT");
+                stmt.executeUpdate("UPDATE WASTEREASONS SET PRIVILEDGE_LEVEL = 0");
+                con.commit();
+                log("Added PRIVILEDGE_LEVEL to WASTEREASONS");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
         }
@@ -3255,8 +3264,9 @@ public class DBConnect extends DataConnect {
                 Date date = new Date(set.getLong(6));
 
                 String reason = set.getString(8);
+                int level = set.getInt(9);
 
-                WasteReason wr = new WasteReason(wreason, reason);
+                WasteReason wr = new WasteReason(wreason, reason, level);
                 Product p = this.getProduct(pid);
                 wis.add(new WasteItem(id, p, quantity, wr, value, date));
             } catch (ProductNotFoundException ex) {
@@ -3357,7 +3367,8 @@ public class DBConnect extends DataConnect {
         while (set.next()) {
             int id = set.getInt("ID");
             String reason = set.getString("REASON");
-            wrs.add(new WasteReason(id, reason));
+            int level = set.getInt("PRIVILEDGE_LEVEL");
+            wrs.add(new WasteReason(id, reason, level));
         }
         return wrs;
     }
@@ -3449,7 +3460,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public WasteReason updateWasteReason(WasteReason wr) throws IOException, SQLException, JTillException {
-        String query = "UPDATE WASTEREASONS SET REASON='" + wr.getReason() + "'";
+        String query = "UPDATE WASTEREASONS SET REASON='" + wr.getReason() + "', PRIVILEDGE_LEVEL=" + wr.getPriviledgeLevel() + " WHERE ID=" + wr.getId();
         try (Connection con = getConnection()) {
             Statement stmt = con.createStatement();
             int value;

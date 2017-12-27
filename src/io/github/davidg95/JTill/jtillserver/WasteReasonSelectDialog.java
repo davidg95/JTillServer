@@ -155,6 +155,14 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
 
     }
 
+    private void select() {
+        if ((reason.getPriviledgeLevel() + 1) > GUI.staff.getPosition()) {
+            JOptionPane.showMessageDialog(this, "You are not authorised to use this reason", "Waste Reason", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        setVisible(false);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -260,7 +268,7 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
-        setVisible(false);
+        select();
     }//GEN-LAST:event_btnSelectActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
@@ -275,7 +283,7 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
                 return;
             }
             if (evt.getClickCount() == 2) {
-                setVisible(false);
+                select();
             }
         }
     }//GEN-LAST:event_tableMouseClicked
@@ -291,7 +299,7 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
             if (reason == null) {
                 JOptionPane.showMessageDialog(this, "Reason not found", "Search", JOptionPane.ERROR_MESSAGE);
             } else {
-                setVisible(false);
+                select();
                 return;
             }
         } catch (NumberFormatException e) {
