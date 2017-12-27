@@ -2240,8 +2240,8 @@ public class DBConnect extends DataConnect {
             try {
                 if (p.getType() == SaleItem.PRODUCT) {
                     final Product pr = (Product) p.getItem();
-                    if(!pr.getCondiments().isEmpty()){
-                        for(Condiment c : pr.getCondiments()){
+                    if (!pr.getCondiments().isEmpty()) {
+                        for (Condiment c : pr.getCondiments()) {
                             purchaseProduct(c.getProduct(), 1);
                         }
                     }
@@ -3248,7 +3248,7 @@ public class DBConnect extends DataConnect {
         while (set.next()) {
             try {
                 int id = set.getInt(1);
-                Product p = this.getProduct(set.getInt(2));
+                int pid = set.getInt(2);
                 int quantity = set.getInt(3);
                 int wreason = set.getInt(4);
                 BigDecimal value = set.getBigDecimal(5);
@@ -3257,6 +3257,7 @@ public class DBConnect extends DataConnect {
                 String reason = set.getString(8);
 
                 WasteReason wr = new WasteReason(wreason, reason);
+                Product p = this.getProduct(pid);
                 wis.add(new WasteItem(id, p, quantity, wr, value, date));
             } catch (ProductNotFoundException ex) {
                 LOG.log(Level.SEVERE, null, ex);
@@ -3342,8 +3343,8 @@ public class DBConnect extends DataConnect {
                 wis = getWasteItemsFromResultSet(set);
                 con.commit();
             } catch (SQLException ex) {
-                con.rollback();
                 LOG.log(Level.SEVERE, null, ex);
+                con.rollback();
                 throw ex;
             }
 

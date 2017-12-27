@@ -45,6 +45,7 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setTitle("Select Reason");
         setIconImage(GUI.icon);
+        txtID.requestFocus();
         try {
             List<WasteReason> reasons = dc.getAllWasteReasons();
             model = new MyTableModel(reasons);
@@ -66,7 +67,7 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
         dialog.setVisible(true);
         return reason;
     }
-    
+
     private class MyTableModel implements TableModel {
 
         private final List<WasteReason> reasons;
@@ -75,6 +76,15 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
         public MyTableModel(List<WasteReason> reasons) {
             this.reasons = reasons;
             this.listeners = new LinkedList<>();
+        }
+
+        public WasteReason getReason(int id) {
+            for (WasteReason wr : reasons) {
+                if (wr.getId() == id) {
+                    return wr;
+                }
+            }
+            return null;
         }
 
         public WasteReason getSelected() {
@@ -158,16 +168,16 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
         table = new javax.swing.JTable();
         btnCancel = new javax.swing.JButton();
         btnSelect = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        txtID = new javax.swing.JTextField();
+        btnSearch = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
@@ -194,6 +204,21 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
             }
         });
 
+        jLabel1.setText("ID:");
+
+        txtID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIDActionPerformed(evt);
+            }
+        });
+
+        btnSearch.setText("Search");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -206,6 +231,12 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnCancel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnSearch)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSelect)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -218,7 +249,10 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancel)
-                    .addComponent(btnSelect))
+                    .addComponent(btnSelect)
+                    .addComponent(jLabel1)
+                    .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSearch))
                 .addContainerGap())
         );
 
@@ -246,10 +280,34 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_tableMouseClicked
 
+    private void txtIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIDActionPerformed
+        btnSearch.doClick();
+    }//GEN-LAST:event_txtIDActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        try {
+            int id = Integer.parseInt(txtID.getText());
+            reason = model.getReason(id);
+            if (reason == null) {
+                JOptionPane.showMessageDialog(this, "Reason not found", "Search", JOptionPane.ERROR_MESSAGE);
+            } else {
+                setVisible(false);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Must enter a number", "Search", JOptionPane.ERROR_MESSAGE);
+        }
+        txtID.setSelectionStart(0);
+        txtID.setSelectionEnd(txtID.getText().length());
+    }//GEN-LAST:event_btnSearchActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSelect;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
+    private javax.swing.JTextField txtID;
     // End of variables declaration//GEN-END:variables
 }

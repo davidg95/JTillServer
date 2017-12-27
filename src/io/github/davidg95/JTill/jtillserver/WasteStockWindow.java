@@ -429,28 +429,38 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         if (wasteItems.isEmpty()) {
             return;
         }
-        BigDecimal total = BigDecimal.ZERO;
-        for (WasteItem wi : wasteItems) {
-            try {
-                Product product = dc.getProduct(wi.getProduct().getId());
-                product.removeStock(wi.getQuantity());
-                dc.updateProduct(product);
-                total = total.add(product.getIndividualCost().multiply(new BigDecimal(wi.getQuantity())));
-            } catch (IOException | ProductNotFoundException | SQLException ex) {
-                JOptionPane.showInternalMessageDialog(WasteStockWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        final ModalDialog mDialog = new ModalDialog(this, "Waste", "Processing...");
+        final Runnable run = () -> {
+            BigDecimal total = BigDecimal.ZERO;
+            for (WasteItem wi : wasteItems) {
+                try {
+                    Product product = dc.getProduct(wi.getProduct().getId());
+                    product.removeStock(wi.getQuantity());
+                    dc.updateProduct(product);
+                    total = total.add(product.getIndividualCost().multiply(new BigDecimal(wi.getQuantity())));
+                } catch (IOException | ProductNotFoundException | SQLException ex) {
+                    mDialog.hide();
+                    JOptionPane.showInternalMessageDialog(WasteStockWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
-        }
-        total.setScale(2);
-        try {
-            dc.addWasteReport(wasteItems);
-            model.setRowCount(0);
-            wasteItems.clear();
-            lblValue.setText("Total: £0.00");
-            btnWaste.setEnabled(false);
-            JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "All items have been wasted", "Waste", JOptionPane.INFORMATION_MESSAGE);
-        } catch (IOException | SQLException | JTillException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        }
+            total.setScale(2);
+            try {
+                dc.addWasteReport(wasteItems);
+                model.setRowCount(0);
+                wasteItems.clear();
+                lblValue.setText("Total: £0.00");
+                btnWaste.setEnabled(false);
+                mDialog.hide();
+                JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "All items have been wasted", "Waste", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException | SQLException | JTillException ex) {
+                mDialog.hide();
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            mDialog.hide();
+        };
+        final Thread thread = new Thread(run, "WASTE_THREAD");
+        thread.start();
+        mDialog.show();
     }//GEN-LAST:event_btnWasteActionPerformed
 
     private void tblProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductsMouseClicked
