@@ -307,7 +307,7 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
-        String reason = JOptionPane.showInternalInputDialog(this, "Enter new waste reason", "New Reason", JOptionPane.PLAIN_MESSAGE);
+        String reason = JOptionPane.showInputDialog(this, "Enter new waste reason", "New Reason", JOptionPane.PLAIN_MESSAGE);
 
         if (reason == null) {
             return;
