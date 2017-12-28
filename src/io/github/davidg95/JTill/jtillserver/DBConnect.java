@@ -2249,8 +2249,8 @@ public class DBConnect extends DataConnect {
             try {
                 if (p.getType() == SaleItem.PRODUCT) {
                     final Product pr = (Product) p.getItem();
-                    if (!pr.getCondiments().isEmpty()) {
-                        for (Condiment c : pr.getCondiments()) {
+                    if (!pr.getSaleCondiments().isEmpty()) {
+                        for (Condiment c : pr.getSaleCondiments()) {
                             purchaseProduct(c.getProduct(), 1);
                         }
                     }
