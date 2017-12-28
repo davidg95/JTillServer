@@ -69,6 +69,11 @@ public class TillDialog extends javax.swing.JInternalFrame {
         table.setModel(model);
         table.setSelectionModel(new ForcedListSelectionModel());
         getAllSales();
+        if (till.isConnected()) {
+            btnSendData.setEnabled(true);
+        } else {
+            btnSendData.setEnabled(false);
+        }
     }
 
     public static void showDialog(Till till) {

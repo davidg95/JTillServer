@@ -262,7 +262,7 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnClearSalesActionPerformed
 
     private void btnPurgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPurgeActionPerformed
-        if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "This will clear ALL sales data, received reports, and waste data. Continue?", "Purge Database", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "This will clear ALL sales data, received reports and waste data. Continue?", "Purge Database", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             final ModalDialog mDialog = new ModalDialog(this, "Sales Data", "Clearing...");
             final Runnable run = new Runnable() {
                 @Override
@@ -271,6 +271,10 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
                         dc.purgeDatabase();
                         mDialog.hide();
                         JOptionPane.showMessageDialog(GUI.gui.internal, "Purge complete", "Purge Database", JOptionPane.INFORMATION_MESSAGE);
+                        if (JOptionPane.showConfirmDialog(GUI.gui.internal, "Do you want to set all stock levels to 0?", "Purge database", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                            dc.submitSQL("UPDATE PRODUCTS SET STOCK = 0");
+                            JOptionPane.showMessageDialog(GUI.gui.internal, "Stock levels set to 0", "Purge Database", JOptionPane.INFORMATION_MESSAGE);
+                        }
                     } catch (IOException | SQLException ex) {
                         mDialog.hide();
                         JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
