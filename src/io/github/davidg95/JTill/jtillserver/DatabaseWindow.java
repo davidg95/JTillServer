@@ -76,7 +76,7 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
             lblCatalog.setText(lblCatalog.getText() + schema);
             lblSchema.setText(lblSchema.getText() + schema);
         } catch (IOException | SQLException ex) {
-            JOptionPane.showInternalMessageDialog(frame, ex, "Database Settings", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, ex, "Database Settings", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -97,6 +97,9 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
         jButton2 = new javax.swing.JButton();
         btnClearSales = new javax.swing.JButton();
         btnPurge = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        txtSQL = new javax.swing.JTextField();
+        btnSubmit = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Database Settings");
@@ -137,6 +140,21 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel1.setText("Submit SQL Statement:");
+
+        txtSQL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSQLActionPerformed(evt);
+            }
+        });
+
+        btnSubmit.setText("Submit");
+        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -157,7 +175,14 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnClearSales)
                             .addComponent(jButton2)
-                            .addComponent(btnPurge))))
+                            .addComponent(btnPurge)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtSQL, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSubmit)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -178,7 +203,12 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblSchema))
                     .addComponent(btnPurge))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 251, Short.MAX_VALUE)
+                .addGap(37, 37, 37)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtSQL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSubmit))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 195, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addContainerGap())
         );
@@ -255,14 +285,46 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnPurgeActionPerformed
 
+    private void txtSQLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSQLActionPerformed
+        btnSubmit.doClick();
+    }//GEN-LAST:event_txtSQLActionPerformed
+
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        String query = txtSQL.getText();
+        if (query.isEmpty()) {
+            return;
+        }
+        final ModalDialog mDialog = new ModalDialog(this, "SQL", "Running...");
+        final Runnable run = () -> {
+            try {
+                dc.submitSQL(query);
+                mDialog.hide();
+                JOptionPane.showMessageDialog(this, "Query successfully run", "SQL", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException | SQLException ex) {
+                mDialog.hide();
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            } finally {
+                mDialog.hide();
+            }
+        };
+        final Thread thread = new Thread(run, "SQL_THREAD");
+        thread.start();
+        mDialog.show();
+        txtSQL.setSelectionStart(0);
+        txtSQL.setSelectionEnd(txtSQL.getText().length());
+    }//GEN-LAST:event_btnSubmitActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClearSales;
     private javax.swing.JButton btnPurge;
+    private javax.swing.JButton btnSubmit;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblCatalog;
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblSchema;
     private javax.swing.JLabel lblVer;
+    private javax.swing.JTextField txtSQL;
     // End of variables declaration//GEN-END:variables
 }

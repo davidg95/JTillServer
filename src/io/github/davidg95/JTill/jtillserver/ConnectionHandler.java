@@ -952,4 +952,9 @@ public class ConnectionHandler {
     public Object[] getLicenseInfo() throws IOException {
         return dc.getLicenseInfo();
     }
+
+    @JConnMethod("SUBMITSQL")
+    public void submitSQL(@JConnParameter("SQL") String SQL) throws IOException, SQLException {
+        dc.submitSQL(SQL);
+    }
 }

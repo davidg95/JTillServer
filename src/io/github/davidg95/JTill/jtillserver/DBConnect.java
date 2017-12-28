@@ -3255,23 +3255,66 @@ public class DBConnect extends DataConnect {
     private List<WasteItem> getWasteItemsFromResultSet(ResultSet set) throws SQLException, IOException {
         List<WasteItem> wis = new LinkedList<>();
         while (set.next()) {
-            try {
-                int id = set.getInt(1);
-                int pid = set.getInt(2);
-                int quantity = set.getInt(3);
-                int wreason = set.getInt(4);
-                BigDecimal value = set.getBigDecimal(5);
-                Date date = new Date(set.getLong(6));
+            int id = set.getInt(1);
+            int pid = set.getInt(2);
+            int quantity = set.getInt(3);
+            int wreason = set.getInt(4);
+            BigDecimal value = set.getBigDecimal(5);
+            Date date = new Date(set.getLong(6));
 
-                String reason = set.getString(8);
-                int level = set.getInt(9);
+            String reason = set.getString(8);
+            int level = set.getInt(9);
 
-                WasteReason wr = new WasteReason(wreason, reason, level);
-                Product p = this.getProduct(pid);
-                wis.add(new WasteItem(id, p, quantity, wr, value, date));
-            } catch (ProductNotFoundException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+            int code = set.getInt(10);
+            int order_code = set.getInt(11);
+            String name = set.getString(12);
+            boolean open = set.getBoolean(13);
+            BigDecimal price = set.getBigDecimal(14);
+            int stock = set.getInt(15);
+            String comments = set.getString(16);
+            String shortName = set.getString(17);
+            int cId = set.getInt(18);
+            int taxID = set.getInt(19);
+            BigDecimal costPrice = set.getBigDecimal(20);
+            int minStock = set.getInt(21);
+            int maxStock = set.getInt(22);
+            int packSize = set.getInt(23);
+            String barcode = set.getString(24);
+            double scale = set.getDouble(25);
+            String scaleName = set.getString(26);
+            boolean incVat = set.getBoolean(27);
+            int maxCon = set.getInt(28);
+            int minCon = set.getInt(29);
+            BigDecimal limit = set.getBigDecimal(30);
+            boolean trackStock = set.getBoolean(31);
+
+            String cName = set.getString(33);
+            Time start = set.getTime(34);
+            Time end = set.getTime(35);
+            boolean restrict = set.getBoolean(36);
+            int age = set.getInt(37);
+            int department = set.getInt(38);
+
+            String dName = set.getString(40);
+
+            Department d = new Department(department, dName);
+
+            Category c = new Category(cId, cName, start, end, restrict, age, d);
+
+            String tName = set.getString(42);
+            double tValue = set.getDouble(43);
+
+            Tax t = new Tax(taxID, tName, tValue);
+
+            Product p;
+            if (!open) {
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon, trackStock);
+            } else {
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
             }
+
+            WasteReason wr = new WasteReason(wreason, reason, level);
+            wis.add(new WasteItem(id, p, quantity, wr, value, date));
         }
         return wis;
     }
@@ -3344,7 +3387,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public List<WasteItem> getAllWasteItems() throws IOException, SQLException {
-        String query = "SELECT * FROM WASTEITEMS, WASTEREASONS WHERE WASTEITEMS.REASON = WASTEREASONS.ID";
+        String query = "SELECT * FROM WASTEITEMS, WASTEREASONS, PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND WASTEITEMS.REASON = WASTEREASONS.ID AND WASTEITEMS.PRODUCT = PRODUCTS.ID";
         try (Connection con = getConnection()) {
             Statement stmt = con.createStatement();
             List<WasteItem> wis = new LinkedList<>();
@@ -5507,5 +5550,20 @@ public class DBConnect extends DataConnect {
     public void setLicenseInfo(String no, int connections) {
         this.licenseNo = no;
         this.conn_limit = connections;
+    }
+
+    @Override
+    public void submitSQL(String SQL) throws IOException, SQLException {
+        try (final Connection con = getConnection()) {
+            Statement stmt = con.createStatement();
+            try {
+                stmt.execute(SQL);
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, "Error submitting custom SQl statement", ex);
+                throw ex;
+            }
+        }
     }
 }
