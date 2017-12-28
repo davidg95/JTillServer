@@ -113,6 +113,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         supplier = SupplierSelectDialog.showDialog(this);
         if (supplier == null) {
             setVisible(false);
+            return;
         }
         txtSupplier.setText(supplier.getName());
     }

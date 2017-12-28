@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -157,7 +158,15 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
 
     private void select() {
         if ((reason.getPriviledgeLevel() + 1) > GUI.staff.getPosition()) {
-            JOptionPane.showMessageDialog(this, "You are not authorised to use this reason", "Waste Reason", JOptionPane.WARNING_MESSAGE);
+            int resp = JOptionPane.showOptionDialog(this, "You are not authorised to use this reason", "Waste Reason", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Ok", "Get Authorisation Now"}, null);
+            if (resp == 1) {
+                Staff s = LoginDialog.showLoginDialog(this);
+                if (reason.getPriviledgeLevel() + 1 <= s.getPosition()) {
+                    setVisible(false);
+                } else {
+                    JOptionPane.showMessageDialog(this, "You do not have authority", "Waste Reason", JOptionPane.ERROR_MESSAGE);
+                }
+            }
             return;
         }
         setVisible(false);

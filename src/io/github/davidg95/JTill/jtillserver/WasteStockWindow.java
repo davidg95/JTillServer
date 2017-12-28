@@ -411,7 +411,6 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             if (amount == 0) {
                 return;
             }
-//            WasteReason wr = (WasteReason) cmbReason.getSelectedItem();
             WasteReason wr = WasteReasonSelectDialog.showDialog(this);
             if (wr == null) {
                 return;
