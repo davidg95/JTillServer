@@ -59,6 +59,7 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
         cmbModel.addElement("Supervisor");
         cmbModel.addElement("Manager");
         cmbModel.addElement("Area Manager");
+        tabbed.setEnabledAt(1, false);
         init();
     }
 
@@ -95,7 +96,7 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
 
     private void reloadList() {
         try {
-            reasons = dc.getAllWasteReasons();
+            reasons = dc.getUsedWasteReasons();
             model.setRowCount(0);
             for (WasteReason wr : reasons) {
                 model.addRow(new Object[]{wr.getId(), wr.getReason()});
@@ -135,6 +136,7 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
         jLabel3 = new javax.swing.JLabel();
         cmbPriviledge = new javax.swing.JComboBox<>();
         btnSave = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
@@ -225,6 +227,13 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
             }
         });
 
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout tabEditLayout = new javax.swing.GroupLayout(tabEdit);
         tabEdit.setLayout(tabEditLayout);
         tabEditLayout.setHorizontalGroup(
@@ -233,19 +242,25 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(tabEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(tabEditLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnSave)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnDelete))
                     .addGroup(tabEditLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(tabEditLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbPriviledge, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnSave))
-                .addContainerGap(139, Short.MAX_VALUE))
+                        .addGroup(tabEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(tabEditLayout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(tabEditLayout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(tabEditLayout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cmbPriviledge, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 129, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         tabEditLayout.setVerticalGroup(
             tabEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -263,7 +278,9 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
                     .addComponent(jLabel3)
                     .addComponent(cmbPriviledge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 236, Short.MAX_VALUE)
-                .addComponent(btnSave)
+                .addGroup(tabEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSave)
+                    .addComponent(btnDelete))
                 .addContainerGap())
         );
 
@@ -303,7 +320,10 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
         WasteReason wr = new WasteReason(reason, 0);
         try {
             wr = dc.addWasteReason(wr);
-            init();
+            reloadList();
+            setCurrent(wr);
+            tabbed.setEnabledAt(1, true);
+            tabbed.setSelectedIndex(1);
         } catch (IOException | SQLException | JTillException ex) {
             LOG.log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -319,6 +339,7 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
         if (row == -1) {
             return;
         }
+        tabbed.setEnabledAt(1, true);
         WasteReason r = reasons.get(row);
         setCurrent(r);
         if (evt.getClickCount() == 2) {
@@ -338,8 +359,24 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        try {
+            if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this waste reason?\n" + reason.getName(), "Remove Reason", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                dc.deleteWasteReason(reason);
+                tabbed.setSelectedIndex(0);
+                reason = null;
+                reloadList();
+                tabbed.setEnabledAt(1, false);
+                JOptionPane.showMessageDialog(this, "Waste reason removed", "Waste Reason", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (IOException | SQLException | JTillException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnNew;
     private javax.swing.JButton btnSave;
     private javax.swing.JComboBox<String> cmbPriviledge;

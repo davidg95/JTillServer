@@ -485,6 +485,15 @@ public class DBConnect extends DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+            try {
+                stmt = con.createStatement();
+                stmt.executeUpdate("ALTER TABLE WASTEREASONS ADD COLUMN DELETED BOOLEAN");
+                stmt.executeUpdate("UPDATE WASTEREASONS SET DELETED = false");
+                con.commit();
+                log("Added DELETED to WASTEREASONS");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
         }
@@ -3418,7 +3427,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public WasteReason addWasteReason(WasteReason wr) throws IOException, SQLException, JTillException {
-        String query = "INSERT INTO APP.WASTEREASONS (REASON) values ('" + wr.getReason() + "')";
+        String query = "INSERT INTO APP.WASTEREASONS (REASON, DELETED) values ('" + wr.getReason() + "', false)";
         try (Connection con = getConnection()) {
             PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             try {
@@ -3484,6 +3493,26 @@ public class DBConnect extends DataConnect {
     @Override
     public List<WasteReason> getAllWasteReasons() throws IOException, SQLException {
         String query = "SELECT * FROM WASTEREASONS";
+        try (Connection con = getConnection()) {
+            Statement stmt = con.createStatement();
+            List<WasteReason> wrs = new LinkedList<>();
+            try {
+                ResultSet set = stmt.executeQuery(query);
+                wrs = getWasteReasonsFromResultSet(set);
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+
+            return wrs;
+        }
+    }
+
+    @Override
+    public List<WasteReason> getUsedWasteReasons() throws IOException, SQLException {
+        String query = "SELECT * FROM WASTEREASONS WHERE DELETED = false";
         try (Connection con = getConnection()) {
             Statement stmt = con.createStatement();
             List<WasteReason> wrs = new LinkedList<>();
@@ -5562,6 +5591,25 @@ public class DBConnect extends DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
                 LOG.log(Level.SEVERE, "Error submitting custom SQl statement", ex);
+                throw ex;
+            }
+        }
+    }
+
+    public void deleteWasteReason(WasteReason wr) throws SQLException, JTillException {
+        String query = "UPDATE WASTEREASONS SET DELETED = true WHERE ID=" + wr.getId();
+        try (Connection con = getConnection()) {
+            Statement stmt = con.createStatement();
+            int value;
+            try {
+                value = stmt.executeUpdate(query);
+                con.commit();
+                if (value == 0) {
+                    throw new JTillException("Waste Reason " + wr.getId() + " not found");
+                }
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
                 throw ex;
             }
         }

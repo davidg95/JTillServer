@@ -47,7 +47,7 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
         setIconImage(GUI.icon);
         txtID.requestFocus();
         try {
-            List<WasteReason> reasons = dc.getAllWasteReasons();
+            List<WasteReason> reasons = dc.getUsedWasteReasons();
             model = new MyTableModel(reasons);
             table.setModel(model);
             table.setSelectionModel(new ForcedListSelectionModel());

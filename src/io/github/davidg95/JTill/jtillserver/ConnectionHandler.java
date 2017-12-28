@@ -957,4 +957,14 @@ public class ConnectionHandler {
     public void submitSQL(@JConnParameter("SQL") String SQL) throws IOException, SQLException {
         dc.submitSQL(SQL);
     }
+
+    @JConnMethod("DELETEWASTEREASON")
+    public void deleteWasteReason(@JConnParameter("WR") WasteReason wr) throws SQLException, JTillException, JTillException {
+        dc.deleteWasteReason(wr);
+    }
+
+    @JConnMethod("GETUSEDWASTEREASONS")
+    public List<WasteReason> getUsedWasteReasons() throws IOException, SQLException {
+        return dc.getUsedWasteReasons();
+    }
 }
