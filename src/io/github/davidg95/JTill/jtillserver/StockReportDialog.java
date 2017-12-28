@@ -235,6 +235,13 @@ public class StockReportDialog extends javax.swing.JDialog {
                 if (type == FULL) {
                     try {
                         List<Product> products = dc.getAllProducts();
+                        Iterator it = products.iterator();
+                        while (it.hasNext()) {
+                            Product p = (Product) it.next();
+                            if (p.isOpen() || !p.isTrackStock()) {
+                                it.remove();
+                            }
+                        }
                         print(products, "Full report", mDialog, job);
                     } catch (IOException | SQLException ex) {
                         JOptionPane.showMessageDialog(GUI.gui, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -245,7 +252,7 @@ public class StockReportDialog extends javax.swing.JDialog {
                         Iterator it = products.iterator();
                         while (it.hasNext()) {
                             Product p = (Product) it.next();
-                            if (p.getStock() >= p.getMinStockLevel()) {
+                            if (p.getStock() >= p.getMinStockLevel() || p.isOpen() || !p.isTrackStock()) {
                                 it.remove();
                             }
                         }
@@ -259,7 +266,7 @@ public class StockReportDialog extends javax.swing.JDialog {
                         Iterator it = products.iterator();
                         while (it.hasNext()) {
                             Product p = (Product) it.next();
-                            if (p.getStock() > 0) {
+                            if (p.getStock() > 0 || p.isOpen() || !p.isTrackStock()) {
                                 it.remove();
                             }
                         }
