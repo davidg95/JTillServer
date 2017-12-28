@@ -60,6 +60,7 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
 
     private void init() {
         model = new DefaultComboBoxModel();
+        model.addElement("0 - All");
         try {
             List<Till> tills = dc.getAllTills();
             for (Till t : tills) {
@@ -85,7 +86,6 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
         cmbTill = new javax.swing.JComboBox<>();
         btnCancel = new javax.swing.JButton();
-        chkAll = new javax.swing.JCheckBox();
         pickStart = new org.jdesktop.swingx.JXDatePicker();
         pickEnd = new org.jdesktop.swingx.JXDatePicker();
 
@@ -107,20 +107,11 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
         jLabel3.setText("Terminal:");
 
         cmbTill.setModel(model);
-        cmbTill.setEnabled(false);
 
         btnCancel.setText("Cancel");
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelActionPerformed(evt);
-            }
-        });
-
-        chkAll.setSelected(true);
-        chkAll.setText("All");
-        chkAll.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkAllActionPerformed(evt);
             }
         });
 
@@ -142,12 +133,10 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbTill, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(chkAll))
+                        .addComponent(cmbTill, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnGenerate)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
                         .addComponent(btnCancel)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -165,8 +154,7 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(cmbTill, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(chkAll))
+                    .addComponent(cmbTill, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGenerate)
@@ -189,7 +177,7 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
             return;
         }
         Till till;
-        if (chkAll.isSelected()) {
+        if (cmbTill.getSelectedIndex() == 0) {
             till = null;
         } else {
             till = ((Till) cmbTill.getSelectedItem());
@@ -198,14 +186,9 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
         ConsolidatedReportingWindow.showWindow(start, end, till);
     }//GEN-LAST:event_btnGenerateActionPerformed
 
-    private void chkAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkAllActionPerformed
-        cmbTill.setEnabled(!chkAll.isSelected());
-    }//GEN-LAST:event_chkAllActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnGenerate;
-    private javax.swing.JCheckBox chkAll;
     private javax.swing.JComboBox<String> cmbTill;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
