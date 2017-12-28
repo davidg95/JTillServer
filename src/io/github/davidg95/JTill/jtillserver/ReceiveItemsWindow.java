@@ -85,6 +85,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         model = (DefaultTableModel) tblProducts.getModel();
         tblProducts.setModel(model);
         txtBarcode.setEnabled(false);
+        btnAddOrder.setEnabled(false);
         setReport();
     }
 

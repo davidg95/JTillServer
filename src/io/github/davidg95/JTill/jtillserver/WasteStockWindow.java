@@ -150,7 +150,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         model.setRowCount(0);
         BigDecimal val = BigDecimal.ZERO;
         for (WasteItem wi : wasteItems) {
-            Object[] row = new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + wi.getTotalValue(), wi.getReason().getReason()};
+            Object[] row = new Object[]{wi.getProduct().getId(), wi.getProduct().getLongName(), wi.getQuantity(), symbol + new DecimalFormat("0.00").format(wi.getTotalValue()), wi.getReason().getReason()};
             model.addRow(row);
             val = val.add(wi.getTotalValue());
         }
