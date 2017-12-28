@@ -320,6 +320,7 @@ public class GUI extends JFrame implements GUIInterface {
             itemLogin.setText("Log Out");
             LOG.log(Level.INFO, staff.getName() + " has logged in");
             isLoggedOn = true;
+//            checkUserLevel();
         } else {
             if (remote) {
                 try {
@@ -332,6 +333,30 @@ public class GUI extends JFrame implements GUIInterface {
             if (SystemTray.isSupported()) {
                 this.setVisible(false);
                 TillServer.trayIcon.displayMessage("JTill Server is still running", "JTill Server is still running in the background, click this icon to bring it back up.", TrayIcon.MessageType.INFO);
+            }
+        }
+    }
+
+    private void checkUserLevel() {
+        for (Component c : toolBar.getComponents()) {
+            c.setEnabled(false);
+        }
+        switch (staff.getPosition()) {
+            case 4: {
+
+            }
+            case 3: {
+                for (Component c : toolBar.getComponents()) {
+                    c.setEnabled(true);
+                }
+            }
+            case 2: {
+                btnManageStock.setEnabled(true);
+            }
+            case 1: {
+                btnWasteStock.setEnabled(true);
+                btnReceiveStock.setEnabled(true);
+                btnEnquiry.setEnabled(true);
             }
         }
     }
@@ -486,7 +511,7 @@ public class GUI extends JFrame implements GUIInterface {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jToolBar1 = new javax.swing.JToolBar();
+        toolBar = new javax.swing.JToolBar();
         btnManageStock = new javax.swing.JButton();
         btnManageCustomers = new javax.swing.JButton();
         btnManageStaff = new javax.swing.JButton();
@@ -575,9 +600,9 @@ public class GUI extends JFrame implements GUIInterface {
         setTitle("JTill Server");
         setIconImage(GUI.icon);
 
-        jToolBar1.setFloatable(false);
-        jToolBar1.setRollover(true);
-        jToolBar1.setDoubleBuffered(true);
+        toolBar.setFloatable(false);
+        toolBar.setRollover(true);
+        toolBar.setDoubleBuffered(true);
 
         btnManageStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/product.png"))); // NOI18N
         btnManageStock.setToolTipText("Manage Products");
@@ -597,7 +622,7 @@ public class GUI extends JFrame implements GUIInterface {
                 btnManageStockActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnManageStock);
+        toolBar.add(btnManageStock);
 
         btnManageCustomers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/customer.png"))); // NOI18N
         btnManageCustomers.setToolTipText("Manage Customers");
@@ -617,7 +642,7 @@ public class GUI extends JFrame implements GUIInterface {
                 btnManageCustomersActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnManageCustomers);
+        toolBar.add(btnManageCustomers);
 
         btnManageStaff.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/staff.png"))); // NOI18N
         btnManageStaff.setToolTipText("Manage Staff");
@@ -637,7 +662,7 @@ public class GUI extends JFrame implements GUIInterface {
                 btnManageStaffActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnManageStaff);
+        toolBar.add(btnManageStaff);
 
         btnAddStaff.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/addStaff.png"))); // NOI18N
         btnAddStaff.setToolTipText("Add a new staff");
@@ -657,7 +682,7 @@ public class GUI extends JFrame implements GUIInterface {
                 btnAddStaffActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnAddStaff);
+        toolBar.add(btnAddStaff);
 
         btnDiscounts.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/discount.png"))); // NOI18N
         btnDiscounts.setToolTipText("Manage Discounts");
@@ -677,7 +702,7 @@ public class GUI extends JFrame implements GUIInterface {
                 btnDiscountsActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnDiscounts);
+        toolBar.add(btnDiscounts);
 
         btnCategorys.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/category.png"))); // NOI18N
         btnCategorys.setToolTipText("Manage Categorys");
@@ -697,7 +722,7 @@ public class GUI extends JFrame implements GUIInterface {
                 btnCategorysActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnCategorys);
+        toolBar.add(btnCategorys);
 
         btnSendData.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/send.png"))); // NOI18N
         btnSendData.setToolTipText("Send data to terminals");
@@ -717,8 +742,8 @@ public class GUI extends JFrame implements GUIInterface {
                 btnSendDataActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnSendData);
-        jToolBar1.add(jSeparator1);
+        toolBar.add(btnSendData);
+        toolBar.add(jSeparator1);
 
         btnNewProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/add.png"))); // NOI18N
         btnNewProduct.setToolTipText("Create a new product");
@@ -738,7 +763,7 @@ public class GUI extends JFrame implements GUIInterface {
                 btnNewProductActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnNewProduct);
+        toolBar.add(btnNewProduct);
 
         btnReceiveStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/receive.png"))); // NOI18N
         btnReceiveStock.setToolTipText("Receive stock");
@@ -758,7 +783,7 @@ public class GUI extends JFrame implements GUIInterface {
                 btnReceiveStockActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnReceiveStock);
+        toolBar.add(btnReceiveStock);
 
         btnWasteStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/waste.png"))); // NOI18N
         btnWasteStock.setToolTipText("Waste stock");
@@ -778,7 +803,7 @@ public class GUI extends JFrame implements GUIInterface {
                 btnWasteStockActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnWasteStock);
+        toolBar.add(btnWasteStock);
 
         btnEnquiry.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/enquiry.png"))); // NOI18N
         btnEnquiry.setToolTipText("Product enquiry");
@@ -798,8 +823,8 @@ public class GUI extends JFrame implements GUIInterface {
                 btnEnquiryActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnEnquiry);
-        jToolBar1.add(jSeparator2);
+        toolBar.add(btnEnquiry);
+        toolBar.add(jSeparator2);
 
         btnScreens.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/screens.png"))); // NOI18N
         btnScreens.setToolTipText("Edit Screens");
@@ -819,7 +844,7 @@ public class GUI extends JFrame implements GUIInterface {
                 btnScreensActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnScreens);
+        toolBar.add(btnScreens);
 
         btnTerminals.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/terminals.png"))); // NOI18N
         btnTerminals.setToolTipText("View and edit terminals");
@@ -839,7 +864,7 @@ public class GUI extends JFrame implements GUIInterface {
                 btnTerminalsActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnTerminals);
+        toolBar.add(btnTerminals);
 
         btnSettings.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/settings.png"))); // NOI18N
         btnSettings.setToolTipText("Settings");
@@ -859,8 +884,8 @@ public class GUI extends JFrame implements GUIInterface {
                 btnSettingsActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnSettings);
-        jToolBar1.add(jSeparator3);
+        toolBar.add(btnSettings);
+        toolBar.add(jSeparator3);
 
         btnReports.setIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/reports.png"))); // NOI18N
         btnReports.setToolTipText("Reports");
@@ -880,15 +905,15 @@ public class GUI extends JFrame implements GUIInterface {
                 btnReportsActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnReports);
-        jToolBar1.add(filler2);
+        toolBar.add(btnReports);
+        toolBar.add(filler2);
 
         lblServerAddress.setText("Local Server Address: 0.0.0.0");
-        jToolBar1.add(lblServerAddress);
-        jToolBar1.add(filler1);
+        toolBar.add(lblServerAddress);
+        toolBar.add(filler1);
 
         lblPort.setText("Port number: 0");
-        jToolBar1.add(lblPort);
+        toolBar.add(lblPort);
 
         lblHelp.setText("Press F1 for help");
         lblHelp.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -1377,7 +1402,7 @@ public class GUI extends JFrame implements GUIInterface {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(statusBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -1398,7 +1423,7 @@ public class GUI extends JFrame implements GUIInterface {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(internal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -2023,7 +2048,6 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
-    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblClients;
     private javax.swing.JLabel lblHelp;
     private javax.swing.JLabel lblPort;
@@ -2036,6 +2060,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenu menuSetup;
     private javax.swing.JMenu menuStock;
     private javax.swing.JPanel statusBar;
+    private javax.swing.JToolBar toolBar;
     private javax.swing.JTextArea txtLog;
     // End of variables declaration//GEN-END:variables
 
