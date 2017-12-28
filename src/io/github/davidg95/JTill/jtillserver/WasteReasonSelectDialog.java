@@ -161,6 +161,9 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
             int resp = JOptionPane.showOptionDialog(this, "You are not authorised to use this reason", "Waste Reason", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Ok", "Get Authorisation Now"}, null);
             if (resp == 1) {
                 Staff s = LoginDialog.showLoginDialog(this);
+                if (s == null) {
+                    return;
+                }
                 if (reason.getPriviledgeLevel() + 1 <= s.getPosition()) {
                     setVisible(false);
                 } else {
