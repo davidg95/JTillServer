@@ -361,6 +361,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
         public void setList(List<Product> products) {
             this.products = products;
+            alertAll();
         }
 
         @Override
