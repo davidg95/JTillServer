@@ -195,6 +195,9 @@
       <Properties>
         <Property name="editable" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="txtSupplierMouseClicked"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

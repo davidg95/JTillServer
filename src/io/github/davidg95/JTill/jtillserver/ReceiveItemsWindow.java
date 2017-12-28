@@ -111,7 +111,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
     private void setSupplier() {
         supplier = SupplierSelectDialog.showDialog(this);
-        if(supplier == null){
+        if (supplier == null) {
             setVisible(false);
         }
         txtSupplier.setText(supplier.getName());
@@ -327,6 +327,11 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         jLabel1.setText("Supplier:");
 
         txtSupplier.setEditable(false);
+        txtSupplier.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtSupplierMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -612,6 +617,19 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         txtBarcode.setText("");
         updateTable();
     }//GEN-LAST:event_btnAddOrderActionPerformed
+
+    private void txtSupplierMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSupplierMouseClicked
+        if (SwingUtilities.isLeftMouseButton(evt)) {
+            if (evt.getClickCount() == 2) {
+                Supplier sup = SupplierSelectDialog.showDialog(this);
+                if (sup == null) {
+                    return;
+                }
+                supplier = sup;
+                txtSupplier.setText(supplier.getName());
+            }
+        }
+    }//GEN-LAST:event_txtSupplierMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddOrder;
