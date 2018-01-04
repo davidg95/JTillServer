@@ -161,11 +161,13 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
             if (resp == 1) {
                 Staff s = LoginDialog.showLoginDialog(this);
                 if (s == null) {
+                    reason = null;
                     return;
                 }
                 if (reason.getPriviledgeLevel() + 1 <= s.getPosition()) {
                     setVisible(false);
                 } else {
+                    reason = null;
                     JOptionPane.showMessageDialog(this, "You do not have authority", "Waste Reason", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -279,6 +281,10 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
+        reason = model.getSelected();
+        if (reason == null) {
+            return;
+        }
         select();
     }//GEN-LAST:event_btnSelectActionPerformed
 
@@ -289,11 +295,11 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         if (SwingUtilities.isLeftMouseButton(evt)) {
-            reason = model.getSelected();
-            if (reason == null) {
-                return;
-            }
             if (evt.getClickCount() == 2) {
+                reason = model.getSelected();
+                if (reason == null) {
+                    return;
+                }
                 select();
             }
         }
