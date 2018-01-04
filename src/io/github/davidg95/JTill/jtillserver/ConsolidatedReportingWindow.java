@@ -64,33 +64,16 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
-        try {
-            retrieve(start, end, till);
-            init();
-        } catch (IOException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        } finally {
-
-        }
-    }
-
-    private void retrieve(Date start, Date end, Till till) throws IOException, SQLException {
         final ModalDialog mDialog = new ModalDialog(GUI.gui, "Consolodated Report", "Generating report...");
         final Runnable run = new Runnable() {
             @Override
             public void run() {
                 try {
-                    if (till == null) {
-                        sales = dc.consolidated(start, end, -1);
-                        refunds = dc.getRefunds(start, end, -1).setScale(2, 6);
-                    } else {
-                        sales = dc.consolidated(start, end, till.getId());
-                        refunds = dc.getRefunds(start, end, till.getId()).setScale(2, 6);
-                    }
-                    wastage = dc.getWastage(start, end).setScale(2, 6);
+                    retrieve(start, end, till);
+                    init();
                 } catch (IOException | SQLException ex) {
                     mDialog.hide();
-                    JOptionPane.showMessageDialog(GUI.gui, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(ConsolidatedReportingWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 } finally {
                     mDialog.hide();
                 }
@@ -99,6 +82,17 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
         final Thread thread = new Thread(run, "Consolodate");
         thread.start();
         mDialog.show();
+    }
+
+    private void retrieve(Date start, Date end, Till till) throws IOException, SQLException {
+        if (till == null) {
+            sales = dc.consolidated(start, end, -1);
+            refunds = dc.getRefunds(start, end, -1).setScale(2, 6);
+        } else {
+            sales = dc.consolidated(start, end, till.getId());
+            refunds = dc.getRefunds(start, end, till.getId()).setScale(2, 6);
+        }
+        wastage = dc.getWastage(start, end).setScale(2, 6);
     }
 
     public static void showWindow(Date start, Date end, Till till) {
