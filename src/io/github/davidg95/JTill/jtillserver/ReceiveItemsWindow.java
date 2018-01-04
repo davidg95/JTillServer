@@ -6,7 +6,6 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
@@ -14,9 +13,7 @@ import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,7 +32,9 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -45,8 +44,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
     private ReceivedReport rr;
-    private List<ReceivedItem> products;
-    private final DefaultTableModel model;
+    private final MyModel model;
     private Supplier supplier;
 
     private boolean viewMode = false;
@@ -58,16 +56,14 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
      */
     public ReceiveItemsWindow() {
         this.dc = GUI.gui.dc;
-        this.products = new ArrayList<>();
         initComponents();
         setTitle("Receive Stock");
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
-        model = (DefaultTableModel) tblProducts.getModel();
+        model = new MyModel();
         tblProducts.setModel(model);
-        model.setRowCount(0);
         init();
         txtBarcode.requestFocus();
     }
@@ -75,14 +71,13 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     public ReceiveItemsWindow(ReceivedReport rr) {
         this.dc = GUI.gui.dc;
         this.rr = rr;
-        this.products = new LinkedList<>();
         initComponents();
         setTitle(rr.getSupplier().getName() + " - " + rr.getInvoiceId());
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
-        model = (DefaultTableModel) tblProducts.getModel();
+        model = new MyModel();
         tblProducts.setModel(model);
         txtBarcode.setEnabled(false);
         btnAddOrder.setEnabled(false);
@@ -132,8 +127,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
     private void setReport() {
         tblProducts.setSelectionModel(new ForcedListSelectionModel());
-        products = rr.getItems();
-        updateTable();
+        model.setItems(rr.getItems());
         txtInvoice.setText(rr.getInvoiceId());
         supplier = rr.getSupplier();
         txtSupplier.setText(supplier.getName());
@@ -142,21 +136,24 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
+        tblProducts.getColumnModel().getColumn(0).setMaxWidth(40);
+        tblProducts.getColumnModel().getColumn(2).setMaxWidth(40);
+        tblProducts.getColumnModel().getColumn(0).setMinWidth(40);
+        tblProducts.getColumnModel().getColumn(2).setMinWidth(40);
         tblProducts.setSelectionModel(new ForcedListSelectionModel());
         this.addInternalFrameListener(new InternalFrameAdapter() {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
-                if (!products.isEmpty()) {
+                if (!model.getItems().isEmpty()) {
                     int res = JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Do you want to save the current report?", "Save", JOptionPane.YES_NO_OPTION);
                     if (res == JOptionPane.YES_OPTION) {
-                        GUI.gui.savedReports.put("REC", products);
+                        GUI.gui.savedReports.put("REC", model.getItems());
                     }
                 }
             }
         });
         if (GUI.gui.savedReports.containsKey("REC")) {
-            products = GUI.gui.savedReports.get("REC");
-            updateTable();
+            model.setItems(GUI.gui.savedReports.get("REC"));
             GUI.gui.savedReports.remove("REC");
         }
         InputMap im = tblProducts.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
@@ -172,7 +169,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 if (index == -1) {
                     return;
                 }
-                final ReceivedItem p = products.get(index);
+                final ReceivedItem p = model.getItem(index);
                 removeItem(p);
             }
         });
@@ -180,29 +177,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
     private void removeItem(ReceivedItem i) {
         if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Are you sure you want to remove this item?\n" + i, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            products.remove(i);
-        }
-        updateTable();
-    }
-
-    private void updateTable() {
-        model.setRowCount(0);
-        BigDecimal val = BigDecimal.ZERO;
-        val.setScale(2);
-        for (ReceivedItem pr : products) {
-            final Product p = pr.getProduct();
-            model.addRow(new Object[]{p.getId(), p.getLongName(), pr.getQuantity()});
-            val = val.add(pr.getPrice());
-        }
-        if (val == BigDecimal.ZERO) {
-            lblValue.setText("Total Value: £0.00");
-        } else {
-            lblValue.setText("Total Value: £" + new DecimalFormat("0.00").format(val));
-        }
-        if (products.isEmpty()) {
-            btnReceive.setEnabled(false);
-        } else {
-            btnReceive.setEnabled(true);
+            model.removeItem(i);
         }
     }
 
@@ -212,6 +187,141 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         txtInvoice.setEditable(false);
         btnAddOrder.setSelected(false);
         viewMode = true;
+    }
+
+    private class MyModel implements TableModel {
+
+        private List<ReceivedItem> items;
+        private final List<TableModelListener> listeners;
+
+        public MyModel() {
+            this.items = new LinkedList<>();
+            this.listeners = new LinkedList<>();
+        }
+
+        public void addItem(ReceivedItem item) {
+            items.add(item);
+            alertAll();
+        }
+
+        public void removeItem(int i) {
+            items.remove(i);
+            alertAll();
+        }
+
+        public void removeItem(ReceivedItem item) {
+            for (int i = 0; i < items.size(); i++) {
+                if (items.get(i).equals(item)) {
+                    items.remove(i);
+                    alertAll();
+                    return;
+                }
+            }
+        }
+
+        public ReceivedItem getItem(int i) {
+            return items.get(i);
+        }
+
+        public List<ReceivedItem> getItems() {
+            return items;
+        }
+
+        public void setItems(List<ReceivedItem> items) {
+            this.items = items;
+            alertAll();
+        }
+
+        public void clear() {
+            items.clear();
+        }
+
+        @Override
+        public int getRowCount() {
+            return items.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 3;
+        }
+
+        @Override
+        public String getColumnName(int i) {
+            switch (i) {
+                case 0: {
+                    return "ID";
+                }
+                case 1: {
+                    return "Product";
+                }
+                case 2: {
+                    return "Qty.";
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return Object.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int i) {
+            return i == 2;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int i) {
+            final ReceivedItem item = items.get(rowIndex);
+            switch (i) {
+                case 0: {
+                    return item.getProduct().getId();
+                }
+                case 1: {
+                    return item.getProduct().getLongName();
+                }
+                case 2: {
+                    return item.getQuantity();
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            final ReceivedItem item = items.get(rowIndex);
+            if (columnIndex == 2) {
+                int quantity = Integer.parseInt((String) aValue);
+                if (quantity <= 0) {
+                    JOptionPane.showMessageDialog(ReceiveItemsWindow.this, "Value must be greater than 0", "New Quantity", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                item.setQuantity(quantity);
+            }
+        }
+
+        public void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
+
     }
 
     /**
@@ -401,7 +511,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiveActionPerformed
-        if (products.isEmpty()) {
+        if (model.getItems().isEmpty()) {
             return;
         }
         if (txtInvoice.getText().isEmpty()) {
@@ -410,7 +520,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             return;
         }
         ReceivedReport report = new ReceivedReport(txtInvoice.getText(), supplier);
-        products.forEach((p) -> {
+        model.getItems().forEach((p) -> {
             try {
                 Product product = p.getProduct();
                 product.addStock(p.getQuantity());
@@ -420,7 +530,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             }
         });
         report.setPaid(chkPaid.isSelected());
-        report.setItems(products);
+        report.setItems(model.getItems());
         try {
             dc.addReceivedReport(report);
             if (order != null) {
@@ -428,8 +538,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 dc.updateOrder(order);
             }
             lblValue.setText("Total: £0.00");
-            model.setRowCount(0);
-            products.clear();
+            model.clear();
             btnReceive.setEnabled(false);
             txtInvoice.setText("");
             chkPaid.setSelected(false);
@@ -437,7 +546,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             if (JOptionPane.showConfirmDialog(this, "Do you want to print the report?", "Print", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 try {
                     BigDecimal val = BigDecimal.ZERO;
-                    for (ReceivedItem p : products) {
+                    for (ReceivedItem p : model.getItems()) {
                         val = val.add(p.getPrice());
                     }
                     MessageFormat header = new MessageFormat("Receive Stock " + new Date());
@@ -517,9 +626,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 return;
             }
 
-            products.add(new ReceivedItem(product, amount));
+            model.addItem(new ReceivedItem(product, amount));
             txtBarcode.setText("");
-            updateTable();
         } else {
             JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
         }
@@ -530,28 +638,10 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             return;
         }
         final int row = tblProducts.getSelectedRow();
-        final ReceivedItem product = products.get(row);
-        if (evt.getClickCount() == 2) {
-            if (evt.getClickCount() == 2) {
-                String input = JOptionPane.showInternalInputDialog(ReceiveItemsWindow.this, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
-                if (!Utilities.isNumber(input)) {
-                    JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "A number must be entered", "Receive Items", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                int val = Integer.parseInt(input);
-                if (val > 0) {
-                    product.setQuantity(val);
-                    updateTable();
-                } else {
-                    JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        }
+        final ReceivedItem product = model.getItem(row);
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem qu = new JMenuItem("Change Quantity");
-            final Font boldFont = new Font(qu.getFont().getFontName(), Font.BOLD, qu.getFont().getSize());
-            qu.setFont(boldFont);
             JMenuItem rem = new JMenuItem("Remove");
             qu.addActionListener((ActionEvent e) -> {
                 String input = JOptionPane.showInternalInputDialog(ReceiveItemsWindow.this, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
@@ -562,7 +652,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 int val = Integer.parseInt(input);
                 if (val > 0) {
                     product.setQuantity(val);
-                    updateTable();
+                    model.alertAll();
                 } else {
                     JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
                 }
@@ -571,6 +661,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 removeItem(product);
             });
             menu.add(qu);
+            menu.addSeparator();
             menu.add(rem);
             menu.show(tblProducts, evt.getX(), evt.getY());
         }
@@ -593,7 +684,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtBarcodeActionPerformed
 
     private void btnAddOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOrderActionPerformed
-        if (!products.isEmpty()) {
+        if (!model.getItems().isEmpty()) {
             JOptionPane.showInternalMessageDialog(this, "You cannot add an order with other items", "Add Order", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -609,14 +700,13 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         }
 
         for (OrderItem oi : order.getItems()) {
-            products.add(new ReceivedItem(oi.getProduct(), oi.getQuantity() * oi.getProduct().getPackSize()));
+            model.addItem(new ReceivedItem(oi.getProduct(), oi.getQuantity() * oi.getProduct().getPackSize()));
         }
         supplier = order.getSupplier();
         txtSupplier.setText(supplier.getName());
         btnAddProduct.setEnabled(false);
         txtBarcode.setEnabled(false);
         txtBarcode.setText("");
-        updateTable();
     }//GEN-LAST:event_btnAddOrderActionPerformed
 
     private void txtSupplierMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSupplierMouseClicked
