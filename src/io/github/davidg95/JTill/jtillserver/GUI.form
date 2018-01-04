@@ -183,6 +183,14 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemReasonsActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="itemRefundReasons">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Edit Refund Reasons"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemRefundReasonsActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemSuppliers">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Edit Suppliers"/>

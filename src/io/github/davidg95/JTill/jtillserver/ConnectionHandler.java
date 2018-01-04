@@ -967,4 +967,29 @@ public class ConnectionHandler {
     public List<WasteReason> getUsedWasteReasons() throws IOException, SQLException {
         return dc.getUsedWasteReasons();
     }
+
+    @JConnMethod("ADDREFUNDREASON")
+    public RefundReason addRefundReason(@JConnParameter("REASON") RefundReason reason) throws IOException, SQLException {
+        return dc.addRefundReason(reason);
+    }
+
+    @JConnMethod("REMOVEREFUNDREASON")
+    public void removeRefundReason(@JConnParameter("REASON") RefundReason reason) throws IOException, SQLException, JTillException {
+        dc.removeRefundReason(reason);
+    }
+
+    @JConnMethod("UPDATEREFUNDREASON")
+    public void updateRefundReason(@JConnParameter("REASON") RefundReason reason) throws IOException, SQLException, JTillException {
+        dc.updateRefundReason(reason);
+    }
+
+    @JConnMethod("GETREFUNDREASON")
+    public RefundReason getRefundReason(@JConnParameter("REASON") int id) throws IOException, SQLException, JTillException {
+        return dc.getRefundReason(id);
+    }
+
+    @JConnMethod("GETUSEDREFUNDREASONS")
+    public List<RefundReason> getUsedRefundReasons() throws IOException, SQLException {
+        return dc.getUsedRefundReasons();
+    }
 }

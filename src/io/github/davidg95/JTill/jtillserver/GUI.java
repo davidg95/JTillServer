@@ -568,6 +568,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemStockTake = new javax.swing.JMenuItem();
         menuSetup = new javax.swing.JMenu();
         itemReasons = new javax.swing.JMenuItem();
+        itemRefundReasons = new javax.swing.JMenuItem();
         itemSuppliers = new javax.swing.JMenuItem();
         itemTillScreens = new javax.swing.JMenuItem();
         itemCustomers = new javax.swing.JMenuItem();
@@ -1177,6 +1178,14 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         menuSetup.add(itemReasons);
+
+        itemRefundReasons.setText("Edit Refund Reasons");
+        itemRefundReasons.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemRefundReasonsActionPerformed(evt);
+            }
+        });
+        menuSetup.add(itemRefundReasons);
 
         itemSuppliers.setText("Edit Suppliers");
         itemSuppliers.addActionListener(new java.awt.event.ActionListener() {
@@ -1976,6 +1985,10 @@ public class GUI extends JFrame implements GUIInterface {
         BackupDialog.showDialog(this);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void itemRefundReasonsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemRefundReasonsActionPerformed
+        RefundReasonsDialog.showDialog();
+    }//GEN-LAST:event_itemRefundReasonsActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
     private javax.swing.JButton btnCategorys;
@@ -2023,6 +2036,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemReasons;
     private javax.swing.JMenuItem itemReceive;
     private javax.swing.JMenuItem itemReceivedReports;
+    private javax.swing.JMenuItem itemRefundReasons;
     private javax.swing.JMenuItem itemSalesReporting;
     private javax.swing.JMenuItem itemSendData;
     private javax.swing.JMenuItem itemServerOptions;

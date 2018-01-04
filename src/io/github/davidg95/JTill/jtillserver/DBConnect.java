@@ -458,14 +458,6 @@ public class DBConnect extends DataConnect {
 //            } catch (SQLException ex) {
 //                con.rollback();
 //            }
-//            try {
-//                stmt = con.createStatement();
-//                stmt.executeUpdate("ALTER TABLE PRODUCTS DROP COLUMN SUPPLIER");
-//                con.commit();
-//                log("Removed SUPPLIER from PRODUCTS");
-//            } catch (SQLException ex) {
-//                con.rollback();
-//            }
             try {
                 stmt = con.createStatement();
                 stmt.executeUpdate("ALTER TABLE PRODUCTS ADD COLUMN TRACK_STOCK BOOLEAN");
@@ -491,6 +483,22 @@ public class DBConnect extends DataConnect {
                 stmt.executeUpdate("UPDATE WASTEREASONS SET DELETED = false");
                 con.commit();
                 log("Added DELETED to WASTEREASONS");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
+            try {
+                stmt = con.createStatement();
+                stmt.executeUpdate("CREATE TABLE REFUND_REASONS\n"
+                        + "(\n"
+                        + "     ID INT not null primary key\n"
+                        + "        GENERATED ALWAYS AS IDENTITY\n"
+                        + "        (START WITH 1, INCREMENT BY 1),\n"
+                        + "     REASON VARCHAR(30) NOT NULL,\n"
+                        + "     LEVEL INT NOT NULL,\n"
+                        + "     DELETED BOOLEAN NOT NULL\n"
+                        + ")");
+                con.commit();
+                log("Created table REFUND_REASONS");
             } catch (SQLException ex) {
                 con.rollback();
             }
@@ -5596,6 +5604,7 @@ public class DBConnect extends DataConnect {
         }
     }
 
+    @Override
     public void deleteWasteReason(WasteReason wr) throws SQLException, JTillException {
         String query = "UPDATE WASTEREASONS SET DELETED = true WHERE ID=" + wr.getId();
         try (Connection con = getConnection()) {
@@ -5612,6 +5621,122 @@ public class DBConnect extends DataConnect {
                 LOG.log(Level.SEVERE, null, ex);
                 throw ex;
             }
+        }
+    }
+
+    @Override
+    public RefundReason addRefundReason(RefundReason r) throws IOException, SQLException {
+        String query = "INSERT INTO APP.REFUND_REASONS (REASON, LEVEL, DELETED) values ('" + r.getReason() + "'," + r.getPriviledgeLevel() + ", false)";
+        try (Connection con = getConnection()) {
+            PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            try {
+                stmt.executeUpdate();
+                ResultSet set = stmt.getGeneratedKeys();
+                while (set.next()) {
+                    int id = set.getInt(1);
+                    r.setId(id);
+                }
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+        return r;
+    }
+
+    @Override
+    public void removeRefundReason(RefundReason r) throws IOException, SQLException, JTillException {
+        String query = "UPDATE REFUND_REASONS SET DELETED = true WHERE ID=" + r.getId();
+        try (Connection con = getConnection()) {
+            Statement stmt = con.createStatement();
+            int value;
+            try {
+                value = stmt.executeUpdate(query);
+                con.commit();
+                if (value == 0) {
+                    throw new JTillException("Refund Reason " + r.getId() + " not found");
+                }
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
+
+    @Override
+    public void updateRefundReason(RefundReason r) throws IOException, SQLException, JTillException {
+        String query = "UPDATE REFUND_REASONS SET REASON='" + r.getReason() + "', LEVEL=" + r.getPriviledgeLevel() + " WHERE ID=" + r.getId();
+        try (Connection con = getConnection()) {
+            Statement stmt = con.createStatement();
+            int value;
+            try {
+                value = stmt.executeUpdate(query);
+                con.commit();
+                if (value == 0) {
+                    throw new JTillException("Refund Reason " + r.getId() + " not found");
+                }
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+        }
+    }
+
+    @Override
+    public RefundReason getRefundReason(int id) throws IOException, SQLException, JTillException {
+        String query = "SELECT * FROM WASTEREASONS WHERE ID=" + id;
+        try (Connection con = getConnection()) {
+            Statement stmt = con.createStatement();
+            List<RefundReason> rrs = new LinkedList<>();
+            try {
+                ResultSet set = stmt.executeQuery(query);
+                rrs = getRefundReasonsFromResultSet(set);
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+
+            if (rrs.isEmpty()) {
+                throw new JTillException(id + " could not be found");
+            }
+            return rrs.get(0);
+        }
+    }
+
+    private List<RefundReason> getRefundReasonsFromResultSet(ResultSet set) throws SQLException {
+        List<RefundReason> rrs = new LinkedList<>();
+        while (set.next()) {
+            int id = set.getInt("ID");
+            String reason = set.getString("REASON");
+            int level = set.getInt("LEVEL");
+            rrs.add(new RefundReason(id, reason, level));
+        }
+        return rrs;
+    }
+
+    @Override
+    public List<RefundReason> getUsedRefundReasons() throws IOException, SQLException {
+        String query = "SELECT * FROM REFUND_REASONS WHERE DELETED = false";
+        try (Connection con = getConnection()) {
+            Statement stmt = con.createStatement();
+            List<RefundReason> rrs = new LinkedList<>();
+            try {
+                ResultSet set = stmt.executeQuery(query);
+                rrs = getRefundReasonsFromResultSet(set);
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                LOG.log(Level.SEVERE, null, ex);
+                throw ex;
+            }
+
+            return rrs;
         }
     }
 }
