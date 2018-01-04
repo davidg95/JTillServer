@@ -267,7 +267,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     return item.getTotalValue();
                 }
                 case 4: {
-                    return item.getReason();
+                    return item.getReason().getName();
                 }
                 default: {
                     return "";
@@ -279,7 +279,12 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
             WasteItem item = items.get(rowIndex);
             if (columnIndex == 2) {
-                item.setQuantity(Integer.parseInt((String) aValue));
+                int value = Integer.parseInt((String) aValue);
+                if (value < 0) {
+                    JOptionPane.showMessageDialog(WasteStockWindow.this, "Value must be greater than or equal to 0", "Set Value", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                item.setQuantity(value);
             }
             alertAll();
         }
@@ -587,8 +592,6 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem it = new JMenuItem("Change Quantity");
-            final Font boldFont = new Font(it.getFont().getFontName(), Font.BOLD, it.getFont().getSize());
-            it.setFont(boldFont);
             JMenuItem changeReason = new JMenuItem("Change Reason");
             JMenuItem item = new JMenuItem("Remove");
             it.addActionListener((ActionEvent e) -> {
@@ -624,6 +627,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             });
             menu.add(it);
             menu.add(changeReason);
+            menu.addSeparator();
             menu.add(item);
             menu.show(tblProducts, evt.getX(), evt.getY());
         }
