@@ -490,6 +490,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             JMenuItem it = new JMenuItem("Change Quantity");
             final Font boldFont = new Font(it.getFont().getFontName(), Font.BOLD, it.getFont().getSize());
             it.setFont(boldFont);
+            JMenuItem changeReason = new JMenuItem("Change Reason");
             JMenuItem item = new JMenuItem("Remove");
             it.addActionListener((ActionEvent e) -> {
                 String input = JOptionPane.showInternalInputDialog(WasteStockWindow.this, "Enter new quantity", "Waste Stock", JOptionPane.PLAIN_MESSAGE);
@@ -505,6 +506,14 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "Must be a value greater than zero", "Waste Stock", JOptionPane.WARNING_MESSAGE);
                 }
             });
+            changeReason.addActionListener((ActionEvent e) ->{
+                WasteReason reason = WasteReasonSelectDialog.showDialog(this);
+                if(reason == null){
+                    return;
+                }
+                wi.setReason(reason);
+                updateTable();
+            });
             item.addActionListener((ActionEvent e) -> {
                 final Product p = wi.getProduct();
                 if (index == -1) {
@@ -516,6 +525,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 }
             });
             menu.add(it);
+            menu.add(changeReason);
             menu.add(item);
             menu.show(tblProducts, evt.getX(), evt.getY());
         }
