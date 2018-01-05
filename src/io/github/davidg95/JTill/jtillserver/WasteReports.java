@@ -350,6 +350,18 @@ public class WasteReports extends javax.swing.JDialog {
                     break;
                 }
                 case REASON: {
+                    WasteReason wr = WasteReasonSelectDialog.showDialog(this);
+                    if (wr == null) {
+                        return;
+                    }
+                    for (WasteItem i : allItems) {
+                        if (i.getTimestamp().before(end) && i.getTimestamp().after(start)) {
+                            if (i.getReason().equals(wr)) {
+                                items.add(i);
+                            }
+                        }
+                    }
+                    print(start, end, items);
                     break;
                 }
                 case ALL: {
