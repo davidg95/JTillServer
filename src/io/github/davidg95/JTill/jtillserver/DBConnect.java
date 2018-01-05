@@ -3282,44 +3282,44 @@ public class DBConnect extends DataConnect {
             String reason = set.getString(8);
             int level = set.getInt(9);
 
-            int code = set.getInt(10);
-            int order_code = set.getInt(11);
-            String name = set.getString(12);
-            boolean open = set.getBoolean(13);
-            BigDecimal price = set.getBigDecimal(14);
-            int stock = set.getInt(15);
-            String comments = set.getString(16);
-            String shortName = set.getString(17);
-            int cId = set.getInt(18);
-            int taxID = set.getInt(19);
-            BigDecimal costPrice = set.getBigDecimal(20);
-            int minStock = set.getInt(21);
-            int maxStock = set.getInt(22);
-            int packSize = set.getInt(23);
-            String barcode = set.getString(24);
-            double scale = set.getDouble(25);
-            String scaleName = set.getString(26);
-            boolean incVat = set.getBoolean(27);
-            int maxCon = set.getInt(28);
-            int minCon = set.getInt(29);
-            BigDecimal limit = set.getBigDecimal(30);
-            boolean trackStock = set.getBoolean(31);
+            int code = set.getInt(11);
+            int order_code = set.getInt(12);
+            String name = set.getString(13);
+            boolean open = set.getBoolean(14);
+            BigDecimal price = set.getBigDecimal(15);
+            int stock = set.getInt(16);
+            String comments = set.getString(17);
+            String shortName = set.getString(18);
+            int cId = set.getInt(19);
+            int taxID = set.getInt(20);
+            BigDecimal costPrice = set.getBigDecimal(21);
+            int minStock = set.getInt(22);
+            int maxStock = set.getInt(23);
+            int packSize = set.getInt(24);
+            String barcode = set.getString(25);
+            double scale = set.getDouble(26);
+            String scaleName = set.getString(27);
+            boolean incVat = set.getBoolean(28);
+            int maxCon = set.getInt(29);
+            int minCon = set.getInt(30);
+            BigDecimal limit = set.getBigDecimal(31);
+            boolean trackStock = set.getBoolean(32);
 
-            String cName = set.getString(33);
-            Time start = set.getTime(34);
-            Time end = set.getTime(35);
-            boolean restrict = set.getBoolean(36);
-            int age = set.getInt(37);
-            int department = set.getInt(38);
+            String cName = set.getString(34);
+            Time start = set.getTime(35);
+            Time end = set.getTime(36);
+            boolean restrict = set.getBoolean(37);
+            int age = set.getInt(38);
+            int department = set.getInt(39);
 
-            String dName = set.getString(40);
+            String dName = set.getString(41);
 
             Department d = new Department(department, dName);
 
             Category c = new Category(cId, cName, start, end, restrict, age, d);
 
-            String tName = set.getString(42);
-            double tValue = set.getDouble(43);
+            String tName = set.getString(43);
+            double tValue = set.getDouble(44);
 
             Tax t = new Tax(taxID, tName, tValue);
 
