@@ -13,6 +13,7 @@ import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -304,11 +305,21 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 }
                 item.setQuantity(quantity);
             }
+            alertAll();
         }
 
         public void alertAll() {
             for (TableModelListener l : listeners) {
                 l.tableChanged(new TableModelEvent(this));
+            }
+            BigDecimal val = BigDecimal.ZERO;
+            for (ReceivedItem ri : items) {
+                val = val.add(ri.getPrice());
+            }
+            if (val == BigDecimal.ZERO) {
+                lblValue.setText("Total Value: £0.00");
+            } else {
+                lblValue.setText("Total Value: £" + new DecimalFormat("0.00").format(val));
             }
         }
 

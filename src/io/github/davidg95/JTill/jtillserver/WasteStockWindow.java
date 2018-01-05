@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
@@ -21,8 +22,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
+import javax.swing.JComboBox;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -47,7 +51,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
     private Date date;
 
     private final MyModel model;
-
+    
     /**
      * Creates new form WasteStockWindow
      */
@@ -240,7 +244,26 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
 
         @Override
         public Class<?> getColumnClass(int i) {
-            return Object.class;
+            switch (i) {
+                case 0: {
+                    return String.class;
+                }
+                case 1: {
+                    return String.class;
+                }
+                case 2: {
+                    return Integer.class;
+                }
+                case 3: {
+                    return Object.class;
+                }
+                case 4: {
+                    return String.class;
+                }
+                default: {
+                    return String.class;
+                }
+            }
         }
 
         @Override
@@ -277,7 +300,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
             WasteItem item = items.get(rowIndex);
             if (columnIndex == 2) {
-                int value = Integer.parseInt((String) aValue);
+                int value = (int) aValue;
                 if (value < 0) {
                     JOptionPane.showMessageDialog(WasteStockWindow.this, "Value must be greater than or equal to 0", "Set Value", JOptionPane.WARNING_MESSAGE);
                     return;
