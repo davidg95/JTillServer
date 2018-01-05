@@ -191,15 +191,22 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
         private final int x = 70;
         private final int tableLineSpace = 20;
 
+        private int ci;
+        private int cj;
+        private boolean complete;
+
         public ReportPrinter(Date start, Date end, Till t) {
             this.start = start;
             this.end = end;
             this.t = t;
+            ci = 0;
+            cj = 0;
+            complete = false;
         }
 
         @Override
         public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-            if (pageIndex > 0) {
+            if (pageIndex > 0 && complete) {
                 return NO_SUCH_PAGE;
             }
 
@@ -242,7 +249,8 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
             y += lineSpace;
 
             //Print departments
-            for (Department d : departments) {
+            for (int i = ci; i < departments.size(); i++) {
+                final Department d = departments.get(i);
                 g2.setColor(Color.LIGHT_GRAY);
                 g2.fillRect(x, y, width, tableLineSpace);
                 g2.setColor(Color.BLACK);
@@ -251,12 +259,18 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
                 int y1 = y;
                 int x2 = width / 2;
                 y += tableLineSpace * 2;
-                for (Category c : categorys) {
+                for (int j = cj; j < categorys.size(); j++) {
+                    Category c = categorys.get(j);
                     if (c.getDepartment().equals(d)) {
                         g2.drawString(c.getName(), x + 10, y - 5);
                         g2.drawString("£" + c.getSales(), x2 + 10, y - 5);
                         g2.drawLine(x, y, x + width, y);
                         y += tableLineSpace;
+                    }
+                    if (y + 30 >= pageFormat.getHeight()) {
+                        ci = i;
+                        cj = j;
+                        return PAGE_EXISTS;
                     }
                 }
                 g2.setFont(new Font("Arial", Font.BOLD, font.getSize()));
@@ -266,6 +280,8 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
                 g2.drawLine(x2, y1 + tableLineSpace, x2, y);
                 g2.drawRect(x, y1, width, y - y1);
             }
+
+            complete = true;
 
             y += tableLineSpace;
             g2.drawString("Tax Sales Breakdown:", x, y);
@@ -300,17 +316,35 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
             y += tableLineSpace;
 
             g2.drawString("Total sales: £" + total.setScale(2, 6).toString(), x, y);
+            if (y + 30 >= pageFormat.getHeight()) {
+                return PAGE_EXISTS;
+            }
             y += lineSpace;
             g2.drawString("Total cost: £" + cost.toString(), x, y);
+            if (y + 30 >= pageFormat.getHeight()) {
+                return PAGE_EXISTS;
+            }
             y += lineSpace;
             g2.drawString("Total tax payable: £" + tax.toString(), x, y);
+            if (y + 30 >= pageFormat.getHeight()) {
+                return PAGE_EXISTS;
+            }
             y += lineSpace;
             g2.drawString("Net Sales: £" + total.subtract(cost).subtract(tax).toString(), x, y);
+            if (y + 30 >= pageFormat.getHeight()) {
+                return PAGE_EXISTS;
+            }
             y += lineSpace;
             g2.drawString("Refunds: £" + refunds, x, y);
+            if (y + 30 >= pageFormat.getHeight()) {
+                return PAGE_EXISTS;
+            }
             if (t == null) {
                 y += lineSpace;
                 g2.drawString("Wastage: £" + wastage, x, y);
+                if (y + 30 >= pageFormat.getHeight()) {
+                    return PAGE_EXISTS;
+                }
             }
 
             return PAGE_EXISTS;

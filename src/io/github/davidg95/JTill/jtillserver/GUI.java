@@ -555,6 +555,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemInfo = new javax.swing.JMenuItem();
         itemUpdate = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         itemExit = new javax.swing.JMenuItem();
         menuStock = new javax.swing.JMenu();
         itemCreateNewProduct = new javax.swing.JMenuItem();
@@ -1076,6 +1077,14 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         menuFile.add(jMenuItem1);
+
+        jMenuItem2.setText("Print Test");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        menuFile.add(jMenuItem2);
 
         itemExit.setText("Exit");
         itemExit.addActionListener(new java.awt.event.ActionListener() {
@@ -1989,6 +1998,10 @@ public class GUI extends JFrame implements GUIInterface {
         RefundReasonsDialog.showDialog();
     }//GEN-LAST:event_itemRefundReasonsActionPerformed
 
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        new PrintTest().setVisible(true);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
     private javax.swing.JButton btnCategorys;
@@ -2058,6 +2071,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;

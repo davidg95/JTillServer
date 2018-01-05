@@ -68,84 +68,89 @@ public class StockReportDialog extends javax.swing.JDialog {
     private class StockPrintable implements Printable {
 
         private final List<Product> products;
+        private List<Department> departments;
         private final String info;
 
         private final int x = 70;
 
+        private int max_per_page = 20;
+
         public StockPrintable(List<Product> products, String info) {
             this.products = products;
+            try {
+                this.departments = dc.getAllDepartments();
+            } catch (IOException | SQLException ex) {
+                Logger.getLogger(StockReportDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
             this.info = info;
         }
 
         @Override
         public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-            try {
-                if (pageIndex > 0) {
-                    return NO_SUCH_PAGE;
-                }
-                Graphics2D g = (Graphics2D) graphics;
-                g.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-
-                Font font = g.getFont();
-
-                final int width = (int) (pageFormat.getWidth() - x - x);
-
-                int y = 60;
-                FontMetrics metrics = graphics.getFontMetrics(font);
-                final int lineSpace = metrics.getHeight() + 5;
-
-                g.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
-
-                g.drawString("Stock Report", x, y);
-                g.setFont(font);
-                String page = "Page " + (pageIndex + 1);
-                g.drawString(page, (int) (pageFormat.getWidth() / 2) - (g.getFontMetrics(font).stringWidth(page) / 2), (int) pageFormat.getHeight() - 20);
-                y += lineSpace;
-                g.drawString(info, x, y);
-
-                y += lineSpace;
-
-                final int idCol = x + 10;
-                final int nCol = x + 40;
-                final int sCol = x + width - 50;
-
-                final int topY = y;
-                g.setColor(Color.lightGray);
-                g.fillRect(x, y, width, lineSpace);
-                g.setColor(Color.BLACK);
-                g.drawRect(x, y, width, lineSpace);
-
-                g.drawString("ID", idCol, y + lineSpace - 5);
-                g.drawString("Name", nCol, y + lineSpace - 5);
-                g.drawString("In Stock", sCol, y + lineSpace - 5);
-
-                y += lineSpace;
-
-                List<Department> departments = dc.getAllDepartments();
-                for (Department d : departments) {
-                    g.setColor(Color.LIGHT_GRAY);
-                    g.fillRect(x, y, width, lineSpace);
-                    g.setColor(Color.BLACK);
-                    g.drawRect(x, y, width, lineSpace);
-                    g.drawString(d.getName(), nCol, y + 15);
-                    y += lineSpace;
-                    for (Product p : products) {
-                        if (p.getCategory().getDepartment().equals(d)) {
-                            y += lineSpace;
-                            g.drawString(p.getId() + "", idCol, y);
-                            g.drawString(p.getLongName(), nCol, y);
-                            g.drawString(p.getStock() + "", sCol, y);
-                        }
-                    }
-                    y += lineSpace / 2;
-                }
-
-                g.drawRect(x, topY, width, y - topY);
-                g.drawLine(nCol - 5, topY, nCol - 5, y);
-                g.drawLine(sCol - 5, topY, sCol - 5, y);
-            } catch (IOException | SQLException ex) {
-                JOptionPane.showMessageDialog(StockReportDialog.this, ex);
+            if (pageIndex * max_per_page >= products.size()) {
+                return NO_SUCH_PAGE;
             }
+            Graphics2D g = (Graphics2D) graphics;
+            g.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+
+            Font font = g.getFont();
+
+            final int width = (int) (pageFormat.getWidth() - x - x);
+
+            int y = 60;
+            FontMetrics metrics = graphics.getFontMetrics(font);
+            final int lineSpace = metrics.getHeight() + 5;
+
+            g.setFont(new Font("Arial", Font.BOLD, 20)); //Use a differnt font for the header.
+
+            g.drawString("Stock Report", x, y);
+            g.setFont(font);
+            String page = "Page " + (pageIndex + 1);
+            g.drawString(page, (int) (pageFormat.getWidth() / 2) - (g.getFontMetrics(font).stringWidth(page) / 2), (int) pageFormat.getHeight() - 20);
+            y += lineSpace;
+            g.drawString(info, x, y);
+
+            y += lineSpace;
+
+            final int idCol = x + 10;
+            final int nCol = x + 40;
+            final int sCol = x + width - 50;
+
+            final int topY = y;
+            g.setColor(Color.lightGray);
+            g.fillRect(x, y, width, lineSpace);
+            g.setColor(Color.BLACK);
+            g.drawRect(x, y, width, lineSpace);
+
+            g.drawString("ID", idCol, y + lineSpace - 5);
+            g.drawString("Name", nCol, y + lineSpace - 5);
+            g.drawString("In Stock", sCol, y + lineSpace - 5);
+
+            y += lineSpace;
+            
+            max_per_page = (int) Math.floor((pageFormat.getHeight() - y - 40)/lineSpace);
+
+//            for (int i = ci; i < departments.size(); i++) {
+//                Department d = departments.get(i);
+//                g.setColor(Color.LIGHT_GRAY);
+//                g.fillRect(x, y, width, lineSpace);
+//                g.setColor(Color.BLACK);
+//                g.drawRect(x, y, width, lineSpace);
+//                g.drawString(d.getName(), nCol, y + 15);
+//                y += lineSpace;
+            for (int i = max_per_page * pageIndex; i < products.size() && i < max_per_page * (pageIndex + 1); i++) {
+                Product p = products.get(i);
+                y += lineSpace;
+                g.drawString(p.getId() + "", idCol, y);
+                g.drawString(p.getLongName(), nCol, y);
+                g.drawString(p.getStock() + "", sCol, y);
+            }
+            y += lineSpace / 2;
+//            }
+
+            g.drawRect(x, topY, width, y - topY);
+            g.drawLine(nCol - 5, topY, nCol - 5, y);
+            g.drawLine(sCol - 5, topY, sCol - 5, y);
             return PAGE_EXISTS;
         }
     }
