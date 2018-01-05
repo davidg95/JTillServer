@@ -179,6 +179,9 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private void removeItem(ReceivedItem i) {
         if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Are you sure you want to remove this item?\n" + i, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             model.removeItem(i);
+            if(model.getRowCount() == 0){
+                btnReceive.setEnabled(false);
+            }
         }
     }
 
@@ -235,6 +238,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
         public void clear() {
             items.clear();
+            alertAll();
         }
 
         @Override
@@ -639,6 +643,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
             model.addItem(new ReceivedItem(product, amount));
             txtBarcode.setText("");
+            btnReceive.setEnabled(true);
         } else {
             JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
         }

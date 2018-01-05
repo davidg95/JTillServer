@@ -47,7 +47,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
     private Date date;
 
     private final MyModel model;
-    
+
     /**
      * Creates new form WasteStockWindow
      */
@@ -134,8 +134,11 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 if (index == -1) {
                     return;
                 }
-                if (JOptionPane.showInternalConfirmDialog(WasteStockWindow.this, "Are you sure you want to remove this item?\n" + p.getName(), "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                if (JOptionPane.showInternalConfirmDialog(WasteStockWindow.this, "Are you sure you want to remove this item?\n" + p.getLongName(), "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     model.removeWasteItem(index);
+                    if (model.getRowCount() == 0) {
+                        btnWaste.setEnabled(false);
+                    }
                 }
             }
         });
@@ -202,6 +205,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
 
         public void clear() {
             items.clear();
+            alertAll();
         }
 
         @Override
@@ -557,6 +561,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             WasteItem wi = new WasteItem(product, amount, wr, getSelectedDate());
             model.addWasteItem(wi);
             txtBarcode.setText("");
+            btnWaste.setEnabled(true);
         } else {
             JOptionPane.showInternalMessageDialog(this, "You must enter a number", "Waste Stock", JOptionPane.ERROR_MESSAGE);
         }
@@ -638,8 +643,11 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 if (index == -1) {
                     return;
                 }
-                if (JOptionPane.showInternalConfirmDialog(WasteStockWindow.this, "Are you sure you want to remove this item?\n" + p.getName(), "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                if (JOptionPane.showInternalConfirmDialog(WasteStockWindow.this, "Are you sure you want to remove this item?\n" + p.getLongName(), "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     model.removeWasteItem(index);
+                    if (model.getRowCount() == 0) {
+                        btnWaste.setEnabled(false);
+                    }
                 }
             });
             menu.add(it);
