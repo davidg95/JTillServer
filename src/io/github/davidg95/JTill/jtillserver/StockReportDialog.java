@@ -15,6 +15,10 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
@@ -25,8 +29,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
 
 /**
  *
@@ -53,6 +63,7 @@ public class StockReportDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         btnGenerate.requestFocus();
+        Utilities.installEscapeCloseOperation(this);
     }
 
     public static void showDialog(Component parent) {
@@ -127,8 +138,8 @@ public class StockReportDialog extends javax.swing.JDialog {
             g.drawString("In Stock", sCol, y + lineSpace - 5);
 
             y += lineSpace;
-            
-            max_per_page = (int) Math.floor((pageFormat.getHeight() - y - 40)/lineSpace);
+
+            max_per_page = (int) Math.floor((pageFormat.getHeight() - y - 40) / lineSpace);
 
 //            for (int i = ci; i < departments.size(); i++) {
 //                Department d = departments.get(i);
@@ -247,6 +258,11 @@ public class StockReportDialog extends javax.swing.JDialog {
                                 it.remove();
                             }
                         }
+                        if (products.isEmpty()) {
+                            mDialog.hide();
+                            JOptionPane.showMessageDialog(StockReportDialog.this, "No items in the report", "Stock Report", JOptionPane.INFORMATION_MESSAGE);
+                            return;
+                        }
                         print(products, "Full report", mDialog, job);
                     } catch (IOException | SQLException ex) {
                         JOptionPane.showMessageDialog(GUI.gui, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -261,6 +277,11 @@ public class StockReportDialog extends javax.swing.JDialog {
                                 it.remove();
                             }
                         }
+                        if (products.isEmpty()) {
+                            mDialog.hide();
+                            JOptionPane.showMessageDialog(StockReportDialog.this, "No items in the report", "Stock Report", JOptionPane.INFORMATION_MESSAGE);
+                            return;
+                        }
                         print(products, "Below minimum report", mDialog, job);
                     } catch (IOException | SQLException ex) {
                         JOptionPane.showMessageDialog(GUI.gui, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -274,6 +295,11 @@ public class StockReportDialog extends javax.swing.JDialog {
                             if (p.getStock() > 0 || p.isOpen() || !p.isTrackStock()) {
                                 it.remove();
                             }
+                        }
+                        if (products.isEmpty()) {
+                            mDialog.hide();
+                            JOptionPane.showMessageDialog(StockReportDialog.this, "No items in the report", "Stock Report", JOptionPane.INFORMATION_MESSAGE);
+                            return;
                         }
                         print(products, "Beloew zero report", mDialog, job);
                     } catch (IOException | SQLException ex) {

@@ -57,6 +57,7 @@ public class WasteReports extends javax.swing.JDialog {
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         btnSearch.requestFocus();
+        Utilities.installEscapeCloseOperation(this);
     }
 
     public static void showWindow(Component parent) {

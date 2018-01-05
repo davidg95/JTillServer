@@ -47,6 +47,7 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
         btnGenerate.requestFocus();
         pickStart.setDate(new Date(0));
         pickEnd.setDate(new Date());
+        Utilities.installEscapeCloseOperation(this);
     }
 
     public static void showDialog(Component parent) {
