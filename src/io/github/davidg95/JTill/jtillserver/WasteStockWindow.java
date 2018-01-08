@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
@@ -492,78 +493,82 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        Product product;
-        if (txtBarcode.getText().isEmpty()) {
-            product = ProductSelectDialog.showDialog(this);
-        } else {
-            if (!Utilities.isNumber(txtBarcode.getText())) {
-                txtBarcode.setSelectionStart(0);
-                txtBarcode.setSelectionEnd(txtBarcode.getText().length());
-                JOptionPane.showInternalMessageDialog(this, "Not a number", "Add Product", JOptionPane.ERROR_MESSAGE);
-                return;
+        try {
+            Product product;
+            if (txtBarcode.getText().isEmpty()) {
+                product = ProductSelectDialog.showDialog(this);
+            } else {
+                if (!Utilities.isNumber(txtBarcode.getText())) {
+                    txtBarcode.setSelectionStart(0);
+                    txtBarcode.setSelectionEnd(txtBarcode.getText().length());
+                    JOptionPane.showInternalMessageDialog(this, "Not a number", "Add Product", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (!Utilities.validateBarcodeLenth(txtBarcode.getText())) {
+                    txtBarcode.setSelectionStart(0);
+                    txtBarcode.setSelectionEnd(txtBarcode.getText().length());
+                    JOptionPane.showInternalMessageDialog(this, "Barcodes must be 8, 12, 13 or 14 digits long", "Add Product", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (!Utilities.validateBarcode(txtBarcode.getText())) {
+                    txtBarcode.setSelectionStart(0);
+                    txtBarcode.setSelectionEnd(txtBarcode.getText().length());
+                    JOptionPane.showInternalMessageDialog(this, "Invalid check digit", "Add Product", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                try {
+                    product = dc.getProductByBarcode(txtBarcode.getText());
+                } catch (IOException | ProductNotFoundException | SQLException ex) {
+                    txtBarcode.setSelectionStart(0);
+                    txtBarcode.setSelectionEnd(txtBarcode.getText().length());
+                    JOptionPane.showInternalMessageDialog(this, ex, "Add Product", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             }
-            if (!Utilities.validateBarcodeLenth(txtBarcode.getText())) {
-                txtBarcode.setSelectionStart(0);
-                txtBarcode.setSelectionEnd(txtBarcode.getText().length());
-                JOptionPane.showInternalMessageDialog(this, "Barcodes must be 8, 12, 13 or 14 digits long", "Add Product", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if (!Utilities.validateBarcode(txtBarcode.getText())) {
-                txtBarcode.setSelectionStart(0);
-                txtBarcode.setSelectionEnd(txtBarcode.getText().length());
-                JOptionPane.showInternalMessageDialog(this, "Invalid check digit", "Add Product", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            try {
-                product = dc.getProductByBarcode(txtBarcode.getText());
-            } catch (IOException | ProductNotFoundException | SQLException ex) {
-                txtBarcode.setSelectionStart(0);
-                txtBarcode.setSelectionEnd(txtBarcode.getText().length());
-                JOptionPane.showInternalMessageDialog(this, ex, "Add Product", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        }
 
-        if (product == null) {
-            return;
-        }
+            if (product == null) {
+                return;
+            }
 //        if (product.isOpen() || !product.isTrackStock()) {
 //            JOptionPane.showMessageDialog(this, "This product cannot be wasted", "Add Product", JOptionPane.ERROR_MESSAGE);
 //            return;
 //        }
 
-        product = (Product) product.clone();
+            product = (Product) product.clone();
 
-        String str = JOptionPane.showInputDialog(this, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
+            String str = JOptionPane.showInputDialog(this, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
 
-        if (str == null || str.isEmpty()) {
-            return;
-        }
-
-        if (Utilities.isNumber(str)) {
-            int amount = Integer.parseInt(str);
-            if (amount <= 0) {
-                JOptionPane.showInternalMessageDialog(this, "Value must be greater than zero", "Waste Item", JOptionPane.ERROR_MESSAGE);
+            if (str == null || str.isEmpty()) {
                 return;
             }
-            if (product.getStock() - amount < 0) {
-                if (JOptionPane.showInternalConfirmDialog(this, "Item does not have that much in stock. Continue?", "Waste", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+
+            if (Utilities.isNumber(str)) {
+                int amount = Integer.parseInt(str);
+                if (amount <= 0) {
+                    JOptionPane.showInternalMessageDialog(this, "Value must be greater than zero", "Waste Item", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+                if (product.getStock() - amount < 0) {
+                    if (JOptionPane.showInternalConfirmDialog(this, "Item does not have that much in stock. Continue?", "Waste", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+                        return;
+                    }
+                }
+                if (amount == 0) {
+                    return;
+                }
+                WasteReason wr = WasteReasonSelectDialog.showDialog(this);
+                if (wr == null) {
+                    return;
+                }
+                WasteItem wi = new WasteItem(product, amount, wr, getSelectedDate());
+                model.addWasteItem(wi);
+                txtBarcode.setText("");
+                btnWaste.setEnabled(true);
+            } else {
+                JOptionPane.showInternalMessageDialog(this, "You must enter a number", "Waste Stock", JOptionPane.ERROR_MESSAGE);
             }
-            if (amount == 0) {
-                return;
-            }
-            WasteReason wr = WasteReasonSelectDialog.showDialog(this);
-            if (wr == null) {
-                return;
-            }
-            WasteItem wi = new WasteItem(product, amount, wr, getSelectedDate());
-            model.addWasteItem(wi);
-            txtBarcode.setText("");
-            btnWaste.setEnabled(true);
-        } else {
-            JOptionPane.showInternalMessageDialog(this, "You must enter a number", "Waste Stock", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Invalid input detected", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddProductActionPerformed
 

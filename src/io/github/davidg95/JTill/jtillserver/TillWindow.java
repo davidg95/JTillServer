@@ -13,6 +13,7 @@ import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +27,10 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -37,7 +41,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
     private static TillWindow window;
 
     private final DataConnect dc;
-    private final DefaultTableModel model;
+    private MyModel model;
     private List<Till> contents;
 
     /**
@@ -49,7 +53,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
         super.setClosable(true);
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
-        model = (DefaultTableModel) table.getModel();
+        getAllTills();
         table.setModel(model);
         init();
     }
@@ -70,6 +74,10 @@ public class TillWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
+        table.getColumnModel().getColumn(0).setMaxWidth(40);
+        table.getColumnModel().getColumn(0).setMinWidth(40);
+        table.getColumnModel().getColumn(2).setMaxWidth(100);
+        table.getColumnModel().getColumn(2).setMinWidth(100);
         table.setSelectionModel(new ForcedListSelectionModel());
         InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = table.getActionMap();
@@ -97,10 +105,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
     private void getAllTills() {
         try {
             contents = dc.getAllTills();
-            model.setRowCount(0);
-            for (Till t : contents) {
-                model.addRow(new Object[]{t.getId(), t.getName(), (t.isConnected() ? "Online" : "Offline")});
-            }
+            model = new MyModel(contents);
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, "Error loading form", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -180,6 +185,100 @@ public class TillWindow extends javax.swing.JInternalFrame {
         } catch (IOException | JTillException | SQLException ex) {
             JOptionPane.showInternalMessageDialog(this, ex, "Remove Terminal", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private class MyModel implements TableModel {
+
+        private final List<Till> tills;
+        private final List<TableModelListener> listeners;
+
+        public MyModel(List<Till> tills) {
+            this.tills = tills;
+            this.listeners = new LinkedList<>();
+        }
+
+        public void removeTill(Till t) {
+            tills.remove(t);
+            alertAll();
+        }
+
+        @Override
+        public int getRowCount() {
+            return tills.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 3;
+        }
+
+        @Override
+        public String getColumnName(int i) {
+            switch (i) {
+                case 0: {
+                    return "ID";
+                }
+                case 1: {
+                    return "Terminal Name";
+                }
+                case 2: {
+                    return "Status";
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return Object.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            Till till = tills.get(rowIndex);
+            switch (columnIndex) {
+                case 0: {
+                    return till.getId();
+                }
+                case 1: {
+                    return till.getName();
+                }
+                case 2: {
+                    return (till.isConnected() ? "Online" : "Offline");
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        }
+
+        private void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
+
     }
 
     /**
