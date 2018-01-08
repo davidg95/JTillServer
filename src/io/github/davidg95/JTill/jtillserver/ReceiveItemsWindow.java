@@ -179,7 +179,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private void removeItem(ReceivedItem i) {
         if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Are you sure you want to remove this item?\n" + i, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             model.removeItem(i);
-            if(model.getRowCount() == 0){
+            if (model.getRowCount() == 0) {
                 btnReceive.setEnabled(false);
             }
         }
@@ -578,74 +578,78 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnReceiveActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        Product product;
-        if (txtBarcode.getText().isEmpty()) {
-            product = ProductSelectDialog.showDialog(this);
-        } else {
-            if (!Utilities.isNumber(txtBarcode.getText())) {
-                txtBarcode.setSelectionStart(0);
-                txtBarcode.setSelectionEnd(txtBarcode.getText().length());
-                JOptionPane.showInternalMessageDialog(this, "Not a number", "Add Product", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if (!Utilities.validateBarcodeLenth(txtBarcode.getText())) {
-                txtBarcode.setSelectionStart(0);
-                txtBarcode.setSelectionEnd(txtBarcode.getText().length());
-                JOptionPane.showInternalMessageDialog(this, "Barcodes must be 8, 12, 13 or 14 digits long", "Add Product", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if (!Utilities.validateBarcode(txtBarcode.getText())) {
-                txtBarcode.setSelectionStart(0);
-                txtBarcode.setSelectionEnd(txtBarcode.getText().length());
-                JOptionPane.showInternalMessageDialog(this, "Invalid check digit", "Add Product", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            try {
-                product = dc.getProductByBarcode(txtBarcode.getText());
-            } catch (IOException | ProductNotFoundException | SQLException ex) {
-                txtBarcode.setSelectionStart(0);
-                txtBarcode.setSelectionEnd(txtBarcode.getText().length());
-                JOptionPane.showInternalMessageDialog(this, ex, "Add Product", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        }
-
-        if (product == null) {
-            return;
-        }
-
-        if (product.isOpen() || !product.isTrackStock()) {
-            JOptionPane.showMessageDialog(this, "This product cannot be received", "Add Product", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        String str = JOptionPane.showInternalInputDialog(ReceiveItemsWindow.this, "Enter amount to receive", "Receive Stock", JOptionPane.INFORMATION_MESSAGE);
-
-        if (str == null || str.isEmpty()) {
-            return;
-        }
-
-        if (Utilities.isNumber(str)) {
-            int amount = Integer.parseInt(str);
-            if (amount <= 0) {
-                JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "Value must be greater than zero", "Receive Items", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if (product.getStock() + amount > product.getMaxStockLevel() && product.getMaxStockLevel() != 0) {
-                int response = JOptionPane.showConfirmDialog(this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product, Continue?", "Stock", JOptionPane.YES_NO_OPTION);
-                if (response == JOptionPane.NO_OPTION) {
+        try {
+            Product product;
+            if (txtBarcode.getText().isEmpty()) {
+                product = ProductSelectDialog.showDialog(this);
+            } else {
+                if (!Utilities.isNumber(txtBarcode.getText())) {
+                    txtBarcode.setSelectionStart(0);
+                    txtBarcode.setSelectionEnd(txtBarcode.getText().length());
+                    JOptionPane.showMessageDialog(this, "Not a number", "Add Product", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (!Utilities.validateBarcodeLenth(txtBarcode.getText())) {
+                    txtBarcode.setSelectionStart(0);
+                    txtBarcode.setSelectionEnd(txtBarcode.getText().length());
+                    JOptionPane.showMessageDialog(this, "Barcodes must be 8, 12, 13 or 14 digits long", "Add Product", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (!Utilities.validateBarcode(txtBarcode.getText())) {
+                    txtBarcode.setSelectionStart(0);
+                    txtBarcode.setSelectionEnd(txtBarcode.getText().length());
+                    JOptionPane.showMessageDialog(this, "Invalid check digit", "Add Product", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                try {
+                    product = dc.getProductByBarcode(txtBarcode.getText());
+                } catch (IOException | ProductNotFoundException | SQLException ex) {
+                    txtBarcode.setSelectionStart(0);
+                    txtBarcode.setSelectionEnd(txtBarcode.getText().length());
+                    JOptionPane.showMessageDialog(this, ex, "Add Product", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
-            if (amount == 0) {
+
+            if (product == null) {
                 return;
             }
 
-            model.addItem(new ReceivedItem(product, amount));
-            txtBarcode.setText("");
-            btnReceive.setEnabled(true);
-        } else {
-            JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
+            if (product.isOpen() || !product.isTrackStock()) {
+                JOptionPane.showMessageDialog(this, "This product cannot be received", "Add Product", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String str = JOptionPane.showInputDialog(this, "Enter amount to receive", "Receive Stock", JOptionPane.INFORMATION_MESSAGE);
+
+            if (str == null || str.isEmpty()) {
+                return;
+            }
+
+            if (Utilities.isNumber(str)) {
+                int amount = Integer.parseInt(str);
+                if (amount <= 0) {
+                    JOptionPane.showMessageDialog(this, "Value must be greater than zero", "Receive Items", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (product.getStock() + amount > product.getMaxStockLevel() && product.getMaxStockLevel() != 0) {
+                    int response = JOptionPane.showConfirmDialog(this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product, Continue?", "Stock", JOptionPane.YES_NO_OPTION);
+                    if (response == JOptionPane.NO_OPTION) {
+                        return;
+                    }
+                }
+                if (amount == 0) {
+                    return;
+                }
+
+                model.addItem(new ReceivedItem(product, amount));
+                txtBarcode.setText("");
+                btnReceive.setEnabled(true);
+            } else {
+                JOptionPane.showMessageDialog(ReceiveItemsWindow.this, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Invalid input detected", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddProductActionPerformed
 
