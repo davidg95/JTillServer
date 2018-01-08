@@ -8,8 +8,14 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Component;
 import java.awt.Dialog;
+import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,8 +25,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JDialog;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.event.TreeModelEvent;
@@ -704,6 +713,11 @@ public class ProductSelectDialog extends javax.swing.JDialog {
 
         jLabel1.setText("Search:");
 
+        txtSearch.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtSearchMouseClicked(evt);
+            }
+        });
         txtSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtSearchActionPerformed(evt);
@@ -931,6 +945,59 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_treeMousePressed
+
+    private void txtSearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSearchMouseClicked
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu menu = new JPopupMenu();
+
+            JMenuItem search = new JMenuItem("Search");
+            final Font boldFont = new Font(search.getFont().getFontName(), Font.BOLD, search.getFont().getSize());
+            search.setFont(boldFont);
+            JMenuItem copy = new JMenuItem("Copy");
+            JMenuItem paste = new JMenuItem("Paste");
+            JMenuItem clear = new JMenuItem("Clear");
+
+            search.addActionListener((event) -> {
+                btnSearch.doClick();
+            });
+
+            copy.addActionListener((event) -> {
+                StringSelection stringSelection = new StringSelection(txtSearch.getText());
+                Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clpbrd.setContents(stringSelection, null);
+            });
+
+            copy.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
+
+            paste.addActionListener((event) -> {
+                Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
+                Transferable t = c.getContents(this);
+                if (t == null) {
+                    return;
+                }
+                try {
+                    txtSearch.setText((String) t.getTransferData(DataFlavor.stringFlavor));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+            paste.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
+
+            clear.addActionListener((event) -> {
+                txtSearch.setText("");
+            });
+
+            menu.add(search);
+            menu.addSeparator();
+            menu.add(copy);
+            menu.add(paste);
+            menu.addSeparator();
+            menu.add(clear);
+
+            menu.show(txtSearch, evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_txtSearchMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;

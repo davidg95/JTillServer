@@ -1025,6 +1025,7 @@ public class GUI extends JFrame implements GUIInterface {
             .addGap(0, 375, Short.MAX_VALUE)
         );
 
+        menuFile.setMnemonic('f');
         menuFile.setText("File");
 
         itemLogin.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
@@ -1087,6 +1088,7 @@ public class GUI extends JFrame implements GUIInterface {
 
         jMenuBar1.add(menuFile);
 
+        menuStock.setMnemonic('s');
         menuStock.setText("Stock");
 
         itemCreateNewProduct.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
@@ -1169,6 +1171,7 @@ public class GUI extends JFrame implements GUIInterface {
 
         jMenuBar1.add(menuStock);
 
+        menuSetup.setMnemonic('t');
         menuSetup.setText("Setup");
 
         itemReasons.setText("Edit Waste Reasons");
@@ -1301,6 +1304,7 @@ public class GUI extends JFrame implements GUIInterface {
 
         jMenuBar1.add(menuSetup);
 
+        itemConsolodated.setMnemonic('r');
         itemConsolodated.setText("Report");
 
         itemSalesReporting.setText("Sales Reporting");
@@ -1385,6 +1389,7 @@ public class GUI extends JFrame implements GUIInterface {
 
         jMenuBar1.add(itemConsolodated);
 
+        menuHelp.setMnemonic('h');
         menuHelp.setText("Help");
 
         itemAbout.setText("About");

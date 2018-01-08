@@ -223,23 +223,25 @@ public class StockReportDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void print(List<Product> products, String info, ModalDialog mDialog, PrinterJob job) {
-        job.setPrintable(new StockPrintable(products, info));
-        boolean ok = job.printDialog();
-        if (ok) {
-            try {
-                job.print();
-                mDialog.hide();
-                JOptionPane.showMessageDialog(GUI.gui, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
-            } catch (PrinterException ex) {
-                mDialog.hide();
-                Logger.getLogger(StockReportDialog.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(GUI.gui, ex, "Error", JOptionPane.INFORMATION_MESSAGE);
-            } finally {
-                mDialog.hide();
-            }
-        } else {
-            mDialog.hide();
-        }
+//        job.setPrintable(new StockPrintable(products, info));
+//        boolean ok = job.printDialog();
+//        if (ok) {
+//            try {
+//                job.print();
+//                mDialog.hide();
+//                JOptionPane.showMessageDialog(GUI.gui, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
+//            } catch (PrinterException ex) {
+//                mDialog.hide();
+//                Logger.getLogger(StockReportDialog.class.getName()).log(Level.SEVERE, null, ex);
+//                JOptionPane.showMessageDialog(GUI.gui, ex, "Error", JOptionPane.INFORMATION_MESSAGE);
+//            } finally {
+//                mDialog.hide();
+//            }
+//        } else {
+//            mDialog.hide();
+//        }
+        new PrintPreviewForm(new StockPrintable(products, info));
+        mDialog.hide();
     }
     private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
         final PrinterJob job = PrinterJob.getPrinterJob();

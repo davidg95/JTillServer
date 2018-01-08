@@ -992,4 +992,9 @@ public class ConnectionHandler {
     public List<RefundReason> getUsedRefundReasons() throws IOException, SQLException {
         return dc.getUsedRefundReasons();
     }
+
+//    @JConnMethod("GETSTAFFMEMBERSALES")
+//    public BigDecimal getStaffMemberSales(@JConnParameter("START") Date start, @JConnParameter("END") Date end, @JConnParameter("STAFF") Staff s) throws SQLException {
+//        return dc.getStaffMemberSales(start, end, s);
+//    }
 }

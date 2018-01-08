@@ -6,6 +6,7 @@
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="menuFile">
           <Properties>
+            <Property name="mnemonic" type="int" value="102"/>
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
           <SubComponents>
@@ -75,6 +76,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="menuStock">
           <Properties>
+            <Property name="mnemonic" type="int" value="115"/>
             <Property name="text" type="java.lang.String" value="Stock"/>
           </Properties>
           <SubComponents>
@@ -172,6 +174,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="menuSetup">
           <Properties>
+            <Property name="mnemonic" type="int" value="116"/>
             <Property name="text" type="java.lang.String" value="Setup"/>
           </Properties>
           <SubComponents>
@@ -307,6 +310,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="itemConsolodated">
           <Properties>
+            <Property name="mnemonic" type="int" value="114"/>
             <Property name="text" type="java.lang.String" value="Report"/>
           </Properties>
           <SubComponents>
@@ -394,6 +398,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="menuHelp">
           <Properties>
+            <Property name="mnemonic" type="int" value="104"/>
             <Property name="text" type="java.lang.String" value="Help"/>
           </Properties>
           <SubComponents>

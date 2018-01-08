@@ -5739,4 +5739,16 @@ public class DBConnect extends DataConnect {
             return rrs;
         }
     }
+
+    @Override
+    public BigDecimal getStaffMemberSales(Date start, Date end, Staff s) throws SQLException {
+        List<Sale> sales = this.getAllSales();
+        BigDecimal value = BigDecimal.ZERO;
+        for (Sale sale : sales) {
+            if (sale.getStaff() == s && sale.getDate().before(end) && sale.getDate().after(start)) {
+                value = value.add(sale.getTotal());
+            }
+        }
+        return value;
+    }
 }
