@@ -392,6 +392,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
             menu.add(sendData);
             menu.add(xReport);
             menu.add(zReport);
+            menu.addSeparator();
             menu.add(remove);
             menu.show(table, evt.getX(), evt.getY());
         }

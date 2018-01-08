@@ -285,7 +285,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     return item.getQuantity();
                 }
                 case 3: {
-                    return item.getTotalValue();
+                    return "£" + new DecimalFormat("0.00").format(item.getTotalValue());
                 }
                 case 4: {
                     return item.getReason().getName();
@@ -527,10 +527,10 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         if (product == null) {
             return;
         }
-        if (product.isOpen() || !product.isTrackStock()) {
-            JOptionPane.showMessageDialog(this, "This product cannot be wasted", "Add Product", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+//        if (product.isOpen() || !product.isTrackStock()) {
+//            JOptionPane.showMessageDialog(this, "This product cannot be wasted", "Add Product", JOptionPane.ERROR_MESSAGE);
+//            return;
+//        }
 
         product = (Product) product.clone();
 
