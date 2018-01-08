@@ -149,6 +149,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         radCopy = new javax.swing.JRadioButton();
         radNewOpen = new javax.swing.JRadioButton();
         chkNext = new javax.swing.JCheckBox();
+        chkAssignNextPrivate = new javax.swing.JCheckBox();
         panProduct = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         txtOrderCode = new javax.swing.JTextField();
@@ -363,10 +364,17 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         buttonGroup1.add(radNewOpen);
         radNewOpen.setText("Create Open Product");
 
-        chkNext.setText("Assign next avaliable");
+        chkNext.setText("Assign next UPC");
         chkNext.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkNextActionPerformed(evt);
+            }
+        });
+
+        chkAssignNextPrivate.setText("Assign Next Private");
+        chkAssignNextPrivate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkAssignNextPrivateActionPerformed(evt);
             }
         });
 
@@ -376,13 +384,15 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panBarcodeLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panBarcodeLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(chkNext))
+                        .addGroup(panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkAssignNextPrivate)
+                            .addComponent(chkNext)))
                     .addGroup(panBarcodeLayout.createSequentialGroup()
                         .addGroup(panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panBarcodeLayout.createSequentialGroup()
@@ -391,9 +401,12 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                                 .addComponent(radNewOpen))
                             .addComponent(btnEnter, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(radCopy))
-                    .addComponent(btnClose))
+                        .addComponent(radCopy)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panBarcodeLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnClose)
+                .addContainerGap())
         );
         panBarcodeLayout.setVerticalGroup(
             panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -403,14 +416,16 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     .addComponent(chkNext)
                     .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chkAssignNextPrivate)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addGroup(panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(radNew)
                     .addComponent(radCopy)
                     .addComponent(radNewOpen))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnEnter, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                .addGap(29, 29, 29)
                 .addComponent(btnClose)
                 .addContainerGap())
         );
@@ -701,7 +716,22 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "You have not specified a UPC Company Prefix. This must be done before generating your own barcodes. Go to Setup -> Plu Settings to do this.", "Generate Barcode", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                //If excecution reaches here, it means an unsude PLU as been generated
+                //If excecution reaches here, it means an unused PLU as been generated
+            } else if (chkAssignNextPrivate.isSelected()) {
+                while (true) {
+                    String nextPrivate = dc.getSetting("NEXT_PRIVATE"); //Get the next PLU number
+                    int n = Integer.parseInt(nextPrivate);
+                    n++;
+                    nextBarcode = Integer.toString(n); // Increase it then convert it to a String
+
+                    String barcode = nextPrivate; //Join them all together
+                    if (!dc.checkBarcode(barcode)) { //Check the barcode is not already int use
+                        this.barcode = barcode;
+                        break; //break from the while loop
+                    } else {
+                        dc.setSetting("NEXT_PLU", nextBarcode);
+                    }
+                }
             } else {
                 //Get the PLU from the user, check what they entered is valid
                 String barcode = txtBarcode.getText();
@@ -843,6 +873,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
     private void chkNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkNextActionPerformed
         txtBarcode.setEnabled(!chkNext.isSelected());
+        if (chkNext.isSelected()) {
+            chkAssignNextPrivate.setSelected(false);
+        }
     }//GEN-LAST:event_chkNextActionPerformed
 
     private void chkScaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkScaleActionPerformed
@@ -893,6 +926,13 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 //        }
     }//GEN-LAST:event_txtBarcodeKeyTyped
 
+    private void chkAssignNextPrivateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkAssignNextPrivateActionPerformed
+        txtBarcode.setEnabled(!chkAssignNextPrivate.isSelected());
+        if (chkAssignNextPrivate.isSelected()) {
+            chkNext.setSelected(false);
+        }
+    }//GEN-LAST:event_chkAssignNextPrivateActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddOpen;
     private javax.swing.JButton btnAddProduct;
@@ -901,6 +941,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnEnter;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JCheckBox chkAssignNextPrivate;
     private javax.swing.JCheckBox chkIncVat;
     private javax.swing.JCheckBox chkNext;
     private javax.swing.JCheckBox chkScale;

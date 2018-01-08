@@ -379,7 +379,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             this.root = root;
             listeners = new LinkedList<>();
         }
-        
+
         public void insertDepartment(Department d) {
             DepartmentNode n = new DepartmentNode(root, d);
             root.addNode(n);
