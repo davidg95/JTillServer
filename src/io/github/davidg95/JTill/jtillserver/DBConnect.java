@@ -5751,4 +5751,22 @@ public class DBConnect extends DataConnect {
         }
         return value;
     }
+
+    @Override
+    public List<Screen> getScreensWithProduct(Product p) throws SQLException {
+        String query = "SELECT * FROM SCREENS, BUTTONS WHERE SCREENS.ID = BUTTONS.SCREEN_ID AND BUTTONS.PRODUCT = " + p.getId();
+        try (Connection con = getConnection()) {
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet set = stmt.executeQuery(query);
+                List<Screen> screens = getScreensFromResultSet(set);
+                con.commit();
+                return screens;
+            } catch (SQLException ex) {
+                LOG.log(Level.SEVERE, null, ex);
+                con.rollback();
+                throw ex;
+            }
+        }
+    }
 }

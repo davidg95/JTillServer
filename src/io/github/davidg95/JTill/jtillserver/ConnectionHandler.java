@@ -993,8 +993,13 @@ public class ConnectionHandler {
         return dc.getUsedRefundReasons();
     }
 
-//    @JConnMethod("GETSTAFFMEMBERSALES")
-//    public BigDecimal getStaffMemberSales(@JConnParameter("START") Date start, @JConnParameter("END") Date end, @JConnParameter("STAFF") Staff s) throws SQLException {
-//        return dc.getStaffMemberSales(start, end, s);
-//    }
+    @JConnMethod("GETSTAFFMEMBERSALES")
+    public BigDecimal getStaffMemberSales(@JConnParameter("START") Date start, @JConnParameter("END") Date end, @JConnParameter("STAFF") Staff s) throws SQLException {
+        return dc.getStaffMemberSales(start, end, s);
+    }
+
+    @JConnMethod("GETSCREENSWITHPRODUCT")
+    public List<Screen> getScreensWithProduct(@JConnParameter("PRODUCT") Product p) throws SQLException {
+        return dc.getScreensWithProduct(p);
+    }
 }
