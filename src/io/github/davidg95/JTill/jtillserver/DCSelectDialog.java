@@ -88,9 +88,11 @@ public class DCSelectDialog extends javax.swing.JDialog {
         List<Department> departments = dc.getAllDepartments();
         for (Department d : departments) {
             model.insertDepartment(d);
-            List<Category> categorys = dc.getCategoriesInDepartment(d.getId());
-            for (Category c : categorys) {
-                model.insertCategory(c);
+            if (mode != DEPARTMENT_SELECT) {
+                List<Category> categorys = dc.getCategoriesInDepartment(d.getId());
+                for (Category c : categorys) {
+                    model.insertCategory(c);
+                }
             }
         }
     }
@@ -180,6 +182,9 @@ public class DCSelectDialog extends javax.swing.JDialog {
 
         @Override
         public boolean isLeaf(Object node) {
+            if (mode == DEPARTMENT_SELECT) {
+                return node instanceof DepartmentNode;
+            }
             return node instanceof CategoryNode;
         }
 
@@ -375,12 +380,20 @@ public class DCSelectDialog extends javax.swing.JDialog {
 
         @Override
         public boolean getAllowsChildren() {
-            return true;
+            if (mode == DEPARTMENT_SELECT) {
+                return false;
+            } else {
+                return true;
+            }
         }
 
         @Override
         public boolean isLeaf() {
-            return false;
+            if (mode == DEPARTMENT_SELECT) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         @Override
