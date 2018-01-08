@@ -379,7 +379,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             this.root = root;
             listeners = new LinkedList<>();
         }
-
+        
         public void insertDepartment(Department d) {
             DepartmentNode n = new DepartmentNode(root, d);
             root.addNode(n);
@@ -667,6 +667,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         jScrollPane2 = new javax.swing.JScrollPane();
         tree = new javax.swing.JTree();
         radOrder = new javax.swing.JRadioButton();
+        btnRefresh = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Select Product - All");
@@ -767,6 +768,13 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         searchButtonGroup.add(radOrder);
         radOrder.setText("Order Code");
 
+        btnRefresh.setText("Refresh");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -790,7 +798,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                         .addComponent(radOrder)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRefresh)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                         .addComponent(btnSelect)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnClose)))
@@ -812,7 +822,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                     .addComponent(radName)
                     .addComponent(radBarcode)
                     .addComponent(btnSelect)
-                    .addComponent(radOrder))
+                    .addComponent(radOrder)
+                    .addComponent(btnRefresh))
                 .addContainerGap())
         );
 
@@ -938,11 +949,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             model.filterDepartment(depNode.getDepartment());
         } else { //All
             setTitle("Select Product - All");
-            try {
-                setTable();
-            } catch (IOException | SQLException ex) {
-                showError(ex);
-            }
+            model.showAll();
         }
     }//GEN-LAST:event_treeMousePressed
 
@@ -999,8 +1006,29 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_txtSearchMouseClicked
 
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        final ModalDialog mDialog = new ModalDialog(this, "Refreshing", "Refreshing");
+        final Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    setTable();
+                } catch (IOException | SQLException ex) {
+                    mDialog.hide();
+                    JOptionPane.showMessageDialog(ProductSelectDialog.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    mDialog.hide();
+                }
+            }
+        };
+        final Thread thread = new Thread(run, "Refresh");
+        thread.start();
+        mDialog.show();
+    }//GEN-LAST:event_btnRefreshActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSelect;
     private javax.swing.JLabel jLabel1;
