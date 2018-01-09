@@ -465,7 +465,7 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
                 String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter quantity to print", "Quantity", JOptionPane.PLAIN_MESSAGE);
-                if(input == null || input.isEmpty()){
+                if (input == null || input.isEmpty()) {
                     return;
                 }
                 if (!Utilities.isNumber(input)) {

@@ -101,7 +101,7 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             //Total and value received.
             valueSpent = dc.getValueSpentOnItem(product.getId()).setScale(2);
             totalReceived = dc.getTotalReceivedOfItem(product.getId());
-            
+
             txtPlu.setText(product.getBarcode());
             if (product.getOrder_code() == 0) {
                 txtOrderCode.setText("N/A");

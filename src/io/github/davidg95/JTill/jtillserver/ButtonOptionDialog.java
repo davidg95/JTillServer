@@ -350,7 +350,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             button.setType(TillButton.SCREEN);
         } else if (func.equals("Link")) {
             String link = (String) JOptionPane.showInputDialog(this, "Enter URL", "Link", JOptionPane.PLAIN_MESSAGE, null, null, button.getLink());
-            if(link == null){
+            if (link == null) {
                 return;
             }
             if (link.length() > 50) {

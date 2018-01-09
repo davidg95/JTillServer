@@ -50,7 +50,7 @@ public class StaffSelectDialog extends javax.swing.JDialog {
 
     public static Staff showDialog(Component parent) {
         Window window = null;
-        if(parent instanceof Dialog || parent instanceof Frame){
+        if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
         final StaffSelectDialog dialog = new StaffSelectDialog(window);

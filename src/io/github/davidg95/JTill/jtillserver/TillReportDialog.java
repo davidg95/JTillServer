@@ -33,8 +33,8 @@ public class TillReportDialog extends javax.swing.JFrame {
         TillReportDialog window = new TillReportDialog(tr);
         window.setVisible(true);
     }
-    
-    private void init(){
+
+    private void init() {
         txtTerminal.setText(tr.getTerminal().getName());
         txtTime.setText(new Date(tr.getTime()).toString());
         txtStaff.setText(tr.getStaff().getName());

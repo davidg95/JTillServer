@@ -344,7 +344,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
         if (p == null) {
             return;
         }
-        if(p.isOpen() || !p.isTrackStock()){
+        if (p.isOpen() || !p.isTrackStock()) {
             JOptionPane.showInternalMessageDialog(this, "This items stock is not tracked", "Add Product", JOptionPane.ERROR_MESSAGE);
             return;
         }

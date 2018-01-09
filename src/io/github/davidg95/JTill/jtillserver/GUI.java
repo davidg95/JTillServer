@@ -1653,17 +1653,34 @@ public class GUI extends JFrame implements GUIInterface {
     private void itemSalesReportingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSalesReportingActionPerformed
         int resp = SaleReportDialog.showDialog(this);
         switch (resp) {
-            case SaleReportDialog.DEPARTMENT_REPORT:
-                Department d = DepartmentSelectDialog.showDialog(this);
+            case SaleReportDialog.DEPARTMENT_REPORT: {
+                Department d = (Department) DCSelectDialog.showDialog(this, DCSelectDialog.DEPARTMENT_SELECT);
+                Date[] dates = DateRangeSelectDialog.showDialog(this);
                 break;
-            case SaleReportDialog.CATEGORY_REPORT:
-                Category c = CategorySelectDialog.showDialog(this);
+            }
+            case SaleReportDialog.CATEGORY_REPORT: {
+                Category c = (Category) DCSelectDialog.showDialog(this, DCSelectDialog.CATEGORY_SELECT);
+                Date[] dates = DateRangeSelectDialog.showDialog(this);
                 break;
-            case SaleReportDialog.CLERK_REPORT:
+            }
+            case SaleReportDialog.CLERK_REPORT: {
                 Staff s = StaffSelectDialog.showDialog(this);
+                Date[] dates = DateRangeSelectDialog.showDialog(this);
                 break;
-            default:
+            }
+            case SaleReportDialog.PRODUCT_REPORT: {
+                Object o = DCSelectDialog.showDialog(this, DCSelectDialog.ANY_SELECT);
+                Date[] dates = DateRangeSelectDialog.showDialog(this);
+                if (o instanceof Department) {
+                    Department dep = (Department) o;
+
+                } else {
+                    Category cat = (Category) o;
+                }
+            }
+            default: {
                 break;
+            }
         }
     }//GEN-LAST:event_itemSalesReportingActionPerformed
 

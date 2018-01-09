@@ -16,6 +16,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,11 +26,14 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JTable;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -125,9 +130,18 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             }
         }
     }
+    private static final String solve = "Solve";
 
     private void initTable() {
         table.setSelectionModel(new ForcedListSelectionModel());
+        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+        table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter, solve);
+        table.getActionMap().put(solve, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnSelect.doClick();
+            }
+        });
     }
 
     private void init() throws IOException, SQLException {
@@ -1013,6 +1027,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             public void run() {
                 try {
                     setTable();
+                    setTitle("Select Product - All");
+                    model.showAll();
+                    tree.setSelectionRow(0);
                 } catch (IOException | SQLException ex) {
                     mDialog.hide();
                     JOptionPane.showMessageDialog(ProductSelectDialog.this, ex, "Error", JOptionPane.ERROR_MESSAGE);

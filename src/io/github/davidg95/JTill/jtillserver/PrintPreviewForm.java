@@ -34,10 +34,12 @@ public class PrintPreviewForm {
 
     private void init() {
         frame = new JFrame();
-        
+
+        frame.setIconImage(GUI.icon);
+
         container = new JPanel();
         container.setLayout(new CardLayout());
-        
+
         JButton next = new JButton("Next");
         next.addActionListener((event) -> {
             ((CardLayout) container.getLayout()).next(container);
@@ -47,11 +49,11 @@ public class PrintPreviewForm {
         prev.addActionListener((event) -> {
             ((CardLayout) container.getLayout()).last(container);
         });
-        
+
         bar = new JToolBar();
         bar.add(next);
         bar.add(prev);
-        
+
         frame.add(bar);
         frame.add(container);
 //        frame.add(next);

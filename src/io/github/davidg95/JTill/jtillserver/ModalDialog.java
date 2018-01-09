@@ -51,7 +51,7 @@ public class ModalDialog {
         this.text = text;
         this.hidden = false;
         this.parent = null;
-        if(parent instanceof Dialog || parent instanceof Frame){
+        if (parent instanceof Dialog || parent instanceof Frame) {
             this.parent = (Window) parent;
         }
         this.modal = true;
@@ -70,7 +70,7 @@ public class ModalDialog {
         this.text = text;
         this.hidden = false;
         this.parent = null;
-        if(parent instanceof Dialog || parent instanceof Frame){
+        if (parent instanceof Dialog || parent instanceof Frame) {
             this.parent = (Window) parent;
         }
         this.modal = modal;

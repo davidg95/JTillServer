@@ -696,11 +696,11 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
-       btnSend.setEnabled(true);
+        btnSend.setEnabled(true);
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
-        if(currentOrder.getItems().isEmpty()){
+        if (currentOrder.getItems().isEmpty()) {
             JOptionPane.showInternalMessageDialog(this, "No items in order", "Send Order", JOptionPane.ERROR_MESSAGE);
             return;
         }
