@@ -611,21 +611,25 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         }
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
-            JMenuItem it = new JMenuItem("Change Quantity");
+            JMenuItem changeQuantity = new JMenuItem("Change Quantity");
             JMenuItem changeReason = new JMenuItem("Change Reason");
             JMenuItem item = new JMenuItem("Remove");
-            it.addActionListener((ActionEvent e) -> {
-                String input = JOptionPane.showInputDialog(this, "Enter new quantity", "Waste Stock", JOptionPane.PLAIN_MESSAGE);
-                if (!Utilities.isNumber(input)) {
-                    JOptionPane.showMessageDialog(this, "A number must be entered", "Waste Stock", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                int val = Integer.parseInt(input);
-                if (val > 0) {
-                    wi.setQuantity(val);
-                    model.alertAll();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Must be a value greater than zero", "Waste Stock", JOptionPane.WARNING_MESSAGE);
+            changeQuantity.addActionListener((ActionEvent e) -> {
+                boolean loop = true;
+                while (loop) {
+                    String input = JOptionPane.showInputDialog(this, "Enter new quantity", "Waste Stock", JOptionPane.PLAIN_MESSAGE);
+                    if (!Utilities.isNumber(input)) {
+                        JOptionPane.showMessageDialog(this, "A number must be entered", "Waste Stock", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    int val = Integer.parseInt(input);
+                    if (val > 0) {
+                        wi.setQuantity(val);
+                        model.alertAll();
+                        loop = false;
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Must be a value greater than zero", "Waste Stock", JOptionPane.WARNING_MESSAGE);
+                    }
                 }
             });
             changeReason.addActionListener((ActionEvent e) -> {
@@ -648,7 +652,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     }
                 }
             });
-            menu.add(it);
+            menu.add(changeQuantity);
             menu.add(changeReason);
             menu.addSeparator();
             menu.add(item);
