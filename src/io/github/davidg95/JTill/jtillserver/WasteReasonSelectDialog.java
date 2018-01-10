@@ -320,7 +320,6 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
                 return;
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Must enter a number", "Search", JOptionPane.ERROR_MESSAGE);
         }
         txtID.setSelectionStart(0);
         txtID.setSelectionEnd(txtID.getText().length());
