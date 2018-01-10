@@ -729,7 +729,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                         this.barcode = barcode;
                         break; //break from the while loop
                     } else {
-                        dc.setSetting("NEXT_PLU", nextBarcode);
+                        dc.setSetting("NEXT_PRIVATE", nextBarcode);
                     }
                 }
             } else {
