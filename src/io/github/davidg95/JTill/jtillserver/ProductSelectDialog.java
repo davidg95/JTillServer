@@ -285,6 +285,10 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         public List<Product> getCurrentProducts() {
             return products;
         }
+        
+        public Product[] getAllProducts() {
+            return allProducts;
+        }
 
         public void setCurrent(List<Product> products) {
             this.products = products;
@@ -871,7 +875,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         }
         List<Product> newList = new ArrayList<>();
 
-        for (Product p : model.getCurrentProducts()) {
+        for (Product p : model.getAllProducts()) {
             if (radName.isSelected()) {
                 if (p.getLongName().toLowerCase().contains(search.toLowerCase())) {
                     newList.add(p);
