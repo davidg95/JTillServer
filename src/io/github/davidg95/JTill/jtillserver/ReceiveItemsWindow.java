@@ -664,9 +664,9 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             JMenuItem qu = new JMenuItem("Change Quantity");
             JMenuItem rem = new JMenuItem("Remove");
             qu.addActionListener((ActionEvent e) -> {
-                String input = JOptionPane.showInternalInputDialog(ReceiveItemsWindow.this, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
+                String input = JOptionPane.showInputDialog(this, "Enter new quantity", "Receive Items", JOptionPane.PLAIN_MESSAGE);
                 if (!Utilities.isNumber(input)) {
-                    JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "A number must be entered", "Receive Items", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "A number must be entered", "Receive Items", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 int val = Integer.parseInt(input);
@@ -674,7 +674,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     product.setQuantity(val);
                     model.alertAll();
                 } else {
-                    JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Must be a value greater than zero", "Receive Items", JOptionPane.WARNING_MESSAGE);
                 }
             });
             rem.addActionListener((ActionEvent e) -> {

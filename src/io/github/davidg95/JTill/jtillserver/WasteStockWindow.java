@@ -528,12 +528,6 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             if (product == null) {
                 return;
             }
-//        if (product.isOpen() || !product.isTrackStock()) {
-//            JOptionPane.showMessageDialog(this, "This product cannot be wasted", "Add Product", JOptionPane.ERROR_MESSAGE);
-//            return;
-//        }
-
-            product = (Product) product.clone();
 
             String str = JOptionPane.showInputDialog(this, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
 
@@ -621,9 +615,9 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             JMenuItem changeReason = new JMenuItem("Change Reason");
             JMenuItem item = new JMenuItem("Remove");
             it.addActionListener((ActionEvent e) -> {
-                String input = JOptionPane.showInternalInputDialog(WasteStockWindow.this, "Enter new quantity", "Waste Stock", JOptionPane.PLAIN_MESSAGE);
+                String input = JOptionPane.showInputDialog(this, "Enter new quantity", "Waste Stock", JOptionPane.PLAIN_MESSAGE);
                 if (!Utilities.isNumber(input)) {
-                    JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "A number must be entered", "Waste Stock", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "A number must be entered", "Waste Stock", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 int val = Integer.parseInt(input);
@@ -631,7 +625,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     wi.setQuantity(val);
                     model.alertAll();
                 } else {
-                    JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "Must be a value greater than zero", "Waste Stock", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Must be a value greater than zero", "Waste Stock", JOptionPane.WARNING_MESSAGE);
                 }
             });
             changeReason.addActionListener((ActionEvent e) -> {
@@ -647,7 +641,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 if (index == -1) {
                     return;
                 }
-                if (JOptionPane.showInternalConfirmDialog(WasteStockWindow.this, "Are you sure you want to remove this item?\n" + p.getLongName(), "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this item?\n" + p.getLongName(), "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     model.removeWasteItem(index);
                     if (model.getRowCount() == 0) {
                         btnWaste.setEnabled(false);
