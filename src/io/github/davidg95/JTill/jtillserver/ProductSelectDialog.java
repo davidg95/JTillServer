@@ -895,7 +895,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                 if (!Utilities.validateBarcodeLenth(search)) {
                     txtSearch.setSelectionStart(0);
                     txtSearch.setSelectionEnd(txtSearch.getText().length());
-                    JOptionPane.showMessageDialog(this, "Barcodes must be 8, 12, 13, or 14 digits long", "Search", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Barcodes must be 1-8, 12, 13, or 14 digits long", "Search", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 if (!Utilities.validateBarcode(search)) {
