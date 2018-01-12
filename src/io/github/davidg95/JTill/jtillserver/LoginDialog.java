@@ -25,7 +25,7 @@ import javax.swing.SwingUtilities;
  *
  * @author 1301480
  */
-public class LoginDialog extends javax.swing.JDialog implements CapsListener {
+public class LoginDialog extends javax.swing.JDialog {
 
     private static JDialog dialog;
     private static Staff staff;
@@ -44,7 +44,7 @@ public class LoginDialog extends javax.swing.JDialog implements CapsListener {
         initComponents();
         super.setLocationRelativeTo(parent);
         super.setModal(true);
-        ch = new CapsChecker(this);
+        ch = new CapsChecker();
         ch.start();
     }
 
@@ -65,30 +65,26 @@ public class LoginDialog extends javax.swing.JDialog implements CapsListener {
         dialog.setVisible(true);
         return staff;
     }
-
-    @Override
+    
     public void doCapsOn() {
         SwingUtilities.invokeLater(() -> {
             lblLogin.setText("Caps lock is on");
         });
     }
-
-    @Override
+    
     public void doCapsOff() {
         SwingUtilities.invokeLater(() -> {
             lblLogin.setText("");
         });
     }
 
-    public static class CapsChecker extends Thread {
-
-        private final CapsListener l;
+    public class CapsChecker extends Thread {
+        
         private boolean state;
         private volatile boolean run;
 
-        public CapsChecker(CapsListener l) {
+        public CapsChecker() {
             super("Caps Checker");
-            this.l = l;
             state = Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
             run = true;
         }
@@ -98,10 +94,10 @@ public class LoginDialog extends javax.swing.JDialog implements CapsListener {
             while (run) {
                 if (state != Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK)) {
                     if (!state) {
-                        l.doCapsOn();
+                        doCapsOn();
                         state = true;
                     } else {
-                        l.doCapsOff();
+                        doCapsOff();
                         state = false;
                     }
                 }

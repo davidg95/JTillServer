@@ -285,7 +285,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         public List<Product> getCurrentProducts() {
             return products;
         }
-        
+
         public Product[] getAllProducts() {
             return allProducts;
         }
@@ -673,7 +673,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         searchButtonGroup = new javax.swing.ButtonGroup();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        scroll = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         btnClose = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -712,7 +712,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                 tableMousePressed(evt);
             }
         });
-        jScrollPane1.setViewportView(table);
+        scroll.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
             table.getColumnModel().getColumn(0).setMinWidth(40);
             table.getColumnModel().getColumn(0).setPreferredWidth(40);
@@ -802,7 +802,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addComponent(scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -828,7 +828,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
+                    .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
                     .addComponent(jScrollPane2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1052,11 +1052,11 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSelect;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JRadioButton radBarcode;
     private javax.swing.JRadioButton radName;
     private javax.swing.JRadioButton radOrder;
+    private javax.swing.JScrollPane scroll;
     private javax.swing.ButtonGroup searchButtonGroup;
     private javax.swing.JTable table;
     private javax.swing.JTree tree;
