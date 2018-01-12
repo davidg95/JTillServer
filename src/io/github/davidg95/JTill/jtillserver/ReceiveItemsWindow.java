@@ -138,8 +138,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
     private void init() {
         tblProducts.getColumnModel().getColumn(0).setMaxWidth(40);
-        tblProducts.getColumnModel().getColumn(2).setMaxWidth(40);
         tblProducts.getColumnModel().getColumn(0).setMinWidth(40);
+        tblProducts.getColumnModel().getColumn(2).setMaxWidth(40);
         tblProducts.getColumnModel().getColumn(2).setMinWidth(40);
         tblProducts.setSelectionModel(new ForcedListSelectionModel());
         this.addInternalFrameListener(new InternalFrameAdapter() {

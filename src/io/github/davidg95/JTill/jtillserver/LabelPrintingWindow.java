@@ -82,6 +82,8 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
+        table.getColumnModel().getColumn(1).setMaxWidth(40);
+        table.getColumnModel().getColumn(1).setMinWidth(40);
         table.setSelectionModel(new ForcedListSelectionModel());
         this.addInternalFrameListener(new InternalFrameAdapter() {
             @Override
@@ -346,10 +348,7 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "Product", "Qty."
