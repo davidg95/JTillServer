@@ -320,8 +320,25 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     return;
                 }
                 item.setQuantity(value);
-            } else if(columnIndex == 4){
-                item.setReason((WasteReason) aValue);
+            } else if (columnIndex == 4) {
+                WasteReason reason = (WasteReason) aValue;
+                if ((reason.getPriviledgeLevel() + 1) > GUI.staff.getPosition()) {
+                    int resp = JOptionPane.showOptionDialog(WasteStockWindow.this, "You are not authorised to use this reason", "Waste Reason", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Ok", "Get Authorisation Now"}, null);
+                    if (resp == 1) {
+                        Staff s = LoginDialog.showLoginDialog(WasteStockWindow.this);
+                        if (s == null) {
+                            return;
+                        }
+                        if (reason.getPriviledgeLevel() + 1 <= s.getPosition()) {
+                            item.setReason(reason);
+                        } else {
+                            JOptionPane.showMessageDialog(WasteStockWindow.this, "You do not have authority", "Waste Reason", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                    }
+                    return;
+                }
+                item.setReason(reason);
             }
             alertAll();
         }
