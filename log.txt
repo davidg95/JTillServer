@@ -1,3 +1,6 @@
-JTill log Fri Jan 12 14:31:28 GMT 2018
-[14:31:28] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[14:31:31] [INFO] David Grant has logged in
+JTill log Fri Jan 12 14:58:08 GMT 2018
+[14:58:08] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[14:58:12] [INFO] David Grant has logged in
+[14:58:27] [INFO] Stopping
+[14:58:27] [INFO] Stopping JTIll Server
+[14:58:27] [INFO] Saving properties
