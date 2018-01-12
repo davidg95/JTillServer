@@ -21,8 +21,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
+import javax.swing.JComboBox;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -35,6 +37,7 @@ import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 /**
@@ -142,6 +145,17 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 }
             }
         });
+        JComboBox box = new JComboBox();
+        try {
+            List<WasteReason> wasteReasons = dc.getUsedWasteReasons();
+            for (WasteReason wr : wasteReasons) {
+                box.addItem(wr);
+            }
+            TableColumn wrCol = tblProducts.getColumnModel().getColumn(4);
+            wrCol.setCellEditor(new DefaultCellEditor(box));
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private Date getSelectedDate() {
@@ -268,7 +282,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
 
         @Override
         public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return columnIndex == 2;
+            return columnIndex == 2 || columnIndex == 4;
         }
 
         @Override
@@ -306,6 +320,8 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     return;
                 }
                 item.setQuantity(value);
+            } else if(columnIndex == 4){
+                item.setReason((WasteReason) aValue);
             }
             alertAll();
         }
