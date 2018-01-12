@@ -1662,6 +1662,9 @@ public class GUI extends JFrame implements GUIInterface {
                     return;
                 }
                 Date[] dates = DateRangeSelectDialog.showDialog(this);
+                if(dates == null){
+                    return;
+                }
                 break;
             }
             case SaleReportDialog.CATEGORY_REPORT: {
@@ -1670,6 +1673,9 @@ public class GUI extends JFrame implements GUIInterface {
                     return;
                 }
                 Date[] dates = DateRangeSelectDialog.showDialog(this);
+                if(dates == null){
+                    return;
+                }
                 break;
             }
             case SaleReportDialog.CLERK_REPORT: {
@@ -1678,6 +1684,9 @@ public class GUI extends JFrame implements GUIInterface {
                     return;
                 }
                 Date[] dates = DateRangeSelectDialog.showDialog(this);
+                if(dates == null){
+                    return;
+                }
                 break;
             }
             case SaleReportDialog.PRODUCT_REPORT: {
@@ -1686,11 +1695,25 @@ public class GUI extends JFrame implements GUIInterface {
                     return;
                 }
                 Date[] dates = DateRangeSelectDialog.showDialog(this);
+                if(dates == null){
+                    return;
+                }
                 if (o instanceof Department) {
-                    Department dep = (Department) o;
-
+                    try {
+                        Department dep = (Department) o;
+                        List<Product> products = dep.getProductsInDepartment();
+                        JOptionPane.showMessageDialog(this, products.size() + "");
+                    } catch (IOException | SQLException ex) {
+                        JOptionPane.showMessageDialog(this, ex);
+                    }
                 } else {
-                    Category cat = (Category) o;
+                    try {
+                        Category cat = (Category) o;
+                        List<Product> products = cat.getProductsInCategory();
+                        JOptionPane.showMessageDialog(this, products.size() + "");
+                    } catch (IOException | SQLException | JTillException ex) {
+                        JOptionPane.showMessageDialog(this, ex);
+                    }
                 }
             }
             default: {

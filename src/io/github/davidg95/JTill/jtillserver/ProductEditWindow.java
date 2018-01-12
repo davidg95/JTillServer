@@ -8,7 +8,6 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.Category;
 import io.github.davidg95.JTill.jtill.DataConnect;
 import io.github.davidg95.JTill.jtill.Product;
-import io.github.davidg95.JTill.jtill.ProductNotFoundException;
 import io.github.davidg95.JTill.jtill.Tax;
 import java.awt.Component;
 import java.beans.PropertyVetoException;
@@ -526,8 +525,8 @@ public class ProductEditWindow extends javax.swing.JInternalFrame {
             }
         }
         try {
-            dc.updateProduct(p);
-        } catch (IOException | ProductNotFoundException | SQLException ex) {
+            p.save();
+        } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSaveActionPerformed
