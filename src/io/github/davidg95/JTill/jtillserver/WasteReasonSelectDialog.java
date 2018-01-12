@@ -171,6 +171,7 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "You do not have authority", "Waste Reason", JOptionPane.ERROR_MESSAGE);
                 }
             }
+            reason = null;
             return;
         }
         setVisible(false);
