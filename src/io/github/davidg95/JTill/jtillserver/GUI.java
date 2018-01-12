@@ -82,11 +82,6 @@ public class GUI extends JFrame implements GUIInterface {
      */
     public GUI(boolean remote, Image icon) throws Exception {
         super();
-        try {
-            javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel"); //Set the look and feel.
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
         this.dc = DataConnect.dataconnect;
         this.remote = remote;
         GUI.icon = icon;
@@ -1836,7 +1831,7 @@ public class GUI extends JFrame implements GUIInterface {
                 JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Check complete. No Issues.", "Database Check", JOptionPane.INFORMATION_MESSAGE); //Show success message
             } catch (IOException | SQLException ex) {
                 mDialog.hide(); //Hide the dialog if there is an error
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Database Check", JOptionPane.ERROR_MESSAGE); //Show the error
+                JOptionPane.showMessageDialog(GUI.gui.internal, ex, "Database Check", JOptionPane.ERROR_MESSAGE); //Show the error
             }
         }; //Create the runnable for performing the database check
         final Thread thread = new Thread(run); //Create the thread for running the integrity check

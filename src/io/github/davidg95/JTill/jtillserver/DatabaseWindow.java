@@ -226,10 +226,10 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
             try {
                 dc.integrityCheck(); //Perform the Database check
                 mDialog.hide(); //Hide the dialog once the check completes
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Check complete. No Issues.", "Database Check", JOptionPane.INFORMATION_MESSAGE); //Show success message
+                JOptionPane.showMessageDialog(GUI.gui.internal, "Check complete. No Issues.", "Database Check", JOptionPane.INFORMATION_MESSAGE); //Show success message
             } catch (IOException | SQLException ex) {
                 mDialog.hide(); //Hide the dialog if there is an error
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Database Check", JOptionPane.ERROR_MESSAGE); //Show the error
+                JOptionPane.showMessageDialog(GUI.gui.internal, ex, "Database Check", JOptionPane.ERROR_MESSAGE); //Show the error
             }
         }; //Create the runnable for performing the database check
         final Thread thread = new Thread(run); //Create the thread for running the integrity check
@@ -249,7 +249,7 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
                         JOptionPane.showMessageDialog(GUI.gui.internal, val + " records removed", "Sales Data", JOptionPane.INFORMATION_MESSAGE);
                     } catch (IOException | SQLException ex) {
                         mDialog.hide();
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
                     } finally {
                         mDialog.hide();
                     }
@@ -277,7 +277,7 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
                         }
                     } catch (IOException | SQLException ex) {
                         mDialog.hide();
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
                     } finally {
                         mDialog.hide();
                     }
