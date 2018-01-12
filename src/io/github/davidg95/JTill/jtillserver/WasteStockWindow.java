@@ -108,7 +108,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
                 if (!model.getItems().isEmpty()) {
-                    int res = JOptionPane.showInternalConfirmDialog(WasteStockWindow.this, "Do you want to save the current report?", "Save", JOptionPane.YES_NO_OPTION);
+                    int res = JOptionPane.showConfirmDialog(WasteStockWindow.this, "Do you want to save the current report?", "Save", JOptionPane.YES_NO_OPTION);
                     if (res == JOptionPane.YES_OPTION) {
                         GUI.gui.savedReports.put("WAS", model.getItems());
                     }
@@ -134,7 +134,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 if (index == -1) {
                     return;
                 }
-                if (JOptionPane.showInternalConfirmDialog(WasteStockWindow.this, "Are you sure you want to remove this item?\n" + p.getLongName(), "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                if (JOptionPane.showConfirmDialog(WasteStockWindow.this, "Are you sure you want to remove this item?\n" + p.getLongName(), "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     model.removeWasteItem(index);
                     if (model.getRowCount() == 0) {
                         btnWaste.setEnabled(false);
@@ -580,7 +580,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     total = total.add(product.getIndividualCost().multiply(new BigDecimal(wi.getQuantity())));
                 } catch (IOException | ProductNotFoundException | SQLException ex) {
                     mDialog.hide();
-                    JOptionPane.showInternalMessageDialog(WasteStockWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(WasteStockWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
             total.setScale(2);
@@ -590,7 +590,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 lblValue.setText("Total: £0.00");
                 btnWaste.setEnabled(false);
                 mDialog.hide();
-                JOptionPane.showInternalMessageDialog(WasteStockWindow.this, "All items have been wasted", "Waste", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(WasteStockWindow.this, "All items have been wasted", "Waste", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException | SQLException | JTillException ex) {
                 mDialog.hide();
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);

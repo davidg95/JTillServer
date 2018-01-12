@@ -29,7 +29,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 /**
@@ -130,7 +129,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
             final TillReport report = dc.xReport(t, declared, GUI.staff);
             TillReportDialog.showDialog(report);
         } catch (Exception ex) {
-            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -153,7 +152,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
             final TillReport report = dc.zReport(t, declared, GUI.staff);
             TillReportDialog.showDialog(report);
         } catch (Exception ex) {
-            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -177,13 +176,13 @@ public class TillWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "This terminal has uncashed transactions, these must be cashed before this temrinal can be removed", "Remove terminal " + t.getName(), JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove this terminal? This will also remove any sales data associated with this terminal along with declaration reports?", "Remove terminal " + t.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this terminal? This will also remove any sales data associated with this terminal along with declaration reports?", "Remove terminal " + t.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 dc.removeTill(t.getId());
                 update();
-                JOptionPane.showInternalMessageDialog(this, "Terminal " + t.getName() + " has been removed from the system", "Remove Terminal", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Terminal " + t.getName() + " has been removed from the system", "Remove Terminal", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (IOException | JTillException | SQLException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex, "Remove Terminal", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Remove Terminal", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -462,9 +461,9 @@ public class TillWindow extends javax.swing.JInternalFrame {
                     dc.sendData(t.getId(), null);
                     return;
                 } catch (IOException ex) {
-                    JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                JOptionPane.showInternalMessageDialog(this, "Till offline", "Send Data", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Till offline", "Send Data", JOptionPane.WARNING_MESSAGE);
             });
 
             JMenuItem xReport = new JMenuItem("X Report");
@@ -515,14 +514,14 @@ public class TillWindow extends javax.swing.JInternalFrame {
         try {
             dc.sendBuildUpdates();
         } catch (IOException | SQLException ex) {
-            JOptionPane.showInternalConfirmDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showConfirmDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
-            JOptionPane.showInternalConfirmDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showConfirmDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnBuildUpdatesActionPerformed
 
     private void btnZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZActionPerformed
-        if (JOptionPane.showInternalConfirmDialog(this, "This will take a report for all tills and reset the session, continue?", "Z Report", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(this, "This will take a report for all tills and reset the session, continue?", "Z Report", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 
         }
     }//GEN-LAST:event_btnZActionPerformed

@@ -595,11 +595,11 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
     private void btnNewScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewScreenActionPerformed
         String name = JOptionPane.showInputDialog(this, "Enter Name", "New Screen", JOptionPane.PLAIN_MESSAGE);
-        if (name == null) {
+        if (name == null || name.isEmpty()) {
             return;
         }
         if (!checkName(name)) {
-            JOptionPane.showInternalMessageDialog(this, "Name already in use", "New Screen", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Name already in use", "New Screen", JOptionPane.ERROR_MESSAGE);
             return;
         }
         int inherit = -1;
@@ -653,7 +653,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 }
             }.start();
         } else {
-            JOptionPane.showInternalMessageDialog(this, "Must enter a value", "New Screen", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Must enter a value", "New Screen", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnNewScreenActionPerformed
 
