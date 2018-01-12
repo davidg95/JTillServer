@@ -270,7 +270,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             txtComments.setText(product.getComments());
             cmbCategory.setSelectedItem(product.getCategory());
             cmbTax.setSelectedItem(product.getTax());
-            txtDepartment.setText(product.getCategory().getDepartment().toString());
+            txtDepartment.setText(product.getDepartment().toString());
         }
     }
 
@@ -486,7 +486,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         btnSearch = new javax.swing.JButton();
         btnWasteStock = new javax.swing.JButton();
         btnReceiveStock = new javax.swing.JButton();
-        btnChart = new javax.swing.JButton();
         btnCSV = new javax.swing.JButton();
         panelCurrent = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
@@ -655,13 +654,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         btnReceiveStock.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnReceiveStockActionPerformed(evt);
-            }
-        });
-
-        btnChart.setText("Show Bar Chart");
-        btnChart.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnChartActionPerformed(evt);
             }
         });
 
@@ -946,17 +938,18 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(btnCSV)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnChart, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(249, 249, 249))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                             .addComponent(btnNewProduct)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(btnReceiveStock)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(btnWasteStock)))
-                    .addComponent(panelCurrent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnShowAll, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(panelCurrent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnShowAll, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel13)
@@ -993,10 +986,8 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnShowAll)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnCSV)
-                            .addComponent(btnChart))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(btnCSV)
+                        .addGap(0, 36, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
@@ -1230,10 +1221,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         WasteStockWindow.showWindow();
     }//GEN-LAST:event_btnWasteStockActionPerformed
 
-    private void btnChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChartActionPerformed
-        StockGraphWindow.showWindow();
-    }//GEN-LAST:event_btnChartActionPerformed
-
     private void btnCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCSVActionPerformed
         final JFileChooser chooser = new JFileChooser();
         chooser.setApproveButtonText("Export CSV");
@@ -1375,7 +1362,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdvanced;
     private javax.swing.JButton btnCSV;
-    private javax.swing.JButton btnChart;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnCondiments;
     private javax.swing.JButton btnDepartments;

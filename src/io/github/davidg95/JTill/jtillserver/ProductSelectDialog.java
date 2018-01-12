@@ -241,7 +241,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         public void filterDepartment(Department d) {
             products.clear();
             for (Product p : allProducts) {
-                if (p.getCategory().getDepartment().equals(d)) {
+                if (p.getDepartment().equals(d)) {
                     products.add(p);
                 }
             }
@@ -265,8 +265,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             products.clear();
             Department dep = null;
             for (Product p : allProducts) {
-                if (p.getCategory().getDepartment().getName().equalsIgnoreCase(d)) {
-                    dep = p.getCategory().getDepartment();
+                if (p.getDepartment().getName().equalsIgnoreCase(d)) {
+                    dep = p.getDepartment();
                     products.add(p);
                 }
             }

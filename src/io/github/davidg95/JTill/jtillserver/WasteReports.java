@@ -327,7 +327,7 @@ public class WasteReports extends javax.swing.JDialog {
                     }
                     for (WasteItem i : allItems) {
                         if (i.getTimestamp().before(end) && i.getTimestamp().after(start)) {
-                            if (i.getProduct().getCategory().getDepartment().equals(d)) {
+                            if (i.getProduct().getDepartment().equals(d)) {
                                 items.add(i);
                             }
                         }
