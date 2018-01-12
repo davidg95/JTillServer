@@ -8,7 +8,6 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PageFormat;
@@ -22,7 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,7 +38,9 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -49,32 +50,25 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
 
-    private List<Label> labels; //The labels to print.
-
-    private final DefaultTableModel model;
+    private final MyModel model;
 
     /**
      * Creates new form LabelPrintingWindow
      */
     public LabelPrintingWindow() {
-        this.labels = new ArrayList<>();
         this.dc = GUI.gui.dc;
         initComponents();
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
-        model = (DefaultTableModel) table.getModel();
+        model = new MyModel();
         table.setModel(model);
-        model.setRowCount(0);
         init();
     }
 
     /**
      * Shows the label printing window.
-     *
-     * @param dc the data connection.
-     * @param icon the icon for the window.
      */
     public static void showWindow() {
         LabelPrintingWindow window = new LabelPrintingWindow();
@@ -92,14 +86,13 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
         this.addInternalFrameListener(new InternalFrameAdapter() {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
-                GUI.gui.savedReports.put("LAB", labels);
+                GUI.gui.savedReports.put("LAB", model.getAllLabels());
             }
         }
         );
         if (GUI.gui.savedReports.containsKey(
                 "LAB")) {
-            labels = GUI.gui.savedReports.get("LAB");
-            updateTable();
+            model.setLabels(GUI.gui.savedReports.get("LAB"));
             GUI.gui.savedReports.remove("LAB");
         }
         InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
@@ -107,45 +100,144 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
 
         KeyStroke enterKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
 
-        im.put(enterKey,
-                "Action.enter");
-        am.put(
-                "Action.enter", new AbstractAction() {
+        im.put(enterKey, "Action.enter");
+        am.put("Action.enter", new AbstractAction() {
             @Override
-            public void actionPerformed(ActionEvent evt
-            ) {
+            public void actionPerformed(ActionEvent evt) {
                 final int index = table.getSelectedRow();
-                final Label l = labels.get(index);
                 if (index == -1) {
                     return;
                 }
-                if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Are you sure you want to remove this item?\n" + l, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    model.removeRow(index);
-                    labels.remove(index);
-                    updateTable();
+                if (JOptionPane.showConfirmDialog(LabelPrintingWindow.this, "Are you sure you want to remove this item?", "Label Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    model.removeLabel(index);
                 }
             }
         }
         );
     }
 
-    /**
-     * Method to update the table.
-     */
-    private void updateTable() {
-        model.setRowCount(0);
-        int amount = 0;
-        for (Label l : labels) {
-            amount += l.amount;
-            Object[] row = new Object[]{l.p.getName(), l.amount};
-            model.addRow(row);
+    private class MyModel implements TableModel {
+
+        private List<Label> labels;
+        private final List<TableModelListener> listeners;
+
+        public MyModel() {
+            this.labels = new LinkedList<>();
+            listeners = new LinkedList<>();
         }
-        if (amount > 0) {
-            btnPrint.setEnabled(true);
-        } else {
-            btnPrint.setEnabled(false);
+
+        public void addLabel(Product p, int amount) {
+            labels.add(new Label(p, amount));
+            alertAll();
         }
-        lblAmount.setText("Lables to print: " + amount);
+
+        public void removeLabel(int i) {
+            labels.remove(i);
+            alertAll();
+        }
+
+        public List<Label> getAllLabels() {
+            return labels;
+        }
+
+        public void setLabels(List<Label> labels) {
+            this.labels = labels;
+        }
+
+        public void clear() {
+            labels.clear();
+            alertAll();
+        }
+
+        public void setAmount(int index, int amount) {
+            labels.get(index).amount = amount;
+            alertAll();
+        }
+
+        @Override
+        public int getRowCount() {
+            return labels.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 2;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return "Product";
+                case 1:
+                    return "Qty";
+                default:
+                    return "";
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return String.class;
+                case 1:
+                    return Integer.class;
+                default:
+                    return Object.class;
+            }
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return columnIndex == 1;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            Label label = labels.get(rowIndex);
+            switch (columnIndex) {
+                case 0: {
+                    return label.p.getLongName();
+                }
+                case 1: {
+                    return label.amount;
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            if (columnIndex == 1) {
+                Label label = labels.get(rowIndex);
+                label.amount = (int) aValue;
+            }
+            alertAll();
+        }
+
+        private void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+            int amount = 0;
+            for(Label l: labels){
+                amount += l.amount;
+            }
+            lblAmount.setText("Lables to print: " + amount);
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
 
     }
 
@@ -378,8 +470,7 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
             return;
         }
 
-        labels.add(new Label(p, 1));
-        updateTable();
+        model.addLabel(p, 1);
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCSVActionPerformed
@@ -403,33 +494,31 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
                         String[] item = line.split(",");
 
                         if (item.length != 2) {
-                            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(this, "File is not recognised", "Add CSV", JOptionPane.ERROR_MESSAGE);
                             return;
                         }
 
                         Product product = dc.getProductByBarcode(item[0]);
                         int a = Integer.parseInt(item[1]);
-                        Label label = new Label(product, a);
-                        labels.add(label);
+                        model.addLabel(product, a);
                     } catch (ProductNotFoundException ex) {
                         errors = true;
                     }
                 }
                 if (errors) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Not all products could be found", "Labels", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Not all products could be found", "Labels", JOptionPane.ERROR_MESSAGE);
                 }
-                updateTable();
             } catch (FileNotFoundException ex) {
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "The file could not be found", "Open File", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "The file could not be found", "Open File", JOptionPane.ERROR_MESSAGE);
             } catch (IOException | SQLException ex) {
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnCSVActionPerformed
 
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
         PrinterJob job = PrinterJob.getPrinterJob();
-        job.setPrintable(new LabelPrintout(labels));
+        job.setPrintable(new LabelPrintout(model.getAllLabels()));
         boolean ok = job.printDialog();
         final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing labels...", job);
         if (ok) {
@@ -440,11 +529,8 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
                         job.print();
                         mDialog.hide();
                         JOptionPane.showMessageDialog(LabelPrintingWindow.this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
-                        if (JOptionPane.showInternalConfirmDialog(LabelPrintingWindow.this, "Do you want to clear the labels?", "Labels", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                            labels.clear();
-                            SwingUtilities.invokeLater(() -> {
-                                updateTable();
-                            });
+                        if (JOptionPane.showConfirmDialog(LabelPrintingWindow.this, "Do you want to clear the labels?", "Labels", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                            model.clear();
                         }
                     } catch (PrinterException ex) {
                         mDialog.hide();
@@ -462,55 +548,34 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         final int index = table.getSelectedRow();
-        if (SwingUtilities.isLeftMouseButton(evt)) {
-            if (evt.getClickCount() == 2) {
-                String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter quantity to print", "Quantity", JOptionPane.PLAIN_MESSAGE);
-                if (input == null || input.isEmpty()) {
-                    return;
-                }
-                if (!Utilities.isNumber(input)) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "A number must be entered", "Quantity", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                int val = Integer.parseInt(input);
-                if (val > 0) {
-                    labels.get(index).amount = val;
-                    updateTable();
-                } else {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must be a value greater than zero", "Quantity", JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        } else if (SwingUtilities.isRightMouseButton(evt)) {
+        if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu m = new JPopupMenu();
-            JMenuItem i = new JMenuItem("Change Quantity");
-            JMenuItem i2 = new JMenuItem("Remove Label");
-            i.addActionListener((ActionEvent e) -> {
-                String input = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter quantity to print", "Quantity", JOptionPane.PLAIN_MESSAGE);
+            JMenuItem quantity = new JMenuItem("Change Quantity");
+            JMenuItem remove = new JMenuItem("Remove Label");
+            quantity.addActionListener((ActionEvent e) -> {
+                String input = JOptionPane.showInputDialog(this, "Enter quantity to print", "Quantity", JOptionPane.PLAIN_MESSAGE);
                 if (!Utilities.isNumber(input)) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "A number must be entered", "Quantity", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "A number must be entered", "Quantity", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 int val = Integer.parseInt(input);
                 if (val > 0) {
-                    labels.get(index).amount = val;
-                    updateTable();
+                    model.setAmount(index, val);
                 } else {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must be a value greater than zero", "Quantity", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Must be a value greater than zero", "Quantity", JOptionPane.WARNING_MESSAGE);
                 }
             });
-            i2.addActionListener((ActionEvent e) -> {
+            remove.addActionListener((ActionEvent e) -> {
                 if (index == -1) {
                     return;
                 }
-                Label l = labels.get(index);
-                if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Are you sure you want to remove this item?\n" + l, "Remove Label", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    model.removeRow(index);
-                    labels.remove(index);
-                    updateTable();
+                if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this item?", "Remove Label", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    model.removeLabel(index);
                 }
             });
-            m.add(i);
-            m.add(i2);
+            m.add(quantity);
+            m.addSeparator();
+            m.add(remove);
             m.show(table, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tableMouseClicked

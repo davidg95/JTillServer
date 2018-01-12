@@ -146,7 +146,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
                 if (!model.getItems().isEmpty()) {
-                    int res = JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Do you want to save the current report?", "Save", JOptionPane.YES_NO_OPTION);
+                    int res = JOptionPane.showConfirmDialog(ReceiveItemsWindow.this, "Do you want to save the current report?", "Save", JOptionPane.YES_NO_OPTION);
                     if (res == JOptionPane.YES_OPTION) {
                         GUI.gui.savedReports.put("REC", model.getItems());
                     }
@@ -177,7 +177,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }
 
     private void removeItem(ReceivedItem i) {
-        if (JOptionPane.showInternalConfirmDialog(ReceiveItemsWindow.this, "Are you sure you want to remove this item?\n" + i, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(ReceiveItemsWindow.this, "Are you sure you want to remove this item?\n" + i, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             model.removeItem(i);
             if (model.getRowCount() == 0) {
                 btnReceive.setEnabled(false);
@@ -530,7 +530,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             return;
         }
         if (txtInvoice.getText().isEmpty()) {
-            JOptionPane.showInternalMessageDialog(this, "You must enter an invoice number", "Receive", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "You must enter an invoice number", "Receive", JOptionPane.WARNING_MESSAGE);
             txtInvoice.requestFocus();
             return;
         }
@@ -572,7 +572,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 }
             }
         } catch (IOException | SQLException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
         }
     }//GEN-LAST:event_btnReceiveActionPerformed
@@ -694,7 +694,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 dc.updateReceivedReport(rr);
                 JOptionPane.showMessageDialog(this, (chkPaid.isSelected() ? "Marked as paid" : "Marked as not paid"), "Invoice " + rr.getInvoiceId(), JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException | SQLException ex) {
-                JOptionPane.showInternalMessageDialog(ReceiveItemsWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(ReceiveItemsWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_chkPaidActionPerformed
@@ -705,7 +705,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
     private void btnAddOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOrderActionPerformed
         if (!model.getItems().isEmpty()) {
-            JOptionPane.showInternalMessageDialog(this, "You cannot add an order with other items", "Add Order", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "You cannot add an order with other items", "Add Order", JOptionPane.ERROR_MESSAGE);
             return;
         }
         order = OrderSelectDialog.showDialog(this);
