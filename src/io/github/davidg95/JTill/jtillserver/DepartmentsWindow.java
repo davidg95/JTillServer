@@ -20,7 +20,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 /**
@@ -173,12 +172,22 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
 
         @Override
         public Class<?> getColumnClass(int columnIndex) {
-            return Object.class;
+            switch (columnIndex) {
+                case 0: {
+                    return Integer.class;
+                }
+                case 1: {
+                    return String.class;
+                }
+                default: {
+                    return Object.class;
+                }
+            }
         }
 
         @Override
         public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return false;
+            return columnIndex == 1;
         }
 
         @Override
@@ -202,6 +211,15 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
 
         @Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            if (columnIndex == 1) {
+                Department d = departments.get(rowIndex);
+                d.setName((String) aValue);
+                try {
+                    d.save();
+                } catch (IOException | SQLException ex) {
+                    JOptionPane.showMessageDialog(DepartmentsWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
 
         @Override
@@ -229,7 +247,6 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         tblDep = new javax.swing.JTable();
         btnNewDepartment = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
-        btnChangeName = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -284,13 +301,6 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        btnChangeName.setText("Change Name");
-        btnChangeName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnChangeNameActionPerformed(evt);
-            }
-        });
-
         btnClose.setText("Close");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -307,7 +317,6 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnNewDepartment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnRemove, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnChangeName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnClose, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
@@ -320,13 +329,11 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnNewDepartment)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnChangeName)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(75, 75, 75)
                         .addComponent(btnRemove)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 189, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -355,11 +362,6 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         Department dep = model.getSelected();
         removeDepartment(dep);
     }//GEN-LAST:event_btnRemoveActionPerformed
-
-    private void btnChangeNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeNameActionPerformed
-        Department dep = model.getSelected();
-        renameDepartment(dep);
-    }//GEN-LAST:event_btnChangeNameActionPerformed
 
     private void tblDepMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDepMouseClicked
         if (SwingUtilities.isRightMouseButton(evt)) {
@@ -390,7 +392,6 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnChangeName;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnNewDepartment;
     private javax.swing.JButton btnRemove;

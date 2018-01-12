@@ -21,7 +21,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -34,8 +36,7 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
     private static ReceivedReportsWindow window;
 
     private final DataConnect dc;
-    private List<ReceivedReport> receivedReports;
-    private final DefaultTableModel model;
+    private MyModel model;
 
     /**
      * Creates new form ReceivedReports
@@ -48,11 +49,8 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
         super.setIconifiable(true);
         super.setMaximizable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
-        model = (DefaultTableModel) tblReports.getModel();
-        tblReports.setModel(model);
         reloadTable();
         txtInvoiceNo.requestFocus();
-        tblReports.setSelectionModel(new ForcedListSelectionModel());
     }
 
     public static void showWindow() {
@@ -72,23 +70,124 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
     private void reloadTable() {
         try {
             List<ReceivedReport> rrs = dc.getAllReceivedReports();
-            model.setRowCount(0);
-            receivedReports = new LinkedList<>();
-            for (ReceivedReport rr : rrs) {
-                Object[] row = new Object[]{rr.getId(), rr.getInvoiceId(), rr.getSupplier().getName(), rr.isPaid()};
-                if (chkShowUnpaid.isSelected() && !rr.isPaid()) {
-                    model.addRow(row);
-                    receivedReports.add(rr);
-                }
-                if (!chkShowUnpaid.isSelected()) {
-                    model.addRow(row);
-                    receivedReports.add(rr);
-                }
-            }
+            model = new MyModel(rrs);
+            tblReports.setModel(model);
         } catch (IOException | SQLException ex) {
             JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(WasteReports.class.getName()).log(Level.SEVERE, null, ex);
         }
+        tblReports.getColumnModel().getColumn(0).setMaxWidth(40);
+        tblReports.getColumnModel().getColumn(0).setMinWidth(40);
+        tblReports.getColumnModel().getColumn(3).setMaxWidth(40);
+        tblReports.getColumnModel().getColumn(3).setMinWidth(40);
+        tblReports.setSelectionModel(new ForcedListSelectionModel());
+    }
+
+    private class MyModel implements TableModel {
+
+        private final List<ReceivedReport> reports;
+        private final List<TableModelListener> listeners;
+
+        public MyModel(List<ReceivedReport> reports) {
+            this.reports = reports;
+            this.listeners = new LinkedList<>();
+        }
+
+        public ReceivedReport getReport(int i) {
+            return reports.get(i);
+        }
+
+        @Override
+        public int getRowCount() {
+            return reports.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 4;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0: {
+                    return "ID";
+                }
+                case 1: {
+                    return "Invoice No.";
+                }
+                case 2: {
+                    return "Supplier";
+                }
+                case 3: {
+                    return "Paid";
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            if (columnIndex == 3) {
+                return Boolean.class;
+            } else {
+                return Object.class;
+            }
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return columnIndex == 3;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            ReceivedReport report = reports.get(rowIndex);
+            switch (columnIndex) {
+                case 0: {
+                    return report.getId();
+                }
+                case 1: {
+                    return report.getInvoiceId();
+                }
+                case 2: {
+                    return report.getSupplier();
+                }
+                case 3: {
+                    return report.isPaid();
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            if (columnIndex == 3) {
+                ReceivedReport report = reports.get(rowIndex);
+                report.setPaid((boolean) aValue);
+            }
+        }
+
+        private void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
+
     }
 
     /**
@@ -142,14 +241,12 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tblReports);
         if (tblReports.getColumnModel().getColumnCount() > 0) {
-            tblReports.getColumnModel().getColumn(0).setMinWidth(40);
+            tblReports.getColumnModel().getColumn(0).setResizable(false);
             tblReports.getColumnModel().getColumn(0).setPreferredWidth(40);
-            tblReports.getColumnModel().getColumn(0).setMaxWidth(40);
             tblReports.getColumnModel().getColumn(1).setResizable(false);
             tblReports.getColumnModel().getColumn(2).setResizable(false);
-            tblReports.getColumnModel().getColumn(3).setMinWidth(40);
+            tblReports.getColumnModel().getColumn(3).setResizable(false);
             tblReports.getColumnModel().getColumn(3).setPreferredWidth(40);
-            tblReports.getColumnModel().getColumn(3).setMaxWidth(40);
         }
 
         btnClose.setText("Close");
@@ -244,11 +341,11 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
     private void tblReportsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblReportsMouseClicked
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
-                final ReceivedReport rr = receivedReports.get(tblReports.getSelectedRow());
+                final ReceivedReport rr = model.getReport(tblReports.getSelectedRow());
                 ReceiveItemsWindow.showWindow(rr);
             }
         } else if (SwingUtilities.isRightMouseButton(evt)) {
-            final ReceivedReport rr = receivedReports.get(tblReports.getSelectedRow());
+            final ReceivedReport rr = model.getReport(tblReports.getSelectedRow());
             JPopupMenu menu = new JPopupMenu();
             JMenuItem view = new JMenuItem("View");
             final Font boldFont = new Font(view.getFont().getFontName(), Font.BOLD, view.getFont().getSize());
@@ -279,7 +376,7 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
         int[] selected = tblReports.getSelectedRows();
         ReceivedReport[] reps = new ReceivedReport[selected.length];
         for (int i = 0; i < selected.length; i++) {
-            reps[i] = receivedReports.get(selected[i]);
+            reps[i] = model.getReport(selected[i]);
         }
         for (ReceivedReport rr : reps) {
             try {

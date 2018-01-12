@@ -13,13 +13,17 @@ import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  * Window which allows categorys to be added, edited or deleted.
@@ -208,6 +212,115 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
      */
     private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Categorys", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private class MyModel implements TableModel {
+
+        private final List<Category> categories;
+        private final List<TableModelListener> listeners;
+
+        public MyModel(List<Category> categories) {
+            this.categories = categories;
+            this.listeners = new LinkedList<>();
+        }
+
+        public void addCategory(Category c) {
+            categories.add(c);
+            alertAll();
+        }
+
+        public void removeCategory(int i) {
+            categories.remove(i);
+        }
+
+        @Override
+        public int getRowCount() {
+            return categories.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 3;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0: {
+                    return "ID";
+                }
+                case 1: {
+                    return "Name";
+                }
+                case 2: {
+                    return "Department";
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return Object.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return columnIndex != 0;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            Category category = categories.get(rowIndex);
+            switch (columnIndex) {
+                case 0: {
+                    return category.getId();
+                }
+                case 1: {
+                    return category.getName();
+                }
+                case 2: {
+                    return category.getDepartment();
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            Category c = categories.get(rowIndex);
+            if (columnIndex == 1) {
+                c.setName((String) aValue);
+            } else if (columnIndex == 2) {
+                c.setDepartment((Department) aValue);
+            }
+            try {
+                c.save();
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showMessageDialog(CategorysWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        private void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
+
     }
 
     /**
