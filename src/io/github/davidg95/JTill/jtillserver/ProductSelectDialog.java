@@ -689,7 +689,6 @@ public class ProductSelectDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Select Product - All");
-        setResizable(false);
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

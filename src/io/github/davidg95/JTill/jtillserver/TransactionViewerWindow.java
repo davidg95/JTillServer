@@ -174,7 +174,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                     return sale.getDate();
                 }
                 case 2: {
-                    return sale.getTotal();
+                    return "£" + sale.getTotal().setScale(2, 6);
                 }
                 case 3: {
                     return sale.getStaff();
