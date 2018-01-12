@@ -310,9 +310,9 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     private void showPopup(Component c, MouseEvent evt, TillButton b) {
         final JPopupMenu menu = new JPopupMenu();
         final JMenuItem edit = new JMenuItem("Edit");
-        final JMenu position = new JMenu("Position");
         final Font boldFont = new Font(edit.getFont().getFontName(), Font.BOLD, edit.getFont().getSize());
         edit.setFont(boldFont);
+        final JMenu position = new JMenu("Position");
         final JMenuItem remove = new JMenuItem("Remove");
 
         edit.addActionListener((ActionEvent e) -> {
@@ -362,6 +362,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
         menu.add(edit);
         menu.add(position);
+        menu.addSeparator();
         menu.add(remove);
         menu.show(c, evt.getX(), evt.getY());
     }
@@ -593,64 +594,64 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewScreenActionPerformed
-        String name = JOptionPane.showInternalInputDialog(this, "Enter Name", "New Screen", JOptionPane.PLAIN_MESSAGE);
+        String name = JOptionPane.showInputDialog(this, "Enter Name", "New Screen", JOptionPane.PLAIN_MESSAGE);
         if (name == null) {
+            return;
+        }
+        if (!checkName(name)) {
+            JOptionPane.showInternalMessageDialog(this, "Name already in use", "New Screen", JOptionPane.ERROR_MESSAGE);
             return;
         }
         int inherit = -1;
         int width;
         int height;
-        if (JOptionPane.showInternalConfirmDialog(this, "Inherit from screen?", "New Screen", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(this, "Inherit from screen?", "New Screen", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             Screen s = ScreenSelectDialog.showDialog(this);
             inherit = s.getId();
             width = s.getWidth();
             height = s.getHeight();
         } else {
             try {
-                width = Integer.parseInt(JOptionPane.showInternalInputDialog(this, "Enter width for screen", "New Screen", JOptionPane.PLAIN_MESSAGE));
-                height = Integer.parseInt(JOptionPane.showInternalInputDialog(this, "Enter height for screen", "New Screen", JOptionPane.PLAIN_MESSAGE));
+                width = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter width for screen", "New Screen", JOptionPane.PLAIN_MESSAGE));
+                height = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter height for screen", "New Screen", JOptionPane.PLAIN_MESSAGE));
                 if (width <= 0 || height <= 0) {
                     throw new Exception("You must enter a number greater than 0");
                 }
             } catch (Exception e) {
-                JOptionPane.showInternalMessageDialog(this, e.getMessage(), "New Screen", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, e.getMessage(), "New Screen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
         if (name.equalsIgnoreCase("default")) {
-            JOptionPane.showInternalMessageDialog(this, "That name is not allowed", "New Screen", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "That name is not allowed", "New Screen", JOptionPane.ERROR_MESSAGE);
             return;
         }
         final int inh = inherit;
         final int fw = width;
         final int fh = height;
         if (!name.equals("")) {
-            if (checkName(name)) { //Check if the name is already being used
-                new Thread("New Screen") {
-                    @Override
-                    public void run() {
-                        try {
-                            Screen s = new Screen(name, fw, fh, inh, 3, 3);
-                            currentScreen = dc.addScreen(s);
-                            int x = 1;
-                            int y = 1;
-                            for (int i = 0; i < (fw * fh); i++) {
-                                TillButton bu = dc.addButton(new TillButton("[SPACE]", 0, TillButton.SPACE, s.getId(), "000000", "ffffff", 1, 1, x, y, 1, ""));
-                                x++;
-                                if (x == (fw + 1)) {
-                                    x = 1;
-                                    y++;
-                                }
+            new Thread("New Screen") {
+                @Override
+                public void run() {
+                    try {
+                        Screen s = new Screen(name, fw, fh, inh, 3, 3);
+                        currentScreen = dc.addScreen(s);
+                        int x = 1;
+                        int y = 1;
+                        for (int i = 0; i < (fw * fh); i++) {
+                            TillButton bu = dc.addButton(new TillButton("[SPACE]", 0, TillButton.SPACE, s.getId(), "000000", "ffffff", 1, 1, x, y, 1, ""));
+                            x++;
+                            if (x == (fw + 1)) {
+                                x = 1;
+                                y++;
                             }
-                            setButtons();
-                        } catch (IOException | SQLException ex) {
-                            showError(ex);
                         }
+                        setButtons();
+                    } catch (IOException | SQLException ex) {
+                        showError(ex);
                     }
-                }.start();
-            } else {
-                JOptionPane.showInternalMessageDialog(this, "Name already in use", "New Screen", JOptionPane.ERROR_MESSAGE);
-            }
+                }
+            }.start();
         } else {
             JOptionPane.showInternalMessageDialog(this, "Must enter a value", "New Screen", JOptionPane.ERROR_MESSAGE);
         }
@@ -666,7 +667,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem rename = new JMenuItem("Rename");
             JMenuItem remove = new JMenuItem("Remove");
-            JMenuItem duplicate = new JMenuItem("Duplicate");
             rename.addActionListener((ActionEvent e) -> {
                 String name = JOptionPane.showInternalInputDialog(this, "Enter new screen name", "Screen name for " + sc.getName(), JOptionPane.OK_CANCEL_OPTION);
                 if (name != null) {
@@ -693,18 +693,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                     JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
-            duplicate.addActionListener((ActionEvent e) -> {
-                try {
-                    String name = JOptionPane.showInternalInputDialog(this, "Enter name for duplicate", "Duplicate " + sc.getName(), JOptionPane.OK_CANCEL_OPTION);
-                    if (name != null) {
-                        Screen dup = sc.clone();
-                        dup.setName(name);
-                        model.addScreen(dc.addScreen(dup));
-                    }
-                } catch (IOException | SQLException ex) {
-                    JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            });
 
             if (sc.getName().equals("DEFAULT")) {
                 remove.setEnabled(false);
@@ -720,18 +708,18 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                         for (Screen s : screens) {
                             scList += "\n" + s.getName();
                         }
-                        JOptionPane.showInternalMessageDialog(this, "This screen is inherited by-" + scList);
+                        JOptionPane.showMessageDialog(this, "This screen is inherited by-" + scList);
                     } else {
-                        JOptionPane.showInternalMessageDialog(this, "This screen is not inherited");
+                        JOptionPane.showMessageDialog(this, "This screen is not inherited");
                     }
                 } catch (IOException | SQLException | JTillException ex) {
                     JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
             menu.add(rename);
-            menu.add(remove);
-//            menu.add(duplicate);
             menu.add(inherit);
+            menu.addSeparator();
+            menu.add(remove);
             menu.show(evt.getComponent(), evt.getX(), evt.getY());
         } else {
             categoryCards.show(panelProducts, sc.getName());

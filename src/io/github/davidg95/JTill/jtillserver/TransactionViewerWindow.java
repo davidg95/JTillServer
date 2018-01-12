@@ -7,6 +7,7 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.HeadlessException;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
@@ -19,8 +20,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -30,8 +36,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
 
-    private final DefaultTableModel model;
-    private List<Sale> tableContents;
+    private MyModel model;
 
     /**
      * Creates new form TransactionViewerWindow
@@ -44,8 +49,6 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         super.setIconifiable(true);
         initComponents();
         this.setFrameIcon(new ImageIcon(GUI.icon));
-        model = (DefaultTableModel) table.getModel();
-        table.setModel(model);
         pickStart.setDate(new Date(0));
         pickEnd.setDate(new Date());
         setVisible(true);
@@ -63,10 +66,10 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
-        table.setSelectionModel(new ForcedListSelectionModel());
         try {
-            tableContents = dc.getAllSales();
-            setTable();
+            List<Sale> sales = dc.getAllSales();
+            model = new MyModel(sales);
+            table.setModel(model);
             final List<Staff> staff = dc.getAllStaff();
             final List<Till> tills = dc.getAllTills();
             cmbStaff.setModel(new DefaultComboBoxModel(staff.toArray()));
@@ -74,25 +77,131 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         } catch (IOException | SQLException ex) {
             JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
+        table.getColumnModel().getColumn(0).setMaxWidth(40);
+        table.getColumnModel().getColumn(0).setMinWidth(40);
+        table.setSelectionModel(new ForcedListSelectionModel());
     }
 
-    private void setTable() {
-        model.setRowCount(0);
-        final int totalSales = tableContents.size();
-        BigDecimal totalValue = BigDecimal.ZERO;
-        BigDecimal totalTax = BigDecimal.ZERO;
-        for (Sale s : tableContents) {
-            final Staff staff = s.getStaff();
-            final Till till = s.getTill();
-            model.addRow(new Object[]{s.getId(), s.getDate(), "£" + s.getTotal().setScale(2, 6), staff.getName(), till.getName()});
-            totalValue = totalValue.add(s.getTotal());
-            for (SaleItem si : s.getSaleItems()) {
-                totalTax = totalTax.add(si.getTaxValue());
+    private class MyModel implements TableModel {
+
+        private List<Sale> sales;
+        private final List<TableModelListener> listeners;
+
+        public MyModel(List<Sale> sales) {
+            this.sales = sales;
+            listeners = new LinkedList<>();
+        }
+
+        public void setContents(List<Sale> sales) {
+            this.sales = sales;
+            final int totalSales = sales.size();
+            BigDecimal totalValue = BigDecimal.ZERO;
+            BigDecimal totalTax = BigDecimal.ZERO;
+            for (Sale s : sales) {
+                totalValue = totalValue.add(s.getTotal());
+                for (SaleItem si : s.getSaleItems()) {
+                    totalTax = totalTax.add(si.getTaxValue());
+                }
+            }
+            txtTotalSales.setValue(totalSales);
+            txtTotalValue.setValue(totalValue);
+            txtTax.setValue(totalTax);
+            alertAll();
+        }
+
+        public Sale getSale(int i) {
+            return sales.get(i);
+        }
+
+        private void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
             }
         }
-        txtTotalSales.setValue(totalSales);
-        txtTotalValue.setValue(totalValue);
-        txtTax.setValue(totalTax);
+
+        @Override
+        public int getRowCount() {
+            return sales.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 5;
+        }
+
+        @Override
+        public String getColumnName(int i) {
+            switch (i) {
+                case 0: {
+                    return "ID";
+                }
+                case 1: {
+                    return "Timestamp";
+                }
+                case 2: {
+                    return "Value";
+                }
+                case 3: {
+                    return "Staff";
+                }
+                case 4: {
+                    return "Terminal";
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return Object.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int i) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            final Sale sale = sales.get(rowIndex);
+            switch (columnIndex) {
+                case 0: {
+                    return sale.getId();
+                }
+                case 1: {
+                    return sale.getDate();
+                }
+                case 2: {
+                    return sale.getTotal();
+                }
+                case 3: {
+                    return sale.getStaff();
+                }
+                case 4: {
+                    return sale.getTill();
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
+
     }
 
     /**
@@ -443,12 +552,12 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                             newList.add(s);
                         }
                     }
-                    tableContents = newList;
                     //Display the sales in the table.
-                    setTable();
-                    if (tableContents.isEmpty()) {
+                    if (newList.isEmpty()) {
                         mDialog.hide();
                         JOptionPane.showInternalMessageDialog(TransactionViewerWindow.this, "No results", "Transactions", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        model.setContents(newList);
                     }
                 } catch (IOException | SQLException ex) {
                     mDialog.hide();
@@ -479,12 +588,36 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_chkAllStaffActionPerformed
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
-        if (evt.getClickCount() == 2) {
-            final int index = table.getSelectedRow();
-            if (index > -1) {
-                final Sale sale = tableContents.get(index);
-                SaleDialog.showSaleDialog(sale);
+        if (SwingUtilities.isLeftMouseButton(evt)) {
+            if (evt.getClickCount() == 2) {
+                final int index = table.getSelectedRow();
+                if (index > -1) {
+                    final Sale sale = model.getSale(index);
+                    SaleDialog.showSaleDialog(sale);
+                }
             }
+        } else if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem view = new JMenuItem("View");
+            final Font boldFont = new Font(view.getFont().getFontName(), Font.BOLD, view.getFont().getSize());
+            view.setFont(boldFont);
+            JMenuItem print = new JMenuItem("Print");
+
+            view.addActionListener((event) -> {
+                final int index = table.getSelectedRow();
+                if (index > -1) {
+                    final Sale sale = model.getSale(index);
+                    SaleDialog.showSaleDialog(sale);
+                }
+            });
+
+            print.addActionListener((event) -> {
+
+            });
+
+            menu.add(view);
+            menu.add(print);
+            menu.show(table, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tableMouseClicked
 

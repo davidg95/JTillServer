@@ -1577,7 +1577,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemInfoActionPerformed
 
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
-        ReportingWindow.showWindow();
+        ConsolidatedReportingDialog.showDialog(this);
     }//GEN-LAST:event_btnReportsActionPerformed
 
     private void btnSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsActionPerformed
