@@ -3483,7 +3483,7 @@ public class DBConnect extends DataConnect {
     }
 
     @Override
-    public Supplier addSupplier(Supplier s) throws IOException, SQLException, JTillException {
+    public Supplier addSupplier(Supplier s) throws IOException, SQLException {
         String query = "INSERT INTO SUPPLIERS (NAME, ADDRESS, PHONE) VALUES ('" + s.getName() + "','" + s.getAddress() + "','" + s.getContactNumber() + "')";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
