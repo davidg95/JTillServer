@@ -6,9 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.DataConnect;
-import io.github.davidg95.JTill.jtill.JTillException;
 import io.github.davidg95.JTill.jtill.ReceivedReport;
-import io.github.davidg95.JTill.jtill.Supplier;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
