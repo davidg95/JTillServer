@@ -68,7 +68,7 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
                 model.addElement(t);
             }
         } catch (IOException | SQLException ex) {
-            Logger.getLogger(ConsolidatedReportingDialog.class.getName()).log(Level.SEVERE, null, ex);
+            GUI.LOG.log(Level.SEVERE, null, ex);
         }
     }
 

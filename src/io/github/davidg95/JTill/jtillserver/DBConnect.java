@@ -3033,7 +3033,7 @@ public class DBConnect extends DataConnect {
                     }
                     t.setUncashedTakings(uncashedValue);
                 } catch (IOException | JTillException ex) {
-                    Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
+                    LOG.log(Level.SEVERE, null, ex);
                 }
             }
         } catch (SQLException ex) {

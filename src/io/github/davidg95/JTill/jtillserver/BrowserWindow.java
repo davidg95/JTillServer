@@ -33,7 +33,7 @@ public class BrowserWindow extends javax.swing.JFrame {
         try {
             init();
         } catch (IOException | SQLException ex) {
-            Logger.getLogger(BrowserWindow.class.getName()).log(Level.SEVERE, null, ex);
+            GUI.LOG.log(Level.SEVERE, null, ex);
         }
     }
 

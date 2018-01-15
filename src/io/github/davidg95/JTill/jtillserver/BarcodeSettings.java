@@ -47,7 +47,7 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
             window.setSelected(true);
             window.init();
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(BarcodeSettings.class.getName()).log(Level.SEVERE, null, ex);
+            GUI.LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -76,7 +76,7 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "There are no more avaliable barcodes for this UPC Prefix", "No More Barcodes", JOptionPane.WARNING_MESSAGE);
             }
         } catch (IOException ex) {
-            Logger.getLogger(BarcodeSettings.class.getName()).log(Level.SEVERE, null, ex);
+            GUI.LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -255,7 +255,7 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
             dc.setSetting("NEXT_PLU", "0");
             init();
         } catch (IOException ex) {
-            Logger.getLogger(BarcodeSettings.class.getName()).log(Level.SEVERE, null, ex);
+            GUI.LOG.log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnResetActionPerformed
 

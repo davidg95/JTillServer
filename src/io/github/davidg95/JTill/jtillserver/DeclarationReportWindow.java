@@ -98,7 +98,7 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
             frame.setIcon(false);
             frame.setSelected(true);
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(DeclarationReportWindow.class.getName()).log(Level.SEVERE, null, ex);
+            GUI.LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -112,7 +112,7 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
                 model.addRow(row);
             }
         } catch (IOException | SQLException ex) {
-            Logger.getLogger(DeclarationReportWindow.class.getName()).log(Level.SEVERE, null, ex);
+            GUI.LOG.log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }

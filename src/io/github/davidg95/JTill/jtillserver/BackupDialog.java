@@ -66,7 +66,7 @@ public class BackupDialog extends javax.swing.JDialog {
                 model.addElement(s);
             }
         } catch (IOException ex) {
-            Logger.getLogger(BackupDialog.class.getName()).log(Level.SEVERE, null, ex);
+            GUI.LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -168,7 +168,7 @@ public class BackupDialog extends javax.swing.JDialog {
                         JOptionPane.showMessageDialog(BackupDialog.this, "Backup saved to " + path + " on the server", "Backup", JOptionPane.INFORMATION_MESSAGE);
                     } catch (IOException ex) {
                         mDialog.hide();
-                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                        GUI.LOG.log(Level.SEVERE, null, ex);
                         JOptionPane.showMessageDialog(BackupDialog.this, "Error performing backup", "Backup", JOptionPane.ERROR_MESSAGE);
                     } finally {
                         mDialog.hide();

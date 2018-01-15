@@ -64,7 +64,7 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
         try {
             window.setSelected(true);
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
+            GUI.LOG.log(Level.SEVERE, null, ex);
         }
     }
 

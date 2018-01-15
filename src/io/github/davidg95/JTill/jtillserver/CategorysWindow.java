@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -77,7 +76,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             frame.setIcon(false);
             frame.setSelected(true);
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            GUI.LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -119,7 +118,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             TableColumn depCol = table.getColumnModel().getColumn(2);
             depCol.setCellEditor(new DefaultCellEditor(box));
         } catch (IOException | SQLException ex) {
-            Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
+            GUI.LOG.log(Level.SEVERE, null, ex);
         }
     }
 

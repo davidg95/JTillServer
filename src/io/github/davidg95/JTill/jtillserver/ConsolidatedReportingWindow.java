@@ -103,7 +103,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
             window.setIcon(false);
             window.setSelected(true);
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(ConsolidatedReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
+            GUI.LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -176,7 +176,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
             txtRefunds.setText("£" + refunds.toString());
             txtWastage.setText("£" + wastage.toString());
         } catch (IOException | SQLException ex) {
-            Logger.getLogger(ConsolidatedReportingWindow.class.getName()).log(Level.SEVERE, null, ex);
+            GUI.LOG.log(Level.SEVERE, null, ex);
         }
     }
 

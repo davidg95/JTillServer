@@ -59,7 +59,7 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
             frame.setIcon(false);
             frame.setSelected(true);
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            GUI.LOG.log(Level.SEVERE, null, ex);
         }
     }
 

@@ -503,9 +503,9 @@ public class DCSelectDialog extends javax.swing.JDialog {
             DepartmentNode depNode = (DepartmentNode) node;
             object = depNode.getDepartment();
         } else { //All
-            if(mode == 3){
+            if (mode == 3) {
                 object = "All";
-            } else{
+            } else {
                 return;
             }
         }

@@ -35,7 +35,7 @@ import javax.swing.*;
  */
 public class GUI extends JFrame implements GUIInterface {
 
-    private static final Logger LOG = Logger.getGlobal();
+    public static final Logger LOG = Logger.getGlobal();
 
     public static GUI gui; //The GUI.
 
@@ -1709,30 +1709,31 @@ public class GUI extends JFrame implements GUIInterface {
                 if (dates == null) {
                     return;
                 }
-                if (o instanceof Department) {
+                final ModalDialog mDialog = new ModalDialog(this, "Retrieving...");
+                final Runnable run = () -> {
                     try {
-                        Department dep = (Department) o;
-                        List<Product> products = dep.getProductsInDepartment();
-                        JOptionPane.showMessageDialog(this, products.size() + "");
-                    } catch (IOException | SQLException ex) {
-                        JOptionPane.showMessageDialog(this, ex);
-                    }
-                } else if (o instanceof Category) {
-                    try {
-                        Category cat = (Category) o;
-                        List<Product> products = cat.getProductsInCategory();
-                        JOptionPane.showMessageDialog(this, products.size() + "");
+                        List<Product> products;
+                        if (o instanceof Department) {
+                            Department dep = (Department) o;
+                            products = dep.getProductsInDepartment();
+                        } else if (o instanceof Category) {
+                            Category cat = (Category) o;
+                            products = cat.getProductsInCategory();
+                        } else {
+                            products = dc.getAllProducts();
+                        }
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(GUI.this, products.size() + "");
                     } catch (IOException | SQLException | JTillException ex) {
-                        JOptionPane.showMessageDialog(this, ex);
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(GUI.this, ex);
+                    } finally {
+                        mDialog.hide();
                     }
-                } else {
-                    try {
-                        List<Product> products = dc.getAllProducts();
-                        JOptionPane.showMessageDialog(this, products.size() + "");
-                    } catch (IOException | SQLException ex) {
-                        JOptionPane.showMessageDialog(this, ex);
-                    }
-                }
+                };
+                final Thread thread = new Thread(run, "Report");
+                thread.start();
+                mDialog.show();
             }
             default: {
                 break;
