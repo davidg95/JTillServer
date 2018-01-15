@@ -896,21 +896,21 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             dc.setSetting("LOGOUT_TIMEOUT", txtLogoutTimeout.getValue().toString());
             if (chkUnlock.isSelected()) {
                 if (txtUnlockCode.getText().isEmpty()) {
-                    JOptionPane.showInternalMessageDialog(this, "Must enter a value for Unlock Code", "Security Settings", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Must enter a value for Unlock Code", "Security Settings", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 if (!Utilities.isNumber(txtUnlockCode.getText())) {
-                    JOptionPane.showInternalMessageDialog(this, "Must enter a numerical value for unlock code", "Security Settings", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Must enter a numerical value for unlock code", "Security Settings", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 dc.setSetting("UNLOCK_CODE", txtUnlockCode.getText());
             } else {
                 dc.setSetting("UNLOCK_CODE", "OFF");
             }
-            JOptionPane.showInternalMessageDialog(this, "Security settings have been saved", "Security Settings", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Security settings have been saved", "Security Settings", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
-            JOptionPane.showInternalMessageDialog(this, "Error saving security settings, changes have been rolled back", "Security Settings", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error saving security settings, changes have been rolled back", "Security Settings", JOptionPane.ERROR_MESSAGE);
             try {
                 boolean old = dc.getSetting("AUTO_LOGOUT").equals("TRUE");
                 chkLogOut.setSelected(old);
@@ -1099,7 +1099,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         try {
             dc.setSetting("TERMINAL_BG", Integer.toString(c.getRGB()));
         } catch (IOException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnColorActionPerformed
 
@@ -1107,7 +1107,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         try {
             dc.setSetting("TERMINAL_BG", Integer.toString(0));
         } catch (IOException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -1119,7 +1119,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             try {
                 dc.setSetting("bg_url", file.getAbsolutePath());
             } catch (Exception e) {
-                JOptionPane.showInternalMessageDialog(this, "File is not an image", "Background Image", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "File is not an image", "Background Image", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnImageActionPerformed
@@ -1132,7 +1132,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         try {
             dc.setSetting("bg_url", "NONE");
         } catch (IOException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnRemoveImageActionPerformed
 
@@ -1150,7 +1150,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         try {
             dc.setSetting("BORDER_SCREEN_BUTTON", Boolean.toString(chkBorderScreen.isSelected()));
         } catch (IOException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_chkBorderScreenActionPerformed
 
@@ -1159,7 +1159,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         try {
             dc.setSetting("BORDER_COLOR", TillButton.rbg2Hex(c));
         } catch (IOException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnBorderColorActionPerformed
 
