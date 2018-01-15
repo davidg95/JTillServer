@@ -1717,12 +1717,19 @@ public class GUI extends JFrame implements GUIInterface {
                     } catch (IOException | SQLException ex) {
                         JOptionPane.showMessageDialog(this, ex);
                     }
-                } else {
+                } else if (o instanceof Category) {
                     try {
                         Category cat = (Category) o;
                         List<Product> products = cat.getProductsInCategory();
                         JOptionPane.showMessageDialog(this, products.size() + "");
                     } catch (IOException | SQLException | JTillException ex) {
+                        JOptionPane.showMessageDialog(this, ex);
+                    }
+                } else {
+                    try {
+                        List<Product> products = dc.getAllProducts();
+                        JOptionPane.showMessageDialog(this, products.size() + "");
+                    } catch (IOException | SQLException ex) {
                         JOptionPane.showMessageDialog(this, ex);
                     }
                 }

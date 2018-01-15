@@ -503,7 +503,11 @@ public class DCSelectDialog extends javax.swing.JDialog {
             DepartmentNode depNode = (DepartmentNode) node;
             object = depNode.getDepartment();
         } else { //All
-            return;
+            if(mode == 3){
+                object = "All";
+            } else{
+                return;
+            }
         }
         btnSelect.setEnabled(true);
         if (evt.getClickCount() == 2) {

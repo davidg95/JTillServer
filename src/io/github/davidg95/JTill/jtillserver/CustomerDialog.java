@@ -13,8 +13,6 @@ import java.awt.Window;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.List;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -32,9 +30,6 @@ public class CustomerDialog extends javax.swing.JDialog {
 
     private final boolean editMode;
 
-    private DefaultComboBoxModel discountsModel;
-    private List<Discount> discounts;
-
     /**
      * Creates new form CustomerDialog.
      *
@@ -47,6 +42,7 @@ public class CustomerDialog extends javax.swing.JDialog {
         editMode = false;
         this.setLocationRelativeTo(parent);
         this.setModal(true);
+        this.setIconImage(GUI.icon);
     }
 
     /**
