@@ -138,7 +138,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
         tabbed.setSelectedIndex(1);
     }
 
-    private void saveOrder() throws IOException, SQLException {
+    private void saveOrder() throws IOException, SQLException, JTillException {
         if (currentOrder.getId() == 0) {
             currentOrder = dc.addOrder(currentOrder);
         } else {
@@ -693,7 +693,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
         txtBarcode.setText("");
         try {
             saveOrder();
-        } catch (IOException | SQLException ex) {
+        } catch (IOException | SQLException | JTillException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
         btnSend.setEnabled(true);
@@ -710,7 +710,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
                 currentOrder.setSent(true);
                 currentOrder.setSendDate(new Date());
                 saveOrder();
-            } catch (IOException | SQLException ex) {
+            } catch (IOException | SQLException | JTillException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             } finally {
                 dialog.hide();

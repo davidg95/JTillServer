@@ -5114,11 +5114,14 @@ public class DBConnect extends DataConnect {
     }
 
     @Override
-    public void updateOrder(Order o) throws IOException, SQLException {
+    public void updateOrder(Order o) throws IOException, SQLException, JTillException {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            stmt.executeUpdate("UPDATE ORDERS SET SENDDATE=" + o.getSendDate().getTime() + ", SENT=" + o.isSent() + ", RECEIVED=" + o.isReceived() + " WHERE ID=" + o.getId());
+            int value = stmt.executeUpdate("UPDATE ORDERS SET SENDDATE=" + o.getSendDate().getTime() + ", SENT=" + o.isSent() + ", RECEIVED=" + o.isReceived() + " WHERE ID=" + o.getId());
+            if(value == 0){
+                throw new JTillException("Order not found");
+            }
             con.commit();
         } catch (SQLException ex) {
             con.rollback();

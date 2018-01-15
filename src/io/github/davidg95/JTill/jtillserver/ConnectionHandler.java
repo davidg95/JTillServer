@@ -899,7 +899,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("UPDATEORDER")
-    public void updateOrder(@JConnParameter("ORDER") Order o) throws IOException, SQLException {
+    public void updateOrder(@JConnParameter("ORDER") Order o) throws IOException, SQLException, JTillException {
         dc.updateOrder(o);
     }
 
