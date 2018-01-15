@@ -574,7 +574,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(this, "Value must be greater than zero", "Waste Item", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if (product.getStock() - amount < 0) {
+                if (product.isTrackStock() && product.getStock() - amount < 0) {
                     if (JOptionPane.showConfirmDialog(this, "Item does not have that much in stock. Continue?", "Waste", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
                         return;
                     }
