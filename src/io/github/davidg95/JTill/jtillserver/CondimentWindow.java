@@ -106,7 +106,7 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
 
     private void removeCon(int i) {
         Condiment c = model.getCondiment(i);
-        if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove this condiment?", "Remove Condiment", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this condiment?", "Remove Condiment", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             try {
                 model.removeCondiment(c);
             } catch (IOException | SQLException ex) {
