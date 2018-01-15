@@ -44,7 +44,6 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
-        tblDep.setSelectionModel(new ForcedListSelectionModel());
         setTable();
     }
 
@@ -69,6 +68,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
             model = new MyModel(deps);
             tblDep.setModel(model);
             tblDep.getColumnModel().getColumn(0).setMaxWidth(40);
+            tblDep.setSelectionModel(new ForcedListSelectionModel());
         } catch (SQLException | IOException ex) {
             Logger.getLogger(DepartmentsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }

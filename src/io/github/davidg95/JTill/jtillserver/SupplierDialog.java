@@ -186,7 +186,7 @@ public class SupplierDialog extends javax.swing.JDialog {
             try {
                 dc.addSupplier(sup);
                 setVisible(false);
-            } catch (IOException | SQLException | JTillException ex) {
+            } catch (IOException | SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {

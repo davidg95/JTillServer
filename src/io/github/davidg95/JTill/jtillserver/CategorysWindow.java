@@ -17,12 +17,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 /**
@@ -37,8 +40,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
     private final DataConnect dc;
     private Category category;
 
-    private final DefaultTableModel model;
-    private List<Category> currentTableContents;
+    private MyModel model;
 
     private final DefaultComboBoxModel depsModel;
 
@@ -52,11 +54,8 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         super.setClosable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
-        currentTableContents = new ArrayList<>();
-        model = (DefaultTableModel) table.getModel();
         depsModel = new DefaultComboBoxModel();
         init();
-        showAllCategorys();
     }
 
     /**
@@ -89,28 +88,18 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
      */
     public static void update() {
         if (frame != null) {
-            frame.showAllCategorys();
             frame.init();
         }
     }
 
-    /**
-     * Method to update the contents of the table with whatever is in the
-     * currentTableContents list.
-     */
-    private void updateTable() {
-        model.setRowCount(0);
-
-        for (Category c : currentTableContents) {
-            Object[] s = new Object[]{c.getId(), c.getName(), c.getDepartment().getName()};
-            model.addRow(s);
-        }
-
-        table.setModel(model);
-        ProductsWindow.update();
-    }
-
     private void init() {
+        try {
+            model = new MyModel(dc.getAllCategorys());
+        } catch (IOException | SQLException ex) {
+            showError(ex);
+        }
+        table.setModel(model);
+        table.getColumnModel().getColumn(0).setMaxWidth(40);
         table.setSelectionModel(new ForcedListSelectionModel());
         try {
             depsModel.removeAllElements();
@@ -122,17 +111,16 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         } catch (IOException | SQLException ex) {
             showError(ex);
         }
-    }
-
-    /**
-     * Method to show all the categorys in the database.
-     */
-    private void showAllCategorys() {
+        JComboBox box = new JComboBox();
         try {
-            currentTableContents = dc.getAllCategorys();
-            updateTable();
+            List<Department> departments = dc.getAllDepartments();
+            for (Department d : departments) {
+                box.addItem(d);
+            }
+            TableColumn depCol = table.getColumnModel().getColumn(2);
+            depCol.setCellEditor(new DefaultCellEditor(box));
         } catch (IOException | SQLException ex) {
-            showError(ex);
+            Logger.getLogger(WasteStockWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -231,6 +219,14 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
 
         public void removeCategory(int i) {
             categories.remove(i);
+        }
+
+        public List<Category> getAllCategories() {
+            return categories;
+        }
+
+        public Category getCategories(int i) {
+            return categories.get(i);
         }
 
         @Override
@@ -655,7 +651,6 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
                     c = new Category(name, startSell, endSell, time, minAge, dep);
                     try {
                         Category cat = dc.addCategory(c);
-                        showAllCategorys();
                         setCurrentCategory(null);
                     } catch (SQLException | IOException ex) {
                         showError(ex);
@@ -700,8 +695,6 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
                 } catch (SQLException | JTillException | IOException ex) {
                     showError(ex);
                 }
-
-                showAllCategorys();
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Fill out all required fields", "Category", JOptionPane.ERROR_MESSAGE);
@@ -713,18 +706,18 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         int index = table.getSelectedRow();
         if (index != -1) {
-            if (currentTableContents.get(index).getId() == 1) {
+            if (model.getCategories(index).getId() == 1) {
                 JOptionPane.showMessageDialog(this, "You cannot remote the default category", "Remove Category", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following category?\n-" + currentTableContents.get(index) + "\nAll products in this category will be moved to the DEFAULT category.", "Remove Category", JOptionPane.YES_NO_OPTION);
+            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following category?\n-" + model.getCategories(index) + "\nAll products in this category will be moved to the DEFAULT category.", "Remove Category", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
-                    dc.removeCategory(currentTableContents.get(index).getId());
+                    dc.removeCategory(model.getCategories(index).getId());
+                    model.removeCategory(index);
                 } catch (SQLException | JTillException | IOException ex) {
                     showError(ex);
                 }
-                showAllCategorys();
                 setCurrentCategory(null);
             }
         }
@@ -736,7 +729,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
 
     private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
         if (evt.getClickCount() == 1) {
-            setCurrentCategory(currentTableContents.get(table.getSelectedRow()));
+            setCurrentCategory(model.getCategories(table.getSelectedRow()));
         }
     }//GEN-LAST:event_tableMousePressed
 
@@ -756,13 +749,12 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         String terms = txtSearch.getText();
 
         if (terms.isEmpty()) {
-            showAllCategorys();
             return;
         }
 
         List<Category> newList = new ArrayList<>();
 
-        for (Category c : currentTableContents) {
+        for (Category c : model.getAllCategories()) {
             if (c.getName().toLowerCase().contains(terms.toLowerCase())) {
                 newList.add(c);
             }
@@ -771,12 +763,10 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         if (newList.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.PLAIN_MESSAGE);
         } else {
-            currentTableContents = newList;
             if (newList.size() == 1) {
                 setCurrentCategory(newList.get(0));
             }
         }
-        updateTable();
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
