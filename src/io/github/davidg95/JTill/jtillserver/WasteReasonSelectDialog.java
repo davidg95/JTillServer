@@ -166,6 +166,7 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
                 }
                 if (reason.getPriviledgeLevel() + 1 <= s.getPosition()) {
                     setVisible(false);
+                    return;
                 } else {
                     reason = null;
                     JOptionPane.showMessageDialog(this, "You do not have authority", "Waste Reason", JOptionPane.ERROR_MESSAGE);
