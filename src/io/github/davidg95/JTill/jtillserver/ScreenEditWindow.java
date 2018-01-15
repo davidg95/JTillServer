@@ -150,7 +150,17 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         if (frame.isVisible()) {
             frame.toFront();
         } else {
-            update();
+            final ModalDialog mDialog = new ModalDialog(GUI.gui, "Loading...");
+            final Runnable run = () -> {
+                try {
+                    update();
+                } finally {
+                    mDialog.hide();
+                }
+            };
+            final Thread thread = new Thread(run, "Screen_Load");
+            thread.start();
+            mDialog.show();
             frame.setVisible(true);
         }
         try {

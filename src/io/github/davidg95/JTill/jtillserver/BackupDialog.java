@@ -157,7 +157,7 @@ public class BackupDialog extends javax.swing.JDialog {
 
     private void btnBackupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackupActionPerformed
         if (JOptionPane.showConfirmDialog(this, "Do you want to take a database backup?", "Backup", JOptionPane.YES_NO_OPTION) == 0) {
-            final ModalDialog mDialog = new ModalDialog(this, "Backup", "Performing backup...");
+            final ModalDialog mDialog = new ModalDialog(this, "Backup");
             final Runnable run = new Runnable() {
                 @Override
                 public void run() {
@@ -195,21 +195,18 @@ public class BackupDialog extends javax.swing.JDialog {
         }
         String name = list.getSelectedValue();
         if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this backup?\n" + name, "Delete Backup", JOptionPane.YES_NO_OPTION) == 0) {
-            final ModalDialog mDialog = new ModalDialog(this, "Delete Backup", "Removing backup...");
-            final Runnable run = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        dc.clearBackup(name);
-                        loadList();
-                        mDialog.hide();
-                        JOptionPane.showMessageDialog(BackupDialog.this, "Backup " + name + " removed", "Delete Backup", 1);
-                    } catch (IOException ex) {
-                        mDialog.hide();
-                        JOptionPane.showMessageDialog(BackupDialog.this, ex, "Error", 6);
-                    } finally {
-                        mDialog.hide();
-                    }
+            final ModalDialog mDialog = new ModalDialog(this, "Delete Backup");
+            final Runnable run = () -> {
+                try {
+                    dc.clearBackup(name);
+                    loadList();
+                    mDialog.hide();
+                    JOptionPane.showMessageDialog(BackupDialog.this, "Backup " + name + " removed", "Delete Backup", 1);
+                } catch (IOException ex) {
+                    mDialog.hide();
+                    JOptionPane.showMessageDialog(BackupDialog.this, ex, "Error", 6);
+                } finally {
+                    mDialog.hide();
                 }
             };
             final Thread thread = new Thread(run, "REMOVE_BACKUP");

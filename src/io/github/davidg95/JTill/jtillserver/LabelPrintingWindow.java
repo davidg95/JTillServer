@@ -519,7 +519,7 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPrintable(new LabelPrintout(model.getAllLabels()));
         boolean ok = job.printDialog();
-        final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing labels...", job);
+        final ModalDialog mDialog = new ModalDialog(this, "Printing...", job);
         if (ok) {
             Runnable runnable = new Runnable() {
                 @Override

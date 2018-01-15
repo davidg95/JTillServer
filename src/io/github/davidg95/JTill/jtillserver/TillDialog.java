@@ -455,18 +455,15 @@ public class TillDialog extends javax.swing.JInternalFrame {
                             + "\nValue counted: £" + report.getDeclared().toString()
                             + "\nActual takings: £" + report.getExpected().toString()
                             + "\nDifference: £" + report.getDifference().toString();
-                    final ModalDialog mDialog = new ModalDialog(this, "Email", "Emailing...");
-                    final Runnable run = new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                dc.sendEmail(message);
-                                mDialog.hide();
-                                JOptionPane.showInputDialog(TillDialog.this, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
-                            } catch (IOException ex) {
-                                mDialog.hide();
-                                JOptionPane.showInputDialog(TillDialog.this, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
-                            }
+                    final ModalDialog mDialog = new ModalDialog(this, "Email");
+                    final Runnable run = () -> {
+                        try {
+                            dc.sendEmail(message);
+                            mDialog.hide();
+                            JOptionPane.showInputDialog(TillDialog.this, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (IOException ex) {
+                            mDialog.hide();
+                            JOptionPane.showInputDialog(TillDialog.this, "Error sending email", "Email", JOptionPane.ERROR_MESSAGE);
                         }
                     };
                     final Thread thread = new Thread(run);

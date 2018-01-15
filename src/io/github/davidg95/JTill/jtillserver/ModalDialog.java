@@ -15,10 +15,8 @@ import java.awt.print.PrinterJob;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 /**
@@ -34,7 +32,6 @@ public class ModalDialog {
     private JProgressBar label; //The message label.
 
     private final String title; //The title of the window.
-    private String text; //The text on the message label.
     private PrinterJob job; //The printer job (if any) associated with this message.
     private boolean hidden;
 
@@ -45,11 +42,9 @@ public class ModalDialog {
      *
      * @param parent the parent component.
      * @param title the title.
-     * @param text the message.
      */
-    public ModalDialog(Component parent, String title, String text) {
+    public ModalDialog(Component parent, String title) {
         this.title = title;
-        this.text = text;
         this.hidden = false;
         this.parent = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
@@ -65,10 +60,10 @@ public class ModalDialog {
      * @param parent the parent component.
      * @param title the title.
      * @param text the message.
+     * @param modal if it should be modal.
      */
     public ModalDialog(Component parent, String title, String text, boolean modal) {
         this.title = title;
-        this.text = text;
         this.hidden = false;
         this.parent = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
@@ -85,11 +80,10 @@ public class ModalDialog {
      *
      * @param parent the parent component.
      * @param title the title.
-     * @param text the message.
      * @param job the PrinterJob to assign.
      */
-    public ModalDialog(Component parent, String title, String text, PrinterJob job) {
-        this(parent, title, text);
+    public ModalDialog(Component parent, String title, PrinterJob job) {
+        this(parent, title);
         this.job = job;
         this.hidden = false;
         final JButton button = new JButton("Cancel");
@@ -115,19 +109,6 @@ public class ModalDialog {
         dialog.pack();
         dialog.setLocationRelativeTo(parent);
         dialog.setModal(modal);
-    }
-
-    /**
-     * Changes the text on the dialog. This method makes a call to
-     * <code>SwingUtilities.invokeLater()</code>.
-     *
-     * @param text the new text.
-     */
-    public void setText(String text) {
-        this.text = text;
-//        SwingUtilities.invokeLater(() -> {
-//            label.setText(text);
-//        });
     }
 
     /**

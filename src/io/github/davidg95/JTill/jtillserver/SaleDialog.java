@@ -10,7 +10,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Window;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterAbortException;
@@ -26,9 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.net.UnknownHostException;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.Calendar;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -454,7 +451,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         if (email == null) {
             return;
         }
-        final ModalDialog mDialog = new ModalDialog(this, "Email...", "Sending email...");
+        final ModalDialog mDialog = new ModalDialog(this, "Email...");
         final String fEmail = email;
         final Runnable run = () -> {
             try {
@@ -482,7 +479,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPrintable(prt);
         boolean ok = job.printDialog();
-        final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing...", job);
+        final ModalDialog mDialog = new ModalDialog(this, "Printing...", job);
         if (ok) {
             Runnable print = new Runnable() {
                 @Override
@@ -490,7 +487,6 @@ public class SaleDialog extends javax.swing.JInternalFrame {
                     try {
                         job.print();
                     } catch (PrinterAbortException ex) {
-                        mDialog.setText("Print aborted");
                     } catch (PrinterException ex) {
                         Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
                     } finally {

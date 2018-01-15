@@ -5291,7 +5291,7 @@ public class DBConnect extends DataConnect {
     @Override
     public String performBackup() throws IOException {
         try {
-            mDialog = new ModalDialog(GUI.gui, "Backup", "Backup in progress...");
+            mDialog = new ModalDialog(GUI.gui, "Backup");
             final Runnable run = new Runnable() {
                 @Override
                 public void run() {
@@ -5322,10 +5322,8 @@ public class DBConnect extends DataConnect {
         File dir = new File("backups");
         if (!dir.exists()) {
             LOG.log(Level.INFO, "Creating backups directory");
-            mDialog.setText("Creating backups directory");
             dir.mkdir();
             LOG.log(Level.INFO, "Directory backups created at " + dir.getAbsolutePath());
-            mDialog.setText("Directory backups created");
         }
         Date now = new Date();
         SimpleDateFormat simpleDateformat = new SimpleDateFormat("ddMMyyyy");
@@ -5340,12 +5338,10 @@ public class DBConnect extends DataConnect {
             zos = new ZipOutputStream(fos);
 
             LOG.log(Level.INFO, "Output to Zip : " + zipFile);
-            mDialog.setText("Creating zip");
             FileInputStream in = null;
 
             for (String file : this.fileList) {
                 LOG.log(Level.INFO, "File Added : " + file);
-                mDialog.setText("Added " + file);
                 ZipEntry ze = new ZipEntry(source + File.separator + file);
                 zos.putNextEntry(ze);
                 try {
@@ -5361,7 +5357,6 @@ public class DBConnect extends DataConnect {
 
             zos.closeEntry();
             LOG.log(Level.INFO, "Folder successfully compressed");
-            mDialog.setText("Complete");
 
         } finally {
             try {

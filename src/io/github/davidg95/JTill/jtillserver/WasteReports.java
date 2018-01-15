@@ -73,7 +73,7 @@ public class WasteReports extends javax.swing.JDialog {
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPrintable(new WastePrinter(start, end, items));
         boolean ok = job.printDialog();
-        final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing report...", job);
+        final ModalDialog mDialog = new ModalDialog(this, "Printing...", job);
         if (ok) {
             Runnable runnable = new Runnable() {
                 @Override

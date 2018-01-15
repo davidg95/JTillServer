@@ -704,7 +704,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
             JOptionPane.showInternalMessageDialog(this, "No items in order", "Send Order", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        final ModalDialog dialog = new ModalDialog(this, "Send Order", "Sending order...");
+        final ModalDialog dialog = new ModalDialog(this, "Send Order");
         final Runnable run = () -> {
             try {
                 currentOrder.setSent(true);

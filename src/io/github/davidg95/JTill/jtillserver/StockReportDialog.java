@@ -223,90 +223,70 @@ public class StockReportDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void print(List<Product> products, String info, ModalDialog mDialog, PrinterJob job) {
-//        job.setPrintable(new StockPrintable(products, info));
-//        boolean ok = job.printDialog();
-//        if (ok) {
-//            try {
-//                job.print();
-//                mDialog.hide();
-//                JOptionPane.showMessageDialog(GUI.gui, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
-//            } catch (PrinterException ex) {
-//                mDialog.hide();
-//                Logger.getLogger(StockReportDialog.class.getName()).log(Level.SEVERE, null, ex);
-//                JOptionPane.showMessageDialog(GUI.gui, ex, "Error", JOptionPane.INFORMATION_MESSAGE);
-//            } finally {
-//                mDialog.hide();
-//            }
-//        } else {
-//            mDialog.hide();
-//        }
         new PrintPreviewForm(new StockPrintable(products, info));
         mDialog.hide();
     }
     private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
         final PrinterJob job = PrinterJob.getPrinterJob();
         final int type = cmbType.getSelectedIndex();
-        final ModalDialog mDialog = new ModalDialog(GUI.gui, "Stock Report", "Generating...", job);
-        final Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                if (type == FULL) {
-                    try {
-                        List<Product> products = dc.getAllProducts();
-                        Iterator it = products.iterator();
-                        while (it.hasNext()) {
-                            Product p = (Product) it.next();
-                            if (p.isOpen() || !p.isTrackStock()) {
-                                it.remove();
-                            }
+        final ModalDialog mDialog = new ModalDialog(GUI.gui, "Stock Report", job);
+        final Runnable run = () -> {
+            if (type == FULL) {
+                try {
+                    List<Product> products = dc.getAllProducts();
+                    Iterator it = products.iterator();
+                    while (it.hasNext()) {
+                        Product p = (Product) it.next();
+                        if (p.isOpen() || !p.isTrackStock()) {
+                            it.remove();
                         }
-                        if (products.isEmpty()) {
-                            mDialog.hide();
-                            JOptionPane.showMessageDialog(StockReportDialog.this, "No items in the report", "Stock Report", JOptionPane.INFORMATION_MESSAGE);
-                            return;
-                        }
-                        print(products, "Full report", mDialog, job);
-                    } catch (IOException | SQLException ex) {
-                        JOptionPane.showMessageDialog(GUI.gui, ex, "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                } else if (type == MINIMUM) {
-                    try {
-                        List<Product> products = dc.getAllProducts();
-                        Iterator it = products.iterator();
-                        while (it.hasNext()) {
-                            Product p = (Product) it.next();
-                            if (p.getStock() >= p.getMinStockLevel() || p.isOpen() || !p.isTrackStock()) {
-                                it.remove();
-                            }
-                        }
-                        if (products.isEmpty()) {
-                            mDialog.hide();
-                            JOptionPane.showMessageDialog(StockReportDialog.this, "No items in the report", "Stock Report", JOptionPane.INFORMATION_MESSAGE);
-                            return;
-                        }
-                        print(products, "Below minimum report", mDialog, job);
-                    } catch (IOException | SQLException ex) {
-                        JOptionPane.showMessageDialog(GUI.gui, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                    if (products.isEmpty()) {
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(StockReportDialog.this, "No items in the report", "Stock Report", JOptionPane.INFORMATION_MESSAGE);
+                        return;
                     }
-                } else if (type == ZERO) {
-                    try {
-                        List<Product> products = dc.getAllProducts();
-                        Iterator it = products.iterator();
-                        while (it.hasNext()) {
-                            Product p = (Product) it.next();
-                            if (p.getStock() > 0 || p.isOpen() || !p.isTrackStock()) {
-                                it.remove();
-                            }
+                    print(products, "Full report", mDialog, job);
+                } catch (IOException | SQLException ex) {
+                    JOptionPane.showMessageDialog(GUI.gui, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else if (type == MINIMUM) {
+                try {
+                    List<Product> products = dc.getAllProducts();
+                    Iterator it = products.iterator();
+                    while (it.hasNext()) {
+                        Product p = (Product) it.next();
+                        if (p.getStock() >= p.getMinStockLevel() || p.isOpen() || !p.isTrackStock()) {
+                            it.remove();
                         }
-                        if (products.isEmpty()) {
-                            mDialog.hide();
-                            JOptionPane.showMessageDialog(StockReportDialog.this, "No items in the report", "Stock Report", JOptionPane.INFORMATION_MESSAGE);
-                            return;
-                        }
-                        print(products, "Beloew zero report", mDialog, job);
-                    } catch (IOException | SQLException ex) {
-                        JOptionPane.showMessageDialog(GUI.gui, ex, "Error", JOptionPane.ERROR_MESSAGE);
                     }
+                    if (products.isEmpty()) {
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(StockReportDialog.this, "No items in the report", "Stock Report", JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
+                    print(products, "Below minimum report", mDialog, job);
+                } catch (IOException | SQLException ex) {
+                    JOptionPane.showMessageDialog(GUI.gui, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else if (type == ZERO) {
+                try {
+                    List<Product> products = dc.getAllProducts();
+                    Iterator it = products.iterator();
+                    while (it.hasNext()) {
+                        Product p = (Product) it.next();
+                        if (p.getStock() > 0 || p.isOpen() || !p.isTrackStock()) {
+                            it.remove();
+                        }
+                    }
+                    if (products.isEmpty()) {
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(StockReportDialog.this, "No items in the report", "Stock Report", JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
+                    print(products, "Beloew zero report", mDialog, job);
+                } catch (IOException | SQLException ex) {
+                    JOptionPane.showMessageDialog(GUI.gui, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         };

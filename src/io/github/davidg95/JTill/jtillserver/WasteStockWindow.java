@@ -602,7 +602,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         if (model.getItems().isEmpty()) {
             return;
         }
-        final ModalDialog mDialog = new ModalDialog(this, "Waste", "Processing...");
+        final ModalDialog mDialog = new ModalDialog(this, "Waste");
         final Runnable run = () -> {
             BigDecimal total = BigDecimal.ZERO;
             for (WasteItem wi : model.getItems()) {

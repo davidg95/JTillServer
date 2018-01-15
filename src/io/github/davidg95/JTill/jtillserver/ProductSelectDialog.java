@@ -82,7 +82,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        final ModalDialog mDialog = new ModalDialog(this, "Retrieving", "Retrieving...");
+        final ModalDialog mDialog = new ModalDialog(this, "Retrieving");
         final Runnable run = () -> {
             try {
                 setTable();
@@ -1024,7 +1024,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_txtSearchMouseClicked
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
-        final ModalDialog mDialog = new ModalDialog(this, "Refreshing", "Refreshing");
+        final ModalDialog mDialog = new ModalDialog(this, "Refreshing");
         final Runnable run = new Runnable() {
             @Override
             public void run() {

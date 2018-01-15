@@ -64,7 +64,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
-        final ModalDialog mDialog = new ModalDialog(GUI.gui, "Consolodated Report", "Generating report...");
+        final ModalDialog mDialog = new ModalDialog(GUI.gui, "Consolodated Report");
         final Runnable run = new Runnable() {
             @Override
             public void run() {
@@ -676,7 +676,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPrintable(new ReportPrinter(start, end, till));
         boolean ok = job.printDialog();
-        final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing report...", job);
+        final ModalDialog mDialog = new ModalDialog(this, "Printing...", job);
         if (ok) {
             Runnable runnable = new Runnable() {
                 @Override

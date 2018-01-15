@@ -502,7 +502,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        final ModalDialog mDialog = new ModalDialog(this, "Search", "Searching transactions...");
+        final ModalDialog mDialog = new ModalDialog(this, "Search");
         //Create a runnable to pass into a worker thread
         final Runnable run = () -> {
             try {
@@ -638,7 +638,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
     private void btnRemoveCashedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveCashedActionPerformed
         if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove cashed sales?", "Remove Cashed Sales", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 
-            final ModalDialog mDialog = new ModalDialog(this, "Remove Cashed Sales", "Removing cashed sales...");
+            final ModalDialog mDialog = new ModalDialog(this, "Remove Cashed Sales");
             final Runnable run = () -> {
                 try {
                     int val = dc.removeCashedSales();

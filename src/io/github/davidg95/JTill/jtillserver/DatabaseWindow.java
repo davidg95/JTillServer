@@ -221,7 +221,7 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        final ModalDialog mDialog = new ModalDialog(this, "Database Check", "Checking database integrity..."); //Create the dialog object
+        final ModalDialog mDialog = new ModalDialog(this, "Database Check"); //Create the dialog object
         final Runnable run = () -> {
             try {
                 dc.integrityCheck(); //Perform the Database check
@@ -238,8 +238,8 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btnClearSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearSalesActionPerformed
-        if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "This will clear ALL sales data, continue?", "Clear sales data", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            final ModalDialog mDialog = new ModalDialog(this, "Sales Data", "Clearing...");
+        if (JOptionPane.showConfirmDialog(this, "This will clear ALL sales data, continue?", "Clear sales data", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            final ModalDialog mDialog = new ModalDialog(this, "Sales Data");
             final Runnable run = new Runnable() {
                 @Override
                 public void run() {
@@ -262,8 +262,8 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnClearSalesActionPerformed
 
     private void btnPurgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPurgeActionPerformed
-        if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "This will clear ALL sales data, received reports and waste data. Continue?", "Purge Database", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            final ModalDialog mDialog = new ModalDialog(this, "Sales Data", "Clearing...");
+        if (JOptionPane.showConfirmDialog(this, "This will clear ALL sales data, received reports and waste data. Continue?", "Purge Database", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            final ModalDialog mDialog = new ModalDialog(this, "Sales Data");
             final Runnable run = new Runnable() {
                 @Override
                 public void run() {
@@ -298,7 +298,7 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
         if (query.isEmpty()) {
             return;
         }
-        final ModalDialog mDialog = new ModalDialog(this, "SQL", "Running...");
+        final ModalDialog mDialog = new ModalDialog(this, "SQL");
         final Runnable run = () -> {
             try {
                 dc.submitSQL(query);

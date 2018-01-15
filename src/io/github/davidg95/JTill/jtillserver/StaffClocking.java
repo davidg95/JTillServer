@@ -450,7 +450,7 @@ public class StaffClocking extends javax.swing.JInternalFrame {
                     PrinterJob job = PrinterJob.getPrinterJob();
                     job.setPrintable(new WageReport(staffList));
                     boolean ok = job.printDialog();
-                    final ModalDialog mDialog = new ModalDialog(this, "Printing...", "Printing report...", job);
+                    final ModalDialog mDialog = new ModalDialog(this, "Printing...", job);
                     if (ok) {
                         Runnable runnable = new Runnable() {
                             @Override

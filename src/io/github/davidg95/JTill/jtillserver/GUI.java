@@ -413,7 +413,7 @@ public class GUI extends JFrame implements GUIInterface {
 
     @Override
     public void connectionDrop() {
-        mDialog = new ModalDialog(this, "Connection lost", "Connection lost");
+        mDialog = new ModalDialog(this, "Connection lost");
         new Thread() {
             @Override
             public void run() {
@@ -1823,15 +1823,15 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemTerminalsActionPerformed
 
     private void itemCheckDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCheckDatabaseActionPerformed
-        final ModalDialog mDialog = new ModalDialog(this, "Database Check", "Checking database integrity..."); //Create the dialog object
+        final ModalDialog mDialog = new ModalDialog(this, "Database Check"); //Create the dialog object
         final Runnable run = () -> {
             try {
                 dc.integrityCheck(); //Perform the Database check
                 mDialog.hide(); //Hide the dialog once the check completes
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Check complete. No Issues.", "Database Check", JOptionPane.INFORMATION_MESSAGE); //Show success message
+                JOptionPane.showMessageDialog(this, "Check complete. No Issues.", "Database Check", JOptionPane.INFORMATION_MESSAGE); //Show success message
             } catch (IOException | SQLException ex) {
                 mDialog.hide(); //Hide the dialog if there is an error
-                JOptionPane.showMessageDialog(GUI.gui.internal, ex, "Database Check", JOptionPane.ERROR_MESSAGE); //Show the error
+                JOptionPane.showMessageDialog(this, ex, "Database Check", JOptionPane.ERROR_MESSAGE); //Show the error
             }
         }; //Create the runnable for performing the database check
         final Thread thread = new Thread(run); //Create the thread for running the integrity check
@@ -1846,21 +1846,21 @@ public class GUI extends JFrame implements GUIInterface {
                 try {
                     String latest = UpdateChecker.checkForUpdate(); //Get the latest version of JTillServer
                     if (!latest.equals(TillServer.VERSION)) { //Check to see if this is the latest version
-                        if (JOptionPane.showInternalConfirmDialog(GUI.gui.internal, "Version " + latest + " avaliable. Download now?", "Update", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        if (JOptionPane.showConfirmDialog(GUI.this, "Version " + latest + " avaliable. Download now?", "Update", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                             UpdateChecker.downloadServerUpdate();
                         }
                     } else {
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You are currently at the latest version", "Update", JOptionPane.INFORMATION_MESSAGE); //Display message to indicate the this is the latest version
+                        JOptionPane.showMessageDialog(GUI.this, "You are currently at the latest version", "Update", JOptionPane.INFORMATION_MESSAGE); //Display message to indicate the this is the latest version
                     }
                 } catch (Exception ex) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Error checking for update", "Update", JOptionPane.INFORMATION_MESSAGE); //Display error message
+                    JOptionPane.showMessageDialog(GUI.this, "Error checking for update", "Update", JOptionPane.INFORMATION_MESSAGE); //Display error message
                 }
             }
         }.start(); //Start this thread
     }//GEN-LAST:event_itemUpdateActionPerformed
 
     private void itemTransactionViewerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTransactionViewerActionPerformed
-        final ModalDialog md = new ModalDialog(this, "Transactions", "Loading tranactions...");
+        final ModalDialog md = new ModalDialog(this, "Transactions");
         final Runnable run = () -> {
             try {
                 TransactionViewerWindow.showWindow();
