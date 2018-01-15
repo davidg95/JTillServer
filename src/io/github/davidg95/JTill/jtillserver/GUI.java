@@ -461,6 +461,22 @@ public class GUI extends JFrame implements GUIInterface {
         //Nothing
     }
 
+    public void checkDatabase() {
+        final ModalDialog mDialog = new ModalDialog(this, "Database Check"); //Create the dialog object
+        final Runnable run = () -> {
+            try {
+                dc.integrityCheck(); //Perform the Database check
+                mDialog.hide(); //Hide the dialog once the check completes
+            } catch (IOException | SQLException ex) {
+                mDialog.hide(); //Hide the dialog if there is an error
+                JOptionPane.showMessageDialog(this, ex, "Database Check", JOptionPane.ERROR_MESSAGE); //Show the error
+            }
+        }; //Create the runnable for performing the database check
+        final Thread thread = new Thread(run); //Create the thread for running the integrity check
+        thread.start(); //Start the thread
+        mDialog.show(); //Show the running dialog
+    }
+
     private class LogHandler extends Handler {
 
         @Override
@@ -1823,20 +1839,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemTerminalsActionPerformed
 
     private void itemCheckDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCheckDatabaseActionPerformed
-        final ModalDialog mDialog = new ModalDialog(this, "Database Check"); //Create the dialog object
-        final Runnable run = () -> {
-            try {
-                dc.integrityCheck(); //Perform the Database check
-                mDialog.hide(); //Hide the dialog once the check completes
-                JOptionPane.showMessageDialog(this, "Check complete. No Issues.", "Database Check", JOptionPane.INFORMATION_MESSAGE); //Show success message
-            } catch (IOException | SQLException ex) {
-                mDialog.hide(); //Hide the dialog if there is an error
-                JOptionPane.showMessageDialog(this, ex, "Database Check", JOptionPane.ERROR_MESSAGE); //Show the error
-            }
-        }; //Create the runnable for performing the database check
-        final Thread thread = new Thread(run); //Create the thread for running the integrity check
-        thread.start(); //Start the thread
-        mDialog.show(); //Show the running dialog
+        checkDatabase();
     }//GEN-LAST:event_itemCheckDatabaseActionPerformed
 
     private void itemUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemUpdateActionPerformed

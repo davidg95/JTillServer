@@ -138,6 +138,7 @@ public class TillServer implements JConnListener {
 //            licensed = true;
 //        }
         if (licensed) {
+            g.checkDatabase();
             g.login();
         } else {
             JOptionPane.showMessageDialog(g, "License file not detected. JTill Server will now close", "License Error", JOptionPane.ERROR_MESSAGE);
