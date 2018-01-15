@@ -879,7 +879,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("UPDATECONDIMENT")
-    public Condiment updateCondiment(@JConnParameter("C") Condiment c) throws IOException, SQLException {
+    public Condiment updateCondiment(@JConnParameter("C") Condiment c) throws IOException, SQLException, JTillException {
         return dc.updateCondiment(c);
     }
 

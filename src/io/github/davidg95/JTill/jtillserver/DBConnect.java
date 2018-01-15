@@ -5027,11 +5027,14 @@ public class DBConnect extends DataConnect {
     }
 
     @Override
-    public Condiment updateCondiment(Condiment c) throws IOException, SQLException {
+    public Condiment updateCondiment(Condiment c) throws IOException, SQLException, JTillException {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            stmt.executeUpdate("UPDATE CONDIMENTS SET PRODUCT=" + c.getProduct() + ", PRODUCT_CON=" + c.getProduct_con().getId() + " WHERE ID=" + c.getId());
+            int value = stmt.executeUpdate("UPDATE CONDIMENTS SET PRODUCT=" + c.getProduct() + ", PRODUCT_CON=" + c.getProduct_con().getId() + " WHERE ID=" + c.getId());
+            if (value == 0) {
+                throw new JTillException("Condiment not found");
+            }
             con.commit();
             return c;
         } catch (SQLException ex) {
@@ -5119,7 +5122,7 @@ public class DBConnect extends DataConnect {
         try {
             Statement stmt = con.createStatement();
             int value = stmt.executeUpdate("UPDATE ORDERS SET SENDDATE=" + o.getSendDate().getTime() + ", SENT=" + o.isSent() + ", RECEIVED=" + o.isReceived() + " WHERE ID=" + o.getId());
-            if(value == 0){
+            if (value == 0) {
                 throw new JTillException("Order not found");
             }
             con.commit();
