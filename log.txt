@@ -1,3 +1,62 @@
-JTill log Mon Jan 15 11:44:35 GMT 2018
-[11:44:35] [INFO] Connecting to database jdbc:derby:TillEmbedded;
-[11:44:39] [INFO] David Grant has logged in
+JTill log Mon Jan 15 11:56:56 GMT 2018
+[11:56:56] [INFO] Connecting to database jdbc:derby:TillEmbedded;
+[11:56:56] [INFO] The database does not exists, so it is getting created
+[11:56:57] [INFO] Creating tables
+[11:56:57] [INFO] Created tills table
+[11:56:57] [INFO] Created tax table
+[11:56:57] [INFO] Created categorys table
+[11:56:57] [INFO] Created departments table
+[11:56:57] [INFO] Created configs table
+[11:56:57] [INFO] Created sales table
+[11:56:57] [INFO] Created customers table
+[11:56:57] [INFO] Created products table
+[11:56:57] [INFO] Created discounts table
+[11:56:57] [INFO] Created buckets table
+[11:56:57] [INFO] Create triggers table
+[11:56:57] [INFO] Created saleItems table
+[11:56:57] [INFO] Created staff table
+[11:56:57] [INFO] Created screens table
+[11:56:57] [INFO] Created buttons table
+[11:56:57] [INFO] Created waste reports table
+[11:56:57] [INFO] Created table waste reasons
+[11:56:57] [INFO] Created table waste items
+[11:56:57] [INFO] Created table suppliers
+[11:56:57] [INFO] Created table recevied items
+[11:56:57] [INFO] Created table clockonoff
+[11:56:57] [INFO] Created table images
+[11:56:57] [INFO] Created table declarations
+[11:56:57] [INFO] New fields added to RECEIVEDITEMS table, 0 rows affected
+[11:56:57] [INFO] New fields added to RECEIVED_REPORTS table, 0 rows affected
+[11:56:57] [INFO] Added SCALE and SCALE_NAME to PRODUCTS, 0 rows affected
+[11:56:57] [INFO] Added COST to SALEITEMS, 0 rows affected
+[11:56:57] [INFO] Added INCVAT to PRODUCTS table and set to FALSE
+[11:56:57] [INFO] Removed DEPARTMENT column from PRODUCTS, 0 rows affected
+[11:56:57] [INFO] Added column DEPARTMENT to CATEGORYS, 0 rows affected
+[11:56:57] [INFO] Set DEPARTMENT in CATEGORYS to 1, 0 rows affected
+[11:56:57] [INFO] Removed VALUE from WASTEREPORTS, 0 records affected
+[11:56:57] [INFO] Added VALUE to WASTEITEMS, 0 records affected
+[11:56:57] [INFO] Created table CONDIMENTS
+[11:56:57] [INFO] Added MAXCON to PRODUCTS, 0 records affected
+[11:56:57] [INFO] Added MINCON to PRODUCTS, 0 records affected
+[11:56:58] [INFO] Removed column VALUE from CONDIMENTS, 0 records affected
+[11:56:58] [INFO] Removed column STOCK from CONDIMENTS, 0 records affected
+[11:56:58] [INFO] Removed column NAME from CONDIMENTS, 0 records affected
+[11:56:58] [INFO] Added column PRODUCT_CON to CONDIMENTS, 0 records affected
+[11:56:58] [INFO] Added TIMESTAMP to WASTEITEMS, 0 rows affected
+[11:56:58] [INFO] Set TIMESTAMP in WASTEITEMS, 0 rows affected
+[11:56:58] [INFO] Dropped column REPORT_ID in WASTEITEMS, 0 rows affected
+[11:56:58] [INFO] Dropped table WASTEREPORTS, 0 rows affected
+[11:56:58] [INFO] Created table ORDERS
+[11:56:58] [INFO] Created table ORDERITEMS
+[11:56:58] [INFO] Added VGAP to SCREENS
+[11:56:58] [INFO] Added HGAP to SCREEN
+[11:56:58] [INFO] Added LIMIT to PRODUCTS
+[11:56:58] [INFO] Added RECEIVED to ORDERS
+[11:56:58] [INFO] Added TRACK_STOCK to PRODUCTS
+[11:56:58] [INFO] Added PRIVILEDGE_LEVEL to WASTEREASONS
+[11:56:58] [INFO] Added DELETED to WASTEREASONS
+[11:56:58] [INFO] Created table REFUND_REASONS
+[11:57:12] [INFO] David Grant has logged in
+[11:57:46] [INFO] Stopping
+[11:57:46] [INFO] Stopping JTIll Server
+[11:57:46] [INFO] Saving properties

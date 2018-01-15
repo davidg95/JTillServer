@@ -147,7 +147,8 @@ public class DBConnect extends DataConnect {
     }
 
     private void updates() {
-        try (final Connection con = getConnection()) {
+        try {
+            Connection con = getConnection();
             Statement stmt = con.createStatement();
             TillSplashScreen.setLabel("Updating database");
             try {
