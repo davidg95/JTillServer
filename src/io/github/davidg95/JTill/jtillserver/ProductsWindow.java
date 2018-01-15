@@ -1277,7 +1277,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
         depButton.addActionListener(event -> {
             try {
-                Department d = DepartmentSelectDialog.showDialog(this);
+                Department d = (Department) DCSelectDialog.showDialog(this, DCSelectDialog.DEPARTMENT_SELECT);
                 if (d == null) {
                     return;
                 }
@@ -1290,7 +1290,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
         catButton.addActionListener(event -> {
             try {
-                Category c = CategorySelectDialog.showDialog(ProductsWindow.this);
+                Category c = (Category) DCSelectDialog.showDialog(this, DCSelectDialog.CATEGORY_SELECT);
                 if (c == null) {
                     return;
                 }
@@ -1315,7 +1315,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         dialog.setResizable(false);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
-//        JOptionPane.showInternalMessageDialog(this, panel, "Advanced Search", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_btnAdvancedActionPerformed
 
     private void chkScaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkScaleActionPerformed

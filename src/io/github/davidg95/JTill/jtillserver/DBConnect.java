@@ -2227,7 +2227,7 @@ public class DBConnect extends DataConnect {
                     final Product pr = (Product) p.getItem();
                     if (!pr.getSaleCondiments().isEmpty()) {
                         for (Condiment c : pr.getSaleCondiments()) {
-                            purchaseProduct(c.getProduct(), 1);
+                            purchaseProduct(c.getProduct_con().getId(), 1);
                         }
                     }
                     if (!pr.isOpen() || pr.isTrackStock()) {
@@ -5008,6 +5008,7 @@ public class DBConnect extends DataConnect {
                 Tax t = new Tax(taxID, tName, value);
 
                 int conId = set.getInt(35);
+                int p_conn = set.getInt(36);
 
                 Product p;
                 if (!open) {
@@ -5015,7 +5016,7 @@ public class DBConnect extends DataConnect {
                 } else {
                     p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
                 }
-                condiments.add(new Condiment(conId, code, p));
+                condiments.add(new Condiment(conId, p_conn, p));
             }
             con.commit();
             return condiments;

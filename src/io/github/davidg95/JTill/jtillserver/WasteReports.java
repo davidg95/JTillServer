@@ -321,7 +321,7 @@ public class WasteReports extends javax.swing.JDialog {
                     break;
                 }
                 case DEPARTMENT: {
-                    Department d = DepartmentSelectDialog.showDialog(this);
+                    Department d = (Department) DCSelectDialog.showDialog(this, DCSelectDialog.DEPARTMENT_SELECT);
                     if (d == null) {
                         return;
                     }
@@ -336,7 +336,7 @@ public class WasteReports extends javax.swing.JDialog {
                     break;
                 }
                 case CATEGORY: {
-                    Category c = CategorySelectDialog.showDialog(this);
+                    Category c = (Category) DCSelectDialog.showDialog(this, DCSelectDialog.CATEGORY_SELECT);
                     if (c == null) {
                         return;
                     }

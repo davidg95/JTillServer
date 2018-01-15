@@ -11,9 +11,9 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
@@ -24,7 +24,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -36,10 +38,7 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
 
     private final Product product;
 
-    private final DefaultTableModel model;
-    private List<Condiment> contents;
-
-    private Condiment selected;
+    private MyModel model;
 
     /**
      * Creates new form CondimentWindow
@@ -53,7 +52,6 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
         super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
         setTitle("Condiments for " + p.getLongName());
-        model = (DefaultTableModel) table.getModel();
         init();
     }
 
@@ -69,7 +67,6 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
-        table.setSelectionModel(new ForcedListSelectionModel());
         InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = table.getActionMap();
 
@@ -83,13 +80,18 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
                 if (index == -1) {
                     return;
                 }
-                final Condiment c = contents.get(index);
-                remove(c);
+                removeCon(index);
             }
         });
-        setTable();
         txtMax.setText(product.getMaxCon() + "");
         txtMin.setText(product.getMinCon() + "");
+        try {
+            List<Condiment> contents = dc.getProductsCondiments(product.getId());
+            model = new MyModel(contents);
+            table.setModel(model);
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
         if (product.getMaxCon() == -2) {
             chkUnlimit.setSelected(true);
             txtMax.setText("1");
@@ -97,29 +99,123 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
         } else {
             txtMax.setText(product.getMaxCon() + "");
         }
+        table.setSelectionModel(new ForcedListSelectionModel());
+        table.getColumnModel().getColumn(0).setMinWidth(40);
+        table.getColumnModel().getColumn(0).setMaxWidth(40);
     }
 
-    private void setTable() {
-        try {
-            contents = dc.getProductsCondiments(product.getId());
-            model.setRowCount(0);
-            for (Condiment c : contents) {
-                model.addRow(new Object[]{c.getId(), c.getProduct_con().getLongName()});
-            }
-        } catch (IOException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void remove(Condiment c) {
+    private void removeCon(int i) {
+        Condiment c = model.getCondiment(i);
         if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove this condiment?", "Remove Condiment", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             try {
-                dc.removeCondiment(c.getId());
-                setTable();
+                model.removeCondiment(c);
             } catch (IOException | SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+    }
+
+    private class MyModel implements TableModel {
+
+        private final List<Condiment> condiments;
+        private final List<TableModelListener> listeners;
+
+        public MyModel(List<Condiment> condiments) {
+            this.condiments = condiments;
+            listeners = new LinkedList<>();
+        }
+
+        public void addCondiment(Condiment c) throws IOException, SQLException {
+            c = dc.addCondiment(c);
+            condiments.add(c);
+            alertAll();
+        }
+
+        public void removeCondiment(Condiment c) throws IOException, SQLException {
+            dc.removeCondiment(c.getId());
+            condiments.remove(c);
+            alertAll();
+        }
+
+        public Condiment getCondiment(int i) {
+            return condiments.get(i);
+        }
+
+        public List<Condiment> getAll() {
+            return condiments;
+        }
+
+        @Override
+        public int getRowCount() {
+            return condiments.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 2;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0: {
+                    return "ID";
+                }
+                case 1: {
+                    return "Product";
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return Object.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            final Condiment c = condiments.get(rowIndex);
+            switch (columnIndex) {
+                case 0: {
+                    return c.getId();
+                }
+                case 1: {
+                    return c.getProduct_con().getLongName();
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        }
+
+        private void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
+
     }
 
     /**
@@ -298,8 +394,7 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
         }
         try {
             Condiment c = new Condiment(this.product.getId(), p);
-            dc.addCondiment(c);
-            setTable();
+            model.addCondiment(c);
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Condiemnts", JOptionPane.ERROR_MESSAGE);
         }
@@ -310,13 +405,12 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
         if (row == -1) {
             return;
         }
-        selected = contents.get(row);
         btnRemove.setEnabled(true);
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem item = new JMenuItem("Remove");
             item.addActionListener((ActionEvent e) -> {
-                remove(selected);
+                removeCon(row);
             });
             menu.add(item);
             menu.show(table, evt.getX(), evt.getY());
@@ -328,7 +422,7 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        if (contents.isEmpty()) {
+        if (model.getAll().isEmpty()) {
             JOptionPane.showMessageDialog(this, "You must enter some condiments first", "Condiments", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -372,7 +466,9 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_chkUnlimitActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-        remove(selected);
+        if (table.getSelectedRow() != -1) {
+            removeCon(table.getSelectedRow());
+        }
     }//GEN-LAST:event_btnRemoveActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
