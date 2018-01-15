@@ -3363,7 +3363,7 @@ public class DBConnect extends DataConnect {
     }
 
     @Override
-    public WasteReason addWasteReason(WasteReason wr) throws IOException, SQLException, JTillException {
+    public WasteReason addWasteReason(WasteReason wr) throws IOException, SQLException {
         String query = "INSERT INTO APP.WASTEREASONS (REASON, DELETED) values ('" + wr.getReason() + "', false)";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);

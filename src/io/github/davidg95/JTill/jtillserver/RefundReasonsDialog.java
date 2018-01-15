@@ -356,8 +356,8 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
         reason.setReason(name);
         reason.setPriviledgeLevel(level);
         try {
-            dc.updateRefundReason(reason);
-        } catch (IOException | SQLException | JTillException ex) {
+            reason.save();
+        } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSaveActionPerformed

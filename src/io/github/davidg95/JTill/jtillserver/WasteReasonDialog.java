@@ -335,7 +335,7 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
             setCurrent(wr);
             tabbed.setEnabledAt(1, true);
             tabbed.setSelectedIndex(1);
-        } catch (IOException | SQLException | JTillException ex) {
+        } catch (IOException | SQLException ex) {
             LOG.log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -364,8 +364,8 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
         reason.setReason(name);
         reason.setPriviledgeLevel(level);
         try {
-            dc.updateWasteReason(reason);
-        } catch (IOException | SQLException | JTillException ex) {
+            reason.save();
+        } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSaveActionPerformed
