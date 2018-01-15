@@ -1657,7 +1657,7 @@ public class GUI extends JFrame implements GUIInterface {
                     return;
                 }
                 Date[] dates = DateRangeSelectDialog.showDialog(this);
-                if(dates == null){
+                if (dates == null) {
                     return;
                 }
                 break;
@@ -1668,7 +1668,7 @@ public class GUI extends JFrame implements GUIInterface {
                     return;
                 }
                 Date[] dates = DateRangeSelectDialog.showDialog(this);
-                if(dates == null){
+                if (dates == null) {
                     return;
                 }
                 break;
@@ -1679,7 +1679,7 @@ public class GUI extends JFrame implements GUIInterface {
                     return;
                 }
                 Date[] dates = DateRangeSelectDialog.showDialog(this);
-                if(dates == null){
+                if (dates == null) {
                     return;
                 }
                 break;
@@ -1690,7 +1690,7 @@ public class GUI extends JFrame implements GUIInterface {
                     return;
                 }
                 Date[] dates = DateRangeSelectDialog.showDialog(this);
-                if(dates == null){
+                if (dates == null) {
                     return;
                 }
                 if (o instanceof Department) {
@@ -1880,13 +1880,6 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemStaffReportingActionPerformed
 
     private void itemSendDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSendDataActionPerformed
-//        try {
-//            dc.reinitialiseAllTills();
-//        } catch (IOException ex) {
-//            JOptionPane.showMessageDialog(internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
-//        } catch (JTillException ex) {
-//            JOptionPane.showMessageDialog(this, ex.getMessage(), "Active inits", JOptionPane.ERROR_MESSAGE);
-//        }
         SendDataDialog.showDialog(this);
     }//GEN-LAST:event_itemSendDataActionPerformed
 

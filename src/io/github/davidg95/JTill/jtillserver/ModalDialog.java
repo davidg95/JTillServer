@@ -17,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
@@ -30,7 +31,7 @@ public class ModalDialog {
     private JDialog dialog; //The dialog.
     private Window parent; //The parent component.
     private JPanel panel; //The panel for the components.
-    private JLabel label; //The message label.
+    private JProgressBar label; //The message label.
 
     private final String title; //The title of the window.
     private String text; //The text on the message label.
@@ -101,7 +102,8 @@ public class ModalDialog {
 
     private void init() {
         panel = new JPanel();
-        label = new JLabel(text);
+        label = new JProgressBar();
+        label.setIndeterminate(true);
         final Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         panel.add(label);
         panel.setBorder(padding);
@@ -123,9 +125,9 @@ public class ModalDialog {
      */
     public void setText(String text) {
         this.text = text;
-        SwingUtilities.invokeLater(() -> {
-            label.setText(text);
-        });
+//        SwingUtilities.invokeLater(() -> {
+//            label.setText(text);
+//        });
     }
 
     /**

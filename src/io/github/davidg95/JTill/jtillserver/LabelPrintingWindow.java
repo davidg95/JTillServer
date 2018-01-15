@@ -225,7 +225,7 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
                 l.tableChanged(new TableModelEvent(this));
             }
             int amount = 0;
-            for(Label l: labels){
+            for (Label l : labels) {
                 amount += l.amount;
             }
             lblAmount.setText("Lables to print: " + amount);

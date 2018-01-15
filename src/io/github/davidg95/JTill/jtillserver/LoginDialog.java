@@ -65,13 +65,13 @@ public class LoginDialog extends javax.swing.JDialog {
         dialog.setVisible(true);
         return staff;
     }
-    
+
     public void doCapsOn() {
         SwingUtilities.invokeLater(() -> {
             lblLogin.setText("Caps lock is on");
         });
     }
-    
+
     public void doCapsOff() {
         SwingUtilities.invokeLater(() -> {
             lblLogin.setText("");
@@ -79,7 +79,7 @@ public class LoginDialog extends javax.swing.JDialog {
     }
 
     public class CapsChecker extends Thread {
-        
+
         private boolean state;
         private volatile boolean run;
 

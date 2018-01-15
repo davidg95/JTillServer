@@ -24,7 +24,6 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
@@ -691,8 +690,8 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
                 category.setDepartment(dep);
 
                 try {
-                    dc.updateCategory(category);
-                } catch (SQLException | JTillException | IOException ex) {
+                    category.save();
+                } catch (SQLException | IOException ex) {
                     showError(ex);
                 }
             }
