@@ -118,7 +118,7 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
     }
 
     private void deleteReport(TillReport report) {
-        if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove this report?", "Remove Report", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_NO_OPTION) {
+        if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this report?", "Remove Report", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_NO_OPTION) {
             try {
                 dc.removeDeclarationReport(report.getId());
                 update();

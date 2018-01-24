@@ -845,14 +845,14 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
         if (p == null) {
             return;
         }
-        String val = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter amount required", "Trigger", JOptionPane.INFORMATION_MESSAGE);
+        String val = JOptionPane.showInputDialog(this, "Enter amount required", "Trigger", JOptionPane.INFORMATION_MESSAGE);
         if (!Utilities.isNumber(val)) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must enter a number", "New Trigger", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Must enter a number", "New Trigger", JOptionPane.ERROR_MESSAGE);
             return;
         }
         int value = Integer.parseInt(val);
         if (value <= 0) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Must enter a value greater than zero", "New Trigger", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Must enter a value greater than zero", "New Trigger", JOptionPane.ERROR_MESSAGE);
             return;
         }
         Trigger t = new Trigger(currentBucket.getId(), p.getId(), value);

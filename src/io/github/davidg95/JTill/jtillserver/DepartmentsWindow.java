@@ -76,7 +76,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
 
     private void removeDepartment(Department dep) {
         try {
-            if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove " + dep.getName() + "?", "Remove Department", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove " + dep.getName() + "?", "Remove Department", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 model.removeDepartment(dep);
                 JOptionPane.showMessageDialog(this, "Department " + dep.getName() + " removed", "Remove Department", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -86,7 +86,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
     }
 
     private void renameDepartment(Department dep) {
-        String name = JOptionPane.showInternalInputDialog(this, "Enter new name for " + dep.getName(), "Rename Department", JOptionPane.PLAIN_MESSAGE);
+        String name = JOptionPane.showInputDialog(this, "Enter new name for " + dep.getName(), "Rename Department", JOptionPane.PLAIN_MESSAGE);
         if (name == null || name.isEmpty()) {
             return;
         }
@@ -341,13 +341,13 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewDepartmentActionPerformed
-        String name = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter name for new department", "New Department", JOptionPane.PLAIN_MESSAGE);
+        String name = JOptionPane.showInputDialog(this, "Enter name for new department", "New Department", JOptionPane.PLAIN_MESSAGE);
 
         if (name == null) {
             return;
         }
         if (name.equals("")) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Cannot have a null value", "New Department", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Cannot have a null value", "New Department", JOptionPane.ERROR_MESSAGE);
             return;
         }
 

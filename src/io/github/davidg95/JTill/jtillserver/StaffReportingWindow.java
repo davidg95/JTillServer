@@ -286,7 +286,7 @@ public class StaffReportingWindow extends javax.swing.JInternalFrame {
             txtAverageValue.setText(average.toString());
 
         } catch (SQLException | IOException | StaffNotFoundException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex, "Staff search error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Staff search error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSearchActionPerformed
 

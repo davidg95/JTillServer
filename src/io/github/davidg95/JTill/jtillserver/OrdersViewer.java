@@ -423,11 +423,11 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
 
     private void deleteOrder(Order o) {
         if (!o.isSent()) {
-            if (JOptionPane.showInternalConfirmDialog(this, "This order has not been sent, are you sure you want to remove it?", "Remove Order", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+            if (JOptionPane.showConfirmDialog(this, "This order has not been sent, are you sure you want to remove it?", "Remove Order", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                 return;
             }
         } else {
-            if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove this order?", "Remove Order", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+            if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this order?", "Remove Order", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                 return;
             }
         }
@@ -666,13 +666,13 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
             p = ProductSelectDialog.showDialog(this);
         } else {
             if (!Utilities.isNumber(txtBarcode.getText())) {
-                JOptionPane.showInternalMessageDialog(this, "Invalid input", "Add Product", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Invalid input", "Add Product", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             try {
                 p = dc.getProductByBarcode(txtBarcode.getText());
             } catch (IOException | ProductNotFoundException | SQLException ex) {
-                JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
@@ -680,10 +680,10 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
             return;
         }
 
-        String str = JOptionPane.showInternalInputDialog(this, "Enter quantity", "Add Product", JOptionPane.PLAIN_MESSAGE);
+        String str = JOptionPane.showInputDialog(this, "Enter quantity", "Add Product", JOptionPane.PLAIN_MESSAGE);
         int quantity = Integer.parseInt(str);
         if (p.getStock() + quantity > p.getMaxStockLevel()) {
-            if (JOptionPane.showInternalConfirmDialog(this, "Warning, this will take the item above its maximum stock level. Continue?", "Product Warning", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+            if (JOptionPane.showConfirmDialog(this, "Warning, this will take the item above its maximum stock level. Continue?", "Product Warning", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                 return;
             }
         }
@@ -701,7 +701,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
         if (currentOrder.getItems().isEmpty()) {
-            JOptionPane.showInternalMessageDialog(this, "No items in order", "Send Order", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No items in order", "Send Order", JOptionPane.ERROR_MESSAGE);
             return;
         }
         final ModalDialog dialog = new ModalDialog(this, "Send Order");

@@ -73,7 +73,7 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
             model = new MyModel(rrs);
             tblReports.setModel(model);
         } catch (IOException | SQLException ex) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(WasteReports.class.getName()).log(Level.SEVERE, null, ex);
         }
         tblReports.getColumnModel().getColumn(0).setMaxWidth(40);
@@ -360,7 +360,7 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
                     dc.updateReceivedReport(rr);
                     reloadTable();
                 } catch (IOException | SQLException ex) {
-                    JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
             if (rr.isPaid()) {
@@ -381,13 +381,13 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
         for (ReceivedReport rr : reps) {
             try {
                 if (rr.isPaid()) {
-                    JOptionPane.showInternalMessageDialog(this, "Already Paid", "Received Report", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Already Paid", "Received Report", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 rr.setPaid(true);
                 dc.updateReceivedReport(rr);
             } catch (IOException | SQLException ex) {
-                JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         reloadTable();

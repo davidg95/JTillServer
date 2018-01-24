@@ -442,11 +442,11 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             final Customer c = sale.getCustomer();
             email = c.getEmail();
             if (email == null) {
-                email = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
+                email = JOptionPane.showInputDialog(this, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
             }
 
         } else {
-            email = JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
+            email = JOptionPane.showInputDialog(this, "Enter email address", "Email Receipt", JOptionPane.PLAIN_MESSAGE);
         }
         if (email == null) {
             return;
@@ -458,13 +458,13 @@ public class SaleDialog extends javax.swing.JInternalFrame {
                 boolean result = dc.emailReceipt(fEmail, sale);
                 mDialog.hide();
                 if (result) {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Email not sent", "Email Receipt", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Email not sent", "Email Receipt", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (IOException | MessagingException ex) {
                 mDialog.hide();
-                JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Error sending email", "Email Receipt", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error sending email", "Email Receipt", JOptionPane.ERROR_MESSAGE);
             } finally {
                 mDialog.hide();
             }

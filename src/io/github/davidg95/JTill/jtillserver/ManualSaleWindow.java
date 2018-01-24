@@ -284,16 +284,16 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
             return;
         }
         if (p.isOpen()) {
-            double price = Double.parseDouble(JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter price", "Sale", JOptionPane.PLAIN_MESSAGE));
+            double price = Double.parseDouble(JOptionPane.showInputDialog(this, "Enter price", "Sale", JOptionPane.PLAIN_MESSAGE));
             p.setPrice(new BigDecimal(Double.toString(price)));
         }
-        int amount = Integer.parseInt((String) JOptionPane.showInternalInputDialog(GUI.gui.internal, "Enter quantity", "Sale", JOptionPane.PLAIN_MESSAGE, null, null, "1"));
+        int amount = Integer.parseInt((String) JOptionPane.showInputDialog(this, "Enter quantity", "Sale", JOptionPane.PLAIN_MESSAGE, null, null, "1"));
         this.addItem(p, amount);
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnCompleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompleteActionPerformed
         if (sale.getSaleItems().isEmpty()) {
-            JOptionPane.showInternalMessageDialog(this, "No items in sale", "Complete Sale", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No items in sale", "Complete Sale", JOptionPane.ERROR_MESSAGE);
             return;
         }
         try {
@@ -304,9 +304,9 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
             sale.setMop(Sale.MOP_CASH);
             dc.addSale(sale);
             init();
-            JOptionPane.showInternalMessageDialog(this, "Sale complete", "Sale", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Sale complete", "Sale", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException | SQLException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex, "Sale", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Sale", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(ManualSaleWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnCompleteActionPerformed
@@ -326,11 +326,11 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
             JMenuItem remove = new JMenuItem("Remove");
             quantity.addActionListener((ActionEvent) -> {
                 try {
-                    int q = Integer.parseInt(JOptionPane.showInternalInputDialog(this, "Enter new quantity", "Quantity for " + item.getName(), JOptionPane.PLAIN_MESSAGE));
+                    int q = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter new quantity", "Quantity for " + item.getName(), JOptionPane.PLAIN_MESSAGE));
                     item.setQuantity(q);
                     refreshTable();
                 } catch (NumberFormatException e) {
-                    JOptionPane.showInternalMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
             remove.addActionListener((ActionEvent) -> {

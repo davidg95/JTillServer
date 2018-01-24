@@ -815,7 +815,7 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
             }
         }
         if (newList.isEmpty()) {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "No results", "Customers", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No results", "Customers", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
         currentTableContents = newList;

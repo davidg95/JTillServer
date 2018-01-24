@@ -275,13 +275,13 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }
 
     private void removeProduct(Product p) {
-        int opt = JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove the following product?\n" + p, "Remove Product", JOptionPane.YES_NO_OPTION);
+        int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following product?\n" + p, "Remove Product", JOptionPane.YES_NO_OPTION);
         if (opt == JOptionPane.YES_OPTION) {
             try {
                 model.removeProduct(p);
                 setCurrentProduct(null);
                 txtName.requestFocus();
-                JOptionPane.showInternalMessageDialog(this, "Product has been removed", "Remove Product", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Product has been removed", "Remove Product", JOptionPane.INFORMATION_MESSAGE);
             } catch (SQLException ex) {
                 if (ex.getErrorCode() == 20000) {
                     JOptionPane.showMessageDialog(this, "This product is still being refernced in either a received report or a sale report, these reports must be cleared before the product can be deleted", "Remove Product", JOptionPane.ERROR_MESSAGE);
@@ -300,7 +300,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
      * @param e the exception to show.
      */
     private void showError(Exception e) {
-        JOptionPane.showInternalMessageDialog(this, e, "Products", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, e, "Products", JOptionPane.ERROR_MESSAGE);
     }
 
     private class MyModel implements TableModel {
@@ -1094,11 +1094,11 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             String costPr = txtCostPrice.getText();
             int packSize = Integer.parseInt(txtPackSize.getText());
             if (packSize < 1) {
-                JOptionPane.showInternalMessageDialog(this, "Pack size must be 1 or greater", "Save Changes", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Pack size must be 1 or greater", "Save Changes", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if (!Utilities.isNumber(pr) || !Utilities.isNumber(costPr)) {
-                JOptionPane.showInternalMessageDialog(this, "Must enter a number for price and cost price", "Save Changes", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Must enter a number for price and cost price", "Save Changes", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             BigDecimal price = new BigDecimal(pr);
@@ -1107,7 +1107,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             String minSt = txtMinStock.getText();
             String maxSt = txtMaxStock.getText();
             if (!Utilities.isNumber(st) || !Utilities.isNumber(minSt) || !Utilities.isNumber(maxSt)) {
-                JOptionPane.showInternalMessageDialog(this, "Must enter a number for stock levels", "Save Changes", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Must enter a number for stock levels", "Save Changes", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int stock = Integer.parseInt(st);

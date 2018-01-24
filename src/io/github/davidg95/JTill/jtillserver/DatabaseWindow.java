@@ -225,10 +225,10 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
             try {
                 dc.integrityCheck(); //Perform the Database check
                 mDialog.hide(); //Hide the dialog once the check completes
-                JOptionPane.showMessageDialog(GUI.gui.internal, "Check complete. No Issues.", "Database Check", JOptionPane.INFORMATION_MESSAGE); //Show success message
+                JOptionPane.showMessageDialog(this, "Check complete. No Issues.", "Database Check", JOptionPane.INFORMATION_MESSAGE); //Show success message
             } catch (IOException | SQLException ex) {
                 mDialog.hide(); //Hide the dialog if there is an error
-                JOptionPane.showMessageDialog(GUI.gui.internal, ex, "Database Check", JOptionPane.ERROR_MESSAGE); //Show the error
+                JOptionPane.showMessageDialog(this, ex, "Database Check", JOptionPane.ERROR_MESSAGE); //Show the error
             }
         }; //Create the runnable for performing the database check
         final Thread thread = new Thread(run); //Create the thread for running the integrity check
@@ -245,10 +245,10 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
                     try {
                         int val = dc.clearSalesData();
                         mDialog.hide();
-                        JOptionPane.showMessageDialog(GUI.gui.internal, val + " records removed", "Sales Data", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(DatabaseWindow.this, val + " records removed", "Sales Data", JOptionPane.INFORMATION_MESSAGE);
                     } catch (IOException | SQLException ex) {
                         mDialog.hide();
-                        JOptionPane.showMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(DatabaseWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                     } finally {
                         mDialog.hide();
                     }
@@ -269,14 +269,14 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
                     try {
                         dc.purgeDatabase();
                         mDialog.hide();
-                        JOptionPane.showMessageDialog(GUI.gui.internal, "Purge complete", "Purge Database", JOptionPane.INFORMATION_MESSAGE);
-                        if (JOptionPane.showConfirmDialog(GUI.gui.internal, "Do you want to set all stock levels to 0?", "Purge database", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        JOptionPane.showMessageDialog(DatabaseWindow.this, "Purge complete", "Purge Database", JOptionPane.INFORMATION_MESSAGE);
+                        if (JOptionPane.showConfirmDialog(DatabaseWindow.this, "Do you want to set all stock levels to 0?", "Purge database", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                             dc.submitSQL("UPDATE PRODUCTS SET STOCK = 0");
-                            JOptionPane.showMessageDialog(GUI.gui.internal, "Stock levels set to 0", "Purge Database", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(DatabaseWindow.this, "Stock levels set to 0", "Purge Database", JOptionPane.INFORMATION_MESSAGE);
                         }
                     } catch (IOException | SQLException ex) {
                         mDialog.hide();
-                        JOptionPane.showMessageDialog(GUI.gui.internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(DatabaseWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                     } finally {
                         mDialog.hide();
                     }

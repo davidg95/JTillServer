@@ -100,7 +100,7 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
     }
 
     private void removeSupplier(Supplier s) {
-        if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove this supplier?", "Remove Supplier", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+        if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this supplier?", "Remove Supplier", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
             return;
         }
         try {

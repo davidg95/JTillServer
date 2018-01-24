@@ -173,14 +173,14 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                     s.setPassword(password);
                     try {
                         dc.updateStaff(s);
-                        JOptionPane.showInternalMessageDialog(GUI.gui.internal, "Password successfully changed", "Password", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Password successfully changed", "Password", JOptionPane.INFORMATION_MESSAGE);
                     } catch (IOException | StaffNotFoundException | SQLException ex) {
                         showError(ex);
                     }
                 }
             }
         } else {
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "You cannot change users passwords", "Password", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "You cannot change users passwords", "Password", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -739,9 +739,9 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                 staff.setEnabled(!staff.isEnabled());
                 try {
                     dc.updateStaff(staff);
-                    JOptionPane.showInternalMessageDialog(this, "Account " + (staff.isEnabled() ? "enabled" : "disabled"), "Staff", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Account " + (staff.isEnabled() ? "enabled" : "disabled"), "Staff", JOptionPane.INFORMATION_MESSAGE);
                 } catch (IOException | StaffNotFoundException | SQLException ex) {
-                    JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Staff", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Staff", JOptionPane.ERROR_MESSAGE);
                 }
             });
             JMenuItem remove = new JMenuItem("Remove");

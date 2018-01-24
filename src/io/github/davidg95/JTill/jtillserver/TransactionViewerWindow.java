@@ -75,7 +75,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
             cmbStaff.setModel(new DefaultComboBoxModel(staff.toArray()));
             cmbTerminal.setModel(new DefaultComboBoxModel(tills.toArray()));
         } catch (IOException | SQLException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
         table.getColumnModel().getColumn(0).setMaxWidth(40);
         table.getColumnModel().getColumn(0).setMinWidth(40);
@@ -525,21 +525,21 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                 //Check to make sure that the minimum value is less than the maximum value
                 if (minVal > maxVal) {
                     mDialog.hide();
-                    JOptionPane.showInternalMessageDialog(this, "Minimum value must be greater or equal to the maximum value", "Transaction Search", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Minimum value must be greater or equal to the maximum value", "Transaction Search", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
                 //Check to make sure that the start time is afer then end time
                 if (endDate.getTime() < startDate.getTime()) {
                     mDialog.hide();
-                    JOptionPane.showInternalMessageDialog(this, "Start date must be on or after then end date", "Transaction Search", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Start date must be on or after then end date", "Transaction Search", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
                 //Check to make sure that the start ID is before the end ID
                 if (startID > endID) {
                     mDialog.hide();
-                    JOptionPane.showInternalMessageDialog(this, "Start ID must be greater than or equal to the end ID", "Transaction Search", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Start ID must be greater than or equal to the end ID", "Transaction Search", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
@@ -555,13 +555,13 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                     //Display the sales in the table.
                     if (newList.isEmpty()) {
                         mDialog.hide();
-                        JOptionPane.showInternalMessageDialog(TransactionViewerWindow.this, "No results", "Transactions", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(TransactionViewerWindow.this, "No results", "Transactions", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         model.setContents(newList);
                     }
                 } catch (IOException | SQLException ex) {
                     mDialog.hide();
-                    JOptionPane.showInternalMessageDialog(TransactionViewerWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(TransactionViewerWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 mDialog.hide();
@@ -636,7 +636,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnRemoveCashedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveCashedActionPerformed
-        if (JOptionPane.showInternalConfirmDialog(this, "Are you sure you want to remove cashed sales?", "Remove Cashed Sales", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove cashed sales?", "Remove Cashed Sales", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 
             final ModalDialog mDialog = new ModalDialog(this, "Remove Cashed Sales");
             final Runnable run = () -> {
@@ -644,15 +644,15 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                     int val = dc.removeCashedSales();
                     if (val == 0) {
                         mDialog.hide();
-                        JOptionPane.showInternalMessageDialog(TransactionViewerWindow.this, "No sales to remove", "Remove Cashed Sales", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(TransactionViewerWindow.this, "No sales to remove", "Remove Cashed Sales", JOptionPane.INFORMATION_MESSAGE);
                         return;
                     }
                     init();
                     mDialog.hide();
-                    JOptionPane.showInternalMessageDialog(TransactionViewerWindow.this, "Remove " + val + " sales", "Remove Cashed Sales", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(TransactionViewerWindow.this, "Remove " + val + " sales", "Remove Cashed Sales", JOptionPane.INFORMATION_MESSAGE);
                 } catch (IOException | SQLException ex) {
                     mDialog.hide();
-                    JOptionPane.showInternalMessageDialog(TransactionViewerWindow.this, ex, "Remove Cashed Sales", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(TransactionViewerWindow.this, ex, "Remove Cashed Sales", JOptionPane.ERROR_MESSAGE);
                 } finally {
                     mDialog.hide();
                 }

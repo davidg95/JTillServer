@@ -1543,7 +1543,7 @@ public class GUI extends JFrame implements GUIInterface {
                     break;
                 }
             }
-            JOptionPane.showInternalMessageDialog(GUI.gui.internal, "ID: " + staff.getName() + "\nName: " + staff.getName() + "\nPosition: " + position, staff.getName(), JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(this, "ID: " + staff.getName() + "\nName: " + staff.getName() + "\nPosition: " + position, staff.getName(), JOptionPane.PLAIN_MESSAGE);
         }
     }//GEN-LAST:event_lblUserMouseClicked
 
