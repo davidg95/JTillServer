@@ -10,12 +10,15 @@ import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -28,23 +31,20 @@ public class TaxWindow extends javax.swing.JInternalFrame {
     private final DataConnect dc;
     private Tax tax;
 
-    private final DefaultTableModel model;
-    private List<Tax> currentTableContents;
+    private MyModel model;
 
     /**
      * Creates new form TaxWindow
      */
     public TaxWindow() {
         this.dc = GUI.gui.dc;
-//        this.setIconImage(icon);
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
-        currentTableContents = new ArrayList<>();
-        model = (DefaultTableModel) table.getModel();
         showAllTaxes();
+        table.getColumnModel().getColumn(0).setMaxWidth(40);
         table.setSelectionModel(new ForcedListSelectionModel());
     }
 
@@ -70,22 +70,10 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         }
     }
 
-    private void updateTable() {
-        model.setRowCount(0);
-
-        for (Tax t : currentTableContents) {
-            Object[] s = new Object[]{t.getId(), t.getName(), t.getValue()};
-            model.addRow(s);
-        }
-
-        table.setModel(model);
-        ProductsWindow.update();
-    }
-
     private void showAllTaxes() {
         try {
-            currentTableContents = dc.getAllTax();
-            updateTable();
+            model = new MyModel(Tax.getAll());
+            table.setModel(model);
         } catch (IOException | SQLException ex) {
             showError(ex);
         }
@@ -107,6 +95,146 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         JOptionPane.showMessageDialog(this, e, "Tax", JOptionPane.ERROR_MESSAGE);
     }
 
+    private class MyModel implements TableModel {
+
+        private List<Tax> taxes;
+        private final List<TableModelListener> listeners;
+
+        public MyModel(List<Tax> taxes) {
+            this.taxes = taxes;
+            this.listeners = new LinkedList<>();
+        }
+
+        public void addTax(Tax t) {
+            taxes.add(t);
+            alertAll();
+        }
+
+        public void removeTax(int i) {
+            taxes.remove(i);
+            alertAll();
+        }
+
+        public Tax getTax(int i) {
+            return taxes.get(i);
+        }
+
+        public List<Tax> getAll() {
+            return taxes;
+        }
+
+        public void filter(String terms) {
+            List<Tax> newList = new LinkedList<>();
+            for (Tax t : taxes) {
+                if (t.getName().toLowerCase().contains(terms.toLowerCase())) {
+                    newList.add(t);
+                }
+            }
+            taxes = newList;
+            alertAll();
+        }
+
+        public void showAll() throws IOException, SQLException {
+            taxes = Tax.getAll();
+            alertAll();
+        }
+
+        @Override
+        public int getRowCount() {
+            return taxes.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 3;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return "ID";
+                case 1:
+                    return "Name";
+                case 2:
+                    return "Value";
+                default:
+                    return "";
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return Object.class;
+                case 1:
+                    return String.class;
+                case 2:
+                    return Double.class;
+                default:
+                    return Object.class;
+            }
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return columnIndex != 0;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            final Tax t = taxes.get(rowIndex);
+            switch (columnIndex) {
+                case 0:
+                    return t.getId();
+                case 1:
+                    return t.getName();
+                case 2:
+                    return t.getValue();
+                default:
+                    return "";
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            Tax t = taxes.get(rowIndex);
+            switch (columnIndex) {
+                case 1:
+                    t.setName((String) aValue);
+                    break;
+                case 2:
+                    t.setValue((double) aValue);
+                    break;
+                default:
+                    return;
+            }
+            try {
+                t.save();
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showMessageDialog(TaxWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        public void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -118,27 +246,25 @@ public class TaxWindow extends javax.swing.JInternalFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        txtName = new javax.swing.JTextField();
-        txtValue = new javax.swing.JTextField();
         btnAdd = new javax.swing.JButton();
-        btnSave = new javax.swing.JButton();
-        btnRemove = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        btnRemove = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        txtName = new javax.swing.JTextField();
+        txtValue = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Tax");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "ID", "Name", "Value"
@@ -174,28 +300,10 @@ public class TaxWindow extends javax.swing.JInternalFrame {
             table.getColumnModel().getColumn(2).setResizable(false);
         }
 
-        jLabel1.setText("Name:");
-
-        jLabel2.setText("Value:");
-
-        btnAdd.setText("Add");
+        btnAdd.setText("Add New");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
-            }
-        });
-
-        btnSave.setText("Save");
-        btnSave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveActionPerformed(evt);
-            }
-        });
-
-        btnRemove.setText("Remove");
-        btnRemove.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveActionPerformed(evt);
             }
         });
 
@@ -221,28 +329,75 @@ public class TaxWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Tax Class"));
+
+        btnRemove.setText("Remove");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
+
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Value:");
+
+        jLabel1.setText("Name:");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnSave)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRemove))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(txtName)
+                        .addComponent(txtValue, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSave)
+                    .addComponent(btnRemove))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtName)
-                            .addComponent(txtValue)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addComponent(btnAdd)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSave)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRemove)))
+                        .addGap(77, 77, 77)
+                        .addComponent(btnAdd)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -251,9 +406,9 @@ public class TaxWindow extends javax.swing.JInternalFrame {
                         .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                         .addComponent(btnClose))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -262,19 +417,10 @@ public class TaxWindow extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(txtValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnAdd)
-                            .addComponent(btnSave)
-                            .addComponent(btnRemove))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnAdd)
+                        .addGap(0, 114, Short.MAX_VALUE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -293,35 +439,37 @@ public class TaxWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        if (tax == null) {
-            Tax t;
-            try {
-                String name = txtName.getText();
-                String val = txtValue.getText();
-                if (val.length() == 0) {
-                    JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Tax", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                if (!Utilities.isNumber(val)) {
-                    JOptionPane.showMessageDialog(this, "Must enter a number for value", "New Tax", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                double value = Double.parseDouble(val);
-                if (name.equals("")) {
-                    JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Tax", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    t = new Tax(name, value);
-                    try {
-                        Tax ta = dc.addTax(t);
-                        showAllTaxes();
-                        setCurrentTax(null);
-                    } catch (IOException | SQLException ex) {
-                        showError(ex);
-                    }
-                }
-            } catch (NumberFormatException e) {
+        Tax t;
+        try {
+            String name = JOptionPane.showInputDialog(this, "Enter name for new tax class", "New Tax Class", JOptionPane.PLAIN_MESSAGE);
+            String val = JOptionPane.showInputDialog(this, "Enter value for new tax class", "New Tax Class", JOptionPane.PLAIN_MESSAGE);
+            if (val.length() == 0) {
                 JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Tax", JOptionPane.ERROR_MESSAGE);
+                return;
             }
+            if (!Utilities.isNumber(val)) {
+                JOptionPane.showMessageDialog(this, "Must enter a number for value", "New Tax", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            double value = Double.parseDouble(val);
+            if (value < 0 || value > 100) {
+                JOptionPane.showMessageDialog(this, "Value must be between 0 and 100", "New Tax Class", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (name.equals("")) {
+                JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Tax", JOptionPane.ERROR_MESSAGE);
+            } else {
+                t = new Tax(name, value);
+                try {
+                    Tax ta = dc.addTax(t);
+                    model.addTax(ta);
+                    setCurrentTax(null);
+                } catch (IOException | SQLException ex) {
+                    showError(ex);
+                }
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Tax", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -334,12 +482,12 @@ public class TaxWindow extends javax.swing.JInternalFrame {
             } else {
                 tax.setName(name);
                 tax.setValue(value);
-                dc.updateTax(tax);
-                updateTable();
+                tax.save();
             }
+            model.alertAll();
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Fill out all required fields", "Tax", JOptionPane.ERROR_MESSAGE);
-        } catch (IOException | SQLException | JTillException ex) {
+        } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSaveActionPerformed
@@ -347,14 +495,15 @@ public class TaxWindow extends javax.swing.JInternalFrame {
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         int index = table.getSelectedRow();
         if (index != -1) {
-            if (currentTableContents.get(index).getId() == 1) {
+            if (model.getTax(index).getId() == 1) {
                 JOptionPane.showMessageDialog(this, "You cannot remove the default tax", "Remove Tax", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following tax?\n-" + currentTableContents.get(index) + "\nAll products in this tax will be set to the default tax (0%)", "Remove Tax", JOptionPane.YES_NO_OPTION);
+            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following tax?\n-" + model.getTax(index) + "\nAll products in this tax will be set to the default tax (0%)", "Remove Tax", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
-                    dc.removeTax(currentTableContents.get(index).getId());
+                    dc.removeTax(model.getTax(index).getId());
+                    model.removeTax(index);
                 } catch (IOException | SQLException | JTillException ex) {
                     showError(ex);
                 }
@@ -366,7 +515,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
 
     private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
         if (evt.getClickCount() == 1) {
-            setCurrentTax(currentTableContents.get(table.getSelectedRow()));
+            setCurrentTax(model.getTax(table.getSelectedRow()));
         }
     }//GEN-LAST:event_tableMousePressed
 
@@ -374,27 +523,14 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         String terms = txtSearch.getText();
 
         if (terms.isEmpty()) {
-            showAllTaxes();
+            try {
+                model.showAll();
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
             return;
         }
-
-        List<Tax> newList = new ArrayList<>();
-
-        for (Tax t : currentTableContents) {
-            if (t.getName().toLowerCase().contains(terms.toLowerCase())) {
-                newList.add(t);
-            }
-        }
-
-        if (newList.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.PLAIN_MESSAGE);
-        } else {
-            currentTableContents = newList;
-            if (newList.size() == 1) {
-                setCurrentTax(newList.get(0));
-            }
-        }
-        updateTable();
+        model.filter(terms);
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
@@ -410,6 +546,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
     private javax.swing.JTextField txtName;

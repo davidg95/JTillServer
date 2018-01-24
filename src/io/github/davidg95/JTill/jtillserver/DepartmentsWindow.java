@@ -382,6 +382,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
             });
 
             menu.add(rename);
+            menu.addSeparator();
             menu.add(remove);
             menu.show(tblDep, evt.getX(), evt.getY());
         }
