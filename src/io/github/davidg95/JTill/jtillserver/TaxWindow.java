@@ -9,13 +9,15 @@ import io.github.davidg95.JTill.jtill.*;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -287,6 +289,9 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         });
         table.getTableHeader().setReorderingAllowed(false);
         table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
+            }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 tableMousePressed(evt);
             }
@@ -442,9 +447,11 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         Tax t;
         try {
             String name = JOptionPane.showInputDialog(this, "Enter name for new tax class", "New Tax Class", JOptionPane.PLAIN_MESSAGE);
+            if (name == null || name.isEmpty()) {
+                return;
+            }
             String val = JOptionPane.showInputDialog(this, "Enter value for new tax class", "New Tax Class", JOptionPane.PLAIN_MESSAGE);
-            if (val.length() == 0) {
-                JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Tax", JOptionPane.ERROR_MESSAGE);
+            if (val == null || val.isEmpty()) {
                 return;
             }
             if (!Utilities.isNumber(val)) {
@@ -456,17 +463,13 @@ public class TaxWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "Value must be between 0 and 100", "New Tax Class", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if (name.equals("")) {
-                JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Tax", JOptionPane.ERROR_MESSAGE);
-            } else {
-                t = new Tax(name, value);
-                try {
-                    Tax ta = dc.addTax(t);
-                    model.addTax(ta);
-                    setCurrentTax(null);
-                } catch (IOException | SQLException ex) {
-                    showError(ex);
-                }
+            t = new Tax(name, value);
+            try {
+                Tax ta = dc.addTax(t);
+                model.addTax(ta);
+                setCurrentTax(null);
+            } catch (IOException | SQLException ex) {
+                showError(ex);
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Tax", JOptionPane.ERROR_MESSAGE);
@@ -507,7 +510,6 @@ public class TaxWindow extends javax.swing.JInternalFrame {
                 } catch (IOException | SQLException | JTillException ex) {
                     showError(ex);
                 }
-                showAllTaxes();
                 setCurrentTax(null);
             }
         }
@@ -536,6 +538,37 @@ public class TaxWindow extends javax.swing.JInternalFrame {
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
         btnSearch.doClick();
     }//GEN-LAST:event_txtSearchActionPerformed
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        int index = table.getSelectedRow();
+        if (index == -1) {
+            return;
+        }
+        final Tax t = model.getTax(index);
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem remove = new JMenuItem("Remove");
+            remove.addActionListener((event) -> {
+                if (t.getId() == 1) {
+                    JOptionPane.showMessageDialog(this, "You cannot remove the default tax", "Remove Tax", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following tax?\n-" + t + "\nAll products in this tax will be set to the default tax (0%)", "Remove Tax", JOptionPane.YES_NO_OPTION);
+                if (opt == JOptionPane.YES_OPTION) {
+                    try {
+                        dc.removeTax(model.getTax(index).getId());
+                        model.removeTax(index);
+                    } catch (IOException | SQLException | JTillException ex) {
+                        showError(ex);
+                    }
+                    setCurrentTax(null);
+                }
+            });
+            
+            menu.add(remove);
+            menu.show(table, evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_tableMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
