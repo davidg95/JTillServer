@@ -1676,6 +1676,30 @@ public class GUI extends JFrame implements GUIInterface {
                 if (dates == null) {
                     return;
                 }
+                try {
+                    List<Sale> sales = dc.consolidated(dates[0], dates[1], -1);
+                    List<Department> departments = Department.getAll();
+                    List<Category> categories = Category.getAll();
+                    for (Sale s : sales) {
+                        for (SaleItem si : s.getSaleItems()) {
+                            final Product p = (Product) si.getItem();
+                            for (Department dep : departments) {
+                                if (p.getDepartment().equals(dep)) {
+                                    dep.addToSales(si.getPrice());
+                                    break;
+                                }
+                            }
+                            for(Category cat : categories){
+                                if(p.getCategory().equals(cat)){
+                                    cat.addToSales(si.getPrice());
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                } catch (IOException | SQLException ex) {
+                    JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             }
             case SaleReportDialog.CATEGORY_REPORT: {
