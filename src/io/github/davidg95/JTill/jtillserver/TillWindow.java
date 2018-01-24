@@ -41,7 +41,6 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
     private MyModel model;
-    private List<Till> contents;
 
     /**
      * Creates new form TillWindow
@@ -91,7 +90,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
                 if (index == -1) {
                     return;
                 }
-                final Till t = contents.get(index);
+                final Till t = model.get(index);
                 removeTill(t);
             }
         });
@@ -103,8 +102,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
     private void getAllTills() {
         try {
-            contents = dc.getAllTills();
-            model = new MyModel(contents);
+            model = new MyModel(Till.getAll());
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, "Error loading form", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -199,6 +197,14 @@ public class TillWindow extends javax.swing.JInternalFrame {
         public void removeTill(Till t) {
             tills.remove(t);
             alertAll();
+        }
+
+        public Till get(int i) {
+            return tills.get(i);
+        }
+
+        public List<Till> getAll() {
+            return tills;
         }
 
         @Override
@@ -426,7 +432,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
         if (index == -1) {
             return;
         }
-        Till t = contents.get(index);
+        Till t = model.get(index);
         TillDialog.showDialog(t);
     }//GEN-LAST:event_btnViewActionPerformed
 
@@ -437,7 +443,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
                 if (index == -1) {
                     return;
                 }
-                Till t = contents.get(index);
+                Till t = model.get(index);
                 TillDialog.showDialog(t);
             }
         } else if (SwingUtilities.isRightMouseButton(evt)) {
@@ -445,7 +451,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
             if (index == -1) {
                 return;
             }
-            Till t = contents.get(index);
+            Till t = model.get(index);
             JPopupMenu menu = new JPopupMenu();
 
             JMenuItem view = new JMenuItem("View");
