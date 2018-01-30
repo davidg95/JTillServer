@@ -1872,6 +1872,7 @@ public class GUI extends JFrame implements GUIInterface {
 
     private void itemCheckDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCheckDatabaseActionPerformed
         checkDatabase();
+        JOptionPane.showMessageDialog(this, "Check Complete", "Database Check", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_itemCheckDatabaseActionPerformed
 
     private void itemUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemUpdateActionPerformed

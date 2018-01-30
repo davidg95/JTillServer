@@ -29,7 +29,6 @@ public class ModalDialog {
     private JDialog dialog; //The dialog.
     private Window parent; //The parent component.
     private JPanel panel; //The panel for the components.
-    private JProgressBar bar; //The progress bar
 
     private final String title; //The title of the window.
     private PrinterJob job; //The printer job (if any) associated with this message.
@@ -91,15 +90,13 @@ public class ModalDialog {
             this.job.cancel();
         });
         panel.add(button);
-        dialog.setMinimumSize(new Dimension(100, 100));
+//        dialog.setMinimumSize(new Dimension(100, 100));
+        dialog.setResizable(false);
     }
 
     private void init() {
-        panel = new JPanel();
-        bar = new JProgressBar();
-        bar.setIndeterminate(true);
+        panel = new ModalPanel();
         final Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
-        panel.add(bar);
         panel.setBorder(padding);
         dialog = new JDialog(parent);
         dialog.setAlwaysOnTop(true);
