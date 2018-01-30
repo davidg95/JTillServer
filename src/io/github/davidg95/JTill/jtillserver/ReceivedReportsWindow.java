@@ -169,6 +169,11 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
             if (columnIndex == 3) {
                 ReceivedReport report = reports.get(rowIndex);
                 report.setPaid((boolean) aValue);
+                try {
+                    report.save();
+                } catch (IOException | SQLException ex) {
+                    JOptionPane.showMessageDialog(ReceivedReportsWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
 
