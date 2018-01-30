@@ -30,12 +30,14 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
     private final DataConnect dc;
     private String barcode;
-    private Product product;
+    private static Product product;
 
     private String nextBarcode;
 
     private final DefaultComboBoxModel taxModel;
     private final DefaultComboBoxModel catModel;
+
+    private boolean autoClose = false;
 
     /**
      * Creates new form ProductEntryDialog.
@@ -55,6 +57,23 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         setModal(true);
         CardLayout c = (CardLayout) container.getLayout();
         c.show(container, "card2");
+    }
+
+    public ProductEntryDialog(Window parent, String barcode) {
+        super(parent);
+        this.dc = GUI.gui.dc;
+        taxModel = new DefaultComboBoxModel();
+        catModel = new DefaultComboBoxModel();
+        initCombos();
+        initComponents();
+        this.setIconImage(GUI.icon);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(parent);
+        setModal(true);
+        CardLayout c = (CardLayout) container.getLayout();
+        c.show(container, "card2");
+        txtBarcode.setText(barcode);
+        autoClose = true;
     }
 
     private void initCombos() {
@@ -77,8 +96,20 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
+        product = null;
         ProductEntryDialog dialog = new ProductEntryDialog(window);
         dialog.setVisible(true);
+    }
+
+    public static Product showDialog(Component parent, String barcode) {
+        Window window = null;
+        if (parent instanceof Dialog || parent instanceof Frame) {
+            window = (Window) parent;
+        }
+        product = null;
+        ProductEntryDialog dialog = new ProductEntryDialog(window, barcode);
+        dialog.setVisible(true);
+        return product;
     }
 
     private void resetPanels() {
@@ -667,6 +698,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             CardLayout c = (CardLayout) container.getLayout();
             c.show(container, "card2");
             txtBarcode.requestFocus();
+            if (autoClose) {
+                setVisible(false);
+            }
         } catch (HeadlessException | IOException | NumberFormatException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -866,6 +900,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             CardLayout c = (CardLayout) container.getLayout();
             c.show(container, "card2");
             txtBarcode.requestFocus();
+            if (autoClose) {
+                setVisible(false);
+            }
         } catch (HeadlessException | IOException | NumberFormatException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
         }

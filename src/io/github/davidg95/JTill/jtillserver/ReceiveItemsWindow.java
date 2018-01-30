@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.beans.PropertyVetoException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -18,12 +20,14 @@ import java.text.MessageFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -35,6 +39,7 @@ import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableModel;
 
 /**
@@ -361,6 +366,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         btnAddOrder = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         txtSupplier = new javax.swing.JTextField();
+        btnAddFile = new javax.swing.JButton();
 
         setResizable(true);
 
@@ -459,6 +465,13 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        btnAddFile.setText("Add File");
+        btnAddFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddFileActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -466,16 +479,18 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(lblValue)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chkPaid)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtBarcode)
+                        .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddProduct)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAddFile)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnAddOrder)
                         .addGap(18, 18, 18)
                         .addComponent(btnReceive)
@@ -501,7 +516,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     .addComponent(jLabel1)
                     .addComponent(txtSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnReceive)
@@ -510,7 +525,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     .addComponent(lblValue)
                     .addComponent(chkPaid)
                     .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAddOrder))
+                    .addComponent(btnAddOrder)
+                    .addComponent(btnAddFile))
                 .addContainerGap())
         );
 
@@ -742,7 +758,47 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txtSupplierMouseClicked
 
+    private void btnAddFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFileActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("*.txt files", "txt");
+        chooser.setFileFilter(filter);
+        int result = chooser.showDialog(this, "Select File");
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            try {
+                Scanner in = new Scanner(file);
+                List<Object[]> barcodes = new LinkedList<>();
+                int count = 0;
+                while (in.hasNext()) {
+                    count++;
+                    String line = in.nextLine();
+                    Scanner inLine = new Scanner(line);
+                    inLine.useDelimiter(",");
+                    String barcode = inLine.next();
+                    int quantity = Integer.parseInt(inLine.next());
+                    try {
+                        Product p = dc.getProductByBarcode(barcode);
+                        ReceivedItem item = new ReceivedItem(p, quantity);
+                        model.addItem(item);
+                    } catch (IOException | ProductNotFoundException | SQLException ex) {
+                        barcodes.add(new Object[]{barcode, null, quantity});
+                    }
+                }
+                JOptionPane.showMessageDialog(this, "Loaded " + count + " items with " + barcodes.size() + " unknown items", "Load File", JOptionPane.INFORMATION_MESSAGE);
+                if (!barcodes.isEmpty()) {
+                    UnknownBarcodeDialog.showDialog(this, barcodes);
+                }
+                if (!model.getItems().isEmpty()) {
+                    btnReceive.setEnabled(true);
+                }
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnAddFileActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddFile;
     private javax.swing.JButton btnAddOrder;
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnClose;

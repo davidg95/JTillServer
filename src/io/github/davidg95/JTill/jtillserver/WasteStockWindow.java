@@ -9,6 +9,10 @@ import io.github.davidg95.JTill.jtill.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -17,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -25,6 +30,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -37,6 +43,7 @@ import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
@@ -374,6 +381,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         pickDate = new org.jdesktop.swingx.JXDatePicker();
         txtBarcode = new javax.swing.JTextField();
+        btnAddfile = new javax.swing.JButton();
 
         setResizable(true);
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/tillIcon.png"))); // NOI18N
@@ -461,6 +469,13 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        btnAddfile.setText("Add File");
+        btnAddfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddfileActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -475,17 +490,19 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(timeSpin, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                        .addComponent(timeSpin)
                         .addGap(277, 277, 277))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(lblValue)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnAddProduct)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnAddfile, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnWaste)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -502,14 +519,15 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     .addComponent(timeSpin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
                     .addComponent(btnWaste)
                     .addComponent(btnAddProduct)
                     .addComponent(lblValue)
-                    .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAddfile))
                 .addContainerGap())
         );
 
@@ -697,8 +715,53 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         btnAddProduct.doClick();
     }//GEN-LAST:event_txtBarcodeActionPerformed
 
+    private void btnAddfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddfileActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("*.txt files", "txt");
+        chooser.setFileFilter(filter);
+        int result = chooser.showDialog(this, "Select File");
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            try {
+                Scanner in = new Scanner(file);
+                int unknowns = 0;
+                int count = 0;
+                while (in.hasNext()) {
+                    count++;
+                    String line = in.nextLine();
+                    Scanner inLine = new Scanner(line);
+                    inLine.useDelimiter(",");
+                    String barcode = inLine.next();
+                    int quantity = Integer.parseInt(inLine.next());
+                    int reasonID = Integer.parseInt(inLine.next());
+                    try {
+                        Product p = dc.getProductByBarcode(barcode);
+                        WasteReason reason;
+                        try {
+                            reason = dc.getWasteReason(reasonID);
+                        } catch (IOException | SQLException | JTillException ex) {
+                            try {
+                                reason = dc.getWasteReason(1);
+                            } catch (IOException | SQLException | JTillException ex1) {
+                                reason = null;
+                            }
+                        }
+                        WasteItem item = new WasteItem(p, quantity, reason, new Date());
+                        model.addWasteItem(item);
+                    } catch (IOException | ProductNotFoundException | SQLException ex) {
+                        unknowns++;
+                    }
+                }
+                JOptionPane.showMessageDialog(this, "Loaded " + count + " items with " + unknowns + " unknown items", "Load File", JOptionPane.INFORMATION_MESSAGE);
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnAddfileActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProduct;
+    private javax.swing.JButton btnAddfile;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnWaste;
     private javax.swing.JLabel jLabel1;
