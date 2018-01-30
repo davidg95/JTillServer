@@ -229,6 +229,7 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
                 amount += l.amount;
             }
             lblAmount.setText("Lables to print: " + amount);
+            btnPrint.setEnabled(amount != 0);
         }
 
         @Override
