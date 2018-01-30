@@ -788,6 +788,11 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 if (!barcodes.isEmpty()) {
                     UnknownBarcodeDialog.showDialog(this, barcodes);
                 }
+                for (Object[] o : barcodes) {
+                    if (o[1] != null) {
+                        model.addItem(new ReceivedItem((Product) o[1], (int) o[2]));
+                    }
+                }
                 if (!model.getItems().isEmpty()) {
                     btnReceive.setEnabled(true);
                 }
