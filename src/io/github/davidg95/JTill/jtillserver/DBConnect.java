@@ -4528,8 +4528,8 @@ public class DBConnect extends DataConnect {
                 }
 
                 int iid = set.getInt(35);
-                BigDecimal riPrice = set.getBigDecimal(36);
                 int quantity = set.getInt(37);
+                BigDecimal riPrice = set.getBigDecimal(38);
 
                 ReceivedItem ri = new ReceivedItem(iid, p, quantity, riPrice);
 
