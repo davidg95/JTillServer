@@ -226,6 +226,7 @@ public class StockReportDialog extends javax.swing.JDialog {
         new PrintPreviewForm(new StockPrintable(products, info));
         mDialog.hide();
     }
+    
     private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
         final PrinterJob job = PrinterJob.getPrinterJob();
         final int type = cmbType.getSelectedIndex();

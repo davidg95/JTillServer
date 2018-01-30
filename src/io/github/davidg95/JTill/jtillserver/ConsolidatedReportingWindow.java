@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -678,19 +677,16 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
         boolean ok = job.printDialog();
         final ModalDialog mDialog = new ModalDialog(this, "Printing...", job);
         if (ok) {
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        job.print();
-                        mDialog.hide();
-                        JOptionPane.showMessageDialog(ConsolidatedReportingWindow.this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (PrinterException ex) {
-                        mDialog.hide();
-                        JOptionPane.showMessageDialog(ConsolidatedReportingWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-                    } finally {
-                        mDialog.hide();
-                    }
+            Runnable runnable = () -> {
+                try {
+                    job.print();
+                    mDialog.hide();
+                    JOptionPane.showMessageDialog(ConsolidatedReportingWindow.this, "Printing complete", "Print", JOptionPane.INFORMATION_MESSAGE);
+                } catch (PrinterException ex) {
+                    mDialog.hide();
+                    JOptionPane.showMessageDialog(ConsolidatedReportingWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    mDialog.hide();
                 }
             };
             Thread th = new Thread(runnable);

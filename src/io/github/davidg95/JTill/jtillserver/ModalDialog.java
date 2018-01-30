@@ -54,25 +54,6 @@ public class ModalDialog {
     }
 
     /**
-     * Constructor which creates the dialog.
-     *
-     * @param parent the parent component.
-     * @param title the title.
-     * @param text the message.
-     * @param modal if it should be modal.
-     */
-    public ModalDialog(Component parent, String title, String text, boolean modal) {
-        this.title = title;
-        this.hidden = false;
-        this.parent = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            this.parent = (Window) parent;
-        }
-        this.modal = modal;
-        init();
-    }
-
-    /**
      * Constructor which created the dialog. This constructor assigns a
      * <code>PrinterJob</code> to the dialog which can be cancelled by clicking
      * the cancel button.
@@ -106,6 +87,7 @@ public class ModalDialog {
         dialog.pack();
         dialog.setLocationRelativeTo(parent);
         dialog.setModal(modal);
+        dialog.setIconImage(GUI.icon);
     }
 
     /**

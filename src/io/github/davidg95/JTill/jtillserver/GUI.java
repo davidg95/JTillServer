@@ -6,11 +6,14 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
+import io.github.davidg95.JTill.jtillserver.printables.ProductReportPrintable;
 import io.github.davidg95.JTill.jtillserver.salereportdialogs.SaleReportDialog;
 import io.github.davidg95.jconn.JConnData;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +71,7 @@ public class GUI extends JFrame implements GUIInterface {
     private int warningCount;
     private LinkedList<String> warningsList;
 
-    private ModalDialog mDialog;
+    private ModalDialog connectionMDialog;
 
     public HashMap<String, List> savedReports = new HashMap<>();
 
@@ -413,18 +416,18 @@ public class GUI extends JFrame implements GUIInterface {
 
     @Override
     public void connectionDrop() {
-        mDialog = new ModalDialog(this, "Connection lost");
+        connectionMDialog = new ModalDialog(this, "Connection lost");
         new Thread() {
             @Override
             public void run() {
-                mDialog.show();
+                connectionMDialog.show();
             }
         }.start();
     }
 
     @Override
     public Staff connectionReestablish() {
-        mDialog.hide();
+        connectionMDialog.hide();
         return null;
     }
 
@@ -599,7 +602,6 @@ public class GUI extends JFrame implements GUIInterface {
         itemTransactionViewer = new javax.swing.JMenuItem();
         itemLabelPrinting = new javax.swing.JMenuItem();
         itemStaffClocking = new javax.swing.JMenuItem();
-        itemStaffReporting = new javax.swing.JMenuItem();
         itemWasteReports = new javax.swing.JMenuItem();
         itemReceivedReports = new javax.swing.JMenuItem();
         itemDeclarations = new javax.swing.JMenuItem();
@@ -1350,14 +1352,6 @@ public class GUI extends JFrame implements GUIInterface {
         });
         itemConsolodated.add(itemStaffClocking);
 
-        itemStaffReporting.setText("Staff Reporting");
-        itemStaffReporting.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemStaffReportingActionPerformed(evt);
-            }
-        });
-        itemConsolodated.add(itemStaffReporting);
-
         itemWasteReports.setText("Waste Reports");
         itemWasteReports.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1689,8 +1683,8 @@ public class GUI extends JFrame implements GUIInterface {
                                     break;
                                 }
                             }
-                            for(Category cat : categories){
-                                if(p.getCategory().equals(cat)){
+                            for (Category cat : categories) {
+                                if (p.getCategory().equals(cat)) {
                                     cat.addToSales(si.getPrice());
                                     break;
                                 }
@@ -1746,8 +1740,30 @@ public class GUI extends JFrame implements GUIInterface {
                         } else {
                             products = dc.getAllProducts();
                         }
+
                         mDialog.hide();
-                        JOptionPane.showMessageDialog(GUI.this, products.size() + "");
+                        PrinterJob job = PrinterJob.getPrinterJob();
+                        String dateStr = dates[0] + " to " + dates[1];
+                        job.setPrintable(new ProductReportPrintable(products, dateStr));
+                        boolean ok = job.printDialog();
+                        final ModalDialog mPrint = new ModalDialog(this, "Printing...");
+                        if (ok) {
+                            final Runnable printRun = () -> {
+                                try {
+                                    job.print();
+                                    mPrint.hide();
+                                    JOptionPane.showMessageDialog(this, "Printing complete", "Printing", JOptionPane.INFORMATION_MESSAGE);
+                                } catch (PrinterException ex) {
+                                    mPrint.hide();
+                                    JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                                } finally {
+                                    mPrint.hide();
+                                }
+                            };
+                            final Thread pThread = new Thread(printRun, "PRINT_THREAD");
+                            pThread.start();
+                            mPrint.show();
+                        }
                     } catch (IOException | SQLException | JTillException ex) {
                         mDialog.hide();
                         JOptionPane.showMessageDialog(GUI.this, ex);
@@ -1910,10 +1926,6 @@ public class GUI extends JFrame implements GUIInterface {
         this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         md.show();
     }//GEN-LAST:event_itemTransactionViewerActionPerformed
-
-    private void itemStaffReportingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffReportingActionPerformed
-        StaffReportingWindow.showWindow();
-    }//GEN-LAST:event_itemStaffReportingActionPerformed
 
     private void itemSendDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSendDataActionPerformed
         SendDataDialog.showDialog(this);
@@ -2127,7 +2139,6 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuItem itemSiteDetails;
     private javax.swing.JMenuItem itemStaff;
     private javax.swing.JMenuItem itemStaffClocking;
-    private javax.swing.JMenuItem itemStaffReporting;
     private javax.swing.JMenuItem itemStock;
     private javax.swing.JMenuItem itemStockReport;
     private javax.swing.JMenuItem itemStockTake;
