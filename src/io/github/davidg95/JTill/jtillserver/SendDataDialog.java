@@ -29,19 +29,17 @@ import javax.swing.table.TableModel;
 public class SendDataDialog extends javax.swing.JDialog {
 
     private MyTillModel model;
-    private final DataConnect dc;
 
     /**
      * Creates new form SendDataDialog
      */
     public SendDataDialog(Window parent) {
         super(parent);
-        dc = GUI.gui.dc;
         initComponents();
         setModal(true);
         setLocationRelativeTo(parent);
         try {
-            model = new MyTillModel(dc.getAllTills());
+            model = new MyTillModel(Till.getAll());
             init();
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -77,10 +75,8 @@ public class SendDataDialog extends javax.swing.JDialog {
             //Get the status for the current row.
             if (model.getOnline(row)) {
                 c.setBackground(new Color(162, 255, 150));
-//                c.setEnabled(true);
             } else {
                 c.setBackground(new Color(255, 150, 150));
-//                c.setEnabled(false);
             }
 
             //Return the JLabel which renders the cell.
