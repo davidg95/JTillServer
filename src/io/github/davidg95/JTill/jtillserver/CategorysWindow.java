@@ -202,7 +202,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
 
     private class MyModel implements TableModel {
 
-        private final List<Category> categories;
+        private List<Category> categories;
         private final List<TableModelListener> listeners;
 
         public MyModel(List<Category> categories) {
@@ -225,6 +225,18 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
 
         public Category getCategories(int i) {
             return categories.get(i);
+        }
+
+        public List<Category> search(String terms) {
+            List<Category> newList = new LinkedList<>();
+            for (Category c : getAllCategories()) {
+                if (c.getName().toLowerCase().contains(terms.toLowerCase())) {
+                    newList.add(c);
+                }
+            }
+            categories = newList;
+            alertAll();
+            return newList;
         }
 
         @Override
@@ -750,16 +762,10 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             return;
         }
 
-        List<Category> newList = new ArrayList<>();
-
-        for (Category c : model.getAllCategories()) {
-            if (c.getName().toLowerCase().contains(terms.toLowerCase())) {
-                newList.add(c);
-            }
-        }
+        List<Category> newList = model.search(terms);
 
         if (newList.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.INFORMATION_MESSAGE);
         } else {
             if (newList.size() == 1) {
                 setCurrentCategory(newList.get(0));
