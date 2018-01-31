@@ -62,7 +62,7 @@ public class DateAndTerminalDialog extends javax.swing.JDialog {
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        selection = new Object[3];
+        selection = null;
         DateAndTerminalDialog dialog = new DateAndTerminalDialog(window, title);
         dialog.setVisible(true);
         return selection;
@@ -163,6 +163,7 @@ public class DateAndTerminalDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
+        selection = new Object[3];
         selection[0] = pickStart.getDate();
         selection[1] = new Date(pickEnd.getDate().getTime() + 86399999L);
         if (cmbTill.getSelectedIndex() == 0) {

@@ -1779,6 +1779,9 @@ public class GUI extends JFrame implements GUIInterface {
             }
             case SaleReportDialog.TRANSACTION_REPORT: {
                 Object[] object = DateAndTerminalDialog.showDialog(this, "Transaction Report");
+                if(object == null){
+                    return;
+                }
                 Date start = (Date) object[0];
                 Date end = (Date) object[1];
                 Till till = (Till) object[2];
