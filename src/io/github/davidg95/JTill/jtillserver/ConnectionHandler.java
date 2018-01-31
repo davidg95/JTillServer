@@ -476,7 +476,7 @@ public class ConnectionHandler {
         return dc.isTillLoggedIn(s);
     }
 
-    @JConnMethod("CHECKUSER")
+    @JConnMethod("CHECKUSERNAME")
     public boolean checkUsername(@JConnParameter("USERNAME") String username) throws IOException, SQLException, JTillException {
         return dc.checkUsername(username);
     }
