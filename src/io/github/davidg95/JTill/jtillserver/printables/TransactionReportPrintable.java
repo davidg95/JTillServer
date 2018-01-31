@@ -89,7 +89,7 @@ public class TransactionReportPrintable implements Printable {
             g.drawString("Report for Terminal " + till.getName(), x, y);
         }
         y += lineSpace;
-        g.drawString("From " + start.toString() + " to " + end.toString(), x, y);
+        g.drawString("From " + start.toString().substring(0, 10) + " to " + end.toString().substring(0, 10), x, y);
         y += lineSpace * 2;
         int x2 = 300;
         int startY = y;

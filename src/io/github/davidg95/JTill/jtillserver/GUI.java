@@ -1667,12 +1667,20 @@ public class GUI extends JFrame implements GUIInterface {
                 if (d == null) {
                     return;
                 }
-                Date[] dates = DateRangeSelectDialog.showDialog(this);
-                if (dates == null) {
+                Object[] object = DateAndTerminalDialog.showDialog(this, "Transaction Report");
+                if (object == null) {
                     return;
                 }
+                Date start = (Date) object[0];
+                Date end = (Date) object[1];
+                Till till = (Till) object[2];
                 try {
-                    List<Sale> sales = dc.consolidated(dates[0], dates[1], -1);
+                    List<Sale> sales;
+                    if (till == null) {
+                        sales = dc.consolidated(start, end, -1);
+                    } else {
+                        sales = dc.consolidated(start, end, till.getId());
+                    }
                     List<Department> departments = Department.getAll();
                     List<Category> categories = Category.getAll();
                     for (Sale s : sales) {
@@ -1702,10 +1710,13 @@ public class GUI extends JFrame implements GUIInterface {
                 if (c == null) {
                     return;
                 }
-                Date[] dates = DateRangeSelectDialog.showDialog(this);
-                if (dates == null) {
+                Object[] object = DateAndTerminalDialog.showDialog(this, "Transaction Report");
+                if (object == null) {
                     return;
                 }
+                Date start = (Date) object[0];
+                Date end = (Date) object[1];
+                Till till = (Till) object[2];
                 break;
             }
             case SaleReportDialog.CLERK_REPORT: {
@@ -1713,10 +1724,13 @@ public class GUI extends JFrame implements GUIInterface {
                 if (s == null) {
                     return;
                 }
-                Date[] dates = DateRangeSelectDialog.showDialog(this);
-                if (dates == null) {
+                Object[] object = DateAndTerminalDialog.showDialog(this, "Transaction Report");
+                if (object == null) {
                     return;
                 }
+                Date start = (Date) object[0];
+                Date end = (Date) object[1];
+                Till till = (Till) object[2];
                 break;
             }
             case SaleReportDialog.PRODUCT_REPORT: {
@@ -1724,10 +1738,13 @@ public class GUI extends JFrame implements GUIInterface {
                 if (o == null) {
                     return;
                 }
-                Date[] dates = DateRangeSelectDialog.showDialog(this);
-                if (dates == null) {
+                Object[] object = DateAndTerminalDialog.showDialog(this, "Transaction Report");
+                if (object == null) {
                     return;
                 }
+                Date start = (Date) object[0];
+                Date end = (Date) object[1];
+                Till till = (Till) object[2];
                 final ModalDialog mDialog = new ModalDialog(this, "Retrieving...");
                 final Runnable run = () -> {
                     try {
@@ -1744,7 +1761,7 @@ public class GUI extends JFrame implements GUIInterface {
 
                         mDialog.hide();
                         PrinterJob job = PrinterJob.getPrinterJob();
-                        String dateStr = dates[0] + " to " + dates[1];
+                        String dateStr = start + " to " + end;
                         job.setPrintable(new ProductReportPrintable(products, dateStr));
                         boolean ok = job.printDialog();
                         final ModalDialog mPrint = new ModalDialog(this, "Printing...");
@@ -1779,7 +1796,7 @@ public class GUI extends JFrame implements GUIInterface {
             }
             case SaleReportDialog.TRANSACTION_REPORT: {
                 Object[] object = DateAndTerminalDialog.showDialog(this, "Transaction Report");
-                if(object == null){
+                if (object == null) {
                     return;
                 }
                 Date start = (Date) object[0];
