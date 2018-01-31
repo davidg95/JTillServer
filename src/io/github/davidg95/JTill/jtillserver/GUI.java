@@ -212,65 +212,6 @@ public class GUI extends JFrame implements GUIInterface {
         }
     }
 
-    /**
-     * Initial setup which creates the database and prompts the user to create
-     * the first member of staff.
-     */
-    private void initialSetup() {
-        if (dc instanceof DBConnect) {
-            try {
-                DBConnect db = (DBConnect) dc;
-                TillSplashScreen.setLabel("Creating database...");
-                db.create(settings.getSetting("db_address") + "create=true;", settings.getSetting("db_username"), settings.getSetting("db_password")); //Create the database
-                TillSplashScreen.setLabel("Populating database");
-                db.addCustomer(new Customer("NONE", "", "", "", "", "", "", "", "", "", "", 0, BigDecimal.ZERO)); //Create a blank customer
-                Staff s = StaffDialog.showNewStaffDialog(this); //Show the create staff dialog
-                if (s == null) {
-                    System.exit(0); // Exit if the user clicked cancel
-                }
-            } catch (SQLException ex) {
-                if (ex.getErrorCode() == 40000) { //If another application is already using the database.
-                    LOG.log(Level.SEVERE, "The database is already in use. The program will now terminate");
-                    JOptionPane.showMessageDialog(this, "The database is already in use by another application. Program will now terminate.\nError Code " + ex.getErrorCode(), "Database in use", JOptionPane.ERROR_MESSAGE);
-                    System.exit(0);
-                } else {
-                    LOG.log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(this, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        }
-    }
-
-    /**
-     * Method to log in to the database. this will not attempt login if the
-     * remote flag has indicated this this is a remote connection to the main
-     * server.
-     */
-    public void databaseLogin() {
-        if (!remote) { //Test if this is a remote server connection
-            try {
-                DBConnect db = (DBConnect) dc;
-                TillSplashScreen.setLabel("Connecting to database"); //Update the splash screen
-                db.connect(settings.getSetting("db_address"), settings.getSetting("db_username"), settings.getSetting("db_password")); //Open a connection to the database
-                setTitle("JTill Server - " + dc.getSetting("SITE_NAME")); //Set the window title
-                if (dc.getStaffCount() == 0) { //Check to see if any staff members have been created
-                    Staff s = new Staff("JTill Admin", Staff.AREA_MANAGER, "admin", "jtill", 0.01, true); //Create the admin member of staff if they do not already exists
-                    try {
-                        dc.addStaff(s); //Add the member of staff
-                    } catch (SQLException | IOException ex) {
-                        JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-                TillSplashScreen.addBar(20);
-            } catch (SQLException ex) {
-                initialSetup(); //If there was an issue connecting to the database, go to the initial setup.
-            } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(this, ex, "Server Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
     public void setUpdateLabel(String text) {
         lblWarnings.setText(text);
     }
@@ -294,19 +235,6 @@ public class GUI extends JFrame implements GUIInterface {
         warningsList.add(o.toString());
         warningCount++;
         lblWarnings.setText("Warnings: " + warningCount);
-    }
-
-    public void checkUpdate() {
-        try {
-            String latest = UpdateChecker.checkForUpdate();
-            if (!latest.equals(TillServer.VERSION)) {
-                if (JOptionPane.showConfirmDialog(this, "Version " + latest + " avaliable. Download now?", "Update", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    UpdateChecker.downloadServerUpdate();
-                }
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error checking for update", "Update", JOptionPane.INFORMATION_MESSAGE);
-        }
     }
 
     /**

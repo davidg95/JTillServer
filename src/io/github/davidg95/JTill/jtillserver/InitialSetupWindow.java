@@ -24,14 +24,14 @@ public class InitialSetupWindow extends javax.swing.JDialog {
 
     private static boolean complete;
 
-    private final Settings s;
+    private final Settings settings;
 
     /**
      * Creates new form InitialSetupWindow
      */
     public InitialSetupWindow() {
         super();
-        this.s = Settings.getInstance();
+        this.settings = Settings.getInstance();
         initComponents();
         setModal(true);
         setLocationRelativeTo(null);
@@ -217,9 +217,9 @@ public class InitialSetupWindow extends javax.swing.JDialog {
         }
 
         try {
-            s.setSetting("SITE_NAME", siteName);
-            s.setSetting("port", strPort);
-            s.setSetting("CURRENCY_SYMBOL", currency);
+            settings.setSetting("SITE_NAME", siteName);
+            settings.setSetting("port", strPort);
+            settings.setSetting("CURRENCY_SYMBOL", currency);
 
             Properties properties = new Properties();
             OutputStream out;
