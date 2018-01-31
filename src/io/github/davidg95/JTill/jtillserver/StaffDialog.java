@@ -299,6 +299,7 @@ public class StaffDialog extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "Wage must be greater than 0", "Create New Staff", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+                password = Encryptor.encrypt(password);
                 staff = new Staff(name, position, username, password, wage, chkEnabled.isSelected());
                 try {
                     Staff s = dc.addStaff(staff);
