@@ -27,7 +27,7 @@ import javax.swing.JOptionPane;
  */
 public class ProductEditWindow extends javax.swing.JInternalFrame {
 
-    private final DataConnect dc = DataConnect.dataconnect;
+    private final DataConnect dc = DataConnect.get();
 
     private DefaultComboBoxModel taxesModel;
     private DefaultComboBoxModel categorysModel;

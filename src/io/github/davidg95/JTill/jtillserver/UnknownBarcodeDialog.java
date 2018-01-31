@@ -26,7 +26,7 @@ import javax.swing.table.TableModel;
  */
 public class UnknownBarcodeDialog extends javax.swing.JDialog {
 
-    private final DataConnect dc = DataConnect.dataconnect;
+    private final DataConnect dc = DataConnect.get();
     private final MyModel model;
 
     /**

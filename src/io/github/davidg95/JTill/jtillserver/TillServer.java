@@ -84,7 +84,7 @@ public class TillServer implements JConnListener {
         TillSplashScreen.showSplashScreen();
         icon = new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/tillIcon.png")).getImage();
         settings = Settings.getInstance();
-        DataConnect.dataconnect = DBConnect.getInstance();
+        DataConnect.set(DBConnect.getInstance());
         TillSplashScreen.setLabel("Loading configurations");
         TillSplashScreen.addBar(5);
         boolean init = settings.loadProperties();
@@ -245,7 +245,7 @@ public class TillServer implements JConnListener {
         aboutItem.addActionListener((ActionEvent e) -> {
             JOptionPane.showMessageDialog(null, "JTill Server is running on port number "
                     + settings.getSetting("port") + "\n"
-                    + DataConnect.dataconnect.toString(), "JTill Server",
+                    + DataConnect.get().toString(), "JTill Server",
                     JOptionPane.INFORMATION_MESSAGE);
         });
 

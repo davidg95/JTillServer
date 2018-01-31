@@ -984,8 +984,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             search.addActionListener((event) -> {
                 btnSearch.doClick();
             });
-            
-            if(txtSearch.getText().isEmpty()){
+
+            if (txtSearch.getText().isEmpty()) {
                 search.setEnabled(false);
             }
 

@@ -564,7 +564,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
                     setCurrentTax(null);
                 }
             });
-            
+
             menu.add(remove);
             menu.show(table, evt.getX(), evt.getY());
         }

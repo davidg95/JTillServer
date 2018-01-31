@@ -86,7 +86,7 @@ public class GUI extends JFrame implements GUIInterface {
      */
     public GUI(boolean remote, Image icon) throws Exception {
         super();
-        this.dc = DataConnect.dataconnect;
+        this.dc = DataConnect.get();
         this.remote = remote;
         GUI.icon = icon;
         if (!remote) {

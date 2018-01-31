@@ -35,7 +35,7 @@ public class BackupDialog extends javax.swing.JDialog {
      */
     public BackupDialog(Window parent) {
         super(parent);
-        dc = DataConnect.dataconnect;
+        dc = DataConnect.get();
         initComponents();
         setModal(true);
         setLocationRelativeTo(parent);

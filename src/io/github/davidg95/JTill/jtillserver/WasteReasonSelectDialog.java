@@ -28,7 +28,7 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
 
     private static WasteReasonSelectDialog dialog;
 
-    private final DataConnect dc = DataConnect.dataconnect;
+    private final DataConnect dc = DataConnect.get();
 
     private static WasteReason reason;
 

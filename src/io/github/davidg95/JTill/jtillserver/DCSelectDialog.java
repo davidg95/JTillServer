@@ -56,7 +56,7 @@ public class DCSelectDialog extends javax.swing.JDialog {
      */
     public DCSelectDialog(Window parent, int mode) {
         super(parent);
-        dc = DataConnect.dataconnect;
+        dc = DataConnect.get();
         this.mode = mode;
         try {
             initComponents();
