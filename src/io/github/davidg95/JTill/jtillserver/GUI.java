@@ -7,6 +7,7 @@ package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
 import io.github.davidg95.JTill.jtillserver.printables.ProductReportPrintable;
+import io.github.davidg95.JTill.jtillserver.printables.TransactionReportPrintable;
 import io.github.davidg95.JTill.jtillserver.salereportdialogs.SaleReportDialog;
 import io.github.davidg95.jconn.JConnData;
 import java.awt.*;
@@ -1774,6 +1775,44 @@ public class GUI extends JFrame implements GUIInterface {
                 final Thread thread = new Thread(run, "Report");
                 thread.start();
                 mDialog.show();
+                break;
+            }
+            case SaleReportDialog.TRANSACTION_REPORT: {
+                Object[] object = DateAndTerminalDialog.showDialog(this, "Transaction Report");
+                Date start = (Date) object[0];
+                Date end = (Date) object[1];
+                Till till = (Till) object[2];
+                final ModalDialog mDialog = new ModalDialog(this, "Transactions");
+                PrinterJob job = PrinterJob.getPrinterJob();
+                boolean ok = job.printDialog();
+                if (ok) {
+                    final Runnable run = new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                List<Sale> sales;
+                                if (till == null) {
+                                    sales = dc.getSalesInRange(start, end);
+                                } else {
+                                    sales = dc.getTerminalSales(start, end, till.getId(), false);
+                                }
+                                PrinterJob job = PrinterJob.getPrinterJob();
+                                job.setPrintable(new TransactionReportPrintable(sales, till, start, end));
+                                job.print();
+                                mDialog.hide();
+                            } catch (IOException | SQLException | PrinterException ex) {
+                                mDialog.hide();
+                                JOptionPane.showMessageDialog(GUI.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                            } finally {
+                                mDialog.hide();
+                            }
+                        }
+                    };
+                    final Thread thread = new Thread(run, "TRANSACTIONS");
+                    thread.start();
+                    mDialog.show();
+                }
+                break;
             }
             default: {
                 break;

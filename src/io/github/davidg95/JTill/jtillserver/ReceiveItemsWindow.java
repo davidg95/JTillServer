@@ -798,6 +798,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 }
             } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error reading file. Are you sure this is a Receive session?", "File Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnAddFileActionPerformed

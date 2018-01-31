@@ -210,7 +210,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("GETSALEDATERANGE")
-    public List<Sale> getSaleDateRange(@JConnParameter("START") Time start, @JConnParameter("END") Time end) throws IOException, SQLException {
+    public List<Sale> getSalesInRange(@JConnParameter("START") Date start, @JConnParameter("END") Date end) throws IOException, SQLException {
         return dc.getSalesInRange(start, end);
     }
 
@@ -724,8 +724,13 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("GETTERMINALSALES")
-    public List<Sale> getTerminalSales(@JConnParameter("TERMINAL") int terminal, @JConnParameter("UNCASHEDFLAG") boolean uncashedOnly) throws IOException, SQLException, JTillException {
-        return dc.getTerminalSales(terminal, uncashedOnly);
+    public List<Sale> getTerminalSales(@JConnParameter("START") Date start, @JConnParameter("END") Date end, @JConnParameter("TERMINAL") int terminal, @JConnParameter("UNCASHEDFLAG") boolean uncashedOnly) throws IOException, SQLException, JTillException {
+        return dc.getTerminalSales(start, end, terminal, uncashedOnly);
+    }
+
+    @JConnMethod("GETALLTERMINALSALES")
+    public List<Sale> getAllTerminalSales(@JConnParameter("TERMINAL") int terminal, @JConnParameter("UNCASHEDFLAG") boolean uncashedOnly) throws IOException, SQLException, JTillException {
+        return dc.getAllTerminalSales(terminal, uncashedOnly);
     }
 
     @JConnMethod("INTEGRITYCHECK")

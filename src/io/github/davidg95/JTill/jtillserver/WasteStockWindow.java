@@ -755,6 +755,8 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "Loaded " + count + " items with " + unknowns + " unknown items", "Load File", JOptionPane.INFORMATION_MESSAGE);
             } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            } catch(Exception ex){
+                JOptionPane.showMessageDialog(this, "Error reading file, are you sure this is a waste session?", "File Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnAddfileActionPerformed

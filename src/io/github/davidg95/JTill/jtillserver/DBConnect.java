@@ -1269,6 +1269,7 @@ public class DBConnect extends DataConnect {
             Statement stmt = con.createStatement();
             stmt.executeUpdate("DELETE FROM WASTEITEMS WHERE PRODUCT = " + id);
             stmt.executeUpdate("DELETE FROM TRIGGERS WHERE PRODUCT=" + id);
+            stmt.executeUpdate("DELETE FROM RECEIVEDITEMS WHERE PRODUCT=" + id);
             stmt.executeUpdate("DELETE FROM PRODUCTS WHERE PRODUCTS.ID = " + id);
             con.commit();
         } catch (SQLException ex) {
@@ -2434,14 +2435,14 @@ public class DBConnect extends DataConnect {
     }
 
     @Override
-    public List<Sale> getSalesInRange(Time start, Time end) throws SQLException, IllegalArgumentException {
+    public List<Sale> getSalesInRange(Date start, Date end) throws SQLException, IllegalArgumentException {
         if (start.after(end)) {
             throw new IllegalArgumentException("Start date needs to be before end date");
         }
         List<Sale> s = getAllSales();
         List<Sale> sales = new LinkedList<>();
 
-        s.stream().filter((sale) -> (sale.getDate().after(start) && sale.getDate().before(start))).forEachOrdered((sale) -> {
+        s.stream().filter((sale) -> (sale.getDate().after(start) && sale.getDate().before(end))).forEachOrdered((sale) -> {
             sales.add(sale);
         });
 
@@ -4283,7 +4284,27 @@ public class DBConnect extends DataConnect {
     }
 
     @Override
-    public List<Sale> getTerminalSales(int terminal, boolean uncashedOnly) throws IOException, SQLException {
+    public List<Sale> getTerminalSales(Date start, Date end, int terminal, boolean uncashedOnly) throws IOException, SQLException {
+        String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.TERMINAL = " + terminal + "AND TIMESTAMP > " + start.getTime() + " AND TIMESTAMP < " + end.getTime() + (uncashedOnly ? " AND s.CASHED = FALSE" : "");
+        Connection con = getConnection();
+        try {
+            Statement stmt = con.createStatement();
+            ResultSet set = stmt.executeQuery(query);
+            List<Sale> sales = getSalesFromResultSet(set);
+            con.commit();
+            for (Sale s : sales) {
+                s.setProducts(getItemsInSale(s));
+            }
+            return sales;
+        } catch (SQLException ex) {
+            con.rollback();
+            LOG.log(Level.SEVERE, null, ex);
+            throw ex;
+        }
+    }
+
+    @Override
+    public List<Sale> getAllTerminalSales(int terminal, boolean uncashedOnly) throws IOException, SQLException {
         String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.TERMINAL = " + terminal + (uncashedOnly ? " AND s.CASHED = FALSE" : "");
         Connection con = getConnection();
         try {

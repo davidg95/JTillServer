@@ -41,6 +41,9 @@ public class UnknownBarcodeDialog extends javax.swing.JDialog {
         setTitle("Unknown barcode browser");
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setResizable(false);
+        setLocationRelativeTo(parent);
+        setModal(true);
+        setIconImage(GUI.icon);
         model = new MyModel(barcodes);
         init();
     }

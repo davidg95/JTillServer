@@ -73,6 +73,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         CardLayout c = (CardLayout) container.getLayout();
         c.show(container, "card2");
         txtBarcode.setText(barcode);
+        txtBarcode.setEnabled(false);
+        chkAssignNextPrivate.setEnabled(false);
+        chkNext.setEnabled(false);
         autoClose = true;
     }
 

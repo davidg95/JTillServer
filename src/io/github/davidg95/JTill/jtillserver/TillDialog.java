@@ -90,7 +90,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
     private void getAllSales() {
         try {
             BigDecimal runningTotal = BigDecimal.ZERO;
-            contents = till.getTerminalSales(true);
+            contents = till.getAllTerminalSales(true);
             model.setRowCount(0);
             for (Sale s : contents) {
                 model.addRow(new Object[]{s.getDate(), s.getTotalItemCount(), "£" + s.getTotal().setScale(2, 6)});

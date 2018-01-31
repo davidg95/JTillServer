@@ -76,11 +76,12 @@
         <Component class="javax.swing.JList" name="list">
           <Properties>
             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
-              <StringArray count="4">
+              <StringArray count="5">
                 <StringItem index="0" value="Department Report"/>
                 <StringItem index="1" value="Category Report"/>
                 <StringItem index="2" value="Clerk Report"/>
                 <StringItem index="3" value="Product Report"/>
+                <StringItem index="4" value="Transaction Report"/>
               </StringArray>
             </Property>
             <Property name="selectionMode" type="int" value="0"/>

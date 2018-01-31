@@ -19,6 +19,7 @@ public class SaleReportDialog extends javax.swing.JDialog {
     public static final int CATEGORY_REPORT = 1;
     public static final int CLERK_REPORT = 2;
     public static final int PRODUCT_REPORT = 3;
+    public static final int TRANSACTION_REPORT = 4;
 
     private static int response;
 
@@ -62,7 +63,7 @@ public class SaleReportDialog extends javax.swing.JDialog {
         jLabel1.setText("Select report type:");
 
         list.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Department Report", "Category Report", "Clerk Report", "Product Report" };
+            String[] strings = { "Department Report", "Category Report", "Clerk Report", "Product Report", "Transaction Report" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
