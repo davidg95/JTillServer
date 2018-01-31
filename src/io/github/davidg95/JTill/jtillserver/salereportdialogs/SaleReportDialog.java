@@ -145,7 +145,7 @@ public class SaleReportDialog extends javax.swing.JDialog {
         if (response == -1) {
             return;
         }
-        setVisible(true);
+        setVisible(false);
     }//GEN-LAST:event_btnSelectActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -1,9 +1,3 @@
-JTill log Wed Jan 31 14:07:03 GMT 2018
-[14:07:03] [INFO]- Connecting to database jdbc:derby:TillEmbedded;
-[14:07:05] [INFO]- Terminal DAVID-PC has connected
-[14:07:12] [INFO]- Colin Grant has logged in from DAVID-PC
-[14:07:19] [INFO]- Colin Grant has logged out
-[14:07:29] [INFO]- David Grant has logged in
-[14:08:14] [INFO]- Terminal DAVID-PC has connected
-[14:08:20] [INFO]- Colin Grant has logged in from DAVID-PC
-[14:08:29] [INFO]- Colin Grant has logged out
+JTill log Wed Jan 31 14:31:33 GMT 2018
+[14:31:33] [INFO]- Connecting to database jdbc:derby:TillEmbedded;
+[14:31:36] [INFO]- David Grant has logged in
