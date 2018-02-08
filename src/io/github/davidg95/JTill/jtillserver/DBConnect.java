@@ -839,7 +839,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -848,7 +847,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -857,7 +855,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -866,7 +863,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -875,7 +871,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -884,7 +879,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -893,7 +887,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -902,7 +895,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         TillSplashScreen.addBar(2);
@@ -912,7 +904,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -921,7 +912,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -930,7 +920,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -939,7 +928,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -948,7 +936,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -957,7 +944,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -966,7 +952,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -975,7 +960,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -984,7 +968,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -993,7 +976,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -1002,7 +984,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -1011,7 +992,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -1020,7 +1000,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -1029,7 +1008,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
         TillSplashScreen.addBar(2);
         try {
@@ -1038,7 +1016,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
-            error(ex);
         }
 
         updates();

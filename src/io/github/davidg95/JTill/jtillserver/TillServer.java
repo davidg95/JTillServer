@@ -189,10 +189,8 @@ public class TillServer implements JConnListener {
      */
     private void initialSetup() {
         try {
+            CreateDatabaseDialog.showDialog(null);
             DBConnect db = (DBConnect) DataConnect.get();
-            TillSplashScreen.setLabel("Creating database...");
-            LOG.info("Creating database");
-            db.create(settings.getSetting("db_address") + "create=true;", settings.getSetting("db_username"), settings.getSetting("db_password")); //Create the database
             TillSplashScreen.setLabel("Populating database");
             LOG.info("Populating database");
             db.addCustomer(new Customer("NONE", "", "", "", "", "", "", "", "", "", "", 0, BigDecimal.ZERO)); //Create a blank customer
