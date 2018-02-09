@@ -242,12 +242,6 @@ public class InitialSetupWindow extends javax.swing.JDialog {
         }
 
         try {
-            try {
-                System.getSecurityManager().checkListen(Integer.parseInt(strPort));
-            } catch (SecurityException ex) {
-                JOptionPane.showMessageDialog(this, "That port cannot be bound", "Port Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
             settings.setSetting("SITE_NAME", siteName);
             settings.setSetting("port", strPort);
             settings.setSetting("CURRENCY_SYMBOL", currency);
