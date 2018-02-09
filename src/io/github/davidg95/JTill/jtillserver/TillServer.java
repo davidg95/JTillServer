@@ -41,7 +41,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class TillServer implements JConnListener {
 
-    private static final Logger LOG = Logger.getLogger(TillServer.class.getName());
+    private static final Logger LOG = Logger.getGlobal();
 
     private GUI g;
     public static Image icon;
@@ -83,7 +83,7 @@ public class TillServer implements JConnListener {
         }
         createAppDataFolder();
         LogFileHandler handler = new LogFileHandler(System.getenv("APPDATA") + "\\JTill Server\\logs\\");
-        Logger.getGlobal().addHandler(handler);
+        LOG.addHandler(handler);
         headless = GraphicsEnvironment.isHeadless();
         final long start = new Date().getTime();
         tillServer = new TillServer();
@@ -96,11 +96,11 @@ public class TillServer implements JConnListener {
     private static void createAppDataFolder() {
         File appData = new File(System.getenv("APPDATA") + "\\JTill Server\\");
         if (!appData.exists()) {
-            Logger.getGlobal().warning("creating JTill Server folder in AppData");
+            LOG.warning("creating JTill Server folder in AppData");
             if (appData.mkdir()) {
                 new File(System.getenv("APPDATA") + "\\JTill Server\\logs\\").mkdir();
             } else {
-                Logger.getGlobal().severe("Error creating appdata folder");
+                LOG.severe("Error creating appdata folder");
             }
         }
     }
