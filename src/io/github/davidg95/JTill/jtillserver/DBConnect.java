@@ -500,6 +500,15 @@ public class DBConnect extends DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+            try {
+                stmt = con.createStatement();
+                stmt.executeUpdate("ALTER TABLE SUPPLIERS ADD COLUMN ACCOUNT_NUMBER VARCHAR(20)");
+                stmt.executeUpdate("ALTER TABLE SUPPLIERS ADD COLUMN EMAIL VARCHAR(30)");
+                con.commit();
+                log("Added columns to SUPPLIERS");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
         }
@@ -3374,7 +3383,9 @@ public class DBConnect extends DataConnect {
                 String name = set.getString("NAME");
                 String addrs = set.getString("ADDRESS");
                 String phone = set.getString("PHONE");
-                sup = new Supplier(id, name, addrs, phone);
+                String email = set.getString("EMAIL");
+                String accountNumber = set.getString("ACCOUNT_NUMBER");
+                sup = new Supplier(id, name, addrs, phone, accountNumber, email);
             }
             con.commit();
             return sup;
@@ -3401,7 +3412,9 @@ public class DBConnect extends DataConnect {
                 String name = set.getString("NAME");
                 String addrs = set.getString("ADDRESS");
                 String phone = set.getString("PHONE");
-                Supplier sup = new Supplier(id, name, addrs, phone);
+                String email = set.getString("EMAIL");
+                String accountNumber = set.getString("ACCOUNT_NUMBER");
+                Supplier sup = new Supplier(id, name, addrs, phone, accountNumber, email);
                 suppliers.add(sup);
             }
             con.commit();
@@ -4306,7 +4319,9 @@ public class DBConnect extends DataConnect {
                 String name = set.getString(6);
                 String addrs = set.getString(7);
                 String phone = set.getString(8);
-                Supplier sup = new Supplier(supp, name, addrs, phone);
+                String accountNumber = set.getString(9);
+                String email = set.getString(10);
+                Supplier sup = new Supplier(supp, name, addrs, phone, accountNumber, email);
 
                 ReceivedReport rr = new ReceivedReport(id, inv, sup, paid);
 
@@ -5007,8 +5022,10 @@ public class DBConnect extends DataConnect {
                 String name = set.getString(7);
                 String s_address = set.getString(8);
                 String phone = set.getString(9);
+                String accountNumber = set.getString(10);
+                String email = set.getString(11);
 
-                Supplier s = new Supplier(supplier, name, s_address, phone);
+                Supplier s = new Supplier(supplier, name, s_address, phone, accountNumber, email);
 
                 Order o = new Order(id, s, sent, sendDate, null, received);
                 orders.add(o);

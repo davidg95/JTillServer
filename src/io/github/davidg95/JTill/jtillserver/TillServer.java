@@ -130,10 +130,19 @@ public class TillServer implements JConnListener {
                 Scanner in = new Scanner(System.in);
                 System.out.println("Enter site name:");
                 String siteName = in.nextLine();
-                System.out.println("Enter port number to use:");
+                System.out.println("Enter port number to use (52341 is default):");
                 String port = in.nextLine();
+                if (port.isEmpty()) {
+                    port = "52341";
+                }
                 if (!Utilities.isNumber(port)) {
                     System.out.println("Invalid input");
+                    System.exit(0);
+                }
+                try {
+                    System.getSecurityManager().checkListen(Integer.parseInt(port));
+                } catch (SecurityException ex) {
+                    System.out.println("That port cannot be bound");
                     System.exit(0);
                 }
                 System.out.println("Enter currency symbol to use:");
@@ -195,7 +204,7 @@ public class TillServer implements JConnListener {
 //                }
                 TillSplashScreen.hideSplashScreen();
                 Staff s = StaffDialog.showNewStaffDialog(null, true);
-                if(s == null){
+                if (s == null) {
                     System.exit(0);
                 }
                 TillSplashScreen.showSplashScreen();
