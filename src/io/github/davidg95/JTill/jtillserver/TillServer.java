@@ -187,12 +187,18 @@ public class TillServer implements JConnListener {
             LOG.info("Connecting to database");
             db.connect(settings.getSetting("db_address"), settings.getSetting("db_username"), settings.getSetting("db_password")); //Open a connection to the database
             if (db.getStaffCount() == 0) { //Check to see if any staff members have been created
-                Staff s = new Staff("JTill Admin", Staff.AREA_MANAGER, "admin", "jtill", 0.01, true); //Create the admin member of staff if they do not already exists
-                try {
-                    db.addStaff(s); //Add the member of staff
-                } catch (SQLException ex) {
-                    LOG.log(Level.SEVERE, "Error creating Admin staff member", ex);
+//                Staff s = new Staff("JTill Admin", Staff.AREA_MANAGER, "admin", "jtill", 0.01, true); //Create the admin member of staff if they do not already exists
+//                try {
+//                    db.addStaff(s); //Add the member of staff
+//                } catch (SQLException ex) {
+//                    LOG.log(Level.SEVERE, "Error creating Admin staff member", ex);
+//                }
+                TillSplashScreen.hideSplashScreen();
+                Staff s = StaffDialog.showNewStaffDialog(null, true);
+                if(s == null){
+                    System.exit(0);
                 }
+                TillSplashScreen.showSplashScreen();
             }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
@@ -206,16 +212,32 @@ public class TillServer implements JConnListener {
      */
     private void initialSetup() {
         try {
-            CreateDatabaseDialog.showDialog(null);
             DBConnect db = (DBConnect) DataConnect.get();
+            if (!headless) {
+                TillSplashScreen.hideSplashScreen();
+                CreateDatabaseDialog.showDialog(null);
+                TillSplashScreen.showSplashScreen();
+            } else {
+                String address = CreateDatabaseDialog.DEFAULT_ADDRESS;
+                System.out.println("Enter database username:");
+                Scanner in = new Scanner(System.in);
+                String username = in.nextLine();
+                System.out.println("Enter database password;");
+                String password = in.nextLine();
+                System.out.println("Creating database...");
+                db.connect(address, username, password);
+                System.out.println("Database Created");
+            }
             TillSplashScreen.setLabel("Populating database");
             LOG.info("Populating database");
             db.addCustomer(new Customer("NONE", "", "", "", "", "", "", "", "", "", "", 0, BigDecimal.ZERO)); //Create a blank customer
             if (!headless) {
-                Staff s = StaffDialog.showNewStaffDialog(null); //Show the create staff dialog
+                TillSplashScreen.hideSplashScreen();
+                Staff s = StaffDialog.showNewStaffDialog(null, true); //Show the create staff dialog
                 if (s == null) {
                     System.exit(0); // Exit if the user clicked cancel
                 }
+                TillSplashScreen.showSplashScreen();
             } else {
                 Staff s = new Staff("JTill Admin", Staff.AREA_MANAGER, "admin", "jtill", 0.01, true); //Create the admin member of staff if they do not already exists
                 try {
