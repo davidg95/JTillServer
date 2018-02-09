@@ -139,6 +139,7 @@ public class DBConnect extends DataConnect {
             TillSplashScreen.addBar(10);
             con.commit();
         }
+        createTables();
         updates();
     }
 
@@ -162,7 +163,7 @@ public class DBConnect extends DataConnect {
                 con.rollback();
             }
             try {
-                String received_reports = "create table APP.RECEIVED_REPORTS\n"
+                String received_reports = "create table RECEIVED_REPORTS\n"
                         + "(\n"
                         + "     ID INT not null primary key\n"
                         + "         GENERATED ALWAYS AS IDENTITY\n"
@@ -268,7 +269,7 @@ public class DBConnect extends DataConnect {
                 con.rollback();
             }
             try {
-                String declarations = "create table \"APP\".DECLARATIONS\n"
+                String declarations = "create table DECLARATIONS\n"
                         + "(\n"
                         + "     ID INT not null primary key\n"
                         + "         GENERATED ALWAYS AS IDENTITY\n"
@@ -340,7 +341,7 @@ public class DBConnect extends DataConnect {
                 con.rollback();
             }
             try {
-                String condiments = "create table \"APP\".CONDIMENTS\n"
+                String condiments = "create table CONDIMENTS\n"
                         + "(\n"
                         + "     ID INT not null primary key\n"
                         + "         GENERATED ALWAYS AS IDENTITY\n"
@@ -574,7 +575,7 @@ public class DBConnect extends DataConnect {
      */
     private void createTables() throws SQLException {
         LOG.log(Level.INFO, "Creating tables");
-        String tills = "create table APP.TILLS\n"
+        String tills = "create table TILLS\n"
                 + "(\n"
                 + "	ID INT not null primary key\n"
                 + "        GENERATED ALWAYS AS IDENTITY\n"
@@ -584,7 +585,7 @@ public class DBConnect extends DataConnect {
                 + "     UNCASHED DOUBLE not null,\n"
                 + "     DEFAULT_SCREEN INT not null\n"
                 + ")";
-        String categorys = "create table APP.CATEGORYS\n"
+        String categorys = "create table CATEGORYS\n"
                 + "(\n"
                 + "	ID INT not null primary key\n"
                 + "        GENERATED ALWAYS AS IDENTITY\n"
@@ -595,14 +596,14 @@ public class DBConnect extends DataConnect {
                 + "     TIME_RESTRICT BOOLEAN not null,\n"
                 + "     MINIMUM_AGE INT not null\n"
                 + ")";
-        String departments = "create table APP.DEPARTMENTS\n"
+        String departments = "create table DEPARTMENTS\n"
                 + "(\n"
                 + "     ID INT not null primary key\n"
                 + "         GENERATED ALWAYS AS IDENTITY\n"
                 + "         (START WITH 1, INCREMENT BY 1),"
                 + "     NAME VARCHAR(30) not null\n"
                 + ")";
-        String tax = "create table \"APP\".TAX\n"
+        String tax = "create table TAX\n"
                 + "(\n"
                 + "	ID INT not null primary key\n"
                 + "        GENERATED ALWAYS AS IDENTITY\n"
@@ -610,14 +611,14 @@ public class DBConnect extends DataConnect {
                 + "	NAME VARCHAR(20) not null,\n"
                 + "	VALUE DOUBLE not null\n"
                 + ")";
-        String configs = "create table APP.CONFIGS\n"
+        String configs = "create table CONFIGS\n"
                 + "(\n"
                 + "	NAME INT not null primary key\n"
                 + "        GENERATED ALWAYS AS IDENTITY\n"
                 + "        (START WITH 1, INCREMENT BY 1),\n"
                 + "	VALUE VARCHAR(20) not null\n"
                 + ")";
-        String sales = "create table APP.SALES\n"
+        String sales = "create table SALES\n"
                 + "(\n"
                 + "     ID INT not null primary key\n"
                 + "        GENERATED ALWAYS AS IDENTITY\n"
@@ -630,7 +631,7 @@ public class DBConnect extends DataConnect {
                 + "     STAFF int,\n"
                 + "     MOP int\n"
                 + ")";
-        String saleItems = "create table APP.SALEITEMS\n"
+        String saleItems = "create table SALEITEMS\n"
                 + "(\n"
                 + "     ID INT not null primary key\n"
                 + "        GENERATED ALWAYS AS IDENTITY\n"
@@ -642,7 +643,7 @@ public class DBConnect extends DataConnect {
                 + "     TAX double not null,\n"
                 + "     SALE_ID INT not null references SALES(ID)\n"
                 + ")";
-        String customers = "create table \"APP\".CUSTOMERS\n"
+        String customers = "create table CUSTOMERS\n"
                 + "(\n"
                 + "	ID INT not null primary key\n"
                 + "        GENERATED ALWAYS AS IDENTITY\n"
@@ -661,7 +662,7 @@ public class DBConnect extends DataConnect {
                 + "	LOYALTY_POINTS INTEGER,\n"
                 + "     MONEY_DUE DOUBLE\n"
                 + ")";
-        String products = "create table \"APP\".PRODUCTS\n"
+        String products = "create table PRODUCTS\n"
                 + "(\n"
                 + "	ID INT not null primary key\n"
                 + "        GENERATED ALWAYS AS IDENTITY\n"
@@ -682,7 +683,7 @@ public class DBConnect extends DataConnect {
                 + "     PACK_SIZE INT,\n"
                 + "     BARCODE VARCHAR(15)\n"
                 + ")";
-        String discounts = "create table \"APP\".DISCOUNTS\n"
+        String discounts = "create table DISCOUNTS\n"
                 + "(\n"
                 + "	ID INT not null primary key\n"
                 + "        GENERATED ALWAYS AS IDENTITY\n"
@@ -696,7 +697,7 @@ public class DBConnect extends DataConnect {
                 + "     STARTT BIGINT,\n"
                 + "     ENDT BIGINT\n"
                 + ")";
-        String buckets = "create table \"APP\".BUCKETS\n"
+        String buckets = "create table BUCKETS\n"
                 + "(\n"
                 + "     ID INT not null primary key\n"
                 + "         GENERATED ALWAYS AS IDENTITY\n"
@@ -705,7 +706,7 @@ public class DBConnect extends DataConnect {
                 + "     TRIGGERSREQUIRED INT,\n"
                 + "     REQUIREDTRIGGER BOOLEAN\n"
                 + ")";
-        String triggers = "create table \"APP\".TRIGGERS\n"
+        String triggers = "create table TRIGGERS\n"
                 + "(\n"
                 + "     ID INT not null primary key\n"
                 + "         GENERATED ALWAYS AS IDENTITY\n"
@@ -714,7 +715,7 @@ public class DBConnect extends DataConnect {
                 + "     PRODUCT INT not null references PRODUCTS(ID),\n"
                 + "     QUANTITYREQUIRED INT\n"
                 + ")";
-        String staff = "create table \"APP\".STAFF\n"
+        String staff = "create table STAFF\n"
                 + "(\n"
                 + "	ID INT not null primary key\n"
                 + "        GENERATED ALWAYS AS IDENTITY\n"
@@ -726,7 +727,7 @@ public class DBConnect extends DataConnect {
                 + "     ENABLED BOOLEAN,\n"
                 + "     WAGE DOUBLE\n"
                 + ")";
-        String screens = "create table \"APP\".SCREENS\n"
+        String screens = "create table SCREENS\n"
                 + "(\n"
                 + "     ID INT not null primary key\n"
                 + "         GENERATED ALWAYS AS IDENTITY\n"
@@ -736,7 +737,7 @@ public class DBConnect extends DataConnect {
                 + "     INHERITS INT not null,\n"
                 + "     HEIGHT INT not null\n"
                 + ")";
-        String buttons = "create table \"APP\".BUTTONS\n"
+        String buttons = "create table BUTTONS\n"
                 + "(\n"
                 + "     ID INT not null primary key\n"
                 + "         GENERATED ALWAYS AS IDENTITY\n"
@@ -754,7 +755,7 @@ public class DBConnect extends DataConnect {
                 + "     SCREEN_ID INT not null references SCREENS(ID),\n"
                 + "     LINK VARCHAR(50)\n"
                 + ")";
-        String wasteReports = "create table \"APP\".WASTEREPORTS\n"
+        String wasteReports = "create table WASTEREPORTS\n"
                 + "(\n"
                 + "     ID INT not null primary key\n"
                 + "         GENERATED ALWAYS AS IDENTITY\n"
@@ -762,14 +763,14 @@ public class DBConnect extends DataConnect {
                 + "     VALUE DOUBLE,\n"
                 + "     TIMESTAMP bigint\n"
                 + ")";
-        String wasteReasons = "create table \"APP\".WASTEREASONS\n"
+        String wasteReasons = "create table WASTEREASONS\n"
                 + "(\n"
                 + "     ID INT not null primary key\n"
                 + "         GENERATED ALWAYS AS IDENTITY\n"
                 + "         (START WITH 1, INCREMENT BY 1),\n"
                 + "     REASON VARCHAR(30)\n"
                 + ")";
-        String wasteItems = "create table \"APP\".WASTEITEMS\n"
+        String wasteItems = "create table WASTEITEMS\n"
                 + "(\n"
                 + "     ID INT not null primary key\n"
                 + "         GENERATED ALWAYS AS IDENTITY\n"
@@ -779,7 +780,7 @@ public class DBConnect extends DataConnect {
                 + "     QUANTITY INT,\n"
                 + "     REASON INT not null references WASTEREASONS(ID)\n"
                 + ")";
-        String suppliers = "create table \"APP\".SUPPLIERS\n"
+        String suppliers = "create table SUPPLIERS\n"
                 + "(\n"
                 + "     ID INT not null primary key\n"
                 + "       GENERATED ALWAYS AS IDENTITY\n"
@@ -788,7 +789,7 @@ public class DBConnect extends DataConnect {
                 + "     ADDRESS VARCHAR(100),\n"
                 + "     PHONE VARCHAR(20)\n"
                 + ")";
-        String receivedItems = "create table \"APP\".RECEIVEDITEMS\n"
+        String receivedItems = "create table RECEIVEDITEMS\n"
                 + "(\n"
                 + "     ID INT not null primary key\n"
                 + "         GENERATED ALWAYS AS IDENTITY\n"
@@ -797,7 +798,7 @@ public class DBConnect extends DataConnect {
                 + "     PRICE DOUBLE,\n"
                 + "     QUANTITY INT\n"
                 + ")";
-        String clockOnOff = "create table \"APP\".CLOCKONOFF\n"
+        String clockOnOff = "create table CLOCKONOFF\n"
                 + "(\n"
                 + "     ID INT not null primary key\n"
                 + "         GENERATED ALWAYS AS IDENTITY\n"
@@ -806,7 +807,7 @@ public class DBConnect extends DataConnect {
                 + "     TIMESTAMP BIGINT,\n"
                 + "     ONOFF int\n"
                 + ")";
-        String images = "create table \"APP\".IMAGES\n"
+        String images = "create table IMAGES\n"
                 + "(\n"
                 + "     ID INT not null primary key\n"
                 + "         GENERATED ALWAYS AS IDENTITY\n"
@@ -814,7 +815,7 @@ public class DBConnect extends DataConnect {
                 + "     NAME VARCHAR(50),\n"
                 + "     URL VARCHAR(200)\n"
                 + ")";
-        String declarations = "create table \"APP\".DECLARATIONS\n"
+        String declarations = "create table DECLARATIONS\n"
                 + "(\n"
                 + "     ID INT not null primary key\n"
                 + "         GENERATED ALWAYS AS IDENTITY\n"
@@ -832,191 +833,52 @@ public class DBConnect extends DataConnect {
         try {
             stmt.execute(tills);
             LOG.log(Level.INFO, "Created tills table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(tax);
             LOG.log(Level.INFO, "Created tax table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(categorys);
             LOG.log(Level.INFO, "Created categorys table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(departments);
             LOG.log(Level.INFO, "Created departments table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(configs);
             LOG.log(Level.INFO, "Created configs table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(sales);
             LOG.log(Level.INFO, "Created sales table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(customers);
             LOG.log(Level.INFO, "Created customers table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(products);
             LOG.log(Level.INFO, "Created products table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(discounts);
             LOG.log(Level.INFO, "Created discounts table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(buckets);
             LOG.log(Level.INFO, "Created buckets table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(triggers);
             LOG.log(Level.INFO, "Create triggers table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(saleItems);
             LOG.log(Level.INFO, "Created saleItems table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(staff);
             LOG.log(Level.INFO, "Created staff table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(screens);
             LOG.log(Level.INFO, "Created screens table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(buttons);
             LOG.log(Level.INFO, "Created buttons table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(wasteReports);
             LOG.log(Level.INFO, "Created waste reports table");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(wasteReasons);
             LOG.log(Level.INFO, "Created table waste reasons");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(wasteItems);
             LOG.log(Level.INFO, "Created table waste items");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(suppliers);
             LOG.log(Level.INFO, "Created table suppliers");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(receivedItems);
             LOG.log(Level.INFO, "Created table recevied items");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(clockOnOff);
             LOG.log(Level.INFO, "Created table clockonoff");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(images);
             LOG.log(Level.INFO, "Created table images");
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-        TillSplashScreen.addBar(2);
-        try {
             stmt.execute(declarations);
             LOG.log(Level.INFO, "Created table declarations");
             con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-        }
-
-        updates();
-
-        try {
+            updates();
             String addDepartment = "INSERT INTO DEPARTMENTS (NAME) VALUES ('DEFAULT')";
             String addCategory = "INSERT INTO CATEGORYS (NAME, TIME_RESTRICT, MINIMUM_AGE, DEPARTMENT) VALUES ('Default','FALSE',0, 1)";
             String addTax = "INSERT INTO TAX (NAME, VALUE) VALUES ('ZERO',0.0)";
@@ -1027,6 +889,7 @@ public class DBConnect extends DataConnect {
             stmt.executeUpdate(addReason);
             con.commit();
         } catch (SQLException ex) {
+            LOG.info("Tables already exist, so they do not need created");
             con.rollback();
         }
         Screen s = new Screen("DEFAULT", 5, 10, -1, 0, 0);
@@ -1041,7 +904,6 @@ public class DBConnect extends DataConnect {
                 y++;
             }
         }
-        updates();
     }
 
     private void error(SQLException ex) {
@@ -3161,7 +3023,7 @@ public class DBConnect extends DataConnect {
         Connection con = getConnection();
         try {
             for (WasteItem i : items) {
-                PreparedStatement stmt = con.prepareStatement("INSERT INTO APP.WASTEITEMS (PRODUCT, QUANTITY, REASON, VALUE, TIMESTAMP) values (" + i.getProduct().getId() + "," + i.getQuantity() + "," + i.getReason().getId() + "," + i.getTotalValue() + "," + i.getTimestamp().getTime() + ")", Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement stmt = con.prepareStatement("INSERT INTO WASTEITEMS (PRODUCT, QUANTITY, REASON, VALUE, TIMESTAMP) values (" + i.getProduct().getId() + "," + i.getQuantity() + "," + i.getReason().getId() + "," + i.getTotalValue() + "," + i.getTimestamp().getTime() + ")", Statement.RETURN_GENERATED_KEYS);
                 stmt.executeUpdate();
                 ResultSet set = stmt.getGeneratedKeys();
                 while (set.next()) {
@@ -3246,7 +3108,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public WasteItem addWasteItem(WasteItem wi) throws IOException, SQLException, JTillException {
-        String query = "INSERT INTO APP.WASTEITEMS (PRODUCT, QUANTITY, REASON, VALUE, TIMESTAMP) values (" + wi.getProduct().getId() + "," + wi.getQuantity() + "," + wi.getReason() + "," + wi.getTotalValue() + "," + wi.getTimestamp().getTime() + ")";
+        String query = "INSERT INTO WASTEITEMS (PRODUCT, QUANTITY, REASON, VALUE, TIMESTAMP) values (" + wi.getProduct().getId() + "," + wi.getQuantity() + "," + wi.getReason() + "," + wi.getTotalValue() + "," + wi.getTimestamp().getTime() + ")";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -3339,7 +3201,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public WasteReason addWasteReason(WasteReason wr) throws IOException, SQLException {
-        String query = "INSERT INTO APP.WASTEREASONS (REASON, DELETED) values ('" + wr.getReason() + "', false)";
+        String query = "INSERT INTO WASTEREASONS (REASON, DELETED) values ('" + wr.getReason() + "', false)";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -5465,7 +5327,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public RefundReason addRefundReason(RefundReason r) throws IOException, SQLException {
-        String query = "INSERT INTO APP.REFUND_REASONS (REASON, LEVEL, DELETED) values ('" + r.getReason() + "'," + r.getPriviledgeLevel() + ", false)";
+        String query = "INSERT INTO REFUND_REASONS (REASON, LEVEL, DELETED) values ('" + r.getReason() + "'," + r.getPriviledgeLevel() + ", false)";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {

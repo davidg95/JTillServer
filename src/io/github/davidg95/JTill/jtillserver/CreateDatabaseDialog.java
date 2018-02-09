@@ -28,15 +28,15 @@ public class CreateDatabaseDialog extends javax.swing.JDialog {
     /**
      * The default database address.
      */
-    public final String DEFAULT_ADDRESS = "jdbc:derby:" + System.getProperty("user.home") + "\\JTill-Database;create=true";
+    public static final String DEFAULT_ADDRESS = "jdbc:derby:" + System.getProperty("user.home") + "\\JTill-Database;create=true";
     /**
      * The default database username.
      */
-    public final String DEFAULT_USERNAME = "APP";
+    public static final String DEFAULT_USERNAME = "APP";
     /**
      * The default database password.
      */
-    public final String DEFAULT_PASSWORD = "App";
+    public static final String DEFAULT_PASSWORD = "App";
 
     /**
      * Creates new form CreateDatabaseDialog
@@ -71,14 +71,13 @@ public class CreateDatabaseDialog extends javax.swing.JDialog {
 
         jPanel1 = new javax.swing.JPanel();
         btnExit = new javax.swing.JButton();
-        btnTest = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         txtUsername = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtUrl = new javax.swing.JTextField();
         btnContinue = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnConnect = new javax.swing.JButton();
         prg = new javax.swing.JProgressBar();
         txtPassword = new javax.swing.JPasswordField();
 
@@ -92,13 +91,6 @@ public class CreateDatabaseDialog extends javax.swing.JDialog {
         btnExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExitActionPerformed(evt);
-            }
-        });
-
-        btnTest.setText("Test");
-        btnTest.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTestActionPerformed(evt);
             }
         });
 
@@ -116,10 +108,16 @@ public class CreateDatabaseDialog extends javax.swing.JDialog {
             }
         });
 
-        jButton2.setText("Create Database");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnConnect.setText("Connect");
+        btnConnect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnConnectActionPerformed(evt);
+            }
+        });
+
+        txtPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPasswordActionPerformed(evt);
             }
         });
 
@@ -131,26 +129,22 @@ public class CreateDatabaseDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(prg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel3)
-                                .addComponent(jLabel4)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING))
-                            .addGap(38, 38, 38)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtUsername)
-                                .addComponent(txtUrl)
-                                .addComponent(txtPassword)))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGap(2, 2, 2)
-                            .addComponent(btnTest)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jButton2)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnContinue)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnExit))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(38, 38, 38)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtUsername)
+                            .addComponent(txtUrl)
+                            .addComponent(txtPassword)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnConnect)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 171, Short.MAX_VALUE)
+                        .addComponent(btnContinue)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnExit)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -170,12 +164,11 @@ public class CreateDatabaseDialog extends javax.swing.JDialog {
                     .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnTest)
-                    .addComponent(jButton2)
+                    .addComponent(btnConnect)
                     .addComponent(btnContinue)
                     .addComponent(btnExit))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(prg, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                .addComponent(prg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -185,21 +178,20 @@ public class CreateDatabaseDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
         String url = txtUrl.getText();
         String username = txtUsername.getText();
         String password = new String(txtPassword.getPassword());
@@ -221,8 +213,10 @@ public class CreateDatabaseDialog extends javax.swing.JDialog {
                 settings.setSetting("db_address", url);
                 settings.setSetting("db_username", username);
                 settings.setSetting("db_password", password);
+                db.connect(url, username, password);
                 db.create(url, username, password);
                 btnContinue.setEnabled(true);
+                btnExit.setEnabled(true);
                 prg.setIndeterminate(false);
                 JOptionPane.showMessageDialog(CreateDatabaseDialog.this, "Database creation successful", "Database", JOptionPane.INFORMATION_MESSAGE);
             } catch (SQLException ex) {
@@ -237,7 +231,7 @@ public class CreateDatabaseDialog extends javax.swing.JDialog {
         };
         final Thread thread = new Thread(runnable, "CREATE_DB");
         thread.start();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnConnectActionPerformed
 
     private void btnContinueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinueActionPerformed
         setVisible(false);
@@ -247,51 +241,14 @@ public class CreateDatabaseDialog extends javax.swing.JDialog {
         System.exit(0);
     }//GEN-LAST:event_btnExitActionPerformed
 
-    private void btnTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTestActionPerformed
-        String url = txtUrl.getText();
-        String username = txtUsername.getText();
-        String password = new String(txtPassword.getPassword());
-
-        if (url.isEmpty() || password.isEmpty() || username.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Fill out all required fields", "Database", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        for (Component c : jPanel1.getComponents()) {
-            c.setEnabled(false);
-        }
-
-        prg.setIndeterminate(true);
-
-        final Runnable runnable = () -> {
-            try {
-                db.connect(url, username, password);
-                btnContinue.setEnabled(true);
-                prg.setIndeterminate(false);
-                for (Component c : jPanel1.getComponents()) {
-                    c.setEnabled(true);
-                }
-                btnContinue.setEnabled(false);
-                JOptionPane.showMessageDialog(CreateDatabaseDialog.this, "Database connection successful", "Database", JOptionPane.INFORMATION_MESSAGE);
-            } catch (SQLException ex) {
-                for (Component c : jPanel1.getComponents()) {
-                    c.setEnabled(true);
-                }
-                btnContinue.setEnabled(false);
-                prg.setIndeterminate(false);
-                Logger.getLogger(CreateDatabaseDialog.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(CreateDatabaseDialog.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        };
-        final Thread thread = new Thread(runnable, "TEST_DB");
-        thread.start();
-    }//GEN-LAST:event_btnTestActionPerformed
+    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
+        btnConnect.doClick();
+    }//GEN-LAST:event_txtPasswordActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnConnect;
     private javax.swing.JButton btnContinue;
     private javax.swing.JButton btnExit;
-    private javax.swing.JButton btnTest;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

@@ -17,6 +17,8 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.beans.PropertyVetoException;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.InetAddress;
@@ -29,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -526,6 +530,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemTerminals = new javax.swing.JMenuItem();
         itemSiteDetails = new javax.swing.JMenuItem();
         itemDatabase = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         itemConsolodated = new javax.swing.JMenu();
         itemSalesReporting = new javax.swing.JMenuItem();
         itemTransactionViewer = new javax.swing.JMenuItem();
@@ -1243,6 +1248,14 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         menuSetup.add(itemDatabase);
+
+        jMenuItem2.setText("Test");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        menuSetup.add(jMenuItem2);
 
         jMenuBar1.add(menuSetup);
 
@@ -2072,6 +2085,10 @@ public class GUI extends JFrame implements GUIInterface {
         RefundReasonsDialog.showDialog();
     }//GEN-LAST:event_itemRefundReasonsActionPerformed
 
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        new InitialConfigWindow().setVisible(true);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
     private javax.swing.JButton btnCategorys;
@@ -2140,6 +2157,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;

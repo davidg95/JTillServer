@@ -47,6 +47,8 @@ public class StaffDialog extends javax.swing.JDialog {
         if (manager) {
             cmbPosition.setSelectedIndex(2);
             cmbPosition.setEnabled(false);
+            chkEnabled.setSelected(true);
+            chkEnabled.setEnabled(false);
         }
         this.setLocationRelativeTo(parent);
         this.setModal(true);
