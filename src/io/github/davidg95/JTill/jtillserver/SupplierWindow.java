@@ -519,9 +519,9 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
             menu.add(remove);
             menu.show(table, evt.getX(), evt.getY());
         } else if (SwingUtilities.isLeftMouseButton(evt)) {
+            setCurrent(s);
+            tabbed.setEnabledAt(1, true);
             if (evt.getClickCount() == 2) {
-                setCurrent(s);
-                tabbed.setEnabledAt(1, true);
                 tabbed.setSelectedIndex(1);
             }
         }

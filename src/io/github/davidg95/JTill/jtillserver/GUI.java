@@ -533,14 +533,16 @@ public class GUI extends JFrame implements GUIInterface {
         jMenuItem2 = new javax.swing.JMenuItem();
         itemConsolodated = new javax.swing.JMenu();
         itemSalesReporting = new javax.swing.JMenuItem();
-        itemTransactionViewer = new javax.swing.JMenuItem();
-        itemLabelPrinting = new javax.swing.JMenuItem();
-        itemStaffClocking = new javax.swing.JMenuItem();
         itemWasteReports = new javax.swing.JMenuItem();
         itemReceivedReports = new javax.swing.JMenuItem();
         itemDeclarations = new javax.swing.JMenuItem();
         itemConsolidated = new javax.swing.JMenuItem();
         itemStockReport = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JPopupMenu.Separator();
+        itemTransactionViewer = new javax.swing.JMenuItem();
+        jSeparator5 = new javax.swing.JPopupMenu.Separator();
+        itemLabelPrinting = new javax.swing.JMenuItem();
+        itemStaffClocking = new javax.swing.JMenuItem();
         menuHelp = new javax.swing.JMenu();
         itemAbout = new javax.swing.JMenuItem();
         itemHelp = new javax.swing.JMenuItem();
@@ -1270,30 +1272,6 @@ public class GUI extends JFrame implements GUIInterface {
         });
         itemConsolodated.add(itemSalesReporting);
 
-        itemTransactionViewer.setText("Transaction Viewer");
-        itemTransactionViewer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemTransactionViewerActionPerformed(evt);
-            }
-        });
-        itemConsolodated.add(itemTransactionViewer);
-
-        itemLabelPrinting.setText("Label Printing");
-        itemLabelPrinting.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemLabelPrintingActionPerformed(evt);
-            }
-        });
-        itemConsolodated.add(itemLabelPrinting);
-
-        itemStaffClocking.setText("Staff Hours");
-        itemStaffClocking.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemStaffClockingActionPerformed(evt);
-            }
-        });
-        itemConsolodated.add(itemStaffClocking);
-
         itemWasteReports.setText("Waste Reports");
         itemWasteReports.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1333,6 +1311,32 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         itemConsolodated.add(itemStockReport);
+        itemConsolodated.add(jSeparator4);
+
+        itemTransactionViewer.setText("Transaction Viewer");
+        itemTransactionViewer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemTransactionViewerActionPerformed(evt);
+            }
+        });
+        itemConsolodated.add(itemTransactionViewer);
+        itemConsolodated.add(jSeparator5);
+
+        itemLabelPrinting.setText("Label Printing");
+        itemLabelPrinting.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemLabelPrintingActionPerformed(evt);
+            }
+        });
+        itemConsolodated.add(itemLabelPrinting);
+
+        itemStaffClocking.setText("Staff Hours");
+        itemStaffClocking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemStaffClockingActionPerformed(evt);
+            }
+        });
+        itemConsolodated.add(itemStaffClocking);
 
         jMenuBar1.add(itemConsolodated);
 
@@ -2156,6 +2160,8 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JLabel lblClients;
     private javax.swing.JLabel lblHelp;
     private javax.swing.JLabel lblPort;

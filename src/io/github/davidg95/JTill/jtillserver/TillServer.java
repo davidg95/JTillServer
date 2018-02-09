@@ -209,6 +209,14 @@ public class TillServer implements JConnListener {
                 }
                 TillSplashScreen.showSplashScreen();
             }
+            try {
+                if (db.getAllWasteReasons().isEmpty()) {
+                    WasteReason reason = new WasteReason("DEFAULT", 1);
+                    reason.save();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(TillServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
             initialSetup(); //If there was an issue connecting to the database, go to the initial setup.
