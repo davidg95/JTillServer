@@ -509,6 +509,13 @@ public class DBConnect extends DataConnect {
             } catch (SQLException ex) {
                 con.rollback();
             }
+            try {
+                stmt.executeUpdate("ALTER TABLE CUSTOMERS ADD COLUMN MAX_DEBT BIGINT");
+                con.commit();
+                log("Added MAX_DEBT to CUSTOMERS");
+            } catch (SQLException ex) {
+                con.rollback();
+            }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
         }
@@ -1266,7 +1273,8 @@ public class DBConnect extends DataConnect {
             String notes = set.getString(12);
             int loyaltyPoints = set.getInt(13);
             BigDecimal moneyDue = set.getBigDecimal(14);
-            Customer c = new Customer(id, name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, loyaltyPoints, moneyDue);
+            BigDecimal maxDebt = set.getBigDecimal(15);
+            Customer c = new Customer(id, name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, loyaltyPoints, moneyDue, maxDebt);
             c = (Customer) Encryptor.decrypt(c);
             customers.add(c);
         }
@@ -1284,7 +1292,7 @@ public class DBConnect extends DataConnect {
     @Override
     public Customer addCustomer(Customer c) throws SQLException {
         c = (Customer) Encryptor.encrypt(c);
-        String query = "INSERT INTO CUSTOMERS (NAME, PHONE, MOBILE, EMAIL, ADDRESS_LINE_1, ADDRESS_LINE_2, TOWN, COUNTY, COUNTRY, POSTCODE, NOTES, LOYALTY_POINTS, MONEY_DUE) VALUES (" + c.getSQLInsertString() + ")";
+        String query = "INSERT INTO CUSTOMERS (NAME, PHONE, MOBILE, EMAIL, ADDRESS_LINE_1, ADDRESS_LINE_2, TOWN, COUNTY, COUNTRY, POSTCODE, NOTES, LOYALTY_POINTS, MONEY_DUE, MAX_DEBT) VALUES (" + c.getSQLInsertString() + ")";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -3330,7 +3338,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public Supplier addSupplier(Supplier s) throws IOException, SQLException {
-        String query = "INSERT INTO SUPPLIERS (NAME, ADDRESS, PHONE) VALUES ('" + s.getName() + "','" + s.getAddress() + "','" + s.getContactNumber() + "')";
+        String query = "INSERT INTO SUPPLIERS (NAME, ADDRESS, PHONE, ACCOUNT_NUMBER, EMAIL) VALUES ('" + s.getName() + "','" + s.getAddress() + "','" + s.getContactNumber() + "','" + s.getEmail() + "','" + s.getAccountNumber() + "')";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         long stamp = supL.writeLock();
@@ -3430,7 +3438,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public Supplier updateSupplier(Supplier s) throws IOException, SQLException, JTillException {
-        String query = "UPDATE SUPPLIERS SET NAME='" + s.getName() + "', ADDRESS='" + s.getAddress() + "', PHONE='" + s.getContactNumber() + "' WHERE ID=" + s.getId();
+        String query = "UPDATE SUPPLIERS SET NAME='" + s.getName() + "', ADDRESS='" + s.getAddress() + "', PHONE='" + s.getContactNumber() + "', ACCOUNT_NUMBER='" + s.getAccountNumber() + "', EMAIL='" + s.getEmail() + "' WHERE ID=" + s.getId();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         long stamp = supL.writeLock();

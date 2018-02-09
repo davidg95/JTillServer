@@ -13,6 +13,8 @@ import java.awt.Window;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -149,6 +151,8 @@ public class CustomerDialog extends javax.swing.JDialog {
         txtNotes = new javax.swing.JTextArea();
         jLabel14 = new javax.swing.JLabel();
         txtMoneyDue = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        txtMaxDebt = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         txtAddress1 = new javax.swing.JTextField();
         txtAddress2 = new javax.swing.JTextField();
@@ -203,6 +207,10 @@ public class CustomerDialog extends javax.swing.JDialog {
 
         txtMoneyDue.setText("0.00");
 
+        jLabel12.setText("Maximum Debt:");
+
+        txtMaxDebt.setText("0.00");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -210,6 +218,7 @@ public class CustomerDialog extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel12)
                     .addComponent(jLabel14)
                     .addComponent(jLabel11)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -228,7 +237,8 @@ public class CustomerDialog extends javax.swing.JDialog {
                     .addComponent(txtPhone)
                     .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                     .addComponent(jScrollPane1)
-                    .addComponent(txtMoneyDue))
+                    .addComponent(txtMoneyDue)
+                    .addComponent(txtMaxDebt))
                 .addContainerGap(44, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -258,11 +268,15 @@ public class CustomerDialog extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtMoneyDue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(txtMaxDebt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Details", jPanel1);
@@ -373,6 +387,7 @@ public class CustomerDialog extends javax.swing.JDialog {
         String notes = txtNotes.getText();
         int loyalty = Integer.parseInt(txtLoyalty.getText());
         BigDecimal moneyDue = new BigDecimal(Double.parseDouble(txtMoneyDue.getText()));
+        BigDecimal maxDebt = new BigDecimal(txtMoneyDue.getText());
 
         String address1 = txtAddress1.getText();
         String address2 = txtAddress2.getText();
@@ -395,9 +410,16 @@ public class CustomerDialog extends javax.swing.JDialog {
             customer.setCounty(county);
             customer.setCountry(country);
             customer.setPostcode(postcode);
-            customer.setMoneyDue(new BigDecimal(Double.parseDouble(txtMoneyDue.getText())));
+            customer.setMoneyDue(moneyDue);
+            customer.setMaxDebt(maxDebt);
+            try {
+                customer.save();
+            } catch (IOException | SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         } else {
-            customer = new Customer(name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, loyalty, moneyDue);
+            customer = new Customer(name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, loyalty, moneyDue, maxDebt);
             try {
                 dc.addCustomer(customer);
             } catch (SQLException ex) {
@@ -419,6 +441,7 @@ public class CustomerDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
@@ -439,6 +462,7 @@ public class CustomerDialog extends javax.swing.JDialog {
     private javax.swing.JTextField txtCounty;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtLoyalty;
+    private javax.swing.JTextField txtMaxDebt;
     private javax.swing.JTextField txtMobile;
     private javax.swing.JTextField txtMoneyDue;
     private javax.swing.JTextField txtName;
