@@ -79,8 +79,6 @@ public class DBConnect extends DataConnect {
     private final List<Staff> loggedIn; //A list of logged in staff.
     private final Semaphore loggedInSem; //Semaphore for the list of logged in staff.
 
-    private final LogFileHandler handler; //Handler object for the logger.
-
     private final List<Integer> clockedOn;
     private final StampedLock clockLock;
 
@@ -116,8 +114,6 @@ public class DBConnect extends DataConnect {
         systemSettings = Settings.getInstance();
         loggedIn = new LinkedList<>();
         loggedInSem = new Semaphore(1);
-        handler = LogFileHandler.getInstance();
-        Logger.getGlobal().addHandler(handler);
         clockedOn = new LinkedList<>();
         clockLock = new StampedLock();
     }

@@ -32,6 +32,8 @@ public class CompanyDetailsDialog extends javax.swing.JDialog {
     private String name;
     private String address;
     private String vat;
+    
+    private final String companyDetails = System.getenv("APPDATA") + "\\JTill Server\\company.details";
 
     /**
      * Creates new form CompanyDetailsDialog
@@ -58,7 +60,7 @@ public class CompanyDetailsDialog extends javax.swing.JDialog {
     private void loadFile() {
         InputStream in;
         try {
-            in = new FileInputStream("company.details");
+            in = new FileInputStream(companyDetails);
             properties.load(in);
 
             name = (properties.getProperty("NAME"));
@@ -73,7 +75,7 @@ public class CompanyDetailsDialog extends javax.swing.JDialog {
         } catch (FileNotFoundException | UnknownHostException ex) {
             OutputStream out;
             try {
-                out = new FileOutputStream("company.details");
+                out = new FileOutputStream(companyDetails);
                 properties.store(out, null);
                 out.close();
             } catch (FileNotFoundException | UnknownHostException e) {
@@ -85,7 +87,7 @@ public class CompanyDetailsDialog extends javax.swing.JDialog {
 
     private void saveFile() throws FileNotFoundException, IOException {
         OutputStream out;
-        out = new FileOutputStream("company.details");
+        out = new FileOutputStream(companyDetails);
         properties.setProperty("NAME", name);
         properties.setProperty("ADDRESS", address);
         properties.setProperty("VAT", vat);

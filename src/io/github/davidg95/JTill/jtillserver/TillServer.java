@@ -66,6 +66,8 @@ public class TillServer implements JConnListener {
 
     private static boolean headless;
 
+    private final String companyDetails = System.getenv("APPDATA") + "\\JTill Server\\company.details";
+
     /**
      * @param args the command line arguments
      */
@@ -79,6 +81,9 @@ public class TillServer implements JConnListener {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             LOG.log(Level.WARNING, "Windows look and feel not supported on this system");
         }
+        createAppDataFolder();
+        LogFileHandler handler = new LogFileHandler(System.getenv("APPDATA") + "\\JTill Server\\logs\\");
+        Logger.getGlobal().addHandler(handler);
         headless = GraphicsEnvironment.isHeadless();
         final long start = new Date().getTime();
         tillServer = new TillServer();
@@ -86,6 +91,18 @@ public class TillServer implements JConnListener {
         final long end = new Date().getTime();
         final long time = end - start;
         LOG.log(Level.INFO, "JTill Server started successfully in " + time / 1000D + "s");
+    }
+
+    private static void createAppDataFolder() {
+        File appData = new File(System.getenv("APPDATA") + "\\JTill Server\\");
+        if (!appData.exists()) {
+            Logger.getGlobal().warning("creating JTill Server folder in AppData");
+            if (appData.mkdir()) {
+                new File(System.getenv("APPDATA") + "\\JTill Server\\logs\\").mkdir();
+            } else {
+                Logger.getGlobal().severe("Error creating appdata folder");
+            }
+        }
     }
 
     /**
@@ -135,7 +152,7 @@ public class TillServer implements JConnListener {
                 Properties properties = new Properties();
                 OutputStream out;
                 try {
-                    out = new FileOutputStream("company.details");
+                    out = new FileOutputStream(companyDetails);
                     properties.setProperty("NAME", companyName);
                     properties.setProperty("ADDRESS", companyAddress);
                     properties.setProperty("VAT", vat);

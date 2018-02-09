@@ -26,6 +26,10 @@ public class InitialSetupWindow extends javax.swing.JDialog {
 
     private final Settings settings;
 
+    public static final String companyDetails = System.getenv("APPDATA") + "\\JTill Server\\company.details";
+
+    public static final String propertiesFile = System.getenv("APPDATA") + "\\JTill Server\\server.properties";
+
     /**
      * Creates new form InitialSetupWindow
      */
@@ -223,7 +227,7 @@ public class InitialSetupWindow extends javax.swing.JDialog {
 
             Properties properties = new Properties();
             OutputStream out;
-            out = new FileOutputStream("company.details");
+            out = new FileOutputStream(companyDetails);
             properties.setProperty("NAME", companyName);
             properties.setProperty("ADDRESS", companyAddress);
             properties.setProperty("VAT", vat);
@@ -237,8 +241,8 @@ public class InitialSetupWindow extends javax.swing.JDialog {
     }//GEN-LAST:event_btnStartActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        File file = new File("company.details");
-        File file2 = new File("server.properties");
+        File file = new File(companyDetails);
+        File file2 = new File(propertiesFile);
         file.delete();
         file2.delete();
         setVisible(false);

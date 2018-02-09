@@ -1,3 +1,1 @@
-JTill log Thu Feb 08 16:54:01 GMT 2018
-[16:54:01] [INFO]- Connecting to database jdbc:derby:C:\Users\David\JTill-Database;create=true
-[16:54:05] [INFO]- David Grant has logged in
+JTill log Fri Feb 09 11:24:42 GMT 2018

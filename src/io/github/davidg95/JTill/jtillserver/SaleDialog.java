@@ -45,6 +45,8 @@ public class SaleDialog extends javax.swing.JInternalFrame {
     private final DataConnect dc;
 
     private final DefaultTableModel model;
+    
+    private final String companyDetails = System.getenv("APPDATA") + "\\JTill Server\\company.details";
 
     /**
      * Creates new form SaleDialog
@@ -222,7 +224,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             InputStream in;
             final Properties properties = new Properties();
             try {
-                in = new FileInputStream("company.details");
+                in = new FileInputStream(companyDetails);
                 properties.load(in);
 
                 final String logoURL = properties.getProperty("LOGO");
@@ -238,7 +240,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             } catch (FileNotFoundException | UnknownHostException ex) {
                 OutputStream out;
                 try {
-                    out = new FileOutputStream("company.details");
+                    out = new FileOutputStream(companyDetails);
                     properties.store(out, null);
                     out.close();
                 } catch (FileNotFoundException | UnknownHostException e) {

@@ -37,6 +37,8 @@ public class OrderPrintable implements Printable {
 
     private String name;
     private String address;
+    
+    private final String companyDetails = System.getenv("APPDATA") + "\\JTill Server\\company.details";
 
     public OrderPrintable(Supplier s, List<OrderItem> items) {
         this.items = items;
@@ -101,7 +103,7 @@ public class OrderPrintable implements Printable {
     private void loadFile() {
         InputStream in;
         try {
-            in = new FileInputStream("company.details");
+            in = new FileInputStream(companyDetails);
             Properties properties = new Properties();
             properties.load(in);
 
