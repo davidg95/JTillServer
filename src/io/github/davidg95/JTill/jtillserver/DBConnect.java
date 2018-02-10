@@ -12,14 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Time;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,7 +36,6 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.swing.JOptionPane;
-import org.apache.derby.jdbc.EmbeddedDriver;
 
 /**
  * Database connection class which handles communication with the database.
@@ -59,11 +51,10 @@ public class DBConnect extends DataConnect {
      */
     private static final DBConnect CONNECTION;
 
-    /**
-     * The database driver.
-     */
-    private Driver embedded;
-
+//  /**
+//     * The database driver.
+//     */
+//    private Driver embedded;
     //Database credentials
     public String address; //The database address.
     public String username; //the database username.
@@ -570,20 +561,19 @@ public class DBConnect extends DataConnect {
      * @param password the database password.
      * @throws SQLException if there was a creation error.
      */
-    public void create(String address, String username, String password) throws SQLException {
-        LOG.log(Level.INFO, "The database does not exists, so it is getting created");
-        embedded = new EmbeddedDriver();
-        TillSplashScreen.setLabel("Registering database driver");
-        DriverManager.registerDriver(embedded);
-        TillSplashScreen.addBar(10);
-        this.address = address;
-        this.username = username;
-        this.password = password;
-        getConnection();
-        TillSplashScreen.setLabel("Creating tables");
-        createTables();
-    }
-
+//    public void create(String address, String username, String password) throws SQLException {
+//        LOG.log(Level.INFO, "The database does not exists, so it is getting created");
+//        embedded = new com.mysql.jdbc.Driver();
+//        TillSplashScreen.setLabel("Registering database driver");
+//        DriverManager.registerDriver(embedded);
+//        TillSplashScreen.addBar(10);
+//        this.address = address;
+//        this.username = username;
+//        this.password = password;
+//        getConnection();
+//        TillSplashScreen.setLabel("Creating tables");
+//        createTables();
+//    }
     /**
      * Create the database tables.
      *
@@ -904,21 +894,21 @@ public class DBConnect extends DataConnect {
             stmt.executeUpdate(addTax);
             stmt.executeUpdate(addReason);
             con.commit();
+            Screen s = new Screen("DEFAULT", 5, 10, -1, 0, 0);
+            addScreen(s);
+            int x = 1;
+            int y = 1;
+            for (int i = 0; i < 50; i++) {
+                TillButton bu = addButton(new TillButton("[SPACE]", 0, TillButton.SPACE, s.getId(), "000000", "ffffff", 1, 1, x, y, 1, ""));
+                x++;
+                if (x == 6) {
+                    x = 1;
+                    y++;
+                }
+            }
         } catch (SQLException ex) {
             LOG.info("Tables already exist, so they do not need created");
             con.rollback();
-        }
-        Screen s = new Screen("DEFAULT", 5, 10, -1, 0, 0);
-        addScreen(s);
-        int x = 1;
-        int y = 1;
-        for (int i = 0; i < 50; i++) {
-            TillButton bu = addButton(new TillButton("[SPACE]", 0, TillButton.SPACE, s.getId(), "000000", "ffffff", 1, 1, x, y, 1, ""));
-            x++;
-            if (x == 6) {
-                x = 1;
-                y++;
-            }
         }
     }
 

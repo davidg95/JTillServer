@@ -214,7 +214,7 @@ public class CreateDatabaseDialog extends javax.swing.JDialog {
                 settings.setSetting("db_username", username);
                 settings.setSetting("db_password", password);
                 db.connect(url, username, password);
-                db.create(url, username, password);
+//                db.create(url, username, password);
                 btnContinue.setEnabled(true);
                 btnExit.setEnabled(true);
                 prg.setIndeterminate(false);
