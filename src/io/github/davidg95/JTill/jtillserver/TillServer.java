@@ -32,6 +32,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
 
 /**
@@ -327,18 +328,21 @@ public class TillServer implements JConnListener {
 //            LicenseWindow.showWindow(null);
 //            licensed = true;
 //        }
-        if (headless) {
-            try {
-                LOG.info("Checking database integrity");
-                DataConnect.get().integrityCheck();
-                LOG.info("Check complete");
-            } catch (IOException | SQLException ex) {
-                LOG.log(Level.SEVERE, "Error checking database", ex);
+        final Runnable runnable = () -> {
+            if (headless) {
+                try {
+                    LOG.info("Checking database integrity");
+                    DataConnect.get().integrityCheck();
+                    LOG.info("Check complete");
+                } catch (IOException | SQLException ex) {
+                    LOG.log(Level.SEVERE, "Error checking database", ex);
+                }
+            } else {
+                g.checkDatabase();
+                g.login();
             }
-        } else {
-            g.checkDatabase();
-            g.login();
-        }
+        };
+        SwingUtilities.invokeLater(runnable);
         if (licensed) {
 //            g.checkDatabase();
 //            g.login();
@@ -493,10 +497,20 @@ public class TillServer implements JConnListener {
         tray.remove(trayIcon);
     }
 
+    /**
+     * When unknown data is received from a client.
+     *
+     * @param data the data.
+     */
     @Override
     public void onReceive(JConnReceiveEvent data) {
     }
 
+    /**
+     * When a connection to the server is dropped.
+     *
+     * @param event the event.
+     */
     @Override
     public void onConnectionDrop(JConnEvent event) {
         connections--;
@@ -505,6 +519,11 @@ public class TillServer implements JConnListener {
         }
     }
 
+    /**
+     * When a connection to the server is established.
+     *
+     * @param event the event.
+     */
     @Override
     public void onConnectionEstablish(JConnEvent event) {
         if (connections >= conn_limit) {
@@ -516,6 +535,9 @@ public class TillServer implements JConnListener {
         }
     }
 
+    /**
+     * When a conenction to the server ends.
+     */
     @Override
     public void onServerGracefulEnd() {
         connections--;
