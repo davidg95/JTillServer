@@ -131,7 +131,6 @@ public class DBConnect extends DataConnect {
             con.commit();
         }
         createTables();
-        updates();
     }
 
     private void updates() {
@@ -885,14 +884,14 @@ public class DBConnect extends DataConnect {
             LOG.log(Level.INFO, "Created table declarations");
             con.commit();
             updates();
-            String addDepartment = "INSERT INTO DEPARTMENTS (NAME) VALUES ('DEFAULT')";
+            String addDepartment = "INSERT INTO DEPARTMENTS (NAME) VALUES ('Default')";
             String addCategory = "INSERT INTO CATEGORYS (NAME, TIME_RESTRICT, MINIMUM_AGE, DEPARTMENT) VALUES ('Default','FALSE',0, 1)";
             String addTax = "INSERT INTO TAX (NAME, VALUE) VALUES ('ZERO',0.0)";
-            String addReason = "INSERT INTO WASTEREASONS (REASON) VALUES ('DEFAULT')";
+            String addWasteReason = "INSERT INTO WASTEREASONS (REASON, DELETED) VALUES ('Default', 'FALSE')";
             stmt.executeUpdate(addDepartment);
             stmt.executeUpdate(addCategory);
             stmt.executeUpdate(addTax);
-            stmt.executeUpdate(addReason);
+            stmt.executeUpdate(addWasteReason);
             con.commit();
             Screen s = new Screen("DEFAULT", 5, 10, -1, 0, 0);
             addScreen(s);
