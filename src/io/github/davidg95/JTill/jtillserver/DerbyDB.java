@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
 
 /**
  *
@@ -23,7 +22,7 @@ public class DerbyDB extends DBConnect {
             + "        GENERATED ALWAYS AS IDENTITY\n"
             + "        (START WITH 1, INCREMENT BY 1),\n"
             + "     UUID VARCHAR(50) not null,\n"
-            + "	NAME VARCHAR(20) not null,\n"
+            + "     NAME VARCHAR(20) not null,\n"
             + "     UNCASHED DOUBLE not null,\n"
             + "     DEFAULT_SCREEN INT not null\n"
             + ")";
@@ -53,13 +52,6 @@ public class DerbyDB extends DBConnect {
             + "        (START WITH 1, INCREMENT BY 1),\n"
             + "	NAME VARCHAR(20) not null,\n"
             + "	VALUE DOUBLE not null\n"
-            + ")";
-    String configs = "create table CONFIGS\n"
-            + "(\n"
-            + "	NAME INT not null primary key\n"
-            + "        GENERATED ALWAYS AS IDENTITY\n"
-            + "        (START WITH 1, INCREMENT BY 1),\n"
-            + "	VALUE VARCHAR(20) not null\n"
             + ")";
     String sales = "create table SALES\n"
             + "(\n"
@@ -114,17 +106,17 @@ public class DerbyDB extends DBConnect {
             + "        GENERATED ALWAYS AS IDENTITY\n"
             + "        (START WITH 1, INCREMENT BY 1),\n"
             + "     ORDER_CODE INTEGER,\n"
-            + "	NAME VARCHAR(50) not null,\n"
+            + "     NAME VARCHAR(50) not null,\n"
             + "     OPEN_PRICE BOOLEAN not null,\n"
-            + "	PRICE DOUBLE,\n"
-            + "	STOCK INTEGER,\n"
-            + "	COMMENTS VARCHAR(200),\n"
-            + "	SHORT_NAME VARCHAR(50) not null,\n"
-            + "	CATEGORY_ID INT not null references CATEGORYS(ID),\n"
-            + "	TAX_ID INT not null references TAX(ID),\n"
-            + "	COST_PRICE DOUBLE,\n"
-            + "	MIN_PRODUCT_LEVEL INTEGER,\n"
-            + "	MAX_PRODUCT_LEVEL INTEGER,\n"
+            + "     PRICE DOUBLE,\n"
+            + "     STOCK INTEGER,\n"
+            + "     COMMENTS VARCHAR(200),\n"
+            + "     SHORT_NAME VARCHAR(50) not null,\n"
+            + "     CATEGORY_ID INT not null references CATEGORYS(ID),\n"
+            + "     TAX_ID INT not null references TAX(ID),\n"
+            + "     COST_PRICE DOUBLE,\n"
+            + "     MIN_PRODUCT_LEVEL INTEGER,\n"
+            + "     MAX_PRODUCT_LEVEL INTEGER,\n"
             + "     PACK_SIZE INT,\n"
             + "     BARCODE VARCHAR(15),\n"
             + "     SCALE DOUBLE,\n"
@@ -356,7 +348,6 @@ public class DerbyDB extends DBConnect {
             s.executeUpdate(tax);
             s.executeUpdate(departments);
             s.executeUpdate(categorys);
-            s.executeUpdate(configs);
             s.executeUpdate(sales);
             s.executeUpdate(customers);
             s.executeUpdate(products);
