@@ -453,7 +453,7 @@ public abstract class DBConnect extends DataConnect {
     //Customer Methods
     @Override
     public List<Customer> getAllCustomers() throws SQLException {
-        String query = "SELECT * FROM CUSTOMERS";
+        String query = "SELECT * FROM CUSTOMERS ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Customer> customers = new LinkedList<>();
@@ -641,7 +641,7 @@ public abstract class DBConnect extends DataConnect {
     //Staff Methods
     @Override
     public List<Staff> getAllStaff() throws SQLException {
-        String query = "SELECT * FROM STAFF";
+        String query = "SELECT * FROM STAFF ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Staff> staff = new LinkedList<>();
@@ -821,7 +821,7 @@ public abstract class DBConnect extends DataConnect {
     //Discount Methods
     @Override
     public List<Discount> getAllDiscounts() throws SQLException {
-        String query = "SELECT * FROM DISCOUNTS";
+        String query = "SELECT * FROM DISCOUNTS ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Discount> discounts = new LinkedList<>();
@@ -946,7 +946,7 @@ public abstract class DBConnect extends DataConnect {
     //Tax Methods
     @Override
     public List<Tax> getAllTax() throws SQLException {
-        String query = "SELECT * FROM TAX";
+        String query = "SELECT * FROM TAX ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Tax> tax = new LinkedList<>();
@@ -1086,7 +1086,7 @@ public abstract class DBConnect extends DataConnect {
     //Category Methods
     @Override
     public List<Category> getAllCategorys() throws SQLException {
-        String query = "SELECT * FROM CATEGORYS, DEPARTMENTS WHERE CATEGORYS.DEPARTMENT = DEPARTMENTS.ID";
+        String query = "SELECT * FROM CATEGORYS, DEPARTMENTS WHERE CATEGORYS.DEPARTMENT = DEPARTMENTS.ID ORDER BY CATEGORYS.ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Category> categorys = new LinkedList<>();
@@ -1319,7 +1319,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Sale> getAllSales() throws SQLException {
-        String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID";
+        String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID ORDER BY SALES.ID";
         List<Sale> sales = new LinkedList<>();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
@@ -2082,7 +2082,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Till> getAllTills() throws SQLException {
-        String query = "SELECT * FROM TILLS";
+        String query = "SELECT * FROM TILLS ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Till> tills = new LinkedList<>();
@@ -2493,7 +2493,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<WasteReason> getAllWasteReasons() throws IOException, SQLException {
-        String query = "SELECT * FROM WASTEREASONS";
+        String query = "SELECT * FROM WASTEREASONS ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<WasteReason> wrs = new LinkedList<>();
@@ -2512,7 +2512,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<WasteReason> getUsedWasteReasons() throws IOException, SQLException {
-        String query = "SELECT * FROM WASTEREASONS WHERE DELETED = false";
+        String query = "SELECT * FROM WASTEREASONS WHERE DELETED = false ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<WasteReason> wrs = new LinkedList<>();
@@ -2733,7 +2733,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Department> getAllDepartments() throws IOException, SQLException {
-        String query = "SELECT * FROM DEPARTMENTS";
+        String query = "SELECT * FROM DEPARTMENTS ORDER BY ID";
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
@@ -3374,7 +3374,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Sale> getAllTerminalSales(int terminal, boolean uncashedOnly) throws IOException, SQLException {
-        String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.TERMINAL = " + terminal + (uncashedOnly ? " AND s.CASHED = FALSE" : "");
+        String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.TERMINAL = " + terminal + (uncashedOnly ? " AND s.CASHED = FALSE" : "") + " ORDER BY SALES.ID";
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
@@ -4657,7 +4657,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<RefundReason> getUsedRefundReasons() throws IOException, SQLException {
-        String query = "SELECT * FROM REFUND_REASONS WHERE DELETED = false";
+        String query = "SELECT * FROM REFUND_REASONS WHERE DELETED = false ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<RefundReason> rrs = new LinkedList<>();
