@@ -209,13 +209,16 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             this.listeners = new LinkedList<>();
         }
 
-        public void addCategory(Category c) {
+        public void addCategory(Category c) throws IOException, SQLException {
+            dc.addCategory(c);
             categories.add(c);
             alertAll();
         }
 
-        public void removeCategory(int i) {
-            categories.remove(i);
+        public void removeCategory(Category c) throws IOException, SQLException, JTillException {
+            dc.removeCategory(c);
+            categories.remove(c);
+            alertAll();
         }
 
         public List<Category> getAllCategories() {
@@ -640,39 +643,15 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        if (category == null) {
-            Category c;
-            try {
-                String name = txtName.getText();
-                boolean time = chkTime.isSelected();
-                Time startSell = null;
-                Time endSell = null;
-                if (time) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-                    startSell = new Time(sdf.parse(startH.getValue() + ":" + startM.getValue() + ":00").getTime());
-                    endSell = new Time(sdf.parse(endH.getValue() + ":" + endM.getValue() + ":00").getTime());
-                }
-                int minAge = (int) spinAge.getValue();
-                Department dep = (Department) cmbDepartment.getSelectedItem();
-                if (name.equals("")) {
-                    JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Category", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    c = new Category(name, startSell, endSell, time, minAge, dep);
-                    try {
-                        Category cat = dc.addCategory(c);
-                        setCurrentCategory(null);
-                    } catch (SQLException | IOException ex) {
-                        showError(ex);
-                    }
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Category", JOptionPane.ERROR_MESSAGE);
-            } catch (ParseException ex) {
-                JOptionPane.showMessageDialog(this, "Invalid time format, user HH:mm:ss", "New Category", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            category = null;
-            setCurrentCategory(null);
+        String name = JOptionPane.showInputDialog(this, "Enter Category Name", "New Category", JOptionPane.PLAIN_MESSAGE);
+        try {
+            Object deps[] = Department.getAll().toArray();
+            Department d = (Department) JOptionPane.showInputDialog(this, "Select Department", "New Category", JOptionPane.PLAIN_MESSAGE, null, deps, deps[0]);
+            Category c = new Category(name, null, null, false, 0, d);
+            model.addCategory(c);
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -722,8 +701,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following category?\n-" + model.getCategories(index) + "\nAll products in this category will be moved to the DEFAULT category.", "Remove Category", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
-                    dc.removeCategory(model.getCategories(index).getId());
-                    model.removeCategory(index);
+                    model.removeCategory(model.getCategories(index));
                 } catch (SQLException | JTillException | IOException ex) {
                     showError(ex);
                 }

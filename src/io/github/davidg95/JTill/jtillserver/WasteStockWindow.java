@@ -319,6 +319,9 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
 
         @Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            if(rowIndex == -1){
+                return;
+            }
             WasteItem item = items.get(rowIndex);
             if (columnIndex == 2) {
                 int value = (int) aValue;
@@ -497,8 +500,8 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                             .addComponent(jScrollPane1)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(lblValue)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                                .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnAddProduct)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -519,7 +522,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     .addComponent(timeSpin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
@@ -638,7 +641,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             try {
                 dc.addWasteReport(model.getItems());
                 model.clear();
-                lblValue.setText("Total: £0.00");
+                lblValue.setText("Total Value: £0.00");
                 btnWaste.setEnabled(false);
                 mDialog.hide();
                 JOptionPane.showMessageDialog(WasteStockWindow.this, "All items have been wasted", "Waste", JOptionPane.INFORMATION_MESSAGE);
