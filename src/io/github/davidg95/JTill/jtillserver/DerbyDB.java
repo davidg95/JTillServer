@@ -35,14 +35,10 @@ public class DerbyDB extends DBConnect {
             + ")";
     String categorys = "create table CATEGORYS\n"
             + "(\n"
-            + "	ID INT not null primary key\n"
+            + "     ID INT not null primary key\n"
             + "        GENERATED ALWAYS AS IDENTITY\n"
             + "        (START WITH 1, INCREMENT BY 1),\n"
-            + "	NAME VARCHAR(20) not null,\n"
-            + "     SELL_START TIME,\n"
-            + "     SELL_END TIME,\n"
-            + "     TIME_RESTRICT BOOLEAN not null,\n"
-            + "     MINIMUM_AGE INT not null,\n"
+            + "     NAME VARCHAR(20) not null,\n"
             + "     DEPARTMENT INT references DEPARTMENTS(ID)\n"
             + ")";
     String tax = "create table TAX\n"
@@ -370,7 +366,7 @@ public class DerbyDB extends DBConnect {
             s.executeUpdate(orders);
             s.executeUpdate(orderItems);
             String addDepartment = "INSERT INTO DEPARTMENTS (NAME) VALUES ('Default')";
-            String addCategory = "INSERT INTO CATEGORYS (NAME, TIME_RESTRICT, MINIMUM_AGE, DEPARTMENT) VALUES ('Default','FALSE',0, 1)";
+            String addCategory = "INSERT INTO CATEGORYS (NAME, DEPARTMENT) VALUES ('Default', 1)";
             String addTax = "INSERT INTO TAX (NAME, VALUE) VALUES ('ZERO',0.0)";
             String addWasteReason = "INSERT INTO WASTEREASONS (REASON, DELETED) VALUES ('Default', 'FALSE')";
             s.executeUpdate(addDepartment);

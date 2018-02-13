@@ -200,17 +200,13 @@ public abstract class DBConnect extends DataConnect {
             boolean trackStock = set.getBoolean(22);
 
             String cName = set.getString(24);
-            Time start = set.getTime(25);
-            Time end = set.getTime(26);
-            boolean restrict = set.getBoolean(27);
-            int age = set.getInt(28);
-            int department = set.getInt(29);
+            int department = set.getInt(25);
 
-            String dName = set.getString(31);
+            String dName = set.getString(27);
 
             Department d = new Department(department, dName);
 
-            Category c = new Category(cId, cName, start, end, restrict, age, d);
+            Category c = new Category(cId, cName, d);
 
             String tName = set.getString(33);
             double value = set.getDouble(34);
@@ -1107,16 +1103,12 @@ public abstract class DBConnect extends DataConnect {
         while (set.next()) {
             int id = set.getInt(1);
             String name = set.getString(2);
-            Time startSell = set.getTime(3);
-            Time endSell = set.getTime(4);
-            boolean timeRestrict = set.getBoolean(5);
-            int minAge = set.getInt(6);
-            int department = set.getInt(7);
+            int department = set.getInt(3);
 
-            String dName = set.getString(9);
+            String dName = set.getString(5);
 
             Department d = new Department(department, dName);
-            Category c = new Category(id, name, startSell, endSell, timeRestrict, minAge, d);
+            Category c = new Category(id, name, d);
             categorys.add(c);
         }
         return categorys;
@@ -1124,7 +1116,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Category addCategory(Category c) throws SQLException {
-        String query = "INSERT INTO CATEGORYS (NAME, SELL_START, SELL_END, TIME_RESTRICT, MINIMUM_AGE, DEPARTMENT) VALUES (" + c.getSQLInsertString() + ")";
+        String query = "INSERT INTO CATEGORYS (NAME, DEPARTMENT) VALUES (" + c.getSQLInsertString() + ")";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -1408,20 +1400,16 @@ public abstract class DBConnect extends DataConnect {
             boolean trackStock = set.getBoolean(30);
 
             String cName = set.getString(32);
-            Time start = set.getTime(33);
-            Time end = set.getTime(34);
-            boolean restrict = set.getBoolean(35);
-            int age = set.getInt(36);
-            int department = set.getInt(37);
+            int department = set.getInt(33);
 
-            String dName = set.getString(39);
+            String dName = set.getString(35);
 
             Department d = new Department(department, dName);
 
-            Category c = new Category(cId, cName, start, end, restrict, age, d);
+            Category c = new Category(cId, cName, d);
 
-            String tName = set.getString(41);
-            double value = set.getDouble(42);
+            String tName = set.getString(37);
+            double value = set.getDouble(38);
 
             Tax t = new Tax(taxID, tName, value);
 
@@ -2306,20 +2294,16 @@ public abstract class DBConnect extends DataConnect {
             boolean trackStock = set.getBoolean(32);
 
             String cName = set.getString(34);
-            Time start = set.getTime(35);
-            Time end = set.getTime(36);
-            boolean restrict = set.getBoolean(37);
-            int age = set.getInt(38);
-            int department = set.getInt(39);
+            int department = set.getInt(35);
 
-            String dName = set.getString(41);
+            String dName = set.getString(37);
 
             Department d = new Department(department, dName);
 
-            Category c = new Category(cId, cName, start, end, restrict, age, d);
+            Category c = new Category(cId, cName, d);
 
-            String tName = set.getString(43);
-            double tValue = set.getDouble(44);
+            String tName = set.getString(39);
+            double tValue = set.getDouble(40);
 
             Tax t = new Tax(taxID, tName, tValue);
 
@@ -3595,20 +3579,16 @@ public abstract class DBConnect extends DataConnect {
                 boolean trackStock = set.getBoolean(22);
 
                 String cName = set.getString(24);
-                Time start = set.getTime(25);
-                Time end = set.getTime(26);
-                boolean restrict = set.getBoolean(27);
-                int age = set.getInt(28);
-                int department = set.getInt(29);
+                int department = set.getInt(25);
 
-                String dName = set.getString(31);
+                String dName = set.getString(27);
 
                 Department d = new Department(department, dName);
 
-                Category c = new Category(cId, cName, start, end, restrict, age, d);
+                Category c = new Category(cId, cName, d);
 
-                String tName = set.getString(33);
-                double value = set.getDouble(34);
+                String tName = set.getString(29);
+                double value = set.getDouble(30);
 
                 Tax t = new Tax(taxID, tName, value);
 
@@ -4082,20 +4062,16 @@ public abstract class DBConnect extends DataConnect {
                 boolean trackStock = set.getBoolean(22);
 
                 String cName = set.getString(24);
-                Time start = set.getTime(25);
-                Time end = set.getTime(26);
-                boolean restrict = set.getBoolean(27);
-                int age = set.getInt(28);
-                int department = set.getInt(29);
+                int department = set.getInt(25);
 
-                String dName = set.getString(31);
+                String dName = set.getString(27);
 
                 Department d = new Department(department, dName);
 
-                Category c = new Category(cId, cName, start, end, restrict, age, d);
+                Category c = new Category(cId, cName, d);
 
-                String tName = set.getString(33);
-                double value = set.getDouble(34);
+                String tName = set.getString(29);
+                double value = set.getDouble(30);
 
                 Tax t = new Tax(taxID, tName, value);
 
@@ -4280,20 +4256,16 @@ public abstract class DBConnect extends DataConnect {
                     boolean trackStock = set2.getBoolean(22);
 
                     String cName = set2.getString(24);
-                    Time start = set2.getTime(25);
-                    Time end = set2.getTime(26);
-                    boolean restrict = set2.getBoolean(27);
-                    int age = set2.getInt(28);
-                    int department = set2.getInt(29);
+                    int department = set2.getInt(25);
 
-                    String dName = set2.getString(31);
+                    String dName = set2.getString(27);
 
                     Department d = new Department(department, dName);
 
-                    Category c = new Category(cId, cName, start, end, restrict, age, d);
+                    Category c = new Category(cId, cName, d);
 
-                    String tName = set2.getString(33);
-                    double value = set2.getDouble(34);
+                    String tName = set2.getString(29);
+                    double value = set2.getDouble(30);
 
                     Tax t = new Tax(taxID, tName, value);
 
@@ -4303,9 +4275,9 @@ public abstract class DBConnect extends DataConnect {
                     } else {
                         p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
                     }
-                    int o_id = set2.getInt(34);
-                    int quantity = set2.getInt(37);
-                    BigDecimal o_price = set2.getBigDecimal(38);
+                    int o_id = set2.getInt(31);
+                    int quantity = set2.getInt(35);
+                    BigDecimal o_price = set2.getBigDecimal(36);
 
                     OrderItem i = new OrderItem(o_id, p, quantity, o_price);
                     items.add(i);

@@ -10,8 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -80,7 +78,6 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         ca.set(Calendar.MINUTE, 0);
         ca.set(Calendar.SECOND, 0);
         ca.set(Calendar.MILLISECOND, 0);
-        Date d = ca.getTime();
         Calendar cb = Calendar.getInstance();
         cb.setTime(new Date(0));
         cb.set(Calendar.HOUR_OF_DAY, c.get(Calendar.HOUR_OF_DAY));
