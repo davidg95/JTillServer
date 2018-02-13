@@ -644,9 +644,15 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         String name = JOptionPane.showInputDialog(this, "Enter Category Name", "New Category", JOptionPane.PLAIN_MESSAGE);
+        if (name == null || name.isEmpty()) {
+            return;
+        }
         try {
             Object deps[] = Department.getAll().toArray();
             Department d = (Department) JOptionPane.showInputDialog(this, "Select Department", "New Category", JOptionPane.PLAIN_MESSAGE, null, deps, deps[0]);
+            if (d == null) {
+                return;
+            }
             Category c = new Category(name, null, null, false, 0, d);
             model.addCategory(c);
         } catch (IOException | SQLException ex) {
