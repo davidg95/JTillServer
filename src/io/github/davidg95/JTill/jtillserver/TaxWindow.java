@@ -55,7 +55,6 @@ public class TaxWindow extends javax.swing.JInternalFrame {
             frame = new TaxWindow();
             GUI.gui.internal.add(frame);
         }
-        update();
         frame.setCurrentTax(null);
         frame.setVisible(true);
         try {
@@ -63,12 +62,6 @@ public class TaxWindow extends javax.swing.JInternalFrame {
             frame.setSelected(true);
         } catch (PropertyVetoException ex) {
             Logger.getLogger(TaxWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public static void update() {
-        if (frame != null) {
-            frame.showAllTaxes();
         }
     }
 

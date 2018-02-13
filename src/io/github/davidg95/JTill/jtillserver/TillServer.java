@@ -32,6 +32,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
 
 /**
@@ -67,6 +68,8 @@ public class TillServer implements JConnListener {
     private static boolean headless;
 
     private final String companyDetails = System.getenv("APPDATA") + "\\JTill Server\\company.details";
+
+    private final DBConnect db;
 
     /**
      * @param args the command line arguments
@@ -113,7 +116,8 @@ public class TillServer implements JConnListener {
         TillSplashScreen.showSplashScreen();
         icon = new javax.swing.ImageIcon(getClass().getResource("/io/github/davidg95/JTill/resources/tillIcon.png")).getImage();
         settings = Settings.getInstance();
-        DataConnect.set(DBConnect.getInstance());
+        db = new DerbyDB();
+        DataConnect.set(db);
         TillSplashScreen.setLabel("Loading configurations");
         LOG.info("Loading configurations");
         TillSplashScreen.addBar(5);
@@ -191,31 +195,16 @@ public class TillServer implements JConnListener {
 
     public void databaseLogin() {
         try {
-            DBConnect db = (DBConnect) DataConnect.get();
             TillSplashScreen.setLabel("Connecting to database"); //Update the splash screen
             LOG.info("Connecting to database");
             db.connect(settings.getSetting("db_address"), settings.getSetting("db_username"), settings.getSetting("db_password")); //Open a connection to the database
             if (db.getStaffCount() == 0) { //Check to see if any staff members have been created
-//                Staff s = new Staff("JTill Admin", Staff.AREA_MANAGER, "admin", "jtill", 0.01, true); //Create the admin member of staff if they do not already exists
-//                try {
-//                    db.addStaff(s); //Add the member of staff
-//                } catch (SQLException ex) {
-//                    LOG.log(Level.SEVERE, "Error creating Admin staff member", ex);
-//                }
                 TillSplashScreen.hideSplashScreen();
                 Staff s = StaffDialog.showNewStaffDialog(null, true);
                 if (s == null) {
                     System.exit(0);
                 }
                 TillSplashScreen.showSplashScreen();
-            }
-            try {
-                if (db.getAllWasteReasons().isEmpty()) {
-                    WasteReason reason = new WasteReason("DEFAULT", 1);
-                    reason.save();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(TillServer.class.getName()).log(Level.SEVERE, null, ex);
             }
             TillSplashScreen.addBar(20);
         } catch (SQLException ex) {
@@ -312,7 +301,7 @@ public class TillServer implements JConnListener {
             LOG.info("Starting server socket on port number " + PORT_IN_USE);
             server = JConnServer.start(PORT_IN_USE, ConnectionHandler.class);
             server.registerListener(this);
-            DBConnect.getInstance().setServer(server);
+            db.setServer(server);
             TillSplashScreen.addBar(20);
             LOG.log(Level.INFO, "Listening on port number " + PORT_IN_USE);
         } catch (IOException ex) {
@@ -339,18 +328,21 @@ public class TillServer implements JConnListener {
 //            LicenseWindow.showWindow(null);
 //            licensed = true;
 //        }
-        if (headless) {
-            try {
-                LOG.info("Checking database integrity");
-                DataConnect.get().integrityCheck();
-                LOG.info("Check complete");
-            } catch (IOException | SQLException ex) {
-                LOG.log(Level.SEVERE, "Error checking database", ex);
+        final Runnable runnable = () -> {
+            if (headless) {
+                try {
+                    LOG.info("Checking database integrity");
+                    DataConnect.get().integrityCheck();
+                    LOG.info("Check complete");
+                } catch (IOException | SQLException ex) {
+                    LOG.log(Level.SEVERE, "Error checking database", ex);
+                }
+            } else {
+                g.checkDatabase();
+                g.login();
             }
-        } else {
-            g.checkDatabase();
-            g.login();
-        }
+        };
+        SwingUtilities.invokeLater(runnable);
         if (licensed) {
 //            g.checkDatabase();
 //            g.login();
@@ -373,7 +365,7 @@ public class TillServer implements JConnListener {
                             String liNo = line.substring(line.indexOf(":") + 2);
                             line = in.nextLine();
                             conn_limit = Integer.parseInt(line.substring(line.indexOf(":") + 2));
-                            DBConnect.getInstance().setLicenseInfo(liNo, conn_limit);
+                            db.setLicenseInfo(liNo, conn_limit);
                             return true;
                         } catch (FileNotFoundException ex) {
                             JOptionPane.showMessageDialog(null, "Error loading license file. JTill Server will now close.", "License", JOptionPane.ERROR_MESSAGE);
@@ -471,8 +463,8 @@ public class TillServer implements JConnListener {
         });
 
         statusItem.addActionListener((ActionEvent e) -> {
-            JOptionPane.showMessageDialog(null, "Database Address- " + DBConnect.getInstance().getAddress()
-                    + "\nDatabase User- " + DBConnect.getInstance().getUsername(),
+            JOptionPane.showMessageDialog(null, "Database Address- " + db.getAddress()
+                    + "\nDatabase User- " + db.getUsername(),
                     "JTill Server Status", JOptionPane.INFORMATION_MESSAGE);
         });
 
@@ -505,10 +497,20 @@ public class TillServer implements JConnListener {
         tray.remove(trayIcon);
     }
 
+    /**
+     * When unknown data is received from a client.
+     *
+     * @param data the data.
+     */
     @Override
     public void onReceive(JConnReceiveEvent data) {
     }
 
+    /**
+     * When a connection to the server is dropped.
+     *
+     * @param event the event.
+     */
     @Override
     public void onConnectionDrop(JConnEvent event) {
         connections--;
@@ -517,6 +519,11 @@ public class TillServer implements JConnListener {
         }
     }
 
+    /**
+     * When a connection to the server is established.
+     *
+     * @param event the event.
+     */
     @Override
     public void onConnectionEstablish(JConnEvent event) {
         if (connections >= conn_limit) {
@@ -528,6 +535,9 @@ public class TillServer implements JConnListener {
         }
     }
 
+    /**
+     * When a conenction to the server ends.
+     */
     @Override
     public void onServerGracefulEnd() {
         connections--;

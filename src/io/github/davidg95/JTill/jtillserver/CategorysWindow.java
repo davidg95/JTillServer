@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -130,62 +132,12 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
     private void setCurrentCategory(Category c) {
         if (c == null) {
             txtName.setText("");
-            chkTime.setSelected(false);
-            lblTime.setEnabled(false);
-            startH.setEnabled(false);
-            startM.setEnabled(false);
-            endH.setEnabled(false);
-            endM.setEnabled(false);
-            lblS.setEnabled(false);
-            lblE.setEnabled(false);
-            lblStart.setEnabled(false);
-            lblEnd.setEnabled(false);
-            startM.setValue(0);
-            startH.setValue(0);
-            endM.setValue(0);
-            endH.setValue(0);
-            spinAge.setValue(0);
             category = null;
         } else {
             category = c;
             txtName.setText(c.getName());
-            chkTime.setSelected(c.isTimeRestrict());
-            if (c.isTimeRestrict()) {
-                chkTime.setSelected(true);
-                lblTime.setEnabled(true);
-                startH.setEnabled(true);
-                startM.setEnabled(true);
-                endH.setEnabled(true);
-                endM.setEnabled(true);
-                lblS.setEnabled(true);
-                lblE.setEnabled(true);
-                lblStart.setEnabled(true);
-                lblEnd.setEnabled(true);
-                startM.setValue(c.getStartSell().getMinutes());
-                startH.setValue(c.getStartSell().getHours());
-                endM.setValue(c.getEndSell().getMinutes());
-                endH.setValue(c.getEndSell().getHours());
-                cmbDepartment.setEnabled(true);
-                cmbDepartment.setSelectedItem(category.getDepartment());
-            } else {
-                chkTime.setSelected(false);
-                lblTime.setEnabled(false);
-                startH.setEnabled(false);
-                startM.setEnabled(false);
-                endH.setEnabled(false);
-                endM.setEnabled(false);
-                lblS.setEnabled(false);
-                lblE.setEnabled(false);
-                lblStart.setEnabled(false);
-                lblEnd.setEnabled(false);
-                startM.setValue(0);
-                startH.setValue(0);
-                endM.setValue(0);
-                endH.setValue(0);
-                cmbDepartment.setEnabled(true);
-                cmbDepartment.setSelectedItem(category.getDepartment());
-            }
-            spinAge.setValue(c.getMinAge());
+            cmbDepartment.setEnabled(true);
+            cmbDepartment.setSelectedItem(category.getDepartment());
         }
         txtName.requestFocus();
     }
@@ -209,13 +161,16 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             this.listeners = new LinkedList<>();
         }
 
-        public void addCategory(Category c) {
+        public void addCategory(Category c) throws IOException, SQLException {
+            dc.addCategory(c);
             categories.add(c);
             alertAll();
         }
 
-        public void removeCategory(int i) {
-            categories.remove(i);
+        public void removeCategory(Category c) throws IOException, SQLException, JTillException {
+            dc.removeCategory(c);
+            categories.remove(c);
+            alertAll();
         }
 
         public List<Category> getAllCategories() {
@@ -341,28 +296,16 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         table = new javax.swing.JTable();
         btnClose = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
-        btnRemove = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        spinAge = new javax.swing.JSpinner();
         txtName = new javax.swing.JTextField();
-        lblE = new javax.swing.JLabel();
-        lblTime = new javax.swing.JLabel();
-        startM = new javax.swing.JSpinner();
-        lblEnd = new javax.swing.JLabel();
-        chkTime = new javax.swing.JCheckBox();
-        jLabel2 = new javax.swing.JLabel();
-        startH = new javax.swing.JSpinner();
-        lblStart = new javax.swing.JLabel();
-        endH = new javax.swing.JSpinner();
         jLabel1 = new javax.swing.JLabel();
         btnSave = new javax.swing.JButton();
-        endM = new javax.swing.JSpinner();
-        lblS = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         cmbDepartment = new javax.swing.JComboBox<>();
+        btnRemove = new javax.swing.JButton();
         btnDepartments = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -415,17 +358,10 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        btnAdd.setText("Add");
+        btnAdd.setText("Create New Category");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
-            }
-        });
-
-        btnRemove.setText("Remove");
-        btnRemove.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveActionPerformed(evt);
             }
         });
 
@@ -446,33 +382,6 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Category Edit"));
 
-        lblE.setText(":");
-
-        lblTime.setText("Time Restriction:");
-        lblTime.setEnabled(false);
-
-        startM.setModel(new javax.swing.SpinnerNumberModel(0, 0, 59, 1));
-        startM.setEnabled(false);
-
-        lblEnd.setText("End");
-
-        chkTime.setText("Time Restricted");
-        chkTime.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkTimeActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setText("Minimum Age:");
-
-        startH.setModel(new javax.swing.SpinnerNumberModel(0, 0, 23, 1));
-        startH.setEnabled(false);
-
-        lblStart.setText("Start");
-
-        endH.setModel(new javax.swing.SpinnerNumberModel(0, 0, 23, 1));
-        endH.setEnabled(false);
-
         jLabel1.setText("Name:");
 
         btnSave.setText("Save");
@@ -482,12 +391,14 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        endM.setModel(new javax.swing.SpinnerNumberModel(0, 0, 59, 1));
-        endM.setEnabled(false);
-
-        lblS.setText(":");
-
         jLabel4.setText("Department:");
+
+        btnRemove.setText("Remove");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -496,49 +407,21 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGap(70, 70, 70)
-                            .addComponent(jLabel1)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(chkTime)))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                            .addComponent(lblTime)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(endH)
-                                .addComponent(startH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(lblS)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(startM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(lblE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(endM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(lblStart)
-                                .addComponent(lblEnd))
-                            .addGap(37, 37, 37)))
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cmbDepartment, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnSave)
-                                    .addComponent(spinAge, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                        .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(cmbDepartment, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(51, 51, 51)
+                .addComponent(btnSave)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnRemove)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -548,31 +431,14 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
                     .addComponent(jLabel1)
                     .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(chkTime)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTime)
-                    .addComponent(startH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblS)
-                    .addComponent(startM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblStart))
-                .addGap(3, 3, 3)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(endH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblE)
-                    .addComponent(endM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblEnd))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(spinAge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(cmbDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(btnSave)
-                .addGap(20, 20, 20))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSave)
+                    .addComponent(btnRemove))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         btnDepartments.setText("Departments");
@@ -593,12 +459,9 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(70, 70, 70)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnDepartments, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnAdd)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnRemove)))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnAdd)
+                            .addComponent(btnDepartments, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -607,7 +470,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
                         .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 438, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 428, Short.MAX_VALUE)
                         .addComponent(btnClose))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
@@ -617,14 +480,12 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnAdd)
-                            .addComponent(btnRemove))
-                        .addGap(64, 64, 64)
+                        .addGap(37, 37, 37)
+                        .addComponent(btnAdd)
+                        .addGap(55, 55, 55)
                         .addComponent(btnDepartments)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -640,63 +501,32 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        if (category == null) {
-            Category c;
-            try {
-                String name = txtName.getText();
-                boolean time = chkTime.isSelected();
-                Time startSell = null;
-                Time endSell = null;
-                if (time) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-                    startSell = new Time(sdf.parse(startH.getValue() + ":" + startM.getValue() + ":00").getTime());
-                    endSell = new Time(sdf.parse(endH.getValue() + ":" + endM.getValue() + ":00").getTime());
-                }
-                int minAge = (int) spinAge.getValue();
-                Department dep = (Department) cmbDepartment.getSelectedItem();
-                if (name.equals("")) {
-                    JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Category", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    c = new Category(name, startSell, endSell, time, minAge, dep);
-                    try {
-                        Category cat = dc.addCategory(c);
-                        setCurrentCategory(null);
-                    } catch (SQLException | IOException ex) {
-                        showError(ex);
-                    }
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Category", JOptionPane.ERROR_MESSAGE);
-            } catch (ParseException ex) {
-                JOptionPane.showMessageDialog(this, "Invalid time format, user HH:mm:ss", "New Category", JOptionPane.ERROR_MESSAGE);
+        String name = JOptionPane.showInputDialog(this, "Enter Category Name", "New Category", JOptionPane.PLAIN_MESSAGE);
+        if (name == null || name.isEmpty()) {
+            return;
+        }
+        try {
+            Object deps[] = Department.getAll().toArray();
+            Department d = (Department) JOptionPane.showInputDialog(this, "Select Department", "New Category", JOptionPane.PLAIN_MESSAGE, null, deps, deps[0]);
+            if (d == null) {
+                return;
             }
-        } else {
-            category = null;
-            setCurrentCategory(null);
+            Category c = new Category(name, d);
+            model.addCategory(c);
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         try {
             String name = txtName.getText();
-            boolean time = chkTime.isSelected();
-            Time startSell = null;
-            Time endSell = null;
-            if (time) {
-                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-                startSell = new Time(sdf.parse(startH.getValue() + ":" + startM.getValue() + ":00").getTime());
-                endSell = new Time(sdf.parse(endH.getValue() + ":" + endM.getValue() + ":00").getTime());
-            }
-            int minAge = (int) spinAge.getValue();
             Department dep = (Department) cmbDepartment.getSelectedItem();
             if (name.equals("")) {
                 JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Category", JOptionPane.ERROR_MESSAGE);
             } else {
                 category.setName(name);
-                category.setStartSell(startSell);
-                category.setEndSell(endSell);
-                category.setTimeRestrict(time);
-                category.setMinAge(minAge);
                 category.setDepartment(dep);
 
                 try {
@@ -707,8 +537,6 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Fill out all required fields", "Category", JOptionPane.ERROR_MESSAGE);
-        } catch (ParseException ex) {
-            JOptionPane.showMessageDialog(this, "Invalid time format, user HH:mm:ss", "New Category", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -722,8 +550,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following category?\n-" + model.getCategories(index) + "\nAll products in this category will be moved to the DEFAULT category.", "Remove Category", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
-                    dc.removeCategory(model.getCategories(index).getId());
-                    model.removeCategory(index);
+                    model.removeCategory(model.getCategories(index));
                 } catch (SQLException | JTillException | IOException ex) {
                     showError(ex);
                 }
@@ -741,18 +568,6 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             setCurrentCategory(model.getCategories(table.getSelectedRow()));
         }
     }//GEN-LAST:event_tableMousePressed
-
-    private void chkTimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkTimeActionPerformed
-        lblTime.setEnabled(chkTime.isSelected());
-        startH.setEnabled(chkTime.isSelected());
-        startM.setEnabled(chkTime.isSelected());
-        endH.setEnabled(chkTime.isSelected());
-        endM.setEnabled(chkTime.isSelected());
-        lblS.setEnabled(chkTime.isSelected());
-        lblE.setEnabled(chkTime.isSelected());
-        lblStart.setEnabled(chkTime.isSelected());
-        lblEnd.setEnabled(chkTime.isSelected());
-    }//GEN-LAST:event_chkTimeActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         String terms = txtSearch.getText();
@@ -787,24 +602,12 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
-    private javax.swing.JCheckBox chkTime;
     private javax.swing.JComboBox<String> cmbDepartment;
-    private javax.swing.JSpinner endH;
-    private javax.swing.JSpinner endM;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblE;
-    private javax.swing.JLabel lblEnd;
-    private javax.swing.JLabel lblS;
-    private javax.swing.JLabel lblStart;
-    private javax.swing.JLabel lblTime;
-    private javax.swing.JSpinner spinAge;
-    private javax.swing.JSpinner startH;
-    private javax.swing.JSpinner startM;
     private javax.swing.JTable table;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtSearch;

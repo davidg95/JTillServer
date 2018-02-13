@@ -35,26 +35,16 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.swing.JOptionPane;
 
 /**
  * Database connection class which handles communication with the database.
  *
  * @author David
  */
-public class DBConnect extends DataConnect {
+public abstract class DBConnect extends DataConnect {
 
-    private static final Logger LOG = Logger.getGlobal();
+    public static final Logger LOG = Logger.getGlobal();
 
-    /**
-     * The static reference to the DBConnect object.
-     */
-    private static final DBConnect CONNECTION;
-
-//  /**
-//     * The database driver.
-//     */
-//    private Driver embedded;
     //Database credentials
     public String address; //The database address.
     public String username; //the database username.
@@ -82,18 +72,7 @@ public class DBConnect extends DataConnect {
     private String licenseNo;
     private int conn_limit;
 
-    static {
-        CONNECTION = new DBConnect();
-    }
-
-    /**
-     * Returns an instance of the DBConnect object.
-     *
-     * @return the DBConnect object.
-     */
-    public static DBConnect getInstance() {
-        return CONNECTION;
-    }
+    Connection connection;
 
     /**
      * Constructor which initialises the concurrent locks.
@@ -108,6 +87,14 @@ public class DBConnect extends DataConnect {
         clockedOn = new LinkedList<>();
         clockLock = new StampedLock();
     }
+
+    /**
+     *
+     * @return @throws SQLException
+     */
+    public abstract Connection getConnection() throws SQLException;
+
+    public abstract void load() throws SQLException;
 
     public void setServer(JConnServer server) {
         this.server = server;
@@ -126,408 +113,9 @@ public class DBConnect extends DataConnect {
         this.address = database_address;
         this.username = username;
         this.password = password;
-        try (final Connection con = getConnection()) {
-            TillSplashScreen.addBar(10);
-            con.commit();
-        }
-        createTables();
-    }
-
-    private void updates() {
-        try {
-            Connection con = getConnection();
-            Statement stmt = con.createStatement();
-            TillSplashScreen.setLabel("Updating database");
-            try {
-                int res = stmt.executeUpdate("ALTER TABLE STAFF ADD ENABLED BOOLEAN");
-                LOG.log(Level.INFO, "New fields added to staff table, " + res + " rows affected");
-                con.commit();
-                try {
-                    int res2 = stmt.executeUpdate("UPDATE STAFF SET STAFF.ENABLED = TRUE");
-                    LOG.log(Level.INFO, "Staff enabled fields set to TRUE, " + res2 + " rows affected");
-                    con.commit();
-                } catch (SQLException ex) {
-                    con.rollback();
-                }
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                String received_reports = "create table RECEIVED_REPORTS\n"
-                        + "(\n"
-                        + "     ID INT not null primary key\n"
-                        + "         GENERATED ALWAYS AS IDENTITY\n"
-                        + "         (START WITH 1, INCREMENT BY 1),"
-                        + "     INVOICE_NO VARCHAR(30) not null,\n"
-                        + "     SUPPLIER_ID INT not null references SUPPLIERS(ID)\n"
-                        + ")";
-                boolean res = stmt.execute(received_reports);
-                if (res) {
-                    LOG.log(Level.INFO, "New table RECEIVED_REPORTS created");
-                }
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                int res = stmt.executeUpdate("ALTER TABLE RECEIVEDITEMS ADD RECEIVED_REPORT INT");
-                LOG.log(Level.INFO, "New fields added to RECEIVEDITEMS table, " + res + " rows affected");
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                int res = stmt.executeUpdate("ALTER TABLE RECEIVED_REPORTS ADD PAID BOOLEAN");
-                LOG.log(Level.INFO, "New fields added to RECEIVED_REPORTS table, " + res + " rows affected");
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                int res = stmt.executeUpdate("ALTER TABLE SCREENS ADD INHERITS INT");
-                LOG.log(Level.INFO, "New fields added to SCREENS table, " + res + " rows affected");
-                con.commit();
-                try {
-                    int res2 = stmt.executeUpdate("UPDATE STAFF SET INHERITS = -1");
-                    LOG.log(Level.INFO, "Set inherits to -1, " + res2 + " rows affected");
-                    con.commit();
-                } catch (SQLException ex) {
-                    con.rollback();
-                }
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                int res = stmt.executeUpdate("ALTER TABLE BUTTONS ADD FONT_COLOR VARCHAR(7)");
-                LOG.log(Level.INFO, "New field added to BUTTONS table, " + res + " rows affected");
-                con.commit();
-                try {
-                    int res2 = stmt.executeUpdate("UPDATE BUTTONS SET FONT_COLOR = '000000'");
-                    LOG.log(Level.INFO, "Set FONT_COLOR to 'ffffff', " + res2 + " rows affected");
-                    con.commit();
-                } catch (SQLException ex) {
-                    con.rollback();
-                }
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                int res = stmt.executeUpdate("ALTER TABLE PRODUCTS ADD PACK_SIZE INT");
-                LOG.log(Level.INFO, "New field added to PRODUCTS table, " + res + " rows affected");
-                con.commit();
-                try {
-                    int res2 = stmt.executeUpdate("UPDATE PRODUCTS SET PACK_SIZE = 1");
-                    LOG.log(Level.INFO, "Set PACK_SIZE to 1, " + res2 + " rows affected");
-                    con.commit();
-                } catch (SQLException ex) {
-                    con.rollback();
-                    throw ex;
-                }
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                int res = stmt.executeUpdate("ALTER TABLE BUTTONS ADD ACCESS_LEVEL INT");
-                LOG.log(Level.INFO, "New field added to BUTTONS table, " + res + " rows affected");
-                con.commit();
-                try {
-                    int res2 = stmt.executeUpdate("UPDATE BUTTONS SET ACCESS_LEVEL = 1");
-                    LOG.log(Level.INFO, "Set ACCESS_LEVEL to 1, " + res2 + " rows affected");
-                    con.commit();
-                } catch (SQLException ex) {
-                    con.rollback();
-                }
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                int res = stmt.executeUpdate("ALTER TABLE PRODUCTS ADD BARCODE VARCHAR(15)");
-                LOG.log(Level.INFO, "BARCODE added to PRODUCTS table, " + res + " rows affected");
-                int res2 = stmt.executeUpdate("UPDATE PRODUCTS SET BARCODE = (SELECT CODE FROM PLUS WHERE PLUS.PRODUCT = PRODUCTS.ID)");
-                LOG.log(Level.INFO, "Updated ," + res2 + " rows affected");
-                int res3 = stmt.executeUpdate("DROP TABLES PLUS");
-                LOG.log(Level.INFO, "Removed PLUS table");
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                int res = stmt.executeUpdate("ALTER TABLE BUTTONS ADD LINK VARCHAR(50)");
-                LOG.log(Level.INFO, "Added LINK to BUTTONS, " + res + " rows affected");
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                String declarations = "create table DECLARATIONS\n"
-                        + "(\n"
-                        + "     ID INT not null primary key\n"
-                        + "         GENERATED ALWAYS AS IDENTITY\n"
-                        + "         (START WITH 1, INCREMENT BY 1),\n"
-                        + "     TERMINAL INT not null references TILLS(ID),\n"
-                        + "     DECLARED DOUBLE,\n"
-                        + "     EXPECTED DOUBLE,\n"
-                        + "     TRANSACTIONS int,\n"
-                        + "     TAX DOUBLE,\n"
-                        + "     STAFF INT not null references STAFF(ID),\n"
-                        + "     TIME bigint\n"
-                        + ")";
-                stmt.executeUpdate(declarations);
-                LOG.log(Level.INFO, "Created table declarations");
-                con.commit();
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                stmt.executeUpdate("ALTER TABLE PRODUCTS ADD SCALE DOUBLE");
-                stmt.executeUpdate("UPDATE PRODUCTS SET SCALE=1");
-                int res = stmt.executeUpdate("ALTER TABLE PRODUCTS ADD SCALE_NAME VARCHAR(20)");
-                stmt.executeUpdate("UPDATE PRODUCTS SET SCALE_NAME='PRICE'");
-                con.commit();
-                LOG.log(Level.INFO, "Added SCALE and SCALE_NAME to PRODUCTS, " + res + " rows affected");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                int res = stmt.executeUpdate("ALTER TABLE SALEITEMS ADD COST DOUBLE");
-                con.commit();
-                LOG.log(Level.INFO, "Added COST to SALEITEMS, " + res + " rows affected");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                stmt.executeUpdate("DROP TABLE PLUS");
-                con.commit();
-                LOG.log(Level.INFO, "Removed PLUS table");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                stmt.executeUpdate("ALTER TABLE PRODUCTS ADD INCVAT BOOLEAN");
-                stmt.executeUpdate("UPDATE PRODUCTS SET INCVAT = FALSE");
-                con.commit();
-                LOG.log(Level.INFO, "Added INCVAT to PRODUCTS table and set to FALSE");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                int r1 = stmt.executeUpdate("ALTER TABLE PRODUCTS DROP COLUMN DEPARTMENT_ID");
-                int r2 = stmt.executeUpdate("ALTER TABLE CATEGORYS ADD DEPARTMENT INT REFERENCES DEPARTMENTS(ID)");
-                stmt.executeUpdate("UPDATE CATEGORYS SET DEPARTMENT = 1");
-                con.commit();
-                LOG.log(Level.INFO, "Removed DEPARTMENT column from PRODUCTS, " + r1 + " rows affected");
-                LOG.log(Level.INFO, "Added column DEPARTMENT to CATEGORYS, " + r2 + " rows affected");
-                LOG.log(Level.INFO, "Set DEPARTMENT in CATEGORYS to 1, " + r2 + " rows affected");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                int r1 = stmt.executeUpdate("ALTER TABLE WASTEREPORTS DROP COLUMN VALUE");
-                int r2 = stmt.executeUpdate("ALTER TABLE WASTEITEMS ADD VALUE DOUBLE");
-                con.commit();
-                LOG.log(Level.INFO, "Removed VALUE from WASTEREPORTS, " + r1 + " records affected");
-                LOG.log(Level.INFO, "Added VALUE to WASTEITEMS, " + r2 + " records affected");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                String condiments = "create table CONDIMENTS\n"
-                        + "(\n"
-                        + "     ID INT not null primary key\n"
-                        + "         GENERATED ALWAYS AS IDENTITY\n"
-                        + "         (START WITH 1, INCREMENT BY 1),\n"
-                        + "     NAME VARCHAR(30),\n"
-                        + "     PRODUCT INT not null references PRODUCTS(ID),\n"
-                        + "     VALUE DOUBLE,\n"
-                        + "     STOCK int\n"
-                        + ")";
-                stmt.executeUpdate(condiments);
-                con.commit();
-                LOG.log(Level.INFO, "Created table CONDIMENTS");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                int r1 = stmt.executeUpdate("ALTER TABLE PRODUCTS ADD COLUMN MAXCON INT");
-                int r2 = stmt.executeUpdate("ALTER TABLE PRODUCTS ADD COLUMN MINCON INT");
-                con.commit();
-                LOG.log(Level.INFO, "Added MAXCON to PRODUCTS, " + r1 + " records affected");
-                LOG.log(Level.INFO, "Added MINCON to PRODUCTS, " + r2 + " records affected");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                int r1 = stmt.executeUpdate("ALTER TABLE CONDIMENTS DROP COLUMN VALUE");
-                stmt.executeUpdate("ALTER TABLE CONDIMENTS DROP COLUMN STOCK");
-                stmt.executeUpdate("ALTER TABLE CONDIMENTS DROP COLUMN NAME");
-                stmt.executeUpdate("ALTER TABLE CONDIMENTS ADD COLUMN PRODUCT_CON INT not null references PRODUCTS(ID) DEFAULT 1");
-                con.commit();
-                LOG.log(Level.INFO, "Removed column VALUE from CONDIMENTS, " + r1 + " records affected");
-                LOG.log(Level.INFO, "Removed column STOCK from CONDIMENTS, " + r1 + " records affected");
-                LOG.log(Level.INFO, "Removed column NAME from CONDIMENTS, " + r1 + " records affected");
-                LOG.log(Level.INFO, "Added column PRODUCT_CON to CONDIMENTS, " + r1 + " records affected");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                int i1 = stmt.executeUpdate("ALTER TABLE WASTEITEMS ADD COLUMN TIMESTAMP BIGINT");
-                int i2 = stmt.executeUpdate("UPDATE WASTEITEMS SET TIMESTAMP=(SELECT TIMESTAMP FROM WASTEREPORTS WHERE ID=WASTEITEMS.REPORT_ID)");
-                int i3 = stmt.executeUpdate("ALTER TABLE WASTEITEMS DROP COLUMN REPORT_ID");
-                int i4 = stmt.executeUpdate("DROP TABLE WASTEREPORTS");
-                con.commit();
-                log("Added TIMESTAMP to WASTEITEMS, " + i1 + " rows affected");
-                log("Set TIMESTAMP in WASTEITEMS, " + i2 + " rows affected");
-                log("Dropped column REPORT_ID in WASTEITEMS, " + i3 + " rows affected");
-                log("Dropped table WASTEREPORTS, " + i4 + " rows affected");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                String orders = "create table ORDERS\n"
-                        + "(\n"
-                        + "     ID INT not null primary key\n"
-                        + "         GENERATED ALWAYS AS IDENTITY\n"
-                        + "         (START WITH 1, INCREMENT BY 1),\n"
-                        + "     SUPPLIER int not null references SUPPLIERS(ID),\n"
-                        + "     SENT BOOLEAN,\n"
-                        + "     SENDDATE BIGINT\n"
-                        + ")";
-                String orderItems = "create table ORDERITEMS\n"
-                        + "(\n"
-                        + "     ID INT not null primary key\n"
-                        + "         GENERATED ALWAYS AS IDENTITY\n"
-                        + "         (START WITH 1, INCREMENT BY 1),\n"
-                        + "     PRODUCT int not null references PRODUCTS(ID),\n"
-                        + "     ORDER_ID int not null references ORDERS(ID),\n"
-                        + "     QUANTITY INT,\n"
-                        + "     PRICE DOUBLE\n"
-                        + ")";
-                stmt.executeUpdate(orders);
-                stmt.executeUpdate(orderItems);
-                con.commit();
-                log("Created table ORDERS");
-                log("Created table ORDERITEMS");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                stmt = con.createStatement();
-                stmt.executeUpdate("ALTER TABLE SCREENS ADD COLUMN VGAP INT");
-                stmt.executeUpdate("ALTER TABLE SCREENS ADD COLUMN HGAP INT");
-                con.commit();
-                log("Added VGAP to SCREENS");
-                log("Added HGAP to SCREEN");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                stmt = con.createStatement();
-                stmt.executeUpdate("ALTER TABLE PRODUCTS ADD COLUMN LIMIT BIGINT");
-                stmt.executeUpdate("UPDATE PRODUCTS SET LIMIT=0");
-                con.commit();
-                log("Added LIMIT to PRODUCTS");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                stmt = con.createStatement();
-                stmt.executeUpdate("ALTER TABLE ORDERS ADD COLUMN RECEIVED BOOLEAN");
-                con.commit();
-                log("Added RECEIVED to ORDERS");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-//            try {
-//                stmt = con.createStatement();
-//                stmt.executeUpdate("ALTER TABLE PRODUCTS ADD COLUMN SUPPLIER INTEGER");
-//                stmt.executeUpdate("UPDATE PRODUCTS SET SUPPLIER = -1");
-//                con.commit();
-//                log("Added SUPPLIER to PRODUCTS and set to -1");
-//            } catch (SQLException ex) {
-//                con.rollback();
-//            }
-            try {
-                stmt = con.createStatement();
-                stmt.executeUpdate("ALTER TABLE PRODUCTS ADD COLUMN TRACK_STOCK BOOLEAN");
-                stmt.executeUpdate("UPDATE PRODUCTS SET TRACK_STOCK = TRUE WHERE OPEN_PRICE = FALSE");
-                stmt.executeUpdate("UPDATE PRODUCTS SET TRACK_STOCK = FALSE WHERE OPEN_PRICE = TRUE");
-                con.commit();
-                log("Added TRACK_STOCK to PRODUCTS");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                stmt = con.createStatement();
-                stmt.executeUpdate("ALTER TABLE WASTEREASONS ADD COLUMN PRIVILEDGE_LEVEL INT");
-                stmt.executeUpdate("UPDATE WASTEREASONS SET PRIVILEDGE_LEVEL = 0");
-                con.commit();
-                log("Added PRIVILEDGE_LEVEL to WASTEREASONS");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                stmt = con.createStatement();
-                stmt.executeUpdate("ALTER TABLE WASTEREASONS ADD COLUMN DELETED BOOLEAN");
-                stmt.executeUpdate("UPDATE WASTEREASONS SET DELETED = false");
-                con.commit();
-                log("Added DELETED to WASTEREASONS");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                stmt = con.createStatement();
-                stmt.executeUpdate("CREATE TABLE REFUND_REASONS\n"
-                        + "(\n"
-                        + "     ID INT not null primary key\n"
-                        + "        GENERATED ALWAYS AS IDENTITY\n"
-                        + "        (START WITH 1, INCREMENT BY 1),\n"
-                        + "     REASON VARCHAR(30) NOT NULL,\n"
-                        + "     LEVEL INT NOT NULL,\n"
-                        + "     DELETED BOOLEAN NOT NULL\n"
-                        + ")");
-                con.commit();
-                log("Created table REFUND_REASONS");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                stmt = con.createStatement();
-                stmt.executeUpdate("ALTER TABLE SUPPLIERS ADD COLUMN ACCOUNT_NUMBER VARCHAR(20)");
-                stmt.executeUpdate("ALTER TABLE SUPPLIERS ADD COLUMN EMAIL VARCHAR(30)");
-                con.commit();
-                log("Added columns to SUPPLIERS");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            try {
-                stmt.executeUpdate("ALTER TABLE CUSTOMERS ADD COLUMN MAX_DEBT BIGINT");
-                con.commit();
-                log("Added MAX_DEBT to CUSTOMERS");
-            } catch (SQLException ex) {
-                con.rollback();
-            }
-            TillSplashScreen.addBar(20);
-        } catch (SQLException ex) {
-        }
-    }
-
-    private void log(String message) {
-        LOG.log(Level.INFO, message);
-    }
-
-    /**
-     * Returns a new connection to the database with auto commit disabled.
-     *
-     * @return new Connection.
-     * @throws SQLException if there was an error getting the connection.
-     */
-    private Connection getConnection() throws SQLException {
-        if (dbConn != null && !dbConn.isClosed()) {
-            return dbConn;
-        }
-        dbConn = DriverManager.getConnection(address, username, password);
-        dbConn.setAutoCommit(false);
-        return dbConn;
+        load();
+        LOG.log(Level.INFO, "Connected to database");
+        TillSplashScreen.addBar(10);
     }
 
     @Override
@@ -550,370 +138,6 @@ public class DBConnect extends DataConnect {
             con.rollback();
             throw ex;
         }
-    }
-
-    /**
-     * Method which creates the database.
-     *
-     * @param address the database address.
-     * @param username the database username.
-     * @param password the database password.
-     * @throws SQLException if there was a creation error.
-     */
-//    public void create(String address, String username, String password) throws SQLException {
-//        LOG.log(Level.INFO, "The database does not exists, so it is getting created");
-//        embedded = new com.mysql.jdbc.Driver();
-//        TillSplashScreen.setLabel("Registering database driver");
-//        DriverManager.registerDriver(embedded);
-//        TillSplashScreen.addBar(10);
-//        this.address = address;
-//        this.username = username;
-//        this.password = password;
-//        getConnection();
-//        TillSplashScreen.setLabel("Creating tables");
-//        createTables();
-//    }
-    /**
-     * Create the database tables.
-     *
-     * @throws SQLException if there was an error in creating any tables.
-     */
-    private void createTables() throws SQLException {
-        LOG.log(Level.INFO, "Creating tables");
-        String tills = "create table TILLS\n"
-                + "(\n"
-                + "	ID INT not null primary key\n"
-                + "        GENERATED ALWAYS AS IDENTITY\n"
-                + "        (START WITH 1, INCREMENT BY 1),\n"
-                + "     UUID VARCHAR(50) not null,\n"
-                + "	NAME VARCHAR(20) not null,\n"
-                + "     UNCASHED DOUBLE not null,\n"
-                + "     DEFAULT_SCREEN INT not null\n"
-                + ")";
-        String categorys = "create table CATEGORYS\n"
-                + "(\n"
-                + "	ID INT not null primary key\n"
-                + "        GENERATED ALWAYS AS IDENTITY\n"
-                + "        (START WITH 1, INCREMENT BY 1),\n"
-                + "	NAME VARCHAR(20) not null,\n"
-                + "     SELL_START TIME,\n"
-                + "     SELL_END TIME,\n"
-                + "     TIME_RESTRICT BOOLEAN not null,\n"
-                + "     MINIMUM_AGE INT not null\n"
-                + ")";
-        String departments = "create table DEPARTMENTS\n"
-                + "(\n"
-                + "     ID INT not null primary key\n"
-                + "         GENERATED ALWAYS AS IDENTITY\n"
-                + "         (START WITH 1, INCREMENT BY 1),"
-                + "     NAME VARCHAR(30) not null\n"
-                + ")";
-        String tax = "create table TAX\n"
-                + "(\n"
-                + "	ID INT not null primary key\n"
-                + "        GENERATED ALWAYS AS IDENTITY\n"
-                + "        (START WITH 1, INCREMENT BY 1),\n"
-                + "	NAME VARCHAR(20) not null,\n"
-                + "	VALUE DOUBLE not null\n"
-                + ")";
-        String configs = "create table CONFIGS\n"
-                + "(\n"
-                + "	NAME INT not null primary key\n"
-                + "        GENERATED ALWAYS AS IDENTITY\n"
-                + "        (START WITH 1, INCREMENT BY 1),\n"
-                + "	VALUE VARCHAR(20) not null\n"
-                + ")";
-        String sales = "create table SALES\n"
-                + "(\n"
-                + "     ID INT not null primary key\n"
-                + "        GENERATED ALWAYS AS IDENTITY\n"
-                + "        (START WITH 1, INCREMENT BY 1),\n"
-                + "     PRICE DOUBLE,\n"
-                + "     CUSTOMER int,\n"
-                + "     TIMESTAMP bigint,\n"
-                + "     TERMINAL int not null references TILLS(ID),\n"
-                + "     CASHED boolean not null,\n"
-                + "     STAFF int,\n"
-                + "     MOP int\n"
-                + ")";
-        String saleItems = "create table SALEITEMS\n"
-                + "(\n"
-                + "     ID INT not null primary key\n"
-                + "        GENERATED ALWAYS AS IDENTITY\n"
-                + "        (START WITH 1, INCREMENT BY 1),\n"
-                + "     PRODUCT_ID INT not null references PRODUCTS(ID),\n"
-                + "	TYPE INT,\n"
-                + "     QUANTITY INT not null,\n"
-                + "     PRICE double not null,\n"
-                + "     TAX double not null,\n"
-                + "     SALE_ID INT not null references SALES(ID)\n"
-                + ")";
-        String customers = "create table CUSTOMERS\n"
-                + "(\n"
-                + "	ID INT not null primary key\n"
-                + "        GENERATED ALWAYS AS IDENTITY\n"
-                + "        (START WITH 1, INCREMENT BY 1),\n"
-                + "	NAME VARCHAR(200) not null,\n"
-                + "	PHONE VARCHAR(200),\n"
-                + "	MOBILE VARCHAR(200),\n"
-                + "	EMAIL VARCHAR(200),\n"
-                + "	ADDRESS_LINE_1 VARCHAR(300),\n"
-                + "	ADDRESS_LINE_2 VARCHAR(300),\n"
-                + "	TOWN VARCHAR(200),\n"
-                + "	COUNTY VARCHAR(200),\n"
-                + "	COUNTRY VARCHAR(200),\n"
-                + "	POSTCODE VARCHAR(200),\n"
-                + "	NOTES VARCHAR(1000),\n"
-                + "	LOYALTY_POINTS INTEGER,\n"
-                + "     MONEY_DUE DOUBLE\n"
-                + ")";
-        String products = "create table PRODUCTS\n"
-                + "(\n"
-                + "	ID INT not null primary key\n"
-                + "        GENERATED ALWAYS AS IDENTITY\n"
-                + "        (START WITH 1, INCREMENT BY 1),\n"
-                + "     ORDER_CODE INTEGER,\n"
-                + "	NAME VARCHAR(50) not null,\n"
-                + "     OPEN_PRICE BOOLEAN not null,\n"
-                + "	PRICE DOUBLE,\n"
-                + "	STOCK INTEGER,\n"
-                + "	COMMENTS VARCHAR(200),\n"
-                + "	SHORT_NAME VARCHAR(50) not null,\n"
-                + "	CATEGORY_ID INT not null references CATEGORYS(ID),\n"
-                + "     DEPARTMENT_ID INT not null references DEPARTMENTS(ID),\n"
-                + "	TAX_ID INT not null references TAX(ID),\n"
-                + "	COST_PRICE DOUBLE,\n"
-                + "	MIN_PRODUCT_LEVEL INTEGER,\n"
-                + "	MAX_PRODUCT_LEVEL INTEGER,\n"
-                + "     PACK_SIZE INT,\n"
-                + "     BARCODE VARCHAR(15)\n"
-                + ")";
-        String discounts = "create table DISCOUNTS\n"
-                + "(\n"
-                + "	ID INT not null primary key\n"
-                + "        GENERATED ALWAYS AS IDENTITY\n"
-                + "        (START WITH 1, INCREMENT BY 1),\n"
-                + "	NAME VARCHAR(20) not null,\n"
-                + "	PLU INTEGER,\n"
-                + "	PERCENTAGE DOUBLE not null,\n"
-                + "	PRICE DOUBLE not null,\n"
-                + "     ACTION INTEGER,\n"
-                + "     CONDITION INTEGER,\n"
-                + "     STARTT BIGINT,\n"
-                + "     ENDT BIGINT\n"
-                + ")";
-        String buckets = "create table BUCKETS\n"
-                + "(\n"
-                + "     ID INT not null primary key\n"
-                + "         GENERATED ALWAYS AS IDENTITY\n"
-                + "         (START WITH 1, INCREMENT BY 1),\n"
-                + "     DISCOUNT INT not null references DISCOUNTS(ID),\n"
-                + "     TRIGGERSREQUIRED INT,\n"
-                + "     REQUIREDTRIGGER BOOLEAN\n"
-                + ")";
-        String triggers = "create table TRIGGERS\n"
-                + "(\n"
-                + "     ID INT not null primary key\n"
-                + "         GENERATED ALWAYS AS IDENTITY\n"
-                + "         (START WITH 1, INCREMENT BY 1),\n"
-                + "     BUCKET INT not null references BUCKETS(ID),\n"
-                + "     PRODUCT INT not null references PRODUCTS(ID),\n"
-                + "     QUANTITYREQUIRED INT\n"
-                + ")";
-        String staff = "create table STAFF\n"
-                + "(\n"
-                + "	ID INT not null primary key\n"
-                + "        GENERATED ALWAYS AS IDENTITY\n"
-                + "        (START WITH 1, INCREMENT BY 1),\n"
-                + "	NAME VARCHAR(50) not null,\n"
-                + "	POSITION INTEGER not null,\n"
-                + "	USERNAME VARCHAR(20) not null,\n"
-                + "	PASSWORD VARCHAR(200) not null,\n"
-                + "     ENABLED BOOLEAN,\n"
-                + "     WAGE DOUBLE\n"
-                + ")";
-        String screens = "create table SCREENS\n"
-                + "(\n"
-                + "     ID INT not null primary key\n"
-                + "         GENERATED ALWAYS AS IDENTITY\n"
-                + "         (START WITH 1, INCREMENT BY 1),\n"
-                + "     NAME VARCHAR(50) not null,\n"
-                + "     WIDTH INT not null,\n"
-                + "     INHERITS INT not null,\n"
-                + "     HEIGHT INT not null\n"
-                + ")";
-        String buttons = "create table BUTTONS\n"
-                + "(\n"
-                + "     ID INT not null primary key\n"
-                + "         GENERATED ALWAYS AS IDENTITY\n"
-                + "         (START WITH 1, INCREMENT BY 1),\n"
-                + "     NAME VARCHAR(50) not null,\n"
-                + "     PRODUCT INT not null,\n"
-                + "     TYPE INT not null,\n"
-                + "     COLOR VARCHAR(7),\n"
-                + "     FONT_COLOR VARCHAR(7),\n"
-                + "     WIDTH INT,\n"
-                + "     HEIGHT INT,\n"
-                + "     XPOS INT,\n"
-                + "     YPOS INT,\n"
-                + "     ACCESS_LEVEL INT,\n"
-                + "     SCREEN_ID INT not null references SCREENS(ID),\n"
-                + "     LINK VARCHAR(50)\n"
-                + ")";
-        String wasteReports = "create table WASTEREPORTS\n"
-                + "(\n"
-                + "     ID INT not null primary key\n"
-                + "         GENERATED ALWAYS AS IDENTITY\n"
-                + "         (START WITH 1, INCREMENT BY 1),\n"
-                + "     VALUE DOUBLE,\n"
-                + "     TIMESTAMP bigint\n"
-                + ")";
-        String wasteReasons = "create table WASTEREASONS\n"
-                + "(\n"
-                + "     ID INT not null primary key\n"
-                + "         GENERATED ALWAYS AS IDENTITY\n"
-                + "         (START WITH 1, INCREMENT BY 1),\n"
-                + "     REASON VARCHAR(30)\n"
-                + ")";
-        String wasteItems = "create table WASTEITEMS\n"
-                + "(\n"
-                + "     ID INT not null primary key\n"
-                + "         GENERATED ALWAYS AS IDENTITY\n"
-                + "         (START WITH 1, INCREMENT BY 1),\n"
-                + "     REPORT_ID INT not null references WASTEREPORTS(ID),\n"
-                + "     PRODUCT INT not null references PRODUCTS(ID),\n"
-                + "     QUANTITY INT,\n"
-                + "     REASON INT not null references WASTEREASONS(ID)\n"
-                + ")";
-        String suppliers = "create table SUPPLIERS\n"
-                + "(\n"
-                + "     ID INT not null primary key\n"
-                + "       GENERATED ALWAYS AS IDENTITY\n"
-                + "         (START WITH 1, INCREMENT BY 1),\n"
-                + "     NAME VARCHAR(30),\n"
-                + "     ADDRESS VARCHAR(100),\n"
-                + "     PHONE VARCHAR(20)\n"
-                + ")";
-        String receivedItems = "create table RECEIVEDITEMS\n"
-                + "(\n"
-                + "     ID INT not null primary key\n"
-                + "         GENERATED ALWAYS AS IDENTITY\n"
-                + "         (START WITH 1, INCREMENT BY 1),\n"
-                + "     PRODUCT INT not null references PRODUCTS(ID),\n"
-                + "     PRICE DOUBLE,\n"
-                + "     QUANTITY INT\n"
-                + ")";
-        String clockOnOff = "create table CLOCKONOFF\n"
-                + "(\n"
-                + "     ID INT not null primary key\n"
-                + "         GENERATED ALWAYS AS IDENTITY\n"
-                + "         (START WITH 1, INCREMENT BY 1),\n"
-                + "     STAFF int not null references STAFF(ID),\n"
-                + "     TIMESTAMP BIGINT,\n"
-                + "     ONOFF int\n"
-                + ")";
-        String images = "create table IMAGES\n"
-                + "(\n"
-                + "     ID INT not null primary key\n"
-                + "         GENERATED ALWAYS AS IDENTITY\n"
-                + "         (START WITH 1, INCREMENT BY 1),\n"
-                + "     NAME VARCHAR(50),\n"
-                + "     URL VARCHAR(200)\n"
-                + ")";
-        String declarations = "create table DECLARATIONS\n"
-                + "(\n"
-                + "     ID INT not null primary key\n"
-                + "         GENERATED ALWAYS AS IDENTITY\n"
-                + "         (START WITH 1, INCREMENT BY 1),\n"
-                + "     TERMINAL INT not null references TILLS(ID),\n"
-                + "     DECLARED DOUBLE,\n"
-                + "     EXPECTED DOUBLE,\n"
-                + "     TRANSACTIONS int,\n"
-                + "     TAX DOUBLE,\n"
-                + "     STAFF INT not null references STAFF(ID),\n"
-                + "     TIME bigint\n"
-                + ")";
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
-        try {
-            stmt.execute(tills);
-            LOG.log(Level.INFO, "Created tills table");
-            stmt.execute(tax);
-            LOG.log(Level.INFO, "Created tax table");
-            stmt.execute(categorys);
-            LOG.log(Level.INFO, "Created categorys table");
-            stmt.execute(departments);
-            LOG.log(Level.INFO, "Created departments table");
-            stmt.execute(configs);
-            LOG.log(Level.INFO, "Created configs table");
-            stmt.execute(sales);
-            LOG.log(Level.INFO, "Created sales table");
-            stmt.execute(customers);
-            LOG.log(Level.INFO, "Created customers table");
-            stmt.execute(products);
-            LOG.log(Level.INFO, "Created products table");
-            stmt.execute(discounts);
-            LOG.log(Level.INFO, "Created discounts table");
-            stmt.execute(buckets);
-            LOG.log(Level.INFO, "Created buckets table");
-            stmt.execute(triggers);
-            LOG.log(Level.INFO, "Create triggers table");
-            stmt.execute(saleItems);
-            LOG.log(Level.INFO, "Created saleItems table");
-            stmt.execute(staff);
-            LOG.log(Level.INFO, "Created staff table");
-            stmt.execute(screens);
-            LOG.log(Level.INFO, "Created screens table");
-            stmt.execute(buttons);
-            LOG.log(Level.INFO, "Created buttons table");
-            stmt.execute(wasteReports);
-            LOG.log(Level.INFO, "Created waste reports table");
-            stmt.execute(wasteReasons);
-            LOG.log(Level.INFO, "Created table waste reasons");
-            stmt.execute(wasteItems);
-            LOG.log(Level.INFO, "Created table waste items");
-            stmt.execute(suppliers);
-            LOG.log(Level.INFO, "Created table suppliers");
-            stmt.execute(receivedItems);
-            LOG.log(Level.INFO, "Created table recevied items");
-            stmt.execute(clockOnOff);
-            LOG.log(Level.INFO, "Created table clockonoff");
-            stmt.execute(images);
-            LOG.log(Level.INFO, "Created table images");
-            stmt.execute(declarations);
-            LOG.log(Level.INFO, "Created table declarations");
-            con.commit();
-            updates();
-            String addDepartment = "INSERT INTO DEPARTMENTS (NAME) VALUES ('Default')";
-            String addCategory = "INSERT INTO CATEGORYS (NAME, TIME_RESTRICT, MINIMUM_AGE, DEPARTMENT) VALUES ('Default','FALSE',0, 1)";
-            String addTax = "INSERT INTO TAX (NAME, VALUE) VALUES ('ZERO',0.0)";
-            String addWasteReason = "INSERT INTO WASTEREASONS (REASON, DELETED) VALUES ('Default', 'FALSE')";
-            stmt.executeUpdate(addDepartment);
-            stmt.executeUpdate(addCategory);
-            stmt.executeUpdate(addTax);
-            stmt.executeUpdate(addWasteReason);
-            con.commit();
-            Screen s = new Screen("DEFAULT", 5, 10, -1, 0, 0);
-            addScreen(s);
-            int x = 1;
-            int y = 1;
-            for (int i = 0; i < 50; i++) {
-                TillButton bu = addButton(new TillButton("[SPACE]", 0, TillButton.SPACE, s.getId(), "000000", "ffffff", 1, 1, x, y, 1, ""));
-                x++;
-                if (x == 6) {
-                    x = 1;
-                    y++;
-                }
-            }
-        } catch (SQLException ex) {
-            LOG.info("Tables already exist, so they do not need created");
-            con.rollback();
-        }
-    }
-
-    private void error(SQLException ex) {
-        JOptionPane.showMessageDialog(null, ex, "Database error", JOptionPane.ERROR_MESSAGE);
-        LOG.log(Level.SEVERE, null, ex);
     }
 
     public String getAddress() {
@@ -976,17 +200,13 @@ public class DBConnect extends DataConnect {
             boolean trackStock = set.getBoolean(22);
 
             String cName = set.getString(24);
-            Time start = set.getTime(25);
-            Time end = set.getTime(26);
-            boolean restrict = set.getBoolean(27);
-            int age = set.getInt(28);
-            int department = set.getInt(29);
+            int department = set.getInt(25);
 
-            String dName = set.getString(31);
+            String dName = set.getString(27);
 
             Department d = new Department(department, dName);
 
-            Category c = new Category(cId, cName, start, end, restrict, age, d);
+            Category c = new Category(cId, cName, d);
 
             String tName = set.getString(33);
             double value = set.getDouble(34);
@@ -1229,7 +449,7 @@ public class DBConnect extends DataConnect {
     //Customer Methods
     @Override
     public List<Customer> getAllCustomers() throws SQLException {
-        String query = "SELECT * FROM CUSTOMERS";
+        String query = "SELECT * FROM CUSTOMERS ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Customer> customers = new LinkedList<>();
@@ -1417,7 +637,7 @@ public class DBConnect extends DataConnect {
     //Staff Methods
     @Override
     public List<Staff> getAllStaff() throws SQLException {
-        String query = "SELECT * FROM STAFF";
+        String query = "SELECT * FROM STAFF ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Staff> staff = new LinkedList<>();
@@ -1597,7 +817,7 @@ public class DBConnect extends DataConnect {
     //Discount Methods
     @Override
     public List<Discount> getAllDiscounts() throws SQLException {
-        String query = "SELECT * FROM DISCOUNTS";
+        String query = "SELECT * FROM DISCOUNTS ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Discount> discounts = new LinkedList<>();
@@ -1722,7 +942,7 @@ public class DBConnect extends DataConnect {
     //Tax Methods
     @Override
     public List<Tax> getAllTax() throws SQLException {
-        String query = "SELECT * FROM TAX";
+        String query = "SELECT * FROM TAX ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Tax> tax = new LinkedList<>();
@@ -1862,7 +1082,7 @@ public class DBConnect extends DataConnect {
     //Category Methods
     @Override
     public List<Category> getAllCategorys() throws SQLException {
-        String query = "SELECT * FROM CATEGORYS, DEPARTMENTS WHERE CATEGORYS.DEPARTMENT = DEPARTMENTS.ID";
+        String query = "SELECT * FROM CATEGORYS, DEPARTMENTS WHERE CATEGORYS.DEPARTMENT = DEPARTMENTS.ID ORDER BY CATEGORYS.ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Category> categorys = new LinkedList<>();
@@ -1883,16 +1103,12 @@ public class DBConnect extends DataConnect {
         while (set.next()) {
             int id = set.getInt(1);
             String name = set.getString(2);
-            Time startSell = set.getTime(3);
-            Time endSell = set.getTime(4);
-            boolean timeRestrict = set.getBoolean(5);
-            int minAge = set.getInt(6);
-            int department = set.getInt(7);
+            int department = set.getInt(3);
 
-            String dName = set.getString(9);
+            String dName = set.getString(5);
 
             Department d = new Department(department, dName);
-            Category c = new Category(id, name, startSell, endSell, timeRestrict, minAge, d);
+            Category c = new Category(id, name, d);
             categorys.add(c);
         }
         return categorys;
@@ -1900,7 +1116,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public Category addCategory(Category c) throws SQLException {
-        String query = "INSERT INTO CATEGORYS (NAME, SELL_START, SELL_END, TIME_RESTRICT, MINIMUM_AGE, DEPARTMENT) VALUES (" + c.getSQLInsertString() + ")";
+        String query = "INSERT INTO CATEGORYS (NAME, DEPARTMENT) VALUES (" + c.getSQLInsertString() + ")";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -2095,7 +1311,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public List<Sale> getAllSales() throws SQLException {
-        String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID";
+        String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID ORDER BY SALES.ID";
         List<Sale> sales = new LinkedList<>();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
@@ -2184,20 +1400,16 @@ public class DBConnect extends DataConnect {
             boolean trackStock = set.getBoolean(30);
 
             String cName = set.getString(32);
-            Time start = set.getTime(33);
-            Time end = set.getTime(34);
-            boolean restrict = set.getBoolean(35);
-            int age = set.getInt(36);
-            int department = set.getInt(37);
+            int department = set.getInt(33);
 
-            String dName = set.getString(39);
+            String dName = set.getString(35);
 
             Department d = new Department(department, dName);
 
-            Category c = new Category(cId, cName, start, end, restrict, age, d);
+            Category c = new Category(cId, cName, d);
 
-            String tName = set.getString(41);
-            double value = set.getDouble(42);
+            String tName = set.getString(37);
+            double value = set.getDouble(38);
 
             Tax t = new Tax(taxID, tName, value);
 
@@ -2858,7 +2070,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public List<Till> getAllTills() throws SQLException {
-        String query = "SELECT * FROM TILLS";
+        String query = "SELECT * FROM TILLS ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Till> tills = new LinkedList<>();
@@ -3082,20 +2294,16 @@ public class DBConnect extends DataConnect {
             boolean trackStock = set.getBoolean(32);
 
             String cName = set.getString(34);
-            Time start = set.getTime(35);
-            Time end = set.getTime(36);
-            boolean restrict = set.getBoolean(37);
-            int age = set.getInt(38);
-            int department = set.getInt(39);
+            int department = set.getInt(35);
 
-            String dName = set.getString(41);
+            String dName = set.getString(37);
 
             Department d = new Department(department, dName);
 
-            Category c = new Category(cId, cName, start, end, restrict, age, d);
+            Category c = new Category(cId, cName, d);
 
-            String tName = set.getString(43);
-            double tValue = set.getDouble(44);
+            String tName = set.getString(39);
+            double tValue = set.getDouble(40);
 
             Tax t = new Tax(taxID, tName, tValue);
 
@@ -3269,7 +2477,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public List<WasteReason> getAllWasteReasons() throws IOException, SQLException {
-        String query = "SELECT * FROM WASTEREASONS";
+        String query = "SELECT * FROM WASTEREASONS ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<WasteReason> wrs = new LinkedList<>();
@@ -3288,7 +2496,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public List<WasteReason> getUsedWasteReasons() throws IOException, SQLException {
-        String query = "SELECT * FROM WASTEREASONS WHERE DELETED = false";
+        String query = "SELECT * FROM WASTEREASONS WHERE DELETED = false ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<WasteReason> wrs = new LinkedList<>();
@@ -3509,7 +2717,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public List<Department> getAllDepartments() throws IOException, SQLException {
-        String query = "SELECT * FROM DEPARTMENTS";
+        String query = "SELECT * FROM DEPARTMENTS ORDER BY ID";
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
@@ -4150,7 +3358,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public List<Sale> getAllTerminalSales(int terminal, boolean uncashedOnly) throws IOException, SQLException {
-        String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.TERMINAL = " + terminal + (uncashedOnly ? " AND s.CASHED = FALSE" : "");
+        String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.TERMINAL = " + terminal + (uncashedOnly ? " AND s.CASHED = FALSE" : "") + " ORDER BY SALES.ID";
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
@@ -4371,20 +3579,16 @@ public class DBConnect extends DataConnect {
                 boolean trackStock = set.getBoolean(22);
 
                 String cName = set.getString(24);
-                Time start = set.getTime(25);
-                Time end = set.getTime(26);
-                boolean restrict = set.getBoolean(27);
-                int age = set.getInt(28);
-                int department = set.getInt(29);
+                int department = set.getInt(25);
 
-                String dName = set.getString(31);
+                String dName = set.getString(27);
 
                 Department d = new Department(department, dName);
 
-                Category c = new Category(cId, cName, start, end, restrict, age, d);
+                Category c = new Category(cId, cName, d);
 
-                String tName = set.getString(33);
-                double value = set.getDouble(34);
+                String tName = set.getString(29);
+                double value = set.getDouble(30);
 
                 Tax t = new Tax(taxID, tName, value);
 
@@ -4858,20 +4062,16 @@ public class DBConnect extends DataConnect {
                 boolean trackStock = set.getBoolean(22);
 
                 String cName = set.getString(24);
-                Time start = set.getTime(25);
-                Time end = set.getTime(26);
-                boolean restrict = set.getBoolean(27);
-                int age = set.getInt(28);
-                int department = set.getInt(29);
+                int department = set.getInt(25);
 
-                String dName = set.getString(31);
+                String dName = set.getString(27);
 
                 Department d = new Department(department, dName);
 
-                Category c = new Category(cId, cName, start, end, restrict, age, d);
+                Category c = new Category(cId, cName, d);
 
-                String tName = set.getString(33);
-                double value = set.getDouble(34);
+                String tName = set.getString(29);
+                double value = set.getDouble(30);
 
                 Tax t = new Tax(taxID, tName, value);
 
@@ -5056,20 +4256,16 @@ public class DBConnect extends DataConnect {
                     boolean trackStock = set2.getBoolean(22);
 
                     String cName = set2.getString(24);
-                    Time start = set2.getTime(25);
-                    Time end = set2.getTime(26);
-                    boolean restrict = set2.getBoolean(27);
-                    int age = set2.getInt(28);
-                    int department = set2.getInt(29);
+                    int department = set2.getInt(25);
 
-                    String dName = set2.getString(31);
+                    String dName = set2.getString(27);
 
                     Department d = new Department(department, dName);
 
-                    Category c = new Category(cId, cName, start, end, restrict, age, d);
+                    Category c = new Category(cId, cName, d);
 
-                    String tName = set2.getString(33);
-                    double value = set2.getDouble(34);
+                    String tName = set2.getString(29);
+                    double value = set2.getDouble(30);
 
                     Tax t = new Tax(taxID, tName, value);
 
@@ -5079,9 +4275,9 @@ public class DBConnect extends DataConnect {
                     } else {
                         p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
                     }
-                    int o_id = set2.getInt(34);
-                    int quantity = set2.getInt(37);
-                    BigDecimal o_price = set2.getBigDecimal(38);
+                    int o_id = set2.getInt(31);
+                    int quantity = set2.getInt(35);
+                    BigDecimal o_price = set2.getBigDecimal(36);
 
                     OrderItem i = new OrderItem(o_id, p, quantity, o_price);
                     items.add(i);
@@ -5433,7 +4629,7 @@ public class DBConnect extends DataConnect {
 
     @Override
     public List<RefundReason> getUsedRefundReasons() throws IOException, SQLException {
-        String query = "SELECT * FROM REFUND_REASONS WHERE DELETED = false";
+        String query = "SELECT * FROM REFUND_REASONS WHERE DELETED = false ORDER BY ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<RefundReason> rrs = new LinkedList<>();

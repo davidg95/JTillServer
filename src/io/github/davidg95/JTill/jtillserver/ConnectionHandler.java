@@ -38,7 +38,7 @@ public class ConnectionHandler {
      * Constructor for Connection thread.
      */
     public ConnectionHandler() {
-        this.dc = DBConnect.getInstance();
+        this.dc = (DBConnect) DataConnect.get();
     }
 
     @JConnMethod("CONNECT")
