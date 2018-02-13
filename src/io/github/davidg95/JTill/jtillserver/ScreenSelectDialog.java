@@ -21,6 +21,9 @@ import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -34,7 +37,7 @@ public class ScreenSelectDialog extends javax.swing.JDialog {
 
     private static Screen screen;
 
-    private final MyListModel model;
+    private MyModel model;
 
     /**
      * Creates new form ScreenSelectDialog
@@ -47,16 +50,15 @@ public class ScreenSelectDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setIconImage(GUI.icon);
-        model = new MyListModel();
         init();
     }
 
     private void init() {
         try {
-            list.setModel(model);
-            for (Screen s : dc.getAllScreens()) {
-                model.addScreen(s);
-            }
+            model = new MyModel(dc.getAllScreens());
+            table.setModel(model);
+            table.getColumnModel().getColumn(0).setMaxWidth(40);
+            table.setSelectionModel(new ForcedListSelectionModel());
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -72,56 +74,96 @@ public class ScreenSelectDialog extends javax.swing.JDialog {
         return screen;
     }
 
-    class MyListModel implements ListModel {
+    private class MyModel implements TableModel {
 
-        private final List<Screen> screens = new ArrayList<>();
-        private final List<ListDataListener> listeners = new LinkedList<>();
+        private final List<Screen> screens;
+        private final List<TableModelListener> listeners;
+
+        public MyModel(List<Screen> screens) {
+            this.screens = screens;
+            this.listeners = new LinkedList<>();
+        }
 
         public void addScreen(Screen s) {
             screens.add(s);
-            alertListenersChanged(screens.size() - 1, screens.size() - 1);
+            alertAll();
         }
 
         public void removeScreen(Screen s) {
             screens.remove(s);
-            int index = 0;
             for (int i = 0; i < screens.size(); i++) {
                 if (screens.get(i).equals(s)) {
-                    index = i;
                     break;
                 }
             }
-            alertListenersChanged(index, index);
+            alertAll();
         }
 
         public void removeScreen(int i) {
             screens.remove(i);
-            alertListenersChanged(i, i);
+            alertAll();
+        }
+
+        public Screen getScreen(int i) {
+            return screens.get(i);
         }
 
         @Override
-        public int getSize() {
+        public int getRowCount() {
             return screens.size();
         }
 
         @Override
-        public Object getElementAt(int index) {
-            return screens.get(index);
+        public int getColumnCount() {
+            return 2;
         }
 
-        private void alertListenersChanged(int i1, int i2) {
-            for (ListDataListener l : listeners) {
-                l.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, i1, i2));
+        @Override
+        public String getColumnName(int columnIndex) {
+            if (columnIndex == 0) {
+                return "ID";
+            } else {
+                return "Name";
             }
         }
 
         @Override
-        public void addListDataListener(ListDataListener l) {
+        public Class<?> getColumnClass(int columnIndex) {
+            return Object.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            Screen s = screens.get(rowIndex);
+            if (columnIndex == 0) {
+                return s.getId();
+            } else {
+                return s.getName();
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        }
+
+        private void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
             listeners.add(l);
         }
 
         @Override
-        public void removeListDataListener(ListDataListener l) {
+        public void removeTableModelListener(TableModelListener l) {
             listeners.remove(l);
         }
     }
@@ -135,26 +177,14 @@ public class ScreenSelectDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        list = new javax.swing.JList<>();
         btnCancel = new javax.swing.JButton();
         btnSelect = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        table = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Screen Select");
         setResizable(false);
-
-        list.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        list.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                listMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(list);
 
         btnCancel.setText("Cancel");
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -171,6 +201,21 @@ public class ScreenSelectDialog extends javax.swing.JDialog {
             }
         });
 
+        table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(table);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -178,7 +223,7 @@ public class ScreenSelectDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnSelect)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -188,8 +233,8 @@ public class ScreenSelectDialog extends javax.swing.JDialog {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSelect)
@@ -205,25 +250,25 @@ public class ScreenSelectDialog extends javax.swing.JDialog {
         setVisible(false);
     }//GEN-LAST:event_btnCancelActionPerformed
 
-    private void listMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClicked
-        if (list.getSelectedIndex() == -1) {
-            return;
-        }
-        btnSelect.setEnabled(true);
-        screen = (Screen) model.getElementAt(list.getSelectedIndex());
-        if (evt.getClickCount() == 2) {
-            setVisible(false);
-        }
-    }//GEN-LAST:event_listMouseClicked
-
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
         setVisible(false);
     }//GEN-LAST:event_btnSelectActionPerformed
 
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        if (table.getSelectedRow() == -1) {
+            return;
+        }
+        btnSelect.setEnabled(true);
+        screen = model.getScreen(table.getSelectedRow());
+        if (evt.getClickCount() == 2) {
+            setVisible(false);
+        }
+    }//GEN-LAST:event_tableMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnSelect;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JList<String> list;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 }

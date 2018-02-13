@@ -80,17 +80,18 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         list.setModel(model);
     }
 
-    class MyListModel implements ListModel {
+    private class MyListModel implements ListModel {
 
         private final List<Screen> screens = new ArrayList<>();
         private final List<ListDataListener> listeners = new LinkedList<>();
 
         public void addScreen(Screen s) {
             screens.add(s);
-            alertListenersChanged(screens.size() - 1, screens.size() - 1);
+            alertAll(screens.size() - 1, screens.size() - 1);
         }
 
-        public void removeScreen(Screen s) {
+        public void removeScreen(Screen s) throws IOException, SQLException, ScreenNotFoundException {
+            dc.removeScreen(s);
             screens.remove(s);
             int index = 0;
             for (int i = 0; i < screens.size(); i++) {
@@ -99,17 +100,17 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                     break;
                 }
             }
-            alertListenersChanged(index, index);
+            alertAll(index, index);
         }
 
         public void removeScreen(int i) {
             screens.remove(i);
-            alertListenersChanged(i, i);
+            alertAll(i, i);
         }
 
         public void empty() {
             screens.clear();
-            alertListenersChanged(0, 0);
+            alertAll(0, 0);
         }
 
         @Override
@@ -122,7 +123,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             return screens.get(index);
         }
 
-        private void alertListenersChanged(int i1, int i2) {
+        private void alertAll(int i1, int i2) {
             for (ListDataListener l : listeners) {
                 l.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, i1, i2));
             }
@@ -591,7 +592,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                         .addComponent(panelScreenProperties, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearch)
-                        .addGap(0, 111, Short.MAX_VALUE))
+                        .addGap(0, 118, Short.MAX_VALUE))
                     .addComponent(panelProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -615,7 +616,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         int inherit = -1;
         int width;
         int height;
-        if (JOptionPane.showConfirmDialog(this, "Inherit from screen?", "New Screen", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (model.getSize() > 0 && JOptionPane.showConfirmDialog(this, "Inherit from screen?", "New Screen", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             Screen s = ScreenSelectDialog.showDialog(this);
             inherit = s.getId();
             width = s.getWidth();
@@ -631,10 +632,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, e.getMessage(), "New Screen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-        }
-        if (name.equalsIgnoreCase("default")) {
-            JOptionPane.showMessageDialog(this, "That name is not allowed", "New Screen", JOptionPane.ERROR_MESSAGE);
-            return;
         }
         final int inh = inherit;
         final int fw = width;
@@ -696,18 +693,12 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                                 return;
                             }
                         }
-                        dc.removeScreen(sc);
                         model.removeScreen(sc);
                     }
                 } catch (IOException | SQLException | ScreenNotFoundException | JTillException ex) {
                     JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
-
-            if (sc.getName().equals("DEFAULT")) {
-                remove.setEnabled(false);
-                rename.setEnabled(false);
-            }
 
             JMenuItem inherit = new JMenuItem("Check Inheritance");
             inherit.addActionListener((ActionEvent e) -> {
