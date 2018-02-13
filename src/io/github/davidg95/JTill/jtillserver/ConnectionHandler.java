@@ -733,8 +733,8 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("INTEGRITYCHECK")
-    public HashMap integrityCheck() throws IOException, SQLException {
-        return dc.integrityCheck();
+    public void integrityCheck() throws IOException, SQLException {
+        dc.integrityCheck();
     }
 
     @JConnMethod("GETPRODUCTSADVANCED")

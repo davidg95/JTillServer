@@ -119,7 +119,7 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public HashMap integrityCheck() throws SQLException {
+    public void integrityCheck() throws SQLException {
         final String query = "SELECT schemaname, tablename,\n"
                 + "SYSCS_UTIL.SYSCS_CHECK_TABLE(schemaname, tablename)\n"
                 + "FROM sys.sysschemas s, sys.systables t\n"
@@ -127,13 +127,8 @@ public abstract class DBConnect extends DataConnect {
         final Connection con = getConnection();
         final Statement stmt = con.createStatement();
         try {
-            final ResultSet set = stmt.executeQuery(query); //Execute the check
-            final HashMap<String, HashMap> map = new HashMap();
-            while (set.next()) {
-
-            }
+            stmt.executeQuery(query); //Execute the check
             con.commit();
-            return map;
         } catch (SQLException ex) {
             con.rollback();
             throw ex;
