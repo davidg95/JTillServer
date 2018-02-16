@@ -203,8 +203,8 @@ public abstract class DBConnect extends DataConnect {
 
             Category c = new Category(cId, cName, d);
 
-            String tName = set.getString(33);
-            double value = set.getDouble(34);
+            String tName = set.getString(29);
+            double value = set.getDouble(30);
 
             Tax t = new Tax(taxID, tName, value);
 
@@ -4070,8 +4070,8 @@ public abstract class DBConnect extends DataConnect {
 
                 Tax t = new Tax(taxID, tName, value);
 
-                int conId = set.getInt(35);
-                int p_conn = set.getInt(36);
+                int conId = set.getInt(31);
+                int p_conn = set.getInt(32);
 
                 Product p;
                 if (!open) {
