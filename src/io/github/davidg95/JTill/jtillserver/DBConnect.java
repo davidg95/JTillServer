@@ -1306,7 +1306,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Sale> getAllSales() throws SQLException {
-        String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID ORDER BY SALES.ID";
+        String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID ORDER BY s.ID";
         List<Sale> sales = new LinkedList<>();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
