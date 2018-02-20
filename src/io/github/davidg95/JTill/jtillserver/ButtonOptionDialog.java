@@ -333,17 +333,17 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     private void btnChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeButtonActionPerformed
         String func = (String) cmbFunction.getSelectedItem();
         if (func.equals("Product")) {
-            Item i = ProductSelectDialog.showDialog(this);
-            if (i != null) {
-                button.setItem(i.getId());
-                button.setName(i.getName());
-                txtItem.setText(i.getName());
+            Product p = ProductSelectDialog.showDialog(this);
+            if (p != null) {
+                button.setItem(p.getBarcode());
+                button.setName(p.getName());
+                txtItem.setText(p.getName());
             }
             button.setType(TillButton.ITEM);
         } else if (func.equals("Screen")) {
             Screen s = ScreenSelectDialog.showDialog(this);
             if (s != null) {
-                button.setItem(s.getId());
+                button.setItem("" + s.getId());
                 button.setName(s.getName());
                 txtItem.setText(s.getName());
             }

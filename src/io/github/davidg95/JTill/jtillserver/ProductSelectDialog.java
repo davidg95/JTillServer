@@ -91,6 +91,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                 try {
                     init();
                 } catch (IOException | SQLException ex) {
+                    mDialog.hide();
                     JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (IOException | SQLException ex) {
@@ -195,10 +196,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         allProducts = all.toArray(allProducts);
         model = new MyTableModel(allProducts);
         table.setModel(model);
-        table.getColumnModel().getColumn(0).setMaxWidth(40);
-        table.getColumnModel().getColumn(2).setMaxWidth(120);
-        table.getColumnModel().getColumn(0).setMinWidth(40);
-        table.getColumnModel().getColumn(2).setMinWidth(120);
+        table.getColumnModel().getColumn(1).setMaxWidth(120);
+        table.getColumnModel().getColumn(1).setMinWidth(120);
     }
 
     /**
@@ -302,17 +301,15 @@ public class ProductSelectDialog extends javax.swing.JDialog {
 
         @Override
         public int getColumnCount() {
-            return 3;
+            return 2;
         }
 
         @Override
         public String getColumnName(int i) {
             switch (i) {
                 case 0:
-                    return "ID";
-                case 1:
                     return "Name";
-                case 2:
+                case 1:
                     return "Barcode";
                 default:
                     return "";
@@ -323,10 +320,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         public Class<?> getColumnClass(int i) {
             switch (i) {
                 case 0:
-                    return Object.class;
-                case 1:
                     return String.class;
-                case 2:
+                case 1:
                     return String.class;
                 default:
                     return Object.class;
@@ -343,10 +338,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             Product p = products.get(rowIndex);
             switch (columnIndex) {
                 case 0:
-                    return p.getId();
-                case 1:
                     return p.getLongName();
-                case 2:
+                case 1:
                     return p.getBarcode();
                 default:
                     return "";

@@ -15,10 +15,6 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
@@ -29,14 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.JRootPane;
-import javax.swing.KeyStroke;
 
 /**
  *
@@ -140,24 +130,14 @@ public class StockReportDialog extends javax.swing.JDialog {
             y += lineSpace;
 
             max_per_page = (int) Math.floor((pageFormat.getHeight() - y - 40) / lineSpace);
-
-//            for (int i = ci; i < departments.size(); i++) {
-//                Department d = departments.get(i);
-//                g.setColor(Color.LIGHT_GRAY);
-//                g.fillRect(x, y, width, lineSpace);
-//                g.setColor(Color.BLACK);
-//                g.drawRect(x, y, width, lineSpace);
-//                g.drawString(d.getName(), nCol, y + 15);
-//                y += lineSpace;
             for (int i = max_per_page * pageIndex; i < products.size() && i < max_per_page * (pageIndex + 1); i++) {
                 Product p = products.get(i);
                 y += lineSpace;
-                g.drawString(p.getId() + "", idCol, y);
+                g.drawString(p.getBarcode() + "", idCol, y);
                 g.drawString(p.getLongName(), nCol, y);
                 g.drawString(p.getStock() + "", sCol, y);
             }
             y += lineSpace / 2;
-//            }
 
             g.drawRect(x, topY, width, y - topY);
             g.drawLine(nCol - 5, topY, nCol - 5, y);

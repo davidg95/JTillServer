@@ -64,18 +64,15 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
         final ModalDialog mDialog = new ModalDialog(GUI.gui, "Consolodated Report");
-        final Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    retrieve(start, end, till);
-                    init();
-                } catch (IOException | SQLException ex) {
-                    mDialog.hide();
-                    JOptionPane.showMessageDialog(ConsolidatedReportingWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-                } finally {
-                    mDialog.hide();
-                }
+        final Runnable run = () -> {
+            try {
+                retrieve(start, end, till);
+                init();
+            } catch (IOException | SQLException ex) {
+                mDialog.hide();
+                JOptionPane.showMessageDialog(ConsolidatedReportingWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            } finally {
+                mDialog.hide();
             }
         };
         final Thread thread = new Thread(run, "Consolodate");
@@ -119,19 +116,19 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
                 for (SaleItem si : s.getSaleItems()) {
                     cost = cost.add(si.getCost());
                     for (Department d : departments) {
-                        final Product p = (Product) si.getItem();
+                        final Product p = (Product) si.getProduct();
                         if (d.equals(p.getDepartment())) {
                             d.addToSales(si.getPrice());
                         }
                     }
                     for (Category c : categorys) {
-                        final Product p = (Product) si.getItem();
+                        final Product p = (Product) si.getProduct();
                         if (c.equals(p.getCategory())) {
                             c.addToSales(si.getPrice());
                         }
                     }
                     for (Tax t : taxes) {
-                        final Product p = (Product) si.getItem();
+                        final Product p = (Product) si.getProduct();
                         if (t.getId() == p.getTax().getId()) {
                             t.addToSales(si.getPrice());
                             t.addToPayable(si.getTaxValue());

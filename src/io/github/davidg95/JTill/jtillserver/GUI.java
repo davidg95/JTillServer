@@ -1619,7 +1619,7 @@ public class GUI extends JFrame implements GUIInterface {
                     List<Category> categories = Category.getAll();
                     for (Sale s : sales) {
                         for (SaleItem si : s.getSaleItems()) {
-                            final Product p = (Product) si.getItem();
+                            final Product p = (Product) si.getProduct();
                             for (Department dep : departments) {
                                 if (p.getDepartment().equals(dep)) {
                                     dep.addToSales(si.getPrice());

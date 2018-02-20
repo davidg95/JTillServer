@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
 
 /**
  *
@@ -18,13 +19,13 @@ public class DerbyDB extends DBConnect {
 
     String tills = "create table TILLS\n"
             + "(\n"
-            + "	ID INT not null primary key\n"
+            + "     tiID INT not null primary key\n"
             + "        GENERATED ALWAYS AS IDENTITY\n"
             + "        (START WITH 1, INCREMENT BY 1),\n"
-            + "     UUID VARCHAR(50) not null,\n"
-            + "     NAME VARCHAR(20) not null,\n"
-            + "     UNCASHED DOUBLE not null,\n"
-            + "     DEFAULT_SCREEN INT not null\n"
+            + "     tiUUID VARCHAR(50) not null,\n"
+            + "     tiNAME VARCHAR(20) not null,\n"
+            + "     tiUNCASHED DOUBLE not null,\n"
+            + "     tiDEFAULT_SCREEN INT not null\n"
             + ")";
     String departments = "create table DEPARTMENTS\n"
             + "(\n"
@@ -39,7 +40,7 @@ public class DerbyDB extends DBConnect {
             + "        GENERATED ALWAYS AS IDENTITY\n"
             + "        (START WITH 1, INCREMENT BY 1),\n"
             + "     cNAME VARCHAR(20) not null,\n"
-            + "     cDEPARTMENT INT references DEPARTMENTS(ID)\n"
+            + "     cDEPARTMENT INT references DEPARTMENTS(dID)\n"
             + ")";
     String tax = "create table TAX\n"
             + "(\n"
@@ -51,17 +52,17 @@ public class DerbyDB extends DBConnect {
             + ")";
     String sales = "create table SALES\n"
             + "(\n"
-            + "     ID INT not null primary key\n"
+            + "     saID INT not null primary key\n"
             + "        GENERATED ALWAYS AS IDENTITY\n"
             + "        (START WITH 1, INCREMENT BY 1),\n"
-            + "     PRICE DOUBLE,\n"
-            + "     CUSTOMER int,\n"
-            + "     TIMESTAMP bigint,\n"
-            + "     TERMINAL int not null references TILLS(ID),\n"
-            + "     CASHED boolean not null,\n"
-            + "     STAFF int,\n"
-            + "     ENABLED boolean,\n"
-            + "     MOP int\n"
+            + "     saPRICE DOUBLE,\n"
+            + "     saCUSTOMER int,\n"
+            + "     saTIMESTAMP bigint,\n"
+            + "     saTERMINAL int not null references TILLS(tiID),\n"
+            + "     saCASHED boolean not null,\n"
+            + "     saSTAFF int,\n"
+            + "     saENABLED boolean,\n"
+            + "     saMOP int\n"
             + ")";
     String saleItems = "create table SALEITEMS\n"
             + "(\n"
@@ -69,11 +70,10 @@ public class DerbyDB extends DBConnect {
             + "        GENERATED ALWAYS AS IDENTITY\n"
             + "        (START WITH 1, INCREMENT BY 1),\n"
             + "     siproduct VARCHAR(15) not null references PRODUCTS(BARCODE),\n"
-            + "     sitype INT,\n"
             + "     siquantity INT not null,\n"
             + "     siprice double not null,\n"
             + "     sitax double not null,\n"
-            + "     sisale INT not null references SALES(ID),\n"
+            + "     sisale INT not null references SALES(saID),\n"
             + "     sicost DOUBLE\n"
             + ")";
     String customers = "create table CUSTOMERS\n"
@@ -107,8 +107,8 @@ public class DerbyDB extends DBConnect {
             + "     pCOST_PRICE DOUBLE,\n"
             + "     pPACK_SIZE INT,\n"
             + "     pSTOCK INTEGER,\n"
-            + "     pCategory INT not null references CATEGORYS(ID),\n"
-            + "     pTax INT not null references TAX(ID),\n"
+            + "     pCategory INT not null references CATEGORYS(cID),\n"
+            + "     pTax INT not null references TAX(tID),\n"
             + "     pmin_level INTEGER,\n"
             + "     pmax_level INTEGER,\n"
             + "     pSCALE DOUBLE,\n"
@@ -155,15 +155,15 @@ public class DerbyDB extends DBConnect {
             + ")";
     String staff = "create table STAFF\n"
             + "(\n"
-            + "	ID INT not null primary key\n"
+            + "     stID INT not null primary key\n"
             + "        GENERATED ALWAYS AS IDENTITY\n"
             + "        (START WITH 1, INCREMENT BY 1),\n"
-            + "	NAME VARCHAR(50) not null,\n"
-            + "	POSITION INTEGER not null,\n"
-            + "	USERNAME VARCHAR(20) not null,\n"
-            + "	PASSWORD VARCHAR(200) not null,\n"
-            + "     ENABLED BOOLEAN,\n"
-            + "     WAGE DOUBLE\n"
+            + "     stNAME VARCHAR(50) not null,\n"
+            + "     stPOSITION INTEGER not null,\n"
+            + "     stUSERNAME VARCHAR(20) not null,\n"
+            + "     stPASSWORD VARCHAR(200) not null,\n"
+            + "     stENABLED BOOLEAN,\n"
+            + "     stWAGE DOUBLE\n"
             + ")";
     String screens = "create table SCREENS\n"
             + "(\n"
@@ -192,7 +192,7 @@ public class DerbyDB extends DBConnect {
             + "     bXPOS INT,\n"
             + "     bYPOS INT,\n"
             + "     bACCESS_LEVEL INT,\n"
-            + "     bSCREEN_ID INT not null references SCREENS(ID),\n"
+            + "     bSCREEN_ID INT not null references SCREENS(scID),\n"
             + "     bLINK VARCHAR(50)\n"
             + ")";
     String wasteReasons = "create table WASTEREASONS\n"
@@ -220,37 +220,37 @@ public class DerbyDB extends DBConnect {
             + "         (START WITH 1, INCREMENT BY 1),\n"
             + "     wiPRODUCT VARCHAR(15) not null references PRODUCTS(BARCODE),\n"
             + "     wiQUANTITY INT,\n"
-            + "     wiREASON INT not null references WASTEREASONS(ID),\n"
+            + "     wiREASON INT not null references WASTEREASONS(wrID),\n"
             + "     wiVALUE DOUBLE,\n"
             + "     wiTIMESTAMP BIGINT\n"
             + ")";
     String suppliers = "create table SUPPLIERS\n"
             + "(\n"
-            + "     ID INT not null primary key\n"
+            + "     sID INT not null primary key\n"
             + "       GENERATED ALWAYS AS IDENTITY\n"
             + "         (START WITH 1, INCREMENT BY 1),\n"
-            + "     NAME VARCHAR(30),\n"
-            + "     ADDRESS VARCHAR(100),\n"
-            + "     PHONE VARCHAR(20),\n"
-            + "     ACCOUNT_NUMBER VARCHAR(20),\n"
-            + "     EMAIL VARCHAR(30)\n"
+            + "     sNAME VARCHAR(30),\n"
+            + "     sADDRESS VARCHAR(100),\n"
+            + "     sPHONE VARCHAR(20),\n"
+            + "     sACCOUNT_NUMBER VARCHAR(20),\n"
+            + "     sEMAIL VARCHAR(30)\n"
             + ")";
     String receivedItems = "create table RECEIVEDITEMS\n"
             + "(\n"
-            + "     ID INT not null primary key\n"
+            + "     riID INT not null primary key\n"
             + "         GENERATED ALWAYS AS IDENTITY\n"
             + "         (START WITH 1, INCREMENT BY 1),\n"
-            + "     PRODUCT VARCHAR(15) not null references PRODUCTS(BARCODE),\n"
-            + "     PRICE DOUBLE,\n"
-            + "     QUANTITY INT,\n"
-            + "     RECEIVED_REPORT INT not null references RECEIVED_REPORTS(ID)\n"
+            + "     riPRODUCT VARCHAR(15) not null references PRODUCTS(BARCODE),\n"
+            + "     riPRICE DOUBLE,\n"
+            + "     riQUANTITY INT,\n"
+            + "     riRECEIVED_REPORT INT not null references RECEIVED_REPORTS(rrID)\n"
             + ")";
     String clockOnOff = "create table CLOCKONOFF\n"
             + "(\n"
             + "     ID INT not null primary key\n"
             + "         GENERATED ALWAYS AS IDENTITY\n"
             + "         (START WITH 1, INCREMENT BY 1),\n"
-            + "     STAFF int not null references STAFF(ID),\n"
+            + "     STAFF int not null references STAFF(stID),\n"
             + "     TIMESTAMP BIGINT,\n"
             + "     ONOFF int\n"
             + ")";
@@ -267,22 +267,22 @@ public class DerbyDB extends DBConnect {
             + "     ID INT not null primary key\n"
             + "         GENERATED ALWAYS AS IDENTITY\n"
             + "         (START WITH 1, INCREMENT BY 1),\n"
-            + "     TERMINAL INT not null references TILLS(ID),\n"
+            + "     TERMINAL INT not null references TILLS(tiID),\n"
             + "     DECLARED DOUBLE,\n"
             + "     EXPECTED DOUBLE,\n"
             + "     TRANSACTIONS int,\n"
             + "     TAX DOUBLE,\n"
-            + "     STAFF INT not null references STAFF(ID),\n"
+            + "     STAFF INT not null references STAFF(stID),\n"
             + "     TIME bigint\n"
             + ")";
     String receivedReports = "create table RECEIVED_REPORTS\n"
             + "(\n"
-            + "     ID INT not null primary key\n"
+            + "     rrID INT not null primary key\n"
             + "         GENERATED ALWAYS AS IDENTITY\n"
             + "         (START WITH 1, INCREMENT BY 1),"
-            + "     INVOICE_NO VARCHAR(30) not null,\n"
-            + "     SUPPLIER_ID INT not null references SUPPLIERS(ID),\n"
-            + "     PAID BOOLEAN\n"
+            + "     rrINVOICE_NO VARCHAR(30) not null,\n"
+            + "     rrSUPPLIER_ID INT not null references SUPPLIERS(sID),\n"
+            + "     rrPAID BOOLEAN\n"
             + ")";
     String condiments = "create table CONDIMENTS\n"
             + "(\n"
@@ -297,7 +297,7 @@ public class DerbyDB extends DBConnect {
             + "     oID INT not null primary key\n"
             + "         GENERATED ALWAYS AS IDENTITY\n"
             + "         (START WITH 1, INCREMENT BY 1),\n"
-            + "     oSUPPLIER int not null references SUPPLIERS(ID),\n"
+            + "     oSUPPLIER int not null references SUPPLIERS(sID),\n"
             + "     oSENT BOOLEAN,\n"
             + "     oSENDDATE BIGINT,\n"
             + "     oRECEIVED BOOLEAN\n"
@@ -308,7 +308,7 @@ public class DerbyDB extends DBConnect {
             + "         GENERATED ALWAYS AS IDENTITY\n"
             + "         (START WITH 1, INCREMENT BY 1),\n"
             + "     oiPRODUCT VARCHAR(15) not null references PRODUCTS(BARCODE),\n"
-            + "     oiORDER_ID int not null references ORDERS(ID),\n"
+            + "     oiORDER_ID int not null references ORDERS(oID),\n"
             + "     oiQUANTITY INT,\n"
             + "     oiPRICE DOUBLE\n"
             + ")";
@@ -363,10 +363,10 @@ public class DerbyDB extends DBConnect {
             s.executeUpdate(condiments);
             s.executeUpdate(orders);
             s.executeUpdate(orderItems);
-            String addDepartment = "INSERT INTO DEPARTMENTS (NAME) VALUES ('Default')";
-            String addCategory = "INSERT INTO CATEGORYS (NAME, DEPARTMENT) VALUES ('Default', 1)";
-            String addTax = "INSERT INTO TAX (NAME, VALUE) VALUES ('ZERO',0.0)";
-            String addWasteReason = "INSERT INTO WASTEREASONS (REASON, DELETED) VALUES ('Default', 'FALSE')";
+            String addDepartment = "INSERT INTO DEPARTMENTS (dNAME) VALUES ('Default')";
+            String addCategory = "INSERT INTO CATEGORYS (cNAME, cDEPARTMENT) VALUES ('Default', 1)";
+            String addTax = "INSERT INTO TAX (tNAME, tVALUE) VALUES ('ZERO',0.0)";
+            String addWasteReason = "INSERT INTO WASTEREASONS (wrREASON, wrDELETED) VALUES ('Default', 'FALSE')";
             s.executeUpdate(addDepartment);
             s.executeUpdate(addCategory);
             s.executeUpdate(addTax);

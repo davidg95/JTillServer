@@ -141,9 +141,8 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             List<Product> products = dc.getAllProducts();
             model = new MyModel(products);
             tableProducts.setModel(model);
-            tableProducts.getColumnModel().getColumn(0).setMaxWidth(40);
+            tableProducts.getColumnModel().getColumn(2).setMaxWidth(60);
             tableProducts.getColumnModel().getColumn(3).setMaxWidth(60);
-            tableProducts.getColumnModel().getColumn(4).setMaxWidth(60);
         } catch (IOException | SQLException ex) {
             showError(ex);
         }
@@ -328,9 +327,9 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             alertAll();
         }
 
-        public Product getProduct(int id) {
+        public Product getProduct(String barcode) {
             for (Product p : products) {
-                if (p.getId() == id) {
+                if (p.getBarcode().equals(barcode)) {
                     return p;
                 }
             }
@@ -371,25 +370,22 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
         @Override
         public int getColumnCount() {
-            return 5;
+            return 4;
         }
 
         @Override
         public String getColumnName(int i) {
             switch (i) {
                 case 0: {
-                    return "ID";
-                }
-                case 1: {
                     return "Barcode";
                 }
-                case 2: {
+                case 1: {
                     return "Name";
                 }
-                case 3: {
+                case 2: {
                     return "Price";
                 }
-                case 4: {
+                case 3: {
                     return "Stock";
                 }
                 default: {
@@ -413,22 +409,19 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             Product p = products.get(rowIndex);
             switch (columnIndex) {
                 case 0: {
-                    return p.getId();
-                }
-                case 1: {
                     return p.getBarcode();
                 }
-                case 2: {
+                case 1: {
                     return p.getLongName();
                 }
-                case 3: {
+                case 2: {
                     if (p.isOpen()) {
                         return "Open";
                     } else {
                         return "£" + new DecimalFormat("0.00").format(p.getPrice());
                     }
                 }
-                case 4: {
+                case 3: {
                     if (p.isTrackStock()) {
                         return p.getStock();
                     } else {
@@ -482,7 +475,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         txtSearch = new javax.swing.JTextField();
         radName = new javax.swing.JRadioButton();
         radBarcode = new javax.swing.JRadioButton();
-        radCode = new javax.swing.JRadioButton();
         btnSearch = new javax.swing.JButton();
         btnWasteStock = new javax.swing.JButton();
         btnReceiveStock = new javax.swing.JButton();
@@ -625,14 +617,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         radBarcode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radBarcodeActionPerformed(evt);
-            }
-        });
-
-        buttonGroup1.add(radCode);
-        radCode.setText("Product Code");
-        radCode.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radCodeActionPerformed(evt);
             }
         });
 
@@ -959,9 +943,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                         .addComponent(radName)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(radBarcode)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(radCode)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(93, 93, 93)
                         .addComponent(btnSearch)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAdvanced)
@@ -987,7 +969,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                         .addComponent(btnShowAll)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCSV)
-                        .addGap(0, 36, Short.MAX_VALUE)))
+                        .addGap(0, 40, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
@@ -995,7 +977,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                     .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(radName)
                     .addComponent(radBarcode)
-                    .addComponent(radCode)
                     .addComponent(btnSearch)
                     .addComponent(btnAdvanced))
                 .addGap(6, 6, 6))
@@ -1169,23 +1150,14 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             return;
         }
 
-        if (radCode.isSelected()) {
+        if (radBarcode.isSelected()) {
             option = 1;
-        } else if (radBarcode.isSelected()) {
-            option = 2;
         } else {
-            option = 3;
+            option = 2;
         }
         final List<Product> newList = new ArrayList<>();
         switch (option) {
             case 1:
-                for (Product p : model.getAll()) {
-                    if ((p.getId() + "").equals(terms)) {
-                        newList.add(p);
-                    }
-                }
-                break;
-            case 2:
                 for (Product p : model.getAll()) {
                     if (p.getBarcode().equals(terms)) {
                         newList.add(p);
@@ -1233,8 +1205,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 final PrintWriter pw = new PrintWriter(file);
 
                 for (Product p : model.getAll()) {
-                    pw.println(p.getId() + ","
-                            + p.getLongName() + ","
+                    pw.println(p.getLongName() + ","
                             + p.getCategory().getId() + ","
                             + p.getCostPrice() + ","
                             + p.getMaxStockLevel() + ","
@@ -1257,10 +1228,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private void radBarcodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radBarcodeActionPerformed
         txtSearch.requestFocus();
     }//GEN-LAST:event_radBarcodeActionPerformed
-
-    private void radCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radCodeActionPerformed
-        txtSearch.requestFocus();
-    }//GEN-LAST:event_radCodeActionPerformed
 
     private void btnDepartmentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartmentsActionPerformed
         DepartmentsWindow.showWindow();
@@ -1399,7 +1366,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel panelCurrent;
     private javax.swing.JRadioButton radBarcode;
-    private javax.swing.JRadioButton radCode;
     private javax.swing.JRadioButton radName;
     private javax.swing.JTable tableProducts;
     private javax.swing.JTextField txtBarcode;

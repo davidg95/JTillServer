@@ -240,7 +240,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         public String getColumnName(int i) {
             switch (i) {
                 case 0: {
-                    return "ID";
+                    return "Barcode";
                 }
                 case 1: {
                     return "Product";
@@ -294,7 +294,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             WasteItem item = items.get(rowIndex);
             switch (i) {
                 case 0: {
-                    return item.getProduct().getId();
+                    return item.getProduct().getBarcode();
                 }
                 case 1: {
                     return item.getProduct().getLongName();
@@ -625,7 +625,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             BigDecimal total = BigDecimal.ZERO;
             for (WasteItem wi : model.getItems()) {
                 try {
-                    Product product = dc.getProduct(wi.getProduct().getId());
+                    Product product = dc.getProduct(wi.getProduct().getBarcode());
                     product.removeStock(wi.getQuantity());
                     dc.updateProduct(product);
                     total = total.add(product.getIndividualCost().multiply(new BigDecimal(wi.getQuantity())));

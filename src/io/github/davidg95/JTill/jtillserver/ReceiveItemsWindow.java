@@ -104,7 +104,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             window.setSelected(true);
             window.setSupplier();
         } catch (IOException | SQLException ex) {
-            JOptionPane.showMessageDialog(window, "Error connecting to database", "Receive Stock", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(window, ex, "Receive Stock", JOptionPane.ERROR_MESSAGE);
         } catch (PropertyVetoException ex) {
             Logger.getLogger(ReceiveItemsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -260,7 +260,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         public String getColumnName(int i) {
             switch (i) {
                 case 0: {
-                    return "ID";
+                    return "Barcode";
                 }
                 case 1: {
                     return "Product";
@@ -289,7 +289,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             final ReceivedItem item = items.get(rowIndex);
             switch (i) {
                 case 0: {
-                    return item.getProduct().getId();
+                    return item.getProduct().getBarcode();
                 }
                 case 1: {
                     return item.getProduct().getLongName();

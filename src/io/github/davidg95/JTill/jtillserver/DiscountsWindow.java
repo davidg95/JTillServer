@@ -855,7 +855,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Must enter a value greater than zero", "New Trigger", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        Trigger t = new Trigger(currentBucket.getId(), p.getId(), value);
+        Trigger t = new Trigger(currentBucket.getId(), p.getBarcode(), value);
         try {
             dc.addTrigger(t);
             currentTriggerContents.add(t);
