@@ -206,12 +206,12 @@ public class DerbyDB extends DBConnect {
             + ")";
     String refundReason = "CREATE TABLE REFUND_REASONS\n"
             + "(\n"
-            + "     ID INT not null primary key\n"
+            + "     refID INT not null primary key\n"
             + "        GENERATED ALWAYS AS IDENTITY\n"
             + "        (START WITH 1, INCREMENT BY 1),\n"
-            + "     REASON VARCHAR(30) NOT NULL,\n"
-            + "     LEVEL INT NOT NULL,\n"
-            + "     DELETED BOOLEAN NOT NULL\n"
+            + "     refREASON VARCHAR(30) NOT NULL,\n"
+            + "     refLEVEL INT NOT NULL,\n"
+            + "     refDELETED BOOLEAN NOT NULL\n"
             + ")";
     String wasteItems = "create table WASTEITEMS\n"
             + "(\n"
@@ -363,17 +363,21 @@ public class DerbyDB extends DBConnect {
             s.executeUpdate(condiments);
             s.executeUpdate(orders);
             s.executeUpdate(orderItems);
+            s.executeUpdate(refundReason);
             String addDepartment = "INSERT INTO DEPARTMENTS (dNAME) VALUES ('Default')";
             String addCategory = "INSERT INTO CATEGORYS (cNAME, cDEPARTMENT) VALUES ('Default', 1)";
             String addTax = "INSERT INTO TAX (tNAME, tVALUE) VALUES ('ZERO',0.0)";
             String addWasteReason = "INSERT INTO WASTEREASONS (wrREASON, wrDELETED) VALUES ('Default', 'FALSE')";
+            String addRefundReason = "insert into REFUND_REASONS (refreason, reflevel, refdeleted) values('Default', 1, FALSE)";
             s.executeUpdate(addDepartment);
             s.executeUpdate(addCategory);
             s.executeUpdate(addTax);
             s.executeUpdate(addWasteReason);
+            s.executeUpdate(addRefundReason);
             s.close();
         } catch (SQLException ex) {
             LOG.info("Tables already exists, so they do not need created");
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 }

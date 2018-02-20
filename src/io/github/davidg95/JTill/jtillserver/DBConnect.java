@@ -3791,9 +3791,9 @@ public abstract class DBConnect extends DataConnect {
     public List<TillReport> getDeclarationReports(int terminal) throws SQLException {
         String query;
         if (terminal == -1) {
-            query = "SELECT * FROM DECLARATIONS d, STAFF s, TILLS t WHERE d.TERMINAL = t.ID AND d.STAFF = s.ID";
+            query = "SELECT * FROM DECLARATIONS, STAFF, TILLS WHERE TERMINAL = tiid AND STAFF = stID";
         } else {
-            query = "SELECT * FROM DECLARATIONS d, STAFF s, TILLS t WHERE d.TERMINAL = t.ID AND d.STAFF = s.ID AND d.TERMINAL = " + terminal;
+            query = "SELECT * FROM DECLARATIONS, STAFF, TILLS WHERE TERMINAL = tiID AND STAFF = stID AND tiid = " + terminal;
         }
         final Connection con = getConnection();
         try {
@@ -3801,30 +3801,30 @@ public abstract class DBConnect extends DataConnect {
             ResultSet set = stmt.executeQuery(query);
             List<TillReport> reports = new LinkedList<>();
             while (set.next()) {
-                int tId = set.getInt(16);
-                UUID uuid = UUID.fromString(set.getString(17));
-                String name = set.getString(18);
-                BigDecimal uncashed = set.getBigDecimal(19);
-                int defaultScreen = set.getInt(20);
+                int tId = set.getInt("tiid");
+                UUID uuid = UUID.fromString(set.getString("tiuuid"));
+                String name = set.getString("tiname");
+                BigDecimal uncashed = set.getBigDecimal("tiuncashed");
+                int defaultScreen = set.getInt("tiDEFAULT_SCREEN");
 
                 Till till = new Till(name, uncashed, tId, uuid, defaultScreen);
 
-                int sId = set.getInt(9);
-                String sName = set.getString(10);
-                int pos = set.getInt(11);
-                String un = set.getString(12);
-                String pw = set.getString(13);
-                boolean enabled = set.getBoolean(14);
-                double wage = set.getDouble(15);
+                int sId = set.getInt("stid");
+                String sName = set.getString("stname");
+                int pos = set.getInt("stposition");
+                String un = set.getString("stusername");
+                String pw = set.getString("stpassword");
+                boolean enabled = set.getBoolean("stenabled");
+                double wage = set.getDouble("stwage");
 
                 Staff staff = new Staff(sId, sName, pos, un, pw, wage, enabled);
 
-                int rid = set.getInt(1);
-                BigDecimal declared = set.getBigDecimal(3);
-                BigDecimal expected = set.getBigDecimal(4);
-                int transactions = set.getInt(5);
-                BigDecimal tax = set.getBigDecimal(6);
-                long time = set.getLong(8);
+                int rid = set.getInt("id");
+                BigDecimal declared = set.getBigDecimal("declared");
+                BigDecimal expected = set.getBigDecimal("expected");
+                int transactions = set.getInt("transactions");
+                BigDecimal tax = set.getBigDecimal("tax");
+                long time = set.getLong("time");
 
                 TillReport report = new TillReport(rid, till, declared, expected, transactions, tax, staff, time);
                 reports.add(report);
@@ -4524,7 +4524,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public RefundReason addRefundReason(RefundReason r) throws IOException, SQLException {
-        String query = "INSERT INTO REFUND_REASONS (REASON, LEVEL, DELETED) values ('" + r.getReason() + "'," + r.getPriviledgeLevel() + ", false)";
+        String query = "INSERT INTO REFUND_REASONS (refREASON, refLEVEL, refDELETED) values ('" + r.getReason() + "'," + r.getPriviledgeLevel() + ", false)";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -4545,7 +4545,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public void removeRefundReason(RefundReason r) throws IOException, SQLException, JTillException {
-        String query = "UPDATE REFUND_REASONS SET DELETED = true WHERE ID=" + r.getId();
+        String query = "UPDATE REFUND_REASONS SET refDELETED = true WHERE refID=" + r.getId();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         int value;
@@ -4564,7 +4564,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public void updateRefundReason(RefundReason r) throws IOException, SQLException, JTillException {
-        String query = "UPDATE REFUND_REASONS SET REASON='" + r.getReason() + "', LEVEL=" + r.getPriviledgeLevel() + " WHERE ID=" + r.getId();
+        String query = "UPDATE REFUND_REASONS SET refREASON='" + r.getReason() + "', refLEVEL=" + r.getPriviledgeLevel() + " WHERE refID=" + r.getId();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         int value;
@@ -4583,7 +4583,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public RefundReason getRefundReason(int id) throws IOException, SQLException, JTillException {
-        String query = "SELECT * FROM WASTEREASONS WHERE ID=" + id;
+        String query = "SELECT * FROM WASTEREASONS WHERE wrID=" + id;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<RefundReason> rrs = new LinkedList<>();
@@ -4606,9 +4606,9 @@ public abstract class DBConnect extends DataConnect {
     private List<RefundReason> getRefundReasonsFromResultSet(ResultSet set) throws SQLException {
         List<RefundReason> rrs = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt("ID");
-            String reason = set.getString("REASON");
-            int level = set.getInt("LEVEL");
+            int id = set.getInt("refID");
+            String reason = set.getString("refREASON");
+            int level = set.getInt("refLEVEL");
             rrs.add(new RefundReason(id, reason, level));
         }
         return rrs;
@@ -4616,7 +4616,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<RefundReason> getUsedRefundReasons() throws IOException, SQLException {
-        String query = "SELECT * FROM REFUND_REASONS WHERE DELETED = false ORDER BY ID";
+        String query = "SELECT * FROM REFUND_REASONS WHERE refDELETED = false ORDER BY refID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<RefundReason> rrs = new LinkedList<>();
