@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +23,10 @@ import javax.swing.InputMap;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -34,10 +38,8 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
 
-    private final DefaultTableModel model;
+    private MyModel model;
     private final DefaultComboBoxModel cmbModel;
-
-    private List<RefundReason> reasons;
 
     private RefundReason reason;
 
@@ -52,15 +54,17 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
         super.setClosable(true);
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
-        model = (DefaultTableModel) table.getModel();
-        table.setModel(model);
         cmbModel = (DefaultComboBoxModel) cmbPriviledge.getModel();
         cmbModel.addElement("Assisstant");
         cmbModel.addElement("Supervisor");
         cmbModel.addElement("Manager");
         cmbModel.addElement("Area Manager");
         tabbed.setEnabledAt(1, false);
-        init();
+        try {
+            init();
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void showDialog() {
@@ -77,7 +81,11 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
         }
     }
 
-    private void init() {
+    private void init() throws IOException, SQLException {
+        model = new MyModel(dc.getUsedRefundReasons());
+        table.setModel(model);
+        table.getColumnModel().getColumn(0).setMinWidth(40);
+        table.getColumnModel().getColumn(0).setMaxWidth(40);
         table.setSelectionModel(new ForcedListSelectionModel());
         InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = table.getActionMap();
@@ -91,19 +99,6 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
 
             }
         });
-        reloadList();
-    }
-
-    private void reloadList() {
-        try {
-            reasons = dc.getUsedRefundReasons();
-            model.setRowCount(0);
-            for (RefundReason rr : reasons) {
-                model.addRow(new Object[]{rr.getId(), rr.getReason()});
-            }
-        } catch (IOException | SQLException ex) {
-            Logger.getLogger(RefundReasonsDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     private void setCurrent(RefundReason reason) {
@@ -111,6 +106,111 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
         txtId.setText(reason.getId() + "");
         txtReason.setText(reason.getReason());
         cmbPriviledge.setSelectedIndex(reason.getPriviledgeLevel());
+    }
+
+    private class MyModel implements TableModel {
+
+        private final List<RefundReason> reasons;
+        private final List<TableModelListener> listeners;
+
+        public MyModel(List<RefundReason> reasons) {
+            this.reasons = reasons;
+            this.listeners = new LinkedList<>();
+        }
+
+        public RefundReason addReason(RefundReason reason) throws IOException, SQLException {
+            reason = dc.addRefundReason(reason);
+            reasons.add(reason);
+            alertAll();
+            return reason;
+        }
+
+        public void removeReason(RefundReason reason) throws IOException, SQLException, JTillException {
+            dc.removeRefundReason(reason);
+            reasons.remove(reason);
+            alertAll();
+        }
+
+        public RefundReason getReason(int i) {
+            return reasons.get(i);
+        }
+
+        public void updateReason(RefundReason reason) throws IOException, SQLException, JTillException {
+            dc.updateRefundReason(reason);
+            alertAll();
+        }
+
+        @Override
+        public int getRowCount() {
+            return 2;
+        }
+
+        @Override
+        public int getColumnCount() {
+            return reasons.size();
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0: {
+                    return "ID";
+                }
+                case 1: {
+                    return "Reason";
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return Object.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            RefundReason reason = reasons.get(rowIndex);
+            switch (columnIndex) {
+                case 0: {
+                    return reason.getId();
+                }
+                case 1: {
+                    return reason.getReason();
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        }
+
+        private void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
+
     }
 
     /**
@@ -339,8 +439,7 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
 
         RefundReason rr = new RefundReason(reason, 0);
         try {
-            rr = dc.addRefundReason(rr);
-            reloadList();
+            rr = model.addReason(rr);
             setCurrent(rr);
             tabbed.setEnabledAt(1, true);
             tabbed.setSelectedIndex(1);
@@ -357,6 +456,7 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
         reason.setPriviledgeLevel(level);
         try {
             reason.save();
+            model.alertAll();
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -365,10 +465,9 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         try {
             if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this refund reason?\n" + reason.getReason(), "Remove Reason", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                dc.removeRefundReason(reason);
+                model.removeReason(reason);
                 tabbed.setSelectedIndex(0);
                 reason = null;
-                reloadList();
                 tabbed.setEnabledAt(1, false);
                 JOptionPane.showMessageDialog(this, "Refund reason removed", "Refund Reason", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -383,7 +482,7 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
             return;
         }
         tabbed.setEnabledAt(1, true);
-        RefundReason r = reasons.get(row);
+        RefundReason r = model.getReason(row);
         setCurrent(r);
         if (evt.getClickCount() == 2) {
             tabbed.setSelectedIndex(1);
