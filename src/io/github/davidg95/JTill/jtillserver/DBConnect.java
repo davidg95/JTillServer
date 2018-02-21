@@ -408,7 +408,7 @@ public abstract class DBConnect extends DataConnect {
      */
     @Override
     public Product getProductByBarcode(String barcode) throws SQLException, ProductNotFoundException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND BARCODE='" + barcode + "'";
+        String query = "select * from products, categorys, departments, tax where pcategory = cid AND cdepartment = did AND ptax = tid and barcode='" + barcode + "'";
         List<Product> products = new LinkedList<>();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
@@ -4045,8 +4045,8 @@ public abstract class DBConnect extends DataConnect {
                 int maxCon = set.getInt("pmaxcon");
                 int minCon = set.getInt("pmincon");
                 BigDecimal limit = set.getBigDecimal("plimit");
-                boolean trackStock = set.getBoolean("ptrack");
-                String ingredients = set.getString("ingredients");
+                boolean trackStock = set.getBoolean("ptrack_stock");
+                String ingredients = set.getString("pingredients");
 
                 String cName = set.getString("cname");
                 int department = set.getInt("cdepartment");

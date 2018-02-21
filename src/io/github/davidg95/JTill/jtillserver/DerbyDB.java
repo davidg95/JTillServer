@@ -377,7 +377,6 @@ public class DerbyDB extends DBConnect {
             s.close();
         } catch (SQLException ex) {
             LOG.info("Tables already exists, so they do not need created");
-            LOG.log(Level.SEVERE, null, ex);
         }
     }
 }

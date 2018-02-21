@@ -492,7 +492,15 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        SupplierDialog.showDialog(this);
+        Supplier s = SupplierDialog.showDialog(this);
+        if (s == null) {
+            return;
+        }
+        try {
+            model.addSupplier(s);
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked

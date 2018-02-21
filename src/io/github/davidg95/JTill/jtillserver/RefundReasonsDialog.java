@@ -142,12 +142,12 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
 
         @Override
         public int getRowCount() {
-            return 2;
+            return reasons.size();
         }
 
         @Override
         public int getColumnCount() {
-            return reasons.size();
+            return 2;
         }
 
         @Override
