@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
 
 /**
  *
@@ -113,6 +112,7 @@ public class DerbyDB extends DBConnect {
             + "     pmax_level INTEGER,\n"
             + "     pSCALE DOUBLE,\n"
             + "     pSCALE_NAME VARCHAR(20),\n"
+            + "     pcost_percentage double,\n"
             + "     pINCVAT BOOLEAN,\n"
             + "     pMAXCON INT,\n"
             + "     pMINCON INT,\n"

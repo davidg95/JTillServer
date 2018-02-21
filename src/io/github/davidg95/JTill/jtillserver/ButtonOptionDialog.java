@@ -336,8 +336,8 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             Product p = ProductSelectDialog.showDialog(this);
             if (p != null) {
                 button.setItem(p.getBarcode());
-                button.setName(p.getName());
-                txtItem.setText(p.getName());
+                button.setName(p.getShortName());
+                txtItem.setText(p.getShortName());
             }
             button.setType(TillButton.ITEM);
         } else if (func.equals("Screen")) {

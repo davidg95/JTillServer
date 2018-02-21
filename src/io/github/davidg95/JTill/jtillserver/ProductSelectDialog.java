@@ -878,7 +878,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                     return;
                 }
                 int order = Integer.parseInt(search);
-                if (p.getOrder_code() == order) {
+                if (p.getOrderCode() == order) {
                     newList.add(p);
                 }
             } else {

@@ -108,7 +108,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             }
             Object[] s = null;
             final Product p = (Product) item.getProduct();
-            s = new Object[]{p.getName(), item.getQuantity(), "£" + df.format(item.getPrice().doubleValue() * item.getQuantity())};
+            s = new Object[]{p.getShortName(), item.getQuantity(), "£" + df.format(item.getPrice().doubleValue() * item.getQuantity())};
             model.addRow(s);
         }
         lblTax.setText("Tax: £" + new DecimalFormat("0.00").format(taxValue.doubleValue()));
@@ -190,7 +190,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             //Print the sale items.
             for (SaleItem it : toPrint.getSaleItems()) {
                 final Product p = (Product) it.getProduct();
-                g2.drawString(p.getName(), item, y);
+                g2.drawString(p.getShortName(), item, y);
                 g2.drawString("" + it.getQuantity(), quantity, y);
                 g2.drawString("£" + it.getPrice().setScale(2), total, y);
                 y += 30;

@@ -193,6 +193,7 @@ public abstract class DBConnect extends DataConnect {
             BigDecimal limit = set.getBigDecimal("plimit");
             boolean trackStock = set.getBoolean("ptrack_stock");
             String ingredients = set.getString("pingredients");
+            double cost_percentage = set.getDouble("pcost_percentage");
 
             String cName = set.getString("cname");
             int department = set.getInt("cdepartment");
@@ -212,7 +213,7 @@ public abstract class DBConnect extends DataConnect {
             if (!open) {
                 p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
             } else {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, ingredients);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
             }
 
             products.add(p);
@@ -230,7 +231,7 @@ public abstract class DBConnect extends DataConnect {
      */
     @Override
     public Product addProduct(Product p) throws SQLException {
-        String query = "INSERT INTO PRODUCTS (pORDER_CODE, pNAME, OPEN_PRICE, pPRICE, pSTOCK, pCOMMENTS, pSHORT_NAME, pcategory, ptax, pcost_price, ppack_size, pmin_level, pmax_level, barcode, pscale, pscale_name, pINCVAT, pLIMIT, pTRACK_STOCK, pingredients) VALUES (" + p.getSQLInsertString() + ")";
+        String query = "INSERT INTO PRODUCTS (pORDER_CODE, pNAME, OPEN_PRICE, pPRICE, pSTOCK, pCOMMENTS, pSHORT_NAME, pcategory, ptax, pcost_price, ppack_size, pmin_level, pmax_level, barcode, pscale, pscale_name, pINCVAT, pLIMIT, pTRACK_STOCK, pcost_percentage, pingredients) VALUES (" + p.getSQLInsertString() + ")";
         Connection con = getConnection();
         try (PreparedStatement stmt = con.prepareStatement(query)) {
             stmt.executeUpdate();
@@ -431,7 +432,7 @@ public abstract class DBConnect extends DataConnect {
     public List<Product> productLookup(String terms) throws IOException, SQLException {
         List<Product> products = this.getAllProducts();
         List<Product> newList = new LinkedList<>();
-        products.stream().filter((p) -> (p.getLongName().toLowerCase().contains(terms.toLowerCase()) || p.getName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((p) -> {
+        products.stream().filter((p) -> (p.getLongName().toLowerCase().contains(terms.toLowerCase()) || p.getShortName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((p) -> {
             newList.add(p);
         });
         return newList;
@@ -1387,6 +1388,7 @@ public abstract class DBConnect extends DataConnect {
             BigDecimal limit = set.getBigDecimal("plimit");
             boolean trackStock = set.getBoolean("ptrack_stock");
             String ingredients = set.getString("pingredients");
+            double cost_percentage = set.getDouble("pcost_percentage");
 
             String cName = set.getString("cname");
             int department = set.getInt("cdepartment");
@@ -1406,7 +1408,7 @@ public abstract class DBConnect extends DataConnect {
             if (!open) {
                 p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
             } else {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, ingredients);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
             }
 
             SaleItem s = new SaleItem(saleId, p, quantity, id, price, tax, cost);
@@ -2280,6 +2282,7 @@ public abstract class DBConnect extends DataConnect {
             BigDecimal limit = set.getBigDecimal("plimit");
             boolean trackStock = set.getBoolean("ptrack_stock");
             String ingredients = set.getString("pingredients");
+            double cost_percentage = set.getDouble("pcost_percentage");
 
             String cName = set.getString("cname");
             int department = set.getInt("cdepartment");
@@ -2299,7 +2302,7 @@ public abstract class DBConnect extends DataConnect {
             if (!open) {
                 p = new Product(name, shortName, barcode, order_code, c, comments, t, pPrice, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
             } else {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, ingredients);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
             }
 
             WasteReason wr = new WasteReason(wreason, reason, level);
@@ -3565,6 +3568,7 @@ public abstract class DBConnect extends DataConnect {
                 BigDecimal limit = set.getBigDecimal("plimit");
                 boolean trackStock = set.getBoolean("ptrack_stock");
                 String ingredients = set.getString("pingredients");
+                double cost_percentage = set.getDouble("pcost_percentage");
 
                 String cName = set.getString("cname");
                 int department = set.getInt("cdepartment");
@@ -3584,7 +3588,7 @@ public abstract class DBConnect extends DataConnect {
                 if (!open) {
                     p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
                 } else {
-                    p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, ingredients);
+                    p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
                 }
 
                 int iid = set.getInt("riid");
@@ -4047,6 +4051,7 @@ public abstract class DBConnect extends DataConnect {
                 BigDecimal limit = set.getBigDecimal("plimit");
                 boolean trackStock = set.getBoolean("ptrack_stock");
                 String ingredients = set.getString("pingredients");
+                double cost_percentage = set.getDouble("pcost_percentage");
 
                 String cName = set.getString("cname");
                 int department = set.getInt("cdepartment");
@@ -4069,7 +4074,7 @@ public abstract class DBConnect extends DataConnect {
                 if (!open) {
                     p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
                 } else {
-                    p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, ingredients);
+                    p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
                 }
                 condiments.add(new Condiment(conId, p_conn, p));
             }
@@ -4241,6 +4246,7 @@ public abstract class DBConnect extends DataConnect {
                     BigDecimal limit = set.getBigDecimal("plimit");
                     boolean trackStock = set.getBoolean("ptrack_stock");
                     String ingredients = set.getString("ingredients");
+                    double cost_percentage = set.getDouble("pcost_percentage");
 
                     String cName = set2.getString("cname");
                     int department = set2.getInt("cdepartment");
@@ -4260,7 +4266,7 @@ public abstract class DBConnect extends DataConnect {
                     if (!open) {
                         p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
                     } else {
-                        p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, ingredients);
+                        p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
                     }
                     int o_id = set2.getInt("oiid");
                     int quantity = set2.getInt("oiquantity");

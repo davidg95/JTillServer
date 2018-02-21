@@ -445,7 +445,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
         List<Product> newList = new ArrayList<>();
         for (Product p : currentTableContents) {
             if (radName.isSelected()) {
-                if (p.getName().contains(txtSearch.getText()) || p.getLongName().contains(txtSearch.getText())) {
+                if (p.getShortName().contains(txtSearch.getText()) || p.getLongName().contains(txtSearch.getText())) {
                     newList.add(p);
                 }
             } else {

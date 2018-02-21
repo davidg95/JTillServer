@@ -103,14 +103,14 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             totalReceived = dc.getTotalReceivedOfItem(product.getBarcode());
 
             txtPlu.setText(product.getBarcode());
-            if (product.getOrder_code() == 0) {
+            if (product.getOrderCode() == 0) {
                 txtOrderCode.setText("N/A");
             } else {
-                txtOrderCode.setText(product.getOrder_code() + "");
+                txtOrderCode.setText(product.getOrderCode() + "");
             }
             DecimalFormat df = new DecimalFormat("0.00");
             txtName.setText(product.getLongName());
-            txtShortName.setText(product.getName());
+            txtShortName.setText(product.getShortName());
             txtDep.setText(product.getDepartment().getName());
             txtCat.setText(product.getCategory().getName());
             txtStock.setText(product.getStock() + "");

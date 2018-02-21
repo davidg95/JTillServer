@@ -185,8 +185,8 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             }
             this.product = p;
             txtName.setText(product.getLongName());
-            txtShortName.setText(product.getName());
-            txtOrder.setText(product.getOrder_code() + "");
+            txtShortName.setText(product.getShortName());
+            txtOrder.setText(product.getOrderCode() + "");
             if (product.isOpen()) { //Check if price is open.
                 jLabel3.setText("Price Limit (£):");
                 txtPrice.setText(product.getPriceLimit().setScale(2, 6) + "");
@@ -221,7 +221,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 chkIncVat.setSelected(false);
                 chkIncVat.setEnabled(false);
                 txtBarcode.setText(product.getBarcode());
-                txtCostPrice.setText(product.getCostPercentage().toString());
+                txtCostPrice.setText(product.getCostPercentage() + "");
                 txtPackSize.setText("0");
                 txtScaleName.setText(p.getScaleName());
                 txtScale.setText(p.getScale() + "");
@@ -1024,7 +1024,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             tax = taxes.get(cmbTax.getSelectedIndex());
         }
         String comments = txtComments.getText();
-        product.setOrder_code(orderCode);
+        product.setOrderCode(orderCode);
         if (product.isOpen()) {
             BigDecimal price = new BigDecimal(txtPrice.getText());
             if (!Utilities.isNumber(txtPrice.getText())) {
@@ -1032,7 +1032,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 return;
             }
             product.setLongName(name);
-            product.setName(shortName);
+            product.setShortName(shortName);
             product.setCategory(category);
             product.setTax(tax);
             product.setComments(comments);
@@ -1042,9 +1042,9 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "Must enter a number for cost percentage", "Save Changes", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            BigDecimal cost = new BigDecimal(strCost);
-            if (cost.compareTo(BigDecimal.ZERO) == -1 || cost.compareTo(new BigDecimal(100)) == 1) {
-                JOptionPane.showMessageDialog(this, "Cost % must be between 0 and 100", "Save Changes", JOptionPane.ERROR_MESSAGE);
+            double cost = Double.parseDouble(strCost);
+            if (cost < 0 || cost > 100) {
+                JOptionPane.showMessageDialog(this, "Cost percentage must be between 0 and 100", "Save Changes", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             product.setCostPercentage(cost);
@@ -1096,7 +1096,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             int maxStock = Integer.parseInt(maxSt);
             boolean incVat = chkIncVat.isSelected();
             product.setLongName(name);
-            product.setName(shortName);
+            product.setShortName(shortName);
             product.setCategory(category);
             product.setTax(tax);
             product.setPrice(price);
@@ -1165,7 +1165,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 }
                 break;
             default:
-                model.getAll().stream().filter((p) -> (p.getLongName().toLowerCase().contains(terms.toLowerCase()) || p.getName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((p) -> {
+                model.getAll().stream().filter((p) -> (p.getLongName().toLowerCase().contains(terms.toLowerCase()) || p.getShortName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((p) -> {
                     newList.add(p);
                 });
                 break;
