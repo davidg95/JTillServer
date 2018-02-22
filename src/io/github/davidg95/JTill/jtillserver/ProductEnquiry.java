@@ -91,26 +91,26 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
     private void setProduct() {
         try {
             //Total sold and value sold
-            totalSold = dc.getTotalSoldOfItem(product.getId());
-            valueSold = dc.getTotalValueSold(product.getId()).setScale(2);
+            totalSold = dc.getTotalSoldOfItem(product.getBarcode());
+            valueSold = dc.getTotalValueSold(product.getBarcode()).setScale(2);
 
             //Total wasted and value wasted
-            totalWasted = dc.getTotalWastedOfItem(product.getId());
-            valueWasted = dc.getValueWastedOfItem(product.getId()).setScale(2);
+            totalWasted = dc.getTotalWastedOfItem(product.getBarcode());
+            valueWasted = dc.getValueWastedOfItem(product.getBarcode()).setScale(2, 6);
 
             //Total and value received.
-            valueSpent = dc.getValueSpentOnItem(product.getId()).setScale(2);
-            totalReceived = dc.getTotalReceivedOfItem(product.getId());
+            valueSpent = dc.getValueSpentOnItem(product.getBarcode()).setScale(2);
+            totalReceived = dc.getTotalReceivedOfItem(product.getBarcode());
 
             txtPlu.setText(product.getBarcode());
-            if (product.getOrder_code() == 0) {
+            if (product.getOrderCode() == 0) {
                 txtOrderCode.setText("N/A");
             } else {
-                txtOrderCode.setText(product.getOrder_code() + "");
+                txtOrderCode.setText(product.getOrderCode() + "");
             }
             DecimalFormat df = new DecimalFormat("0.00");
             txtName.setText(product.getLongName());
-            txtShortName.setText(product.getName());
+            txtShortName.setText(product.getShortName());
             txtDep.setText(product.getDepartment().getName());
             txtCat.setText(product.getCategory().getName());
             txtStock.setText(product.getStock() + "");
@@ -130,7 +130,7 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             txtValReceived.setText("£" + valueSpent.toString());
             txtReceived.setText(totalReceived + "");
             txtProfit.setText("£" + valueSold.subtract(valueSpent));
-            double margin = (valueSpent.doubleValue() / valueSold.doubleValue()) * 100;
+            double margin = ((valueSold.doubleValue() / valueSpent.doubleValue()) - 1) * 100;
             if (Double.isNaN(margin)) {
                 txtMarginToDate.setText("---");
             } else if (Double.isInfinite(margin)) {
@@ -185,8 +185,6 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             int s = 30;
 
             //Print product info.
-            g2.drawString("ID: " + p.getId(), x, y);
-            y += s;
             g2.drawString("Barcode: " + p.getBarcode(), x, y);
             y += s;
             g2.drawString("Name: " + p.getLongName(), x, y);

@@ -149,7 +149,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Product> getAllProducts() throws SQLException, IOException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID ORDER BY PRODUCTS.ID";
+        String query = "select * from products, categorys, departments, tax where pcategory = cid and cdepartment = did and ptax = tid";
         List<Product> products;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
@@ -163,7 +163,7 @@ public abstract class DBConnect extends DataConnect {
             throw ex;
         }
         for (Product p : products) {
-            p.setCondiments(getProductsCondiments(p.getId()));
+            p.setCondiments(getProductsCondiments(p.getBarcode()));
         }
         return products;
     }
@@ -171,48 +171,49 @@ public abstract class DBConnect extends DataConnect {
     private List<Product> getProductsFromResultSet(ResultSet set) throws SQLException {
         List<Product> products = new LinkedList<>();
         while (set.next()) {
-            int code = set.getInt(1);
-            int order_code = set.getInt(2);
-            String name = set.getString(3);
-            boolean open = set.getBoolean(4);
-            BigDecimal price = set.getBigDecimal(5);
-            int stock = set.getInt(6);
-            String comments = set.getString(7);
-            String shortName = set.getString(8);
-            int cId = set.getInt(9);
-            int taxID = set.getInt(10);
-            BigDecimal costPrice = set.getBigDecimal(11);
-            int minStock = set.getInt(12);
-            int maxStock = set.getInt(13);
-            int packSize = set.getInt(14);
-            String barcode = set.getString(15);
-            double scale = set.getDouble(16);
-            String scaleName = set.getString(17);
-            boolean incVat = set.getBoolean(18);
-            int maxCon = set.getInt(19);
-            int minCon = set.getInt(20);
-            BigDecimal limit = set.getBigDecimal(21);
-            boolean trackStock = set.getBoolean(22);
+            String barcode = set.getString("barcode");
+            int order_code = set.getInt("porder_code");
+            String name = set.getString("pname");
+            boolean open = set.getBoolean("open_price");
+            BigDecimal price = set.getBigDecimal("pprice");
+            int stock = set.getInt("pstock");
+            String comments = set.getString("pcomments");
+            String shortName = set.getString("pshort_name");
+            int cId = set.getInt("pcategory");
+            int taxID = set.getInt("ptax");
+            BigDecimal costPrice = set.getBigDecimal("pcost_price");
+            int minStock = set.getInt("pmin_level");
+            int maxStock = set.getInt("pmax_level");
+            int packSize = set.getInt("ppack_size");
+            double scale = set.getDouble("pscale");
+            String scaleName = set.getString("pscale_name");
+            boolean incVat = set.getBoolean("pincvat");
+            int maxCon = set.getInt("pmaxcon");
+            int minCon = set.getInt("pmincon");
+            BigDecimal limit = set.getBigDecimal("plimit");
+            boolean trackStock = set.getBoolean("ptrack_stock");
+            String ingredients = set.getString("pingredients");
+            double cost_percentage = set.getDouble("pcost_percentage");
 
-            String cName = set.getString(24);
-            int department = set.getInt(25);
+            String cName = set.getString("cname");
+            int department = set.getInt("cdepartment");
 
-            String dName = set.getString(27);
+            String dName = set.getString("dname");
 
             Department d = new Department(department, dName);
 
             Category c = new Category(cId, cName, d);
 
-            String tName = set.getString(29);
-            double value = set.getDouble(30);
+            String tName = set.getString("tname");
+            double value = set.getDouble("tvalue");
 
             Tax t = new Tax(taxID, tName, value);
 
             Product p;
             if (!open) {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon, trackStock);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
             } else {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
             }
 
             products.add(p);
@@ -230,15 +231,10 @@ public abstract class DBConnect extends DataConnect {
      */
     @Override
     public Product addProduct(Product p) throws SQLException {
-        String query = "INSERT INTO PRODUCTS (ORDER_CODE, NAME, OPEN_PRICE, PRICE, STOCK, COMMENTS, SHORT_NAME, CATEGORY_ID, TAX_ID, COST_PRICE, PACK_SIZE, MIN_PRODUCT_LEVEL, MAX_PRODUCT_LEVEL, BARCODE, SCALE, SCALE_NAME, INCVAT, LIMIT, TRACK_STOCK) VALUES (" + p.getSQLInsertString() + ")";
+        String query = "INSERT INTO PRODUCTS (pORDER_CODE, pNAME, OPEN_PRICE, pPRICE, pSTOCK, pCOMMENTS, pSHORT_NAME, pcategory, ptax, pcost_price, ppack_size, pmin_level, pmax_level, barcode, pscale, pscale_name, pINCVAT, pLIMIT, pTRACK_STOCK, pcost_percentage, pingredients) VALUES (" + p.getSQLInsertString() + ")";
         Connection con = getConnection();
-        try (PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = con.prepareStatement(query)) {
             stmt.executeUpdate();
-            ResultSet set = stmt.getGeneratedKeys();
-            while (set.next()) {
-                int id = set.getInt(1);
-                p.setId(id);
-            }
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
@@ -257,7 +253,7 @@ public abstract class DBConnect extends DataConnect {
         try {
             value = stmt.executeUpdate(query);
             if (value == 0) {
-                throw new ProductNotFoundException("Product id " + p.getId() + " could not be found");
+                throw new ProductNotFoundException("Product " + p.getBarcode() + " could not be found");
             }
             con.commit();
         } catch (SQLException ex) {
@@ -307,25 +303,25 @@ public abstract class DBConnect extends DataConnect {
      */
     @Override
     public void removeProduct(Product p) throws SQLException, ProductNotFoundException {
-        removeProduct(p.getId());
+        removeProduct(p.getBarcode());
     }
 
     /**
      * Method to remove a product from the database.
      *
-     * @param id the product to remove.
+     * @param barcode the product to remove.
      * @throws SQLException if there was an error removing the product.
      * @throws ProductNotFoundException if the product code was not found.
      */
     @Override
-    public void removeProduct(int id) throws SQLException, ProductNotFoundException {
+    public void removeProduct(String barcode) throws SQLException, ProductNotFoundException {
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            stmt.executeUpdate("DELETE FROM WASTEITEMS WHERE PRODUCT = " + id);
-            stmt.executeUpdate("DELETE FROM TRIGGERS WHERE PRODUCT=" + id);
-            stmt.executeUpdate("DELETE FROM RECEIVEDITEMS WHERE PRODUCT=" + id);
-            stmt.executeUpdate("DELETE FROM PRODUCTS WHERE PRODUCTS.ID = " + id);
+            stmt.executeUpdate("DELETE FROM WASTEITEMS WHERE PRODUCT = '" + barcode + "'");
+            stmt.executeUpdate("DELETE FROM TRIGGERS WHERE PRODUCT = '" + barcode + "'");
+            stmt.executeUpdate("DELETE FROM RECEIVEDITEMS WHERE PRODUCT = '" + barcode + "'");
+            stmt.executeUpdate("DELETE FROM PRODUCTS WHERE PRODUCTS.BARCODE = '" + barcode + "'");
             con.commit();
         } catch (SQLException ex) {
             LOG.log(Level.SEVERE, null, ex);
@@ -337,7 +333,7 @@ public abstract class DBConnect extends DataConnect {
     /**
      * Method to purchase a product and reduce its stock level by 1.
      *
-     * @param id the product to purchase.
+     * @param barcode the product to purchase.
      * @param amount the amount of the product to purchase.
      * @return the new stock level.
      * @throws SQLException if there was an error purchasing the product.
@@ -345,21 +341,21 @@ public abstract class DBConnect extends DataConnect {
      * @throws ProductNotFoundException if the product was not found.
      */
     @Override
-    public int purchaseProduct(int id, int amount) throws SQLException, OutOfStockException, ProductNotFoundException {
+    public int purchaseProduct(String barcode, int amount) throws SQLException, OutOfStockException, ProductNotFoundException {
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         try {
-            ResultSet res = stmt.executeQuery("SELECT ID, STOCK, MIN_PRODUCT_LEVEL FROM PRODUCTS WHERE PRODUCTS.ID=" + id);
+            ResultSet res = stmt.executeQuery("SELECT barcode, pstock, pmin_level from products where barcode='" + barcode + "'");
             while (res.next()) {
-                int stock = res.getInt("STOCK");
+                int stock = res.getInt("pstock");
                 stock -= amount;
-                int minStock = res.getInt("MIN_PRODUCT_LEVEL");
+                int minStock = res.getInt("pmin_level");
                 res.close();
-                String update = "UPDATE PRODUCTS SET STOCK=" + stock + " WHERE PRODUCTS.ID=" + id;
+                String update = "update products set pstock=" + stock + " where barcode='" + barcode + "'";
                 stmt.executeUpdate(update);
                 if (stock < minStock) {
-                    LOG.log(Level.WARNING, id + " is below minimum stock level");
-                    g.logWarning("WARNING- Product " + id + " is below is minimum level!");
+                    LOG.log(Level.WARNING, barcode + " is below minimum stock level");
+                    g.logWarning("WARNING- Product " + barcode + " is below is minimum level!");
                 }
                 con.commit();
                 return stock;
@@ -369,20 +365,21 @@ public abstract class DBConnect extends DataConnect {
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
         }
-        throw new ProductNotFoundException(id + " could not be found");
+        throw new ProductNotFoundException(barcode + " could not be found");
     }
 
     /**
      * Method to get a product by its code.
      *
-     * @param code the product to get.
+     * @param barcode the barcode of the product to search.
      * @return the Product that matches the code.
      * @throws SQLException if there was an error getting the product.
      * @throws ProductNotFoundException if the product could not be found.
+     * @throws java.io.IOException if there is a network error.
      */
     @Override
-    public Product getProduct(int code) throws SQLException, ProductNotFoundException, IOException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND PRODUCTS.ID=" + code;
+    public Product getProduct(String barcode) throws SQLException, ProductNotFoundException, IOException {
+        String query = "select * from products, categorys, departments, tax where pcategory = cid and cdepartment = did and ptax = tid and barcode='" + barcode + "'";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Product> products = new LinkedList<>();
@@ -391,14 +388,14 @@ public abstract class DBConnect extends DataConnect {
             products = getProductsFromResultSet(res);
             con.commit();
             if (products.isEmpty()) {
-                throw new ProductNotFoundException("Product " + code + " could not be found");
+                throw new ProductNotFoundException("Product " + barcode + " could not be found");
             }
         } catch (SQLException ex) {
             con.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
         }
-        products.get(0).setCondiments(getProductsCondiments(products.get(0).getId()));
+        products.get(0).setCondiments(getProductsCondiments(products.get(0).getBarcode()));
         return products.get(0);
     }
 
@@ -412,7 +409,7 @@ public abstract class DBConnect extends DataConnect {
      */
     @Override
     public Product getProductByBarcode(String barcode) throws SQLException, ProductNotFoundException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND BARCODE='" + barcode + "'";
+        String query = "select * from products, categorys, departments, tax where pcategory = cid AND cdepartment = did AND ptax = tid and barcode='" + barcode + "'";
         List<Product> products = new LinkedList<>();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
@@ -435,7 +432,7 @@ public abstract class DBConnect extends DataConnect {
     public List<Product> productLookup(String terms) throws IOException, SQLException {
         List<Product> products = this.getAllProducts();
         List<Product> newList = new LinkedList<>();
-        products.stream().filter((p) -> (p.getLongName().toLowerCase().contains(terms.toLowerCase()) || p.getName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((p) -> {
+        products.stream().filter((p) -> (p.getLongName().toLowerCase().contains(terms.toLowerCase()) || p.getShortName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((p) -> {
             newList.add(p);
         });
         return newList;
@@ -632,7 +629,7 @@ public abstract class DBConnect extends DataConnect {
     //Staff Methods
     @Override
     public List<Staff> getAllStaff() throws SQLException {
-        String query = "SELECT * FROM STAFF ORDER BY ID";
+        String query = "SELECT * FROM STAFF ORDER BY stID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Staff> staff = new LinkedList<>();
@@ -652,14 +649,14 @@ public abstract class DBConnect extends DataConnect {
     public List<Staff> getStaffFromResultSet(ResultSet set) throws SQLException {
         List<Staff> staff = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt(1);
-            String name = set.getString(2);
-            int position = set.getInt(3);
-            String uname = set.getString(4);
-            String pword = set.getString(5);
+            int id = set.getInt("stid");
+            String name = set.getString("stname");
+            int position = set.getInt("stposition");
+            String uname = set.getString("stusername");
+            String pword = set.getString("stpassword");
             String dPass = Encryptor.decrypt(pword);
-            boolean enabled = set.getBoolean(6);
-            double wage = set.getDouble(7);
+            boolean enabled = set.getBoolean("stenabled");
+            double wage = set.getDouble("stwage");
             Staff s = new Staff(id, name, position, uname, dPass, wage, enabled);
 
             staff.add(s);
@@ -669,7 +666,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Staff addStaff(Staff s) throws SQLException {
-        String query = "INSERT INTO STAFF (NAME, POSITION, USERNAME, PASSWORD, ENABLED, WAGE) VALUES (" + s.getSQLInsertString() + ")";
+        String query = "INSERT INTO STAFF (stNAME, stPOSITION, stUSERNAME, stPASSWORD, stENABLED, stWAGE) VALUES (" + s.getSQLInsertString() + ")";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -734,7 +731,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Staff getStaff(int id) throws SQLException, StaffNotFoundException {
-        String query = "SELECT * FROM STAFF WHERE STAFF.ID = " + id;
+        String query = "SELECT * FROM STAFF WHERE stID = " + id;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Staff> staff = new LinkedList<>();
@@ -757,7 +754,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Staff login(String username, String password) throws SQLException, LoginException {
-        String query = "SELECT * FROM STAFF WHERE STAFF.USERNAME = '" + username.toLowerCase() + "'";
+        String query = "SELECT * FROM STAFF WHERE stusername = '" + username.toLowerCase() + "'";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Staff> staff = new LinkedList<>();
@@ -937,7 +934,7 @@ public abstract class DBConnect extends DataConnect {
     //Tax Methods
     @Override
     public List<Tax> getAllTax() throws SQLException {
-        String query = "SELECT * FROM TAX ORDER BY ID";
+        String query = "select * from tax";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Tax> tax = new LinkedList<>();
@@ -969,7 +966,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Tax addTax(Tax t) throws SQLException {
-        String query = "INSERT INTO TAX (NAME, VALUE) VALUES (" + t.getSQLInsertString() + ")";
+        String query = "INSERT INTO TAX (tNAME, tVALUE) VALUES (" + t.getSQLInsertString() + ")";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -1019,8 +1016,8 @@ public abstract class DBConnect extends DataConnect {
         Statement stmt = con.createStatement();
         int value;
         try {
-            stmt.executeUpdate("UPDATE PRODUCTS SET TAX_ID = 1 WHERE TAX_ID = " + id);
-            value = stmt.executeUpdate("DELETE FROM TAX WHERE TAX.ID = " + id);
+            stmt.executeUpdate("UPDATE PRODUCTS SET ptax = 1 WHERE ptax = " + id);
+            value = stmt.executeUpdate("DELETE FROM TAX WHERE tid = " + id);
             con.commit();
             if (value == 0) {
                 throw new JTillException(id + "");
@@ -1034,7 +1031,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Tax getTax(int id) throws SQLException, JTillException {
-        String query = "SELECT * FROM TAX WHERE TAX.ID = " + id;
+        String query = "SELECT * FROM TAX WHERE tid = " + id;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Tax> tax = new LinkedList<>();
@@ -1057,7 +1054,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Product> getProductsInTax(int id) throws SQLException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND TAX_ID = " + id;
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE pcategory = cid AND cdepartment = did AND ptax = tid AND tid = " + id;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Product> products = new LinkedList<>();
@@ -1077,7 +1074,7 @@ public abstract class DBConnect extends DataConnect {
     //Category Methods
     @Override
     public List<Category> getAllCategorys() throws SQLException {
-        String query = "SELECT * FROM CATEGORYS, DEPARTMENTS WHERE CATEGORYS.DEPARTMENT = DEPARTMENTS.ID ORDER BY CATEGORYS.ID";
+        String query = "SELECT * FROM CATEGORYS, DEPARTMENTS WHERE cdepartment = did ORDER BY cid";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Category> categorys = new LinkedList<>();
@@ -1111,7 +1108,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Category addCategory(Category c) throws SQLException {
-        String query = "INSERT INTO CATEGORYS (NAME, DEPARTMENT) VALUES (" + c.getSQLInsertString() + ")";
+        String query = "INSERT INTO CATEGORYS (cNAME, cDEPARTMENT) VALUES (" + c.getSQLInsertString() + ")";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -1164,8 +1161,8 @@ public abstract class DBConnect extends DataConnect {
         Statement stmt = con.createStatement();
         int value;
         try {
-            stmt.executeUpdate("UPDATE PRODUCTS SET CATEGORY_ID=1 WHERE CATEGORY_ID=" + id);
-            value = stmt.executeUpdate("DELETE FROM CATEGORYS WHERE CATEGORYS.ID = " + id);
+            stmt.executeUpdate("UPDATE PRODUCTS SET pcategory=1 WHERE pcategory=" + id);
+            value = stmt.executeUpdate("DELETE FROM CATEGORYS WHERE cid = " + id);
             con.commit();
             if (value == 0) {
                 throw new JTillException(id + "");
@@ -1222,27 +1219,27 @@ public abstract class DBConnect extends DataConnect {
     private List<Sale> getSalesFromResultSet(ResultSet set) throws SQLException {
         List<Sale> sales = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt(1);
-            BigDecimal price = new BigDecimal(Double.toString(set.getDouble(2)));
-            int cid = set.getInt(3);
-            Date date = new Date(set.getLong(4));
-            boolean cashed = set.getBoolean(6);
+            int id = set.getInt("said");
+            BigDecimal price = new BigDecimal(Double.toString(set.getDouble("saprice")));
+            int cid = set.getInt("sacustomer");
+            Date date = new Date(set.getLong("satimestamp"));
+            boolean cashed = set.getBoolean("sacashed");
 
-            int tid = set.getInt(9);
-            UUID uuid = UUID.fromString(set.getString(10));
-            String tname = set.getString(11);
-            BigDecimal uncashed = set.getBigDecimal(12);
-            int sc = set.getInt(13);
+            int tid = set.getInt("tiid");
+            UUID uuid = UUID.fromString(set.getString("tiuuid"));
+            String tname = set.getString("tiname");
+            BigDecimal uncashed = set.getBigDecimal("tiuncashed");
+            int sc = set.getInt("tiDEFAULT_SCREEN");
             final Till t = new Till(tname, uncashed, tid, uuid, sc);
 
-            int stid = set.getInt(14);
-            String stname = set.getString(15);
-            int position = set.getInt(16);
-            String uname = set.getString(17);
-            String pword = set.getString(18);
+            int stid = set.getInt("stid");
+            String stname = set.getString("stname");
+            int position = set.getInt("stposition");
+            String uname = set.getString("stusername");
+            String pword = set.getString("stpassword");
             String dPass = Encryptor.decrypt(pword);
-            boolean enabled = set.getBoolean(19);
-            double wage = set.getDouble(20);
+            boolean enabled = set.getBoolean("stenabled");
+            double wage = set.getDouble("stwage");
             final Staff st = new Staff(stid, stname, position, uname, dPass, wage, enabled);
 
             final Sale s = new Sale(id, price, null, date, t, cashed, st);
@@ -1253,7 +1250,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Sale addSale(Sale s) throws SQLException, IOException {
-        String query = "INSERT INTO SALES (PRICE, CUSTOMER, TIMESTAMP, TERMINAL, CASHED, STAFF, MOP) VALUES (" + s.getSQLInsertStatement() + ")";
+        String query = "INSERT INTO SALES (saPRICE, saCUSTOMER, saTIMESTAMP, saTERMINAL, saCASHED, saSTAFF, saMOP) VALUES (" + s.getSQLInsertStatement() + ")";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -1276,16 +1273,14 @@ public abstract class DBConnect extends DataConnect {
         for (SaleItem p : s.getSaleItems()) {
             addSaleItem(s, p);
             try {
-                if (p.getType() == SaleItem.PRODUCT) {
-                    final Product pr = (Product) p.getItem();
-                    if (!pr.getSaleCondiments().isEmpty()) {
-                        for (Condiment c : pr.getSaleCondiments()) {
-                            purchaseProduct(c.getProduct_con().getId(), 1);
-                        }
+                final Product pr = (Product) p.getProduct();
+                if (!pr.getSaleCondiments().isEmpty()) {
+                    for (Condiment c : pr.getSaleCondiments()) {
+                        purchaseProduct(c.getProduct_con().getBarcode(), 1);
                     }
-                    if (!pr.isOpen() || pr.isTrackStock()) {
-                        purchaseProduct(pr.getId(), p.getQuantity());
-                    }
+                }
+                if (!pr.isOpen() || pr.isTrackStock()) {
+                    purchaseProduct(pr.getBarcode(), p.getQuantity());
                 }
             } catch (OutOfStockException ex) {
                 g.log(ex);
@@ -1344,7 +1339,7 @@ public abstract class DBConnect extends DataConnect {
     }
 
     private List<SaleItem> getItemsInSale(Sale sale) throws SQLException {
-        final String query = "SELECT * FROM SALEITEMS, PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE SALEITEMS.PRODUCT_ID = PRODUCTS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.TAX_ID = TAX.ID AND SALEITEMS.SALE_ID = " + sale.getId();
+        final String query = "SELECT * FROM SALEITEMS, PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE siproduct = barcode AND cdepartment = did AND pcategory = cid AND ptax = tid AND sisale = " + sale.getId();
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
@@ -1355,6 +1350,7 @@ public abstract class DBConnect extends DataConnect {
             return items;
         } catch (SQLException ex) {
             con.rollback();
+            LOG.log(Level.SEVERE, null, ex);
             throw ex;
         }
     }
@@ -1362,60 +1358,60 @@ public abstract class DBConnect extends DataConnect {
     private List<SaleItem> getSaleItemsFromResultSet(ResultSet set) throws SQLException {
         final List<SaleItem> sales = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt(1);
-            int item = set.getInt(2);
-            int type = set.getInt(3);
-            int quantity = set.getInt(4);
-            BigDecimal price = set.getBigDecimal(5);
-            BigDecimal tax = set.getBigDecimal(6);
-            int saleId = set.getInt(7);
-            BigDecimal cost = set.getBigDecimal(8);
+            int id = set.getInt("siid");
+            int item = set.getInt("siproduct");
+            int quantity = set.getInt("siquantity");
+            BigDecimal price = set.getBigDecimal("siprice");
+            BigDecimal tax = set.getBigDecimal("sitax");
+            int saleId = set.getInt("sisale");
+            BigDecimal cost = set.getBigDecimal("sicost");
 
-            int code = set.getInt(9);
-            int order_code = set.getInt(10);
-            String name = set.getString(11);
-            boolean open = set.getBoolean(12);
-            BigDecimal pPrice = set.getBigDecimal(13);
-            int stock = set.getInt(14);
-            String comments = set.getString(15);
-            String shortName = set.getString(16);
-            int cId = set.getInt(17);
-            int taxID = set.getInt(18);
-            BigDecimal costPrice = set.getBigDecimal(19);
-            int minStock = set.getInt(20);
-            int maxStock = set.getInt(21);
-            int packSize = set.getInt(22);
-            String barcode = set.getString(23);
-            double scale = set.getDouble(24);
-            String scaleName = set.getString(25);
-            boolean incVat = set.getBoolean(26);
-            int maxCon = set.getInt(27);
-            int minCon = set.getInt(28);
-            BigDecimal limit = set.getBigDecimal(29);
-            boolean trackStock = set.getBoolean(30);
+            String barcode = set.getString("barcode");
+            int order_code = set.getInt("porder_code");
+            String name = set.getString("pname");
+            boolean open = set.getBoolean("open_price");
+            BigDecimal pPrice = set.getBigDecimal("pprice");
+            int stock = set.getInt("pstock");
+            String comments = set.getString("pcomments");
+            String shortName = set.getString("pshort_name");
+            int cId = set.getInt("pcategory");
+            int taxID = set.getInt("ptax");
+            BigDecimal costPrice = set.getBigDecimal("pcost_price");
+            int minStock = set.getInt("pmin_level");
+            int maxStock = set.getInt("pmax_level");
+            int packSize = set.getInt("ppack_size");
+            double scale = set.getDouble("pscale");
+            String scaleName = set.getString("pscale_name");
+            boolean incVat = set.getBoolean("pincvat");
+            int maxCon = set.getInt("pmaxcon");
+            int minCon = set.getInt("pmincon");
+            BigDecimal limit = set.getBigDecimal("plimit");
+            boolean trackStock = set.getBoolean("ptrack_stock");
+            String ingredients = set.getString("pingredients");
+            double cost_percentage = set.getDouble("pcost_percentage");
 
-            String cName = set.getString(32);
-            int department = set.getInt(33);
+            String cName = set.getString("cname");
+            int department = set.getInt("cdepartment");
 
-            String dName = set.getString(35);
+            String dName = set.getString("dname");
 
             Department d = new Department(department, dName);
 
             Category c = new Category(cId, cName, d);
 
-            String tName = set.getString(37);
-            double value = set.getDouble(38);
+            String tName = set.getString("tname");
+            double value = set.getDouble("tvalue");
 
             Tax t = new Tax(taxID, tName, value);
 
             Product p;
             if (!open) {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon, trackStock);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
             } else {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
             }
 
-            SaleItem s = new SaleItem(saleId, p, quantity, id, price, type, tax, cost);
+            SaleItem s = new SaleItem(saleId, p, quantity, id, price, tax, cost);
             sales.add(s);
         }
         return sales;
@@ -1512,7 +1508,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Staff tillLogin(int id) throws IOException, LoginException, SQLException {
-        String query = "SELECT * FROM STAFF WHERE STAFF.ID = " + id;
+        String query = "SELECT * FROM STAFF WHERE stID = " + id;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Staff> staff = new LinkedList<>();
@@ -1576,13 +1572,13 @@ public abstract class DBConnect extends DataConnect {
     private List<Screen> getScreensFromResultSet(ResultSet set) throws SQLException {
         List<Screen> screens = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt("ID");
-            String name = set.getString("NAME");
-            int width = set.getInt("WIDTH");
-            int height = set.getInt("HEIGHT");
-            int inherits = set.getInt("INHERITS");
-            int vgap = set.getInt("VGAP");
-            int hgap = set.getInt("HGAP");
+            int id = set.getInt("scID");
+            String name = set.getString("scNAME");
+            int width = set.getInt("scWIDTH");
+            int height = set.getInt("scHEIGHT");
+            int inherits = set.getInt("scINHERITS");
+            int vgap = set.getInt("scVGAP");
+            int hgap = set.getInt("scHGAP");
             Screen s = new Screen(name, id, width, height, inherits, vgap, hgap);
 
             screens.add(s);
@@ -1596,7 +1592,7 @@ public abstract class DBConnect extends DataConnect {
         while (set.next()) {
             int id = set.getInt("ID");
             String name = set.getString("NAME");
-            int p = set.getInt("PRODUCT");
+            String p = set.getString("PRODUCT");
             int type = set.getInt("TYPE");
             int s = set.getInt("SCREEN_ID");
             String color = set.getString("COLOR");
@@ -1617,7 +1613,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Screen addScreen(Screen s) throws SQLException {
-        String query = "INSERT INTO SCREENS (NAME, WIDTH, HEIGHT, INHERITS, VGAP, HGAP) VALUES (" + s.getSQLInsertString() + ")";
+        String query = "INSERT INTO SCREENS (scNAME, scWIDTH, scHEIGHT, scINHERITS, scVGAP, scHGAP) VALUES (" + s.getSQLInsertString() + ")";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -1638,7 +1634,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public TillButton addButton(TillButton b) throws SQLException {
-        String query = "INSERT INTO BUTTONS (NAME, PRODUCT, TYPE, COLOR, FONT_COLOR, SCREEN_ID, WIDTH, HEIGHT, XPOS, YPOS, ACCESS_LEVEL, LINK) VALUES (" + b.getSQLInsertString() + ")";
+        String query = "INSERT INTO BUTTONS (bNAME, bPRODUCT, bTYPE, bCOLOR, bFONT_COLOR, bSCREEN_ID, bWIDTH, bHEIGHT, bXPOS, bYPOS, bACCESS_LEVEL, bLINK) VALUES (" + b.getSQLInsertString() + ")";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -1659,9 +1655,9 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public void removeScreen(Screen s) throws SQLException, ScreenNotFoundException {
-        String query = "DELETE FROM SCREENS WHERE SCREENS.ID = " + s.getId();
-        String buttonsQuery = "DELETE FROM BUTTONS WHERE BUTTONS.SCREEN_ID = " + s.getId();
-        String bq2 = "UPDATE BUTTONS SET BUTTONS.TYPE=" + TillButton.SPACE + " WHERE BUTTONS.TYPE=" + TillButton.SCREEN + " AND BUTTONS.PRODUCT=" + s.getId();
+        String query = "DELETE FROM SCREENS WHERE scid = " + s.getId();
+        String buttonsQuery = "DELETE FROM BUTTONS WHERE bSCREEN_ID = " + s.getId();
+        String bq2 = "UPDATE BUTTONS SET bTYPE=" + TillButton.SPACE + " WHERE bTYPE=" + TillButton.SCREEN + " AND bPRODUCT='" + s.getId() + "'";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         int value;
@@ -1701,7 +1697,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Screen getScreen(int s) throws SQLException, ScreenNotFoundException {
-        String query = "SELECT * FROM SCREENS WHERE SCREENS.ID = " + s;
+        String query = "SELECT * FROM SCREENS WHERE scID = " + s;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Screen> screens = new LinkedList<>();
@@ -1791,13 +1787,13 @@ public abstract class DBConnect extends DataConnect {
             ResultSet set = stmt.executeQuery(query);
             screens = new LinkedList<>();
             while (set.next()) {
-                int id = set.getInt("ID");
-                String name = set.getString("NAME");
-                int width = set.getInt("WIDTH");
-                int height = set.getInt("HEIGHT");
-                int inherits = set.getInt("INHERITS");
-                int vgap = set.getInt("VGAP");
-                int hgap = set.getInt("HGAP");
+                int id = set.getInt("scID");
+                String name = set.getString("scNAME");
+                int width = set.getInt("scWIDTH");
+                int height = set.getInt("scHEIGHT");
+                int inherits = set.getInt("scINHERITS");
+                int vgap = set.getInt("scVGAP");
+                int hgap = set.getInt("scHGAP");
                 Screen s = new Screen(name, id, width, height, inherits, vgap, hgap);
 
                 screens.add(s);
@@ -1821,18 +1817,18 @@ public abstract class DBConnect extends DataConnect {
             ResultSet set = stmt.executeQuery(query);
             buttons = new LinkedList<>();
             while (set.next()) {
-                int id = set.getInt("ID");
-                String name = set.getString("NAME");
-                int p = set.getInt("PRODUCT");
-                int type = set.getInt("TYPE");
-                String color = set.getString("COLOR");
-                String fontColor = set.getString("FONT_COLOR");
-                int s = set.getInt("SCREEN_ID");
-                int width = set.getInt("WIDTH");
-                int height = set.getInt("HEIGHT");
-                int x = set.getInt("XPOS");
-                int y = set.getInt("YPOS");
-                String link = set.getString("LINK");
+                int id = set.getInt("bID");
+                String name = set.getString("bNAME");
+                String p = set.getString("bPRODUCT");
+                int type = set.getInt("bTYPE");
+                String color = set.getString("bCOLOR");
+                String fontColor = set.getString("bFONT_COLOR");
+                int s = set.getInt("bSCREEN_ID");
+                int width = set.getInt("bWIDTH");
+                int height = set.getInt("bHEIGHT");
+                int x = set.getInt("bXPOS");
+                int y = set.getInt("bYPOS");
+                String link = set.getString("bLINK");
                 TillButton b = new TillButton(name, p, type, s, color, fontColor, id, width, height, x, y, link);
                 buttons.add(b);
             }
@@ -1847,7 +1843,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<TillButton> getButtonsOnScreen(Screen s) throws IOException, SQLException, ScreenNotFoundException {
-        String query = "SELECT * FROM BUTTONS WHERE BUTTONS.SCREEN_ID=" + s.getId();
+        String query = "SELECT * FROM BUTTONS WHERE BUTTONS.bSCREEN_ID=" + s.getId();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<TillButton> buttons = new LinkedList<>();
@@ -1855,21 +1851,21 @@ public abstract class DBConnect extends DataConnect {
             ResultSet set = stmt.executeQuery(query);
             buttons = new LinkedList<>();
             while (set.next()) {
-                int id = set.getInt("ID");
-                String name = set.getString("NAME");
-                int i = 0;
+                int id = set.getInt("bID");
+                String name = set.getString("bNAME");
+                String i = "0";
                 if (!name.equals("[SPACE]")) {
-                    i = set.getInt("PRODUCT");
+                    i = set.getString("bPRODUCT");
                 }
-                int type = set.getInt("TYPE");
-                String color = set.getString("COLOR");
-                String fontColor = set.getString("FONT_COLOR");
-                int width = set.getInt("WIDTH");
-                int height = set.getInt("HEIGHT");
-                int x = set.getInt("XPOS");
-                int y = set.getInt("YPOS");
-                int accessLevel = set.getInt("ACCESS_LEVEL");
-                String link = set.getString("LINK");
+                int type = set.getInt("bTYPE");
+                String color = set.getString("bCOLOR");
+                String fontColor = set.getString("bFONT_COLOR");
+                int width = set.getInt("bWIDTH");
+                int height = set.getInt("bHEIGHT");
+                int x = set.getInt("bXPOS");
+                int y = set.getInt("bYPOS");
+                int accessLevel = set.getInt("bACCESS_LEVEL");
+                String link = set.getString("bLINK");
 
                 TillButton b = new TillButton(name, i, type, s.getId(), color, fontColor, id, width, height, x, y, accessLevel, link);
 
@@ -1984,11 +1980,11 @@ public abstract class DBConnect extends DataConnect {
     private List<Till> getTillsFromResultSet(ResultSet set) throws SQLException {
         List<Till> tills = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt("ID");
-            UUID uuid = UUID.fromString(set.getString("UUID"));
-            String name = set.getString("NAME");
-            double d = set.getDouble("UNCASHED");
-            int sc = set.getInt("DEFAULT_SCREEN");
+            int id = set.getInt("tiID");
+            UUID uuid = UUID.fromString(set.getString("tiUUID"));
+            String name = set.getString("tiNAME");
+            double d = set.getDouble("tiUNCASHED");
+            int sc = set.getInt("tiDEFAULT_SCREEN");
             BigDecimal uncashed = new BigDecimal(Double.toString(d));
 
             Till t = new Till(name, uncashed, id, uuid, sc);
@@ -2001,7 +1997,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Till addTill(Till t) throws IOException, SQLException {
-        String query = "INSERT INTO TILLS (NAME, UUID, UNCASHED, DEFAULT_SCREEN) VALUES (" + t.getSQLInsertString() + ")";
+        String query = "INSERT INTO TILLS (tiNAME, tiUUID, tiUNCASHED, tiDEFAULT_SCREEN) VALUES (" + t.getSQLInsertString() + ")";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -2043,7 +2039,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Till getTill(int id) throws IOException, SQLException, JTillException {
-        String query = "SELECT * FROM TILLS WHERE TILLS.ID = " + id;
+        String query = "SELECT * FROM TILLS WHERE tiID = " + id;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Till> tills = new LinkedList<>();
@@ -2065,7 +2061,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Till> getAllTills() throws SQLException {
-        String query = "SELECT * FROM TILLS ORDER BY ID";
+        String query = "SELECT * FROM TILLS ORDER BY tiID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Till> tills = new LinkedList<>();
@@ -2173,7 +2169,7 @@ public abstract class DBConnect extends DataConnect {
     }
 
     private Till getTillByUUID(UUID uuid) throws SQLException, JTillException {
-        String query = "SELECT * FROM TILLS WHERE TILLS.UUID = '" + uuid.toString() + "'";
+        String query = "SELECT * FROM TILLS WHERE tiUUID = '" + uuid.toString() + "'";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Till> tills = new LinkedList<>();
@@ -2211,7 +2207,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public boolean checkUsername(String username) throws IOException, SQLException {
-        String query = "SELECT * FROM STAFF WHERE USERNAME='" + username.toLowerCase() + "'";
+        String query = "SELECT * FROM STAFF WHERE stUSERNAME='" + username.toLowerCase() + "'";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         try {
@@ -2236,7 +2232,7 @@ public abstract class DBConnect extends DataConnect {
         Connection con = getConnection();
         try {
             for (WasteItem i : items) {
-                PreparedStatement stmt = con.prepareStatement("INSERT INTO WASTEITEMS (PRODUCT, QUANTITY, REASON, VALUE, TIMESTAMP) values (" + i.getProduct().getId() + "," + i.getQuantity() + "," + i.getReason().getId() + "," + i.getTotalValue() + "," + i.getTimestamp().getTime() + ")", Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement stmt = con.prepareStatement("INSERT INTO WASTEITEMS (wiproduct, wiquantity, wireason, wivalue, witimestamp) values ('" + i.getProduct().getBarcode() + "'," + i.getQuantity() + "," + i.getReason().getId() + "," + i.getTotalValue() + "," + i.getTimestamp().getTime() + ")", Statement.RETURN_GENERATED_KEYS);
                 stmt.executeUpdate();
                 ResultSet set = stmt.getGeneratedKeys();
                 while (set.next()) {
@@ -2255,58 +2251,58 @@ public abstract class DBConnect extends DataConnect {
     private List<WasteItem> getWasteItemsFromResultSet(ResultSet set) throws SQLException, IOException {
         List<WasteItem> wis = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt(1);
-            int pid = set.getInt(2);
-            int quantity = set.getInt(3);
-            int wreason = set.getInt(4);
-            BigDecimal value = set.getBigDecimal(5);
-            Date date = new Date(set.getLong(6));
+            int id = set.getInt("wiid");
+            int quantity = set.getInt("wiquantity");
+            int wreason = set.getInt("wireason");
+            BigDecimal value = set.getBigDecimal("wivalue");
+            Date date = new Date(set.getLong("witimestamp"));
 
-            String reason = set.getString(8);
-            int level = set.getInt(9);
+            String reason = set.getString("wrreason");
+            int level = set.getInt("wrpriv");
 
-            int code = set.getInt(11);
-            int order_code = set.getInt(12);
-            String name = set.getString(13);
-            boolean open = set.getBoolean(14);
-            BigDecimal price = set.getBigDecimal(15);
-            int stock = set.getInt(16);
-            String comments = set.getString(17);
-            String shortName = set.getString(18);
-            int cId = set.getInt(19);
-            int taxID = set.getInt(20);
-            BigDecimal costPrice = set.getBigDecimal(21);
-            int minStock = set.getInt(22);
-            int maxStock = set.getInt(23);
-            int packSize = set.getInt(24);
-            String barcode = set.getString(25);
-            double scale = set.getDouble(26);
-            String scaleName = set.getString(27);
-            boolean incVat = set.getBoolean(28);
-            int maxCon = set.getInt(29);
-            int minCon = set.getInt(30);
-            BigDecimal limit = set.getBigDecimal(31);
-            boolean trackStock = set.getBoolean(32);
+            String barcode = set.getString("barcode");
+            int order_code = set.getInt("porder_code");
+            String name = set.getString("pname");
+            boolean open = set.getBoolean("open_price");
+            BigDecimal pPrice = set.getBigDecimal("pprice");
+            int stock = set.getInt("pstock");
+            String comments = set.getString("pcomments");
+            String shortName = set.getString("pshort_name");
+            int cId = set.getInt("pcategory");
+            int taxID = set.getInt("ptax");
+            BigDecimal costPrice = set.getBigDecimal("pcost_price");
+            int minStock = set.getInt("pmin_level");
+            int maxStock = set.getInt("pmax_level");
+            int packSize = set.getInt("ppack_size");
+            double scale = set.getDouble("pscale");
+            String scaleName = set.getString("pscale_name");
+            boolean incVat = set.getBoolean("pincvat");
+            int maxCon = set.getInt("pmaxcon");
+            int minCon = set.getInt("pmincon");
+            BigDecimal limit = set.getBigDecimal("plimit");
+            boolean trackStock = set.getBoolean("ptrack_stock");
+            String ingredients = set.getString("pingredients");
+            double cost_percentage = set.getDouble("pcost_percentage");
 
-            String cName = set.getString(34);
-            int department = set.getInt(35);
+            String cName = set.getString("cname");
+            int department = set.getInt("cdepartment");
 
-            String dName = set.getString(37);
+            String dName = set.getString("dname");
 
             Department d = new Department(department, dName);
 
             Category c = new Category(cId, cName, d);
 
-            String tName = set.getString(39);
-            double tValue = set.getDouble(40);
+            String tName = set.getString("tname");
+            double tValue = set.getDouble("tvalue");
 
             Tax t = new Tax(taxID, tName, tValue);
 
             Product p;
             if (!open) {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon, trackStock);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, pPrice, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
             } else {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
             }
 
             WasteReason wr = new WasteReason(wreason, reason, level);
@@ -2317,7 +2313,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public WasteItem addWasteItem(WasteItem wi) throws IOException, SQLException, JTillException {
-        String query = "INSERT INTO WASTEITEMS (PRODUCT, QUANTITY, REASON, VALUE, TIMESTAMP) values (" + wi.getProduct().getId() + "," + wi.getQuantity() + "," + wi.getReason() + "," + wi.getTotalValue() + "," + wi.getTimestamp().getTime() + ")";
+        String query = "INSERT INTO WASTEITEMS (wiPRODUCT, wiQUANTITY, wiREASON, wiVALUE, wiTIMESTAMP) values (" + wi.getProduct().getBarcode() + "," + wi.getQuantity() + "," + wi.getReason() + "," + wi.getTotalValue() + "," + wi.getTimestamp().getTime() + ")";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -2338,7 +2334,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public void removeWasteItem(int id) throws IOException, SQLException, JTillException {
-        String query = "DELETE FROM WASTEITEMS WHERE ID=" + id;
+        String query = "DELETE FROM WASTEITEMS WHERE wiID=" + id;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         int value = 0;
@@ -2380,7 +2376,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<WasteItem> getAllWasteItems() throws IOException, SQLException {
-        String query = "SELECT * FROM WASTEITEMS, WASTEREASONS, PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND WASTEITEMS.REASON = WASTEREASONS.ID AND WASTEITEMS.PRODUCT = PRODUCTS.ID";
+        String query = "SELECT * FROM WASTEITEMS, WASTEREASONS, PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE pcategory = cid AND cdepartment = did AND ptax = tid AND wireason = wrid AND wiproduct = barcode";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<WasteItem> wis = new LinkedList<>();
@@ -2400,9 +2396,9 @@ public abstract class DBConnect extends DataConnect {
     private List<WasteReason> getWasteReasonsFromResultSet(ResultSet set) throws SQLException {
         List<WasteReason> wrs = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt("ID");
-            String reason = set.getString("REASON");
-            int level = set.getInt("PRIVILEDGE_LEVEL");
+            int id = set.getInt("wrid");
+            String reason = set.getString("wrreason");
+            int level = set.getInt("wrpriv");
             wrs.add(new WasteReason(id, reason, level));
         }
         return wrs;
@@ -2410,7 +2406,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public WasteReason addWasteReason(WasteReason wr) throws IOException, SQLException {
-        String query = "INSERT INTO WASTEREASONS (REASON, DELETED) values ('" + wr.getReason() + "', false)";
+        String query = "INSERT INTO WASTEREASONS (wrREASON, wrDELETED) values ('" + wr.getReason() + "', false)";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -2491,7 +2487,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<WasteReason> getUsedWasteReasons() throws IOException, SQLException {
-        String query = "SELECT * FROM WASTEREASONS WHERE DELETED = false ORDER BY ID";
+        String query = "select * from wastereasons where wrdeleted = false order by wrid";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<WasteReason> wrs = new LinkedList<>();
@@ -2510,7 +2506,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public WasteReason updateWasteReason(WasteReason wr) throws IOException, SQLException, JTillException {
-        String query = "UPDATE WASTEREASONS SET REASON='" + wr.getReason() + "', PRIVILEDGE_LEVEL=" + wr.getPriviledgeLevel() + " WHERE ID=" + wr.getId();
+        String query = "UPDATE WASTEREASONS SET wrREASON='" + wr.getReason() + "', wrpriv=" + wr.getPriviledgeLevel() + " WHERE wrID=" + wr.getId();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         int value;
@@ -2530,7 +2526,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Supplier addSupplier(Supplier s) throws IOException, SQLException {
-        String query = "INSERT INTO SUPPLIERS (NAME, ADDRESS, PHONE, ACCOUNT_NUMBER, EMAIL) VALUES ('" + s.getName() + "','" + s.getAddress() + "','" + s.getContactNumber() + "','" + s.getEmail() + "','" + s.getAccountNumber() + "')";
+        String query = "INSERT INTO SUPPLIERS (sNAME, sADDRESS, sPHONE, sACCOUNT_NUMBER, sEMAIL) VALUES ('" + s.getName() + "','" + s.getAddress() + "','" + s.getContactNumber() + "','" + s.getEmail() + "','" + s.getAccountNumber() + "')";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         long stamp = supL.writeLock();
@@ -2608,12 +2604,12 @@ public abstract class DBConnect extends DataConnect {
             ResultSet set = stmt.executeQuery(query);
             List<Supplier> suppliers = new LinkedList<>();
             while (set.next()) {
-                int id = set.getInt("ID");
-                String name = set.getString("NAME");
-                String addrs = set.getString("ADDRESS");
-                String phone = set.getString("PHONE");
-                String email = set.getString("EMAIL");
-                String accountNumber = set.getString("ACCOUNT_NUMBER");
+                int id = set.getInt("sID");
+                String name = set.getString("sNAME");
+                String addrs = set.getString("sADDRESS");
+                String phone = set.getString("sPHONE");
+                String email = set.getString("sEMAIL");
+                String accountNumber = set.getString("sACCOUNT_NUMBER");
                 Supplier sup = new Supplier(id, name, addrs, phone, accountNumber, email);
                 suppliers.add(sup);
             }
@@ -2649,7 +2645,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Department addDepartment(Department d) throws IOException, SQLException {
-        String query = "INSERT INTO DEPARTMENTS (NAME) VALUES('" + d.getName() + "')";
+        String query = "INSERT INTO DEPARTMENTS (dNAME) VALUES('" + d.getName() + "')";
         Connection con = getConnection();
         try {
             PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -2676,8 +2672,8 @@ public abstract class DBConnect extends DataConnect {
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            stmt.executeUpdate("UPDATE CATEGORYS SET DEPARTMENT = 1 WHERE DEPARTMENT = " + id);
-            int value = stmt.executeUpdate("DELETE FROM DEPARTMENTS WHERE ID=" + id);
+            stmt.executeUpdate("UPDATE CATEGORYS SET cdepartment = 1 WHERE cdepartment = " + id);
+            int value = stmt.executeUpdate("DELETE FROM DEPARTMENTS WHERE did=" + id);
             con.commit();
             if (value == 0) {
                 throw new JTillException("Department " + id + " not found");
@@ -2691,14 +2687,14 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Department getDepartment(int id) throws SQLException, JTillException {
-        String query = "SELECT * FROM DEPARTMENTS WHERE ID=" + id;
+        String query = "SELECT * FROM DEPARTMENTS WHERE did=" + id;
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
             ResultSet set = stmt.executeQuery(query);
             List<Department> departments = new LinkedList<>();
             while (set.next()) {
-                String name = set.getString("NAME");
+                String name = set.getString("dname");
                 departments.add(new Department(id, name));
             }
             con.commit();
@@ -2712,15 +2708,15 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Department> getAllDepartments() throws IOException, SQLException {
-        String query = "SELECT * FROM DEPARTMENTS ORDER BY ID";
+        String query = "SELECT * FROM DEPARTMENTS ORDER BY dID";
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
             ResultSet set = stmt.executeQuery(query);
             List<Department> departments = new LinkedList<>();
             while (set.next()) {
-                int id = set.getInt("ID");
-                String name = set.getString("NAME");
+                int id = set.getInt("dID");
+                String name = set.getString("dNAME");
                 departments.add(new Department(id, name));
             }
             con.commit();
@@ -2734,7 +2730,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Department updateDepartment(Department d) throws IOException, SQLException, JTillException {
-        String query = "UPDATE DEPARTMENTS SET NAME='" + d.getName() + "' WHERE ID=" + d.getId();
+        String query = "UPDATE DEPARTMENTS SET dname='" + d.getName() + "' WHERE did=" + d.getId();
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
@@ -2751,7 +2747,7 @@ public abstract class DBConnect extends DataConnect {
     @Override
     public SaleItem addSaleItem(Sale s, SaleItem i) throws IOException, SQLException {
         i.setSale(s.getId());
-        String query = "INSERT INTO SALEITEMS (PRODUCT_ID, TYPE, QUANTITY, PRICE, TAX, SALE_ID, COST) VALUES(" + i.getSQLInsertStatement() + ")";
+        String query = "INSERT INTO SALEITEMS (siPRODUCT, siQUANTITY, siPRICE, siTAX, siSALE, siCOST) VALUES(" + i.getSQLInsertStatement() + ")";
         Connection con = getConnection();
         try {
             PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -2855,7 +2851,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public SaleItem updateSaleItem(SaleItem i) throws IOException, SQLException, JTillException {
-        String query = "UPDATE SALEITEMS SET PRODUCT_ID=" + i.getId() + ",TYPE=" + i.getType() + ",QUANTITY=" + i.getQuantity() + ",PRICE=" + i.getPrice() + ",SALE_ID=" + i.getSale();
+        String query = "UPDATE SALEITEMS SET PRODUCT_ID=" + i.getId() + ",QUANTITY=" + i.getQuantity() + ",PRICE=" + i.getPrice() + ",SALE_ID=" + i.getSale();
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
@@ -2870,15 +2866,15 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public int getTotalSoldOfItem(int id) throws IOException, SQLException {
-        String query = "SELECT QUANTITY, PRODUCT_ID FROM SALEITEMS WHERE PRODUCT_ID=" + id;
+    public int getTotalSoldOfItem(String barcode) throws IOException, SQLException {
+        String query = "SELECT sun(siquantity) FROM SALEITEMS WHERE siproduct='" + barcode + "'";
         int quantity = 0;
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
             ResultSet set = stmt.executeQuery(query);
             while (set.next()) {
-                quantity += set.getInt("QUANTITY");
+                quantity += set.getInt(1);
             }
             con.commit();
             return quantity;
@@ -2890,16 +2886,16 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public BigDecimal getTotalValueSold(int id) throws IOException, SQLException {
-        String query = "SELECT PRICE, PRODUCT_ID, QUANTITY FROM SALEITEMS WHERE PRODUCT_ID=" + id;
+    public BigDecimal getTotalValueSold(String barcode) throws IOException, SQLException {
+        String query = "SELECT siprice, siquantity FROM SALEITEMS WHERE siproduct='" + barcode + "'";
         BigDecimal val = BigDecimal.ZERO;
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
             ResultSet set = stmt.executeQuery(query);
             while (set.next()) {
-                String value = Double.toString(set.getDouble("PRICE"));
-                int quantity = set.getInt("QUANTITY");
+                String value = Double.toString(set.getDouble(1));
+                int quantity = set.getInt(2);
                 val = val.add(new BigDecimal(value).multiply(new BigDecimal(quantity)));
             }
             con.commit();
@@ -2912,15 +2908,15 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public int getTotalWastedOfItem(int id) throws IOException, SQLException {
-        String query = "SELECT PRODUCT, QUANTITY FROM WASTEITEMS WHERE PRODUCT=" + id;
+    public int getTotalWastedOfItem(String barcode) throws IOException, SQLException {
+        String query = "SELECT wiQUANTITY FROM WASTEITEMS WHERE wiPRODUCT='" + barcode + "'";
         int quantity = 0;
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
             ResultSet set = stmt.executeQuery(query);
             while (set.next()) {
-                quantity += set.getInt("QUANTITY");
+                quantity += set.getInt(1);
             }
             con.commit();
             return quantity;
@@ -2932,16 +2928,16 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public BigDecimal getValueWastedOfItem(int id) throws IOException, SQLException {
-        String query = "SELECT WASTEITEMS.ID AS wId, PRODUCT, QUANTITY, PRODUCTS.ID as pId, PRICE FROM PRODUCTS, WASTEITEMS WHERE WASTEITEMS.PRODUCT = PRODUCTS.ID AND WASTEITEMS.PRODUCT=" + id;
+    public BigDecimal getValueWastedOfItem(String barcode) throws IOException, SQLException {
+        String query = "SELECT wiQUANTITY, (COST_PRICE/PACK_SIZE) as INDCOST FROM PRODUCTS, WASTEITEMS WHERE wiPRODUCT = barcode AND wiPRODUCT='" + barcode + "'";
         BigDecimal val = BigDecimal.ZERO;
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
             ResultSet set = stmt.executeQuery(query);
             while (set.next()) {
-                double dval = set.getDouble("PRICE");
-                dval *= set.getInt("QUANTITY");
+                double dval = set.getDouble(2);
+                dval *= set.getInt("1");
                 String value = Double.toString(dval);
                 val = val.add(new BigDecimal(value));
             }
@@ -2956,7 +2952,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public void addReceivedItem(ReceivedItem i, int report) throws IOException, SQLException {
-        String query = "INSERT INTO RECEIVEDITEMS (PRODUCT, QUANTITY, PRICE, RECEIVED_REPORT) VALUES (" + i.getProduct().getId() + "," + i.getQuantity() + "," + i.getPrice().doubleValue() + "," + report + ")";
+        String query = "INSERT INTO RECEIVEDITEMS (riPRODUCT, riQUANTITY, riPRICE, riRECEIVED_REPORT) VALUES ('" + i.getProduct().getBarcode() + "'," + i.getQuantity() + "," + i.getPrice().doubleValue() + "," + report + ")";
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
@@ -2970,8 +2966,8 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public BigDecimal getValueSpentOnItem(int id) throws IOException, SQLException {
-        String query = "SELECT * FROM RECEIVEDITEMS WHERE PRODUCT=" + id;
+    public BigDecimal getValueSpentOnItem(String barcode) throws IOException, SQLException {
+        String query = "SELECT price FROM RECEIVEDITEMS WHERE PRODUCT='" + barcode + "'";
         BigDecimal value = BigDecimal.ZERO;
         Connection con = getConnection();
         try {
@@ -3240,7 +3236,7 @@ public abstract class DBConnect extends DataConnect {
             List<Trigger> triggers = new LinkedList<>();
             while (set.next()) {
                 int tId = set.getInt("ID");
-                int product = set.getInt("PRODUCT");
+                String product = set.getString("PRODUCT");
                 int req = set.getInt("QUANTITYREQUIRED");
                 triggers.add(new Trigger(tId, id, product, req));
             }
@@ -3287,7 +3283,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Sale> getUncachedTillSales(int id) throws IOException, JTillException, SQLException {
-        String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID AND TERMINAL=" + id + " AND CASHED=FALSE";
+        String query = "SELECT * FROM SALES, TILLS, STAFF WHERE stID = sastaff AND saterminal = tiid AND tiid=" + id + " AND sacashed=FALSE";
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
@@ -3353,7 +3349,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Sale> getAllTerminalSales(int terminal, boolean uncashedOnly) throws IOException, SQLException {
-        String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.TERMINAL = " + terminal + (uncashedOnly ? " AND s.CASHED = FALSE" : "") + " ORDER BY SALES.ID";
+        String query = "SELECT * FROM SALES, TILLS, STAFF WHERE stID = sastaff AND saterminal = tiid AND tiid = " + terminal + (uncashedOnly ? " AND sacashed = FALSE" : "") + " ORDER BY said";
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
@@ -3481,7 +3477,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public void addReceivedReport(ReceivedReport rep) throws SQLException, IOException {
-        String query = "INSERT INTO RECEIVED_REPORTS (INVOICE_NO, SUPPLIER_ID, PAID) VALUES ('" + rep.getInvoiceId() + "'," + rep.getSupplier().getId() + "," + rep.isPaid() + ")";
+        String query = "INSERT INTO RECEIVED_REPORTS (rrINVOICE_NO, rrSUPPLIER_ID, rrPAID) VALUES ('" + rep.getInvoiceId() + "'," + rep.getSupplier().getId() + "," + rep.isPaid() + ")";
         Connection con = getConnection();
         try (PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stmt.executeUpdate();
@@ -3503,7 +3499,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<ReceivedReport> getAllReceivedReports() throws IOException, SQLException {
-        String query = "SELECT * FROM RECEIVED_REPORTS, SUPPLIERS WHERE RECEIVED_REPORTS.SUPPLIER_ID = SUPPLIERS.ID ORDER BY RECEIVED_REPORTS.ID";
+        String query = "SELECT * FROM RECEIVED_REPORTS, SUPPLIERS WHERE rrSUPPLIER_ID = sid ORDER BY rrID";
         List<ReceivedReport> reports;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
@@ -3511,16 +3507,16 @@ public abstract class DBConnect extends DataConnect {
             ResultSet set = stmt.executeQuery(query);
             reports = new LinkedList<>();
             while (set.next()) {
-                int id = set.getInt(1);
-                String inv = set.getString(2);
-                int supp = set.getInt(3);
-                boolean paid = set.getBoolean(4);
+                int id = set.getInt("rrid");
+                String inv = set.getString("rrinvoice_no");
+                int supp = set.getInt("rrsupplier_id");
+                boolean paid = set.getBoolean("rrpaid");
 
-                String name = set.getString(6);
-                String addrs = set.getString(7);
-                String phone = set.getString(8);
-                String accountNumber = set.getString(9);
-                String email = set.getString(10);
+                String name = set.getString("sname");
+                String addrs = set.getString("saddress");
+                String phone = set.getString("sphone");
+                String accountNumber = set.getString("sACCOUNT_NUMBER");
+                String email = set.getString("semail");
                 Supplier sup = new Supplier(supp, name, addrs, phone, accountNumber, email);
 
                 ReceivedReport rr = new ReceivedReport(id, inv, sup, paid);
@@ -3541,7 +3537,7 @@ public abstract class DBConnect extends DataConnect {
     }
 
     private List<ReceivedItem> getItemsInReport(int id) throws SQLException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, RECEIVEDITEMS WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND RECEIVEDITEMS.PRODUCT = PRODUCTS.ID AND RECEIVED_REPORT=" + id;
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, RECEIVEDITEMS WHERE pcategory = cid AND cdepartment = did AND ptax = tid AND riproduct = barcode AND riRECEIVED_REPORT=" + id;
 
         List<ReceivedItem> items;
         Connection con = getConnection();
@@ -3550,53 +3546,54 @@ public abstract class DBConnect extends DataConnect {
             ResultSet set = stmt.executeQuery(query);
             items = new LinkedList<>();
             while (set.next()) {
-                int code = set.getInt(1);
-                int order_code = set.getInt(2);
-                String name = set.getString(3);
-                boolean open = set.getBoolean(4);
-                BigDecimal price = set.getBigDecimal(5);
-                int stock = set.getInt(6);
-                String comments = set.getString(7);
-                String shortName = set.getString(8);
-                int cId = set.getInt(9);
-                int taxID = set.getInt(10);
-                BigDecimal costPrice = set.getBigDecimal(11);
-                int minStock = set.getInt(12);
-                int maxStock = set.getInt(13);
-                int packSize = set.getInt(14);
-                String barcode = set.getString(15);
-                double scale = set.getDouble(16);
-                String scaleName = set.getString(17);
-                boolean incVat = set.getBoolean(18);
-                int maxCon = set.getInt(19);
-                int minCon = set.getInt(20);
-                BigDecimal limit = set.getBigDecimal(21);
-                boolean trackStock = set.getBoolean(22);
+                String barcode = set.getString("barcode");
+                int order_code = set.getInt("porder_code");
+                String name = set.getString("pname");
+                boolean open = set.getBoolean("open_price");
+                BigDecimal price = set.getBigDecimal("pprice");
+                int stock = set.getInt("pstock");
+                String comments = set.getString("pcomments");
+                String shortName = set.getString("pshort_name");
+                int cId = set.getInt("pcategory");
+                int taxID = set.getInt("ptax");
+                BigDecimal costPrice = set.getBigDecimal("pcost_price");
+                int minStock = set.getInt("pmin_level");
+                int maxStock = set.getInt("pmax_level");
+                int packSize = set.getInt("ppack_size");
+                double scale = set.getDouble("pscale");
+                String scaleName = set.getString("pscale_name");
+                boolean incVat = set.getBoolean("pincvat");
+                int maxCon = set.getInt("pmaxcon");
+                int minCon = set.getInt("pmincon");
+                BigDecimal limit = set.getBigDecimal("plimit");
+                boolean trackStock = set.getBoolean("ptrack_stock");
+                String ingredients = set.getString("pingredients");
+                double cost_percentage = set.getDouble("pcost_percentage");
 
-                String cName = set.getString(24);
-                int department = set.getInt(25);
+                String cName = set.getString("cname");
+                int department = set.getInt("cdepartment");
 
-                String dName = set.getString(27);
+                String dName = set.getString("dname");
 
                 Department d = new Department(department, dName);
 
                 Category c = new Category(cId, cName, d);
 
-                String tName = set.getString(29);
-                double value = set.getDouble(30);
+                String tName = set.getString("tname");
+                double value = set.getDouble("tvalue");
 
                 Tax t = new Tax(taxID, tName, value);
 
                 Product p;
                 if (!open) {
-                    p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon, trackStock);
+                    p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
                 } else {
-                    p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
+                    p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
                 }
 
-                int iid = set.getInt(35);
-                int quantity = set.getInt(37);
-                BigDecimal riPrice = set.getBigDecimal(38);
+                int iid = set.getInt("riid");
+                int quantity = set.getInt("riquantity");
+                BigDecimal riPrice = set.getBigDecimal("riprice");
 
                 ReceivedItem ri = new ReceivedItem(iid, p, quantity, riPrice);
 
@@ -3668,7 +3665,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Screen> checkInheritance(Screen s) throws IOException, SQLException, JTillException {
-        String query = "SELECT * FROM SCREENS WHERE INHERITS = " + s.getId();
+        String query = "SELECT * FROM SCREENS WHERE scinherits = " + s.getId();
         Connection con = getConnection();
         Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         try {
@@ -3704,7 +3701,7 @@ public abstract class DBConnect extends DataConnect {
     @Override
     public TillReport zReport(Till terminal, BigDecimal declared, Staff staff) throws IOException, SQLException, JTillException {
         final TillReport report = xReport(terminal, declared, staff);
-        final String query = "UPDATE SALES SET CASHED=TRUE WHERE TERMINAL=" + terminal.getId();
+        final String query = "UPDATE SALES SET sacashed=TRUE WHERE saterminal=" + terminal.getId();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         try {
@@ -3721,7 +3718,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public TillReport xReport(Till terminal, BigDecimal declared, Staff staff) throws IOException, SQLException, JTillException {
-        final String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.CASHED = FALSE AND s.TERMINAL = " + terminal.getId();
+        final String query = "SELECT * FROM SALES, TILLS, STAFF WHERE stid = sastaff AND saterminal = tiid AND sacashed = FALSE AND tiid = " + terminal.getId();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Sale> sales = new LinkedList<>();
@@ -3798,9 +3795,9 @@ public abstract class DBConnect extends DataConnect {
     public List<TillReport> getDeclarationReports(int terminal) throws SQLException {
         String query;
         if (terminal == -1) {
-            query = "SELECT * FROM DECLARATIONS d, STAFF s, TILLS t WHERE d.TERMINAL = t.ID AND d.STAFF = s.ID";
+            query = "SELECT * FROM DECLARATIONS, STAFF, TILLS WHERE TERMINAL = tiid AND STAFF = stID";
         } else {
-            query = "SELECT * FROM DECLARATIONS d, STAFF s, TILLS t WHERE d.TERMINAL = t.ID AND d.STAFF = s.ID AND d.TERMINAL = " + terminal;
+            query = "SELECT * FROM DECLARATIONS, STAFF, TILLS WHERE TERMINAL = tiID AND STAFF = stID AND tiid = " + terminal;
         }
         final Connection con = getConnection();
         try {
@@ -3808,30 +3805,30 @@ public abstract class DBConnect extends DataConnect {
             ResultSet set = stmt.executeQuery(query);
             List<TillReport> reports = new LinkedList<>();
             while (set.next()) {
-                int tId = set.getInt(16);
-                UUID uuid = UUID.fromString(set.getString(17));
-                String name = set.getString(18);
-                BigDecimal uncashed = set.getBigDecimal(19);
-                int defaultScreen = set.getInt(20);
+                int tId = set.getInt("tiid");
+                UUID uuid = UUID.fromString(set.getString("tiuuid"));
+                String name = set.getString("tiname");
+                BigDecimal uncashed = set.getBigDecimal("tiuncashed");
+                int defaultScreen = set.getInt("tiDEFAULT_SCREEN");
 
                 Till till = new Till(name, uncashed, tId, uuid, defaultScreen);
 
-                int sId = set.getInt(9);
-                String sName = set.getString(10);
-                int pos = set.getInt(11);
-                String un = set.getString(12);
-                String pw = set.getString(13);
-                boolean enabled = set.getBoolean(14);
-                double wage = set.getDouble(15);
+                int sId = set.getInt("stid");
+                String sName = set.getString("stname");
+                int pos = set.getInt("stposition");
+                String un = set.getString("stusername");
+                String pw = set.getString("stpassword");
+                boolean enabled = set.getBoolean("stenabled");
+                double wage = set.getDouble("stwage");
 
                 Staff staff = new Staff(sId, sName, pos, un, pw, wage, enabled);
 
-                int rid = set.getInt(1);
-                BigDecimal declared = set.getBigDecimal(3);
-                BigDecimal expected = set.getBigDecimal(4);
-                int transactions = set.getInt(5);
-                BigDecimal tax = set.getBigDecimal(6);
-                long time = set.getLong(8);
+                int rid = set.getInt("id");
+                BigDecimal declared = set.getBigDecimal("declared");
+                BigDecimal expected = set.getBigDecimal("expected");
+                int transactions = set.getInt("transactions");
+                BigDecimal tax = set.getBigDecimal("tax");
+                long time = set.getLong("time");
 
                 TillReport report = new TillReport(rid, till, declared, expected, transactions, tax, staff, time);
                 reports.add(report);
@@ -3846,7 +3843,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public boolean isTillNameUsed(String name) throws IOException, SQLException {
-        String query = "SELECT NAME FROM TILLS WHERE NAME='" + name + "'";
+        String query = "SELECT tiNAME FROM TILLS WHERE tiNAME='" + name + "'";
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -3872,14 +3869,14 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public int getTotalReceivedOfItem(int id) throws IOException, SQLException {
+    public int getTotalReceivedOfItem(String barcode) throws IOException, SQLException {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            ResultSet set = stmt.executeQuery("SELECT PRODUCT, QUANTITY FROM RECEIVEDITEMS WHERE PRODUCT =" + id);
+            ResultSet set = stmt.executeQuery("SELECT sum(quantity) FROM RECEIVEDITEMS WHERE PRODUCT='" + barcode + "'");
             int quantity = 0;
             while (set.next()) {
-                quantity += set.getInt(2);
+                quantity += set.getInt(1);
             }
             con.commit();
             return quantity;
@@ -3898,7 +3895,7 @@ public abstract class DBConnect extends DataConnect {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            ResultSet set = stmt.executeQuery("SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID AND TIMESTAMP >= " + s + " AND TIMESTAMP <= " + e + (t != -1 ? "AND TERMINAL = " + t : ""));
+            ResultSet set = stmt.executeQuery("select * from sales, tills, staff where sastaff = stid and saterminal = tiid and saTIMESTAMP >= " + s + " AND saTIMESTAMP <= " + e + (t != -1 ? "AND tiid = " + t : ""));
             sales = getSalesFromResultSet(set);
             con.commit();
         } catch (SQLException ex) {
@@ -3919,7 +3916,7 @@ public abstract class DBConnect extends DataConnect {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            ResultSet set = stmt.executeQuery("SELECT SALEITEMS.PRICE, SALES.TIMESTAMP FROM SALEITEMS, SALES WHERE SALEITEMS.SALE_ID = SALES.ID AND SALES.TIMESTAMP >= " + s + " AND SALES.TIMESTAMP <= " + e + " AND SALEITEMS.PRICE < 0");
+            ResultSet set = stmt.executeQuery("select siprice from saleitems, sales where sisale = said and satimestamp >= " + s + " and satimestamp <= " + e + " and saprice < 0");
             BigDecimal total = BigDecimal.ZERO;
             while (set.next()) {
                 total = total.add(set.getBigDecimal(1));
@@ -3940,7 +3937,7 @@ public abstract class DBConnect extends DataConnect {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            ResultSet set = stmt.executeQuery("SELECT TIMESTAMP, VALUE FROM WASTEITEMS WHERE TIMESTAMP >= " + s + " AND TIMESTAMP <= " + e);
+            ResultSet set = stmt.executeQuery("SELECT wiVALUE FROM WASTEITEMS WHERE wiTIMESTAMP >= " + s + " AND wiTIMESTAMP <= " + e);
             BigDecimal total = BigDecimal.ZERO;
             while (set.next()) {
                 total = total.add(set.getBigDecimal(2));
@@ -3960,10 +3957,10 @@ public abstract class DBConnect extends DataConnect {
         try {
             Statement stmt = con.createStatement();
             if (zeroRest) {
-                stmt.executeUpdate("UPDATE PRODUCTS SET STOCK = 0");
+                stmt.executeUpdate("UPDATE PRODUCTS SET pSTOCK = 0");
             }
             for (Product p : products) {
-                stmt.executeUpdate("UPDATE PRODUCTS SET STOCK=" + p.getStock() + " WHERE ID=" + p.getId());
+                stmt.executeUpdate("UPDATE PRODUCTS SET pSTOCK=" + p.getStock() + " WHERE barcode=" + p.getBarcode());
             }
             con.commit();
         } catch (SQLException ex) {
@@ -3978,7 +3975,7 @@ public abstract class DBConnect extends DataConnect {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            ResultSet set = stmt.executeQuery("SELECT * FROM CATEGORYS, DEPARTMENTS WHERE CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND DEPARTMENTS.ID = " + department);
+            ResultSet set = stmt.executeQuery("select * from categorys, departments where cdepartment = did and did = " + department);
             List<Category> c = getCategorysFromResultSet(set);
             con.commit();
             return c;
@@ -4007,7 +4004,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Condiment addCondiment(Condiment c) throws IOException, SQLException {
-        String query = "INSERT INTO CONDIMENTS (PRODUCT, PRODUCT_CON) VALUES (" + c.getProduct() + "," + c.getProduct_con().getId() + ")";
+        String query = "INSERT INTO CONDIMENTS (PRODUCT, PRODUCT_CON) VALUES ('" + c.getProduct() + "','" + c.getProduct_con().getBarcode() + "')";
         final Connection con = getConnection();
         try (PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stmt.executeUpdate();
@@ -4026,58 +4023,58 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public List<Condiment> getProductsCondiments(int product) throws IOException, SQLException {
+    public List<Condiment> getProductsCondiments(String barcode) throws IOException, SQLException {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            ResultSet set = stmt.executeQuery("SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, CONDIMENTS WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND PRODUCTS.ID = CONDIMENTS.PRODUCT_CON AND CONDIMENTS.PRODUCT = " + product);
+            ResultSet set = stmt.executeQuery("select * from products, categorys, departments, tax, condiments where pcategory = cid and cdepartment = did and ptax = tid and barcode = product_con AND condiments.product = '" + barcode + "'");
             List<Condiment> condiments = new LinkedList<>();
             while (set.next()) {
-                int code = set.getInt(1);
-                int order_code = set.getInt(2);
-                String name = set.getString(3);
-                boolean open = set.getBoolean(4);
-                BigDecimal price = set.getBigDecimal(5);
-                int stock = set.getInt(6);
-                String comments = set.getString(7);
-                String shortName = set.getString(8);
-                int cId = set.getInt(9);
-                int taxID = set.getInt(10);
-                BigDecimal costPrice = set.getBigDecimal(11);
-                int minStock = set.getInt(12);
-                int maxStock = set.getInt(13);
-                int packSize = set.getInt(14);
-                String barcode = set.getString(15);
-                double scale = set.getDouble(16);
-                String scaleName = set.getString(17);
-                boolean incVat = set.getBoolean(18);
-                int maxCon = set.getInt(19);
-                int minCon = set.getInt(20);
-                BigDecimal limit = set.getBigDecimal(21);
-                boolean trackStock = set.getBoolean(22);
+                int order_code = set.getInt("porder_code");
+                String name = set.getString("pname");
+                boolean open = set.getBoolean("open_price");
+                BigDecimal price = set.getBigDecimal("pprice");
+                int stock = set.getInt("pstock");
+                String comments = set.getString("pcomments");
+                String shortName = set.getString("pshort_name");
+                int cId = set.getInt("pcategory");
+                int taxID = set.getInt("ptax");
+                BigDecimal costPrice = set.getBigDecimal("pcost_price");
+                int minStock = set.getInt("pmin_level");
+                int maxStock = set.getInt("pmax_level");
+                int packSize = set.getInt("ppack_size");
+                double scale = set.getDouble("pscale");
+                String scaleName = set.getString("pscale_name");
+                boolean incVat = set.getBoolean("pincvat");
+                int maxCon = set.getInt("pmaxcon");
+                int minCon = set.getInt("pmincon");
+                BigDecimal limit = set.getBigDecimal("plimit");
+                boolean trackStock = set.getBoolean("ptrack_stock");
+                String ingredients = set.getString("pingredients");
+                double cost_percentage = set.getDouble("pcost_percentage");
 
-                String cName = set.getString(24);
-                int department = set.getInt(25);
+                String cName = set.getString("cname");
+                int department = set.getInt("cdepartment");
 
-                String dName = set.getString(27);
+                String dName = set.getString("dname");
 
                 Department d = new Department(department, dName);
 
                 Category c = new Category(cId, cName, d);
 
-                String tName = set.getString(29);
-                double value = set.getDouble(30);
+                String tName = set.getString("tname");
+                double value = set.getDouble("tvalue");
 
                 Tax t = new Tax(taxID, tName, value);
 
-                int conId = set.getInt(31);
-                int p_conn = set.getInt(32);
+                int conId = set.getInt("product");
+                String p_conn = set.getString("product_con");
 
                 Product p;
                 if (!open) {
-                    p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon, trackStock);
+                    p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
                 } else {
-                    p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
+                    p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
                 }
                 condiments.add(new Condiment(conId, p_conn, p));
             }
@@ -4095,7 +4092,7 @@ public abstract class DBConnect extends DataConnect {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            int value = stmt.executeUpdate("UPDATE CONDIMENTS SET PRODUCT=" + c.getProduct() + ", PRODUCT_CON=" + c.getProduct_con().getId() + " WHERE ID=" + c.getId());
+            int value = stmt.executeUpdate("UPDATE CONDIMENTS SET PRODUCT=" + c.getProduct() + ", PRODUCT_CON='" + c.getProduct_con().getBarcode() + "' WHERE ID=" + c.getId());
             if (value == 0) {
                 throw new JTillException("Condiment not found");
             }
@@ -4133,7 +4130,7 @@ public abstract class DBConnect extends DataConnect {
             Main:
             for (SaleItem item : items) {
                 for (SaleItem i : is) {
-                    if (item.getItem().equals(i.getItem())) {
+                    if (item.getProduct().equals(i.getProduct())) {
                         i.increaseQuantity(item.getQuantity());
                         continue Main;
                     }
@@ -4161,7 +4158,7 @@ public abstract class DBConnect extends DataConnect {
                 o.setId(id);
             }
             for (OrderItem i : o.getItems()) {
-                String query2 = "INSERT INTO ORDERITEMS (PRODUCT, ORDER_ID, QUANTITY, PRICE) VALUES (" + i.getProduct().getId() + "," + o.getId() + "," + i.getQuantity() + "," + i.getPrice().doubleValue() + ")";
+                String query2 = "INSERT INTO ORDERITEMS (PRODUCT, ORDER_ID, QUANTITY, PRICE) VALUES ('" + i.getProduct().getBarcode() + "'," + o.getId() + "," + i.getQuantity() + "," + i.getPrice().doubleValue() + ")";
                 try (PreparedStatement pstmt2 = con.prepareStatement(query2, Statement.RETURN_GENERATED_KEYS)) {
                     pstmt2.executeUpdate();
                     ResultSet set2 = pstmt2.getGeneratedKeys();
@@ -4227,52 +4224,53 @@ public abstract class DBConnect extends DataConnect {
                 ResultSet set2 = stmt.executeQuery("SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, ORDERITEMS WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND ORDERITEMS.PRODUCT = PRODUCTS.ID AND ORDERITEMS.ORDER_ID = " + o.getId());
                 List<OrderItem> items = new LinkedList<>();
                 while (set2.next()) {
-                    int code = set2.getInt(1);
-                    int order_code = set2.getInt(2);
-                    String name = set2.getString(3);
-                    boolean open = set2.getBoolean(4);
-                    BigDecimal price = set2.getBigDecimal(5);
-                    int stock = set2.getInt(6);
-                    String comments = set2.getString(7);
-                    String shortName = set2.getString(8);
-                    int cId = set2.getInt(9);
-                    int taxID = set2.getInt(10);
-                    BigDecimal costPrice = set2.getBigDecimal(11);
-                    int minStock = set2.getInt(12);
-                    int maxStock = set2.getInt(13);
-                    int packSize = set2.getInt(14);
-                    String barcode = set2.getString(15);
-                    double scale = set2.getDouble(16);
-                    String scaleName = set2.getString(17);
-                    boolean incVat = set2.getBoolean(18);
-                    int maxCon = set2.getInt(19);
-                    int minCon = set2.getInt(20);
-                    BigDecimal limit = set2.getBigDecimal(21);
-                    boolean trackStock = set2.getBoolean(22);
+                    String barcode = set.getString("barcode");
+                    int order_code = set.getInt("porder_code");
+                    String name = set.getString("pname");
+                    boolean open = set.getBoolean("open_price");
+                    BigDecimal price = set.getBigDecimal("pprice");
+                    int stock = set.getInt("pstock");
+                    String comments = set.getString("pcomments");
+                    String shortName = set.getString("pshort_name");
+                    int cId = set.getInt("pcategory");
+                    int taxID = set.getInt("ptax");
+                    BigDecimal costPrice = set.getBigDecimal("pcost_price");
+                    int minStock = set.getInt("pmin_level");
+                    int maxStock = set.getInt("pmax_level");
+                    int packSize = set.getInt("ppack_size");
+                    double scale = set.getDouble("pscale");
+                    String scaleName = set.getString("pscale_name");
+                    boolean incVat = set.getBoolean("pincvat");
+                    int maxCon = set.getInt("pmaxcon");
+                    int minCon = set.getInt("pmincon");
+                    BigDecimal limit = set.getBigDecimal("plimit");
+                    boolean trackStock = set.getBoolean("ptrack_stock");
+                    String ingredients = set.getString("ingredients");
+                    double cost_percentage = set.getDouble("pcost_percentage");
 
-                    String cName = set2.getString(24);
-                    int department = set2.getInt(25);
+                    String cName = set2.getString("cname");
+                    int department = set2.getInt("cdepartment");
 
-                    String dName = set2.getString(27);
+                    String dName = set2.getString("dname");
 
                     Department d = new Department(department, dName);
 
                     Category c = new Category(cId, cName, d);
 
-                    String tName = set2.getString(29);
-                    double value = set2.getDouble(30);
+                    String tName = set2.getString("tname");
+                    double value = set2.getDouble("tvalue");
 
                     Tax t = new Tax(taxID, tName, value);
 
                     Product p;
                     if (!open) {
-                        p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, code, maxCon, minCon, trackStock);
+                        p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
                     } else {
-                        p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, costPrice, limit, code);
+                        p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
                     }
-                    int o_id = set2.getInt(31);
-                    int quantity = set2.getInt(35);
-                    BigDecimal o_price = set2.getBigDecimal(36);
+                    int o_id = set2.getInt("oiid");
+                    int quantity = set2.getInt("oiquantity");
+                    BigDecimal o_price = set2.getBigDecimal("oiprice");
 
                     OrderItem i = new OrderItem(o_id, p, quantity, o_price);
                     items.add(i);
@@ -4532,7 +4530,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public RefundReason addRefundReason(RefundReason r) throws IOException, SQLException {
-        String query = "INSERT INTO REFUND_REASONS (REASON, LEVEL, DELETED) values ('" + r.getReason() + "'," + r.getPriviledgeLevel() + ", false)";
+        String query = "INSERT INTO REFUND_REASONS (refREASON, refLEVEL, refDELETED) values ('" + r.getReason() + "'," + r.getPriviledgeLevel() + ", false)";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
@@ -4553,7 +4551,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public void removeRefundReason(RefundReason r) throws IOException, SQLException, JTillException {
-        String query = "UPDATE REFUND_REASONS SET DELETED = true WHERE ID=" + r.getId();
+        String query = "UPDATE REFUND_REASONS SET refDELETED = true WHERE refID=" + r.getId();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         int value;
@@ -4572,7 +4570,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public void updateRefundReason(RefundReason r) throws IOException, SQLException, JTillException {
-        String query = "UPDATE REFUND_REASONS SET REASON='" + r.getReason() + "', LEVEL=" + r.getPriviledgeLevel() + " WHERE ID=" + r.getId();
+        String query = "UPDATE REFUND_REASONS SET refREASON='" + r.getReason() + "', refLEVEL=" + r.getPriviledgeLevel() + " WHERE refID=" + r.getId();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         int value;
@@ -4591,7 +4589,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public RefundReason getRefundReason(int id) throws IOException, SQLException, JTillException {
-        String query = "SELECT * FROM WASTEREASONS WHERE ID=" + id;
+        String query = "SELECT * FROM WASTEREASONS WHERE wrID=" + id;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<RefundReason> rrs = new LinkedList<>();
@@ -4614,9 +4612,9 @@ public abstract class DBConnect extends DataConnect {
     private List<RefundReason> getRefundReasonsFromResultSet(ResultSet set) throws SQLException {
         List<RefundReason> rrs = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt("ID");
-            String reason = set.getString("REASON");
-            int level = set.getInt("LEVEL");
+            int id = set.getInt("refID");
+            String reason = set.getString("refREASON");
+            int level = set.getInt("refLEVEL");
             rrs.add(new RefundReason(id, reason, level));
         }
         return rrs;
@@ -4624,7 +4622,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<RefundReason> getUsedRefundReasons() throws IOException, SQLException {
-        String query = "SELECT * FROM REFUND_REASONS WHERE DELETED = false ORDER BY ID";
+        String query = "SELECT * FROM REFUND_REASONS WHERE refDELETED = false ORDER BY refID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<RefundReason> rrs = new LinkedList<>();
@@ -4655,7 +4653,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Screen> getScreensWithProduct(Product p) throws SQLException {
-        String query = "SELECT * FROM SCREENS, BUTTONS WHERE SCREENS.ID = BUTTONS.SCREEN_ID AND BUTTONS.PRODUCT = " + p.getId();
+        String query = "SELECT * FROM SCREENS, BUTTONS WHERE SCREENS.ID = BUTTONS.bSCREEN_ID AND BUTTONS.bproduct = '" + p.getBarcode() + "'";
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();

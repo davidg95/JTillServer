@@ -86,7 +86,7 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
         txtMax.setText(product.getMaxCon() + "");
         txtMin.setText(product.getMinCon() + "");
         try {
-            List<Condiment> contents = dc.getProductsCondiments(product.getId());
+            List<Condiment> contents = dc.getProductsCondiments(product.getBarcode());
             model = new MyModel(contents);
             table.setModel(model);
         } catch (IOException | SQLException ex) {
@@ -393,7 +393,7 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
             return;
         }
         try {
-            Condiment c = new Condiment(this.product.getId(), p);
+            Condiment c = new Condiment(this.product.getBarcode(), p);
             model.addCondiment(c);
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Condiemnts", JOptionPane.ERROR_MESSAGE);

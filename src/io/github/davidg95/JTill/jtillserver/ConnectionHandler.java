@@ -65,17 +65,17 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("REMOVEPRODUCT")
-    public void removeProduct(@JConnParameter("CODE") int code) throws ProductNotFoundException, IOException, SQLException {
+    public void removeProduct(@JConnParameter("CODE") String code) throws ProductNotFoundException, IOException, SQLException {
         dc.removeProduct(code);
     }
 
     @JConnMethod("PURCHASE")
-    public int purchase(@JConnParameter("PRODUCT") int p, @JConnParameter("AMOUNT") int amount) throws IOException, ProductNotFoundException, OutOfStockException, SQLException {
+    public int purchase(@JConnParameter("PRODUCT") String p, @JConnParameter("AMOUNT") int amount) throws IOException, ProductNotFoundException, OutOfStockException, SQLException {
         return dc.purchaseProduct(p, amount);
     }
 
     @JConnMethod("GETPRODUCT")
-    public Product getProduct(@JConnParameter("CODE") int code) throws IOException, ProductNotFoundException, SQLException {
+    public Product getProduct(@JConnParameter("CODE") String code) throws IOException, ProductNotFoundException, SQLException {
         return dc.getProduct(code);
     }
 
@@ -612,22 +612,22 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("GETTOTALSOLDITEM")
-    public int getTotalSoldItem(@JConnParameter("ID") int id) throws IOException, SQLException, ProductNotFoundException {
+    public int getTotalSoldItem(@JConnParameter("ID") String id) throws IOException, SQLException, ProductNotFoundException {
         return dc.getTotalSoldOfItem(id);
     }
 
     @JConnMethod("GETVALUESOLDITEM")
-    public BigDecimal getValueSoldItem(@JConnParameter("ID") int id) throws IOException, SQLException, ProductNotFoundException {
+    public BigDecimal getValueSoldItem(@JConnParameter("ID") String id) throws IOException, SQLException, ProductNotFoundException {
         return dc.getTotalValueSold(id);
     }
 
     @JConnMethod("GETTOTALWASTEDITEM")
-    public int getTotalWastedItem(@JConnParameter("ID") int id) throws IOException, SQLException, ProductNotFoundException {
+    public int getTotalWastedItem(@JConnParameter("ID") String id) throws IOException, SQLException, ProductNotFoundException {
         return dc.getTotalWastedOfItem(id);
     }
 
     @JConnMethod("GETVALUEWASTEDITEM")
-    public BigDecimal getValueWastedItem(@JConnParameter("ID") int id) throws IOException, SQLException, ProductNotFoundException {
+    public BigDecimal getValueWastedItem(@JConnParameter("ID") String id) throws IOException, SQLException, ProductNotFoundException {
         return dc.getValueWastedOfItem(id);
     }
 
@@ -637,7 +637,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("GETSPENTONITEM")
-    public BigDecimal getValueSpentOnItem(@JConnParameter("ID") int id) throws IOException, SQLException, ProductNotFoundException {
+    public BigDecimal getValueSpentOnItem(@JConnParameter("ID") String id) throws IOException, SQLException, ProductNotFoundException {
         return dc.getValueSpentOnItem(id);
     }
 
@@ -838,7 +838,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("TOTALRECEIVED")
-    public int getTotalReceivedOfItem(@JConnParameter("ID") int id) throws IOException, SQLException {
+    public int getTotalReceivedOfItem(@JConnParameter("ID") String id) throws IOException, SQLException {
         return dc.getTotalReceivedOfItem(id);
     }
 
@@ -878,7 +878,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("GETPRODUCTSCONDIMENTS")
-    public List<Condiment> getProductsCondiments(@JConnParameter("ID") int id) throws IOException, SQLException {
+    public List<Condiment> getProductsCondiments(@JConnParameter("ID") String id) throws IOException, SQLException {
         return dc.getProductsCondiments(id);
     }
 

@@ -646,7 +646,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                         int x = 1;
                         int y = 1;
                         for (int i = 0; i < (fw * fh); i++) {
-                            TillButton bu = dc.addButton(new TillButton("[SPACE]", 0, TillButton.SPACE, s.getId(), "000000", "ffffff", 1, 1, x, y, 1, ""));
+                            TillButton bu = dc.addButton(new TillButton("[SPACE]", "0", TillButton.SPACE, s.getId(), "000000", "ffffff", 1, 1, x, y, 1, ""));
                             x++;
                             if (x == (fw + 1)) {
                                 x = 1;

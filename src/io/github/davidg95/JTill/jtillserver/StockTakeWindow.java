@@ -116,7 +116,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     public void updateTable() {
         model.setRowCount(0);
         for (Product p : currentTableContents) {
-            Object[] row = new Object[]{p.getId(), p.getLongName(), p.getBarcode(), p.getStock()};
+            Object[] row = new Object[]{p.getBarcode(), p.getLongName(), p.getBarcode(), p.getStock()};
             model.addRow(row);
         }
         if (currentTableContents.isEmpty()) {
@@ -129,7 +129,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     public void setTable(List<Product> list) {
         model.setRowCount(0);
         for (Product p : list) {
-            Object[] row = new Object[]{p.getId(), p.getLongName(), p.getBarcode(), p.getStock()};
+            Object[] row = new Object[]{p.getBarcode(), p.getLongName(), p.getBarcode(), p.getStock()};
             model.addRow(row);
         }
     }
@@ -177,7 +177,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Product", "Barcode", "Qty."
+                "Barcode", "Product", "Barcode", "Qty."
             }
         ) {
             Class[] types = new Class [] {
@@ -445,7 +445,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
         List<Product> newList = new ArrayList<>();
         for (Product p : currentTableContents) {
             if (radName.isSelected()) {
-                if (p.getName().contains(txtSearch.getText()) || p.getLongName().contains(txtSearch.getText())) {
+                if (p.getShortName().contains(txtSearch.getText()) || p.getLongName().contains(txtSearch.getText())) {
                     newList.add(p);
                 }
             } else {

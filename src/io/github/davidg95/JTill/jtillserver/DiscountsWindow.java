@@ -211,7 +211,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
         for (Trigger t : currentTriggerContents) {
             try {
                 final Product p = dc.getProduct(t.getProduct());
-                Object[] row = new Object[]{p.getName(), p.getBarcode(), t.getQuantityRequired()};
+                Object[] row = new Object[]{p.getShortName(), p.getBarcode(), t.getQuantityRequired()};
                 trigModel.addRow(row);
             } catch (ProductNotFoundException | IOException | SQLException ex) {
                 Logger.getLogger(DiscountsWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -855,7 +855,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Must enter a value greater than zero", "New Trigger", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        Trigger t = new Trigger(currentBucket.getId(), p.getId(), value);
+        Trigger t = new Trigger(currentBucket.getId(), p.getBarcode(), value);
         try {
             dc.addTrigger(t);
             currentTriggerContents.add(t);

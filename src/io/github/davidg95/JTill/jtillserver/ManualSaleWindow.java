@@ -139,7 +139,7 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
         model.setRowCount(0);
         BigDecimal total = BigDecimal.ZERO;
         for (SaleItem si : sale.getSaleItems()) {
-            final Product p = (Product) si.getItem();
+            final Product p = (Product) si.getProduct();
             si.setTotalPrice(p.getPrice().multiply(new BigDecimal(si.getQuantity())).setScale(2).toString());
             Object[] s = new Object[]{p.getBarcode(), p.getLongName(), si.getQuantity(), si.getTotalPrice()};
             total = total.add(si.getPrice().multiply(new BigDecimal(si.getQuantity())));

@@ -55,7 +55,6 @@ public class TaxWindow extends javax.swing.JInternalFrame {
             frame = new TaxWindow();
             GUI.gui.internal.add(frame);
         }
-        frame.setCurrentTax(null);
         frame.setVisible(true);
         try {
             frame.setIcon(false);
@@ -74,18 +73,6 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         }
     }
 
-    private void setCurrentTax(Tax t) {
-        if (t == null) {
-            txtName.setText("");
-            txtValue.setText("");
-            tax = null;
-        } else {
-            tax = t;
-            txtName.setText(t.getName());
-            txtValue.setText(t.getValue() + "");
-        }
-    }
-
     private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e, "Tax", JOptionPane.ERROR_MESSAGE);
     }
@@ -100,13 +87,15 @@ public class TaxWindow extends javax.swing.JInternalFrame {
             this.listeners = new LinkedList<>();
         }
 
-        public void addTax(Tax t) {
+        public void addTax(Tax t) throws IOException, SQLException {
+            dc.addTax(t);
             taxes.add(t);
             alertAll();
         }
 
-        public void removeTax(int i) {
-            taxes.remove(i);
+        public void removeTax(Tax t) throws IOException, SQLException, JTillException {
+            dc.removeTax(t);
+            taxes.remove(t);
             alertAll();
         }
 
@@ -200,7 +189,12 @@ public class TaxWindow extends javax.swing.JInternalFrame {
                     t.setName((String) aValue);
                     break;
                 case 2:
-                    t.setValue((double) aValue);
+                    double value = (double) aValue;
+                    if (value < 0 || value > 100) {
+                        JOptionPane.showMessageDialog(TaxWindow.this, "Value msut be between 0 and 100", "Tax", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    t.setValue(value);
                     break;
                 default:
                     return;
@@ -227,7 +221,17 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         public void removeTableModelListener(TableModelListener l) {
             listeners.remove(l);
         }
+    }
 
+    private void delete(Tax t) {
+        int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following tax?\n-" + t + "\nAll products in this tax will be set to the default tax (0%)", "Remove Tax", JOptionPane.YES_NO_OPTION);
+        if (opt == JOptionPane.YES_OPTION) {
+            try {
+                model.removeTax(t);
+            } catch (IOException | SQLException | JTillException ex) {
+                showError(ex);
+            }
+        }
     }
 
     /**
@@ -246,13 +250,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         jLabel3 = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
         btnRemove = new javax.swing.JButton();
-        btnSave = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        txtName = new javax.swing.JTextField();
-        txtValue = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Tax");
@@ -284,9 +282,6 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableMouseClicked(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                tableMousePressed(evt);
             }
         });
         jScrollPane1.setViewportView(table);
@@ -327,8 +322,6 @@ public class TaxWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Tax Class"));
-
         btnRemove.setText("Remove");
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -336,96 +329,41 @@ public class TaxWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        btnSave.setText("Save");
-        btnSave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setText("Value:");
-
-        jLabel1.setText("Name:");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnSave)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRemove))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(txtName)
-                        .addComponent(txtValue, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSave)
-                    .addComponent(btnRemove))
-                .addContainerGap())
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(77, 77, 77)
-                        .addComponent(btnAdd)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnAdd)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRemove)
+                        .addGap(76, 76, 76)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                        .addComponent(btnClose))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                        .addComponent(btnClose)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnAdd)
-                        .addGap(0, 114, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
                     .addComponent(jLabel3)
                     .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSearch))
+                    .addComponent(btnSearch)
+                    .addComponent(btnAdd)
+                    .addComponent(btnRemove))
                 .addContainerGap())
         );
 
@@ -458,9 +396,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
             }
             t = new Tax(name, value);
             try {
-                Tax ta = dc.addTax(t);
-                model.addTax(ta);
-                setCurrentTax(null);
+                model.addTax(t);
             } catch (IOException | SQLException ex) {
                 showError(ex);
             }
@@ -468,51 +404,6 @@ public class TaxWindow extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Tax", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddActionPerformed
-
-    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        try {
-            String name = txtName.getText();
-            double value = Double.parseDouble(txtValue.getText());
-            if (name == null) {
-                JOptionPane.showMessageDialog(this, "Fill out all required fields", "Tax", JOptionPane.ERROR_MESSAGE);
-            } else {
-                tax.setName(name);
-                tax.setValue(value);
-                tax.save();
-            }
-            model.alertAll();
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Fill out all required fields", "Tax", JOptionPane.ERROR_MESSAGE);
-        } catch (IOException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_btnSaveActionPerformed
-
-    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-        int index = table.getSelectedRow();
-        if (index != -1) {
-            if (model.getTax(index).getId() == 1) {
-                JOptionPane.showMessageDialog(this, "You cannot remove the default tax", "Remove Tax", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following tax?\n-" + model.getTax(index) + "\nAll products in this tax will be set to the default tax (0%)", "Remove Tax", JOptionPane.YES_NO_OPTION);
-            if (opt == JOptionPane.YES_OPTION) {
-                try {
-                    dc.removeTax(model.getTax(index).getId());
-                    model.removeTax(index);
-                } catch (IOException | SQLException | JTillException ex) {
-                    showError(ex);
-                }
-                setCurrentTax(null);
-            }
-        }
-    }//GEN-LAST:event_btnRemoveActionPerformed
-
-    private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
-        if (evt.getClickCount() == 1) {
-            setCurrentTax(model.getTax(table.getSelectedRow()));
-        }
-    }//GEN-LAST:event_tableMousePressed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         String terms = txtSearch.getText();
@@ -537,46 +428,38 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         if (index == -1) {
             return;
         }
-        final Tax t = model.getTax(index);
+        tax = model.getTax(index);
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem remove = new JMenuItem("Remove");
             remove.addActionListener((event) -> {
-                if (t.getId() == 1) {
-                    JOptionPane.showMessageDialog(this, "You cannot remove the default tax", "Remove Tax", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following tax?\n-" + t + "\nAll products in this tax will be set to the default tax (0%)", "Remove Tax", JOptionPane.YES_NO_OPTION);
-                if (opt == JOptionPane.YES_OPTION) {
-                    try {
-                        dc.removeTax(model.getTax(index).getId());
-                        model.removeTax(index);
-                    } catch (IOException | SQLException | JTillException ex) {
-                        showError(ex);
-                    }
-                    setCurrentTax(null);
-                }
+                delete(tax);
             });
+
+            if (tax.getId() == 1) {
+                remove.setEnabled(false);
+            }
 
             menu.add(remove);
             menu.show(table, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tableMouseClicked
 
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        if (tax == null) {
+            return;
+        }
+        delete(tax);
+    }//GEN-LAST:event_btnRemoveActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnRemove;
-    private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
-    private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtSearch;
-    private javax.swing.JTextField txtValue;
     // End of variables declaration//GEN-END:variables
 }

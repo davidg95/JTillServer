@@ -45,7 +45,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
     private final DataConnect dc;
 
     private final DefaultTableModel model;
-    
+
     private final String companyDetails = System.getenv("APPDATA") + "\\JTill Server\\company.details";
 
     /**
@@ -107,18 +107,8 @@ public class SaleDialog extends javax.swing.JInternalFrame {
                 df = new DecimalFormat("0.00");
             }
             Object[] s = null;
-            if (item.getType() == SaleItem.PRODUCT) {
-                final Product p = (Product) item.getItem();
-                s = new Object[]{p.getName(), item.getQuantity(), "£" + df.format(item.getPrice().doubleValue() * item.getQuantity())};
-            } else {
-//                final Discount d;
-//                try {
-//                    d = dc.getDiscount(item.getItem());
-//                    s = new Object[]{item.getQuantity(), d.getName(), df.format(item.getPrice().doubleValue() * item.getQuantity())};
-//                } catch (IOException | SQLException | DiscountNotFoundException ex) {
-//                    Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-            }
+            final Product p = (Product) item.getProduct();
+            s = new Object[]{p.getShortName(), item.getQuantity(), "£" + df.format(item.getPrice().doubleValue() * item.getQuantity())};
             model.addRow(s);
         }
         lblTax.setText("Tax: £" + new DecimalFormat("0.00").format(taxValue.doubleValue()));
@@ -199,13 +189,8 @@ public class SaleDialog extends javax.swing.JInternalFrame {
 
             //Print the sale items.
             for (SaleItem it : toPrint.getSaleItems()) {
-                if (it.getType() == SaleItem.PRODUCT) {
-                    final Product p = (Product) it.getItem();
-                    g2.drawString(p.getName(), item, y);
-                } else {
-//                    final Discount d = (Discount) it.getProduct();
-//                    g2.drawString(d.getName(), item, y);
-                }
+                final Product p = (Product) it.getProduct();
+                g2.drawString(p.getShortName(), item, y);
                 g2.drawString("" + it.getQuantity(), quantity, y);
                 g2.drawString("£" + it.getPrice().setScale(2), total, y);
                 y += 30;

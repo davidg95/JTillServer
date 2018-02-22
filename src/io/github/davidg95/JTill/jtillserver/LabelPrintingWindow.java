@@ -271,14 +271,14 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
          * @param y the y position.
          */
         public void print(Graphics2D g, int x, int y) {
-            g.drawString(p.getName(), x + 1, y + 20); //Print the name.
+            g.drawString(p.getShortName(), x + 1, y + 20); //Print the name.
             g.drawString("£" + p.getPrice(), x + 1, y + 45); //Print the price.
             g.drawString(p.getBarcode(), x + 1, y + 65); //Print the barcode.
         }
 
         @Override
         public String toString() {
-            return "Item: " + p.getName() + " Quantity: " + amount;
+            return "Item: " + p.getShortName() + " Quantity: " + amount;
         }
     }
 

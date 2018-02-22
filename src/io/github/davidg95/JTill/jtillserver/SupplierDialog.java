@@ -10,8 +10,6 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
-import java.io.IOException;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
@@ -22,55 +20,28 @@ public class SupplierDialog extends javax.swing.JDialog {
 
     private static SupplierDialog dialog;
 
-    private final DataConnect dc;
-    private final Supplier s;
+    private static Supplier s;
 
     /**
      * Creates new form SupplierDialog
      */
     public SupplierDialog(Window parent) {
         super(parent);
-        this.dc = GUI.gui.dc;
-        this.s = null;
         initComponents();
         setModal(true);
         setLocationRelativeTo(parent);
         setTitle("New Supplier");
     }
 
-    /**
-     * Creates new form SupplierDialog
-     */
-    public SupplierDialog(Window parent, Supplier s) {
-        super(parent);
-        this.dc = GUI.gui.dc;
-        this.s = s;
-        initComponents();
-        txtName.setText(s.getName());
-        txtAddress.setText(s.getAddress());
-        txtNumber.setText(s.getContactNumber());
-        btnAdd.setText("Save");
-        setModal(true);
-        setLocationRelativeTo(parent);
-        setTitle("Edit Supplier");
-    }
-
-    public static void showDialog(Component parent) {
+    public static Supplier showDialog(Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
         dialog = new SupplierDialog(window);
+        s = null;
         dialog.setVisible(true);
-    }
-
-    public static void showDialog(Component parent, Supplier s) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
-        dialog = new SupplierDialog(window, s);
-        dialog.setVisible(true);
+        return s;
     }
 
     /**
@@ -202,28 +173,8 @@ public class SupplierDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Letter not allowed in phone number", "New supplier", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if (s == null) {
-            Supplier sup = new Supplier(name, address, phone, accountNumber, email);
-            try {
-                dc.addSupplier(sup);
-                setVisible(false);
-            } catch (IOException | SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            s.setName(name);
-            s.setAddress(address);
-            s.setContactNumber(phone);
-            s.setAccountNumber(accountNumber);
-            s.setEmail(email);
-            try {
-                dc.updateSupplier(s);
-                JOptionPane.showMessageDialog(this, "Supplier Updated", "Supplier", JOptionPane.INFORMATION_MESSAGE);
-                setVisible(false);
-            } catch (IOException | SQLException | JTillException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+        s = new Supplier(name, address, phone, accountNumber, email);
+        setVisible(false);
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed

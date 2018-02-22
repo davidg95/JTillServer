@@ -1619,7 +1619,7 @@ public class GUI extends JFrame implements GUIInterface {
                     List<Category> categories = Category.getAll();
                     for (Sale s : sales) {
                         for (SaleItem si : s.getSaleItems()) {
-                            final Product p = (Product) si.getItem();
+                            final Product p = (Product) si.getProduct();
                             for (Department dep : departments) {
                                 if (p.getDepartment().equals(dep)) {
                                     dep.addToSales(si.getPrice());
@@ -2067,7 +2067,9 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemOrderingWizardActionPerformed
 
     private void itemEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEditActionPerformed
-        ProductEditWindow.showWindow();
+        //ProductEditWindow.showWindow();
+        Product p = ProductSelectDialog.showDialog(this);
+        ProductEntryDialog.showDialog(this, p);
     }//GEN-LAST:event_itemEditActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
