@@ -32,6 +32,8 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
 
+    private Department department;
+
     private MyModel model;
 
     /**
@@ -312,28 +314,28 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnNewDepartment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnRemove, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnClose, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnNewDepartment)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnClose)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnNewDepartment)
-                        .addGap(75, 75, 75)
-                        .addComponent(btnRemove)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnClose))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClose)
+                    .addComponent(btnNewDepartment)
+                    .addComponent(btnRemove))
                 .addContainerGap())
         );
 
@@ -351,8 +353,9 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
             return;
         }
 
+        department = new Department(name);
         try {
-            model.addDepartment(new Department(name));
+            model.addDepartment(department);
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex);
         }
@@ -364,9 +367,9 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnRemoveActionPerformed
 
     private void tblDepMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDepMouseClicked
+        department = model.getSelected();
         if (SwingUtilities.isRightMouseButton(evt)) {
-            Department d = model.getSelected();
-            if (d == null) {
+            if (department == null) {
                 return;
             }
             JPopupMenu menu = new JPopupMenu();
@@ -375,10 +378,10 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
             JMenuItem remove = new JMenuItem("Remove");
 
             rename.addActionListener((event) -> {
-                renameDepartment(d);
+                renameDepartment(department);
             });
             remove.addActionListener((event) -> {
-                removeDepartment(d);
+                removeDepartment(department);
             });
 
             menu.add(rename);

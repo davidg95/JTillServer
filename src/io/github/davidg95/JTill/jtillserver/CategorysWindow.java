@@ -12,11 +12,15 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
@@ -65,7 +69,6 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             frame.toFront();
         } else {
             update();
-            frame.setCurrentCategory(null);
             frame.setVisible(true);
         }
         try {
@@ -95,16 +98,6 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         table.setModel(model);
         table.getColumnModel().getColumn(0).setMaxWidth(40);
         table.setSelectionModel(new ForcedListSelectionModel());
-        try {
-            depsModel.removeAllElements();
-            List<Department> deps = dc.getAllDepartments();
-            for (Department d : deps) {
-                depsModel.addElement(d);
-            }
-            cmbDepartment.setModel(depsModel);
-        } catch (IOException | SQLException ex) {
-            showError(ex);
-        }
         JComboBox box = new JComboBox();
         try {
             List<Department> departments = dc.getAllDepartments();
@@ -116,25 +109,6 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         } catch (IOException | SQLException ex) {
             GUI.LOG.log(Level.SEVERE, null, ex);
         }
-    }
-
-    /**
-     * Method to set the current selected category and fill the fields
-     * accordingly.
-     *
-     * @param c the category to show.
-     */
-    private void setCurrentCategory(Category c) {
-        if (c == null) {
-            txtName.setText("");
-            category = null;
-        } else {
-            category = c;
-            txtName.setText(c.getName());
-            cmbDepartment.setEnabled(true);
-            cmbDepartment.setSelectedItem(category.getDepartment());
-        }
-        txtName.requestFocus();
     }
 
     /**
@@ -172,7 +146,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             return categories;
         }
 
-        public Category getCategories(int i) {
+        public Category getCategory(int i) {
             return categories.get(i);
         }
 
@@ -278,6 +252,16 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
 
     }
 
+    private void delete(Category c) {
+        try {
+            if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this category? all products in this category will eb moved to the default category", "Remove Category", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                model.removeCategory(c);
+            }
+        } catch (IOException | SQLException | JTillException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -294,24 +278,15 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         jLabel3 = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
-        txtName = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        btnSave = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
-        cmbDepartment = new javax.swing.JComboBox<>();
-        btnRemove = new javax.swing.JButton();
         btnDepartments = new javax.swing.JButton();
+        btnRemove = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Categorys");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "ID", "Name", "Department"
@@ -334,8 +309,8 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         });
         table.getTableHeader().setReorderingAllowed(false);
         table.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                tableMousePressed(evt);
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(table);
@@ -375,18 +350,12 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Category Edit"));
-
-        jLabel1.setText("Name:");
-
-        btnSave.setText("Save");
-        btnSave.addActionListener(new java.awt.event.ActionListener() {
+        btnDepartments.setText("Departments");
+        btnDepartments.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveActionPerformed(evt);
+                btnDepartmentsActionPerformed(evt);
             }
         });
-
-        jLabel4.setText("Department:");
 
         btnRemove.setText("Remove");
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
@@ -395,100 +364,44 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(cmbDepartment, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(51, 51, 51)
-                .addComponent(btnSave)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRemove)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(cmbDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSave)
-                    .addComponent(btnRemove))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        btnDepartments.setText("Departments");
-        btnDepartments.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDepartmentsActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnAdd)
-                            .addComponent(btnDepartments, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnAdd)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRemove)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 151, Short.MAX_VALUE)
+                        .addComponent(btnDepartments, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(140, 140, 140)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 428, Short.MAX_VALUE)
-                        .addComponent(btnClose))
-                    .addComponent(jScrollPane1))
+                        .addGap(76, 76, 76)
+                        .addComponent(btnClose)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(37, 37, 37)
-                        .addComponent(btnAdd)
-                        .addGap(55, 55, 55)
-                        .addComponent(btnDepartments)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
                     .addComponent(jLabel3)
                     .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSearch))
+                    .addComponent(btnSearch)
+                    .addComponent(btnAdd)
+                    .addComponent(btnDepartments)
+                    .addComponent(btnRemove))
                 .addContainerGap())
         );
 
@@ -506,63 +419,42 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             if (d == null) {
                 return;
             }
-            Category c = new Category(name, d);
-            model.addCategory(c);
+            category = new Category(name, d);
+            model.addCategory(category);
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
-    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        try {
-            String name = txtName.getText();
-            Department dep = (Department) cmbDepartment.getSelectedItem();
-            if (name.equals("")) {
-                JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Category", JOptionPane.ERROR_MESSAGE);
-            } else {
-                category.setName(name);
-                category.setDepartment(dep);
-
-                try {
-                    category.save();
-                } catch (SQLException | IOException ex) {
-                    showError(ex);
-                }
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Fill out all required fields", "Category", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_btnSaveActionPerformed
-
-    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-        int index = table.getSelectedRow();
-        if (index != -1) {
-            if (model.getCategories(index).getId() == 1) {
-                JOptionPane.showMessageDialog(this, "You cannot remote the default category", "Remove Category", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following category?\n-" + model.getCategories(index) + "\nAll products in this category will be moved to the DEFAULT category.", "Remove Category", JOptionPane.YES_NO_OPTION);
-            if (opt == JOptionPane.YES_OPTION) {
-                try {
-                    model.removeCategory(model.getCategories(index));
-                } catch (SQLException | JTillException | IOException ex) {
-                    showError(ex);
-                }
-                setCurrentCategory(null);
-            }
-        }
-    }//GEN-LAST:event_btnRemoveActionPerformed
-
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
         this.setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
 
-    private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
-        if (evt.getClickCount() == 1) {
-            setCurrentCategory(model.getCategories(table.getSelectedRow()));
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+        btnSearch.doClick();
+    }//GEN-LAST:event_txtSearchActionPerformed
+
+    private void btnDepartmentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartmentsActionPerformed
+        DepartmentsWindow.showWindow();
+    }//GEN-LAST:event_btnDepartmentsActionPerformed
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        int index = table.getSelectedRow();
+        if (index == -1) {
+            return;
         }
-    }//GEN-LAST:event_tableMousePressed
+        category = model.getCategory(index);
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem remove = new JMenuItem("Remove");
+            remove.addActionListener((event) -> {
+                delete(category);
+            });
+            menu.add(remove);
+            menu.show(table, evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_tableMouseClicked
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         String terms = txtSearch.getText();
@@ -577,34 +469,27 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "No records found", "Search", JOptionPane.INFORMATION_MESSAGE);
         } else {
             if (newList.size() == 1) {
-                setCurrentCategory(newList.get(0));
+
             }
         }
     }//GEN-LAST:event_btnSearchActionPerformed
 
-    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
-        btnSearch.doClick();
-    }//GEN-LAST:event_txtSearchActionPerformed
-
-    private void btnDepartmentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartmentsActionPerformed
-        DepartmentsWindow.showWindow();
-    }//GEN-LAST:event_btnDepartmentsActionPerformed
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        if (category == null) {
+            return;
+        }
+        delete(category);
+    }//GEN-LAST:event_btnRemoveActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnDepartments;
     private javax.swing.JButton btnRemove;
-    private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
-    private javax.swing.JComboBox<String> cmbDepartment;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
-    private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

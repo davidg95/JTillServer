@@ -1016,8 +1016,8 @@ public abstract class DBConnect extends DataConnect {
         Statement stmt = con.createStatement();
         int value;
         try {
-            stmt.executeUpdate("UPDATE PRODUCTS SET TAX_ID = 1 WHERE TAX_ID = " + id);
-            value = stmt.executeUpdate("DELETE FROM TAX WHERE TAX.ID = " + id);
+            stmt.executeUpdate("UPDATE PRODUCTS SET ptax = 1 WHERE ptax = " + id);
+            value = stmt.executeUpdate("DELETE FROM TAX WHERE tid = " + id);
             con.commit();
             if (value == 0) {
                 throw new JTillException(id + "");
@@ -1031,7 +1031,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Tax getTax(int id) throws SQLException, JTillException {
-        String query = "SELECT * FROM TAX WHERE TAX.ID = " + id;
+        String query = "SELECT * FROM TAX WHERE tid = " + id;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Tax> tax = new LinkedList<>();
@@ -1054,7 +1054,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Product> getProductsInTax(int id) throws SQLException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND TAX_ID = " + id;
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE pcategory = cid AND cdepartment = did AND ptax = tid AND tid = " + id;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Product> products = new LinkedList<>();
@@ -1074,7 +1074,7 @@ public abstract class DBConnect extends DataConnect {
     //Category Methods
     @Override
     public List<Category> getAllCategorys() throws SQLException {
-        String query = "SELECT * FROM CATEGORYS, DEPARTMENTS WHERE CATEGORYS.cDEPARTMENT = DEPARTMENTS.dID ORDER BY CATEGORYS.cID";
+        String query = "SELECT * FROM CATEGORYS, DEPARTMENTS WHERE cdepartment = did ORDER BY cid";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Category> categorys = new LinkedList<>();
@@ -1161,8 +1161,8 @@ public abstract class DBConnect extends DataConnect {
         Statement stmt = con.createStatement();
         int value;
         try {
-            stmt.executeUpdate("UPDATE PRODUCTS SET CATEGORY_ID=1 WHERE CATEGORY_ID=" + id);
-            value = stmt.executeUpdate("DELETE FROM CATEGORYS WHERE CATEGORYS.ID = " + id);
+            stmt.executeUpdate("UPDATE PRODUCTS SET pcategory=1 WHERE pcategory=" + id);
+            value = stmt.executeUpdate("DELETE FROM CATEGORYS WHERE cid = " + id);
             con.commit();
             if (value == 0) {
                 throw new JTillException(id + "");
@@ -2672,8 +2672,8 @@ public abstract class DBConnect extends DataConnect {
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            stmt.executeUpdate("UPDATE CATEGORYS SET DEPARTMENT = 1 WHERE DEPARTMENT = " + id);
-            int value = stmt.executeUpdate("DELETE FROM DEPARTMENTS WHERE ID=" + id);
+            stmt.executeUpdate("UPDATE CATEGORYS SET cdepartment = 1 WHERE cdepartment = " + id);
+            int value = stmt.executeUpdate("DELETE FROM DEPARTMENTS WHERE did=" + id);
             con.commit();
             if (value == 0) {
                 throw new JTillException("Department " + id + " not found");
@@ -2687,14 +2687,14 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Department getDepartment(int id) throws SQLException, JTillException {
-        String query = "SELECT * FROM DEPARTMENTS WHERE ID=" + id;
+        String query = "SELECT * FROM DEPARTMENTS WHERE did=" + id;
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
             ResultSet set = stmt.executeQuery(query);
             List<Department> departments = new LinkedList<>();
             while (set.next()) {
-                String name = set.getString("NAME");
+                String name = set.getString("dname");
                 departments.add(new Department(id, name));
             }
             con.commit();
@@ -2730,7 +2730,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Department updateDepartment(Department d) throws IOException, SQLException, JTillException {
-        String query = "UPDATE DEPARTMENTS SET NAME='" + d.getName() + "' WHERE ID=" + d.getId();
+        String query = "UPDATE DEPARTMENTS SET dname='" + d.getName() + "' WHERE did=" + d.getId();
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
