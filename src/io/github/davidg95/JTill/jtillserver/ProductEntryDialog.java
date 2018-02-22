@@ -52,30 +52,24 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         catModel = new DefaultComboBoxModel();
         initCombos();
         initComponents();
+        txtDepartment.setText("1 - Default");
         this.setIconImage(GUI.icon);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(parent);
         setModal(true);
         CardLayout c = (CardLayout) container.getLayout();
         c.show(container, "card2");
+        txtBarcode.requestFocus();
     }
 
     public ProductEntryDialog(Window parent, String barcode) {
-        super(parent);
-        taxModel = new DefaultComboBoxModel();
-        catModel = new DefaultComboBoxModel();
-        initCombos();
-        initComponents();
-        this.setIconImage(GUI.icon);
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(parent);
-        setModal(true);
+        this(parent);
+        this.barcode = barcode;
+        setTitle("Edit Product - " + barcode);
         CardLayout c = (CardLayout) container.getLayout();
-        c.show(container, "card2");
-        txtBarcode.setText(barcode);
-        txtBarcode.setEnabled(false);
-        chkAssignNextPrivate.setEnabled(false);
-        chkNext.setEnabled(false);
+        c.show(container, "card3");
+        btnBack.setEnabled(false);
+        txtName.requestFocus();
         autoClose = true;
     }
 
@@ -170,6 +164,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         txtShortName.setText(product.getShortName());
         txtOrderCode.setText("" + product.getOrderCode());
         cmbCat.setSelectedItem(product.getCategory());
+        txtDepartment.setText(product.getCategory().getDepartment().toString());
         cmbVat.setSelectedItem(product.getTax());
         chkTrackStock.setSelected(product.isTrackStock());
         if (product.isTrackStock()) {
@@ -196,6 +191,88 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             txtPackSize.setText(product.getPackSize() + "");
             calculateUnitCost();
             chkIncVat.setSelected(product.isPriceIncVat());
+        }
+    }
+
+    private void sortBarcode() throws IOException, SQLException, JTillException {
+        if (chkNext.isSelected()) {
+            String upc = dc.getSetting("UPC_PREFIX"); //Get the UPC Prefix
+            int length = Integer.parseInt(dc.getSetting("BARCODE_LENGTH")); //Get the barcode length
+            if (!upc.equals("")) { //Check that the UPC has been set
+                while (true) {
+                    int lengthToAdd = length - upc.length() - 1; //Work out how many more digits need added
+                    String ref = dc.getSetting("NEXT_PLU"); //Get the next PLU number
+                    int n = Integer.parseInt(ref);
+                    int max = (int) Math.pow(10, length - upc.length() - 1);
+                    int remaining = max - n;
+                    if (remaining == 0) {
+                        chkNext.setSelected(false);
+                        txtBarcode.setEnabled(true);
+                        throw new JTillException("There are no more avaliable barcodes for this UPC Prefix");
+                    }
+                    n++;
+                    nextBarcode = Integer.toString(n); // Increase it then convert it to a String
+
+                    lengthToAdd -= ref.length(); //Subtract the length to find out how many digits need added
+                    for (int i = 1; i <= lengthToAdd; i++) {
+                        ref = 0 + ref; //Pad it out with zero's to make up the length
+                    }
+                    String barcode = upc + ref; //Join them all together
+                    int checkDigit = Utilities.calculateCheckDigit(barcode);
+                    barcode = barcode + checkDigit;
+                    if (!dc.checkBarcode(barcode)) { //Check the barcode is not already int use
+                        this.barcode = barcode;
+                        break; //break from the while loop
+                    } else {
+                        dc.setSetting("NEXT_PLU", nextBarcode);
+                    }
+                }
+            } else {
+                throw new JTillException("You have not specified a UPC Company Prefix. This must be done before generating your own barcodes. Go to Setup -> Plu Settings to do this.");
+            }
+            //If excecution reaches here, it means an unused barcode as been generated
+        } else if (chkAssignNextPrivate.isSelected()) {
+            while (true) {
+                String nextPrivate = dc.getSetting("NEXT_PRIVATE"); //Get the next barcode
+                int n = Integer.parseInt(nextPrivate);
+                n++;
+                nextBarcode = Integer.toString(n); // Increase it then convert it to a String
+
+                String barcode = nextPrivate; //Join them all together
+                if (!dc.checkBarcode(barcode)) { //Check the barcode is not already int use
+                    this.barcode = barcode;
+                    break; //break from the while loop
+                } else {
+                    dc.setSetting("NEXT_PRIVATE", nextBarcode);
+                }
+            }
+        } else {
+            //Get the barcode from the user, check what they entered is valid
+            String barcode = txtBarcode.getText();
+            if (barcode.equals("")) {
+                txtBarcode.setSelectionStart(0);
+                txtBarcode.setSelectionEnd(barcode.length());
+                throw new JTillException("You must enter a barcode");
+            } else if (!Utilities.validateBarcodeLenth(barcode)) {
+                txtBarcode.setSelectionStart(0);
+                txtBarcode.setSelectionEnd(barcode.length());
+                throw new JTillException("Barcode must be 8, 12, 13 or 14 digits long");
+            } else if (!barcode.matches("[0-9]+")) {
+                txtBarcode.setSelectionStart(0);
+                txtBarcode.setSelectionEnd(barcode.length());
+                throw new JTillException("Must only contain numbers");
+            }
+            if (!Utilities.validateBarcode(barcode)) {
+                txtBarcode.setSelectionStart(0);
+                txtBarcode.setSelectionEnd(barcode.length());
+                throw new JTillException("Invalid check digit");
+            }
+            if (dc.checkBarcode(barcode)) {
+                txtBarcode.setSelectionStart(0);
+                txtBarcode.setSelectionEnd(barcode.length());
+                throw new JTillException("Barcode is already in use");
+            }
+            this.barcode = txtBarcode.getText();
         }
     }
 
@@ -274,6 +351,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         cmbCat = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         txtShortName = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        txtDepartment = new javax.swing.JTextField();
 
         setTitle("Create New Product");
         setResizable(false);
@@ -326,9 +405,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             }
         });
         txtBarcode.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtBarcodeKeyPressed(evt);
-            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtBarcodeKeyTyped(evt);
             }
@@ -407,9 +483,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         panBarcodeLayout.setVerticalGroup(
             panBarcodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panBarcodeLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(234, 234, 234)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(499, Short.MAX_VALUE))
+                .addContainerGap(276, Short.MAX_VALUE))
         );
 
         container.add(panBarcode, "card2");
@@ -798,8 +874,17 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         jLabel7.setText("Category:");
 
         cmbCat.setModel(catModel);
+        cmbCat.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbCatItemStateChanged(evt);
+            }
+        });
 
         jLabel2.setText("Product Name:");
+
+        jLabel5.setText("Department:");
+
+        txtDepartment.setEditable(false);
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -814,7 +899,11 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbCat, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cmbCat, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(6, 6, 6)
@@ -841,7 +930,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(cmbCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -1016,98 +1107,13 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
     private void btnEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnterActionPerformed
         try {
-            if (chkNext.isSelected()) {
-                String upc = dc.getSetting("UPC_PREFIX"); //Get the UPC Prefix
-                int length = Integer.parseInt(dc.getSetting("BARCODE_LENGTH")); //Get the barcode length
-                if (!upc.equals("")) { //Check that the UPC has been set
-                    while (true) {
-                        int lengthToAdd = length - upc.length() - 1; //Work out how many more digits need added
-                        String ref = dc.getSetting("NEXT_PLU"); //Get the next PLU number
-                        int n = Integer.parseInt(ref);
-                        int max = (int) Math.pow(10, length - upc.length() - 1);
-                        int remaining = max - n;
-                        if (remaining == 0) {
-                            JOptionPane.showMessageDialog(this, "There are no more avaliable barcodes for this UPC Prefix", "No More Barcodes", JOptionPane.WARNING_MESSAGE);
-                            chkNext.setSelected(false);
-                            txtBarcode.setEnabled(true);
-                            return;
-                        }
-                        n++;
-                        nextBarcode = Integer.toString(n); // Increase it then convert it to a String
-
-                        lengthToAdd -= ref.length(); //Subtract the length to find out how many digits need added
-                        for (int i = 1; i <= lengthToAdd; i++) {
-                            ref = 0 + ref; //Pad it out with zero's to make up the length
-                        }
-                        String barcode = upc + ref; //Join them all together
-                        int checkDigit = Utilities.calculateCheckDigit(barcode);
-                        barcode = barcode + checkDigit;
-                        if (!dc.checkBarcode(barcode)) { //Check the barcode is not already int use
-                            this.barcode = barcode;
-                            break; //break from the while loop
-                        } else {
-                            dc.setSetting("NEXT_PLU", nextBarcode);
-                        }
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, "You have not specified a UPC Company Prefix. This must be done before generating your own barcodes. Go to Setup -> Plu Settings to do this.", "Generate Barcode", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                //If excecution reaches here, it means an unused barcode as been generated
-            } else if (chkAssignNextPrivate.isSelected()) {
-                while (true) {
-                    String nextPrivate = dc.getSetting("NEXT_PRIVATE"); //Get the next barcode
-                    int n = Integer.parseInt(nextPrivate);
-                    n++;
-                    nextBarcode = Integer.toString(n); // Increase it then convert it to a String
-
-                    String barcode = nextPrivate; //Join them all together
-                    if (!dc.checkBarcode(barcode)) { //Check the barcode is not already int use
-                        this.barcode = barcode;
-                        break; //break from the while loop
-                    } else {
-                        dc.setSetting("NEXT_PRIVATE", nextBarcode);
-                    }
-                }
-            } else {
-                //Get the barcode from the user, check what they entered is valid
-                String barcode = txtBarcode.getText();
-                if (barcode.equals("")) {
-                    JOptionPane.showMessageDialog(this, "You must enter a barcode", "New Product", JOptionPane.WARNING_MESSAGE);
-                    txtBarcode.setSelectionStart(0);
-                    txtBarcode.setSelectionEnd(barcode.length());
-                    return;
-                } else if (!Utilities.validateBarcodeLenth(barcode)) {
-                    JOptionPane.showMessageDialog(this, "Barcode must be 8, 12, 13 or 14 digits long", "New Product", JOptionPane.WARNING_MESSAGE);
-                    txtBarcode.setSelectionStart(0);
-                    txtBarcode.setSelectionEnd(barcode.length());
-                    return;
-                } else if (!barcode.matches("[0-9]+")) {
-                    JOptionPane.showMessageDialog(this, "Must only contain numbers", "New Product", JOptionPane.WARNING_MESSAGE);
-                    txtBarcode.setSelectionStart(0);
-                    txtBarcode.setSelectionEnd(barcode.length());
-                    return;
-                }
-                if (!Utilities.validateBarcode(barcode)) {
-                    JOptionPane.showMessageDialog(this, "Invalid check digit", "New Product", JOptionPane.ERROR_MESSAGE);
-                    txtBarcode.setSelectionStart(0);
-                    txtBarcode.setSelectionEnd(barcode.length());
-                    return;
-                }
-                if (dc.checkBarcode(barcode)) {
-                    JOptionPane.showMessageDialog(this, "Barcode is already in use", "Barcode in use", JOptionPane.WARNING_MESSAGE);
-                    txtBarcode.setSelectionStart(0);
-                    txtBarcode.setSelectionEnd(barcode.length());
-                    return;
-                }
-                this.barcode = txtBarcode.getText();
-            }
+            sortBarcode();
             setTitle("Create New Product - " + barcode);
             CardLayout c = (CardLayout) container.getLayout();
             c.show(container, "card3");
             txtName.requestFocus();
-        } catch (IOException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException | SQLException | JTillException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnEnterActionPerformed
 
@@ -1131,47 +1137,12 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         txtScaleName.setEnabled(chkScale.isSelected());
     }//GEN-LAST:event_chkScaleActionPerformed
 
-    private void txtBarcodeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBarcodeKeyPressed
-//        char c = evt.getKeyChar();
-//        String s = Character.toString(c);
-//        if ((!(s.matches("[0-9]+"))) && !isBackspace) {
-//            evt.consume();
-//        }
-//        if (txtBarcode.getSelectionStart() < txtBarcode.getSelectionEnd()) {
-//            btnEnter.setEnabled(false);
-//            return;
-//        }
-//        int length = txtBarcode.getText().length() + 1;
-//        if (isBackspace) {
-//            length--;
-//        }
-//        if (length > 14) {
-//            evt.consume();
-//            return;
-//        }
-//        if (length == 8 || length == 12 || length == 13 || length == 14) {
-//            btnEnter.setEnabled(true);
-//        } else {
-//            btnEnter.setEnabled(false);
-//        }
-    }//GEN-LAST:event_txtBarcodeKeyPressed
-
     private void txtBarcodeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBarcodeKeyTyped
         char c = evt.getKeyChar();
         String s = Character.toString(c);
         if (!(s.matches("[0-9]+"))) {
             evt.consume();
         }
-//        int length = txtBarcode.getText().length() + 1;
-//        if (length > 14) {
-//            evt.consume();
-//            return;
-//        }
-//        if (length == 8 || length == 12 || length == 13 || length == 14) {
-//            btnEnter.setEnabled(true);
-//        } else {
-//            btnEnter.setEnabled(false);
-//        }
     }//GEN-LAST:event_txtBarcodeKeyTyped
 
     private void chkAssignNextPrivateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkAssignNextPrivateActionPerformed
@@ -1182,6 +1153,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_chkAssignNextPrivateActionPerformed
 
     private void btnCalculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateActionPerformed
+        if (txtCostPrice.getText().isEmpty() || txtPackSize.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Enter values for cost price and pack size", "Calculate GP", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         String input = JOptionPane.showInputDialog(this, "Enter GP %", "Calculate Price", JOptionPane.PLAIN_MESSAGE);
         if (input == null || input.isEmpty()) {
             return;
@@ -1201,18 +1176,23 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCalculateActionPerformed
 
     private void btnCopyDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCopyDetailsActionPerformed
-        Product toCopy = ProductSelectDialog.showDialog(this); //Copy details from an existing product
-        if (toCopy != null) {
-            toCopy.setStock(0);
-            toCopy.setBarcode(this.barcode);
-            try {
-                dc.addProduct(toCopy);
-                JOptionPane.showMessageDialog(this, "New Product created", "New Product", JOptionPane.INFORMATION_MESSAGE);
-                txtBarcode.setText("");
-                txtBarcode.requestFocus();
-            } catch (IOException | SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        try {
+            sortBarcode();
+            Product toCopy = ProductSelectDialog.showDialog(this); //Copy details from an existing product
+            if (toCopy != null) {
+                toCopy.setStock(0);
+                toCopy.setBarcode(this.barcode);
+                try {
+                    dc.addProduct(toCopy);
+                    JOptionPane.showMessageDialog(this, "New Product created", "New Product", JOptionPane.INFORMATION_MESSAGE);
+                    txtBarcode.setText("");
+                    txtBarcode.requestFocus();
+                } catch (IOException | SQLException ex) {
+                    JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
+        } catch (IOException | SQLException | JTillException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnCopyDetailsActionPerformed
 
@@ -1257,6 +1237,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         calculateGP();
     }//GEN-LAST:event_txtPriceFocusLost
 
+    private void cmbCatItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbCatItemStateChanged
+        txtDepartment.setText((((Category) cmbCat.getSelectedItem()).getDepartment()).toString());
+    }//GEN-LAST:event_cmbCatItemStateChanged
+
     private void calculateUnitCost() {
         if (txtCostPrice.getText().isEmpty()) {
             return;
@@ -1271,15 +1255,15 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         BigDecimal unit = cost.divide(new BigDecimal(packSize), 2, 6);
         txtUnitCost.setText(unit.toString());
     }
-    
-    private void calculateGP(){
+
+    private void calculateGP() {
         if (txtCostPrice.getText().isEmpty()) {
             return;
         }
         if (txtPackSize.getText().isEmpty()) {
             return;
         }
-        if(txtPrice.getText().isEmpty()){
+        if (txtPrice.getText().isEmpty()) {
             return;
         }
 
@@ -1318,6 +1302,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
@@ -1344,6 +1329,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JTextArea txtComments;
     private javax.swing.JTextField txtCostPercentage;
     private javax.swing.JTextField txtCostPrice;
+    private javax.swing.JTextField txtDepartment;
     private javax.swing.JTextField txtGP;
     private javax.swing.JTextArea txtIngredients;
     private javax.swing.JTextField txtMax;

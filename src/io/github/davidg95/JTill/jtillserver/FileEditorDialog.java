@@ -5,7 +5,6 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
-import io.github.davidg95.JTill.jtill.DataConnect;
 import io.github.davidg95.JTill.jtill.Product;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -14,7 +13,6 @@ import java.awt.Window;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -24,36 +22,36 @@ import javax.swing.table.TableModel;
  *
  * @author David
  */
-public class UnknownBarcodeDialog extends javax.swing.JDialog {
+public class FileEditorDialog extends javax.swing.JDialog {
 
-    private final DataConnect dc = DataConnect.get();
     private final MyModel model;
+
+    private FileItem item;
 
     /**
      * Creates new form UnknownBarcodeDialog
      *
      * @param parent
-     * @param barcodes
+     * @param items
      */
-    public UnknownBarcodeDialog(Window parent, List<Object[]> barcodes) {
+    public FileEditorDialog(Window parent, List<FileItem> items) {
         super(parent);
         initComponents();
-        setTitle("Unknown barcode browser");
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setResizable(false);
         setLocationRelativeTo(parent);
         setModal(true);
         setIconImage(GUI.icon);
-        model = new MyModel(barcodes);
+        model = new MyModel(items);
         init();
     }
 
-    public static void showDialog(Component parent, List<Object[]> barcodes) {
+    public static void showDialog(Component parent, List<FileItem> items) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        UnknownBarcodeDialog dialog = new UnknownBarcodeDialog(window, barcodes);
+        FileEditorDialog dialog = new FileEditorDialog(window, items);
         dialog.setVisible(true);
     }
 
@@ -64,25 +62,35 @@ public class UnknownBarcodeDialog extends javax.swing.JDialog {
 
     private class MyModel implements TableModel {
 
-        private final List<Object[]> barcodes;
+        private final List<FileItem> items;
         private final List<TableModelListener> listeners;
 
-        public MyModel(List<Object[]> barcodes) {
-            this.barcodes = barcodes;
+        public MyModel(List<FileItem> items) {
+            this.items = items;
             this.listeners = new LinkedList<>();
         }
 
-        public Object[] getItem(int i) {
-            return barcodes.get(i);
+        public void removeBarcode(String barcode) {
+            for (int i = 0; i < items.size(); i++) {
+                if (items.get(i).getBarcode().equals(barcode)) {
+                    items.remove(i);
+                    alertAll();
+                    return;
+                }
+            }
         }
 
-        public List<Object[]> getAll() {
-            return barcodes;
+        public FileItem getItem(int i) {
+            return items.get(i);
+        }
+
+        public List<FileItem> getAll() {
+            return items;
         }
 
         @Override
         public int getRowCount() {
-            return barcodes.size();
+            return items.size();
         }
 
         @Override
@@ -133,15 +141,33 @@ public class UnknownBarcodeDialog extends javax.swing.JDialog {
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            return barcodes.get(rowIndex)[columnIndex];
+            FileItem item = items.get(rowIndex);
+            switch (columnIndex) {
+                case 0: {
+                    return item.getBarcode();
+                }
+                case 1: {
+                    if (item.getProduct() == null) {
+                        return "";
+                    } else {
+                        return item.getProduct().getLongName();
+                    }
+                }
+                case 2: {
+                    return item.getQuantity();
+                }
+                default: {
+                    return "";
+                }
+            }
         }
 
         @Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
             if (columnIndex == 1) {
-                barcodes.get(rowIndex)[1] = (Product) aValue;
+                items.get(rowIndex).setProduct((Product) aValue);
             } else if (columnIndex == 2) {
-                barcodes.get(rowIndex)[2] = (int) aValue;
+                items.get(rowIndex).setQuantity((int) aValue);
             } else {
                 return;
             }
@@ -166,6 +192,20 @@ public class UnknownBarcodeDialog extends javax.swing.JDialog {
 
     }
 
+    private void createEdit(FileItem item) {
+        Product p;
+        if (item.getProduct() == null) {
+            p = ProductEntryDialog.showDialog(this, item.getBarcode());
+            if (p == null) {
+                return;
+            }
+        } else {
+            p = ProductEntryDialog.showDialog(this, item.getProduct());
+        }
+        item.setProduct(p);
+        model.alertAll();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -179,8 +219,10 @@ public class UnknownBarcodeDialog extends javax.swing.JDialog {
         table = new javax.swing.JTable();
         btnFinish = new javax.swing.JButton();
         btnCreate = new javax.swing.JButton();
+        btnRemove = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("File Editor");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -204,10 +246,17 @@ public class UnknownBarcodeDialog extends javax.swing.JDialog {
             }
         });
 
-        btnCreate.setText("Create Product");
+        btnCreate.setText("Create/Edit");
         btnCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCreateActionPerformed(evt);
+            }
+        });
+
+        btnRemove.setText("Remove");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
             }
         });
 
@@ -221,6 +270,8 @@ public class UnknownBarcodeDialog extends javax.swing.JDialog {
                     .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnCreate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRemove)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnFinish)))
                 .addContainerGap())
@@ -233,7 +284,8 @@ public class UnknownBarcodeDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnFinish)
-                    .addComponent(btnCreate))
+                    .addComponent(btnCreate)
+                    .addComponent(btnRemove))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -241,17 +293,7 @@ public class UnknownBarcodeDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        int row = table.getSelectedRow();
-        if (row == -1) {
-            return;
-        }
-        String barcode = (String) model.getItem(row)[0];
-        Product p = ProductEntryDialog.showDialog(this, barcode);
-        if (p == null) {
-            return;
-        }
-        model.getItem(row)[1] = p;
-        model.alertAll();
+        createEdit(item);
     }//GEN-LAST:event_btnCreateActionPerformed
 
     private void btnFinishActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinishActionPerformed
@@ -259,25 +301,29 @@ public class UnknownBarcodeDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnFinishActionPerformed
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            return;
+        }
+        item = model.getItem(row);
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
-                int row = table.getSelectedRow();
-                if (row == -1) {
-                    return;
-                }
-                String barcode = (String) model.getItem(row)[0];
-                Product p = ProductEntryDialog.showDialog(this, barcode);
-                if (p == null) {
-                    return;
-                }
-                JOptionPane.showMessageDialog(this, p.getLongName() + " created");
+                createEdit(item);
             }
         }
     }//GEN-LAST:event_tableMouseClicked
 
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        if (item == null) {
+            return;
+        }
+        model.removeBarcode(item.getBarcode());
+    }//GEN-LAST:event_btnRemoveActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnFinish;
+    private javax.swing.JButton btnRemove;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables

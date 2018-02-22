@@ -1301,7 +1301,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Sale> getAllSales() throws SQLException {
-        String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID ORDER BY s.ID";
+        String query = "SELECT * FROM SALES, TILLS, STAFF WHERE stid = sastaff AND saterminal = tiid ORDER BY said";
         List<Sale> sales = new LinkedList<>();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
@@ -2867,7 +2867,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public int getTotalSoldOfItem(String barcode) throws IOException, SQLException {
-        String query = "SELECT sun(siquantity) FROM SALEITEMS WHERE siproduct='" + barcode + "'";
+        String query = "SELECT sum(siquantity) FROM SALEITEMS WHERE siproduct='" + barcode + "'";
         int quantity = 0;
         Connection con = getConnection();
         try {
@@ -2929,14 +2929,14 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public BigDecimal getValueWastedOfItem(String barcode) throws IOException, SQLException {
-        String query = "SELECT wiQUANTITY, (COST_PRICE/PACK_SIZE) as INDCOST FROM PRODUCTS, WASTEITEMS WHERE wiPRODUCT = barcode AND wiPRODUCT='" + barcode + "'";
+        String query = "SELECT (pCOST_PRICE/pPACK_SIZE) as INDCOST FROM PRODUCTS, WASTEITEMS WHERE wiPRODUCT = barcode AND wiPRODUCT='" + barcode + "'";
         BigDecimal val = BigDecimal.ZERO;
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
             ResultSet set = stmt.executeQuery(query);
             while (set.next()) {
-                double dval = set.getDouble(2);
+                double dval = set.getDouble(1);
                 dval *= set.getInt("1");
                 String value = Double.toString(dval);
                 val = val.add(new BigDecimal(value));
@@ -2967,14 +2967,14 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public BigDecimal getValueSpentOnItem(String barcode) throws IOException, SQLException {
-        String query = "SELECT price FROM RECEIVEDITEMS WHERE PRODUCT='" + barcode + "'";
+        String query = "SELECT riprice FROM RECEIVEDITEMS WHERE riproduct='" + barcode + "'";
         BigDecimal value = BigDecimal.ZERO;
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
             ResultSet set = stmt.executeQuery(query);
             while (set.next()) {
-                BigDecimal p = set.getBigDecimal("PRICE");
+                BigDecimal p = set.getBigDecimal(1);
                 value = value.add(p);
             }
             con.commit();
@@ -3873,10 +3873,10 @@ public abstract class DBConnect extends DataConnect {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            ResultSet set = stmt.executeQuery("SELECT sum(quantity) FROM RECEIVEDITEMS WHERE PRODUCT='" + barcode + "'");
+            ResultSet set = stmt.executeQuery("SELECT sum(riquantity) FROM RECEIVEDITEMS WHERE riproduct='" + barcode + "'");
             int quantity = 0;
             while (set.next()) {
-                quantity += set.getInt(1);
+                quantity = set.getInt(1);
             }
             con.commit();
             return quantity;
@@ -4199,7 +4199,7 @@ public abstract class DBConnect extends DataConnect {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            ResultSet set = stmt.executeQuery("SELECT * FROM ORDERS, SUPPLIERS WHERE ORDERS.SUPPLIER = SUPPLIERS.ID");
+            ResultSet set = stmt.executeQuery("SELECT * FROM ORDERS, SUPPLIERS WHERE osupplier = sid");
             List<Order> orders = new LinkedList<>();
             while (set.next()) {
                 int id = set.getInt(1);

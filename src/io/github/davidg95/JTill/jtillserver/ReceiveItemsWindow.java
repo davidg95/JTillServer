@@ -767,30 +767,31 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             File file = chooser.getSelectedFile();
             try {
                 Scanner in = new Scanner(file);
-                List<Object[]> barcodes = new LinkedList<>();
+                List<FileItem> items = new LinkedList<>();
                 int count = 0;
                 while (in.hasNext()) {
-                    count++;
                     String line = in.nextLine();
                     Scanner inLine = new Scanner(line);
                     inLine.useDelimiter(",");
                     String barcode = inLine.next();
                     int quantity = Integer.parseInt(inLine.next());
+                    FileItem item;
                     try {
                         Product p = dc.getProductByBarcode(barcode);
-                        ReceivedItem item = new ReceivedItem(p, quantity);
-                        model.addItem(item);
+                        item = new FileItem(barcode, p, quantity);
                     } catch (IOException | ProductNotFoundException | SQLException ex) {
-                        barcodes.add(new Object[]{barcode, null, quantity});
+                        count++;
+                        item = new FileItem(barcode, null, quantity);
                     }
+                    items.add(item);
                 }
-                JOptionPane.showMessageDialog(this, "Loaded " + count + " items with " + barcodes.size() + " unknown items", "Load File", JOptionPane.INFORMATION_MESSAGE);
-                if (!barcodes.isEmpty()) {
-                    UnknownBarcodeDialog.showDialog(this, barcodes);
+                JOptionPane.showMessageDialog(this, "Loaded " + items.size() + " items with " + count + " unknown items", "Load File", JOptionPane.INFORMATION_MESSAGE);
+                if (!items.isEmpty()) {
+                    FileEditorDialog.showDialog(this, items);
                 }
-                for (Object[] o : barcodes) {
-                    if (o[1] != null) {
-                        model.addItem(new ReceivedItem((Product) o[1], (int) o[2]));
+                for (FileItem i : items) {
+                    if (i.getProduct() != null) {
+                        model.addItem(new ReceivedItem(i.getProduct(), i.getQuantity()));
                     }
                 }
                 if (!model.getItems().isEmpty()) {
