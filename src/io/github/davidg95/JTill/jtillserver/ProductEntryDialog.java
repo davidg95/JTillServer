@@ -190,6 +190,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             txtCostPrice.setText(product.getCostPrice().toString());
             txtPackSize.setText(product.getPackSize() + "");
             calculateUnitCost();
+            calculateGP();
             chkIncVat.setSelected(product.isPriceIncVat());
         }
     }
@@ -1272,7 +1273,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         int packSize = Integer.parseInt(txtPackSize.getText());
 
         BigDecimal unit = cost.divide(new BigDecimal(packSize), 2, 6);
-        BigDecimal gp = price.divide(unit).subtract(BigDecimal.ONE).multiply(new BigDecimal(100));
+        BigDecimal gp = ((price.divide(unit, 2, 6)).subtract(BigDecimal.ONE)).multiply(new BigDecimal(100));
         txtGP.setText(gp.toString() + "%");
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
