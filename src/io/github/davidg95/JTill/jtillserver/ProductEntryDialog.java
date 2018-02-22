@@ -81,14 +81,14 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         setTitle("Edit Product - " + product.getBarcode());
         showProductPanel();
     }
-    
-    private void showBarcodePanel(){
+
+    private void showBarcodePanel() {
         CardLayout c = (CardLayout) container.getLayout();
         c.show(container, "card2");
         txtBarcode.requestFocus();
     }
-    
-    private void showProductPanel(){
+
+    private void showProductPanel() {
         CardLayout c = (CardLayout) container.getLayout();
         c.show(container, "card3");
         txtName.requestFocus();
@@ -1270,6 +1270,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         product = ProductSelectDialog.showDialog(this);
+        if (product == null) {
+            return;
+        }
         setProduct();
         editMode = true;
         btnCreate.setText("Save");
@@ -1309,6 +1312,11 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         int packSize = Integer.parseInt(txtPackSize.getText());
 
         BigDecimal unit = cost.divide(new BigDecimal(packSize), 2, 6);
+
+        if (unit.compareTo(BigDecimal.ZERO) == 0) {
+            txtGP.setText("---");
+            return;
+        }
         BigDecimal gp = ((price.divide(unit, 2, 6)).subtract(BigDecimal.ONE)).multiply(new BigDecimal(100));
         txtGP.setText(gp.toString() + "%");
     }
