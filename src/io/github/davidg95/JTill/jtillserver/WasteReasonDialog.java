@@ -128,6 +128,7 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         btnClose = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
         tabEdit = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txtID = new javax.swing.JTextField();
@@ -185,6 +186,13 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
             }
         });
 
+        btnEdit.setText("Edit");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout tabViewLayout = new javax.swing.GroupLayout(tabView);
         tabView.setLayout(tabViewLayout);
         tabViewLayout.setHorizontalGroup(
@@ -195,6 +203,8 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
                     .addGroup(tabViewLayout.createSequentialGroup()
                         .addComponent(btnNew)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnEdit)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
@@ -207,7 +217,8 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(tabViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNew)
-                    .addComponent(btnClose))
+                    .addComponent(btnClose)
+                    .addComponent(btnEdit))
                 .addContainerGap())
         );
 
@@ -350,6 +361,7 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
         if (row == -1) {
             return;
         }
+        btnEdit.setEnabled(true);
         tabbed.setEnabledAt(1, true);
         WasteReason r = reasons.get(row);
         setCurrent(r);
@@ -389,10 +401,15 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
         setVisible(false);
     }//GEN-LAST:event_btnClose2ActionPerformed
 
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        tabbed.setSelectedIndex(1);
+    }//GEN-LAST:event_btnEditActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnClose2;
     private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnNew;
     private javax.swing.JButton btnSave;
     private javax.swing.JComboBox<String> cmbPriviledge;

@@ -228,6 +228,7 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
         table = new javax.swing.JTable();
         btnReason = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
         panelEdit = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -285,6 +286,13 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
             }
         });
 
+        btnEdit.setText("Edit");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelViewLayout = new javax.swing.GroupLayout(panelView);
         panelView.setLayout(panelViewLayout);
         panelViewLayout.setHorizontalGroup(
@@ -295,6 +303,8 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
                     .addGroup(panelViewLayout.createSequentialGroup()
                         .addComponent(btnReason)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnEdit)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClose)))
                 .addContainerGap())
@@ -307,7 +317,8 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnReason)
-                    .addComponent(btnClose))
+                    .addComponent(btnClose)
+                    .addComponent(btnEdit))
                 .addContainerGap())
         );
 
@@ -481,6 +492,7 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
         if (row == -1) {
             return;
         }
+        btnEdit.setEnabled(true);
         tabbed.setEnabledAt(1, true);
         RefundReason r = model.getReason(row);
         setCurrent(r);
@@ -489,10 +501,15 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableMouseClicked
 
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        tabbed.setSelectedIndex(1);
+    }//GEN-LAST:event_btnEditActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnClose2;
     private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnReason;
     private javax.swing.JButton btnSave;
     private javax.swing.JComboBox<String> cmbPriviledge;
