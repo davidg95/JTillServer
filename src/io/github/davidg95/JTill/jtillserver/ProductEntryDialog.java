@@ -320,13 +320,13 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         txtUnitCost = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
-        txtPackSize = new javax.swing.JFormattedTextField();
         chkIncVat = new javax.swing.JCheckBox();
         btnCalculate = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         txtPrice = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         txtGP = new javax.swing.JTextField();
+        txtPackSize = new javax.swing.JTextField();
         panelOpen = new javax.swing.JPanel();
         jLabel21 = new javax.swing.JLabel();
         txtScale = new javax.swing.JTextField();
@@ -457,7 +457,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btnEdit)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
                         .addComponent(btnEnter, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCopyDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -590,13 +590,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
         jLabel14.setText("Price (£):");
 
-        txtPackSize.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
-        txtPackSize.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtPackSizeFocusLost(evt);
-            }
-        });
-
         chkIncVat.setText("Price includes VAT");
 
         btnCalculate.setText("Calculate based on GP");
@@ -644,9 +637,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                                 .addComponent(jLabel19))
                             .addComponent(btnCalculate))
                         .addGap(2, 2, 2)
-                        .addGroup(panelStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelStandardLayout.createSequentialGroup()
-                                .addComponent(txtPackSize, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(panelStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelStandardLayout.createSequentialGroup()
+                                .addGap(2, 2, 2)
+                                .addComponent(txtPackSize)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel3))
                             .addComponent(chkIncVat))
@@ -668,10 +662,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 .addGroup(panelStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(txtCostPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtPackSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel19)
                     .addComponent(jLabel3)
-                    .addComponent(txtUnitCost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtUnitCost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPackSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCalculate, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -878,7 +872,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 601, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -979,7 +973,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panProductLayout.setVerticalGroup(
             panProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1111,6 +1105,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
                 resetPanels();
                 txtBarcode.setText("");
+                setTitle("Create New Product");
                 CardLayout c = (CardLayout) container.getLayout();
                 c.show(container, "card2");
                 txtBarcode.requestFocus();
@@ -1234,11 +1229,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         calculateUnitCost();
         calculateGP();
     }//GEN-LAST:event_txtCostPriceFocusLost
-
-    private void txtPackSizeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPackSizeFocusLost
-        calculateUnitCost();
-        calculateGP();
-    }//GEN-LAST:event_txtPackSizeFocusLost
 
     private void radStandardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radStandardActionPerformed
         for (Component c : panelStandard.getComponents()) {
@@ -1390,7 +1380,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JTextField txtMin;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtOrderCode;
-    private javax.swing.JFormattedTextField txtPackSize;
+    private javax.swing.JTextField txtPackSize;
     private javax.swing.JTextField txtPrice;
     private javax.swing.JTextField txtPriceLimit;
     private javax.swing.JTextField txtScale;

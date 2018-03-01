@@ -330,8 +330,6 @@ public class TillServer implements JConnListener {
             }
         };
         SwingUtilities.invokeLater(runnable);
-        JOptionPane.showMessageDialog(null, "License file not detected. JTill Server will now close", "License Error", JOptionPane.ERROR_MESSAGE);
-        System.exit(0);
     }
 
     /**
