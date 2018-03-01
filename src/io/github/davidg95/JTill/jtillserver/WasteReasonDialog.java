@@ -64,10 +64,12 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
     }
 
     public static void showDialog() {
-        if (dialog == null) {
-            dialog = new WasteReasonDialog();
-            GUI.gui.internal.add(dialog);
+        if (dialog != null && dialog.isVisible()) {
+            dialog.setVisible(true);
+            return;
         }
+        dialog = new WasteReasonDialog();
+        GUI.gui.internal.add(dialog);
         dialog.setVisible(true);
         try {
             dialog.setIcon(false);
