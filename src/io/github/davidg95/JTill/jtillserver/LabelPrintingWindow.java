@@ -114,8 +114,7 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
                     model.removeLabel(index);
                 }
             }
-        }
-        );
+        });
     }
 
     private class MyModel implements TableModel {

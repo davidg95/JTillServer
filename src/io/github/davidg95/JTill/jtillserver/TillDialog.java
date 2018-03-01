@@ -11,13 +11,16 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -27,8 +30,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
 
     private Till till;
     private final DataConnect dc;
-    private final DefaultTableModel model;
-    private List<Sale> contents;
+    private MyModel model;
 
     /**
      * Creates new form TillDialog
@@ -65,9 +67,6 @@ public class TillDialog extends javax.swing.JInternalFrame {
         } catch (IOException | SQLException | ScreenNotFoundException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
-        model = (DefaultTableModel) table.getModel();
-        table.setModel(model);
-        table.setSelectionModel(new ForcedListSelectionModel());
         getAllSales();
         if (till.isConnected()) {
             btnSendData.setEnabled(true);
@@ -90,15 +89,107 @@ public class TillDialog extends javax.swing.JInternalFrame {
     private void getAllSales() {
         try {
             BigDecimal runningTotal = BigDecimal.ZERO;
-            contents = till.getAllTerminalSales(true);
-            model.setRowCount(0);
-            for (Sale s : contents) {
-                model.addRow(new Object[]{s.getDate(), s.getTotalItemCount(), "£" + s.getTotal().setScale(2, 6)});
-                runningTotal = runningTotal.add(s.getTotal());
-            }
+            List<Sale> contents = till.getAllTerminalSales(true);
+            model = new MyModel(contents);
+            table.setModel(model);
+            table.setSelectionModel(new ForcedListSelectionModel());
+            table.getColumnModel().getColumn(1).setMinWidth(40);
+            table.getColumnModel().getColumn(1).setMaxWidth(40);
             lblTotal.setText("Total: £" + new DecimalFormat("0.00").format(runningTotal));
         } catch (IOException | SQLException ex) {
             Logger.getLogger(TillDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private class MyModel implements TableModel {
+
+        private final List<Sale> sales;
+        private final List<TableModelListener> listeners;
+
+        public MyModel(List<Sale> sales) {
+            this.sales = sales;
+            listeners = new LinkedList<>();
+        }
+
+        public Sale get(int i) {
+            return sales.get(i);
+        }
+
+        @Override
+        public int getRowCount() {
+            return sales.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 3;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0: {
+                    return "Timestamp";
+                }
+                case 1: {
+                    return "Items";
+                }
+                case 2: {
+                    return "Value";
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return Object.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            Sale s = sales.get(rowIndex);
+            switch (columnIndex) {
+                case 0: {
+                    return s.getDate();
+                }
+                case 1: {
+                    return s.getTotalItemCount();
+                }
+                case 2: {
+                    return "£" + s.getTotal();
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        }
+
+        private void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
         }
     }
 
@@ -489,7 +580,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
         if (row == -1) {
             return;
         }
-        Sale s = contents.get(row);
+        Sale s = model.get(row);
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
                 SaleDialog.showSaleDialog(s);
