@@ -61,7 +61,6 @@ public class TillServer implements JConnListener {
 
     private int connections;
     private int conn_limit = 9999;
-    private boolean licensed = true;
 
     private static boolean headless;
 
@@ -263,30 +262,30 @@ public class TillServer implements JConnListener {
     }
 
     public void checkUpdate() {
-        try {
-            String latest = UpdateChecker.checkForUpdate();
-            if (!latest.equals(TillServer.VERSION)) {
-                if (!headless) {
-                    if (JOptionPane.showConfirmDialog(null, "Version " + latest + " avaliable. Download now?", "Update", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                        UpdateChecker.downloadServerUpdate();
-                    }
-                } else {
-                    System.out.println("Version " + latest + "avaliable. Download now? <y/n>");
-                    Scanner in = new Scanner(System.in);
-                    String input = in.next();
-                    if (input.equalsIgnoreCase("y")) {
-                        LOG.info("Downloading update...");
-                        UpdateChecker.downloadServerUpdate();
-                        LOG.info("Donwload complete!");
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            LOG.log(Level.SEVERE, "Error checking for update", ex);
-            if (!headless) {
-                JOptionPane.showMessageDialog(null, "Error checking for update", "Update", JOptionPane.INFORMATION_MESSAGE);
-            }
-        }
+//        try {
+//            String latest = UpdateChecker.checkForUpdate();
+//            if (!latest.equals(TillServer.VERSION)) {
+//                if (!headless) {
+//                    if (JOptionPane.showConfirmDialog(null, "Version " + latest + " avaliable. Download now?", "Update", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+//                        UpdateChecker.downloadServerUpdate();
+//                    }
+//                } else {
+//                    System.out.println("Version " + latest + "avaliable. Download now? <y/n>");
+//                    Scanner in = new Scanner(System.in);
+//                    String input = in.next();
+//                    if (input.equalsIgnoreCase("y")) {
+//                        LOG.info("Downloading update...");
+//                        UpdateChecker.downloadServerUpdate();
+//                        LOG.info("Donwload complete!");
+//                    }
+//                }
+//            }
+//        } catch (Exception ex) {
+//            LOG.log(Level.SEVERE, "Error checking for update", ex);
+//            if (!headless) {
+//                JOptionPane.showMessageDialog(null, "Error checking for update", "Update", JOptionPane.INFORMATION_MESSAGE);
+//            }
+//        }
     }
 
     /**
@@ -344,7 +343,7 @@ public class TillServer implements JConnListener {
             System.out.println("SystemTray is not supported");
             return;
         }
-        final PopupMenu popup = new PopupMenu();
+        PopupMenu popup = new PopupMenu();
         trayIcon = new TrayIcon(icon);
         tray = SystemTray.getSystemTray();
 
