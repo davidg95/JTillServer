@@ -23,8 +23,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Properties;
@@ -318,16 +316,6 @@ public class TillServer implements JConnListener {
             TillSplashScreen.hideSplashScreen();
             g.setVisible(true);
         }
-//        LicenseThread thread = new LicenseThread();
-//        thread.start();
-//        licensed = checkLicense();
-//        File f = new File("license.dat");
-//        if (f.exists()) {
-//            licensed = true;
-//        } else {
-//            LicenseWindow.showWindow(null);
-//            licensed = true;
-//        }
         final Runnable runnable = () -> {
             if (headless) {
                 try {
@@ -343,89 +331,8 @@ public class TillServer implements JConnListener {
             }
         };
         SwingUtilities.invokeLater(runnable);
-        if (licensed) {
-//            g.checkDatabase();
-//            g.login();
-        } else {
-            JOptionPane.showMessageDialog(null, "License file not detected. JTill Server will now close", "License Error", JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
-        }
-    }
-
-    private boolean checkLicense() {
-        for (File r : File.listRoots()) {
-            try {
-                for (File f : r.listFiles()) {
-                    if (f.getName().equals("license.txt")) {
-                        try {
-                            String hash = fileHash(f);
-                            JOptionPane.showMessageDialog(null, "License Hash-\n" + hash);
-                            Scanner in = new Scanner(f);
-                            String line = in.nextLine();
-                            String liNo = line.substring(line.indexOf(":") + 2);
-                            line = in.nextLine();
-                            conn_limit = Integer.parseInt(line.substring(line.indexOf(":") + 2));
-                            db.setLicenseInfo(liNo, conn_limit);
-                            return true;
-                        } catch (FileNotFoundException ex) {
-                            JOptionPane.showMessageDialog(null, "Error loading license file. JTill Server will now close.", "License", JOptionPane.ERROR_MESSAGE);
-                            System.exit(0);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-
-            }
-        }
-        return false;
-    }
-
-    private String fileHash(File f) {
-        try {
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            Scanner in = new Scanner(f);
-            String s = "";
-            while (in.hasNext()) {
-                s += in.next();
-            }
-            byte[] byteHash = md5.digest(s.getBytes());
-            return new String(byteHash);
-        } catch (NoSuchAlgorithmException | FileNotFoundException ex) {
-            Logger.getLogger(TillServer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    private class LicenseThread extends Thread {
-
-        public LicenseThread() {
-
-        }
-
-        @Override
-        public void run() {
-            Main:
-            while (true) {
-                try {
-                    Thread.sleep(5000);
-                    for (File r : File.listRoots()) {
-                        try {
-                            for (File f : r.listFiles()) {
-                                if (f.getName().equals("license.txt")) {
-                                    continue Main;
-                                }
-                            }
-                        } catch (Exception e) {
-
-                        }
-                    }
-                    JOptionPane.showMessageDialog(null, "License file not detected. JTill Server will now close", "License Error", JOptionPane.ERROR_MESSAGE);
-                    System.exit(0);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(TillServer.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
+        JOptionPane.showMessageDialog(null, "License file not detected. JTill Server will now close", "License Error", JOptionPane.ERROR_MESSAGE);
+        System.exit(0);
     }
 
     /**
