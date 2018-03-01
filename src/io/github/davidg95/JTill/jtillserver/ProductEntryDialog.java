@@ -1282,43 +1282,51 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void calculateUnitCost() {
-        if (txtCostPrice.getText().isEmpty()) {
-            return;
-        }
-        if (txtPackSize.getText().isEmpty()) {
-            return;
-        }
+        try {
+            if (txtCostPrice.getText().isEmpty()) {
+                return;
+            }
+            if (txtPackSize.getText().isEmpty()) {
+                return;
+            }
 
-        BigDecimal cost = new BigDecimal(txtCostPrice.getText());
-        int packSize = Integer.parseInt(txtPackSize.getText());
+            BigDecimal cost = new BigDecimal(txtCostPrice.getText());
+            int packSize = Integer.parseInt(txtPackSize.getText());
 
-        BigDecimal unit = cost.divide(new BigDecimal(packSize), 2, 6);
-        txtUnitCost.setText(unit.toString());
+            BigDecimal unit = cost.divide(new BigDecimal(packSize), 2, 6);
+            txtUnitCost.setText(unit.toString());
+        } catch (NumberFormatException e) {
+            txtUnitCost.setText("INVALID INPUT");
+        }
     }
 
     private void calculateGP() {
-        if (txtCostPrice.getText().isEmpty()) {
-            return;
-        }
-        if (txtPackSize.getText().isEmpty()) {
-            return;
-        }
-        if (txtPrice.getText().isEmpty()) {
-            return;
-        }
+        try {
+            if (txtCostPrice.getText().isEmpty()) {
+                return;
+            }
+            if (txtPackSize.getText().isEmpty()) {
+                return;
+            }
+            if (txtPrice.getText().isEmpty()) {
+                return;
+            }
 
-        BigDecimal price = new BigDecimal(txtPrice.getText());
-        BigDecimal cost = new BigDecimal(txtCostPrice.getText());
-        int packSize = Integer.parseInt(txtPackSize.getText());
+            BigDecimal price = new BigDecimal(txtPrice.getText());
+            BigDecimal cost = new BigDecimal(txtCostPrice.getText());
+            int packSize = Integer.parseInt(txtPackSize.getText());
 
-        BigDecimal unit = cost.divide(new BigDecimal(packSize), 2, 6);
+            BigDecimal unit = cost.divide(new BigDecimal(packSize), 2, 6);
 
-        if (unit.compareTo(BigDecimal.ZERO) == 0) {
-            txtGP.setText("---");
-            return;
+            if (unit.compareTo(BigDecimal.ZERO) == 0) {
+                txtGP.setText("---");
+                return;
+            }
+            BigDecimal gp = ((price.divide(unit, 2, 6)).subtract(BigDecimal.ONE)).multiply(new BigDecimal(100));
+            txtGP.setText(gp.toString() + "%");
+        } catch (NumberFormatException e) {
+            txtGP.setText("INVALID INPUT");
         }
-        BigDecimal gp = ((price.divide(unit, 2, 6)).subtract(BigDecimal.ONE)).multiply(new BigDecimal(100));
-        txtGP.setText(gp.toString() + "%");
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
