@@ -443,6 +443,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         txtOrder = new javax.swing.JTextField();
         txtCat = new javax.swing.JTextField();
         txtTax = new javax.swing.JTextField();
+        btnEnquiry = new javax.swing.JButton();
         btnAdvanced = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -693,6 +694,13 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
         txtTax.setEditable(false);
 
+        btnEnquiry.setText("Enquiry");
+        btnEnquiry.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEnquiryActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelCurrentLayout = new javax.swing.GroupLayout(panelCurrent);
         panelCurrent.setLayout(panelCurrentLayout);
         panelCurrentLayout.setHorizontalGroup(
@@ -764,14 +772,17 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCurrentLayout.createSequentialGroup()
                 .addContainerGap(33, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelCurrentLayout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelCurrentLayout.createSequentialGroup()
                         .addComponent(btnEditProduct)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRemoveProduct))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnEnquiry)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRemoveProduct)))
                 .addContainerGap())
         );
         panelCurrentLayout.setVerticalGroup(
@@ -839,9 +850,10 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
                 .addGap(32, 32, 32)
-                .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panelCurrentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnRemoveProduct)
                     .addComponent(btnEditProduct)
-                    .addComponent(btnRemoveProduct))
+                    .addComponent(btnEnquiry))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1122,28 +1134,28 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         }
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
-            JMenuItem enquiry = new JMenuItem("Enquiry");
             JMenuItem edit = new JMenuItem("Edit");
+            JMenuItem enquiry = new JMenuItem("Enquiry");
             JMenuItem remove = new JMenuItem("Remove");
             final Font boldFont = new Font(enquiry.getFont().getFontName(), Font.BOLD, enquiry.getFont().getSize());
-            enquiry.setFont(boldFont);
+            edit.setFont(boldFont);
+            edit.addActionListener((event) -> {
+                ProductEntryDialog.showDialog(this, p);
+            });
             enquiry.addActionListener((ActionEvent e) -> {
                 ProductEnquiry.showWindow(p);
             });
             remove.addActionListener((ActionEvent e) -> {
                 removeProduct(p);
             });
-            edit.addActionListener((event) -> {
-                ProductEntryDialog.showDialog(this, p);
-            });
-            menu.add(enquiry);
             menu.add(edit);
+            menu.add(enquiry);
             menu.addSeparator();
             menu.add(remove);
             menu.show(tableProducts, evt.getX(), evt.getY());
         } else {
             if (evt.getClickCount() == 2) {
-                ProductEnquiry.showWindow(p);
+                ProductEntryDialog.showDialog(this, p);
             }
         }
     }//GEN-LAST:event_tableProductsMouseClicked
@@ -1152,6 +1164,10 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         CondimentWindow.showWindow(product);
     }//GEN-LAST:event_btnCondimentsActionPerformed
 
+    private void btnEnquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnquiryActionPerformed
+        ProductEnquiry.showWindow(product);
+    }//GEN-LAST:event_btnEnquiryActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdvanced;
     private javax.swing.JButton btnCSV;
@@ -1159,6 +1175,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnCondiments;
     private javax.swing.JButton btnDepartments;
     private javax.swing.JButton btnEditProduct;
+    private javax.swing.JButton btnEnquiry;
     private javax.swing.JButton btnNewProduct;
     private javax.swing.JButton btnReceiveStock;
     private javax.swing.JButton btnRemoveProduct;
