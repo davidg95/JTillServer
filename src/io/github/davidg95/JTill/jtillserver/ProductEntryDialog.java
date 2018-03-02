@@ -1093,9 +1093,16 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "Product has been saved", "Edit Product", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 product = dc.addProduct(product);
-                if (nextBarcode != null) {
-                    dc.setSetting("NEXT_PLU", nextBarcode);
-                    nextBarcode = null;
+                if (chkAssignNextPrivate.isSelected()) {
+                    if (nextBarcode != null) {
+                        dc.setSetting("NEXT_PRIVATE", nextBarcode);
+                        nextBarcode = null;
+                    }
+                } else {
+                    if (nextBarcode != null) {
+                        dc.setSetting("NEXT_PLU", nextBarcode);
+                        nextBarcode = null;
+                    }
                 }
                 JOptionPane.showMessageDialog(this, "New product has been created", "New Product", JOptionPane.INFORMATION_MESSAGE);
                 resetPanels();
