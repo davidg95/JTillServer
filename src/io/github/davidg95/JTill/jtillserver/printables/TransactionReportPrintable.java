@@ -66,9 +66,9 @@ public class TransactionReportPrintable implements Printable {
                 negativeSaleValue = negativeSaleValue.add(s.getTotal());
             }
             for (SaleItem si : s.getSaleItems()) {
-                taxValue = taxValue.add(si.getTaxValue());
-                if (si.getPrice().compareTo(BigDecimal.ZERO) == -1) {
-                    refundsValue = refundsValue.add(si.getPrice());
+                taxValue = taxValue.add(si.getTotalTax());
+                if (si.getTotalPrice().compareTo(BigDecimal.ZERO) == -1) {
+                    refundsValue = refundsValue.add(si.getTotalPrice());
                 }
             }
         }

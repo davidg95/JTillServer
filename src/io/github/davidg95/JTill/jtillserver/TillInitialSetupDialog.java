@@ -12,8 +12,13 @@ import java.awt.Frame;
 import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListDataListener;
 
 /**
  *
@@ -22,6 +27,8 @@ import javax.swing.JOptionPane;
 public class TillInitialSetupDialog extends javax.swing.JDialog {
 
     private static Till till;
+
+    private MyModel model;
 
     private final DataConnect dc;
 
@@ -39,8 +46,13 @@ public class TillInitialSetupDialog extends javax.swing.JDialog {
     }
 
     private void init() {
-        txtName.setText(till.getName());
-        txtScreen.setText("DEFAULT");
+        try {
+            model = new MyModel(dc.getAllScreens());
+            cmbScreen.setModel(model);
+            txtName.setText(till.getName());
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static Till showDialog(Component parent, Till t) {
@@ -52,6 +64,50 @@ public class TillInitialSetupDialog extends javax.swing.JDialog {
         final TillInitialSetupDialog dialog = new TillInitialSetupDialog(window);
         dialog.setVisible(true);
         return till;
+    }
+
+    private class MyModel implements ComboBoxModel {
+
+        private final List<Screen> screens;
+        private Screen selected;
+
+        public MyModel(List<Screen> screens) {
+            this.screens = screens;
+            if (!screens.isEmpty()) {
+                selected = screens.get(0);
+            } else {
+                selected = null;
+            }
+        }
+
+        @Override
+        public void setSelectedItem(Object anItem) {
+            selected = (Screen) anItem;
+        }
+
+        @Override
+        public Object getSelectedItem() {
+            return selected;
+        }
+
+        @Override
+        public int getSize() {
+            return screens.size();
+        }
+
+        @Override
+        public Object getElementAt(int index) {
+            return screens.get(index);
+        }
+
+        @Override
+        public void addListDataListener(ListDataListener l) {
+        }
+
+        @Override
+        public void removeListDataListener(ListDataListener l) {
+        }
+
     }
 
     /**
@@ -66,10 +122,9 @@ public class TillInitialSetupDialog extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        txtScreen = new javax.swing.JTextField();
-        btnSet = new javax.swing.JButton();
         btnConfirm = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
+        cmbScreen = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Terminal Setup");
@@ -78,15 +133,6 @@ public class TillInitialSetupDialog extends javax.swing.JDialog {
         jLabel1.setText("Terminal Name:");
 
         jLabel2.setText("Default Screen:");
-
-        txtScreen.setEditable(false);
-
-        btnSet.setText("Set");
-        btnSet.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSetActionPerformed(evt);
-            }
-        });
 
         btnConfirm.setText("Confirm Till");
         btnConfirm.addActionListener(new java.awt.event.ActionListener() {
@@ -102,6 +148,8 @@ public class TillInitialSetupDialog extends javax.swing.JDialog {
             }
         });
 
+        cmbScreen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -110,22 +158,18 @@ public class TillInitialSetupDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnConfirm)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 115, Short.MAX_VALUE)
+                        .addComponent(btnCancel))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel2)
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnSet))
-                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnConfirm)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancel)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtName)
+                            .addComponent(cmbScreen, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -137,9 +181,8 @@ public class TillInitialSetupDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtScreen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSet))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                    .addComponent(cmbScreen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnConfirm)
                     .addComponent(btnCancel))
@@ -148,15 +191,6 @@ public class TillInitialSetupDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetActionPerformed
-        Screen s = ScreenSelectDialog.showDialog(this);
-        if (s == null) {
-            return;
-        }
-        txtScreen.setText(s.getName());
-        till.setDefaultScreen(s.getId());
-    }//GEN-LAST:event_btnSetActionPerformed
 
     private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
         try {
@@ -170,6 +204,8 @@ public class TillInitialSetupDialog extends javax.swing.JDialog {
                 return;
             }
             till.setName(txtName.getText());
+            Screen s = (Screen) model.getSelectedItem();
+            till.setDefaultScreen(s.getId());
             this.setVisible(false);
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -184,10 +220,9 @@ public class TillInitialSetupDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnConfirm;
-    private javax.swing.JButton btnSet;
+    private javax.swing.JComboBox<String> cmbScreen;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JTextField txtName;
-    private javax.swing.JTextField txtScreen;
     // End of variables declaration//GEN-END:variables
 }

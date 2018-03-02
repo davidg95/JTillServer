@@ -1008,13 +1008,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Must enter a product name", "Save Changes", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        int orderCode = 0;
-        try {
-            orderCode = Integer.parseInt(txtOrder.getText());
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Invalid input", "Product", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        String orderCode = txtOrder.getText();
         Category category = null;
         if (!categorys.isEmpty()) {
             category = categorys.get(cmbCategory.getSelectedIndex());

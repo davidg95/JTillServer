@@ -398,6 +398,9 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
      * Method to show the buttons options dialog for a particular button.
      */
     private void showButtonOptions() {
+        if(currentScreen == null){
+            return;
+        }
         currentButton = ButtonOptionDialog.showDialog(this, currentButton, currentScreen.getWidth() - currentButton.getX() + 1, currentScreen.getHeight() - currentButton.getY() + 1);
         if (currentButton == null) { //If it is null then the button is getting removed.
             return;

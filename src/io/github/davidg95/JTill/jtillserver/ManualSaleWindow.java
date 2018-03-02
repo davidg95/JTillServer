@@ -22,7 +22,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -32,9 +34,7 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
 
     private final DataConnect dc;
 
-    private Sale sale;
-
-    private final DefaultTableModel model;
+    private MyModel model;
 
     private MyComboModel cmbModel;
 
@@ -51,7 +51,6 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
         super.setMaximizable(true);
         super.setIconifiable(true);
         df = new DecimalFormat("0.00");
-        model = (DefaultTableModel) table.getModel();
         init();
     }
 
@@ -63,14 +62,20 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
-        model.setRowCount(0);
         try {
+            List<Till> tills = dc.getAllTills();
+            if (tills.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "You have not set up any terminals yet", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             cmbModel = new MyComboModel(dc.getAllTills());
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex);
         }
         cmbTerminal.setModel(cmbModel);
-        sale = new Sale(((Till) cmbTerminal.getSelectedItem()), GUI.staff);
+        Sale sale = new Sale(((Till) cmbTerminal.getSelectedItem()), GUI.staff);
+        model = new MyModel(sale);
+        table.setModel(model);
         lblTotal.setText("Total: £0.00");
     }
 
@@ -130,22 +135,138 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
         }
     }
 
-    private void addItem(Product p, int q) {
-        sale.addItem(p, q);
-        refreshTable();
-    }
+    private class MyModel implements TableModel {
 
-    private void refreshTable() {
-        model.setRowCount(0);
-        BigDecimal total = BigDecimal.ZERO;
-        for (SaleItem si : sale.getSaleItems()) {
-            final Product p = (Product) si.getProduct();
-            si.setTotalPrice(p.getPrice().multiply(new BigDecimal(si.getQuantity())).setScale(2).toString());
-            Object[] s = new Object[]{p.getBarcode(), p.getLongName(), si.getQuantity(), si.getTotalPrice()};
-            total = total.add(si.getPrice().multiply(new BigDecimal(si.getQuantity())));
-            model.addRow(s);
+        private final Sale sale;
+        private final List<TableModelListener> listeners;
+
+        public MyModel(Sale s) {
+            this.sale = s;
+            listeners = new LinkedList<>();
         }
-        lblTotal.setText("Total: £" + total.setScale(2).toString());
+
+        public void addItem(Product p, BigDecimal price, int quantity) {
+            sale.addItem(p, price, quantity);
+            alertAll();
+        }
+
+        public void removeItem(int i) {
+            sale.getSaleItems().remove(i);
+            alertAll();
+        }
+
+        public void removeItem(SaleItem i) {
+            sale.voidItem(i);
+            alertAll();
+        }
+
+        public SaleItem getItem(int i) {
+            return sale.getSaleItems().get(i);
+        }
+
+        public boolean isEmpty() {
+            return sale.getSaleItems().isEmpty();
+        }
+
+        public Sale getSale() {
+            return sale;
+        }
+
+        @Override
+        public int getRowCount() {
+            return sale.getSaleItems().size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 4;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0: {
+                    return "Barcode";
+                }
+                case 1: {
+                    return "Name";
+                }
+                case 2: {
+                    return "Quantity";
+                }
+                case 3: {
+                    return "Total";
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            if(columnIndex == 2){
+                return Integer.class;
+            }
+            return Object.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return columnIndex == 2;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            SaleItem item = sale.getSaleItems().get(rowIndex);
+            switch (columnIndex) {
+                case 0: {
+                    return item.getProduct().getBarcode();
+                }
+                case 1: {
+                    return item.getProduct().getLongName();
+                }
+                case 2: {
+                    return item.getQuantity();
+                }
+                case 3: {
+                    return "£" + item.getTotalPrice();
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            if (columnIndex == 2) {
+                sale.getSaleItems().get(rowIndex).setQuantity((int) aValue);
+                alertAll();
+            }
+        }
+
+        private void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+            BigDecimal total = BigDecimal.ZERO;
+            for (SaleItem si : sale.getSaleItems()) {
+                final Product p = (Product) si.getProduct();
+                total = total.add(si.getIndividualPrice().multiply(new BigDecimal(si.getQuantity())));
+            }
+            lblTotal.setText("Total: £" + total.setScale(2).toString());
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
     }
 
     /**
@@ -233,27 +354,26 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnComplete)
+                        .addComponent(btnCancel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancel))
+                        .addComponent(btnComplete))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(btnAdd)
                         .addGap(30, 30, 30)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(lblTotal)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE))))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmbTerminal, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmbTerminal, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,7 +382,7 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(cmbTerminal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAdd))
@@ -283,26 +403,29 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
         if (p == null) {
             return;
         }
+        BigDecimal price;
         if (p.isOpen()) {
-            double price = Double.parseDouble(JOptionPane.showInputDialog(this, "Enter price", "Sale", JOptionPane.PLAIN_MESSAGE));
-            p.setPrice(new BigDecimal(Double.toString(price)));
+            price = new BigDecimal(JOptionPane.showInputDialog(this, "Enter price", "Sale", JOptionPane.PLAIN_MESSAGE));
+        } else{
+            price = p.getPrice();
         }
         int amount = Integer.parseInt((String) JOptionPane.showInputDialog(this, "Enter quantity", "Sale", JOptionPane.PLAIN_MESSAGE, null, null, "1"));
-        this.addItem(p, amount);
+        model.addItem(p, price, amount);
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnCompleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompleteActionPerformed
-        if (sale.getSaleItems().isEmpty()) {
+        if (model.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No items in sale", "Complete Sale", JOptionPane.ERROR_MESSAGE);
             return;
         }
         try {
-            sale.complete();
-            sale.setDate(new Date());
-            sale.setCustomer(null);
-            sale.setStaff(GUI.staff);
-            sale.setMop(Sale.MOP_CASH);
-            dc.addSale(sale);
+            Sale s = model.getSale();
+            s.complete();
+            s.setDate(new Date());
+            s.setCustomer(null);
+            s.setStaff(GUI.staff);
+            s.setMop(Sale.MOP_CASH);
+            dc.addSale(model.getSale());
             init();
             JOptionPane.showMessageDialog(this, "Sale complete", "Sale", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException | SQLException ex) {
@@ -312,30 +435,32 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCompleteActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        setVisible(false);
+        if (model.isEmpty()) {
+            if (JOptionPane.showConfirmDialog(this, "Warning! This will abandon the current sale, continue?", "Abandon Sale", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                setVisible(false);
+            }
+        }
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         if (table.getSelectedRow() == -1) {
             return;
         }
-        SaleItem item = sale.getSaleItems().get(table.getSelectedRow());
+        SaleItem item = model.getSale().getSaleItems().get(table.getSelectedRow());
         if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem quantity = new JMenuItem("Change Quantity");
             JMenuItem remove = new JMenuItem("Remove");
             quantity.addActionListener((ActionEvent) -> {
                 try {
-                    int q = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter new quantity", "Quantity for " + item.getName(), JOptionPane.PLAIN_MESSAGE));
+                    int q = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter new quantity", "Quantity for " + item.getProduct().getLongName(), JOptionPane.PLAIN_MESSAGE));
                     item.setQuantity(q);
-                    refreshTable();
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
             remove.addActionListener((ActionEvent) -> {
-                sale.voidItem(item);
-                refreshTable();
+                model.removeItem(item);
             });
 
             menu.add(quantity);

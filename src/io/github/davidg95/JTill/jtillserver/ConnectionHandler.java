@@ -586,11 +586,6 @@ public class ConnectionHandler {
         return dc.addSaleItem(s, i);
     }
 
-    @JConnMethod("REMOVESALEITEM")
-    public void removeSaleItem(@JConnParameter("ID") int id) throws IOException, SQLException, JTillException {
-        dc.removeSaleItem(id);
-    }
-
     @JConnMethod("GETSALEITEM")
     public SaleItem getSaleItem(@JConnParameter("ID") int id) throws IOException, SQLException, JTillException {
         return dc.getSaleItem(id);
@@ -605,12 +600,6 @@ public class ConnectionHandler {
     public List<SaleItem> subSaleItemQuery(@JConnParameter("QUERY") String q) throws IOException, SQLException {
         return dc.submitSaleItemQuery(q);
     }
-
-    @JConnMethod("UPDATESALEITEM")
-    public SaleItem updateSaleItem(@JConnParameter("ITEM") SaleItem i) throws IOException, SQLException, JTillException {
-        return dc.updateSaleItem(i);
-    }
-
     @JConnMethod("GETTOTALSOLDITEM")
     public int getTotalSoldItem(@JConnParameter("ID") String id) throws IOException, SQLException, ProductNotFoundException {
         return dc.getTotalSoldOfItem(id);

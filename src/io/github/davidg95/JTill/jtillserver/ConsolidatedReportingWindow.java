@@ -114,27 +114,27 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
             for (Sale s : sales) {
                 total = total.add(s.getTotal());
                 for (SaleItem si : s.getSaleItems()) {
-                    cost = cost.add(si.getCost());
+                    cost = cost.add(si.getTotalCost());
                     for (Department d : departments) {
                         final Product p = (Product) si.getProduct();
                         if (d.equals(p.getDepartment())) {
-                            d.addToSales(si.getPrice());
+                            d.addToSales(si.getTotalPrice());
                         }
                     }
                     for (Category c : categorys) {
                         final Product p = (Product) si.getProduct();
                         if (c.equals(p.getCategory())) {
-                            c.addToSales(si.getPrice());
+                            c.addToSales(si.getTotalPrice());
                         }
                     }
                     for (Tax t : taxes) {
                         final Product p = (Product) si.getProduct();
                         if (t.getId() == p.getTax().getId()) {
-                            t.addToSales(si.getPrice());
-                            t.addToPayable(si.getTaxValue());
+                            t.addToSales(si.getTotalPrice());
+                            t.addToPayable(si.getTotalTax());
                         }
                     }
-                    tax = tax.add(si.getTaxValue());
+                    tax = tax.add(si.getTotalTax());
                 }
             }
 

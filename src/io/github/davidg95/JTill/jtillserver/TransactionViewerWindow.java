@@ -100,7 +100,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
             for (Sale s : sales) {
                 totalValue = totalValue.add(s.getTotal());
                 for (SaleItem si : s.getSaleItems()) {
-                    totalTax = totalTax.add(si.getTaxValue());
+                    totalTax = totalTax.add(si.getTotalTax());
                 }
             }
             txtTotalSales.setValue(totalSales);

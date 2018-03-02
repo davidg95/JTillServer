@@ -877,8 +877,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "Order code must be a number", "Search", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                int order = Integer.parseInt(search);
-                if (p.getOrderCode() == order) {
+                if (p.getOrderCode().equals(search)) {
                     newList.add(p);
                 }
             } else {

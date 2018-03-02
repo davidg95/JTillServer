@@ -15,9 +15,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListDataListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -30,7 +32,8 @@ public class TillDialog extends javax.swing.JInternalFrame {
 
     private Till till;
     private final DataConnect dc;
-    private MyModel model;
+    private SalesModel salesModel;
+    private ScreensModel screensModel;
 
     /**
      * Creates new form TillDialog
@@ -45,33 +48,45 @@ public class TillDialog extends javax.swing.JInternalFrame {
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
         setTitle(till.getName());
-        txtUUID.setText(till.getUuid().toString());
-        txtID.setText("" + till.getId());
-        txtName.setText(till.getName());
-        txtStaff.setText("Not logged in");
-        try {
-            Staff s = dc.getTillStaff(till.getId());
-            if (s == null) {
-                txtStaff.setText("Not logged in");
-                btnLogout.setEnabled(false);
-            } else {
-                txtStaff.setText(s.getName());
-                btnLogout.setEnabled(true);
-            }
-        } catch (IOException | JTillException ex) {
-        }
+        init();
+    }
 
+    private void init() {
         try {
-            Screen sc = dc.getScreen(till.getDefaultScreen());
-            txtDefaultScreen.setText(sc.getName());
-        } catch (IOException | SQLException | ScreenNotFoundException ex) {
+            List<Screen> screens = dc.getAllScreens();
+            screensModel = new ScreensModel(screens);
+            cmbScreen.setModel(screensModel);
+
+            txtUUID.setText(till.getUuid().toString());
+            txtID.setText("" + till.getId());
+            txtName.setText(till.getName());
+            txtStaff.setText("Not logged in");
+            try {
+                Staff s = dc.getTillStaff(till.getId());
+                if (s == null) {
+                    txtStaff.setText("Not logged in");
+                    btnLogout.setEnabled(false);
+                } else {
+                    txtStaff.setText(s.getName());
+                    btnLogout.setEnabled(true);
+                }
+            } catch (IOException | JTillException ex) {
+            }
+
+            try {
+                Screen sc = dc.getScreen(till.getDefaultScreen());
+                screensModel.setSelectedItem(sc);
+            } catch (IOException | SQLException | ScreenNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            getAllSales();
+            if (till.isConnected()) {
+                btnSendData.setEnabled(true);
+            } else {
+                btnSendData.setEnabled(false);
+            }
+        } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        getAllSales();
-        if (till.isConnected()) {
-            btnSendData.setEnabled(true);
-        } else {
-            btnSendData.setEnabled(false);
         }
     }
 
@@ -90,8 +105,8 @@ public class TillDialog extends javax.swing.JInternalFrame {
         try {
             BigDecimal runningTotal = BigDecimal.ZERO;
             List<Sale> contents = till.getAllTerminalSales(true);
-            model = new MyModel(contents);
-            table.setModel(model);
+            salesModel = new SalesModel(contents);
+            table.setModel(salesModel);
             table.setSelectionModel(new ForcedListSelectionModel());
             table.getColumnModel().getColumn(1).setMinWidth(40);
             table.getColumnModel().getColumn(1).setMaxWidth(40);
@@ -101,12 +116,56 @@ public class TillDialog extends javax.swing.JInternalFrame {
         }
     }
 
-    private class MyModel implements TableModel {
+    private class ScreensModel implements ComboBoxModel {
+
+        private final List<Screen> screens;
+        private Screen selected;
+
+        public ScreensModel(List<Screen> screens) {
+            this.screens = screens;
+            if (!screens.isEmpty()) {
+                selected = screens.get(0);
+            } else {
+                selected = null;
+            }
+        }
+
+        @Override
+        public void setSelectedItem(Object anItem) {
+            selected = (Screen) anItem;
+        }
+
+        @Override
+        public Object getSelectedItem() {
+            return selected;
+        }
+
+        @Override
+        public int getSize() {
+            return screens.size();
+        }
+
+        @Override
+        public Object getElementAt(int index) {
+            return screens.get(index);
+        }
+
+        @Override
+        public void addListDataListener(ListDataListener l) {
+        }
+
+        @Override
+        public void removeListDataListener(ListDataListener l) {
+        }
+
+    }
+
+    private class SalesModel implements TableModel {
 
         private final List<Sale> sales;
         private final List<TableModelListener> listeners;
 
-        public MyModel(List<Sale> sales) {
+        public SalesModel(List<Sale> sales) {
             this.sales = sales;
             listeners = new LinkedList<>();
         }
@@ -207,19 +266,21 @@ public class TillDialog extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
-        txtName = new javax.swing.JTextField();
         lblID = new javax.swing.JLabel();
         txtID = new javax.swing.JTextField();
-        lblName = new javax.swing.JLabel();
-        btnChangeName = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         txtUUID = new javax.swing.JTextField();
         txtStaff = new javax.swing.JTextField();
         lblStaff = new javax.swing.JLabel();
         btnLogout = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        txtName = new javax.swing.JTextField();
+        btnChangeName = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        cmbScreen = new javax.swing.JComboBox<>();
+        btnSaveScreen = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        txtDefaultScreen = new javax.swing.JTextField();
-        btnChange = new javax.swing.JButton();
         btnSendData = new javax.swing.JButton();
         btnZReport = new javax.swing.JButton();
         lblTotal = new javax.swing.JLabel();
@@ -271,24 +332,9 @@ public class TillDialog extends javax.swing.JInternalFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Terminal Info"));
 
-        txtName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNameActionPerformed(evt);
-            }
-        });
-
         lblID.setText("Terminal ID:");
 
         txtID.setEditable(false);
-
-        lblName.setText("Terminal Name:");
-
-        btnChangeName.setText("Save");
-        btnChangeName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnChangeNameActionPerformed(evt);
-            }
-        });
 
         jLabel2.setText("Terminal UUID:");
 
@@ -305,48 +351,112 @@ public class TillDialog extends javax.swing.JInternalFrame {
             }
         });
 
-        jLabel1.setText("Default Screen:");
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Name"));
 
-        txtDefaultScreen.setEditable(false);
-
-        btnChange.setText("Change");
-        btnChange.addActionListener(new java.awt.event.ActionListener() {
+        txtName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnChangeActionPerformed(evt);
+                txtNameActionPerformed(evt);
             }
         });
+
+        btnChangeName.setText("Save");
+        btnChangeName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChangeNameActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Name:");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtName)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnChangeName)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnChangeName)
+                    .addComponent(jLabel3))
+                .addContainerGap())
+        );
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Screen"));
+
+        cmbScreen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        btnSaveScreen.setText("Save");
+        btnSaveScreen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveScreenActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Default Screen:");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cmbScreen, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSaveScreen)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(cmbScreen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSaveScreen))
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(lblID)
-                    .addComponent(lblName)
-                    .addComponent(lblStaff))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtStaff)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnLogout))
-                    .addComponent(txtUUID)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtName)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnChangeName))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblStaff)
+                            .addComponent(jLabel2))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnLogout))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtUUID))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtDefaultScreen, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnChange)))
+                        .addComponent(lblID)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtStaff, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 96, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -360,21 +470,16 @@ public class TillDialog extends javax.swing.JInternalFrame {
                     .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblID))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblName)
-                    .addComponent(btnChangeName))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtStaff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnLogout))
+                    .addComponent(lblStaff))
+                .addGap(28, 28, 28)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtStaff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblStaff)
-                    .addComponent(btnLogout))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtDefaultScreen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnChange))
-                .addContainerGap(118, Short.MAX_VALUE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         btnSendData.setText("Send Data to Terminal");
@@ -411,7 +516,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblTotal)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 142, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
                         .addComponent(btnClose))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
@@ -472,25 +577,6 @@ public class TillDialog extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnLogoutActionPerformed
-
-    private void btnChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeActionPerformed
-        try {
-            if (dc.getAllScreens().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "You have not configured any screens", "Screens", JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }
-            final Screen s = ScreenSelectDialog.showDialog(this);
-            if (s != null) {
-                till.setDefaultScreen(s.getId());
-                txtDefaultScreen.setText(s.getName());
-                dc.updateTill(till);
-            }
-        } catch (IOException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (JTillException ex) {
-
-        }
-    }//GEN-LAST:event_btnChangeActionPerformed
 
     private void btnChangeNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeNameActionPerformed
         String name = txtName.getText();
@@ -580,7 +666,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
         if (row == -1) {
             return;
         }
-        Sale s = model.get(row);
+        Sale s = salesModel.get(row);
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
                 SaleDialog.showSaleDialog(s);
@@ -588,24 +674,37 @@ public class TillDialog extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableMouseClicked
 
+    private void btnSaveScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveScreenActionPerformed
+        try {
+            till.setDefaultScreen(((Screen) screensModel.getSelectedItem()).getId());
+            dc.updateTill(till);
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (JTillException ex) {
+
+        }
+    }//GEN-LAST:event_btnSaveScreenActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnChange;
     private javax.swing.JButton btnChangeName;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnLogout;
+    private javax.swing.JButton btnSaveScreen;
     private javax.swing.JButton btnSendData;
     private javax.swing.JButton btnXReport;
     private javax.swing.JButton btnZReport;
+    private javax.swing.JComboBox<String> cmbScreen;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblID;
-    private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblStaff;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JTable table;
-    private javax.swing.JTextField txtDefaultScreen;
     private javax.swing.JTextField txtID;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtStaff;

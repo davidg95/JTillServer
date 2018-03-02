@@ -103,7 +103,7 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             totalReceived = dc.getTotalReceivedOfItem(product.getBarcode());
 
             txtPlu.setText(product.getBarcode());
-            if (product.getOrderCode() == 0) {
+            if (product.getOrderCode().isEmpty()) {
                 txtOrderCode.setText("N/A");
             } else {
                 txtOrderCode.setText(product.getOrderCode() + "");

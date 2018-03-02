@@ -98,7 +98,7 @@ public class DerbyDB extends DBConnect {
     String products = "create table PRODUCTS\n"
             + "(\n"
             + "     barcode VARCHAR(15) not null primary key,\n"
-            + "     porder_code INTEGER,\n"
+            + "     porder_code VARCHAR(15),\n"
             + "     pNAME VARCHAR(50) not null,\n"
             + "     pSHORT_NAME VARCHAR(50) not null,\n"
             + "     OPEN_PRICE BOOLEAN not null,\n"

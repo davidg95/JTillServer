@@ -1003,12 +1003,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         String name = txtName.getText();
         String shortName = txtShortName.getText();
-        String val = txtOrderCode.getText();
-        if (!Utilities.isNumber(val)) {
-            JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        int orderCode = Integer.parseInt(val);
+        String orderCode = txtOrderCode.getText();
         Category category = (Category) cmbCat.getSelectedItem();
         if (!Utilities.isNumber(txtMin.getText())) {
             JOptionPane.showMessageDialog(this, "Not all fields have been filled out correctly", "Create New Product", JOptionPane.ERROR_MESSAGE);

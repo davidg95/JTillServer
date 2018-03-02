@@ -172,7 +172,7 @@ public abstract class DBConnect extends DataConnect {
         List<Product> products = new LinkedList<>();
         while (set.next()) {
             String barcode = set.getString("barcode");
-            int order_code = set.getInt("porder_code");
+            String order_code = set.getString("porder_code");
             String name = set.getString("pname");
             boolean open = set.getBoolean("open_price");
             BigDecimal price = set.getBigDecimal("pprice");
@@ -1359,15 +1359,13 @@ public abstract class DBConnect extends DataConnect {
         final List<SaleItem> sales = new LinkedList<>();
         while (set.next()) {
             int id = set.getInt("siid");
-            int item = set.getInt("siproduct");
             int quantity = set.getInt("siquantity");
             BigDecimal price = set.getBigDecimal("siprice");
             BigDecimal tax = set.getBigDecimal("sitax");
-            int saleId = set.getInt("sisale");
             BigDecimal cost = set.getBigDecimal("sicost");
 
             String barcode = set.getString("barcode");
-            int order_code = set.getInt("porder_code");
+            String order_code = set.getString("porder_code");
             String name = set.getString("pname");
             boolean open = set.getBoolean("open_price");
             BigDecimal pPrice = set.getBigDecimal("pprice");
@@ -1406,12 +1404,12 @@ public abstract class DBConnect extends DataConnect {
 
             Product p;
             if (!open) {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, pPrice, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
             } else {
                 p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
             }
 
-            SaleItem s = new SaleItem(saleId, p, quantity, id, price, tax, cost);
+            SaleItem s = new SaleItem(id, p, quantity, price, cost, tax);
             sales.add(s);
         }
         return sales;
@@ -2261,7 +2259,7 @@ public abstract class DBConnect extends DataConnect {
             int level = set.getInt("wrpriv");
 
             String barcode = set.getString("barcode");
-            int order_code = set.getInt("porder_code");
+            String order_code = set.getString("porder_code");
             String name = set.getString("pname");
             boolean open = set.getBoolean("open_price");
             BigDecimal pPrice = set.getBigDecimal("pprice");
@@ -2746,8 +2744,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public SaleItem addSaleItem(Sale s, SaleItem i) throws IOException, SQLException {
-        i.setSale(s.getId());
-        String query = "INSERT INTO SALEITEMS (siPRODUCT, siQUANTITY, siPRICE, siTAX, siSALE, siCOST) VALUES(" + i.getSQLInsertStatement() + ")";
+        String query = "INSERT INTO SALEITEMS (siPRODUCT, siQUANTITY, siPRICE, siTAX, siSALE, siCOST) VALUES('" + i.getProduct().getBarcode() + "'," + i.getQuantity() + "," + i.getIndividualPrice() + "," + i.getIndividualTax() + "," + s.getId() + "," + i.getIndividualCost() + ")";
         Connection con = getConnection();
         try {
             PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -2759,21 +2756,6 @@ public abstract class DBConnect extends DataConnect {
             }
             con.commit();
             return i;
-        } catch (SQLException ex) {
-            con.rollback();
-            LOG.log(Level.SEVERE, null, ex);
-            throw ex;
-        }
-    }
-
-    @Override
-    public void removeSaleItem(int id) throws IOException, SQLException, JTillException {
-        String query = "DELETE FROM SALEITEMS WHERE ID=" + id;
-        Connection con = getConnection();
-        try {
-            Statement stmt = con.createStatement();
-            stmt.executeUpdate(query);
-            con.commit();
         } catch (SQLException ex) {
             con.rollback();
             LOG.log(Level.SEVERE, null, ex);
@@ -2847,22 +2829,6 @@ public abstract class DBConnect extends DataConnect {
                 throw new SQLException(ex.getMessage());
             }
         }
-    }
-
-    @Override
-    public SaleItem updateSaleItem(SaleItem i) throws IOException, SQLException, JTillException {
-        String query = "UPDATE SALEITEMS SET PRODUCT_ID=" + i.getId() + ",QUANTITY=" + i.getQuantity() + ",PRICE=" + i.getPrice() + ",SALE_ID=" + i.getSale();
-        Connection con = getConnection();
-        try {
-            Statement stmt = con.createStatement();
-            stmt.executeUpdate(query);
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-            LOG.log(Level.SEVERE, null, ex);
-            throw ex;
-        }
-        return i;
     }
 
     @Override
@@ -3547,7 +3513,7 @@ public abstract class DBConnect extends DataConnect {
             items = new LinkedList<>();
             while (set.next()) {
                 String barcode = set.getString("barcode");
-                int order_code = set.getInt("porder_code");
+                String order_code = set.getString("porder_code");
                 String name = set.getString("pname");
                 boolean open = set.getBoolean("open_price");
                 BigDecimal price = set.getBigDecimal("pprice");
@@ -4030,7 +3996,7 @@ public abstract class DBConnect extends DataConnect {
             ResultSet set = stmt.executeQuery("select * from products, categorys, departments, tax, condiments where pcategory = cid and cdepartment = did and ptax = tid and barcode = product_con AND condiments.product = '" + barcode + "'");
             List<Condiment> condiments = new LinkedList<>();
             while (set.next()) {
-                int order_code = set.getInt("porder_code");
+                String order_code = set.getString("porder_code");
                 String name = set.getString("pname");
                 boolean open = set.getBoolean("open_price");
                 BigDecimal price = set.getBigDecimal("pprice");
@@ -4126,19 +4092,7 @@ public abstract class DBConnect extends DataConnect {
             Statement stmt = con.createStatement();
             ResultSet set = stmt.executeQuery("SELECT * FROM SALEITEMS, PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE SALEITEMS.PRODUCT_ID = PRODUCTS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND PRODUCTS.TAX_ID = TAX.ID AND DEPARTMENTS.ID=" + id);
             List<SaleItem> items = getSaleItemsFromResultSet(set);
-            List<SaleItem> is = new LinkedList<>();
-            Main:
-            for (SaleItem item : items) {
-                for (SaleItem i : is) {
-                    if (item.getProduct().equals(i.getProduct())) {
-                        i.increaseQuantity(item.getQuantity());
-                        continue Main;
-                    }
-                }
-                is.add(item);
-            }
-            con.commit();
-            return is;
+            return items;
         } catch (SQLException ex) {
             con.rollback();
             LOG.log(Level.SEVERE, null, ex);
@@ -4225,7 +4179,7 @@ public abstract class DBConnect extends DataConnect {
                 List<OrderItem> items = new LinkedList<>();
                 while (set2.next()) {
                     String barcode = set.getString("barcode");
-                    int order_code = set.getInt("porder_code");
+                    String order_code = set.getString("porder_code");
                     String name = set.getString("pname");
                     boolean open = set.getBoolean("open_price");
                     BigDecimal price = set.getBigDecimal("pprice");
