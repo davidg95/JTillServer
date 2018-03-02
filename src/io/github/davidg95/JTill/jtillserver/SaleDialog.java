@@ -26,6 +26,8 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +35,8 @@ import javax.imageio.ImageIO;
 import javax.mail.MessagingException;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -41,10 +44,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class SaleDialog extends javax.swing.JInternalFrame {
 
-    private final Sale sale;
     private final DataConnect dc;
 
-    private final DefaultTableModel model;
+    private final MyModel model;
 
     private final String companyDetails = System.getenv("APPDATA") + "\\JTill Server\\company.details";
 
@@ -53,13 +55,13 @@ public class SaleDialog extends javax.swing.JInternalFrame {
      */
     public SaleDialog(Sale sale) {
         super();
-        this.sale = sale;
         this.dc = GUI.gui.dc;
         initComponents();
         super.setClosable(true);
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
-        model = (DefaultTableModel) tableItems.getModel();
+        model = new MyModel(sale);
+        table.setModel(model);
         setTitle("Sale " + sale.getId());
         init();
     }
@@ -83,7 +85,10 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         } catch (IOException ex) {
             Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
-        tableItems.setSelectionModel(new ForcedListSelectionModel());
+        table.getColumnModel().getColumn(1).setMinWidth(40);
+        table.getColumnModel().getColumn(1).setMaxWidth(40);
+        table.setSelectionModel(new ForcedListSelectionModel());
+        Sale sale = model.getSale();
         txtId.setText(sale.getId() + "");
         txtTime.setText(sale.getDate().toString());
         if (sale.getCustomer() != null) {
@@ -94,25 +99,98 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         txtTill.setText(sale.getTill().getName());
         txtStaff.setText(sale.getStaff().getName());
         lblTotal.setText("Total: £" + sale.getTotal().setScale(2, 6));
-
-        model.setRowCount(0);
-
         BigDecimal taxValue = BigDecimal.ZERO;
         for (SaleItem item : sale.getSaleItems()) {
-            taxValue = taxValue.add(item.getTaxValue());
-            DecimalFormat df;
-            if (item.getPrice().compareTo(BigDecimal.ZERO) > 1) {
-                df = new DecimalFormat("#.00");
-            } else {
-                df = new DecimalFormat("0.00");
-            }
-            Object[] s = null;
-            final Product p = (Product) item.getProduct();
-            s = new Object[]{p.getShortName(), item.getQuantity(), "£" + df.format(item.getPrice().doubleValue() * item.getQuantity())};
-            model.addRow(s);
+            taxValue = taxValue.add(item.getTotalTax());
         }
         lblTax.setText("Tax: £" + new DecimalFormat("0.00").format(taxValue.doubleValue()));
-        tableItems.setModel(model);
+    }
+
+    private class MyModel implements TableModel {
+
+        private final Sale sale;
+        private final List<TableModelListener> listeners;
+
+        public MyModel(Sale sale) {
+            this.sale = sale;
+            this.listeners = new LinkedList<>();
+        }
+
+        public Sale getSale() {
+            return sale;
+        }
+
+        @Override
+        public int getRowCount() {
+            return sale.getSaleItems().size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 3;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0: {
+                    return "Item";
+                }
+                case 1: {
+                    return "Qty.";
+                }
+                case 2: {
+                    return "Price";
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return Object.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            SaleItem item = sale.getSaleItems().get(rowIndex);
+            switch (columnIndex) {
+                case 0: {
+                    return item.getProduct().getLongName();
+                }
+                case 1: {
+                    return item.getQuantity();
+                }
+                case 2: {
+                    return "£" + item.getTotalPrice();
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
+
     }
 
     /**
@@ -192,7 +270,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
                 final Product p = (Product) it.getProduct();
                 g2.drawString(p.getShortName(), item, y);
                 g2.drawString("" + it.getQuantity(), quantity, y);
-                g2.drawString("£" + it.getPrice().setScale(2), total, y);
+                g2.drawString("£" + it.getTotalPrice().setScale(2), total, y);
                 y += 30;
             }
             g2.drawLine(item - 30, y - 20, total + 100, y - 20);
@@ -252,7 +330,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         lblTime = new javax.swing.JLabel();
         lblCustomer = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tableItems = new javax.swing.JTable();
+        table = new javax.swing.JTable();
         lblTerminal = new javax.swing.JLabel();
         btnEmail = new javax.swing.JButton();
         btnPrint = new javax.swing.JButton();
@@ -278,7 +356,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
 
         lblCustomer.setText("Customer:");
 
-        tableItems.setModel(new javax.swing.table.DefaultTableModel(
+        table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -294,14 +372,14 @@ public class SaleDialog extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        tableItems.getTableHeader().setReorderingAllowed(false);
-        jScrollPane2.setViewportView(tableItems);
-        if (tableItems.getColumnModel().getColumnCount() > 0) {
-            tableItems.getColumnModel().getColumn(0).setResizable(false);
-            tableItems.getColumnModel().getColumn(1).setMinWidth(40);
-            tableItems.getColumnModel().getColumn(1).setMaxWidth(40);
-            tableItems.getColumnModel().getColumn(2).setMinWidth(100);
-            tableItems.getColumnModel().getColumn(2).setMaxWidth(100);
+        table.getTableHeader().setReorderingAllowed(false);
+        jScrollPane2.setViewportView(table);
+        if (table.getColumnModel().getColumnCount() > 0) {
+            table.getColumnModel().getColumn(0).setResizable(false);
+            table.getColumnModel().getColumn(1).setMinWidth(40);
+            table.getColumnModel().getColumn(1).setMaxWidth(40);
+            table.getColumnModel().getColumn(2).setMinWidth(100);
+            table.getColumnModel().getColumn(2).setMaxWidth(100);
         }
 
         lblTerminal.setText("Terminal:");
@@ -425,6 +503,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
 
     private void btnEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmailActionPerformed
         String email;
+        Sale sale = model.getSale();
         if (sale.getCustomer() != null) {
             final Customer c = sale.getCustomer();
             email = c.getEmail();
@@ -462,7 +541,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnEmailActionPerformed
 
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
-        ReceiptPrinter prt = new ReceiptPrinter(sale);
+        ReceiptPrinter prt = new ReceiptPrinter(model.getSale());
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPrintable(prt);
         boolean ok = job.printDialog();
@@ -505,7 +584,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lblTerminal;
     private javax.swing.JLabel lblTime;
     private javax.swing.JLabel lblTotal;
-    private javax.swing.JTable tableItems;
+    private javax.swing.JTable table;
     private javax.swing.JTextField txtCustomer;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtStaff;

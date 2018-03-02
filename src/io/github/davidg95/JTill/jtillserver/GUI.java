@@ -508,6 +508,7 @@ public class GUI extends JFrame implements GUIInterface {
         itemWasteStock = new javax.swing.JMenuItem();
         itemEnquiry = new javax.swing.JMenuItem();
         itemStockTake = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         menuSetup = new javax.swing.JMenu();
         itemReasons = new javax.swing.JMenuItem();
         itemRefundReasons = new javax.swing.JMenuItem();
@@ -1113,6 +1114,14 @@ public class GUI extends JFrame implements GUIInterface {
         });
         menuStock.add(itemStockTake);
 
+        jMenuItem3.setText("Manual Sale");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        menuStock.add(jMenuItem3);
+
         jMenuBar1.add(menuStock);
 
         menuSetup.setMnemonic('t');
@@ -1622,13 +1631,13 @@ public class GUI extends JFrame implements GUIInterface {
                             final Product p = (Product) si.getProduct();
                             for (Department dep : departments) {
                                 if (p.getDepartment().equals(dep)) {
-                                    dep.addToSales(si.getPrice());
+                                    dep.addToSales(si.getTotalPrice());
                                     break;
                                 }
                             }
                             for (Category cat : categories) {
                                 if (p.getCategory().equals(cat)) {
-                                    cat.addToSales(si.getPrice());
+                                    cat.addToSales(si.getTotalPrice());
                                     break;
                                 }
                             }
@@ -2067,7 +2076,6 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemOrderingWizardActionPerformed
 
     private void itemEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEditActionPerformed
-        //ProductEditWindow.showWindow();
         Product p = ProductSelectDialog.showDialog(this);
         ProductEntryDialog.showDialog(this, p);
     }//GEN-LAST:event_itemEditActionPerformed
@@ -2083,6 +2091,10 @@ public class GUI extends JFrame implements GUIInterface {
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         new InitialConfigWindow().setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        ManualSaleWindow.showWindow();
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStaff;
@@ -2153,6 +2165,7 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
