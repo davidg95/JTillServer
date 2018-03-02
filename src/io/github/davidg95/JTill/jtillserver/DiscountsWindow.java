@@ -124,7 +124,6 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
             }
             model.addRow(s);
         }
-        ProductsWindow.update();
     }
 
     /**
