@@ -122,10 +122,11 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
             txtValWaste.setText("£" + valueWasted.toString());
             if (product.isOpen()) {
                 txtPrice.setText("OPEN");
+                txtCostPrice.setText("OPEN");
             } else {
                 txtPrice.setText("£" + df.format(product.getPrice()));
+                txtCostPrice.setText("£" + df.format(product.getCostPrice()));
             }
-            txtCostPrice.setText("£" + df.format(product.getCostPrice()));
             txtPackSize.setText(product.getPackSize() + "");
             txtValReceived.setText("£" + valueSpent.toString());
             txtReceived.setText(totalReceived + "");
