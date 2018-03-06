@@ -526,7 +526,6 @@ public class GUI extends JFrame implements GUIInterface {
         itemTerminals = new javax.swing.JMenuItem();
         itemSiteDetails = new javax.swing.JMenuItem();
         itemDatabase = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
         itemConsolodated = new javax.swing.JMenu();
         itemSalesReporting = new javax.swing.JMenuItem();
         itemWasteReports = new javax.swing.JMenuItem();
@@ -1254,14 +1253,6 @@ public class GUI extends JFrame implements GUIInterface {
             }
         });
         menuSetup.add(itemDatabase);
-
-        jMenuItem2.setText("Test");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
-            }
-        });
-        menuSetup.add(jMenuItem2);
 
         jMenuBar1.add(menuSetup);
 
@@ -2088,10 +2079,6 @@ public class GUI extends JFrame implements GUIInterface {
         RefundReasonsDialog.showDialog();
     }//GEN-LAST:event_itemRefundReasonsActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        new InitialConfigWindow().setVisible(true);
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
-
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         ManualSaleWindow.showWindow();
     }//GEN-LAST:event_jMenuItem3ActionPerformed
@@ -2164,7 +2151,6 @@ public class GUI extends JFrame implements GUIInterface {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
