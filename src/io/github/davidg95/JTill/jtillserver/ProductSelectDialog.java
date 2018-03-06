@@ -56,6 +56,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
 
     private static Product product;
 
+    private static Object lastSelection;
+
     private final DataConnect dc;
 
     private MyTableModel model;
@@ -107,6 +109,34 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         txtSearch.requestFocus();
         tree.setModel(treeModel);
         tree.setCellRenderer(new MyTreeCellRenderer());
+        selectNode(lastSelection);
+    }
+
+    private void selectNode(Object o) {
+        RootNode root = (RootNode) treeModel.getRoot();
+        if (o == null) {
+            model.showAll();
+            tree.setSelectionRow(0);
+        } else if (o instanceof Department) {
+            model.filterDepartment((Department) lastSelection);
+            for (int i = 0; i < root.getChildCount(); i++) {
+                DepartmentNode node = (DepartmentNode) root.getChildAt(i);
+                if (node.getDepartment().equals(o)) {
+                    //Department Found - Code goes here
+                }
+            }
+        } else {
+            model.filterCategory((Category) lastSelection);
+            for (int i = 0; i < root.getChildCount(); i++) {
+                DepartmentNode dNode = (DepartmentNode) root.getChildAt(i);
+                for (int j = 0; j < dNode.getChildCount(); j++) {
+                    CategoryNode cNode = (CategoryNode) dNode.getChildAt(j);
+                    if (cNode.getCategory().equals(o)) {
+                        //Category Found - Code goes here
+                    }
+                }
+            }
+        }
     }
 
     private void checkFilter() {
@@ -225,6 +255,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         public void showAll() {
             products = new LinkedList<>(Arrays.asList(allProducts));
             alertAll();
+            setTitle("Select Product - All");
         }
 
         public void filterCategory(Category c) {
@@ -234,6 +265,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                     products.add(p);
                 }
             }
+            setTitle("Select Product - " + c.getDepartment().getName() + " - " + c.getName());
             alertAll();
         }
 
@@ -244,6 +276,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                     products.add(p);
                 }
             }
+            setTitle("Select Product - " + d.getName());
             alertAll();
         }
 
@@ -952,13 +985,16 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             setTitle("Select Product - " + par.toString() + " - " + node.toString());
             CategoryNode catNode = (CategoryNode) node;
             model.filterCategory(catNode.getCategory());
+            lastSelection = catNode.getCategory();
         } else if (path.getPathCount() == 2) { //Department
             setTitle("Select Product - " + node.toString());
             DepartmentNode depNode = (DepartmentNode) node;
             model.filterDepartment(depNode.getDepartment());
+            lastSelection = depNode.getDepartment();
         } else { //All
             setTitle("Select Product - All");
             model.showAll();
+            lastSelection = null;
         }
     }//GEN-LAST:event_treeMousePressed
 
