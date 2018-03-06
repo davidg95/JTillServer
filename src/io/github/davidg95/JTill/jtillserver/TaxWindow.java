@@ -88,7 +88,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         }
 
         public void addTax(Tax t) throws IOException, SQLException {
-            dc.addTax(t);
+            t = dc.addTax(t);
             taxes.add(t);
             alertAll();
         }
@@ -375,7 +375,6 @@ public class TaxWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        Tax t;
         try {
             String name = JOptionPane.showInputDialog(this, "Enter name for new tax class", "New Tax Class", JOptionPane.PLAIN_MESSAGE);
             if (name == null || name.isEmpty()) {
@@ -394,7 +393,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "Value must be between 0 and 100", "New Tax Class", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            t = new Tax(name, value);
+            Tax t = new Tax(name, value);
             try {
                 model.addTax(t);
             } catch (IOException | SQLException ex) {

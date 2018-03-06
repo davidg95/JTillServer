@@ -131,7 +131,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         }
 
         public void addCategory(Category c) throws IOException, SQLException {
-            dc.addCategory(c);
+            c = dc.addCategory(c);
             categories.add(c);
             alertAll();
         }

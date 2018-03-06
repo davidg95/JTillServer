@@ -608,11 +608,11 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewScreenActionPerformed
-        String name = JOptionPane.showInputDialog(this, "Enter Name", "New Screen", JOptionPane.PLAIN_MESSAGE);
-        if (name == null || name.isEmpty()) {
+        final String scName = JOptionPane.showInputDialog(this, "Enter Name", "New Screen", JOptionPane.PLAIN_MESSAGE);
+        if (scName == null || scName.isEmpty()) {
             return;
         }
-        if (!checkName(name)) {
+        if (!checkName(scName)) {
             JOptionPane.showMessageDialog(this, "Name already in use", "New Screen", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -639,17 +639,17 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         final int inh = inherit;
         final int fw = width;
         final int fh = height;
-        if (!name.equals("")) {
+        if (!scName.equals("")) {
             new Thread("New Screen") {
                 @Override
                 public void run() {
                     try {
-                        Screen s = new Screen(name, fw, fh, inh, 3, 3);
+                        Screen s = new Screen(scName, fw, fh, inh, 3, 3);
                         currentScreen = dc.addScreen(s);
                         int x = 1;
                         int y = 1;
                         for (int i = 0; i < (fw * fh); i++) {
-                            TillButton bu = dc.addButton(new TillButton("[SPACE]", "0", TillButton.SPACE, s.getId(), "000000", "ffffff", 1, 1, x, y, 1, ""));
+                            TillButton bu = dc.addButton(new TillButton("[SPACE]", "0", TillButton.SPACE, currentScreen.getId(), "000000", "ffffff", 1, 1, x, y, 1, ""));
                             x++;
                             if (x == (fw + 1)) {
                                 x = 1;
