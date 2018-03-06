@@ -6,7 +6,6 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.*;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
@@ -14,7 +13,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -22,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -70,21 +67,19 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
      * if needed.
      */
     public static void showProductsListWindow() {
-        if (frame == null || frame.isClosed()) {
-            frame = new ProductsWindow();
-            GUI.gui.internal.add(frame);
-        }
-        if (frame.isVisible()) {
+        if (frame != null && !frame.isClosed && frame.isVisible()) {
             frame.toFront();
         } else {
+            frame = new ProductsWindow();
+            GUI.gui.internal.add(frame);
             frame.setCurrentProduct(null);
-            frame.setVisible(true);
-        }
-        try {
-            frame.setIcon(false);
-            frame.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                frame.setIcon(false);
+                frame.setSelected(true);
+                frame.setVisible(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(SettingsWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -446,7 +441,6 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         btnEnquiry = new javax.swing.JButton();
         btnAdvanced = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setResizable(true);
         setTitle("Stock Managment");
 

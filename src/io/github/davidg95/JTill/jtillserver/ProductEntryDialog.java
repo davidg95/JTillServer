@@ -151,13 +151,16 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         txtPackSize.setText("");
         txtMin.setText("0");
         txtMax.setText("0");
+        for (Component c : jPanel4.getComponents()) {
+            c.setEnabled(true);
+        }
         txtComments.setText("");
         txtIngredients.setText("");
         radStandard.doClick();
         chkIncVat.setSelected(false);
         chkTrackStock.setSelected(true);
         txtScale.setText("1");
-        txtScaleName.setText("");
+        txtScaleName.setText("Price");
         txtCostPercentage.setText("0");
         txtPriceLimit.setText("0");
 
@@ -327,6 +330,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         txtGP = new javax.swing.JTextField();
         txtPackSize = new javax.swing.JTextField();
+        lblIncVat = new javax.swing.JLabel();
+        txtIncVat = new javax.swing.JTextField();
         panelOpen = new javax.swing.JPanel();
         jLabel21 = new javax.swing.JLabel();
         txtScale = new javax.swing.JTextField();
@@ -334,9 +339,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         jLabel20 = new javax.swing.JLabel();
         chkScale = new javax.swing.JCheckBox();
         txtCostPercentage = new javax.swing.JTextField();
-        jLabel12 = new javax.swing.JLabel();
+        lblLimit = new javax.swing.JLabel();
         txtScaleName = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
+        chkNoLimit = new javax.swing.JCheckBox();
         jLabel22 = new javax.swing.JLabel();
         cmbVat = new javax.swing.JComboBox<>();
         jPanel4 = new javax.swing.JPanel();
@@ -578,6 +584,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
         jLabel19.setText("Pack Size:");
 
+        txtCostPrice.setText("0.00");
         txtCostPrice.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtCostPriceFocusLost(evt);
@@ -585,12 +592,18 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         });
 
         txtUnitCost.setEditable(false);
+        txtUnitCost.setText("0");
 
         jLabel9.setText("Cost Price (£):");
 
         jLabel14.setText("Price (£):");
 
         chkIncVat.setText("Price includes VAT");
+        chkIncVat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkIncVatActionPerformed(evt);
+            }
+        });
 
         btnCalculate.setText("Calculate based on GP");
         btnCalculate.addActionListener(new java.awt.event.ActionListener() {
@@ -601,6 +614,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
         jLabel3.setText("Unit Cost (£):");
 
+        txtPrice.setText("0.00");
         txtPrice.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtPriceFocusLost(evt);
@@ -610,6 +624,13 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         jLabel4.setText("GP:");
 
         txtGP.setEditable(false);
+        txtGP.setText("0");
+
+        txtPackSize.setText("1");
+
+        lblIncVat.setText("Price Inc. VAT");
+
+        txtIncVat.setEditable(false);
 
         javax.swing.GroupLayout panelStandardLayout = new javax.swing.GroupLayout(panelStandard);
         panelStandard.setLayout(panelStandardLayout);
@@ -619,33 +640,39 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(panelStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelStandardLayout.createSequentialGroup()
-                        .addComponent(jLabel14)
+                        .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtCostPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(4, 4, 4)
+                        .addComponent(jLabel19)
+                        .addGap(4, 4, 4)
+                        .addComponent(txtPackSize, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4)
+                        .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtGP, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(txtUnitCost, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE))
                     .addGroup(panelStandardLayout.createSequentialGroup()
                         .addGroup(panelStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelStandardLayout.createSequentialGroup()
-                                .addComponent(jLabel9)
+                                .addComponent(jLabel14)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtCostPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(4, 4, 4)
-                                .addComponent(jLabel19))
-                            .addComponent(btnCalculate))
-                        .addGap(2, 2, 2)
-                        .addGroup(panelStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelStandardLayout.createSequentialGroup()
-                                .addGap(2, 2, 2)
-                                .addComponent(txtPackSize)
+                                .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel3))
-                            .addComponent(chkIncVat))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtUnitCost, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE))))
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtGP, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelStandardLayout.createSequentialGroup()
+                                .addComponent(btnCalculate)
+                                .addGroup(panelStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(panelStandardLayout.createSequentialGroup()
+                                        .addGap(62, 62, 62)
+                                        .addComponent(chkIncVat))
+                                    .addGroup(panelStandardLayout.createSequentialGroup()
+                                        .addGap(39, 39, 39)
+                                        .addComponent(lblIncVat)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtIncVat, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         panelStandardLayout.setVerticalGroup(
             panelStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -667,9 +694,14 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     .addComponent(txtUnitCost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtPackSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(panelStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnCalculate, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(chkIncVat))
+                    .addGroup(panelStandardLayout.createSequentialGroup()
+                        .addComponent(chkIncVat)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblIncVat)
+                            .addComponent(txtIncVat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
 
@@ -681,6 +713,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         txtScale.setText("1");
         txtScale.setEnabled(false);
 
+        txtPriceLimit.setText("0");
         txtPriceLimit.setEnabled(false);
 
         jLabel20.setText("Scale Name:");
@@ -694,16 +727,26 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             }
         });
 
+        txtCostPercentage.setText("0");
         txtCostPercentage.setEnabled(false);
 
-        jLabel12.setText("Price Limit:");
-        jLabel12.setEnabled(false);
+        lblLimit.setText("Price Limit:");
+        lblLimit.setEnabled(false);
 
         txtScaleName.setText("Price");
         txtScaleName.setEnabled(false);
 
         jLabel17.setText("Cost Percentage");
         jLabel17.setEnabled(false);
+
+        chkNoLimit.setSelected(true);
+        chkNoLimit.setText("No Limit");
+        chkNoLimit.setEnabled(false);
+        chkNoLimit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkNoLimitActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelOpenLayout = new javax.swing.GroupLayout(panelOpen);
         panelOpen.setLayout(panelOpenLayout);
@@ -727,9 +770,11 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     .addGroup(panelOpenLayout.createSequentialGroup()
                         .addComponent(txtCostPercentage, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel12)
+                        .addComponent(lblLimit)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPriceLimit, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtPriceLimit, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(chkNoLimit)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelOpenLayout.setVerticalGroup(
@@ -746,8 +791,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 .addGroup(panelOpenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtCostPercentage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel17)
-                    .addComponent(jLabel12)
-                    .addComponent(txtPriceLimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblLimit)
+                    .addComponent(txtPriceLimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkNoLimit))
                 .addContainerGap())
         );
 
@@ -1069,7 +1115,12 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "Must enter a number", "Create Product", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            BigDecimal priceLimit = new BigDecimal(txtPriceLimit.getText());
+            BigDecimal priceLimit;
+            if (chkNoLimit.isSelected()) {
+                priceLimit = BigDecimal.ZERO;
+            } else {
+                priceLimit = new BigDecimal(txtPriceLimit.getText());
+            }
             String scaleName = "Price";
             double scale = 1;
             if (chkScale.isSelected()) {
@@ -1250,6 +1301,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         }
         txtScaleName.setEnabled(chkScale.isSelected());
         txtScale.setEnabled(chkScale.isSelected());
+        txtPriceLimit.setEnabled(!chkNoLimit.isSelected());
     }//GEN-LAST:event_radOpenActionPerformed
 
     private void txtPriceFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPriceFocusLost
@@ -1272,6 +1324,19 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         setTitle("Edit Product - " + product.getBarcode());
         showProductPanel();
     }//GEN-LAST:event_btnEditActionPerformed
+
+    private void chkNoLimitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkNoLimitActionPerformed
+        txtPriceLimit.setEnabled(!chkNoLimit.isSelected());
+        lblLimit.setEnabled(!chkNoLimit.isSelected());
+    }//GEN-LAST:event_chkNoLimitActionPerformed
+
+    private void chkIncVatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkIncVatActionPerformed
+        if (chkIncVat.isSelected()) {
+            txtIncVat.setText(txtPrice.getText());
+        } else {
+            txtIncVat.setText("BETA");
+        }
+    }//GEN-LAST:event_chkIncVatActionPerformed
 
     private void calculateUnitCost() {
         try {
@@ -1331,13 +1396,13 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JCheckBox chkAssignNextPrivate;
     private javax.swing.JCheckBox chkIncVat;
     private javax.swing.JCheckBox chkNext;
+    private javax.swing.JCheckBox chkNoLimit;
     private javax.swing.JCheckBox chkScale;
     private javax.swing.JCheckBox chkTrackStock;
     private javax.swing.JComboBox<String> cmbCat;
     private javax.swing.JComboBox<String> cmbVat;
     private javax.swing.JPanel container;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel17;
@@ -1362,6 +1427,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel lblIncVat;
+    private javax.swing.JLabel lblLimit;
     private javax.swing.JLabel lblMax;
     private javax.swing.JLabel lblMin;
     private javax.swing.JPanel panBarcode;
@@ -1377,6 +1444,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JTextField txtCostPrice;
     private javax.swing.JTextField txtDepartment;
     private javax.swing.JTextField txtGP;
+    private javax.swing.JTextField txtIncVat;
     private javax.swing.JTextArea txtIngredients;
     private javax.swing.JTextField txtMax;
     private javax.swing.JTextField txtMin;
