@@ -438,6 +438,11 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             }
         });
         tableProducts.getTableHeader().setReorderingAllowed(false);
+        tableProducts.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                tableProductsMouseWheelMoved(evt);
+            }
+        });
         tableProducts.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableProductsMouseClicked(evt);
@@ -1130,7 +1135,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tableProductsKeyPressed
 
     private void tableProductsKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableProductsKeyTyped
-        
+
     }//GEN-LAST:event_tableProductsKeyTyped
 
     private void tableProductsKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableProductsKeyReleased
@@ -1139,6 +1144,24 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             setCurrentProduct(p);
         }
     }//GEN-LAST:event_tableProductsKeyReleased
+
+    private void tableProductsMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_tableProductsMouseWheelMoved
+        int row = tableProducts.getSelectedRow();
+        if (evt.getWheelRotation() < 0) { //Up
+            if (row == 0) {
+                return;
+            }
+            tableProducts.getSelectionModel().setSelectionInterval(row - 1, row - 1);
+        } else if (evt.getWheelRotation() > 0) { //Down
+            if (tableProducts.getRowCount() - 1 == row) {
+                return;
+            }
+            tableProducts.getSelectionModel().setSelectionInterval(row + 1, row + 1);
+
+        }
+        Product p = model.getSelected();
+        setCurrentProduct(p);
+    }//GEN-LAST:event_tableProductsMouseWheelMoved
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdvanced;

@@ -90,6 +90,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                 setTable();
                 initTable();
                 checkFilter();
+                if (table.getRowCount() > 0) {
+                    table.getSelectionModel().setSelectionInterval(0, 0);
+                }
                 try {
                     init();
                 } catch (IOException | SQLException ex) {
@@ -733,6 +736,11 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             }
         });
         table.getTableHeader().setReorderingAllowed(false);
+        table.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                tableMouseWheelMoved(evt);
+            }
+        });
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 tableMousePressed(evt);
@@ -765,6 +773,11 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         txtSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtSearchActionPerformed(evt);
+            }
+        });
+        txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSearchKeyReleased(evt);
             }
         });
 
@@ -896,6 +909,13 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         String search = txtSearch.getText();
 
         if (search.length() == 0) {
+            int row = table.getSelectedRow();
+            if (row == -1) {
+                return;
+            }
+            product = model.getSelected();
+            closedFlag = true;
+            setVisible(false);
             return;
         }
         List<Product> newList = new ArrayList<>();
@@ -1077,6 +1097,37 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         thread.start();
         mDialog.show();
     }//GEN-LAST:event_btnRefreshActionPerformed
+
+    private void tableMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_tableMouseWheelMoved
+        int row = table.getSelectedRow();
+        if (evt.getWheelRotation() < 0) { //Up
+            if (row == 0) {
+                return;
+            }
+            table.getSelectionModel().setSelectionInterval(row - 1, row - 1);
+        } else if (evt.getWheelRotation() > 0) { //Down
+            if (table.getRowCount() - 1 == row) {
+                return;
+            }
+            table.getSelectionModel().setSelectionInterval(row + 1, row + 1);
+        }
+
+    }//GEN-LAST:event_tableMouseWheelMoved
+
+    private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
+        int row = table.getSelectedRow();
+        if (evt.getKeyCode() == KeyEvent.VK_UP) { //Up
+            if (row == 0) {
+                return;
+            }
+            table.getSelectionModel().setSelectionInterval(row - 1, row - 1);
+        } else if (evt.getKeyCode() == KeyEvent.VK_DOWN) { //Down
+            if (table.getRowCount() - 1 == row) {
+                return;
+            }
+            table.getSelectionModel().setSelectionInterval(row + 1, row + 1);
+        }
+    }//GEN-LAST:event_txtSearchKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
