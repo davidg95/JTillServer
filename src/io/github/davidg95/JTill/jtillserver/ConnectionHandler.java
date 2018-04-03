@@ -847,8 +847,8 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("SUBMITSTOCKTAKE")
-    public void submitStockTake(@JConnParameter("PRODUCTS") List<Product> products, @JConnParameter("ZEROREST") boolean zeroRest) throws IOException, SQLException {
-        dc.submitStockTake(products, zeroRest);
+    public void submitStockTake(@JConnParameter("PRODUCTS") List<Product> products) throws IOException, SQLException {
+        dc.submitStockTake(products);
     }
 
     @JConnMethod("CATSINDEP")

@@ -1199,7 +1199,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Product> getProductsInCategory(int id) throws SQLException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND CATEGORYS.ID = " + id;
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE pCategory = cId AND cDepartment = dId AND pTax = tId AND cId = " + id;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Product> products = new LinkedList<>();
@@ -3918,15 +3918,12 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public void submitStockTake(List<Product> products, boolean zeroRest) throws IOException, SQLException {
+    public void submitStockTake(List<Product> products) throws IOException, SQLException {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            if (zeroRest) {
-                stmt.executeUpdate("UPDATE PRODUCTS SET pSTOCK = 0");
-            }
             for (Product p : products) {
-                stmt.executeUpdate("UPDATE PRODUCTS SET pSTOCK=" + p.getStock() + " WHERE barcode=" + p.getBarcode());
+                stmt.executeUpdate("UPDATE PRODUCTS SET pSTOCK=" + p.getStock() + " WHERE barcode='" + p.getBarcode() + "'");
             }
             con.commit();
         } catch (SQLException ex) {
@@ -3957,7 +3954,7 @@ public abstract class DBConnect extends DataConnect {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            ResultSet set = stmt.executeQuery("SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND DEPARTMENTS.ID = " + id);
+            ResultSet set = stmt.executeQuery("SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE pCategory = cId AND cDEPARTMENT = cId AND pTax = tId AND dId = " + id);
             List<Product> products = getProductsFromResultSet(set);
             con.commit();
             return products;

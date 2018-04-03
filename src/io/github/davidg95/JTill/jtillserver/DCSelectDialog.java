@@ -57,6 +57,7 @@ public class DCSelectDialog extends javax.swing.JDialog {
     public DCSelectDialog(Window parent, int mode) {
         super(parent);
         dc = DataConnect.get();
+        setIconImage(GUI.icon);
         this.mode = mode;
         try {
             initComponents();

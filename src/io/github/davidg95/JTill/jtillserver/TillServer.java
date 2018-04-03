@@ -308,6 +308,12 @@ public class TillServer implements JConnListener {
             GUI.getInstance().updateLables();
             TillSplashScreen.setLabel("Checking for update");
         }
+        HttpController http = new HttpController();
+        try {
+            http.start();
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, "Error starting HTTP server", ex);
+        }
         LOG.info("Checking for update");
         checkUpdate();
         if (!headless) {

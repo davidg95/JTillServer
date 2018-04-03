@@ -16,7 +16,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -32,7 +37,10 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -43,8 +51,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     private static StockTakeWindow window;
 
     private final DataConnect dc;
-    private List<Product> currentTableContents;
-    private final DefaultTableModel model;
+    private MyModel model;
 
     /**
      * Creates new form StockTakeWindow
@@ -56,9 +63,6 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
-        currentTableContents = new ArrayList<>();
-        model = (DefaultTableModel) table.getModel();
-        table.setModel(model);
         init();
     }
 
@@ -75,77 +79,252 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() {
-        this.addInternalFrameListener(new InternalFrameAdapter() {
-            @Override
-            public void internalFrameClosing(InternalFrameEvent e) {
-                if (!currentTableContents.isEmpty()) {
-                    int res = JOptionPane.showConfirmDialog(StockTakeWindow.this, "Do you want to save the current report?", "Save", JOptionPane.YES_NO_OPTION);
-                    if (res == JOptionPane.YES_OPTION) {
-                        GUI.gui.savedReports.put("STO", currentTableContents);
-                    }
-                }
-            }
-        });
-        if (GUI.gui.savedReports.containsKey("STO")) {
-            currentTableContents = GUI.gui.savedReports.get("STO");
-            updateTable();
-            GUI.gui.savedReports.remove("STO");
-        }
+        model = new MyModel();
+        table.setModel(model);
+        
+        table.getColumnModel().getColumn(2).setMinWidth(80);
+        table.getColumnModel().getColumn(2).setMaxWidth(80);
+        table.getColumnModel().getColumn(3).setMinWidth(80);
+        table.getColumnModel().getColumn(3).setMaxWidth(80);
+        table.getColumnModel().getColumn(4).setMinWidth(80);
+        table.getColumnModel().getColumn(4).setMaxWidth(80);
         InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = table.getActionMap();
-
         KeyStroke enterKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
-
         im.put(enterKey, "Action.enter");
         am.put("Action.enter", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 final int index = table.getSelectedRow();
-                final Product p = currentTableContents.get(index);
+                final Product p = model.get(index);
                 if (index == -1) {
                     return;
                 }
                 if (JOptionPane.showConfirmDialog(StockTakeWindow.this, "Are you sure you want to remove this item?\n" + p, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    currentTableContents.remove(index);
-                    updateTable();
+                    model.removeItem(index);
                 }
             }
         });
     }
 
-    public void updateTable() {
-        model.setRowCount(0);
-        for (Product p : currentTableContents) {
-            Object[] row = new Object[]{p.getBarcode(), p.getLongName(), p.getBarcode(), p.getStock()};
-            model.addRow(row);
-        }
-        if (currentTableContents.isEmpty()) {
-            btnSubmit.setEnabled(false);
-        } else {
-            btnSubmit.setEnabled(true);
-        }
-    }
+    private class MyModel implements TableModel {
 
-    public void setTable(List<Product> list) {
-        model.setRowCount(0);
-        for (Product p : list) {
-            Object[] row = new Object[]{p.getBarcode(), p.getLongName(), p.getBarcode(), p.getStock()};
-            model.addRow(row);
+        private final List<ProductStockPair> products;
+        private final List<TableModelListener> listeners;
+
+        public MyModel() {
+            this.products = new LinkedList<>();
+            this.listeners = new LinkedList<>();
         }
-    }
 
-    public void addRow(Product p) {
-        currentTableContents.add(p);
-        updateTable();
-    }
+        public void addItem(Product p, int amount) {
+            for (ProductStockPair psp : products) {
+                Product pr = psp.getProduct();
+                if (pr.equals(p)) {
+                    String option = (String) JOptionPane.showInputDialog(StockTakeWindow.this, "Product already in report, add to quantity ot set to quantity?", "Add Product", JOptionPane.QUESTION_MESSAGE, null, new String[]{"Add To", "Set To"}, "Add To");
+                    if ("Add To".equals(option)) {
+                        psp.setNewStock(((int) psp.getNewStock()) + amount);
+                    } else {
+                        psp.setNewStock(amount);
+                    }
+                    alertAll();
+                    return;
+                }
+            }
+            products.add(new ProductStockPair(p, amount));
+            alertAll();
+        }
 
-    private Product checkProductAlreadyExists(Product p) {
-        for (Product pr : currentTableContents) {
-            if (pr.equals(p)) {
-                return pr;
+        public void addItems(List<Product> ps) {
+            Main:
+            for (Product pr : ps) {
+                for (ProductStockPair psp : products) {
+                    Product p = psp.getProduct();
+                    if (p.equals(pr)) {
+                        continue Main;
+                    }
+                }
+                products.add(new ProductStockPair(pr, 0));
+            }
+            alertAll();
+        }
+
+        public void removeItem(Product p) {
+            for (int i = 0; i < products.size(); i++) {
+                ProductStockPair psp = products.get(i);
+                if (psp.getProduct().equals(p)) {
+                    products.remove(i);
+                    alertAll();
+                    return;
+                }
             }
         }
-        return null;
+
+        public void removeItem(int i) {
+            products.remove(i);
+            alertAll();
+        }
+
+        public Product get(int i) {
+            return products.get(i).getProduct();
+        }
+
+        public List<ProductStockPair> getAll() {
+            return products;
+        }
+
+        public void clear() {
+            products.clear();
+            alertAll();
+        }
+
+        @Override
+        public int getRowCount() {
+            return products.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 5;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0: {
+                    return "Barcode";
+                }
+                case 1: {
+                    return "Product";
+                }
+                case 2: {
+                    return "Current Stock";
+                }
+                case 3: {
+                    return "New Qty.";
+                }
+                case 4: {
+                    return "Discrepency";
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            if (columnIndex >= 2) {
+                return Integer.class;
+            }
+            return String.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return columnIndex == 3;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            ProductStockPair psp = products.get(rowIndex);
+            switch (columnIndex) {
+                case 0: {
+                    return psp.getProduct().getBarcode();
+                }
+                case 1: {
+                    return psp.getProduct().getLongName();
+                }
+                case 2: {
+                    return psp.getProduct().getStock();
+                }
+                case 3: {
+                    return psp.getNewStock();
+                }
+                case 4: {
+                    return psp.getNewStock() - psp.getProduct().getStock();
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            ProductStockPair psp = products.get(rowIndex);
+            if (columnIndex == 3) {
+                psp.setNewStock((int) aValue);
+            }
+        }
+
+        private void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+            btnSubmit.setEnabled(!products.isEmpty());
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
+
+    }
+
+    private class ProductStockPair {
+
+        private final Product product;
+        private int newStock;
+
+        public ProductStockPair(Product product, int newStock) {
+            this.product = product;
+            this.newStock = newStock;
+        }
+
+        public void setNewStock(int newStock) {
+            this.newStock = newStock;
+        }
+
+        public Product getProduct() {
+            return product;
+        }
+
+        public int getNewStock() {
+            return newStock;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 83 * hash + Objects.hashCode(this.product);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final ProductStockPair other = (ProductStockPair) obj;
+            return Objects.equals(this.product, other.product);
+        }
+
+        @Override
+        public String toString() {
+            return product.getLongName() + " - " + newStock;
+        }
     }
 
     /**
@@ -169,6 +348,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
         btnAddProduct = new javax.swing.JButton();
         btnAddCSV = new javax.swing.JButton();
         btnSubmit = new javax.swing.JButton();
+        addDc = new javax.swing.JButton();
 
         setTitle("Stock Take");
 
@@ -177,14 +357,14 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Barcode", "Product", "Barcode", "Qty."
+                "Barcode", "Product", "Qty."
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -207,10 +387,9 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
             table.getColumnModel().getColumn(0).setPreferredWidth(40);
             table.getColumnModel().getColumn(0).setMaxWidth(40);
             table.getColumnModel().getColumn(1).setResizable(false);
-            table.getColumnModel().getColumn(2).setResizable(false);
-            table.getColumnModel().getColumn(3).setMinWidth(40);
-            table.getColumnModel().getColumn(3).setPreferredWidth(40);
-            table.getColumnModel().getColumn(3).setMaxWidth(40);
+            table.getColumnModel().getColumn(2).setMinWidth(40);
+            table.getColumnModel().getColumn(2).setPreferredWidth(40);
+            table.getColumnModel().getColumn(2).setMaxWidth(40);
         }
 
         jLabel1.setText("Search:");
@@ -264,6 +443,13 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        addDc.setText("Add D/C");
+        addDc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addDcActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -282,10 +468,12 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
                         .addComponent(radBarcode)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                         .addComponent(btnAddCSV)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddProduct)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(addDc)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSubmit)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -296,7 +484,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -307,7 +495,8 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
                     .addComponent(btnClose)
                     .addComponent(btnAddProduct)
                     .addComponent(btnAddCSV)
-                    .addComponent(btnSubmit))
+                    .addComponent(btnSubmit)
+                    .addComponent(addDc))
                 .addContainerGap())
         );
 
@@ -324,8 +513,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         Product p = ProductSelectDialog.showDialog(this);
-        Product pr = checkProductAlreadyExists(p);
-        if (pr != null) {
+        if (p != null) {
             String input = JOptionPane.showInputDialog(this, "Enter new quantity", "Stock Take", JOptionPane.PLAIN_MESSAGE);
             if (!Utilities.isNumber(input)) {
                 JOptionPane.showMessageDialog(this, "Must enter a number", "Stock Take", JOptionPane.ERROR_MESSAGE);
@@ -333,35 +521,14 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
             }
             int val = Integer.parseInt(input);
             if (val > 0) {
-                pr.setStock(val);
-                updateTable();
+                model.addItem(p, val);
                 return;
             } else {
                 JOptionPane.showMessageDialog(this, "Must enter a value greater than zero", "Stock Take", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-        }
-        if (p == null) {
-            return;
-        }
-        if (p.isOpen() || !p.isTrackStock()) {
-            JOptionPane.showMessageDialog(this, "This items stock is not tracked", "Add Product", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        String val = JOptionPane.showInputDialog(this, "Enter new stock level", "Enter stock level", JOptionPane.PLAIN_MESSAGE);
-        if (val == null || val.isEmpty()) {
-            return;
-        }
-        if (Utilities.isNumber(val)) {
-            int stock = Integer.parseInt(val);
-            if (stock < 0) {
-                JOptionPane.showMessageDialog(this, "Value must be zero or greater", "Stock Take", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            p.setStock(stock);
-            addRow(p);
         } else {
-            JOptionPane.showMessageDialog(this, "You must enter a number", "Stock Take", JOptionPane.ERROR_MESSAGE);
+            return;
         }
     }//GEN-LAST:event_btnAddProductActionPerformed
 
@@ -397,14 +564,11 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
                     try {
                         product = dc.getProductByBarcode(barcode);
 
-                        product.setStock(quantity);
-
-                        currentTableContents.add(product);
+                        model.addItem(product, quantity);
                     } catch (ProductNotFoundException ex) {
                         nFound++;
                     }
                 }
-                updateTable();
                 if (nFound > 0) {
                     JOptionPane.showMessageDialog(StockTakeWindow.this, nFound + " barcodes could not be found", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -417,19 +581,35 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnAddCSVActionPerformed
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
-        if (currentTableContents.isEmpty()) {
+        if (model.getAll().isEmpty()) {
             return;
         }
         if (JOptionPane.showConfirmDialog(StockTakeWindow.this, "Are you sure you want to submit this stock take?", "Stock Take", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            boolean zeroRest = JOptionPane.showConfirmDialog(this, "Do you want unadded items to have the stock level set to zero?", "Stock Take", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
-            try {
-                dc.submitStockTake(currentTableContents, zeroRest);
-                currentTableContents.clear();
-                updateTable();
-                JOptionPane.showMessageDialog(StockTakeWindow.this, "Stock take submitted", "Complete", JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException | SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex + "\nStock take not submitted", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            final ModalDialog mDialog = new ModalDialog(this, "Stock Take");
+            final Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        List<Product> products = new LinkedList<>();
+                        for (ProductStockPair psp : model.getAll()) {
+                            psp.getProduct().setStock(psp.getNewStock());
+                            products.add(psp.getProduct());
+                        }
+                        dc.submitStockTake(products);
+                        model.clear();
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(StockTakeWindow.this, "Stock take submitted", "Complete", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (IOException | SQLException ex) {
+                        mDialog.hide();
+                        JOptionPane.showMessageDialog(StockTakeWindow.this, ex + "\nStock take not submitted", "Error", JOptionPane.ERROR_MESSAGE);
+                    } finally {
+                        mDialog.hide();
+                    }
+                }
+            };
+            final Thread thread = new Thread(runnable, "STOCK_TAKE");
+            thread.start();
+            mDialog.show();
         }
     }//GEN-LAST:event_btnSubmitActionPerformed
 
@@ -438,36 +618,38 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtSearchActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        if (txtSearch.getText().equals("")) {
-            updateTable();
-            return;
-        }
-        List<Product> newList = new ArrayList<>();
-        for (Product p : currentTableContents) {
-            if (radName.isSelected()) {
-                if (p.getShortName().contains(txtSearch.getText()) || p.getLongName().contains(txtSearch.getText())) {
-                    newList.add(p);
-                }
-            } else {
-                if (p.getBarcode().equals(txtSearch.getText())) {
-                    newList.add(p);
-                }
-            }
-        }
-        if (newList.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No results", "Search", JOptionPane.WARNING_MESSAGE);
-        }
-        setTable(newList);
-        txtSearch.setSelectionStart(0);
-        txtSearch.setSelectionEnd(txtSearch.getText().length());
+//        if (txtSearch.getText().equals("")) {
+//            return;
+//        }
+//        List<Product> newList = new ArrayList<>();
+//        for (Product p : currentTableContents) {
+//            if (radName.isSelected()) {
+//                if (p.getShortName().contains(txtSearch.getText()) || p.getLongName().contains(txtSearch.getText())) {
+//                    newList.add(p);
+//                }
+//            } else {
+//                if (p.getBarcode().equals(txtSearch.getText())) {
+//                    newList.add(p);
+//                }
+//            }
+//        }
+//        if (newList.isEmpty()) {
+//            JOptionPane.showMessageDialog(this, "No results", "Search", JOptionPane.WARNING_MESSAGE);
+//        }
+//        setTable(newList);
+//        txtSearch.setSelectionStart(0);
+//        txtSearch.setSelectionEnd(txtSearch.getText().length());
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         final int index = table.getSelectedRow();
-        final Product p = currentTableContents.get(index);
+        final Product p = model.get(index);
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
                 String input = JOptionPane.showInputDialog(StockTakeWindow.this, "Enter new quantity", "Stock Take", JOptionPane.PLAIN_MESSAGE);
+                if(input == null || input.isEmpty()){
+                    return;
+                }
                 if (!Utilities.isNumber(input)) {
                     JOptionPane.showMessageDialog(StockTakeWindow.this, "A number must be entered", "Stock Take", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -475,7 +657,6 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
                 int val = Integer.parseInt(input);
                 if (val > 0) {
                     p.setStock(val);
-                    updateTable();
                 } else {
                     JOptionPane.showMessageDialog(StockTakeWindow.this, "Must be a value greater than zero", "Stock Take", JOptionPane.WARNING_MESSAGE);
                 }
@@ -493,7 +674,6 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
                 int val = Integer.parseInt(input);
                 if (val > 0) {
                     p.setStock(val);
-                    updateTable();
                 } else {
                     JOptionPane.showMessageDialog(StockTakeWindow.this, "Must be a value greater than zero", "Stock Take", JOptionPane.WARNING_MESSAGE);
                 }
@@ -503,8 +683,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
                     return;
                 }
                 if (JOptionPane.showConfirmDialog(StockTakeWindow.this, "Are you sure you want to remove this item?\n" + p, "Stock Item", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    model.removeRow(index);
-                    currentTableContents.remove(index);
+                    model.removeItem(index);
                 }
             });
             m.add(i);
@@ -513,7 +692,27 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableMouseClicked
 
+    private void addDcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addDcActionPerformed
+        Object selection = DCSelectDialog.showDialog(this, DCSelectDialog.ANY_SELECT);
+        List<Product> products;
+        try {
+            if (selection instanceof Department) {
+                Department d = (Department) selection;
+                products = dc.getProductsInDepartment(d.getId());
+            } else if (selection instanceof Category) {
+                Category c = (Category) selection;
+                products = dc.getProductsInCategory(c.getId());
+            } else {
+                products = dc.getAllProducts();
+            }
+            model.addItems(products);
+        } catch (IOException | SQLException | JTillException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_addDcActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addDc;
     private javax.swing.JButton btnAddCSV;
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnClose;
