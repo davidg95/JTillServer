@@ -7,6 +7,8 @@ package io.github.davidg95.JTill.jtillserver;
 
 import com.sun.glass.events.KeyEvent;
 import io.github.davidg95.JTill.jtill.*;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
@@ -25,6 +27,7 @@ import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -33,6 +36,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
 /**
@@ -74,6 +78,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     private void init() {
         model = new MyModel();
         table.setModel(model);
+        table.getColumnModel().getColumn(4).setCellRenderer(new StatusColumnCellRenderer());
         table.getColumnModel().getColumn(2).setMinWidth(80);
         table.getColumnModel().getColumn(2).setMaxWidth(80);
         table.getColumnModel().getColumn(3).setMinWidth(80);
@@ -98,6 +103,22 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
                 }
             }
         });
+    }
+
+    public class StatusColumnCellRenderer extends DefaultTableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+            JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+            if (((int) value) == 0) {
+                l.setBackground(Color.GREEN);
+            } else if (((int) value) < 0) {
+                l.setBackground(Color.RED);
+            } else {
+                l.setBackground(Color.ORANGE);
+            }
+            return l;
+        }
     }
 
     private class MyModel implements TableModel {
@@ -333,7 +354,6 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
@@ -352,24 +372,9 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Barcode", "Product", "Qty."
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
             }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        ));
         table.getTableHeader().setReorderingAllowed(false);
         table.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
             public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
@@ -382,15 +387,6 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
             }
         });
         jScrollPane1.setViewportView(table);
-        if (table.getColumnModel().getColumnCount() > 0) {
-            table.getColumnModel().getColumn(0).setMinWidth(40);
-            table.getColumnModel().getColumn(0).setPreferredWidth(40);
-            table.getColumnModel().getColumn(0).setMaxWidth(40);
-            table.getColumnModel().getColumn(1).setResizable(false);
-            table.getColumnModel().getColumn(2).setMinWidth(40);
-            table.getColumnModel().getColumn(2).setPreferredWidth(40);
-            table.getColumnModel().getColumn(2).setMaxWidth(40);
-        }
 
         jLabel1.setText("Search:");
 
@@ -716,7 +712,6 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSubmit;
-    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
