@@ -1111,7 +1111,6 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             }
             table.getSelectionModel().setSelectionInterval(row + 1, row + 1);
         }
-
     }//GEN-LAST:event_tableMouseWheelMoved
 
     private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased

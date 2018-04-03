@@ -29,6 +29,7 @@ import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JFileChooser;
+import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -81,7 +82,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     private void init() {
         model = new MyModel();
         table.setModel(model);
-        
+
         table.getColumnModel().getColumn(2).setMinWidth(80);
         table.getColumnModel().getColumn(2).setMaxWidth(80);
         table.getColumnModel().getColumn(3).setMinWidth(80);
@@ -96,7 +97,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 final int index = table.getSelectedRow();
-                final Product p = model.get(index);
+                final Product p = model.get(index).getProduct();
                 if (index == -1) {
                     return;
                 }
@@ -165,8 +166,12 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
             alertAll();
         }
 
-        public Product get(int i) {
-            return products.get(i).getProduct();
+        public ProductStockPair get(int i) {
+            return products.get(i);
+        }
+
+        public int indexOf(ProductStockPair p) {
+            return products.indexOf(p);
         }
 
         public List<ProductStockPair> getAll() {
@@ -341,8 +346,6 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
         table = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
-        radName = new javax.swing.JRadioButton();
-        radBarcode = new javax.swing.JRadioButton();
         btnSearch = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
         btnAddProduct = new javax.swing.JButton();
@@ -376,6 +379,11 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
             }
         });
         table.getTableHeader().setReorderingAllowed(false);
+        table.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                tableMouseWheelMoved(evt);
+            }
+        });
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableMouseClicked(evt);
@@ -399,13 +407,6 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
                 txtSearchActionPerformed(evt);
             }
         });
-
-        buttonGroup1.add(radName);
-        radName.setText("Name");
-
-        buttonGroup1.add(radBarcode);
-        radBarcode.setSelected(true);
-        radBarcode.setText("Barcode");
 
         btnSearch.setText("Search");
         btnSearch.addActionListener(new java.awt.event.ActionListener() {
@@ -461,14 +462,10 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(radName)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(radBarcode)
+                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
                         .addComponent(btnAddCSV)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddProduct)
@@ -484,13 +481,11 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(radName)
-                    .addComponent(radBarcode)
                     .addComponent(btnSearch)
                     .addComponent(btnClose)
                     .addComponent(btnAddProduct)
@@ -618,36 +613,30 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtSearchActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-//        if (txtSearch.getText().equals("")) {
-//            return;
-//        }
-//        List<Product> newList = new ArrayList<>();
-//        for (Product p : currentTableContents) {
-//            if (radName.isSelected()) {
-//                if (p.getShortName().contains(txtSearch.getText()) || p.getLongName().contains(txtSearch.getText())) {
-//                    newList.add(p);
-//                }
-//            } else {
-//                if (p.getBarcode().equals(txtSearch.getText())) {
-//                    newList.add(p);
-//                }
-//            }
-//        }
-//        if (newList.isEmpty()) {
-//            JOptionPane.showMessageDialog(this, "No results", "Search", JOptionPane.WARNING_MESSAGE);
-//        }
-//        setTable(newList);
-//        txtSearch.setSelectionStart(0);
-//        txtSearch.setSelectionEnd(txtSearch.getText().length());
+        if (txtSearch.getText().equals("")) {
+            return;
+        }
+        table.getSelectionModel().removeSelectionInterval(0, model.getRowCount());
+        for (ProductStockPair p : model.getAll()) {
+            if (p.getProduct().getBarcode().equals(txtSearch.getText())) {
+                int index = model.indexOf(p);
+                table.getSelectionModel().setSelectionInterval(index, index);
+            }
+        }
+        txtSearch.setSelectionStart(0);
+        txtSearch.setSelectionEnd(txtSearch.getText().length());
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         final int index = table.getSelectedRow();
-        final Product p = model.get(index);
+        if (index == -1) {
+            return;
+        }
+        final ProductStockPair p = model.get(index);
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
                 String input = JOptionPane.showInputDialog(StockTakeWindow.this, "Enter new quantity", "Stock Take", JOptionPane.PLAIN_MESSAGE);
-                if(input == null || input.isEmpty()){
+                if (input == null || input.isEmpty()) {
                     return;
                 }
                 if (!Utilities.isNumber(input)) {
@@ -656,16 +645,17 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
                 }
                 int val = Integer.parseInt(input);
                 if (val > 0) {
-                    p.setStock(val);
+                    p.setNewStock(val);
+                    model.alertAll();
                 } else {
                     JOptionPane.showMessageDialog(StockTakeWindow.this, "Must be a value greater than zero", "Stock Take", JOptionPane.WARNING_MESSAGE);
                 }
             }
         } else if (SwingUtilities.isRightMouseButton(evt)) {
             JPopupMenu m = new JPopupMenu();
-            JMenuItem i = new JMenuItem("Change Quantity");
-            JMenuItem i2 = new JMenuItem("Remove Item");
-            i.addActionListener((ActionEvent e) -> {
+            JMenuItem changeQuantity = new JMenuItem("Change Quantity");
+            JMenuItem removeItem = new JMenuItem("Remove Item");
+            changeQuantity.addActionListener((ActionEvent e) -> {
                 String input = JOptionPane.showInputDialog(StockTakeWindow.this, "Enter new quantity", "Stock Take", JOptionPane.PLAIN_MESSAGE);
                 if (!Utilities.isNumber(input)) {
                     JOptionPane.showMessageDialog(StockTakeWindow.this, "A number must be entered", "Stock Take", JOptionPane.ERROR_MESSAGE);
@@ -673,12 +663,13 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
                 }
                 int val = Integer.parseInt(input);
                 if (val > 0) {
-                    p.setStock(val);
+                    p.setNewStock(val);
+                    model.alertAll();
                 } else {
                     JOptionPane.showMessageDialog(StockTakeWindow.this, "Must be a value greater than zero", "Stock Take", JOptionPane.WARNING_MESSAGE);
                 }
             });
-            i2.addActionListener((ActionEvent e) -> {
+            removeItem.addActionListener((ActionEvent e) -> {
                 if (index == -1) {
                     return;
                 }
@@ -686,8 +677,8 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
                     model.removeItem(index);
                 }
             });
-            m.add(i);
-            m.add(i2);
+            m.add(changeQuantity);
+            m.add(removeItem);
             m.show(table, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tableMouseClicked
@@ -711,6 +702,21 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_addDcActionPerformed
 
+    private void tableMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_tableMouseWheelMoved
+        int row = table.getSelectedRow();
+        if (evt.getWheelRotation() < 0) { //Up
+            if (row == 0) {
+                return;
+            }
+            table.getSelectionModel().setSelectionInterval(row - 1, row - 1);
+        } else if (evt.getWheelRotation() > 0) { //Down
+            if (table.getRowCount() - 1 == row) {
+                return;
+            }
+            table.getSelectionModel().setSelectionInterval(row + 1, row + 1);
+        }
+    }//GEN-LAST:event_tableMouseWheelMoved
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addDc;
     private javax.swing.JButton btnAddCSV;
@@ -721,8 +727,6 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JRadioButton radBarcode;
-    private javax.swing.JRadioButton radName;
     private javax.swing.JTable table;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
