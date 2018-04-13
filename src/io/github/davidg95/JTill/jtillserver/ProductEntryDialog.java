@@ -1063,7 +1063,15 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         String name = txtName.getText();
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Must enter a name", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         String shortName = txtShortName.getText();
+        if (shortName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Must enter a short name", "Create New Product", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         String orderCode = txtOrderCode.getText();
         Category category = (Category) cmbCat.getSelectedItem();
         if (!Utilities.isNumber(txtMin.getText())) {
