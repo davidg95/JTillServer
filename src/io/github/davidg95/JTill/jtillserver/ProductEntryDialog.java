@@ -149,9 +149,16 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         txtPrice.setText("");
         txtCostPrice.setText("");
         txtPackSize.setText("");
+        txtUnitCost.setText("");
         txtMin.setText("0");
         txtMax.setText("0");
         for (Component c : jPanel4.getComponents()) {
+            c.setEnabled(true);
+        }
+        for (Component c : panelOpen.getComponents()) {
+            c.setEnabled(false);
+        }
+        for (Component c : panelStandard.getComponents()) {
             c.setEnabled(true);
         }
         txtComments.setText("");
@@ -163,10 +170,18 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         txtScaleName.setText("Price");
         txtCostPercentage.setText("0");
         txtPriceLimit.setText("0");
+        chkScale.setSelected(false);
 
         cmbVat.setSelectedIndex(0);
         cmbCat.setSelectedIndex(0);
         tabbed.setSelectedIndex(0);
+
+        txtGP.setText("");
+
+        radStandard.setSelected(true);
+        radOpen.setSelected(false);
+        txtDepartment.setText("");
+        txtIncVat.setText("");
     }
 
     public void setProduct() {
@@ -1187,8 +1202,13 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             CardLayout c = (CardLayout) container.getLayout();
             c.show(container, "card3");
             txtName.requestFocus();
-        } catch (IOException | SQLException | JTillException ex) {
+        } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (JTillException ex) {
+            chkNext.setSelected(false);
+            txtBarcode.setEnabled(true);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            txtBarcode.requestFocus();
         }
     }//GEN-LAST:event_btnEnterActionPerformed
 
@@ -1266,8 +1286,13 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
-        } catch (IOException | SQLException | JTillException ex) {
+        } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (JTillException ex) {
+            chkNext.setSelected(false);
+            txtBarcode.setEnabled(true);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            txtBarcode.requestFocus();
         }
     }//GEN-LAST:event_btnCopyDetailsActionPerformed
 
