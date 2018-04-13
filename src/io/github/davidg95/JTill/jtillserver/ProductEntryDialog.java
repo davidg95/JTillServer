@@ -1184,6 +1184,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 setTitle("Create New Product");
                 CardLayout c = (CardLayout) container.getLayout();
                 c.show(container, "card2");
+                setTitle("Create New Product");
                 txtBarcode.requestFocus();
                 if (autoClose) {
                     setVisible(false);
@@ -1200,6 +1201,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         } else {
             CardLayout c = (CardLayout) container.getLayout();
             c.show(container, "card2");
+            setTitle("Create New Product");
         }
     }//GEN-LAST:event_btnBackActionPerformed
 
