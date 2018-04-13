@@ -3576,7 +3576,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public ReceivedReport updateReceivedReport(ReceivedReport rr) throws IOException, SQLException {
-        String query = "UPDATE RECEIVED_REPORTS SET PAID = " + rr.isPaid() + " WHERE ID=" + rr.getId();
+        String query = "UPDATE RECEIVED_REPORTS SET rrPAID = " + rr.isPaid() + " WHERE rrID=" + rr.getId();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         try {
