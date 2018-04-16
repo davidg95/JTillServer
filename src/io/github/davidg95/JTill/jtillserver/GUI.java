@@ -223,9 +223,16 @@ public class GUI extends JFrame implements GUIInterface {
     @Override
     public void log(Object o) {
         txtLog.append(o.toString() + "\n");
+        if (o instanceof Exception) {
+            txtLog.append(((Exception) o).getMessage());
+        }
         txtLog.setCaretPosition(txtLog.getDocument().getLength());
         if (TillServer.server != null) {
-            TillServer.server.sendData(null, JConnData.create("LOG").addParam("MESSAGE", o.toString()));
+            if (o instanceof Exception) {
+                TillServer.server.sendData(null, JConnData.create("LOG").addParam("MESSAGE", ((Exception) o).getMessage()));
+            } else {
+                TillServer.server.sendData(null, JConnData.create("LOG").addParam("MESSAGE", o.toString()));
+            }
         }
     }
 

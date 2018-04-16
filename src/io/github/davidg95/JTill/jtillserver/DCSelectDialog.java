@@ -482,10 +482,11 @@ public class DCSelectDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
+        getSelected();
         setVisible(false);
     }//GEN-LAST:event_btnSelectActionPerformed
 
-    private void treeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMousePressed
+    private void getSelected() {
         TreePath path = tree.getSelectionModel().getSelectionPath();
         if (path == null) {
             return;
@@ -511,7 +512,10 @@ public class DCSelectDialog extends javax.swing.JDialog {
             }
         }
         btnSelect.setEnabled(true);
+    }
+    private void treeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMousePressed
         if (evt.getClickCount() == 2) {
+            getSelected();
             setVisible(false);
         }
     }//GEN-LAST:event_treeMousePressed
