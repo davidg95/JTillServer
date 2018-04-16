@@ -673,6 +673,9 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
 
     private void addDcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addDcActionPerformed
         Object selection = DCSelectDialog.showDialog(this, DCSelectDialog.ANY_SELECT);
+        if(selection == null){
+            return;
+        }
         List<Product> products;
         try {
             if (selection instanceof Department) {
