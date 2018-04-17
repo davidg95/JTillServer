@@ -600,6 +600,7 @@ public class ConnectionHandler {
     public List<SaleItem> subSaleItemQuery(@JConnParameter("QUERY") String q) throws IOException, SQLException {
         return dc.submitSaleItemQuery(q);
     }
+
     @JConnMethod("GETTOTALSOLDITEM")
     public int getTotalSoldItem(@JConnParameter("ID") String id) throws IOException, SQLException, ProductNotFoundException {
         return dc.getTotalSoldOfItem(id);
@@ -994,5 +995,10 @@ public class ConnectionHandler {
     @JConnMethod("GETSCREENSWITHPRODUCT")
     public List<Screen> getScreensWithProduct(@JConnParameter("PRODUCT") Product p) throws SQLException {
         return dc.getScreensWithProduct(p);
+    }
+
+    @JConnMethod("GETSUPPLIERSPRODUCTS")
+    public List<Product> getSuppliersProducts(@JConnParameter("SUPPLIER") Supplier s) throws IOException, SQLException {
+        return dc.getProductsInSupplier(s);
     }
 }

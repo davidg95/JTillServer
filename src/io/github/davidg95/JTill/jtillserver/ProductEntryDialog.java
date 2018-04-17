@@ -36,6 +36,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
     private final DefaultComboBoxModel taxModel;
     private final DefaultComboBoxModel catModel;
+    private final DefaultComboBoxModel supModel;
 
     private boolean autoClose = false;
 
@@ -50,6 +51,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         super(parent);
         taxModel = new DefaultComboBoxModel();
         catModel = new DefaultComboBoxModel();
+        supModel = new DefaultComboBoxModel();
         initCombos();
         initComponents();
         txtDepartment.setText("1 - Default");
@@ -103,6 +105,11 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             List<Category> cats = dc.getAllCategorys();
             for (Category c : cats) {
                 catModel.addElement(c);
+            }
+            List<Supplier> sups = dc.getAllSuppliers();
+            supModel.addElement("NONE");
+            for (Supplier s : sups) {
+                supModel.addElement(s);
             }
         } catch (IOException | SQLException ex) {
             Logger.getLogger(ProductEntryDialog.class.getName()).log(Level.SEVERE, null, ex);
@@ -174,6 +181,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
         cmbVat.setSelectedIndex(0);
         cmbCat.setSelectedIndex(0);
+        cmbSupplier.setSelectedIndex(0);
         tabbed.setSelectedIndex(0);
 
         txtGP.setText("");
@@ -190,6 +198,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         txtShortName.setText(product.getShortName());
         txtOrderCode.setText("" + product.getOrderCode());
         cmbCat.setSelectedItem(product.getCategory());
+        cmbSupplier.setSelectedItem(product.getSupplier());
         txtDepartment.setText(product.getCategory().getDepartment().toString());
         cmbVat.setSelectedItem(product.getTax());
         chkTrackStock.setSelected(product.isTrackStock());
@@ -366,6 +375,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         lblMax = new javax.swing.JLabel();
         txtMax = new javax.swing.JTextField();
         txtMin = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        cmbSupplier = new javax.swing.JComboBox<>();
         tabbed = new javax.swing.JTabbedPane();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -870,6 +881,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
         txtMin.setText("0");
 
+        jLabel8.setText("Supplier:");
+
+        cmbSupplier.setModel(supModel);
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -885,6 +900,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 .addComponent(txtMax, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(chkTrackStock)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cmbSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -896,7 +915,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     .addComponent(txtMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblMax)
                     .addComponent(txtMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(chkTrackStock))
+                    .addComponent(chkTrackStock)
+                    .addComponent(jLabel8)
+                    .addComponent(cmbSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -1096,6 +1117,13 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         Tax tax = (Tax) cmbVat.getSelectedItem();
         String comments = txtComments.getText();
         String ingredients = txtIngredients.getText();
+        Object supSel = cmbSupplier.getSelectedItem();
+        Supplier supplier;
+        if (supSel.equals("NONE")) {
+            supplier = null;
+        } else {
+            supplier = (Supplier) supSel;
+        }
 
         if (radStandard.isSelected()) {
             if (!Utilities.isNumber(txtPrice.getText())) {
@@ -1122,7 +1150,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 return;
             }
             boolean incVat = chkIncVat.isSelected();
-            product = new Product(name, shortName, barcode, orderCode, category, comments, tax, price, costPrice, incVat, packSize, 0, minStock, maxStock, 0, 0, trackStock, ingredients);
+            product = new Product(name, shortName, barcode, orderCode, category, comments, tax, price, costPrice, incVat, packSize, 0, minStock, maxStock, 0, 0, trackStock, ingredients, supplier);
         } else {
             String strCost = txtCostPercentage.getText();
             if (!Utilities.isNumber(strCost)) {
@@ -1159,7 +1187,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     return;
                 }
             }
-            product = new Product(name, shortName, barcode, orderCode, category, comments, tax, scale, scaleName, costPercentage, priceLimit, ingredients);
+            product = new Product(name, shortName, barcode, orderCode, category, comments, tax, scale, scaleName, costPercentage, priceLimit, ingredients, supplier);
         }
         try {
             if (editMode) {
@@ -1435,6 +1463,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JCheckBox chkScale;
     private javax.swing.JCheckBox chkTrackStock;
     private javax.swing.JComboBox<String> cmbCat;
+    private javax.swing.JComboBox<String> cmbSupplier;
     private javax.swing.JComboBox<String> cmbVat;
     private javax.swing.JPanel container;
     private javax.swing.JLabel jLabel1;
@@ -1451,6 +1480,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

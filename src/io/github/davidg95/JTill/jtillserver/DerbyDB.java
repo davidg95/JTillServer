@@ -119,6 +119,7 @@ public class DerbyDB extends DBConnect {
             + "     pLIMIT BIGINT,\n"
             + "     pComments VARCHAR(200),\n"
             + "     pIngredients VARCHAR(200),\n"
+            + "     pSupplier int,\n"
             + "     pTRACK_STOCK BOOLEAN\n"
             + ")";
     String discounts = "create table DISCOUNTS\n"

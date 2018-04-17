@@ -66,18 +66,24 @@ public class ProductSelectDialog extends javax.swing.JDialog {
 
     private MyTreeModel treeModel;
 
-    private final String filter;
+    private final Supplier supplier;
+    private final String suppString;
 
     /**
      * Creates new form ProductSelectDialog
      *
      * @param parent the parent window.
-     * @param filter a filter to apply.
+     * @param supplier the supplier to show.
      */
-    public ProductSelectDialog(Window parent, String filter) {
+    public ProductSelectDialog(Window parent, Supplier supplier) {
         super(parent);
         this.dc = GUI.gui.dc;
-        this.filter = filter;
+        this.supplier = supplier;
+        if(supplier == null){
+            suppString = "";
+        } else{
+            suppString = " for supplier " + supplier.getName();
+        }
         closedFlag = false;
         initComponents();
         this.setIconImage(GUI.icon);
@@ -89,7 +95,6 @@ public class ProductSelectDialog extends javax.swing.JDialog {
             try {
                 setTable();
                 initTable();
-                checkFilter();
                 if (table.getRowCount() > 0) {
                     table.getSelectionModel().setSelectionInterval(0, 0);
                 }
@@ -142,28 +147,6 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         }
     }
 
-    private void checkFilter() {
-        if (filter.isEmpty()) {
-            return;
-        }
-        String[] params = filter.split(",");
-        if (params.length == 0) {
-            return;
-        }
-        for (String p : params) {
-            String[] sPams = p.split(" ");
-            if (sPams.length == 0) {
-                return;
-            }
-            if (p.charAt(p.indexOf('-') + 1) == 'd') {
-                Department d = model.filterDepartment(sPams[1]);
-                setTitle("Select Product - " + d.getName());
-            } else if (p.charAt(p.indexOf('-') + 1) == 'c') {
-                Category c = model.filterCategory(sPams[1]);
-                setTitle("Select Product - " + c.getDepartment().getName() + " - " + c.getDepartment().getName());
-            }
-        }
-    }
     private static final String solve = "Solve";
 
     private void initTable() {
@@ -202,29 +185,34 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * @return the product selected by the user.
      */
     public static Product showDialog(Component parent) {
-        return showDialog(parent, "");
+        return showDialog(parent, null);
     }
 
     /**
      * Method to show the product select dialog.
      *
      * @param parent the parent component.
-     * @param filter a filter to apply.
+     * @param supplier the supplier to show.
      * @return the product selected by the user.
      */
-    public static Product showDialog(Component parent, String filter) {
+    public static Product showDialog(Component parent, Supplier supplier) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new ProductSelectDialog(window, filter);
+        dialog = new ProductSelectDialog(window, supplier);
         product = null;
         dialog.setVisible(true);
         return product;
     }
 
     private void setTable() throws IOException, SQLException {
-        List<Product> all = dc.getAllProducts();
+        List<Product> all;
+        if (supplier == null) {
+            all = dc.getAllProducts();
+        } else {
+            all = dc.getProductsInSupplier(supplier);
+        }
         Product allProducts[] = new Product[]{};
         allProducts = all.toArray(allProducts);
         model = new MyTableModel(allProducts);
@@ -258,7 +246,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         public void showAll() {
             products = new LinkedList<>(Arrays.asList(allProducts));
             alertAll();
-            setTitle("Select Product - All");
+            setTitle("Select Product - All" + suppString);
         }
 
         public void filterCategory(Category c) {
@@ -268,7 +256,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                     products.add(p);
                 }
             }
-            setTitle("Select Product - " + c.getDepartment().getName() + " - " + c.getName());
+            setTitle("Select Product - " + c.getDepartment().getName() + " - " + c.getName() + suppString);
             alertAll();
         }
 
@@ -279,7 +267,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
                     products.add(p);
                 }
             }
-            setTitle("Select Product - " + d.getName());
+            setTitle("Select Product - " + d.getName() + suppString);
             alertAll();
         }
 
@@ -717,7 +705,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         btnRefresh = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Select Product - All");
+        setTitle("Select Products - All" + suppString);
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

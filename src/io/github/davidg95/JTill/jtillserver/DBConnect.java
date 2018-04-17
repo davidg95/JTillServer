@@ -149,7 +149,34 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Product> getAllProducts() throws SQLException, IOException {
-        String query = "select * from products, categorys, departments, tax where pcategory = cid and cdepartment = did and ptax = tid order by barcode";
+        String query = "select * from products, categorys, departments, tax, suppliers where pSupplier = sid and pcategory = cid and cdepartment = did and ptax = tid order by barcode";
+        List<Product> products;
+        Connection con = getConnection();
+        Statement stmt = con.createStatement();
+        try {
+            ResultSet set = stmt.executeQuery(query);
+            products = getProductsFromResultSet(set);
+            con.commit();
+        } catch (SQLException ex) {
+            con.rollback();
+            LOG.log(Level.SEVERE, null, ex);
+            throw ex;
+        }
+        for (Product p : products) {
+            p.setCondiments(getProductsCondiments(p.getBarcode()));
+        }
+        return products;
+    }
+
+    @Override
+    public List<Product> getProductsInSupplier(Supplier s) throws IOException, SQLException {
+        int id;
+        if (s == null) {
+            id = -1;
+        } else {
+            id = s.getId();
+        }
+        String query = "select * from products, categorys, departments, tax, suppliers where pSupplier = sid and pcategory = cid and cdepartment = did and ptax = tid and psupplier = " + id + " order by barcode";
         List<Product> products;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
@@ -206,14 +233,24 @@ public abstract class DBConnect extends DataConnect {
 
             String tName = set.getString("tname");
             double value = set.getDouble("tvalue");
+            int supplier = set.getInt("pSupplier");
+            Supplier s = null;
+            if (supplier != -1) {
+                String sname = set.getString("sname");
+                String saddress = set.getString("saddress");
+                String sphone = set.getString("sphone");
+                String saccount = set.getString("saccount_number");
+                String semail = set.getString("semail");
+                s = new Supplier(supplier, sname, saddress, sphone, saccount, semail);
+            }
 
             Tax t = new Tax(taxID, tName, value);
 
             Product p;
             if (!open) {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients, s);
             } else {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients, s);
             }
 
             products.add(p);
@@ -231,7 +268,7 @@ public abstract class DBConnect extends DataConnect {
      */
     @Override
     public Product addProduct(Product p) throws SQLException {
-        String query = "INSERT INTO PRODUCTS (pORDER_CODE, pNAME, OPEN_PRICE, pPRICE, pSTOCK, pCOMMENTS, pSHORT_NAME, pcategory, ptax, pcost_price, ppack_size, pmin_level, pmax_level, barcode, pscale, pscale_name, pINCVAT, pLIMIT, pTRACK_STOCK, pcost_percentage, pingredients) VALUES (" + p.getSQLInsertString() + ")";
+        String query = "INSERT INTO PRODUCTS (pORDER_CODE, pNAME, OPEN_PRICE, pPRICE, pSTOCK, pCOMMENTS, pSHORT_NAME, pcategory, ptax, pcost_price, ppack_size, pmin_level, pmax_level, barcode, pscale, pscale_name, pINCVAT, pLIMIT, pTRACK_STOCK, pcost_percentage, pingredients, psupplier) VALUES (" + p.getSQLInsertString() + ")";
         Connection con = getConnection();
         try (PreparedStatement stmt = con.prepareStatement(query)) {
             stmt.executeUpdate();
@@ -379,7 +416,7 @@ public abstract class DBConnect extends DataConnect {
      */
     @Override
     public Product getProduct(String barcode) throws SQLException, ProductNotFoundException, IOException {
-        String query = "select * from products, categorys, departments, tax where pcategory = cid and cdepartment = did and ptax = tid and barcode='" + barcode + "'";
+        String query = "select * from products, categorys, departments, tax, suppliers where psupplier = sid and pcategory = cid and cdepartment = did and ptax = tid and barcode='" + barcode + "'";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Product> products = new LinkedList<>();
@@ -409,7 +446,7 @@ public abstract class DBConnect extends DataConnect {
      */
     @Override
     public Product getProductByBarcode(String barcode) throws SQLException, ProductNotFoundException {
-        String query = "select * from products, categorys, departments, tax where pcategory = cid AND cdepartment = did AND ptax = tid and barcode='" + barcode + "'";
+        String query = "select * from products, categorys, departments, tax, suppliers where psupplier = sid and pcategory = cid AND cdepartment = did AND ptax = tid and barcode='" + barcode + "'";
         List<Product> products = new LinkedList<>();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
@@ -1054,7 +1091,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Product> getProductsInTax(int id) throws SQLException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE pcategory = cid AND cdepartment = did AND ptax = tid AND tid = " + id;
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, suppliers WHERE psupplier = sid and pcategory = cid AND cdepartment = did AND ptax = tid AND tid = " + id;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Product> products = new LinkedList<>();
@@ -1199,7 +1236,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Product> getProductsInCategory(int id) throws SQLException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE pCategory = cId AND cDepartment = dId AND pTax = tId AND cId = " + id;
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, suppliers WHERE psupplier = sid and pCategory = cId AND cDepartment = dId AND pTax = tId AND cId = " + id;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         List<Product> products = new LinkedList<>();
@@ -1402,11 +1439,22 @@ public abstract class DBConnect extends DataConnect {
 
             Tax t = new Tax(taxID, tName, value);
 
+            int supplier = set.getInt("pSupplier");
+            Supplier sup = null;
+            if (supplier != -1) {
+                String sname = set.getString("sname");
+                String saddress = set.getString("saddress");
+                String sphone = set.getString("sphone");
+                String saccount = set.getString("saccount_number");
+                String semail = set.getString("semail");
+                sup = new Supplier(supplier, sname, saddress, sphone, saccount, semail);
+            }
+
             Product p;
             if (!open) {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, pPrice, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, pPrice, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients, sup);
             } else {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients, sup);
             }
 
             SaleItem s = new SaleItem(id, p, quantity, price, cost, tax);
@@ -2296,11 +2344,22 @@ public abstract class DBConnect extends DataConnect {
 
             Tax t = new Tax(taxID, tName, tValue);
 
+            int supplier = set.getInt("pSupplier");
+            Supplier s = null;
+            if (supplier != -1) {
+                String sname = set.getString("sname");
+                String saddress = set.getString("saddress");
+                String sphone = set.getString("sphone");
+                String saccount = set.getString("saccount_number");
+                String semail = set.getString("semail");
+                s = new Supplier(supplier, sname, saddress, sphone, saccount, semail);
+            }
+
             Product p;
             if (!open) {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, pPrice, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, pPrice, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients, s);
             } else {
-                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
+                p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients, s);
             }
 
             WasteReason wr = new WasteReason(wreason, reason, level);
@@ -3335,7 +3394,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Product> getProductsAdvanced(String WHERE) throws IOException, SQLException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX " + WHERE + " AND PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID";
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, suppliers " + WHERE + " AND psupplier = sid and PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         try {
@@ -3550,11 +3609,22 @@ public abstract class DBConnect extends DataConnect {
 
                 Tax t = new Tax(taxID, tName, value);
 
+                int supplier = set.getInt("pSupplier");
+                Supplier s = null;
+                if (supplier != -1) {
+                    String sname = set.getString("sname");
+                    String saddress = set.getString("saddress");
+                    String sphone = set.getString("sphone");
+                    String saccount = set.getString("saccount_number");
+                    String semail = set.getString("semail");
+                    s = new Supplier(supplier, sname, saddress, sphone, saccount, semail);
+                }
+
                 Product p;
                 if (!open) {
-                    p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
+                    p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients, s);
                 } else {
-                    p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
+                    p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients, s);
                 }
 
                 int iid = set.getInt("riid");
@@ -3954,7 +4024,7 @@ public abstract class DBConnect extends DataConnect {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            ResultSet set = stmt.executeQuery("SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX WHERE pCategory = cId AND cDEPARTMENT = cId AND pTax = tId AND dId = " + id);
+            ResultSet set = stmt.executeQuery("SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, suppliers WHERE psupplier = sid and  pCategory = cId AND cDEPARTMENT = cId AND pTax = tId AND dId = " + id);
             List<Product> products = getProductsFromResultSet(set);
             con.commit();
             return products;
@@ -3990,7 +4060,7 @@ public abstract class DBConnect extends DataConnect {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            ResultSet set = stmt.executeQuery("select * from products, categorys, departments, tax, condiments where pcategory = cid and cdepartment = did and ptax = tid and barcode = product_con AND condiments.product = '" + barcode + "'");
+            ResultSet set = stmt.executeQuery("select * from products, categorys, departments, tax, suppliers, condiments where psupplier = sid and pcategory = cid and cdepartment = did and ptax = tid and barcode = product_con AND condiments.product = '" + barcode + "'");
             List<Condiment> condiments = new LinkedList<>();
             while (set.next()) {
                 String order_code = set.getString("porder_code");
@@ -4033,11 +4103,22 @@ public abstract class DBConnect extends DataConnect {
                 int conId = set.getInt("product");
                 String p_conn = set.getString("product_con");
 
+                int supplier = set.getInt("pSupplier");
+                Supplier s = null;
+                if (supplier != -1) {
+                    String sname = set.getString("sname");
+                    String saddress = set.getString("saddress");
+                    String sphone = set.getString("sphone");
+                    String saccount = set.getString("saccount_number");
+                    String semail = set.getString("semail");
+                    s = new Supplier(supplier, sname, saddress, sphone, saccount, semail);
+                }
+
                 Product p;
                 if (!open) {
-                    p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
+                    p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients, s);
                 } else {
-                    p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
+                    p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients, s);
                 }
                 condiments.add(new Condiment(conId, p_conn, p));
             }
@@ -4172,7 +4253,7 @@ public abstract class DBConnect extends DataConnect {
             }
 
             for (Order o : orders) {
-                ResultSet set2 = stmt.executeQuery("SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, ORDERITEMS WHERE PRODUCTS.CATEGORY_ID = CATEGORYS.ID AND CATEGORYS.DEPARTMENT = DEPARTMENTS.ID AND PRODUCTS.TAX_ID = TAX.ID AND ORDERITEMS.PRODUCT = PRODUCTS.ID AND ORDERITEMS.ORDER_ID = " + o.getId());
+                ResultSet set2 = stmt.executeQuery("SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, suppliers, ORDERITEMS WHERE psupplier = sid and pcategory = cid AND cdepartment = did AND ptax = tid AND oiproduct = barcode AND oiorder = " + o.getId());
                 List<OrderItem> items = new LinkedList<>();
                 while (set2.next()) {
                     String barcode = set.getString("barcode");
@@ -4213,11 +4294,22 @@ public abstract class DBConnect extends DataConnect {
 
                     Tax t = new Tax(taxID, tName, value);
 
+                    int supplier = set.getInt("pSupplier");
+                    Supplier s = null;
+                    if (supplier != -1) {
+                        String sname = set.getString("sname");
+                        String saddress = set.getString("saddress");
+                        String sphone = set.getString("sphone");
+                        String saccount = set.getString("saccount_number");
+                        String semail = set.getString("semail");
+                        s = new Supplier(supplier, sname, saddress, sphone, saccount, semail);
+                    }
+
                     Product p;
                     if (!open) {
-                        p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients);
+                        p = new Product(name, shortName, barcode, order_code, c, comments, t, price, costPrice, incVat, packSize, stock, minStock, maxStock, maxCon, minCon, trackStock, ingredients, s);
                     } else {
-                        p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients);
+                        p = new Product(name, shortName, barcode, order_code, c, comments, t, scale, scaleName, cost_percentage, limit, ingredients, s);
                     }
                     int o_id = set2.getInt("oiid");
                     int quantity = set2.getInt("oiquantity");

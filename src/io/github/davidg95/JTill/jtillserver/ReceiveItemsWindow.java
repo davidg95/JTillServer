@@ -597,7 +597,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         try {
             Product product;
             if (txtBarcode.getText().isEmpty()) {
-                product = ProductSelectDialog.showDialog(this);
+                product = ProductSelectDialog.showDialog(this, supplier);
             } else {
                 if (!Utilities.isNumber(txtBarcode.getText())) {
                     txtBarcode.setSelectionStart(0);
