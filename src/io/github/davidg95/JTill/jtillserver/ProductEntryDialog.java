@@ -153,10 +153,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         txtName.setText("");
         txtShortName.setText("");
         txtOrderCode.setText("0");
-        txtPrice.setText("");
-        txtCostPrice.setText("");
-        txtPackSize.setText("");
-        txtUnitCost.setText("");
+        txtPrice.setText("0.00");
+        txtCostPrice.setText("0.00");
+        txtPackSize.setText("1");
+        txtUnitCost.setText("0.00");
         txtMin.setText("0");
         txtMax.setText("0");
         for (Component c : jPanel4.getComponents()) {
