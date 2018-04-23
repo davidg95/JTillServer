@@ -242,8 +242,9 @@ public class DerbyDB extends DBConnect {
             + "         GENERATED ALWAYS AS IDENTITY\n"
             + "         (START WITH 1, INCREMENT BY 1),\n"
             + "     riPRODUCT VARCHAR(15) not null references PRODUCTS(BARCODE),\n"
-            + "     riPRICE DOUBLE,\n"
+            + "     ritotal DOUBLE,\n"
             + "     riQUANTITY INT,\n"
+            + "     ripacks int,\n"
             + "     riRECEIVED_REPORT INT not null references RECEIVED_REPORTS(rrID)\n"
             + ")";
     String clockOnOff = "create table CLOCKONOFF\n"

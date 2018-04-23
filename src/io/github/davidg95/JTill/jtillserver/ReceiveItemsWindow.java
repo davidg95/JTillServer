@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -54,6 +55,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private Supplier supplier;
 
     private boolean viewMode = false;
+
+    private boolean edits = false;
 
     private Order order;
 
@@ -144,8 +147,12 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private void init() {
         tblProducts.getColumnModel().getColumn(0).setMaxWidth(100);
         tblProducts.getColumnModel().getColumn(0).setMinWidth(100);
-        tblProducts.getColumnModel().getColumn(2).setMaxWidth(40);
-        tblProducts.getColumnModel().getColumn(2).setMinWidth(40);
+        tblProducts.getColumnModel().getColumn(4).setMaxWidth(40);
+        tblProducts.getColumnModel().getColumn(4).setMinWidth(40);
+        tblProducts.getColumnModel().getColumn(5).setMaxWidth(40);
+        tblProducts.getColumnModel().getColumn(5).setMinWidth(40);
+        tblProducts.getColumnModel().getColumn(6).setMaxWidth(40);
+        tblProducts.getColumnModel().getColumn(6).setMinWidth(40);
         tblProducts.setSelectionModel(new ForcedListSelectionModel());
         this.addInternalFrameListener(new InternalFrameAdapter() {
             @Override
@@ -253,7 +260,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
         @Override
         public int getColumnCount() {
-            return 3;
+            return 8;
         }
 
         @Override
@@ -266,7 +273,22 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     return "Product";
                 }
                 case 2: {
-                    return "Qty.";
+                    return "Price";
+                }
+                case 3: {
+                    return "Cost Price";
+                }
+                case 4: {
+                    return "Pack Size";
+                }
+                case 5: {
+                    return "Received";
+                }
+                case 6: {
+                    return "Packs";
+                }
+                case 7: {
+                    return "Total";
                 }
                 default: {
                     return "";
@@ -275,13 +297,41 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         }
 
         @Override
-        public Class<?> getColumnClass(int columnIndex) {
-            return Object.class;
+        public Class<?> getColumnClass(int i) {
+            switch (i) {
+                case 0: {
+                    return String.class;
+                }
+                case 1: {
+                    return String.class;
+                }
+                case 2: {
+                    return Double.class;
+                }
+                case 3: {
+                    return Double.class;
+                }
+                case 4: {
+                    return Integer.class;
+                }
+                case 5: {
+                    return Integer.class;
+                }
+                case 6: {
+                    return Integer.class;
+                }
+                case 7: {
+                    return Double.class;
+                }
+                default: {
+                    return Object.class;
+                }
+            }
         }
 
         @Override
         public boolean isCellEditable(int rowIndex, int i) {
-            return i == 2;
+            return i >= 2 && i <= 6;
         }
 
         @Override
@@ -295,7 +345,22 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     return item.getProduct().getLongName();
                 }
                 case 2: {
+                    return item.getProduct().getPrice();
+                }
+                case 3: {
+                    return item.getProduct().getCostPrice();
+                }
+                case 4: {
+                    return item.getProduct().getPackSize();
+                }
+                case 5: {
                     return item.getQuantity();
+                }
+                case 6: {
+                    return item.getPacks();
+                }
+                case 7: {
+                    return item.getTotal();
                 }
                 default: {
                     return "";
@@ -306,15 +371,28 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         @Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
             final ReceivedItem item = items.get(rowIndex);
-            if (columnIndex == 2) {
-                int quantity = Integer.parseInt((String) aValue);
-                if (quantity <= 0) {
-                    JOptionPane.showMessageDialog(ReceiveItemsWindow.this, "Value must be greater than 0", "New Quantity", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                item.setQuantity(quantity);
+            switch (columnIndex) {
+                case 2:
+                    item.getProduct().setPrice(new BigDecimal((double) aValue));
+                    break;
+                case 3:
+                    item.getProduct().setCostPrice(new BigDecimal((double) aValue));
+                    break;
+                case 4:
+                    item.getProduct().setPackSize((int) aValue);
+                    break;
+                case 5:
+                    item.setQuantity((int) aValue);
+                    break;
+                case 6:
+                    item.setPacks((int) aValue);
+                    break;
+                default:
+                    break;
             }
+            item.updateTotal();
             alertAll();
+            edits = true;
         }
 
         public void alertAll() {
@@ -323,7 +401,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             }
             BigDecimal val = BigDecimal.ZERO;
             for (ReceivedItem ri : items) {
-                val = val.add(ri.getPrice());
+                val = val.add(ri.getTotal());
             }
             if (val == BigDecimal.ZERO) {
                 lblValue.setText("Total Value: £0.00");
@@ -484,15 +562,15 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                         .addComponent(lblValue)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chkPaid)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                         .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddProduct)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddFile)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddOrder)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnReceive)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnClose))
@@ -516,7 +594,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     .addComponent(jLabel1)
                     .addComponent(txtSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnReceive)
@@ -551,15 +629,16 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             return;
         }
         ReceivedReport report = new ReceivedReport(txtInvoice.getText(), supplier);
+        HashMap<String, Integer> updates = new HashMap<>();
         model.getItems().forEach((p) -> {
-            try {
-                Product product = p.getProduct();
-                product.addStock(p.getQuantity());
-                dc.updateProduct(product);
-            } catch (IOException | ProductNotFoundException | SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            Product product = p.getProduct();
+            updates.put(product.getBarcode(), p.getQuantity());
         });
+        try {
+            dc.batchStockReceive(updates);
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
         report.setPaid(chkPaid.isSelected());
         report.setItems(model.getItems());
         try {
@@ -568,6 +647,17 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 order.setReceived(true);
                 dc.updateOrder(order);
             }
+            if (edits) {
+                if (JOptionPane.showConfirmDialog(this, "Do you want to update price info?", "Updates", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    List<Product> products = new LinkedList<>();
+                    model.getItems().forEach((p) -> {
+                        products.add(p.getProduct());
+                    });
+                    dc.batchProductUpdate(products);
+                    JOptionPane.showMessageDialog(this, "Products updated", "Update Products", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+            edits = false;
             lblValue.setText("Total: £0.00");
             model.clear();
             btnReceive.setEnabled(false);
@@ -578,7 +668,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 try {
                     BigDecimal val = BigDecimal.ZERO;
                     for (ReceivedItem p : model.getItems()) {
-                        val = val.add(p.getPrice());
+                        val = val.add(p.getTotal());
                     }
                     MessageFormat header = new MessageFormat("Receive Stock " + new Date());
                     MessageFormat footer = new MessageFormat("Page{0,number,integer}");
@@ -647,28 +737,37 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 return;
             }
 
-            if (Utilities.isNumber(str)) {
-                int amount = Integer.parseInt(str);
-                if (amount <= 0) {
-                    JOptionPane.showMessageDialog(this, "Value must be greater than zero", "Receive Items", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                if (product.getStock() + amount > product.getMaxStockLevel() && product.getMaxStockLevel() != 0) {
-                    int response = JOptionPane.showConfirmDialog(this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product, Continue?", "Stock", JOptionPane.YES_NO_OPTION);
-                    if (response == JOptionPane.NO_OPTION) {
-                        return;
-                    }
-                }
-                if (amount == 0) {
-                    return;
-                }
-
-                model.addItem(new ReceivedItem(product, amount));
-                txtBarcode.setText("");
-                btnReceive.setEnabled(true);
-            } else {
+            if (!Utilities.isNumber(str)) {
                 JOptionPane.showMessageDialog(ReceiveItemsWindow.this, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
             }
+
+            String strPacks = JOptionPane.showInputDialog(this, "Enter packs to receive", "Receive Stock", JOptionPane.INFORMATION_MESSAGE);
+
+            if (strPacks == null || strPacks.isEmpty()) {
+                return;
+            }
+
+            if (!Utilities.isNumber(strPacks)) {
+                JOptionPane.showMessageDialog(ReceiveItemsWindow.this, "You must enter a number", "Receive Stock", JOptionPane.ERROR_MESSAGE);
+            }
+
+            int amount = Integer.parseInt(str);
+            int packs = Integer.parseInt(strPacks);
+            int totalAdded = amount + (product.getPackSize() * packs);
+            if (totalAdded <= 0) {
+                JOptionPane.showMessageDialog(this, "Value must be greater than zero", "Receive Items", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (product.getStock() + totalAdded > product.getMaxStockLevel() && product.getMaxStockLevel() != 0) {
+                int response = JOptionPane.showConfirmDialog(this, "Warning- this will take the product stock level higher than the maximum stock level defined for this product, Continue?", "Stock", JOptionPane.YES_NO_OPTION);
+                if (response == JOptionPane.NO_OPTION) {
+                    return;
+                }
+            }
+
+            model.addItem(new ReceivedItem(product, amount, packs));
+            txtBarcode.setText("");
+            btnReceive.setEnabled(true);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Invalid input detected", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -741,7 +840,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         }
 
         for (OrderItem oi : order.getItems()) {
-            model.addItem(new ReceivedItem(oi.getProduct(), oi.getQuantity() * oi.getProduct().getPackSize()));
+            model.addItem(new ReceivedItem(oi.getProduct(), 0, oi.getQuantity() * oi.getProduct().getPackSize()));
         }
         supplier = order.getSupplier();
         txtSupplier.setText(supplier.getName());
@@ -796,7 +895,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 }
                 for (FileItem i : items) {
                     if (i.getProduct() != null) {
-                        model.addItem(new ReceivedItem(i.getProduct(), i.getQuantity()));
+                        model.addItem(new ReceivedItem(i.getProduct(), i.getQuantity(), 0));
                     }
                 }
                 if (!model.getItems().isEmpty()) {

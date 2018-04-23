@@ -1001,4 +1001,14 @@ public class ConnectionHandler {
     public List<Product> getSuppliersProducts(@JConnParameter("SUPPLIER") Supplier s) throws IOException, SQLException {
         return dc.getProductsInSupplier(s);
     }
+
+    @JConnMethod("BATCHPRODUCTUPDATE")
+    public void batchProductUpdate(@JConnParameter("products") List<Product> products) throws SQLException {
+        dc.batchProductUpdate(products);
+    }
+
+    @JConnMethod("BATCHSTOCKRECEIVE")
+    public void batchStockReceive(@JConnParameter("updates") HashMap<String, Integer> updates) throws SQLException {
+        dc.batchStockReceive(updates);
+    }
 }

@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.StampedLock;
@@ -282,6 +283,37 @@ public abstract class DBConnect extends DataConnect {
             throw ex;
         }
         return p;
+    }
+
+    @Override
+    public void batchProductUpdate(List<Product> products) throws SQLException {
+        Connection con = getConnection();
+        try (Statement s = con.createStatement()) {
+            for (Product p : products) {
+                s.executeUpdate(p.getSQlUpdateString());
+            }
+            con.commit();
+        } catch (SQLException ex) {
+            con.rollback();
+            LOG.log(Level.SEVERE, null, ex);
+            throw ex;
+        }
+    }
+
+    @Override
+    public void batchStockReceive(HashMap<String, Integer> updates) throws SQLException {
+        Connection con = getConnection();
+        try (Statement s = con.createStatement()) {
+            for (Map.Entry me : updates.entrySet()) {
+                String sql = "update products set pstock = (pstock + " + me.getValue() + ") where barcode='" + me.getKey() + "'";
+                s.executeUpdate(sql);
+            }
+            con.commit();
+        } catch(SQLException ex){
+            con.rollback();
+            LOG.log(Level.SEVERE, null, ex);
+            throw ex;
+        }
     }
 
     @Override
@@ -2980,7 +3012,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public void addReceivedItem(ReceivedItem i, int report) throws IOException, SQLException {
-        String query = "INSERT INTO RECEIVEDITEMS (riPRODUCT, riQUANTITY, riPRICE, riRECEIVED_REPORT) VALUES ('" + i.getProduct().getBarcode() + "'," + i.getQuantity() + "," + i.getPrice().doubleValue() + "," + report + ")";
+        String query = "INSERT INTO RECEIVEDITEMS (riPRODUCT, riQUANTITY, riPRICE, riRECEIVED_REPORT) VALUES ('" + i.getProduct().getBarcode() + "'," + i.getQuantity() + "," + i.getTotal().doubleValue() + "," + report + ")";
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
@@ -3632,9 +3664,10 @@ public abstract class DBConnect extends DataConnect {
 
                 int iid = set.getInt("riid");
                 int quantity = set.getInt("riquantity");
-                BigDecimal riPrice = set.getBigDecimal("riprice");
+                int packs = set.getInt("ripacks");
+                BigDecimal riPrice = set.getBigDecimal("ritotal");
 
-                ReceivedItem ri = new ReceivedItem(iid, p, quantity, riPrice);
+                ReceivedItem ri = new ReceivedItem(iid, p, quantity, packs, riPrice);
 
                 items.add(ri);
             }
