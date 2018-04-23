@@ -619,6 +619,11 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 }
                 try {
                     product = dc.getProductByBarcode(txtBarcode.getText());
+                    if ((product.getSupplier() == null && supplier == null) || (product.getSupplier().equals(supplier))) {
+                    } else {
+                        JOptionPane.showMessageDialog(this, "This product is not from that supplier", "Add Product", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                 } catch (IOException | ProductNotFoundException | SQLException ex) {
                     txtBarcode.setSelectionStart(0);
                     txtBarcode.setSelectionEnd(txtBarcode.getText().length());

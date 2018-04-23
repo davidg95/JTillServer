@@ -201,6 +201,11 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         cmbSupplier.setSelectedItem(product.getSupplier());
         txtDepartment.setText(product.getCategory().getDepartment().toString());
         cmbVat.setSelectedItem(product.getTax());
+        if (product.getSupplier() == null) {
+            cmbSupplier.setSelectedIndex(0);
+        } else {
+            cmbSupplier.setSelectedItem(product.getSupplier());
+        }
         chkTrackStock.setSelected(product.isTrackStock());
         if (product.isTrackStock()) {
             txtMin.setText(product.getMinStockLevel() + "");
