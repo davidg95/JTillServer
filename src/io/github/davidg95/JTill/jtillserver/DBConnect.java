@@ -3012,7 +3012,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public void addReceivedItem(ReceivedItem i, int report) throws IOException, SQLException {
-        String query = "INSERT INTO RECEIVEDITEMS (riPRODUCT, riQUANTITY, riPRICE, riRECEIVED_REPORT) VALUES ('" + i.getProduct().getBarcode() + "'," + i.getQuantity() + "," + i.getTotal().doubleValue() + "," + report + ")";
+        String query = "INSERT INTO RECEIVEDITEMS (riPRODUCT, riQUANTITY, ripacks, ritotal, riRECEIVED_REPORT) VALUES ('" + i.getProduct().getBarcode() + "'," + i.getQuantity() + "," + i.getPacks() + "," + i.getTotal().doubleValue() + "," + report + ")";
         Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
@@ -3597,7 +3597,7 @@ public abstract class DBConnect extends DataConnect {
     }
 
     private List<ReceivedItem> getItemsInReport(int id) throws SQLException {
-        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, RECEIVEDITEMS WHERE pcategory = cid AND cdepartment = did AND ptax = tid AND riproduct = barcode AND riRECEIVED_REPORT=" + id;
+        String query = "SELECT * FROM PRODUCTS, CATEGORYS, DEPARTMENTS, TAX, SUPPLIERS, RECEIVEDITEMS WHERE psupplier = sid and pcategory = cid AND cdepartment = did AND ptax = tid AND riproduct = barcode AND riRECEIVED_REPORT=" + id;
 
         List<ReceivedItem> items;
         Connection con = getConnection();
