@@ -632,7 +632,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         HashMap<String, Integer> updates = new HashMap<>();
         model.getItems().forEach((p) -> {
             Product product = p.getProduct();
-            updates.put(product.getBarcode(), p.getQuantity());
+            updates.put(product.getBarcode(), p.getTotalAmount());
         });
         try {
             jtill.getDataConnection().batchStockReceive(updates);
