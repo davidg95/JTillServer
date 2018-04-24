@@ -43,11 +43,9 @@ import javax.swing.event.ListDataListener;
  */
 public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
-    private final Logger LOG = Logger.getGlobal();
-
     private static ScreenEditWindow frame;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private final CardLayout categoryCards; //Cards for each screen
 
@@ -63,8 +61,8 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form ScreenEditWindow
      */
-    public ScreenEditWindow() {
-        this.dc = GUI.gui.dc;
+    public ScreenEditWindow(JTill jtill) {
+        this.jtill = jtill;
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
@@ -91,7 +89,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         }
 
         public void removeScreen(Screen s) throws IOException, SQLException, ScreenNotFoundException {
-            dc.removeScreen(s);
+            jtill.getDataConnection().removeScreen(s);
             screens.remove(s);
             int index = 0;
             for (int i = 0; i < screens.size(); i++) {
@@ -143,9 +141,9 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     /**
      * Show the screen edit window.
      */
-    public static void showScreenEditWindow() {
+    public static void showScreenEditWindow(JTill jtill) {
         if (frame == null || frame.isClosed()) {
-            frame = new ScreenEditWindow();
+            frame = new ScreenEditWindow(jtill);
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {
@@ -181,8 +179,8 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
      */
     public synchronized void setButtons() {
         try {
-            List<Screen> screens = dc.getAllScreens(); //Get all the screens on the server.
-            amount = dc.getAllButtons().size();
+            List<Screen> screens = jtill.getDataConnection().getAllScreens(); //Get all the screens on the server.
+            amount = jtill.getDataConnection().getAllButtons().size();
             bar.setMaximum(amount);
             model.empty();
             for (Screen s : screens) {
@@ -201,9 +199,9 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         if (s.getInherits() == -1) {
             return;
         }
-        Screen parent = dc.getScreen(s.getInherits());
+        Screen parent = jtill.getDataConnection().getScreen(s.getInherits());
         checkInheritance(panel, parent);
-        List<TillButton> buttons = dc.getButtonsOnScreen(parent);
+        List<TillButton> buttons = jtill.getDataConnection().getButtonsOnScreen(parent);
         for (TillButton b : buttons) {
             if (b.getType() != TillButton.SPACE) {
                 JButton pButton = new JButton(b.getName()); //Creat a new button for the button.
@@ -239,7 +237,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         panel.setLayout(new GridBagLayout());
 
         try {
-            currentButtons = dc.getButtonsOnScreen(s); //Get all the buttons on the screen.
+            currentButtons = jtill.getDataConnection().getButtonsOnScreen(s); //Get all the buttons on the screen.
             checkInheritance(panel, s);
             for (TillButton b : currentButtons) {
                 JButton pButton = new JButton(b.getName()); //Creat a new button for the button.
@@ -380,7 +378,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
     private void saveAndUpdate() {
         try {
-            dc.updateButton(currentButton); //This will update the ucrrent button in the database
+            jtill.getDataConnection().updateButton(currentButton); //This will update the ucrrent button in the database
         } catch (IOException | SQLException | JTillException ex) {
             showError(ex);
         }
@@ -401,12 +399,12 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         if(currentScreen == null){
             return;
         }
-        currentButton = ButtonOptionDialog.showDialog(this, currentButton, currentScreen.getWidth() - currentButton.getX() + 1, currentScreen.getHeight() - currentButton.getY() + 1);
+        currentButton = ButtonOptionDialog.showDialog(jtill, this, currentButton, currentScreen.getWidth() - currentButton.getX() + 1, currentScreen.getHeight() - currentButton.getY() + 1);
         if (currentButton == null) { //If it is null then the button is getting removed.
             return;
         } else { //If it is not null then it is being edited or nothing has happening to it
             try {
-                dc.updateButton(currentButton); //This will update the ucrrent button in the database
+                jtill.getDataConnection().updateButton(currentButton); //This will update the ucrrent button in the database
             } catch (IOException | SQLException | JTillException ex) {
                 showError(ex);
             }
@@ -428,14 +426,14 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
     private boolean checkName(String name) {
         try {
-            List<Screen> screens = dc.getAllScreens();
+            List<Screen> screens = jtill.getDataConnection().getAllScreens();
             for (Screen s : screens) {
                 if (s.getName().equalsIgnoreCase(name)) {
                     return false;
                 }
             }
         } catch (IOException | SQLException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            jtill.getLogger().log(Level.SEVERE, null, ex);
         }
         return true;
     }
@@ -620,7 +618,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         int width;
         int height;
         if (model.getSize() > 0 && JOptionPane.showConfirmDialog(this, "Inherit from screen?", "New Screen", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            Screen s = ScreenSelectDialog.showDialog(this);
+            Screen s = ScreenSelectDialog.showDialog(jtill, this);
             inherit = s.getId();
             width = s.getWidth();
             height = s.getHeight();
@@ -645,11 +643,11 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 public void run() {
                     try {
                         Screen s = new Screen(scName, fw, fh, inh, 3, 3);
-                        currentScreen = dc.addScreen(s);
+                        currentScreen = jtill.getDataConnection().addScreen(s);
                         int x = 1;
                         int y = 1;
                         for (int i = 0; i < (fw * fh); i++) {
-                            TillButton bu = dc.addButton(new TillButton("[SPACE]", "0", TillButton.SPACE, currentScreen.getId(), "000000", "ffffff", 1, 1, x, y, 1, ""));
+                            TillButton bu = jtill.getDataConnection().addButton(new TillButton("[SPACE]", "0", TillButton.SPACE, currentScreen.getId(), "000000", "ffffff", 1, 1, x, y, 1, ""));
                             x++;
                             if (x == (fw + 1)) {
                                 x = 1;
@@ -682,7 +680,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 if (name != null) {
                     sc.setName(name);
                     try {
-                        dc.updateScreen(sc);
+                        jtill.getDataConnection().updateScreen(sc);
                     } catch (IOException | SQLException | ScreenNotFoundException ex) {
                         JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -691,7 +689,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             remove.addActionListener((ActionEvent e) -> {
                 try {
                     if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove " + sc.getName() + "?", "Remove Screen " + sc.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                        if (!dc.checkInheritance(sc).isEmpty()) {
+                        if (!jtill.getDataConnection().checkInheritance(sc).isEmpty()) {
                             if (JOptionPane.showConfirmDialog(this, "Warning! This screen is being inherited. Are you sure you want to remove it?", "Remove Screen " + sc.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                                 return;
                             }
@@ -706,7 +704,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             JMenuItem inherit = new JMenuItem("Check Inheritance");
             inherit.addActionListener((ActionEvent e) -> {
                 try {
-                    List<Screen> screens = dc.checkInheritance(sc);
+                    List<Screen> screens = jtill.getDataConnection().checkInheritance(sc);
                     if (!screens.isEmpty()) {
                         String scList = "";
                         for (Screen s : screens) {
@@ -732,12 +730,12 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             txtHGap.setText(currentScreen.gethGap() + "");
             if (sc.getInherits() != -1) {
                 try {
-                    Screen parent = dc.getScreen(sc.getInherits());
+                    Screen parent = jtill.getDataConnection().getScreen(sc.getInherits());
                     btnInherits.setText(parent.getName());
                 } catch (IOException | SQLException | ScreenNotFoundException ex) {
                     sc.setInherits(-1);
                     try {
-                        dc.updateScreen(sc);
+                        jtill.getDataConnection().updateScreen(sc);
                     } catch (IOException | SQLException | ScreenNotFoundException ex1) {
                         JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -750,11 +748,11 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_listMouseClicked
 
     private void btnInheritsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInheritsActionPerformed
-        Screen par = ScreenSelectDialog.showDialog(this);
+        Screen par = ScreenSelectDialog.showDialog(jtill, this);
         if (par == null) {
             currentScreen.setInherits(-1);
             try {
-                dc.updateScreen(currentScreen);
+                jtill.getDataConnection().updateScreen(currentScreen);
                 btnInherits.setText("NONE");
             } catch (IOException | SQLException | ScreenNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -772,7 +770,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         }
         currentScreen.setInherits(par.getId());
         try {
-            dc.updateScreen(currentScreen);
+            jtill.getDataConnection().updateScreen(currentScreen);
             btnInherits.setText(par.getName());
         } catch (IOException | SQLException | ScreenNotFoundException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -790,7 +788,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         currentScreen.setvGap(vgap);
         currentScreen.sethGap(hgap);
         try {
-            dc.updateScreen(currentScreen);
+            jtill.getDataConnection().updateScreen(currentScreen);
         } catch (IOException | SQLException | ScreenNotFoundException ex) {
             JOptionPane.showMessageDialog(this, ex, "Save", JOptionPane.ERROR_MESSAGE);
         }
@@ -798,8 +796,8 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         try {
-            Product p = ProductSelectDialog.showDialog(this);
-            List<Screen> screens = dc.getScreensWithProduct(p);
+            Product p = ProductSelectDialog.showDialog(this, jtill);
+            List<Screen> screens = jtill.getDataConnection().getScreensWithProduct(p);
             if (screens.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "This product is not on any screens", "Product Search", JOptionPane.INFORMATION_MESSAGE);
             } else {

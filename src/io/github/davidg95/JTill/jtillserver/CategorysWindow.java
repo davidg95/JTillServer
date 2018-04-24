@@ -35,7 +35,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
 
     public static CategorysWindow frame;
 
-    private final DataConnect dc;
+    private final JTill jtill;
     private Category category;
 
     private MyModel model;
@@ -45,8 +45,8 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form CategoryWindow
      */
-    public CategorysWindow() {
-        this.dc = GUI.gui.dc;
+    public CategorysWindow(JTill jtill) {
+        this.jtill= jtill;
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
@@ -60,9 +60,9 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
      * Method to show the category window. If this is the first time it is being
      * called, it will first construct the window.
      */
-    public static void showCategoryWindow() {
+    public static void showCategoryWindow(JTill jtill) {
         if (frame == null || frame.isClosed()) {
-            frame = new CategorysWindow();
+            frame = new CategorysWindow(jtill);
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {
@@ -91,7 +91,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
 
     private void init() {
         try {
-            model = new MyModel(dc.getAllCategorys());
+            model = new MyModel(jtill.getDataConnection().getAllCategorys());
         } catch (IOException | SQLException ex) {
             showError(ex);
         }
@@ -100,7 +100,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         table.setSelectionModel(new ForcedListSelectionModel());
         JComboBox box = new JComboBox();
         try {
-            List<Department> departments = dc.getAllDepartments();
+            List<Department> departments = jtill.getDataConnection().getAllDepartments();
             for (Department d : departments) {
                 box.addItem(d);
             }
@@ -131,13 +131,13 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         }
 
         public void addCategory(Category c) throws IOException, SQLException {
-            c = dc.addCategory(c);
+            c = jtill.getDataConnection().addCategory(c);
             categories.add(c);
             alertAll();
         }
 
         public void removeCategory(Category c) throws IOException, SQLException, JTillException {
-            dc.removeCategory(c);
+            jtill.getDataConnection().removeCategory(c);
             categories.remove(c);
             alertAll();
         }
@@ -436,7 +436,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtSearchActionPerformed
 
     private void btnDepartmentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartmentsActionPerformed
-        DepartmentsWindow.showWindow();
+        DepartmentsWindow.showWindow(jtill);
     }//GEN-LAST:event_btnDepartmentsActionPerformed
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked

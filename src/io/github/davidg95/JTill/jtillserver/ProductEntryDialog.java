@@ -28,7 +28,7 @@ import javax.swing.JOptionPane;
  */
 public final class ProductEntryDialog extends javax.swing.JDialog {
 
-    private final DataConnect dc = DataConnect.get();
+    private final JTill jtill;
     private String barcode;
     private static Product product;
 
@@ -47,8 +47,9 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
      *
      * @param parent the parent component.
      */
-    public ProductEntryDialog(Window parent) {
+    public ProductEntryDialog(Window parent, JTill jtill) {
         super(parent);
+        this.jtill = jtill;
         taxModel = new DefaultComboBoxModel();
         catModel = new DefaultComboBoxModel();
         supModel = new DefaultComboBoxModel();
@@ -62,8 +63,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         showBarcodePanel();
     }
 
-    public ProductEntryDialog(Window parent, String barcode) {
-        this(parent);
+    public ProductEntryDialog(Window parent, JTill jtill, String barcode) {
+        this(parent, jtill);
         this.barcode = barcode;
         setTitle("Edit Product - " + barcode);
         CardLayout c = (CardLayout) container.getLayout();
@@ -73,8 +74,8 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         autoClose = true;
     }
 
-    public ProductEntryDialog(Window parent, Product product) {
-        this(parent);
+    public ProductEntryDialog(Window parent, JTill jtill, Product product) {
+        this(parent, jtill);
         editMode = true;
         btnCreate.setText("Save");
         btnBack.setText("Close");
@@ -98,15 +99,15 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
     private void initCombos() {
         try {
-            List<Tax> taxes = dc.getAllTax();
+            List<Tax> taxes = jtill.getDataConnection().getAllTax();
             for (Tax t : taxes) {
                 taxModel.addElement(t);
             }
-            List<Category> cats = dc.getAllCategorys();
+            List<Category> cats = jtill.getDataConnection().getAllCategorys();
             for (Category c : cats) {
                 catModel.addElement(c);
             }
-            List<Supplier> sups = dc.getAllSuppliers();
+            List<Supplier> sups = jtill.getDataConnection().getAllSuppliers();
             supModel.addElement("NONE");
             for (Supplier s : sups) {
                 supModel.addElement(s);
@@ -116,33 +117,33 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         }
     }
 
-    public static void showDialog(Component parent) {
+    public static void showDialog(Component parent, JTill jtill) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
         product = null;
-        ProductEntryDialog dialog = new ProductEntryDialog(window);
+        ProductEntryDialog dialog = new ProductEntryDialog(window, jtill);
         dialog.setVisible(true);
     }
 
-    public static Product showDialog(Component parent, String barcode) {
+    public static Product showDialog(Component parent, JTill jtill, String barcode) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
         product = null;
-        ProductEntryDialog dialog = new ProductEntryDialog(window, barcode);
+        ProductEntryDialog dialog = new ProductEntryDialog(window, jtill, barcode);
         dialog.setVisible(true);
         return product;
     }
 
-    public static Product showDialog(Component parent, Product product) {
+    public static Product showDialog(Component parent, JTill jtill, Product product) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        ProductEntryDialog dialog = new ProductEntryDialog(window, product);
+        ProductEntryDialog dialog = new ProductEntryDialog(window, jtill, product);
         dialog.setVisible(true);
         return product;
     }
@@ -237,12 +238,12 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
     private void sortBarcode() throws IOException, SQLException, JTillException {
         if (chkNext.isSelected()) {
-            String upc = dc.getSetting("UPC_PREFIX"); //Get the UPC Prefix
-            int length = Integer.parseInt(dc.getSetting("BARCODE_LENGTH")); //Get the barcode length
+            String upc = jtill.getDataConnection().getSetting("UPC_PREFIX"); //Get the UPC Prefix
+            int length = Integer.parseInt(jtill.getDataConnection().getSetting("BARCODE_LENGTH")); //Get the barcode length
             if (!upc.equals("")) { //Check that the UPC has been set
                 while (true) {
                     int lengthToAdd = length - upc.length() - 1; //Work out how many more digits need added
-                    String ref = dc.getSetting("NEXT_PLU"); //Get the next PLU number
+                    String ref = jtill.getDataConnection().getSetting("NEXT_PLU"); //Get the next PLU number
                     int n = Integer.parseInt(ref);
                     int max = (int) Math.pow(10, length - upc.length() - 1);
                     int remaining = max - n;
@@ -261,11 +262,11 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                     String barcode = upc + ref; //Join them all together
                     int checkDigit = Utilities.calculateCheckDigit(barcode);
                     barcode = barcode + checkDigit;
-                    if (!dc.checkBarcode(barcode)) { //Check the barcode is not already int use
+                    if (!jtill.getDataConnection().checkBarcode(barcode)) { //Check the barcode is not already int use
                         this.barcode = barcode;
                         break; //break from the while loop
                     } else {
-                        dc.setSetting("NEXT_PLU", nextBarcode);
+                        jtill.getDataConnection().setSetting("NEXT_PLU", nextBarcode);
                     }
                 }
             } else {
@@ -274,17 +275,17 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
             //If excecution reaches here, it means an unused barcode as been generated
         } else if (chkAssignNextPrivate.isSelected()) {
             while (true) {
-                String nextPrivate = dc.getSetting("NEXT_PRIVATE"); //Get the next barcode
+                String nextPrivate = jtill.getDataConnection().getSetting("NEXT_PRIVATE"); //Get the next barcode
                 int n = Integer.parseInt(nextPrivate);
                 n++;
                 nextBarcode = Integer.toString(n); // Increase it then convert it to a String
 
                 String barcode = nextPrivate; //Join them all together
-                if (!dc.checkBarcode(barcode)) { //Check the barcode is not already int use
+                if (!jtill.getDataConnection().checkBarcode(barcode)) { //Check the barcode is not already int use
                     this.barcode = barcode;
                     break; //break from the while loop
                 } else {
-                    dc.setSetting("NEXT_PRIVATE", nextBarcode);
+                    jtill.getDataConnection().setSetting("NEXT_PRIVATE", nextBarcode);
                 }
             }
         } else {
@@ -308,7 +309,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 txtBarcode.setSelectionEnd(barcode.length());
                 throw new JTillException("Invalid check digit");
             }
-            if (dc.checkBarcode(barcode)) {
+            if (jtill.getDataConnection().checkBarcode(barcode)) {
                 txtBarcode.setSelectionStart(0);
                 txtBarcode.setSelectionEnd(barcode.length());
                 throw new JTillException("Barcode is already in use");
@@ -1199,15 +1200,15 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 product.save();
                 JOptionPane.showMessageDialog(this, "Product has been saved", "Edit Product", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                product = dc.addProduct(product);
+                product = jtill.getDataConnection().addProduct(product);
                 if (chkAssignNextPrivate.isSelected()) {
                     if (nextBarcode != null) {
-                        dc.setSetting("NEXT_PRIVATE", nextBarcode);
+                        jtill.getDataConnection().setSetting("NEXT_PRIVATE", nextBarcode);
                         nextBarcode = null;
                     }
                 } else {
                     if (nextBarcode != null) {
-                        dc.setSetting("NEXT_PLU", nextBarcode);
+                        jtill.getDataConnection().setSetting("NEXT_PLU", nextBarcode);
                         nextBarcode = null;
                     }
                 }
@@ -1316,12 +1317,12 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     private void btnCopyDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCopyDetailsActionPerformed
         try {
             sortBarcode();
-            Product toCopy = ProductSelectDialog.showDialog(this); //Copy details from an existing product
+            Product toCopy = ProductSelectDialog.showDialog(this, jtill); //Copy details from an existing product
             if (toCopy != null) {
                 toCopy.setStock(0);
                 toCopy.setBarcode(this.barcode);
                 try {
-                    dc.addProduct(toCopy);
+                    jtill.getDataConnection().addProduct(toCopy);
                     JOptionPane.showMessageDialog(this, "New Product created", "New Product", JOptionPane.INFORMATION_MESSAGE);
                     txtBarcode.setText("");
                     txtBarcode.requestFocus();
@@ -1381,7 +1382,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_cmbCatItemStateChanged
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        product = ProductSelectDialog.showDialog(this);
+        product = ProductSelectDialog.showDialog(this, jtill);
         if (product == null) {
             return;
         }

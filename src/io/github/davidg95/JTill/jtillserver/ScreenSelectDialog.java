@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.DataConnect;
+import io.github.davidg95.JTill.jtill.JTill;
 import io.github.davidg95.JTill.jtill.Screen;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -29,7 +30,7 @@ public class ScreenSelectDialog extends javax.swing.JDialog {
 
     private static ScreenSelectDialog dialog;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private static Screen screen;
 
@@ -38,9 +39,9 @@ public class ScreenSelectDialog extends javax.swing.JDialog {
     /**
      * Creates new form ScreenSelectDialog
      */
-    public ScreenSelectDialog(Window parent) {
+    public ScreenSelectDialog(JTill jtill, Window parent) {
         super(parent);
-        dc = GUI.gui.dc;
+        this.jtill = jtill;
         initComponents();
         setModal(true);
         setLocationRelativeTo(parent);
@@ -52,7 +53,7 @@ public class ScreenSelectDialog extends javax.swing.JDialog {
 
     private void init() {
         try {
-            model = new MyModel(dc.getAllScreens());
+            model = new MyModel(jtill.getDataConnection().getAllScreens());
             table.setModel(model);
             table.getColumnModel().getColumn(0).setMaxWidth(40);
             table.setSelectionModel(new ForcedListSelectionModel());
@@ -61,12 +62,12 @@ public class ScreenSelectDialog extends javax.swing.JDialog {
         }
     }
 
-    public static Screen showDialog(Component parent) {
+    public static Screen showDialog(JTill jtill, Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new ScreenSelectDialog(window);
+        dialog = new ScreenSelectDialog(jtill, window);
         dialog.setVisible(true);
         return screen;
     }

@@ -29,17 +29,17 @@ public class TaxSelectDialog extends javax.swing.JDialog {
 
     private static Tax tax;
 
-    private final DataConnect dc;
+    private final JTill jtill;
     private final DefaultTableModel model;
     private List<Tax> taxes;
 
     /**
      * Creates new form TaxSelectDialog
      */
-    public TaxSelectDialog(Window parent) {
+    public TaxSelectDialog(JTill jtill, Window parent) {
         super(parent);
         taxes = new ArrayList<>();
-        this.dc = GUI.gui.dc;
+        this.jtill = jtill;
         initComponents();
         setTitle("Taxes");
         setLocationRelativeTo(parent);
@@ -53,12 +53,12 @@ public class TaxSelectDialog extends javax.swing.JDialog {
      *
      * @return the tax that was selected.
      */
-    public static Tax showDialog(Component parent) {
+    public static Tax showDialog(JTill jtill, Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        final TaxSelectDialog dialog = new TaxSelectDialog(window);
+        final TaxSelectDialog dialog = new TaxSelectDialog(jtill, window);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setVisible(true);
         return tax;
@@ -66,7 +66,7 @@ public class TaxSelectDialog extends javax.swing.JDialog {
 
     private void init() {
         try {
-            taxes = dc.getAllTax();
+            taxes = jtill.getDataConnection().getAllTax();
             updateTable();
         } catch (IOException | SQLException ex) {
             LOG.log(Level.SEVERE, null, ex);

@@ -30,7 +30,7 @@ public class LoginDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static Staff staff;
 
-    private final DataConnect dc;
+    private final JTill jtill;
     private final CapsChecker ch;
 
     /**
@@ -38,9 +38,9 @@ public class LoginDialog extends javax.swing.JDialog {
      *
      * @param parent the parent window.
      */
-    public LoginDialog(Window parent) {
+    public LoginDialog(Window parent, JTill jtill) {
         super(parent);
-        this.dc = GUI.gui.dc;
+        this.jtill = jtill;
         initComponents();
         super.setLocationRelativeTo(parent);
         super.setModal(true);
@@ -54,12 +54,12 @@ public class LoginDialog extends javax.swing.JDialog {
      * @param parent the parent component.
      * @return the member of staff logging in.
      */
-    public static Staff showLoginDialog(Component parent) {
+    public static Staff showLoginDialog(Component parent, JTill jtill) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new LoginDialog(window);
+        dialog = new LoginDialog(window, jtill);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         staff = null;
         dialog.setVisible(true);
@@ -227,11 +227,11 @@ public class LoginDialog extends javax.swing.JDialog {
             lblLogin.setText("Please enter both username and password");
         } else {
             try {
-                staff = dc.login(username, password);
-                if (staff.getPosition() < Integer.parseInt(dc.getSetting("MINIMUM_SERVER_LOGIN"))) {
+                staff = jtill.getDataConnection().login(username, password);
+                if (staff.getPosition() < Integer.parseInt(jtill.getDataConnection().getSetting("MINIMUM_SERVER_LOGIN"))) {
                     JOptionPane.showMessageDialog(this, "You do not have authority to log in", "Log in", JOptionPane.ERROR_MESSAGE);
                     try {
-                        dc.logout(staff);
+                        jtill.getDataConnection().logout(staff);
                     } catch (StaffNotFoundException ex) {
                     }
                     return;

@@ -30,7 +30,7 @@ import javax.swing.JOptionPane;
  */
 public final class ProductEnquiry extends javax.swing.JInternalFrame {
 
-    private final DataConnect dc;
+    private final JTill jtill;
     private Product product;
     private int totalSold;
     private BigDecimal valueSold;
@@ -44,8 +44,8 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
      *
      * @param p the product to show an enquiry for, can be null.
      */
-    public ProductEnquiry(Product p) {
-        this.dc = GUI.gui.dc;
+    public ProductEnquiry(Product p, JTill jtill) {
+        this.jtill = jtill;
         initComponents();
         super.setClosable(true);
         super.setIconifiable(true);
@@ -59,8 +59,8 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
     /**
      * Method to show the Product Enquiry window.
      */
-    public static void showWindow() {
-        ProductEnquiry window = new ProductEnquiry(null);
+    public static void showWindow(JTill jtill) {
+        ProductEnquiry window = new ProductEnquiry(null, jtill);
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {
@@ -76,8 +76,8 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
      *
      * @param p the product to show an enquiry for.
      */
-    public static void showWindow(Product p) {
-        ProductEnquiry window = new ProductEnquiry(p);
+    public static void showWindow(Product p, JTill jtill) {
+        ProductEnquiry window = new ProductEnquiry(p, jtill);
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {
@@ -91,16 +91,16 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
     private void setProduct() {
         try {
             //Total sold and value sold
-            totalSold = dc.getTotalSoldOfItem(product.getBarcode());
-            valueSold = dc.getTotalValueSold(product.getBarcode()).setScale(2);
+            totalSold = jtill.getDataConnection().getTotalSoldOfItem(product.getBarcode());
+            valueSold = jtill.getDataConnection().getTotalValueSold(product.getBarcode()).setScale(2);
 
             //Total wasted and value wasted
-            totalWasted = dc.getTotalWastedOfItem(product.getBarcode());
-            valueWasted = dc.getValueWastedOfItem(product.getBarcode()).setScale(2, 6);
+            totalWasted = jtill.getDataConnection().getTotalWastedOfItem(product.getBarcode());
+            valueWasted = jtill.getDataConnection().getValueWastedOfItem(product.getBarcode()).setScale(2, 6);
 
             //Total and value received.
-            valueSpent = dc.getValueSpentOnItem(product.getBarcode()).setScale(2);
-            totalReceived = dc.getTotalReceivedOfItem(product.getBarcode());
+            valueSpent = jtill.getDataConnection().getValueSpentOnItem(product.getBarcode()).setScale(2);
+            totalReceived = jtill.getDataConnection().getTotalReceivedOfItem(product.getBarcode());
 
             txtPlu.setText(product.getBarcode());
             if (product.getOrderCode().isEmpty()) {
@@ -586,11 +586,11 @@ public final class ProductEnquiry extends javax.swing.JInternalFrame {
 
     private void btnProductSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductSelectActionPerformed
         if (txtProduct.getText().isEmpty()) {
-            product = ProductSelectDialog.showDialog(this);
+            product = ProductSelectDialog.showDialog(this, jtill);
         } else {
             final String barcode = txtProduct.getText();
             try {
-                product = dc.getProductByBarcode(barcode);
+                product = jtill.getDataConnection().getProductByBarcode(barcode);
             } catch (IOException | SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             } catch (ProductNotFoundException ex) {

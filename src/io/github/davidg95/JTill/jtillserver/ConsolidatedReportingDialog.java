@@ -27,16 +27,16 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
 
     private static JDialog dialog;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private DefaultComboBoxModel model;
 
     /**
      * Creates new form ConsolodatedReportingDialog
      */
-    public ConsolidatedReportingDialog(Window parent) {
+    public ConsolidatedReportingDialog(JTill jtill, Window parent) {
         super(parent);
-        this.dc = GUI.gui.dc;
+        this.jtill = jtill;
         init();
         initComponents();
         setModal(true);
@@ -49,12 +49,12 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
         Utilities.installEscapeCloseOperation(this);
     }
 
-    public static void showDialog(Component parent) {
+    public static void showDialog(JTill jtill, Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new ConsolidatedReportingDialog(window);
+        dialog = new ConsolidatedReportingDialog(jtill, window);
         dialog.setVisible(true);
     }
 
@@ -62,7 +62,7 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
         model = new DefaultComboBoxModel();
         model.addElement("0 - All");
         try {
-            List<Till> tills = dc.getAllTills();
+            List<Till> tills = jtill.getDataConnection().getAllTills();
             for (Till t : tills) {
                 model.addElement(t);
             }
@@ -183,7 +183,7 @@ public class ConsolidatedReportingDialog extends javax.swing.JDialog {
             till = ((Till) cmbTill.getSelectedItem());
         }
         this.setVisible(false);
-        ConsolidatedReportingWindow.showWindow(start, end, till);
+        ConsolidatedReportingWindow.showWindow(jtill, start, end, till);
     }//GEN-LAST:event_btnGenerateActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

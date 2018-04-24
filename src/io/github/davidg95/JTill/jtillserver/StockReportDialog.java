@@ -34,7 +34,7 @@ import javax.swing.JOptionPane;
  */
 public class StockReportDialog extends javax.swing.JDialog {
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private static StockReportDialog dialog;
 
@@ -45,9 +45,9 @@ public class StockReportDialog extends javax.swing.JDialog {
     /**
      * Creates new form StockReportDialog
      */
-    public StockReportDialog(Window parent) {
+    public StockReportDialog(JTill jtill, Window parent) {
         super(parent);
-        dc = GUI.gui.dc;
+        this.jtill = jtill;
         initComponents();
         setModal(true);
         setLocationRelativeTo(parent);
@@ -56,12 +56,12 @@ public class StockReportDialog extends javax.swing.JDialog {
         Utilities.installEscapeCloseOperation(this);
     }
 
-    public static void showDialog(Component parent) {
+    public static void showDialog(JTill jtill, Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new StockReportDialog(window);
+        dialog = new StockReportDialog(jtill, window);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setVisible(true);
     }
@@ -79,7 +79,7 @@ public class StockReportDialog extends javax.swing.JDialog {
         public StockPrintable(List<Product> products, String info) {
             this.products = products;
             try {
-                this.departments = dc.getAllDepartments();
+                this.departments = jtill.getDataConnection().getAllDepartments();
             } catch (IOException | SQLException ex) {
                 Logger.getLogger(StockReportDialog.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -214,7 +214,7 @@ public class StockReportDialog extends javax.swing.JDialog {
         final Runnable run = () -> {
             if (type == FULL) {
                 try {
-                    List<Product> products = dc.getAllProducts();
+                    List<Product> products = jtill.getDataConnection().getAllProducts();
                     Iterator it = products.iterator();
                     while (it.hasNext()) {
                         Product p = (Product) it.next();
@@ -233,7 +233,7 @@ public class StockReportDialog extends javax.swing.JDialog {
                 }
             } else if (type == MINIMUM) {
                 try {
-                    List<Product> products = dc.getAllProducts();
+                    List<Product> products = jtill.getDataConnection().getAllProducts();
                     Iterator it = products.iterator();
                     while (it.hasNext()) {
                         Product p = (Product) it.next();
@@ -252,7 +252,7 @@ public class StockReportDialog extends javax.swing.JDialog {
                 }
             } else if (type == ZERO) {
                 try {
-                    List<Product> products = dc.getAllProducts();
+                    List<Product> products = jtill.getDataConnection().getAllProducts();
                     Iterator it = products.iterator();
                     while (it.hasNext()) {
                         Product p = (Product) it.next();

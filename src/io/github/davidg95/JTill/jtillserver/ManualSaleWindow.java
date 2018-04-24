@@ -32,7 +32,7 @@ import javax.swing.table.TableModel;
  */
 public class ManualSaleWindow extends javax.swing.JInternalFrame {
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private MyModel model;
 
@@ -43,8 +43,8 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form ManualSaleDialog
      */
-    public ManualSaleWindow() {
-        dc = GUI.gui.dc;
+    public ManualSaleWindow(JTill jtill) {
+        this.jtill = jtill;
         initComponents();
         setTitle("Manual Sale");
         super.setClosable(true);
@@ -54,8 +54,8 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showWindow() {
-        ManualSaleWindow window = new ManualSaleWindow();
+    public static void showWindow(JTill jtill) {
+        ManualSaleWindow window = new ManualSaleWindow(jtill);
         GUI.gui.internal.add(window);
         window.setVisible(true);
         JOptionPane.showMessageDialog(window, "This is a beta feature", "BETA Feature!", JOptionPane.WARNING_MESSAGE);
@@ -63,12 +63,12 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
 
     private void init() {
         try {
-            List<Till> tills = dc.getAllTills();
+            List<Till> tills = jtill.getDataConnection().getAllTills();
             if (tills.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "You have not set up any terminals yet", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            cmbModel = new MyComboModel(dc.getAllTills());
+            cmbModel = new MyComboModel(jtill.getDataConnection().getAllTills());
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex);
         }
@@ -399,7 +399,7 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        final Product p = ProductSelectDialog.showDialog(this);
+        final Product p = ProductSelectDialog.showDialog(this, jtill);
         if (p == null) {
             return;
         }
@@ -425,7 +425,7 @@ public class ManualSaleWindow extends javax.swing.JInternalFrame {
             s.setCustomer(null);
             s.setStaff(GUI.staff);
             s.setMop(Sale.MOP_CASH);
-            dc.addSale(model.getSale());
+            jtill.getDataConnection().addSale(model.getSale());
             init();
             JOptionPane.showMessageDialog(this, "Sale complete", "Sale", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException | SQLException ex) {

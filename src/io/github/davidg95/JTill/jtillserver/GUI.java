@@ -54,8 +54,8 @@ public class GUI extends JFrame implements GUIInterface {
      * Indicates whether warning messages should show.
      */
     public static boolean SHOW_WARNING = true;
-
-    public final DataConnect dc; //The data connection.
+    
+    private JTill jtill;
 
     private boolean isLoggedOn; //Boolean to indicate whether someone is logged on or not.
     public static Staff staff; //The current logged on staff.
@@ -80,12 +80,13 @@ public class GUI extends JFrame implements GUIInterface {
     /**
      * Creates new form GUI
      *
+     * @param jtill the jtill reference.
      * @param remote flag indicating whether this is a remote connection or not.
      * @param icon the icon for the frame.
      */
-    public GUI(boolean remote, Image icon) throws Exception {
+    public GUI(JTill jtill, boolean remote, Image icon) throws Exception {
         super();
-        this.dc = DataConnect.get();
+        this.jtill = jtill;
         this.remote = remote;
         GUI.icon = icon;
         if (!remote) {
@@ -97,16 +98,16 @@ public class GUI extends JFrame implements GUIInterface {
             if (!remote) {
                 lblServerAddress.setText("Local Server Address: " + InetAddress.getLocalHost().getHostAddress());
             } else {
-                lblServerAddress.setText("Server Address: " + ((ServerConnection) dc).toString());
+                lblServerAddress.setText("Server Address: " + ((ServerConnection) jtill.getDataConnection()).toString());
             }
         } catch (UnknownHostException ex) {
             lblServerAddress.setText("Local Server Address: UNKNOWN");
         }
         LOG.addHandler(new LogHandler());
         try {
-            File file = dc.getLoginBackground();
+            File file = jtill.getDataConnection().getLoginBackground();
             if (file != null) {
-                image = ImageIO.read(dc.getLoginBackground());
+                image = ImageIO.read(jtill.getDataConnection().getLoginBackground());
             }
         } catch (IOException ex) {
         }
@@ -131,7 +132,7 @@ public class GUI extends JFrame implements GUIInterface {
         public void paintComponent(Graphics g) {
             try {
                 Graphics2D g2 = (Graphics2D) g;
-                if (!Boolean.parseBoolean(dc.getSetting("SHOWBACKGROUND"))) {
+                if (!Boolean.parseBoolean(jtill.getDataConnection().getSetting("SHOWBACKGROUND"))) {
                     return;
                 }
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
@@ -147,7 +148,7 @@ public class GUI extends JFrame implements GUIInterface {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setFocusable(true);
         setIconImage(icon);
-        dc.setGUI(this);
+        jtill.getDataConnection().setGUI(this);
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -175,12 +176,13 @@ public class GUI extends JFrame implements GUIInterface {
     /**
      * Creates a new instance of the GUI.
      *
+     * @param jtill the jtill reference.
      * @param remote if it is a remote session.
      * @param icon the icon for the windows and dialogs.
      * @return the GUI.
      */
-    public static GUI create(boolean remote, Image icon) throws Exception {
-        gui = new GUI(remote, icon);
+    public static GUI create(JTill jtill, boolean remote, Image icon) throws Exception {
+        gui = new GUI(jtill, remote, icon);
         return gui;
     }
 
@@ -205,7 +207,7 @@ public class GUI extends JFrame implements GUIInterface {
     @Override
     public void updateTills() {
         try {
-            lblClients.setText("Connections: " + dc.getConnectedTills().size());
+            lblClients.setText("Connections: " + jtill.getDataConnection().getConnectedTills().size());
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }
@@ -247,7 +249,7 @@ public class GUI extends JFrame implements GUIInterface {
      * Method to log a member of staff in to the server.
      */
     public void login() {
-        staff = LoginDialog.showLoginDialog(this);
+        staff = LoginDialog.showLoginDialog(this, jtill);
         if (staff != null) {
             lblUser.setText(staff.getName());
             itemLogin.setText("Log Out");
@@ -257,7 +259,7 @@ public class GUI extends JFrame implements GUIInterface {
         } else {
             if (remote) {
                 try {
-                    ((ServerConnection) dc).close();
+                    ((ServerConnection) jtill.getDataConnection()).close();
                 } catch (IOException ex) {
                     LOG.log(Level.SEVERE, null, ex);
                 }
@@ -301,7 +303,7 @@ public class GUI extends JFrame implements GUIInterface {
     @Override
     public void logout() {
         try {
-            dc.logout(staff);
+            jtill.getDataConnection().logout(staff);
             for (JInternalFrame f : internal.getAllFrames()) {
                 try {
                     f.setClosed(true);
@@ -377,7 +379,7 @@ public class GUI extends JFrame implements GUIInterface {
             throw new JTillException("The server is not ready to accept new connections");
         }
         Till till = new Till(name, uuid, 1);
-        till = TillInitialSetupDialog.showDialog(this, till);
+        till = TillInitialSetupDialog.showDialog(jtill, this, till);
         if (till == null) {
             throw new JTillException("Connection cancelled by server");
         }
@@ -403,7 +405,7 @@ public class GUI extends JFrame implements GUIInterface {
         final ModalDialog mDialog = new ModalDialog(this, "Database Check"); //Create the dialog object
         final Runnable run = () -> {
             try {
-                dc.integrityCheck(); //Perform the Database check
+                jtill.getDataConnection().integrityCheck(); //Perform the Database check
                 mDialog.hide(); //Hide the dialog once the check completes
             } catch (IOException | SQLException ex) {
                 mDialog.hide(); //Hide the dialog if there is an error
@@ -1409,15 +1411,15 @@ public class GUI extends JFrame implements GUIInterface {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnManageStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStockActionPerformed
-        ProductsWindow.showProductsListWindow();
+        ProductsWindow.showProductsListWindow(jtill);
     }//GEN-LAST:event_btnManageStockActionPerformed
 
     private void itemStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStockActionPerformed
-        ProductsWindow.showProductsListWindow();
+        ProductsWindow.showProductsListWindow(jtill);
     }//GEN-LAST:event_itemStockActionPerformed
 
     private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
-        if (dc instanceof DBConnect) {
+        if (jtill.getDataConnection() instanceof DBConnect) {
             if (JOptionPane.showConfirmDialog(this, "Are you sure you want to stop JTill server?", "JTill Server", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                 return;
             }
@@ -1428,7 +1430,7 @@ public class GUI extends JFrame implements GUIInterface {
             TillServer.removeSystemTrayIcon(); //Remove the system tray icon
         } else {
             try {
-                ((ServerConnection) dc).close(); //Close the Database/Server connection
+                ((ServerConnection) jtill.getDataConnection()).close(); //Close the Database/Server connection
             } catch (IOException ex) {
                 LOG.log(Level.SEVERE, null, ex);
             }
@@ -1437,11 +1439,11 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemExitActionPerformed
 
     private void itemCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCustomersActionPerformed
-        CustomersWindow.showCustomersListWindow();
+        CustomersWindow.showCustomersListWindow(jtill);
     }//GEN-LAST:event_itemCustomersActionPerformed
 
     private void btnManageCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageCustomersActionPerformed
-        CustomersWindow.showCustomersListWindow();
+        CustomersWindow.showCustomersListWindow(jtill);
     }//GEN-LAST:event_btnManageCustomersActionPerformed
 
     private void itemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLoginActionPerformed
@@ -1453,11 +1455,11 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemLoginActionPerformed
 
     private void itemStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffActionPerformed
-        StaffWindow.showStaffListWindow();
+        StaffWindow.showStaffListWindow(jtill);
     }//GEN-LAST:event_itemStaffActionPerformed
 
     private void btnManageStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStaffActionPerformed
-        StaffWindow.showStaffListWindow();
+        StaffWindow.showStaffListWindow(jtill);
     }//GEN-LAST:event_btnManageStaffActionPerformed
 
     private void lblClientsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblClientsMouseClicked
@@ -1496,27 +1498,27 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_lblHelpMouseClicked
 
     private void itemDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDiscountsActionPerformed
-        DiscountsWindow.showDiscountListWindow();
+        DiscountsWindow.showDiscountListWindow(jtill);
     }//GEN-LAST:event_itemDiscountsActionPerformed
 
     private void itemCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCategorysActionPerformed
-        CategorysWindow.showCategoryWindow();
+        CategorysWindow.showCategoryWindow(jtill);
     }//GEN-LAST:event_itemCategorysActionPerformed
 
     private void itemTaxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTaxesActionPerformed
-        TaxWindow.showTaxWindow();
+        TaxWindow.showTaxWindow(jtill);
     }//GEN-LAST:event_itemTaxesActionPerformed
 
     private void btnDiscountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiscountsActionPerformed
-        DiscountsWindow.showDiscountListWindow();
+        DiscountsWindow.showDiscountListWindow(jtill);
     }//GEN-LAST:event_btnDiscountsActionPerformed
 
     private void btnCategorysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategorysActionPerformed
-        CategorysWindow.showCategoryWindow();
+        CategorysWindow.showCategoryWindow(jtill);
     }//GEN-LAST:event_btnCategorysActionPerformed
 
     private void itemServerOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemServerOptionsActionPerformed
-        SettingsWindow.showSettingsWindow();
+        SettingsWindow.showSettingsWindow(jtill);
     }//GEN-LAST:event_itemServerOptionsActionPerformed
 
     private void itemInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemInfoActionPerformed
@@ -1524,23 +1526,23 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemInfoActionPerformed
 
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
-        ConsolidatedReportingDialog.showDialog(this);
+        ConsolidatedReportingDialog.showDialog(jtill, this);
     }//GEN-LAST:event_btnReportsActionPerformed
 
     private void btnSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsActionPerformed
-        SettingsWindow.showSettingsWindow();
+        SettingsWindow.showSettingsWindow(jtill);
     }//GEN-LAST:event_btnSettingsActionPerformed
 
     private void btnScreensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScreensActionPerformed
-        ScreenEditWindow.showScreenEditWindow();
+        ScreenEditWindow.showScreenEditWindow(jtill);
     }//GEN-LAST:event_btnScreensActionPerformed
 
     private void itemReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReceiveActionPerformed
-        ReceiveItemsWindow.showWindow();
+        ReceiveItemsWindow.showWindow(jtill);
     }//GEN-LAST:event_itemReceiveActionPerformed
 
     private void itemWasteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemWasteStockActionPerformed
-        WasteStockWindow.showWindow();
+        WasteStockWindow.showWindow(jtill);
     }//GEN-LAST:event_itemWasteStockActionPerformed
 
     private void chkSevereActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkSevereActionPerformed
@@ -1556,15 +1558,15 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_chkInfoActionPerformed
 
     private void itemWasteReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemWasteReportsActionPerformed
-        WasteReports.showWindow(this);
+        WasteReports.showWindow(jtill, this);
     }//GEN-LAST:event_itemWasteReportsActionPerformed
 
     private void itemReasonsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReasonsActionPerformed
-        WasteReasonDialog.showDialog();
+        WasteReasonDialog.showDialog(jtill);
     }//GEN-LAST:event_itemReasonsActionPerformed
 
     private void itemTillScreensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTillScreensActionPerformed
-        ScreenEditWindow.showScreenEditWindow();
+        ScreenEditWindow.showScreenEditWindow(jtill);
     }//GEN-LAST:event_itemTillScreensActionPerformed
 
     private void txtLogMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtLogMouseClicked
@@ -1590,11 +1592,11 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_txtLogMouseClicked
 
     private void itemSuppliersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSuppliersActionPerformed
-        SupplierWindow.showWindow();
+        SupplierWindow.showWindow(jtill);
     }//GEN-LAST:event_itemSuppliersActionPerformed
 
     private void itemDepartmentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDepartmentsActionPerformed
-        DepartmentsWindow.showWindow();
+        DepartmentsWindow.showWindow(jtill);
     }//GEN-LAST:event_itemDepartmentsActionPerformed
 
     private void itemSalesReportingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSalesReportingActionPerformed
@@ -1618,9 +1620,9 @@ public class GUI extends JFrame implements GUIInterface {
                 try {
                     List<Sale> sales;
                     if (till == null) {
-                        sales = dc.consolidated(start, end, -1);
+                        sales = jtill.getDataConnection().consolidated(start, end, -1);
                     } else {
-                        sales = dc.consolidated(start, end, till.getId());
+                        sales = jtill.getDataConnection().consolidated(start, end, till.getId());
                     }
                     List<Department> departments = Department.getAll();
                     List<Category> categories = Category.getAll();
@@ -1661,7 +1663,7 @@ public class GUI extends JFrame implements GUIInterface {
                 break;
             }
             case SaleReportDialog.CLERK_REPORT: {
-                Staff s = StaffSelectDialog.showDialog(this);
+                Staff s = StaffSelectDialog.showDialog(jtill, this);
                 if (s == null) {
                     return;
                 }
@@ -1697,7 +1699,7 @@ public class GUI extends JFrame implements GUIInterface {
                             Category cat = (Category) o;
                             products = cat.getProductsInCategory();
                         } else {
-                            products = dc.getAllProducts();
+                            products = jtill.getDataConnection().getAllProducts();
                         }
 
                         mDialog.hide();
@@ -1753,9 +1755,9 @@ public class GUI extends JFrame implements GUIInterface {
                             try {
                                 List<Sale> sales;
                                 if (till == null) {
-                                    sales = dc.getSalesInRange(start, end);
+                                    sales = jtill.getDataConnection().getSalesInRange(start, end);
                                 } else {
-                                    sales = dc.getTerminalSales(start, end, till.getId(), false);
+                                    sales = jtill.getDataConnection().getTerminalSales(start, end, till.getId(), false);
                                 }
                                 PrinterJob job = PrinterJob.getPrinterJob();
                                 job.setPrintable(new TransactionReportPrintable(sales, till, start, end));
@@ -1782,34 +1784,34 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemSalesReportingActionPerformed
 
     private void itemEnquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEnquiryActionPerformed
-        ProductEnquiry.showWindow();
+        ProductEnquiry.showWindow(jtill);
     }//GEN-LAST:event_itemEnquiryActionPerformed
 
     private void itemLabelPrintingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLabelPrintingActionPerformed
-        LabelPrintingWindow.showWindow();
+        LabelPrintingWindow.showWindow(jtill);
     }//GEN-LAST:event_itemLabelPrintingActionPerformed
 
     private void itemCreateNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCreateNewProductActionPerformed
-        ProductEntryDialog.showDialog(this);
+        ProductEntryDialog.showDialog(this, jtill);
     }//GEN-LAST:event_itemCreateNewProductActionPerformed
 
     private void itemNewStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNewStaffActionPerformed
-        Staff s = StaffDialog.showNewStaffDialog(this);
+        Staff s = StaffDialog.showNewStaffDialog(jtill, this);
         if (s != null) {
             JOptionPane.showMessageDialog(this, "New staff member " + s + " created");
         }
     }//GEN-LAST:event_itemNewStaffActionPerformed
 
     private void itemStaffClockingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStaffClockingActionPerformed
-        StaffClocking.showWindow();
+        StaffClocking.showWindow(jtill);
     }//GEN-LAST:event_itemStaffClockingActionPerformed
 
     private void itemStockTakeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStockTakeActionPerformed
-        StockTakeWindow.showWindow();
+        StockTakeWindow.showWindow(jtill);
     }//GEN-LAST:event_itemStockTakeActionPerformed
 
     private void itemPluSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPluSettingsActionPerformed
-        BarcodeSettings.showWindow();
+        BarcodeSettings.showWindow(jtill);
     }//GEN-LAST:event_itemPluSettingsActionPerformed
 
     private void btnManageStockMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnManageStockMouseEntered
@@ -1883,7 +1885,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_lblWarningsMouseClicked
 
     private void itemTerminalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTerminalsActionPerformed
-        TillWindow.showWindow();
+        TillWindow.showWindow(jtill);
     }//GEN-LAST:event_itemTerminalsActionPerformed
 
     private void itemCheckDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCheckDatabaseActionPerformed
@@ -1915,7 +1917,7 @@ public class GUI extends JFrame implements GUIInterface {
         final ModalDialog md = new ModalDialog(this, "Transactions");
         final Runnable run = () -> {
             try {
-                TransactionViewerWindow.showWindow();
+                TransactionViewerWindow.showWindow(jtill);
             } finally {
                 md.hide();
                 this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -1932,16 +1934,16 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemSendDataActionPerformed
 
     private void itemDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDatabaseActionPerformed
-        DatabaseWindow.showDatabaseWindow();
+        DatabaseWindow.showDatabaseWindow(jtill);
     }//GEN-LAST:event_itemDatabaseActionPerformed
 
     private void itemReceivedReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReceivedReportsActionPerformed
-        ReceivedReportsWindow.showWindow();
+        ReceivedReportsWindow.showWindow(jtill);
     }//GEN-LAST:event_itemReceivedReportsActionPerformed
 
     private void btnSendDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendDataActionPerformed
         try {
-            dc.reinitialiseAllTills();
+            jtill.getDataConnection().reinitialiseAllTills();
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(internal, ex, "Error", JOptionPane.ERROR_MESSAGE);
         } catch (JTillException ex) {
@@ -1966,15 +1968,15 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnTerminalsMouseExited
 
     private void btnTerminalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTerminalsActionPerformed
-        TillWindow.showWindow();
+        TillWindow.showWindow(jtill);
     }//GEN-LAST:event_btnTerminalsActionPerformed
 
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
-        ProductEntryDialog.showDialog(this);
+        ProductEntryDialog.showDialog(this, jtill);
     }//GEN-LAST:event_btnNewProductActionPerformed
 
     private void btnWasteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWasteStockActionPerformed
-        WasteStockWindow.showWindow();
+        WasteStockWindow.showWindow(jtill);
     }//GEN-LAST:event_btnWasteStockActionPerformed
 
     private void btnNewProductMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNewProductMouseEntered
@@ -2002,7 +2004,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnAddStaffMouseExited
 
     private void btnAddStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStaffActionPerformed
-        Staff s = StaffDialog.showNewStaffDialog(this);
+        Staff s = StaffDialog.showNewStaffDialog(jtill, this);
         if (s != null) {
             JOptionPane.showMessageDialog(this, "New staff member " + s + " created");
         }
@@ -2017,7 +2019,7 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnReceiveStockMouseExited
 
     private void btnReceiveStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiveStockActionPerformed
-        ReceiveItemsWindow.showWindow();
+        ReceiveItemsWindow.showWindow(jtill);
     }//GEN-LAST:event_btnReceiveStockActionPerformed
 
     private void btnEnquiryMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEnquiryMouseEntered
@@ -2029,12 +2031,12 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_btnEnquiryMouseExited
 
     private void btnEnquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnquiryActionPerformed
-        ProductEnquiry.showWindow();
+        ProductEnquiry.showWindow(jtill);
     }//GEN-LAST:event_btnEnquiryActionPerformed
 
     private void itemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAboutActionPerformed
         try {
-            Object[] licenseInfo = dc.getLicenseInfo();
+            Object[] licenseInfo = jtill.getDataConnection().getLicenseInfo();
             String number = (String) licenseInfo[0];
             int connections = (int) licenseInfo[1];
             JOptionPane.showMessageDialog(this, "JTill Server version " + TillServer.VERSION + "\n"
@@ -2050,15 +2052,15 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemHelpActionPerformed
 
     private void itemDeclarationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDeclarationsActionPerformed
-        DeclarationReportWindow.showWindow();
+        DeclarationReportWindow.showWindow(jtill);
     }//GEN-LAST:event_itemDeclarationsActionPerformed
 
     private void itemConsolidatedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemConsolidatedActionPerformed
-        ConsolidatedReportingDialog.showDialog(this);
+        ConsolidatedReportingDialog.showDialog(jtill, this);
     }//GEN-LAST:event_itemConsolidatedActionPerformed
 
     private void itemStockReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemStockReportActionPerformed
-        StockReportDialog.showDialog(this);
+        StockReportDialog.showDialog(jtill, this);
     }//GEN-LAST:event_itemStockReportActionPerformed
 
     private void itemSiteDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSiteDetailsActionPerformed
@@ -2066,16 +2068,16 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_itemSiteDetailsActionPerformed
 
     private void itemOrderingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemOrderingActionPerformed
-        OrdersViewer.showWindow();
+        OrdersViewer.showWindow(jtill);
     }//GEN-LAST:event_itemOrderingActionPerformed
 
     private void itemOrderingWizardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemOrderingWizardActionPerformed
-        OrderingWizard.showDialog(this);
+        OrderingWizard.showDialog(jtill, this);
     }//GEN-LAST:event_itemOrderingWizardActionPerformed
 
     private void itemEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEditActionPerformed
-        Product p = ProductSelectDialog.showDialog(this);
-        ProductEntryDialog.showDialog(this, p);
+        Product p = ProductSelectDialog.showDialog(this, jtill);
+        ProductEntryDialog.showDialog(this, jtill, p);
     }//GEN-LAST:event_itemEditActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -2083,11 +2085,11 @@ public class GUI extends JFrame implements GUIInterface {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void itemRefundReasonsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemRefundReasonsActionPerformed
-        RefundReasonsDialog.showDialog();
+        RefundReasonsDialog.showDialog(jtill);
     }//GEN-LAST:event_itemRefundReasonsActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        ManualSaleWindow.showWindow();
+        ManualSaleWindow.showWindow(jtill);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

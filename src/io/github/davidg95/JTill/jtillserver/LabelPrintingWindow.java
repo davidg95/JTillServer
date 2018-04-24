@@ -48,15 +48,15 @@ import javax.swing.table.TableModel;
  */
 public class LabelPrintingWindow extends javax.swing.JInternalFrame {
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private final MyModel model;
 
     /**
      * Creates new form LabelPrintingWindow
      */
-    public LabelPrintingWindow() {
-        this.dc = GUI.gui.dc;
+    public LabelPrintingWindow(JTill jtill) {
+        this.jtill = jtill;
         initComponents();
         super.setClosable(true);
         super.setMaximizable(true);
@@ -70,8 +70,8 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
     /**
      * Shows the label printing window.
      */
-    public static void showWindow() {
-        LabelPrintingWindow window = new LabelPrintingWindow();
+    public static void showWindow(JTill jtill) {
+        LabelPrintingWindow window = new LabelPrintingWindow(jtill);
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {
@@ -463,7 +463,7 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        Product p = ProductSelectDialog.showDialog(this);
+        Product p = ProductSelectDialog.showDialog(this, jtill);
 
         if (p == null) {
             return;
@@ -497,7 +497,7 @@ public class LabelPrintingWindow extends javax.swing.JInternalFrame {
                             return;
                         }
 
-                        Product product = dc.getProductByBarcode(item[0]);
+                        Product product = jtill.getDataConnection().getProductByBarcode(item[0]);
                         int a = Integer.parseInt(item[1]);
                         model.addLabel(product, a);
                     } catch (ProductNotFoundException ex) {

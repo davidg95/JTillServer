@@ -47,13 +47,13 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
     private BigDecimal refunds = BigDecimal.ZERO;
     private BigDecimal wastage = BigDecimal.ZERO;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     /**
      * Creates new form ConsolodatedReportingWindow
      */
-    public ConsolidatedReportingWindow(Date start, Date end, Till till) {
-        this.dc = GUI.gui.dc;
+    public ConsolidatedReportingWindow(JTill jtill, Date start, Date end, Till till) {
+        this.jtill = jtill;
         this.start = start;
         this.end = end;
         this.till = till;
@@ -82,17 +82,17 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
 
     private void retrieve(Date start, Date end, Till till) throws IOException, SQLException {
         if (till == null) {
-            sales = dc.consolidated(start, end, -1);
-            refunds = dc.getRefunds(start, end, -1).setScale(2, 6);
+            sales = jtill.getDataConnection().consolidated(start, end, -1);
+            refunds = jtill.getDataConnection().getRefunds(start, end, -1).setScale(2, 6);
         } else {
-            sales = dc.consolidated(start, end, till.getId());
-            refunds = dc.getRefunds(start, end, till.getId()).setScale(2, 6);
+            sales = jtill.getDataConnection().consolidated(start, end, till.getId());
+            refunds = jtill.getDataConnection().getRefunds(start, end, till.getId()).setScale(2, 6);
         }
-        wastage = dc.getWastage(start, end).setScale(2, 6);
+        wastage = jtill.getDataConnection().getWastage(start, end).setScale(2, 6);
     }
 
-    public static void showWindow(Date start, Date end, Till till) {
-        ConsolidatedReportingWindow window = new ConsolidatedReportingWindow(start, end, till);
+    public static void showWindow(JTill jtill, Date start, Date end, Till till) {
+        ConsolidatedReportingWindow window = new ConsolidatedReportingWindow(jtill, start, end, till);
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {
@@ -107,9 +107,9 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
         try {
             int transactions = sales.size();
 
-            departments = dc.getAllDepartments();
-            categorys = dc.getAllCategorys();
-            taxes = dc.getAllTax();
+            departments = jtill.getDataConnection().getAllDepartments();
+            categorys = jtill.getDataConnection().getAllCategorys();
+            taxes = jtill.getDataConnection().getAllTax();
 
             for (Sale s : sales) {
                 total = total.add(s.getTotal());

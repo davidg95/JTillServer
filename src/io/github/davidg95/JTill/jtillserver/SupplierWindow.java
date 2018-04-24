@@ -36,7 +36,7 @@ import javax.swing.table.TableModel;
  */
 public class SupplierWindow extends javax.swing.JInternalFrame {
 
-    private final DataConnect dc;
+    private final JTill jtill;
     private MyModel model;
 
     private Supplier current;
@@ -44,8 +44,8 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form SupplierWindow
      */
-    public SupplierWindow() {
-        this.dc = GUI.gui.dc;
+    public SupplierWindow(JTill jtill) {
+        this.jtill = jtill;
         initComponents();
         super.setClosable(true);
         super.setIconifiable(true);
@@ -60,8 +60,8 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
         }
     }
 
-    public static void showWindow() {
-        SupplierWindow window = new SupplierWindow();
+    public static void showWindow(JTill jtill) {
+        SupplierWindow window = new SupplierWindow(jtill);
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {
@@ -73,7 +73,7 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
     }
 
     private void init() throws IOException, SQLException {
-        model = new MyModel(dc.getAllSuppliers());
+        model = new MyModel(jtill.getDataConnection().getAllSuppliers());
         table.setModel(model);
         table.setSelectionModel(new ForcedListSelectionModel());
         table.getColumnModel().getColumn(0).setMinWidth(40);
@@ -129,13 +129,13 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
         }
 
         public void addSupplier(Supplier s) throws IOException, SQLException {
-            dc.addSupplier(s);
+            jtill.getDataConnection().addSupplier(s);
             suppliers.add(s);
             alertAll();
         }
 
         public void removeSupplier(Supplier s) throws IOException, SQLException, JTillException {
-            dc.removeSupplier(s.getId());
+            jtill.getDataConnection().removeSupplier(s.getId());
             suppliers.remove(s);
             alertAll();
         }
@@ -564,7 +564,7 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
 
     private void btnDeleteSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteSupplierActionPerformed
         try {
-            dc.removeSupplier(current.getId());
+            jtill.getDataConnection().removeSupplier(current.getId());
         } catch (IOException | SQLException | JTillException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }

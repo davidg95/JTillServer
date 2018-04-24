@@ -41,7 +41,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
 
     public static StaffWindow frame;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private Staff staff;
 
@@ -50,8 +50,8 @@ public class StaffWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form StaffWindow
      */
-    public StaffWindow() {
-        this.dc = GUI.gui.dc;
+    public StaffWindow(JTill jtill) {
+        this.jtill = jtill;
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
@@ -85,9 +85,9 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         });
     }
 
-    public static void showStaffListWindow() {
+    public static void showStaffListWindow(JTill jtill) {
         if (frame == null || frame.isClosed()) {
-            frame = new StaffWindow();
+            frame = new StaffWindow(jtill);
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {
@@ -118,7 +118,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
 
     private void showAllStaff() {
         try {
-            List<Staff> list = dc.getAllStaff();
+            List<Staff> list = jtill.getDataConnection().getAllStaff();
             model = new MyModel(list);
             tableStaff.setModel(model);
             tableStaff.getColumnModel().getColumn(0).setMaxWidth(40);
@@ -135,7 +135,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                 if (s == null) {
                     return;
                 }
-                StaffDialog.showEditStaffDialog(this, s);
+                StaffDialog.showEditStaffDialog(jtill, this, s);
                 model.alertAll();
             }
         });
@@ -172,7 +172,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                 if (!password.equals("")) {
                     s.setPassword(password);
                     try {
-                        dc.updateStaff(s);
+                        jtill.getDataConnection().updateStaff(s);
                         JOptionPane.showMessageDialog(this, "Password successfully changed", "Password", JOptionPane.INFORMATION_MESSAGE);
                     } catch (IOException | StaffNotFoundException | SQLException ex) {
                         showError(ex);
@@ -190,7 +190,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             return;
         }
         try {
-            if (dc.isTillLoggedIn(s)) {
+            if (jtill.getDataConnection().isTillLoggedIn(s)) {
                 JOptionPane.showMessageDialog(this, "You cannot remove this member of staff as they are currently logged in", "Remove", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -200,7 +200,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following staff member?\n" + s, "Remove Staff", JOptionPane.YES_NO_OPTION);
         if (opt == JOptionPane.YES_OPTION) {
             try {
-                dc.removeStaff(s.getId());
+                jtill.getDataConnection().removeStaff(s.getId());
                 showAllStaff();
                 setCurrentStaff(null);
                 JOptionPane.showMessageDialog(this, "Staff member removed", "Remove Staff", JOptionPane.INFORMATION_MESSAGE);
@@ -221,13 +221,13 @@ public class StaffWindow extends javax.swing.JInternalFrame {
         }
 
         public void addStaff(Staff s) throws IOException, SQLException {
-            s = dc.addStaff(s);
+            s = jtill.getDataConnection().addStaff(s);
             staff.add(s);
             alertAll();
         }
 
         public void removeStaff(Staff s) throws IOException, StaffNotFoundException, SQLException {
-            dc.removeStaff(s);
+            jtill.getDataConnection().removeStaff(s);
             staff.remove(s);
             alertAll();
         }
@@ -615,7 +615,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStaffActionPerformed
-        Staff s = StaffDialog.showNewStaffDialog(this);
+        Staff s = StaffDialog.showNewStaffDialog(jtill, this);
         if (s != null) {
             setCurrentStaff(null);
             showAllStaff();
@@ -640,7 +640,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             staff.setName(name);
             String lastUsername = staff.getUsername();
             if (!lastUsername.equals(username)) {
-                if (dc.checkUsername(username)) {
+                if (jtill.getDataConnection().checkUsername(username)) {
                     JOptionPane.showMessageDialog(this, "Username is already in use", "Save Changes", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -649,7 +649,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             staff.setPosition(position);
             staff.setWage(wage);
             staff.setEnabled(chkEnabled.isSelected());
-            dc.updateStaff(staff);
+            jtill.getDataConnection().updateStaff(staff);
             model.alertAll();
         } catch (SQLException | StaffNotFoundException | IOException ex) {
             showError(ex);
@@ -738,7 +738,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             enable.addActionListener((ActionEvent e) -> {
                 staff.setEnabled(!staff.isEnabled());
                 try {
-                    dc.updateStaff(staff);
+                    jtill.getDataConnection().updateStaff(staff);
                     JOptionPane.showMessageDialog(this, "Account " + (staff.isEnabled() ? "enabled" : "disabled"), "Staff", JOptionPane.INFORMATION_MESSAGE);
                 } catch (IOException | StaffNotFoundException | SQLException ex) {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Staff", JOptionPane.ERROR_MESSAGE);

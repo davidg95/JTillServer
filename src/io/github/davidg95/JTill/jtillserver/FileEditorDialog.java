@@ -5,6 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.JTill;
 import io.github.davidg95.JTill.jtill.Product;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -23,6 +24,8 @@ import javax.swing.table.TableModel;
  * @author David
  */
 public class FileEditorDialog extends javax.swing.JDialog {
+    
+    private JTill jtill;
 
     private final MyModel model;
 
@@ -34,8 +37,9 @@ public class FileEditorDialog extends javax.swing.JDialog {
      * @param parent
      * @param items
      */
-    public FileEditorDialog(Window parent, List<FileItem> items) {
+    public FileEditorDialog(JTill jtill, Window parent, List<FileItem> items) {
         super(parent);
+        this.jtill = jtill;
         initComponents();
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -46,12 +50,12 @@ public class FileEditorDialog extends javax.swing.JDialog {
         init();
     }
 
-    public static void showDialog(Component parent, List<FileItem> items) {
+    public static void showDialog(JTill jtill, Component parent, List<FileItem> items) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        FileEditorDialog dialog = new FileEditorDialog(window, items);
+        FileEditorDialog dialog = new FileEditorDialog(jtill, window, items);
         dialog.setVisible(true);
     }
 
@@ -195,12 +199,12 @@ public class FileEditorDialog extends javax.swing.JDialog {
     private void createEdit(FileItem item) {
         Product p;
         if (item.getProduct() == null) {
-            p = ProductEntryDialog.showDialog(this, item.getBarcode());
+            p = ProductEntryDialog.showDialog(this, jtill, item.getBarcode());
             if (p == null) {
                 return;
             }
         } else {
-            p = ProductEntryDialog.showDialog(this, item.getProduct());
+            p = ProductEntryDialog.showDialog(this, jtill, item.getProduct());
         }
         item.setProduct(p);
         model.alertAll();

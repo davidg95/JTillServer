@@ -36,7 +36,7 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
 
     private static RefundReasonsDialog dialog;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private MyModel model;
     private final DefaultComboBoxModel cmbModel;
@@ -46,9 +46,9 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
     /**
      * Creates new form RefundReasonsDialog
      */
-    public RefundReasonsDialog() {
+    public RefundReasonsDialog(JTill jtill) {
         super();
-        this.dc = GUI.gui.dc;
+        this.jtill = jtill;
         initComponents();
         setTitle("Refund Reasons");
         super.setClosable(true);
@@ -67,9 +67,9 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
         }
     }
 
-    public static void showDialog() {
+    public static void showDialog(JTill jtill) {
         if (dialog == null) {
-            dialog = new RefundReasonsDialog();
+            dialog = new RefundReasonsDialog(jtill);
             GUI.gui.internal.add(dialog);
         }
         dialog.setVisible(true);
@@ -82,7 +82,7 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
     }
 
     private void init() throws IOException, SQLException {
-        model = new MyModel(dc.getUsedRefundReasons());
+        model = new MyModel(jtill.getDataConnection().getUsedRefundReasons());
         table.setModel(model);
         table.getColumnModel().getColumn(0).setMinWidth(40);
         table.getColumnModel().getColumn(0).setMaxWidth(40);
@@ -119,14 +119,14 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
         }
 
         public RefundReason addReason(RefundReason reason) throws IOException, SQLException {
-            reason = dc.addRefundReason(reason);
+            reason = jtill.getDataConnection().addRefundReason(reason);
             reasons.add(reason);
             alertAll();
             return reason;
         }
 
         public void removeReason(RefundReason reason) throws IOException, SQLException, JTillException {
-            dc.removeRefundReason(reason);
+            jtill.getDataConnection().removeRefundReason(reason);
             reasons.remove(reason);
             alertAll();
         }
@@ -136,7 +136,7 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
         }
 
         public void updateReason(RefundReason reason) throws IOException, SQLException, JTillException {
-            dc.updateRefundReason(reason);
+            jtill.getDataConnection().updateRefundReason(reason);
             alertAll();
         }
 

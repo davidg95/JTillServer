@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver.printables;
 
 import io.github.davidg95.JTill.jtill.DataConnect;
+import io.github.davidg95.JTill.jtill.JTill;
 import io.github.davidg95.JTill.jtill.OrderItem;
 import io.github.davidg95.JTill.jtill.Supplier;
 import io.github.davidg95.JTill.jtillserver.*;
@@ -33,17 +34,17 @@ public class OrderPrintable implements Printable {
     private final List<OrderItem> items;
     private final Supplier supplier;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private String name;
     private String address;
-    
+
     private final String companyDetails = System.getenv("APPDATA") + "\\JTill Server\\company.details";
 
-    public OrderPrintable(Supplier s, List<OrderItem> items) {
+    public OrderPrintable(JTill jtill, Supplier s, List<OrderItem> items) {
         this.items = items;
         this.supplier = s;
-        this.dc = GUI.gui.dc;
+        this.jtill = jtill;
         loadFile();
     }
 

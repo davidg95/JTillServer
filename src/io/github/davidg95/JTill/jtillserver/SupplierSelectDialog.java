@@ -26,7 +26,7 @@ public class SupplierSelectDialog extends javax.swing.JDialog {
 
     private static Supplier supplier;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private final DefaultTableModel model;
     private List<Supplier> contents;
@@ -34,9 +34,9 @@ public class SupplierSelectDialog extends javax.swing.JDialog {
     /**
      * Creates new form SuppleirSelectDialog
      */
-    public SupplierSelectDialog(Window parent) {
+    public SupplierSelectDialog(JTill jtill, Window parent) {
         super(parent);
-        this.dc = GUI.gui.dc;
+        this.jtill= jtill;
         initComponents();
         setLocationRelativeTo(parent);
         setModal(true);
@@ -47,12 +47,12 @@ public class SupplierSelectDialog extends javax.swing.JDialog {
         init();
     }
 
-    public static Supplier showDialog(Component parent) {
+    public static Supplier showDialog(JTill jtill, Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        SupplierSelectDialog dialog = new SupplierSelectDialog(window);
+        SupplierSelectDialog dialog = new SupplierSelectDialog(jtill, window);
         supplier = null;
         dialog.setVisible(true);
         return supplier;
@@ -66,7 +66,7 @@ public class SupplierSelectDialog extends javax.swing.JDialog {
     private void setTable() {
         try {
             model.setRowCount(0);
-            contents = dc.getAllSuppliers();
+            contents = jtill.getDataConnection().getAllSuppliers();
             for (Supplier s : contents) {
                 model.addRow(new Object[]{s.getId(), s.getName()});
             }

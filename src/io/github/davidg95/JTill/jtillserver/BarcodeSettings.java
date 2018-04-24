@@ -21,13 +21,13 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
 
     private static BarcodeSettings window;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     /**
      * Creates new form PluSettings
      */
-    public BarcodeSettings() {
-        this.dc = GUI.gui.dc;
+    public BarcodeSettings(JTill jtill) {
+        this.jtill = jtill;
         initComponents();
         super.setClosable(true);
         super.setIconifiable(true);
@@ -36,9 +36,9 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showWindow() {
+    public static void showWindow(JTill jtill) {
         if (window == null || window.isClosed()) {
-            window = new BarcodeSettings();
+            window = new BarcodeSettings(jtill);
             GUI.gui.internal.add(window);
         }
         window.setVisible(true);
@@ -53,9 +53,9 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
 
     private void init() {
         try {
-            String upc = dc.getSetting("UPC_PREFIX");
-            int length = Integer.parseInt(dc.getSetting("BARCODE_LENGTH"));
-            String next = dc.getSetting("NEXT_PLU");
+            String upc = jtill.getDataConnection().getSetting("UPC_PREFIX");
+            int length = Integer.parseInt(jtill.getDataConnection().getSetting("BARCODE_LENGTH"));
+            String next = jtill.getDataConnection().getSetting("NEXT_PLU");
             txtUPC.setText(upc);
             cmbLength.setSelectedItem(Integer.toString(length));
 
@@ -93,7 +93,7 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
             return;
         }
         try {
-            dc.setSetting("UPC_PREFIX", upc);
+            jtill.getDataConnection().setSetting("UPC_PREFIX", upc);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, ex, "UPC Prefix", JOptionPane.ERROR_MESSAGE);
         }
@@ -104,7 +104,7 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
         String length = Integer.toString(l);
 
         try {
-            dc.setSetting("BARCODE_LENGTH", length);
+            jtill.getDataConnection().setSetting("BARCODE_LENGTH", length);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, ex, "Barcode Length", JOptionPane.ERROR_MESSAGE);
         }
@@ -252,7 +252,7 @@ public class BarcodeSettings extends javax.swing.JInternalFrame {
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         try {
-            dc.setSetting("NEXT_PLU", "0");
+            jtill.getDataConnection().setSetting("NEXT_PLU", "0");
             init();
         } catch (IOException ex) {
             GUI.LOG.log(Level.SEVERE, null, ex);

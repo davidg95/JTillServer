@@ -49,7 +49,7 @@ import javax.swing.table.TableModel;
  */
 public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
 
-    private final DataConnect dc;
+    private final JTill jtill;
     private ReceivedReport rr;
     private final MyModel model;
     private Supplier supplier;
@@ -63,8 +63,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form ReceiveItemsWindow
      */
-    public ReceiveItemsWindow() {
-        this.dc = GUI.gui.dc;
+    public ReceiveItemsWindow(JTill jtill) {
+        this.jtill = jtill;
         initComponents();
         setTitle("Receive Stock");
         super.setClosable(true);
@@ -77,8 +77,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         txtBarcode.requestFocus();
     }
 
-    public ReceiveItemsWindow(ReceivedReport rr) {
-        this.dc = GUI.gui.dc;
+    public ReceiveItemsWindow(JTill jtill, ReceivedReport rr) {
+        this.jtill = jtill;
         this.rr = rr;
         initComponents();
         setTitle(rr.getSupplier().getName() + " - " + rr.getInvoiceId());
@@ -93,11 +93,11 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         setReport();
     }
 
-    public static void showWindow() {
-        ReceiveItemsWindow window = new ReceiveItemsWindow();
+    public static void showWindow(JTill jtill) {
+        ReceiveItemsWindow window = new ReceiveItemsWindow(jtill);
         GUI.gui.internal.add(window);
         try {
-            List<Supplier> suppliers = GUI.gui.dc.getAllSuppliers();
+            List<Supplier> suppliers = jtill.getDataConnection().getAllSuppliers();
             if (suppliers.isEmpty()) {
                 JOptionPane.showMessageDialog(window, "You must set up at least one supplier before receiving stock. Go to Setup -> Edit Suppliers to do this", "No Suppliers Set", JOptionPane.WARNING_MESSAGE);
                 return;
@@ -114,7 +114,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     }
 
     private void setSupplier() {
-        supplier = SupplierSelectDialog.showDialog(this);
+        supplier = SupplierSelectDialog.showDialog(jtill, this);
         if (supplier == null) {
             setVisible(false);
             return;
@@ -122,8 +122,8 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         txtSupplier.setText(supplier.getName());
     }
 
-    public static void showWindow(ReceivedReport rr) {
-        ReceiveItemsWindow window = new ReceiveItemsWindow(rr);
+    public static void showWindow(JTill jtill, ReceivedReport rr) {
+        ReceiveItemsWindow window = new ReceiveItemsWindow(jtill, rr);
         GUI.gui.internal.add(window);
         try {
             window.setVisible(true);
@@ -635,17 +635,17 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             updates.put(product.getBarcode(), p.getQuantity());
         });
         try {
-            dc.batchStockReceive(updates);
+            jtill.getDataConnection().batchStockReceive(updates);
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
         report.setPaid(chkPaid.isSelected());
         report.setItems(model.getItems());
         try {
-            dc.addReceivedReport(report);
+            jtill.getDataConnection().addReceivedReport(report);
             if (order != null) {
                 order.setReceived(true);
-                dc.updateOrder(order);
+                jtill.getDataConnection().updateOrder(order);
             }
             if (edits) {
                 if (JOptionPane.showConfirmDialog(this, "Do you want to update price info?", "Updates", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
@@ -653,7 +653,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     model.getItems().forEach((p) -> {
                         products.add(p.getProduct());
                     });
-                    dc.batchProductUpdate(products);
+                    jtill.getDataConnection().batchProductUpdate(products);
                     JOptionPane.showMessageDialog(this, "Products updated", "Update Products", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
@@ -687,7 +687,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         try {
             Product product;
             if (txtBarcode.getText().isEmpty()) {
-                product = ProductSelectDialog.showDialog(this, supplier);
+                product = ProductSelectDialog.showDialog(this, supplier, jtill);
             } else {
                 if (!Utilities.isNumber(txtBarcode.getText())) {
                     txtBarcode.setSelectionStart(0);
@@ -708,7 +708,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     return;
                 }
                 try {
-                    product = dc.getProductByBarcode(txtBarcode.getText());
+                    product = jtill.getDataConnection().getProductByBarcode(txtBarcode.getText());
                     if ((product.getSupplier() == null && supplier == null) || (product.getSupplier().equals(supplier))) {
                     } else {
                         JOptionPane.showMessageDialog(this, "This product is not from that supplier", "Add Product", JOptionPane.ERROR_MESSAGE);
@@ -811,7 +811,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
         if (viewMode) {
             rr.setPaid(chkPaid.isSelected());
             try {
-                dc.updateReceivedReport(rr);
+                jtill.getDataConnection().updateReceivedReport(rr);
                 JOptionPane.showMessageDialog(this, (chkPaid.isSelected() ? "Marked as paid" : "Marked as not paid"), "Invoice " + rr.getInvoiceId(), JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException | SQLException ex) {
                 JOptionPane.showMessageDialog(ReceiveItemsWindow.this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -828,7 +828,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "You cannot add an order with other items", "Add Order", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        order = OrderSelectDialog.showDialog(this);
+        order = OrderSelectDialog.showDialog(this, jtill);
         if (order == null) {
             return;
         }
@@ -852,7 +852,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
     private void txtSupplierMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSupplierMouseClicked
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
-                Supplier sup = SupplierSelectDialog.showDialog(this);
+                Supplier sup = SupplierSelectDialog.showDialog(jtill, this);
                 if (sup == null) {
                     return;
                 }
@@ -881,7 +881,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                     int quantity = Integer.parseInt(inLine.next());
                     FileItem item;
                     try {
-                        Product p = dc.getProductByBarcode(barcode);
+                        Product p = jtill.getDataConnection().getProductByBarcode(barcode);
                         item = new FileItem(barcode, p, quantity);
                     } catch (IOException | ProductNotFoundException | SQLException ex) {
                         count++;
@@ -891,7 +891,7 @@ public final class ReceiveItemsWindow extends javax.swing.JInternalFrame {
                 }
                 JOptionPane.showMessageDialog(this, "Loaded " + items.size() + " items with " + count + " unknown items", "Load File", JOptionPane.INFORMATION_MESSAGE);
                 if (!items.isEmpty()) {
-                    FileEditorDialog.showDialog(this, items);
+                    FileEditorDialog.showDialog(jtill, this, items);
                 }
                 for (FileItem i : items) {
                     if (i.getProduct() != null) {

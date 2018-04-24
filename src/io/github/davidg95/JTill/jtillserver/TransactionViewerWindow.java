@@ -34,16 +34,16 @@ import javax.swing.table.TableModel;
  */
 public class TransactionViewerWindow extends javax.swing.JInternalFrame {
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private MyModel model;
 
     /**
      * Creates new form TransactionViewerWindow
      */
-    public TransactionViewerWindow() {
+    public TransactionViewerWindow(JTill jtill) {
         super();
-        this.dc = GUI.gui.dc;
+        this.jtill = jtill;
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
@@ -56,8 +56,8 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showWindow() {
-        final TransactionViewerWindow window = new TransactionViewerWindow();
+    public static void showWindow(JTill jtill) {
+        final TransactionViewerWindow window = new TransactionViewerWindow(jtill);
         try {
             window.setSelected(true);
         } catch (PropertyVetoException ex) {
@@ -67,11 +67,11 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
 
     private void init() {
         try {
-            List<Sale> sales = dc.getAllSales();
+            List<Sale> sales = jtill.getDataConnection().getAllSales();
             model = new MyModel(sales);
             table.setModel(model);
-            final List<Staff> staff = dc.getAllStaff();
-            final List<Till> tills = dc.getAllTills();
+            final List<Staff> staff = jtill.getDataConnection().getAllStaff();
+            final List<Till> tills = jtill.getDataConnection().getAllTills();
             cmbStaff.setModel(new DefaultComboBoxModel(staff.toArray()));
             cmbTerminal.setModel(new DefaultComboBoxModel(tills.toArray()));
         } catch (IOException | SQLException ex) {
@@ -544,7 +544,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                 }
 
                 try {
-                    final List<Sale> sales = dc.getAllSales(); //Get all the sales
+                    final List<Sale> sales = jtill.getDataConnection().getAllSales(); //Get all the sales
                     final List<Sale> newList = new LinkedList<>(); //Create a list for the filtered sales
                     //Check each sale and make sure it matches the criteria
                     for (Sale s : sales) {
@@ -593,7 +593,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                 final int index = table.getSelectedRow();
                 if (index > -1) {
                     final Sale sale = model.getSale(index);
-                    SaleDialog.showSaleDialog(sale);
+                    SaleDialog.showSaleDialog(jtill, sale);
                 }
             }
         } else if (SwingUtilities.isRightMouseButton(evt)) {
@@ -607,7 +607,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
                 final int index = table.getSelectedRow();
                 if (index > -1) {
                     final Sale sale = model.getSale(index);
-                    SaleDialog.showSaleDialog(sale);
+                    SaleDialog.showSaleDialog(jtill, sale);
                 }
             });
 
@@ -641,7 +641,7 @@ public class TransactionViewerWindow extends javax.swing.JInternalFrame {
             final ModalDialog mDialog = new ModalDialog(this, "Remove Cashed Sales");
             final Runnable run = () -> {
                 try {
-                    int val = dc.removeCashedSales();
+                    int val = jtill.getDataConnection().removeCashedSales();
                     if (val == 0) {
                         mDialog.hide();
                         JOptionPane.showMessageDialog(TransactionViewerWindow.this, "No sales to remove", "Remove Cashed Sales", JOptionPane.INFORMATION_MESSAGE);

@@ -18,24 +18,27 @@ import java.awt.Window;
 public class OrderingWizard extends javax.swing.JDialog {
 
     private Supplier supplier;
+    
+    private final JTill jtill;
 
     /**
      * Creates new form OrderingWizard
      */
-    public OrderingWizard(Window parent) {
+    public OrderingWizard(JTill jtill, Window parent) {
         super(parent);
+        this.jtill = jtill;
         initComponents();
         setLocationRelativeTo(parent);
         setModal(true);
         setTitle("Ordering Wizard");
     }
 
-    public static void showDialog(Component parent) {
+    public static void showDialog(JTill jtill, Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        OrderingWizard dialog = new OrderingWizard(window);
+        OrderingWizard dialog = new OrderingWizard(jtill, window);
         dialog.setVisible(true);
     }
 
@@ -154,7 +157,7 @@ public class OrderingWizard extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtSupplierMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSupplierMouseClicked
-        supplier = SupplierSelectDialog.showDialog(this);
+        supplier = SupplierSelectDialog.showDialog(jtill, this);
         if (supplier != null) {
             txtSupplier.setText(supplier.toString());
             btnCreate.setEnabled(true);

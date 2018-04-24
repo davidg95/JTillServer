@@ -44,7 +44,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
 
     public static ProductsWindow frame;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private Product product;
 
@@ -53,8 +53,8 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form ProductsWindow
      */
-    public ProductsWindow() {
-        this.dc = GUI.gui.dc;
+    public ProductsWindow(JTill jtill) {
+        this.jtill = jtill;
         initComponents();
         super.setFrameIcon(new ImageIcon(GUI.icon));
         super.setMaximizable(true);
@@ -67,11 +67,11 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
      * Method to showing the products list window. This will create the window
      * if needed.
      */
-    public static void showProductsListWindow() {
+    public static void showProductsListWindow(JTill jtill) {
         if (frame != null && !frame.isClosed && frame.isVisible()) {
             frame.toFront();
         } else {
-            frame = new ProductsWindow();
+            frame = new ProductsWindow(jtill);
             GUI.gui.internal.add(frame);
             frame.setCurrentProduct(null);
             try {
@@ -98,7 +98,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
      */
     private void init() {
         try {
-            List<Product> products = dc.getAllProducts();
+            List<Product> products = jtill.getDataConnection().getAllProducts();
             model = new MyModel(products);
             tableProducts.setModel(model);
             tableProducts.setSelectionModel(new ForcedListSelectionModel());
@@ -202,13 +202,13 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         }
 
         public void addProduct(Product p) throws IOException, SQLException {
-            dc.addProduct(p);
+            jtill.getDataConnection().addProduct(p);
             products.add(p);
             alertAll();
         }
 
         public void removeProduct(Product p) throws IOException, ProductNotFoundException, SQLException {
-            dc.removeProduct(p);
+            jtill.getDataConnection().removeProduct(p);
             products.remove(p);
             alertAll();
         }
@@ -239,12 +239,12 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
         }
 
         public void filterCategory(Category c) throws IOException, SQLException, JTillException {
-            products = dc.getProductsInCategory(c.getId());
+            products = jtill.getDataConnection().getProductsInCategory(c.getId());
             alertAll();
         }
 
         public void filterDepartment(Department d) throws IOException, SQLException, JTillException {
-            products = dc.getProductsInDepartment(d.getId());
+            products = jtill.getDataConnection().getProductsInDepartment(d.getId());
             alertAll();
         }
 
@@ -922,11 +922,11 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnRemoveProductActionPerformed
 
     private void btnEditProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditProductActionPerformed
-        ProductEntryDialog.showDialog(this, product);
+        ProductEntryDialog.showDialog(this, jtill, product);
     }//GEN-LAST:event_btnEditProductActionPerformed
 
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
-        ProductEntryDialog.showDialog(this);
+        ProductEntryDialog.showDialog(this, jtill);
         setCurrentProduct(null);
     }//GEN-LAST:event_btnNewProductActionPerformed
 
@@ -936,7 +936,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tableProductsMousePressed
 
     private void btnShowTaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowTaxActionPerformed
-        TaxWindow.showTaxWindow();
+        TaxWindow.showTaxWindow(jtill);
     }//GEN-LAST:event_btnShowTaxActionPerformed
 
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
@@ -988,11 +988,11 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnReceiveStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiveStockActionPerformed
-        ReceiveItemsWindow.showWindow();
+        ReceiveItemsWindow.showWindow(jtill);
     }//GEN-LAST:event_btnReceiveStockActionPerformed
 
     private void btnWasteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWasteStockActionPerformed
-        WasteStockWindow.showWindow();
+        WasteStockWindow.showWindow(jtill);
     }//GEN-LAST:event_btnWasteStockActionPerformed
 
     private void btnCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCSVActionPerformed
@@ -1096,13 +1096,13 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             final Font boldFont = new Font(enquiry.getFont().getFontName(), Font.BOLD, enquiry.getFont().getSize());
             edit.setFont(boldFont);
             edit.addActionListener((event) -> {
-                ProductEntryDialog.showDialog(this, p);
+                ProductEntryDialog.showDialog(this, jtill, p);
             });
             enquiry.addActionListener((ActionEvent e) -> {
-                ProductEnquiry.showWindow(p);
+                ProductEnquiry.showWindow(p, jtill);
             });
             condiments.addActionListener((ActionEvent e) -> {
-                CondimentWindow.showWindow(p);
+                CondimentWindow.showWindow(jtill, p);
             });
             remove.addActionListener((ActionEvent e) -> {
                 removeProduct(p);
@@ -1115,22 +1115,22 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
             menu.show(tableProducts, evt.getX(), evt.getY());
         } else {
             if (evt.getClickCount() == 2) {
-                ProductEntryDialog.showDialog(this, p);
+                ProductEntryDialog.showDialog(this, jtill, p);
             }
         }
     }//GEN-LAST:event_tableProductsMouseClicked
 
     private void btnCondimentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCondimentsActionPerformed
-        CondimentWindow.showWindow(product);
+        CondimentWindow.showWindow(jtill, product);
     }//GEN-LAST:event_btnCondimentsActionPerformed
 
     private void btnEnquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnquiryActionPerformed
-        ProductEnquiry.showWindow(product);
+        ProductEnquiry.showWindow(product, jtill);
     }//GEN-LAST:event_btnEnquiryActionPerformed
 
     private void tableProductsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableProductsKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
-            ProductEntryDialog.showDialog(this, product);
+            ProductEntryDialog.showDialog(this, jtill, product);
         }
     }//GEN-LAST:event_tableProductsKeyPressed
 

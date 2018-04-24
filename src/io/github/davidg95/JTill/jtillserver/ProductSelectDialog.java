@@ -58,7 +58,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
 
     private static Object lastSelection;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private MyTableModel model;
 
@@ -75,9 +75,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * @param parent the parent window.
      * @param supplier the supplier to show.
      */
-    public ProductSelectDialog(Window parent, Supplier supplier) {
+    public ProductSelectDialog(Window parent, Supplier supplier, JTill jtill) {
         super(parent);
-        this.dc = GUI.gui.dc;
+        this.jtill = jtill;
         this.supplier = supplier;
         if(supplier == null){
             suppString = "";
@@ -168,10 +168,10 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     }
 
     private void createNodes() throws IOException, SQLException {
-        List<Department> departments = dc.getAllDepartments();
+        List<Department> departments = jtill.getDataConnection().getAllDepartments();
         for (Department d : departments) {
             treeModel.insertDepartment(d);
-            List<Category> categorys = dc.getCategoriesInDepartment(d.getId());
+            List<Category> categorys = jtill.getDataConnection().getCategoriesInDepartment(d.getId());
             for (Category c : categorys) {
                 treeModel.insertCategory(c);
             }
@@ -184,8 +184,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * @param parent the parent component.
      * @return the product selected by the user.
      */
-    public static Product showDialog(Component parent) {
-        return showDialog(parent, null);
+    public static Product showDialog(Component parent, JTill jtill) {
+        return showDialog(parent, null, jtill);
     }
 
     /**
@@ -195,12 +195,12 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * @param supplier the supplier to show.
      * @return the product selected by the user.
      */
-    public static Product showDialog(Component parent, Supplier supplier) {
+    public static Product showDialog(Component parent, Supplier supplier, JTill jtill) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new ProductSelectDialog(window, supplier);
+        dialog = new ProductSelectDialog(window, supplier, jtill);
         product = null;
         dialog.setVisible(true);
         return product;
@@ -209,9 +209,9 @@ public class ProductSelectDialog extends javax.swing.JDialog {
     private void setTable() throws IOException, SQLException {
         List<Product> all;
         if (supplier == null) {
-            all = dc.getAllProducts();
+            all = jtill.getDataConnection().getAllProducts();
         } else {
-            all = dc.getProductsInSupplier(supplier);
+            all = jtill.getDataConnection().getProductsInSupplier(supplier);
         }
         Product allProducts[] = new Product[]{};
         allProducts = all.toArray(allProducts);

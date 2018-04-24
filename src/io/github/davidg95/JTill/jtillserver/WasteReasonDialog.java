@@ -33,7 +33,7 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
     private static WasteReasonDialog dialog;
     private static final Logger LOG = Logger.getGlobal();
 
-    private final DataConnect dc;
+    private final JTill jtill;
     private List<WasteReason> reasons;
     private final DefaultTableModel model;
 
@@ -44,9 +44,9 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
     /**
      * Creates new form WasteReasonDialog
      */
-    public WasteReasonDialog() {
+    public WasteReasonDialog(JTill jtill) {
         super();
-        this.dc = GUI.gui.dc;
+        this.jtill = jtill;
         initComponents();
         setTitle("Waste Reasons");
         super.setClosable(true);
@@ -63,12 +63,12 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showDialog() {
+    public static void showDialog(JTill jtill) {
         if (dialog != null && dialog.isVisible()) {
             dialog.setVisible(true);
             return;
         }
-        dialog = new WasteReasonDialog();
+        dialog = new WasteReasonDialog(jtill);
         GUI.gui.internal.add(dialog);
         dialog.setVisible(true);
         try {
@@ -98,7 +98,7 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
 
     private void reloadList() {
         try {
-            reasons = dc.getUsedWasteReasons();
+            reasons = jtill.getDataConnection().getUsedWasteReasons();
             model.setRowCount(0);
             for (WasteReason wr : reasons) {
                 model.addRow(new Object[]{wr.getId(), wr.getReason()});
@@ -343,7 +343,7 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
 
         WasteReason wr = new WasteReason(reason, 0);
         try {
-            wr = dc.addWasteReason(wr);
+            wr = jtill.getDataConnection().addWasteReason(wr);
             reloadList();
             setCurrent(wr);
             tabbed.setEnabledAt(1, true);
@@ -387,7 +387,7 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         try {
             if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this waste reason?\n" + reason.getName(), "Remove Reason", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                dc.deleteWasteReason(reason);
+                jtill.getDataConnection().deleteWasteReason(reason);
                 tabbed.setSelectedIndex(0);
                 reason = null;
                 reloadList();

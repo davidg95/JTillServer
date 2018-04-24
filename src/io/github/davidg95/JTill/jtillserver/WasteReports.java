@@ -36,7 +36,7 @@ public class WasteReports extends javax.swing.JDialog {
 
     private final Logger log = Logger.getGlobal();
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private static final int ALL = 0;
     private static final int CONTAINING = 1;
@@ -47,8 +47,8 @@ public class WasteReports extends javax.swing.JDialog {
     /**
      * Creates new form WasteReports
      */
-    public WasteReports(Window parent) {
-        this.dc = GUI.gui.dc;
+    public WasteReports(JTill jtill, Window parent) {
+        this.jtill = jtill;
         initComponents();
         dateStart.setDate(new Date(0));
         dateEnd.setDate(new Date());
@@ -60,12 +60,12 @@ public class WasteReports extends javax.swing.JDialog {
         Utilities.installEscapeCloseOperation(this);
     }
 
-    public static void showWindow(Component parent) {
+    public static void showWindow(JTill jtill, Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        WasteReports wr = new WasteReports(window);
+        WasteReports wr = new WasteReports(jtill, window);
         wr.setVisible(true);
     }
 
@@ -109,8 +109,8 @@ public class WasteReports extends javax.swing.JDialog {
             this.start = start;
             this.end = end;
             this.items = items;
-            departments = dc.getAllDepartments();
-            categorys = dc.getAllCategorys();
+            departments = jtill.getDataConnection().getAllDepartments();
+            categorys = jtill.getDataConnection().getAllCategorys();
         }
 
         @Override
@@ -301,12 +301,12 @@ public class WasteReports extends javax.swing.JDialog {
             Date start = dateStart.getDate();
             Date end = new Date(dateEnd.getDate().getTime() + 86399999L);
 
-            List<WasteItem> allItems = dc.getAllWasteItems();
+            List<WasteItem> allItems = jtill.getDataConnection().getAllWasteItems();
             List<WasteItem> items = new LinkedList<>();
 
             switch (reason) {
                 case CONTAINING: {
-                    Product p = ProductSelectDialog.showDialog(this);
+                    Product p = ProductSelectDialog.showDialog(this, jtill);
                     if (p == null) {
                         return;
                     }
@@ -351,7 +351,7 @@ public class WasteReports extends javax.swing.JDialog {
                     break;
                 }
                 case REASON: {
-                    WasteReason wr = WasteReasonSelectDialog.showDialog(this);
+                    WasteReason wr = WasteReasonSelectDialog.showDialog(jtill, this);
                     if (wr == null) {
                         return;
                     }

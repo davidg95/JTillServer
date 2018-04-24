@@ -31,7 +31,7 @@ import javax.swing.table.TableModel;
 public class TillDialog extends javax.swing.JInternalFrame {
 
     private Till till;
-    private final DataConnect dc;
+    private final JTill jtill;
     private SalesModel salesModel;
     private ScreensModel screensModel;
 
@@ -40,9 +40,9 @@ public class TillDialog extends javax.swing.JInternalFrame {
      *
      * @param t the till.
      */
-    public TillDialog(Till t) {
+    public TillDialog(JTill jtill, Till t) {
         this.till = t;
-        this.dc = GUI.gui.dc;
+        this.jtill = jtill;
         initComponents();
         super.setClosable(true);
         super.setIconifiable(true);
@@ -53,7 +53,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
 
     private void init() {
         try {
-            List<Screen> screens = dc.getAllScreens();
+            List<Screen> screens = jtill.getDataConnection().getAllScreens();
             screensModel = new ScreensModel(screens);
             cmbScreen.setModel(screensModel);
 
@@ -62,7 +62,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
             txtName.setText(till.getName());
             txtStaff.setText("Not logged in");
             try {
-                Staff s = dc.getTillStaff(till.getId());
+                Staff s = jtill.getDataConnection().getTillStaff(till.getId());
                 if (s == null) {
                     txtStaff.setText("Not logged in");
                     btnLogout.setEnabled(false);
@@ -74,7 +74,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
             }
 
             try {
-                Screen sc = dc.getScreen(till.getDefaultScreen());
+                Screen sc = jtill.getDataConnection().getScreen(till.getDefaultScreen());
                 screensModel.setSelectedItem(sc);
             } catch (IOException | SQLException | ScreenNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -90,8 +90,8 @@ public class TillDialog extends javax.swing.JInternalFrame {
         }
     }
 
-    public static void showDialog(Till till) {
-        final TillDialog dialog = new TillDialog(till);
+    public static void showDialog(JTill jtill, Till till) {
+        final TillDialog dialog = new TillDialog(jtill, till);
         GUI.gui.internal.add(dialog);
         dialog.setVisible(true);
         try {
@@ -561,7 +561,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
             }
 
             BigDecimal declared = new BigDecimal(strVal);
-            final TillReport report = dc.xReport(this.till, declared, GUI.staff);
+            final TillReport report = jtill.getDataConnection().xReport(this.till, declared, GUI.staff);
             TillReportDialog.showDialog(report);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -571,7 +571,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         try {
-            dc.logoutTill(till.getId());
+            jtill.getDataConnection().logoutTill(till.getId());
             btnLogout.setEnabled(false);
         } catch (IOException | JTillException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -588,12 +588,12 @@ public class TillDialog extends javax.swing.JInternalFrame {
             return;
         }
         try {
-            if (dc.isTillNameUsed(name)) {
+            if (jtill.getDataConnection().isTillNameUsed(name)) {
                 JOptionPane.showMessageDialog(this, "That name is already in use", "Till Rename", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             till.setName(name);
-            dc.updateTill(till);
+            jtill.getDataConnection().updateTill(till);
             JOptionPane.showMessageDialog(this, "Rename successful, data must be sent to terminal", "Rename", JOptionPane.INFORMATION_MESSAGE);
         } catch (JTillException | IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -624,9 +624,9 @@ public class TillDialog extends javax.swing.JInternalFrame {
             }
 
             BigDecimal declared = new BigDecimal(strVal);
-            final TillReport report = dc.zReport(this.till, declared, GUI.staff);
+            final TillReport report = jtill.getDataConnection().zReport(this.till, declared, GUI.staff);
 
-            if (Boolean.getBoolean(dc.getSetting("USE_EMAIL"))) {
+            if (Boolean.getBoolean(jtill.getDataConnection().getSetting("USE_EMAIL"))) {
                 if (JOptionPane.showConfirmDialog(this, "Do you want the report emailed?", "Z Report for " + till.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     String message = "Cashup for terminal " + till.getName()
                             + "\nValue counted: £" + report.getDeclared().toString()
@@ -635,7 +635,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
                     final ModalDialog mDialog = new ModalDialog(this, "Email");
                     final Runnable run = () -> {
                         try {
-                            dc.sendEmail(message);
+                            jtill.getDataConnection().sendEmail(message);
                             mDialog.hide();
                             JOptionPane.showInputDialog(TillDialog.this, "Email sent", "Email", JOptionPane.INFORMATION_MESSAGE);
                         } catch (IOException ex) {
@@ -669,7 +669,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
         Sale s = salesModel.get(row);
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
-                SaleDialog.showSaleDialog(s);
+                SaleDialog.showSaleDialog(jtill, s);
             }
         }
     }//GEN-LAST:event_tableMouseClicked
@@ -677,7 +677,7 @@ public class TillDialog extends javax.swing.JInternalFrame {
     private void btnSaveScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveScreenActionPerformed
         try {
             till.setDefaultScreen(((Screen) screensModel.getSelectedItem()).getId());
-            dc.updateTill(till);
+            jtill.getDataConnection().updateTill(till);
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         } catch (JTillException ex) {

@@ -30,14 +30,14 @@ public class TillInitialSetupDialog extends javax.swing.JDialog {
 
     private MyModel model;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     /**
      * Creates new form TillInitialSetupDialog
      */
-    public TillInitialSetupDialog(Window parent) {
+    public TillInitialSetupDialog(JTill jtill, Window parent) {
         super(parent);
-        this.dc = GUI.gui.dc;
+        this.jtill = jtill;
         initComponents();
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(parent);
@@ -47,7 +47,7 @@ public class TillInitialSetupDialog extends javax.swing.JDialog {
 
     private void init() {
         try {
-            model = new MyModel(dc.getAllScreens());
+            model = new MyModel(jtill.getDataConnection().getAllScreens());
             cmbScreen.setModel(model);
             txtName.setText(till.getName());
         } catch (IOException | SQLException ex) {
@@ -55,13 +55,13 @@ public class TillInitialSetupDialog extends javax.swing.JDialog {
         }
     }
 
-    public static Till showDialog(Component parent, Till t) {
+    public static Till showDialog(JTill jtill, Component parent, Till t) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
         till = t;
-        final TillInitialSetupDialog dialog = new TillInitialSetupDialog(window);
+        final TillInitialSetupDialog dialog = new TillInitialSetupDialog(jtill, window);
         dialog.setVisible(true);
         return till;
     }
@@ -199,7 +199,7 @@ public class TillInitialSetupDialog extends javax.swing.JDialog {
                 return;
             }
             String name = txtName.getText();
-            if (dc.isTillNameUsed(name)) {
+            if (jtill.getDataConnection().isTillNameUsed(name)) {
                 JOptionPane.showMessageDialog(this, "That name is already in use", "Terminal Setup", JOptionPane.ERROR_MESSAGE);
                 return;
             }

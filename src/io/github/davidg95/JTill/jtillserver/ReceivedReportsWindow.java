@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.DataConnect;
+import io.github.davidg95.JTill.jtill.JTill;
 import io.github.davidg95.JTill.jtill.ReceivedReport;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -31,18 +32,17 @@ import javax.swing.table.TableModel;
  */
 public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
 
-    private final Logger log = Logger.getGlobal();
-
     private static ReceivedReportsWindow window;
-
-    private final DataConnect dc;
+    
+    private final JTill jtill;
+    
     private MyModel model;
 
     /**
      * Creates new form ReceivedReports
      */
-    public ReceivedReportsWindow() {
-        this.dc = GUI.gui.dc;
+    public ReceivedReportsWindow(JTill jtill) {
+        this.jtill= jtill;
         initComponents();
         setTitle("Received Reports");
         super.setClosable(true);
@@ -53,9 +53,9 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
         txtInvoiceNo.requestFocus();
     }
 
-    public static void showWindow() {
+    public static void showWindow(JTill jtill) {
         if (window == null || window.isClosed()) {
-            window = new ReceivedReportsWindow();
+            window = new ReceivedReportsWindow(jtill);
             GUI.gui.internal.add(window);
         }
         window.setVisible(true);
@@ -69,7 +69,7 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
 
     private void reloadTable() {
         try {
-            List<ReceivedReport> rrs = dc.getAllReceivedReports();
+            List<ReceivedReport> rrs = jtill.getDataConnection().getAllReceivedReports();
             model = new MyModel(rrs);
             tblReports.setModel(model);
         } catch (IOException | SQLException ex) {
@@ -347,7 +347,7 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
         if (SwingUtilities.isLeftMouseButton(evt)) {
             if (evt.getClickCount() == 2) {
                 final ReceivedReport rr = model.getReport(tblReports.getSelectedRow());
-                ReceiveItemsWindow.showWindow(rr);
+                ReceiveItemsWindow.showWindow(jtill, rr);
             }
         } else if (SwingUtilities.isRightMouseButton(evt)) {
             final ReceivedReport rr = model.getReport(tblReports.getSelectedRow());
@@ -356,13 +356,13 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
             final Font boldFont = new Font(view.getFont().getFontName(), Font.BOLD, view.getFont().getSize());
             view.setFont(boldFont);
             view.addActionListener((ActionEvent e) -> {
-                ReceiveItemsWindow.showWindow(rr);
+                ReceiveItemsWindow.showWindow(jtill, rr);
             });
             JMenuItem markPaid = new JMenuItem("Mark Paid");
             markPaid.addActionListener((ActionEvent e) -> {
                 rr.setPaid(true);
                 try {
-                    dc.updateReceivedReport(rr);
+                    jtill.getDataConnection().updateReceivedReport(rr);
                     reloadTable();
                 } catch (IOException | SQLException ex) {
                     JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -390,7 +390,7 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
                     return;
                 }
                 rr.setPaid(true);
-                dc.updateReceivedReport(rr);
+                jtill.getDataConnection().updateReceivedReport(rr);
             } catch (IOException | SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -402,9 +402,9 @@ public class ReceivedReportsWindow extends javax.swing.JInternalFrame {
         try {
             final String number = txtInvoiceNo.getText();
 
-            for (ReceivedReport rr : dc.getAllReceivedReports()) {
+            for (ReceivedReport rr : jtill.getDataConnection().getAllReceivedReports()) {
                 if (rr.getInvoiceId().equals(number)) {
-                    ReceiveItemsWindow.showWindow(rr);
+                    ReceiveItemsWindow.showWindow(jtill, rr);
                     return;
                 }
             }

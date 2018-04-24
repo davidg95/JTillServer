@@ -39,14 +39,14 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
     private static TillWindow window;
 
-    private final DataConnect dc;
+    private final JTill jtill;
     private MyModel model;
 
     /**
      * Creates new form TillWindow
      */
-    public TillWindow() {
-        this.dc = GUI.gui.dc;
+    public TillWindow(JTill jtill) {
+        this.jtill = jtill;
         initComponents();
         super.setClosable(true);
         super.setIconifiable(true);
@@ -56,9 +56,9 @@ public class TillWindow extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showWindow() {
+    public static void showWindow(JTill jtill) {
         if (window == null || window.isClosed()) {
-            window = new TillWindow();
+            window = new TillWindow(jtill);
             GUI.gui.internal.add(window);
         }
         update();
@@ -124,7 +124,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
             BigDecimal declared = new BigDecimal(strVal);
 
-            final TillReport report = dc.xReport(t, declared, GUI.staff);
+            final TillReport report = jtill.getDataConnection().xReport(t, declared, GUI.staff);
             TillReportDialog.showDialog(report);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -147,7 +147,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
             BigDecimal declared = new BigDecimal(strVal);
 
-            final TillReport report = dc.zReport(t, declared, GUI.staff);
+            final TillReport report = jtill.getDataConnection().zReport(t, declared, GUI.staff);
             TillReportDialog.showDialog(report);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -155,7 +155,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
     }
 
     private boolean isTerminalOnline(Till t) throws IOException {
-        List<Till> tills = dc.getConnectedTills();
+        List<Till> tills = jtill.getDataConnection().getConnectedTills();
         for (Till till : tills) {
             if (till.getId() == t.getId()) {
                 return true;
@@ -170,12 +170,12 @@ public class TillWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "This terminal is currently online. The terminal must be disconnected before it can be removed.", "Remove terminal " + t.getName(), JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if (!dc.getUncachedTillSales(t.getId()).isEmpty()) {
+            if (!jtill.getDataConnection().getUncachedTillSales(t.getId()).isEmpty()) {
                 JOptionPane.showMessageDialog(this, "This terminal has uncashed transactions, these must be cashed before this temrinal can be removed", "Remove terminal " + t.getName(), JOptionPane.WARNING_MESSAGE);
                 return;
             }
             if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this terminal? This will also remove any sales data associated with this terminal along with declaration reports?", "Remove terminal " + t.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                dc.removeTill(t.getId());
+                jtill.getDataConnection().removeTill(t.getId());
                 update();
                 JOptionPane.showMessageDialog(this, "Terminal " + t.getName() + " has been removed from the system", "Remove Terminal", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -433,7 +433,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
             return;
         }
         Till t = model.get(index);
-        TillDialog.showDialog(t);
+        TillDialog.showDialog(jtill, t);
     }//GEN-LAST:event_btnViewActionPerformed
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
@@ -444,7 +444,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
                     return;
                 }
                 Till t = model.get(index);
-                TillDialog.showDialog(t);
+                TillDialog.showDialog(jtill, t);
             }
         } else if (SwingUtilities.isRightMouseButton(evt)) {
             int index = table.getSelectedRow();
@@ -458,13 +458,13 @@ public class TillWindow extends javax.swing.JInternalFrame {
             final Font boldFont = new Font(view.getFont().getFontName(), Font.BOLD, view.getFont().getSize());
             view.setFont(boldFont);
             view.addActionListener((ActionEvent e) -> {
-                TillDialog.showDialog(t);
+                TillDialog.showDialog(jtill, t);
             });
 
             JMenuItem sendData = new JMenuItem("Send Data");
             sendData.addActionListener((ActionEvent e) -> {
                 try {
-                    dc.sendData(t.getId(), null);
+                    jtill.getDataConnection().sendData(t.getId(), null);
                     return;
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -504,7 +504,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
     private void btnSendDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendDataActionPerformed
         try {
-            dc.reinitialiseAllTills();
+            jtill.getDataConnection().reinitialiseAllTills();
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         } catch (JTillException ex) {
@@ -518,7 +518,7 @@ public class TillWindow extends javax.swing.JInternalFrame {
 
     private void btnBuildUpdatesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuildUpdatesActionPerformed
         try {
-            dc.sendBuildUpdates();
+            jtill.getDataConnection().sendBuildUpdates();
         } catch (IOException | SQLException ex) {
             JOptionPane.showConfirmDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {

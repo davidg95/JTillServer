@@ -28,7 +28,7 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
 
     private static WasteReasonSelectDialog dialog;
 
-    private final DataConnect dc = DataConnect.get();
+    private final JTill jtill;
 
     private static WasteReason reason;
 
@@ -37,8 +37,9 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
     /**
      * Creates new form WasteReasonSelectDialog
      */
-    public WasteReasonSelectDialog(Window parent) {
+    public WasteReasonSelectDialog(JTill jtill, Window parent) {
         super(parent);
+        this.jtill = jtill;
         initComponents();
         setLocationRelativeTo(parent);
         setModal(true);
@@ -47,7 +48,7 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
         setIconImage(GUI.icon);
         txtID.requestFocus();
         try {
-            List<WasteReason> reasons = dc.getUsedWasteReasons();
+            List<WasteReason> reasons = jtill.getDataConnection().getUsedWasteReasons();
             model = new MyTableModel(reasons);
             table.setModel(model);
             table.setSelectionModel(new ForcedListSelectionModel());
@@ -57,12 +58,12 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
         }
     }
 
-    public static WasteReason showDialog(Component parent) {
+    public static WasteReason showDialog(JTill jtill, Component parent) {
         Window window = null;
         if (parent instanceof Frame || parent instanceof Dialog) {
             window = (Window) parent;
         }
-        dialog = new WasteReasonSelectDialog(window);
+        dialog = new WasteReasonSelectDialog(jtill, window);
         reason = null;
         dialog.setVisible(true);
         return reason;
@@ -159,7 +160,7 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
         if ((reason.getPriviledgeLevel() + 1) > GUI.staff.getPosition()) {
             int resp = JOptionPane.showOptionDialog(this, "You are not authorised to use this reason", "Waste Reason", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Ok", "Get Authorisation Now"}, null);
             if (resp == 1) {
-                Staff s = LoginDialog.showLoginDialog(this);
+                Staff s = LoginDialog.showLoginDialog(this, jtill);
                 if (s == null) {
                     reason = null;
                     return;

@@ -28,7 +28,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
 
     public static SettingsWindow frame;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private boolean editNetwork = false;
 
@@ -37,17 +37,17 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form Settings
      */
-    public SettingsWindow() {
-        this.dc = GUI.gui.dc;
+    public SettingsWindow(JTill jtill) {
+        this.jtill = jtill;
         super.setIconifiable(true);
         super.setClosable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
     }
 
-    public static void showSettingsWindow() {
+    public static void showSettingsWindow(JTill jtill) {
         if (frame == null || frame.isClosed()) {
-            frame = new SettingsWindow();
+            frame = new SettingsWindow(jtill);
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {
@@ -70,15 +70,15 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
 
     private void init() {
         try {
-            txtPort.setText(dc.getSetting("port"));
-            txtMaxConn.setText(dc.getSetting("max_conn"));
-            txtMaxQueued.setText(dc.getSetting("max_queue"));
-            txtAddress.setText(dc.getSetting("db_address"));
-            txtUsername.setText(dc.getSetting("db_username"));
-            txtPassword.setText(dc.getSetting("db_password"));
-            chkLogOut.setSelected(dc.getSetting("AUTO_LOGOUT").equals("TRUE"));
-            spinSaleCache.setValue(Integer.parseInt(dc.getSetting("MAX_CACHE_SALES")));
-            boolean useEmail = Boolean.getBoolean(dc.getSetting("USE_EMAIL", Boolean.toString(false)));
+            txtPort.setText(jtill.getDataConnection().getSetting("port"));
+            txtMaxConn.setText(jtill.getDataConnection().getSetting("max_conn"));
+            txtMaxQueued.setText(jtill.getDataConnection().getSetting("max_queue"));
+            txtAddress.setText(jtill.getDataConnection().getSetting("db_address"));
+            txtUsername.setText(jtill.getDataConnection().getSetting("db_username"));
+            txtPassword.setText(jtill.getDataConnection().getSetting("db_password"));
+            chkLogOut.setSelected(jtill.getDataConnection().getSetting("AUTO_LOGOUT").equals("TRUE"));
+            spinSaleCache.setValue(Integer.parseInt(jtill.getDataConnection().getSetting("MAX_CACHE_SALES")));
+            boolean useEmail = Boolean.getBoolean(jtill.getDataConnection().getSetting("USE_EMAIL", Boolean.toString(false)));
             chkEmail.setSelected(useEmail);
             if (!useEmail) {
                 for (Component c : panelEmail.getComponents()) {
@@ -88,22 +88,22 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                     c.setEnabled(false);
                 }
             }
-            txtOutMail.setText(dc.getSetting("mail.smtp.host"));
-            txtOutgoingAddress.setText(dc.getSetting("OUTGOING_MAIL_ADDRESS"));
-            txtMailAddress.setText(dc.getSetting("MAIL_ADDRESS"));
-            txtSymbol.setText(dc.getSetting("CURRENCY_SYMBOL"));
-            txtSiteName.setText(dc.getSetting("SITE_NAME"));
-            txtReceiptHeader.setText(dc.getSetting("RECEIPT_HEADER"));
-            txtReceiptFooter.setText(dc.getSetting("RECEIPT_FOOTER"));
-            chkBorderScreen.setSelected(dc.getSetting("BORDER_SCREEN_BUTTON", "false").equals("true"));
-            chkAddress.setSelected(dc.getSetting("SHOW_ADDRESS_RECEIPT").equals("true"));
-            chkStaff.setSelected(dc.getSetting("SHOW_STAFF_RECEIPT").equals("true"));
-            chkTerminal.setSelected(dc.getSetting("SHOW_TERMINAL_RECEIPT").equals("true"));
-            chkEmailPrompt.setSelected(dc.getSetting("PROMPT_EMAIL_RECEIPT").equals("true"));
-            chkUpdate.setSelected(dc.getSetting("UPDATE_STARTUP").equals("true"));
-            txtLogoutTimeout.setValue(Integer.parseInt(dc.getSetting("LOGOUT_TIMEOUT")));
-            String unlockCode = dc.getSetting("UNLOCK_CODE");
-            chkShowBack.setSelected(Boolean.parseBoolean(dc.getSetting("SHOWBACKGROUND")));
+            txtOutMail.setText(jtill.getDataConnection().getSetting("mail.smtp.host"));
+            txtOutgoingAddress.setText(jtill.getDataConnection().getSetting("OUTGOING_MAIL_ADDRESS"));
+            txtMailAddress.setText(jtill.getDataConnection().getSetting("MAIL_ADDRESS"));
+            txtSymbol.setText(jtill.getDataConnection().getSetting("CURRENCY_SYMBOL"));
+            txtSiteName.setText(jtill.getDataConnection().getSetting("SITE_NAME"));
+            txtReceiptHeader.setText(jtill.getDataConnection().getSetting("RECEIPT_HEADER"));
+            txtReceiptFooter.setText(jtill.getDataConnection().getSetting("RECEIPT_FOOTER"));
+            chkBorderScreen.setSelected(jtill.getDataConnection().getSetting("BORDER_SCREEN_BUTTON", "false").equals("true"));
+            chkAddress.setSelected(jtill.getDataConnection().getSetting("SHOW_ADDRESS_RECEIPT").equals("true"));
+            chkStaff.setSelected(jtill.getDataConnection().getSetting("SHOW_STAFF_RECEIPT").equals("true"));
+            chkTerminal.setSelected(jtill.getDataConnection().getSetting("SHOW_TERMINAL_RECEIPT").equals("true"));
+            chkEmailPrompt.setSelected(jtill.getDataConnection().getSetting("PROMPT_EMAIL_RECEIPT").equals("true"));
+            chkUpdate.setSelected(jtill.getDataConnection().getSetting("UPDATE_STARTUP").equals("true"));
+            txtLogoutTimeout.setValue(Integer.parseInt(jtill.getDataConnection().getSetting("LOGOUT_TIMEOUT")));
+            String unlockCode = jtill.getDataConnection().getSetting("UNLOCK_CODE");
+            chkShowBack.setSelected(Boolean.parseBoolean(jtill.getDataConnection().getSetting("SHOWBACKGROUND")));
             if (unlockCode.equals("OFF")) {
                 chkUnlock.setSelected(false);
                 txtUnlockCode.setEnabled(false);
@@ -817,9 +817,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                 return;
             } else {
                 try {
-                    dc.setSetting("port", portVal);
-                    dc.setSetting("max_conn", maxVal);
-                    dc.setSetting("max_queue", queueVal);
+                    jtill.getDataConnection().setSetting("port", portVal);
+                    jtill.getDataConnection().setSetting("max_conn", maxVal);
+                    jtill.getDataConnection().setSetting("max_queue", queueVal);
                 } catch (IOException ex) {
                     LOG.log(Level.SEVERE, null, ex);
                 }
@@ -861,9 +861,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(this, "Must enter values for database options", "Database Settings", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                dc.setSetting("db_address", address);
-                dc.setSetting("db_username", username);
-                dc.setSetting("db_password", password);
+                jtill.getDataConnection().setSetting("db_address", address);
+                jtill.getDataConnection().setSetting("db_username", username);
+                jtill.getDataConnection().setSetting("db_password", password);
                 for (Component c : panelDatabase.getComponents()) {
                     c.setEnabled(false);
                 }
@@ -889,11 +889,11 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private void btnSaveSecurityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveSecurityActionPerformed
         try {
             if (chkLogOut.isSelected()) {
-                dc.setSetting("AUTO_LOGOUT", "TRUE");
+                jtill.getDataConnection().setSetting("AUTO_LOGOUT", "TRUE");
             } else {
-                dc.setSetting("AUTO_LOGOUT", "FALSE");
+                jtill.getDataConnection().setSetting("AUTO_LOGOUT", "FALSE");
             }
-            dc.setSetting("LOGOUT_TIMEOUT", txtLogoutTimeout.getValue().toString());
+            jtill.getDataConnection().setSetting("LOGOUT_TIMEOUT", txtLogoutTimeout.getValue().toString());
             if (chkUnlock.isSelected()) {
                 if (txtUnlockCode.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Must enter a value for Unlock Code", "Security Settings", JOptionPane.ERROR_MESSAGE);
@@ -903,16 +903,16 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(this, "Must enter a numerical value for unlock code", "Security Settings", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                dc.setSetting("UNLOCK_CODE", txtUnlockCode.getText());
+                jtill.getDataConnection().setSetting("UNLOCK_CODE", txtUnlockCode.getText());
             } else {
-                dc.setSetting("UNLOCK_CODE", "OFF");
+                jtill.getDataConnection().setSetting("UNLOCK_CODE", "OFF");
             }
             JOptionPane.showMessageDialog(this, "Security settings have been saved", "Security Settings", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "Error saving security settings, changes have been rolled back", "Security Settings", JOptionPane.ERROR_MESSAGE);
             try {
-                boolean old = dc.getSetting("AUTO_LOGOUT").equals("TRUE");
+                boolean old = jtill.getDataConnection().getSetting("AUTO_LOGOUT").equals("TRUE");
                 chkLogOut.setSelected(old);
             } catch (IOException ex1) {
                 LOG.log(Level.SEVERE, null, ex1);
@@ -922,9 +922,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
 
     private void btnDatabaseDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDatabaseDefaultActionPerformed
         try {
-            txtAddress.setText(dc.getSetting("db_address"));
-            txtUsername.setText(dc.getSetting("db_username"));
-            txtPassword.setText(dc.getSetting("db_password"));
+            txtAddress.setText(jtill.getDataConnection().getSetting("db_address"));
+            txtUsername.setText(jtill.getDataConnection().getSetting("db_username"));
+            txtPassword.setText(jtill.getDataConnection().getSetting("db_password"));
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }
@@ -932,16 +932,16 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         try {
-            dc.setSetting("USE_EMAIL", Boolean.toString(chkEmail.isSelected()));
+            jtill.getDataConnection().setSetting("USE_EMAIL", Boolean.toString(chkEmail.isSelected()));
             if (chkEmail.isSelected()) {
                 if (txtOutMail.getText().isEmpty() || txtOutgoingAddress.getText().isEmpty() || txtMailAddress.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Must fill out all fields", "Email settings", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
-            dc.setSetting("mail.smtp.host", txtOutMail.getText());
-            dc.setSetting("OUTGOING_MAIL_ADDRESS", txtOutgoingAddress.getText());
-            dc.setSetting("MAIL_ADDRESS", txtMailAddress.getText());
+            jtill.getDataConnection().setSetting("mail.smtp.host", txtOutMail.getText());
+            jtill.getDataConnection().setSetting("OUTGOING_MAIL_ADDRESS", txtOutgoingAddress.getText());
+            jtill.getDataConnection().setSetting("MAIL_ADDRESS", txtMailAddress.getText());
             JOptionPane.showMessageDialog(this, "Email settings saved", "Email Settings", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Error saving settings", "Email Settings", JOptionPane.ERROR_MESSAGE);
@@ -951,7 +951,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private void btnSaveCacheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveCacheActionPerformed
         boolean error = false;
         try {
-            dc.setSetting("MAX_CACHE_SALES", "" + (int) spinSaleCache.getValue());
+            jtill.getDataConnection().setSetting("MAX_CACHE_SALES", "" + (int) spinSaleCache.getValue());
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
             error = true;
@@ -960,30 +960,30 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
             if (txtSymbol.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "No currency symbol set, will use last set symbol", "Settings", JOptionPane.WARNING_MESSAGE);
             } else {
-                dc.setSetting("CURRENCY_SYMBOL", txtSymbol.getText());
+                jtill.getDataConnection().setSetting("CURRENCY_SYMBOL", txtSymbol.getText());
             }
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
             error = true;
         }
         try {
-            dc.setSetting("SITE_NAME", txtSiteName.getText());
+            jtill.getDataConnection().setSetting("SITE_NAME", txtSiteName.getText());
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
             error = true;
         }
         try {
-            dc.setSetting("PROMPT_EMAIL_RECEIPT", Boolean.toString(chkEmailPrompt.isSelected()));
+            jtill.getDataConnection().setSetting("PROMPT_EMAIL_RECEIPT", Boolean.toString(chkEmailPrompt.isSelected()));
         } catch (IOException ex) {
             error = true;
         }
         try {
-            dc.setSetting("UPDATE_STARTUP", Boolean.toString(chkUpdate.isSelected()));
+            jtill.getDataConnection().setSetting("UPDATE_STARTUP", Boolean.toString(chkUpdate.isSelected()));
         } catch (IOException ex) {
             error = true;
         }
         try {
-            dc.setSetting("SHOWBACKGROUND", Boolean.toString(chkShowBack.isSelected()));
+            jtill.getDataConnection().setSetting("SHOWBACKGROUND", Boolean.toString(chkShowBack.isSelected()));
         } catch (IOException ex) {
             error = true;
         }
@@ -996,11 +996,11 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
 
     private void btnReceiptSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiptSaveActionPerformed
         try {
-            dc.setSetting("RECEIPT_HEADER", txtReceiptHeader.getText());
-            dc.setSetting("RECEIPT_FOOTER", txtReceiptFooter.getText());
-            dc.setSetting("SHOW_ADDRESS_RECEIPT", Boolean.toString(chkAddress.isSelected()));
-            dc.setSetting("SHOW_STAFF_RECEIPT", Boolean.toString(chkStaff.isSelected()));
-            dc.setSetting("SHOW_TERMINAL_RECEIPT", Boolean.toString(chkStaff.isSelected()));
+            jtill.getDataConnection().setSetting("RECEIPT_HEADER", txtReceiptHeader.getText());
+            jtill.getDataConnection().setSetting("RECEIPT_FOOTER", txtReceiptFooter.getText());
+            jtill.getDataConnection().setSetting("SHOW_ADDRESS_RECEIPT", Boolean.toString(chkAddress.isSelected()));
+            jtill.getDataConnection().setSetting("SHOW_STAFF_RECEIPT", Boolean.toString(chkStaff.isSelected()));
+            jtill.getDataConnection().setSetting("SHOW_TERMINAL_RECEIPT", Boolean.toString(chkStaff.isSelected()));
             JOptionPane.showMessageDialog(this, "Receipt settings saved", "Receipt Settings", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (IOException ex) {
@@ -1021,9 +1021,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private void chkEmailPromptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkEmailPromptActionPerformed
         if (chkEmailPrompt.isSelected()) {
             try {
-                String i = dc.getSetting("mail.smtp.host");
-                String j = dc.getSetting("OUTGOING_MAIL_ADDRESS");
-                String k = dc.getSetting("MAIL_ADDRESS");
+                String i = jtill.getDataConnection().getSetting("mail.smtp.host");
+                String j = jtill.getDataConnection().getSetting("OUTGOING_MAIL_ADDRESS");
+                String k = jtill.getDataConnection().getSetting("MAIL_ADDRESS");
 
                 if ("".equals(i) || "".equals(j) || "".equals(k)) {
                     JOptionPane.showMessageDialog(this, "You have not specified any mail server settings, this must be done before you can send emails", "Email", JOptionPane.ERROR_MESSAGE);
@@ -1040,9 +1040,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private void chkEmailPromptMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkEmailPromptMouseClicked
         if (chkEmailPrompt.isSelected()) {
             try {
-                String i = dc.getSetting("mail.smtp.host");
-                String j = dc.getSetting("OUTGOING_MAIL_ADDRESS");
-                String k = dc.getSetting("MAIL_ADDRESS");
+                String i = jtill.getDataConnection().getSetting("mail.smtp.host");
+                String j = jtill.getDataConnection().getSetting("OUTGOING_MAIL_ADDRESS");
+                String k = jtill.getDataConnection().getSetting("MAIL_ADDRESS");
 
                 if ("".equals(i) || "".equals(j) || "".equals(k)) {
                     JOptionPane.showMessageDialog(this, "You have not specified any mail server settings, this must be done before you can send emails", "Email", JOptionPane.ERROR_MESSAGE);
@@ -1058,9 +1058,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
 
     private void btnNetworkCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNetworkCancelActionPerformed
         try {
-            txtPort.setText(dc.getSetting("port"));
-            txtMaxConn.setText(dc.getSetting("max_conn"));
-            txtMaxQueued.setText(dc.getSetting("max_queue"));
+            txtPort.setText(jtill.getDataConnection().getSetting("port"));
+            txtMaxConn.setText(jtill.getDataConnection().getSetting("max_conn"));
+            txtMaxQueued.setText(jtill.getDataConnection().getSetting("max_queue"));
             for (Component c : panelNetwork.getComponents()) {
                 c.setEnabled(false);
             }
@@ -1077,9 +1077,9 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
 
     private void btnDatabaseCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDatabaseCancelActionPerformed
         try {
-            txtAddress.setText(dc.getSetting("db_address"));
-            txtUsername.setText(dc.getSetting("db_username"));
-            txtPassword.setText(dc.getSetting("db_password"));
+            txtAddress.setText(jtill.getDataConnection().getSetting("db_address"));
+            txtUsername.setText(jtill.getDataConnection().getSetting("db_username"));
+            txtPassword.setText(jtill.getDataConnection().getSetting("db_password"));
             for (Component c : panelDatabase.getComponents()) {
                 c.setEnabled(false);
             }
@@ -1097,7 +1097,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private void btnColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColorActionPerformed
         Color c = JColorChooser.showDialog(this, "Terminal Screen Background Color", null);
         try {
-            dc.setSetting("TERMINAL_BG", Integer.toString(c.getRGB()));
+            jtill.getDataConnection().setSetting("TERMINAL_BG", Integer.toString(c.getRGB()));
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -1105,7 +1105,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-            dc.setSetting("TERMINAL_BG", Integer.toString(0));
+            jtill.getDataConnection().setSetting("TERMINAL_BG", Integer.toString(0));
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -1117,7 +1117,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
         if (option == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             try {
-                dc.setSetting("bg_url", file.getAbsolutePath());
+                jtill.getDataConnection().setSetting("bg_url", file.getAbsolutePath());
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "File is not an image", "Background Image", JOptionPane.ERROR_MESSAGE);
             }
@@ -1130,7 +1130,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
 
     private void btnRemoveImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveImageActionPerformed
         try {
-            dc.setSetting("bg_url", "NONE");
+            jtill.getDataConnection().setSetting("bg_url", "NONE");
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -1148,7 +1148,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private void chkBorderScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBorderScreenActionPerformed
         btnBorderColor.setEnabled(chkBorderScreen.isSelected());
         try {
-            dc.setSetting("BORDER_SCREEN_BUTTON", Boolean.toString(chkBorderScreen.isSelected()));
+            jtill.getDataConnection().setSetting("BORDER_SCREEN_BUTTON", Boolean.toString(chkBorderScreen.isSelected()));
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -1157,7 +1157,7 @@ public final class SettingsWindow extends javax.swing.JInternalFrame {
     private void btnBorderColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorderColorActionPerformed
         Color c = JColorChooser.showDialog(this, "Screen Button Border Color", null);
         try {
-            dc.setSetting("BORDER_COLOR", TillButton.rbg2Hex(c));
+            jtill.getDataConnection().setSetting("BORDER_COLOR", TillButton.rbg2Hex(c));
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }

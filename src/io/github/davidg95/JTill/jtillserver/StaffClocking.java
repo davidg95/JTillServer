@@ -36,7 +36,7 @@ import javax.swing.table.DefaultTableModel;
 public class StaffClocking extends javax.swing.JInternalFrame {
 
     private Staff staff;
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private List<ClockItem> currentTableContents;
     private final DefaultTableModel model;
@@ -46,8 +46,8 @@ public class StaffClocking extends javax.swing.JInternalFrame {
     /**
      * Creates new form StaffClocking
      */
-    public StaffClocking() {
-        this.dc = GUI.gui.dc;
+    public StaffClocking(JTill jtill) {
+        this.jtill = jtill;
         initComponents();
         super.setClosable(true);
         super.setIconifiable(true);
@@ -58,8 +58,8 @@ public class StaffClocking extends javax.swing.JInternalFrame {
         clocked = 0;
     }
 
-    public static void showWindow() {
-        StaffClocking window = new StaffClocking();
+    public static void showWindow(JTill jtill) {
+        StaffClocking window = new StaffClocking(jtill);
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {
@@ -347,13 +347,13 @@ public class StaffClocking extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        staff = StaffSelectDialog.showDialog(this);
+        staff = StaffSelectDialog.showDialog(jtill, this);
         if (staff == null) {
             return;
         }
         txtStaff.setText(staff.toString());
         try {
-            currentTableContents = dc.getAllClocks(staff.getId());
+            currentTableContents = jtill.getDataConnection().getAllClocks(staff.getId());
             clocked = 0;
             long on = 0;
             int last = -1;
@@ -405,7 +405,7 @@ public class StaffClocking extends javax.swing.JInternalFrame {
         txtWage.setText("£" + bWage);
         if (JOptionPane.showConfirmDialog(this, "Do you want to clear the current clock entries for this member of staff?", "Hours", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             try {
-                dc.clearClocks(staff.getId());
+                jtill.getDataConnection().clearClocks(staff.getId());
                 currentTableContents = new ArrayList<>();
                 setTable();
                 JOptionPane.showMessageDialog(this, "Hours cleared", "Hours", JOptionPane.INFORMATION_MESSAGE);
@@ -426,9 +426,9 @@ public class StaffClocking extends javax.swing.JInternalFrame {
     private void btnAllStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAllStaffActionPerformed
         try {
             List<Staff> staffList = new ArrayList<>();
-            for (Staff s : dc.getAllStaff()) {
+            for (Staff s : jtill.getDataConnection().getAllStaff()) {
                 try {
-                    List<ClockItem> items = dc.getAllClocks(s.getId());
+                    List<ClockItem> items = jtill.getDataConnection().getAllClocks(s.getId());
                     double cl = 0;
                     long on = 0;
                     for (ClockItem i : items) {

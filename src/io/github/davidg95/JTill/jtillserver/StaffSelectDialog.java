@@ -26,7 +26,7 @@ public class StaffSelectDialog extends javax.swing.JDialog {
 
     private static Staff staff;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private final DefaultTableModel model;
     private List<Staff> currentTableContents;
@@ -34,9 +34,9 @@ public class StaffSelectDialog extends javax.swing.JDialog {
     /**
      * Creates new form StaffSelectDialog
      */
-    public StaffSelectDialog(Window parent) {
+    public StaffSelectDialog(JTill jtill, Window parent) {
         super(parent);
-        this.dc = GUI.gui.dc;
+        this.jtill = jtill;
         initComponents();
         setModal(true);
         setLocationRelativeTo(parent);
@@ -48,12 +48,12 @@ public class StaffSelectDialog extends javax.swing.JDialog {
         txtSearch.requestFocus();
     }
 
-    public static Staff showDialog(Component parent) {
+    public static Staff showDialog(JTill jtill, Component parent) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        final StaffSelectDialog dialog = new StaffSelectDialog(window);
+        final StaffSelectDialog dialog = new StaffSelectDialog(jtill, window);
         staff = null;
         dialog.setVisible(true);
         return staff;
@@ -83,7 +83,7 @@ public class StaffSelectDialog extends javax.swing.JDialog {
      */
     private void showAllStaff() {
         try {
-            currentTableContents = dc.getAllStaff();
+            currentTableContents = jtill.getDataConnection().getAllStaff();
             updateTable();
         } catch (IOException | SQLException ex) {
             showError(ex);

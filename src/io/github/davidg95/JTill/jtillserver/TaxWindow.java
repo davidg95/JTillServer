@@ -30,7 +30,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
 
     public static TaxWindow frame;
 
-    private final DataConnect dc;
+    private final JTill jtill;
     private Tax tax;
 
     private MyModel model;
@@ -38,8 +38,8 @@ public class TaxWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form TaxWindow
      */
-    public TaxWindow() {
-        this.dc = GUI.gui.dc;
+    public TaxWindow(JTill jtill) {
+        this.jtill = jtill;
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
@@ -50,9 +50,9 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         table.setSelectionModel(new ForcedListSelectionModel());
     }
 
-    public static void showTaxWindow() {
+    public static void showTaxWindow(JTill jtill) {
         if (frame == null || frame.isClosed()) {
-            frame = new TaxWindow();
+            frame = new TaxWindow(jtill);
             GUI.gui.internal.add(frame);
         }
         frame.setVisible(true);
@@ -88,13 +88,13 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         }
 
         public void addTax(Tax t) throws IOException, SQLException {
-            t = dc.addTax(t);
+            t = jtill.getDataConnection().addTax(t);
             taxes.add(t);
             alertAll();
         }
 
         public void removeTax(Tax t) throws IOException, SQLException, JTillException {
-            dc.removeTax(t);
+            jtill.getDataConnection().removeTax(t);
             taxes.remove(t);
             alertAll();
         }

@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.DataConnect;
+import io.github.davidg95.JTill.jtill.JTill;
 import java.awt.Image;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
@@ -23,14 +24,14 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
 
     private static DatabaseWindow frame;
 
-    private final DataConnect dc;
+    private final JTill jtill;
     private final Image icon;
 
     /**
      * Creates new form DatabaseWindow
      */
-    public DatabaseWindow() {
-        this.dc = GUI.getInstance().dc;
+    public DatabaseWindow(JTill jtill) {
+        this.jtill = jtill;
         this.icon = GUI.icon;
         initComponents();
         super.setFrameIcon(new ImageIcon(icon));
@@ -44,9 +45,9 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
      * Method to showing the products list window. This will create the window
      * if needed.
      */
-    public static void showDatabaseWindow() {
+    public static void showDatabaseWindow(JTill jtill) {
         if (frame == null || frame.isClosed()) {
-            frame = new DatabaseWindow();
+            frame = new DatabaseWindow(jtill);
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {
@@ -64,7 +65,7 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
 
     private void init() {
         try {
-            Object[] ob = dc.databaseInfo();
+            Object[] ob = jtill.getDataConnection().databaseInfo();
             String catalog = (String) ob[0];
             String schema = (String) ob[1];
             Properties info = (Properties) ob[2];
@@ -223,7 +224,7 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
         final ModalDialog mDialog = new ModalDialog(this, "Database Check"); //Create the dialog object
         final Runnable run = () -> {
             try {
-                dc.integrityCheck(); //Perform the Database check
+                jtill.getDataConnection().integrityCheck(); //Perform the Database check
                 mDialog.hide(); //Hide the dialog once the check completes
                 JOptionPane.showMessageDialog(this, "Check complete. No Issues.", "Database Check", JOptionPane.INFORMATION_MESSAGE); //Show success message
             } catch (IOException | SQLException ex) {
@@ -243,7 +244,7 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
                 @Override
                 public void run() {
                     try {
-                        int val = dc.clearSalesData();
+                        int val = jtill.getDataConnection().clearSalesData();
                         mDialog.hide();
                         JOptionPane.showMessageDialog(DatabaseWindow.this, val + " records removed", "Sales Data", JOptionPane.INFORMATION_MESSAGE);
                     } catch (IOException | SQLException ex) {
@@ -267,11 +268,11 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
                 @Override
                 public void run() {
                     try {
-                        dc.purgeDatabase();
+                        jtill.getDataConnection().purgeDatabase();
                         mDialog.hide();
                         JOptionPane.showMessageDialog(DatabaseWindow.this, "Purge complete", "Purge Database", JOptionPane.INFORMATION_MESSAGE);
                         if (JOptionPane.showConfirmDialog(DatabaseWindow.this, "Do you want to set all stock levels to 0?", "Purge database", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                            dc.submitSQL("UPDATE PRODUCTS SET STOCK = 0");
+                            jtill.getDataConnection().submitSQL("UPDATE PRODUCTS SET STOCK = 0");
                             JOptionPane.showMessageDialog(DatabaseWindow.this, "Stock levels set to 0", "Purge Database", JOptionPane.INFORMATION_MESSAGE);
                         }
                     } catch (IOException | SQLException ex) {
@@ -300,7 +301,7 @@ public class DatabaseWindow extends javax.swing.JInternalFrame {
         final ModalDialog mDialog = new ModalDialog(this, "SQL");
         final Runnable run = () -> {
             try {
-                dc.submitSQL(query);
+                jtill.getDataConnection().submitSQL(query);
                 mDialog.hide();
                 JOptionPane.showMessageDialog(this, "Query successfully run", "SQL", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException | SQLException ex) {

@@ -21,6 +21,8 @@ import javax.swing.JOptionPane;
  * @author David
  */
 public final class ButtonOptionDialog extends javax.swing.JDialog {
+    
+    private final JTill jtill;
 
     private static TillButton button;
 
@@ -30,12 +32,15 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     /**
      * Creates new form ButtonOptionDialog.
      *
+     * @param jtill the JTill reference.
      * @param parent the parent component.
      * @param maxWidth the maximum width of the button.
      * @param maxHeight the maximum height of the button.
      */
-    public ButtonOptionDialog(Window parent, int maxWidth, int maxHeight) {
+    public ButtonOptionDialog(JTill jtill, Window parent, int maxWidth, int maxHeight) {
         super(parent);
+        
+        this.jtill = jtill;
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
         this.setIconImage(GUI.icon);
@@ -104,13 +109,13 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
      * @param maxHeight the maximum height of the button.
      * @return the button with any changed applied.
      */
-    public static TillButton showDialog(Component parent, TillButton b, int maxWidth, int maxHeight) {
+    public static TillButton showDialog(JTill jtill, Component parent, TillButton b, int maxWidth, int maxHeight) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
         button = b;
-        ButtonOptionDialog dialog = new ButtonOptionDialog(window, maxWidth, maxHeight);
+        ButtonOptionDialog dialog = new ButtonOptionDialog(jtill, window, maxWidth, maxHeight);
         dialog.setVisible(true);
         return button;
     }
@@ -333,7 +338,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
     private void btnChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeButtonActionPerformed
         String func = (String) cmbFunction.getSelectedItem();
         if (func.equals("Product")) {
-            Product p = ProductSelectDialog.showDialog(this);
+            Product p = ProductSelectDialog.showDialog(this, jtill);
             if (p != null) {
                 button.setItem(p.getBarcode());
                 button.setName(p.getShortName());
@@ -341,7 +346,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             }
             button.setType(TillButton.ITEM);
         } else if (func.equals("Screen")) {
-            Screen s = ScreenSelectDialog.showDialog(this);
+            Screen s = ScreenSelectDialog.showDialog(jtill, this);
             if (s != null) {
                 button.setItem("" + s.getId());
                 button.setName(s.getName());

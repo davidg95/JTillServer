@@ -47,14 +47,14 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
 
     private static StockTakeWindow window;
 
-    private final DataConnect dc;
+    private final JTill jtill;
     private MyModel model;
 
     /**
      * Creates new form StockTakeWindow
      */
-    public StockTakeWindow() {
-        this.dc = GUI.gui.dc;
+    public StockTakeWindow(JTill jtill) {
+        this.jtill = jtill;
         initComponents();
         super.setClosable(true);
         super.setMaximizable(true);
@@ -63,8 +63,8 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showWindow() {
-        window = new StockTakeWindow();
+    public static void showWindow(JTill jtill) {
+        window = new StockTakeWindow(jtill);
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {
@@ -495,7 +495,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        Product p = ProductSelectDialog.showDialog(this);
+        Product p = ProductSelectDialog.showDialog(this, jtill);
         if (p != null) {
             String input = JOptionPane.showInputDialog(this, "Enter new quantity", "Stock Take", JOptionPane.PLAIN_MESSAGE);
             if (!Utilities.isNumber(input)) {
@@ -545,7 +545,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
 
                     Product product;
                     try {
-                        product = dc.getProductByBarcode(barcode);
+                        product = jtill.getDataConnection().getProductByBarcode(barcode);
 
                         model.addItem(product, quantity);
                     } catch (ProductNotFoundException ex) {
@@ -578,7 +578,7 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
                             psp.getProduct().setStock(psp.getNewStock());
                             products.add(psp.getProduct());
                         }
-                        dc.submitStockTake(products);
+                        jtill.getDataConnection().submitStockTake(products);
                         model.clear();
                         mDialog.hide();
                         JOptionPane.showMessageDialog(StockTakeWindow.this, "Stock take submitted", "Complete", JOptionPane.INFORMATION_MESSAGE);
@@ -680,12 +680,12 @@ public class StockTakeWindow extends javax.swing.JInternalFrame {
         try {
             if (selection instanceof Department) {
                 Department d = (Department) selection;
-                products = dc.getProductsInDepartment(d.getId());
+                products = jtill.getDataConnection().getProductsInDepartment(d.getId());
             } else if (selection instanceof Category) {
                 Category c = (Category) selection;
-                products = dc.getProductsInCategory(c.getId());
+                products = jtill.getDataConnection().getProductsInCategory(c.getId());
             } else {
-                products = dc.getAllProducts();
+                products = jtill.getDataConnection().getAllProducts();
             }
             model.addItems(products);
         } catch (IOException | SQLException | JTillException ex) {

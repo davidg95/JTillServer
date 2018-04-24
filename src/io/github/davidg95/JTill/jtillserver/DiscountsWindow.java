@@ -34,7 +34,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
 
     public static DiscountsWindow frame;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private Discount discount;
 
@@ -52,8 +52,8 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form DiscountsWindow
      */
-    public DiscountsWindow() {
-        this.dc = GUI.gui.dc;
+    public DiscountsWindow(JTill jtill) {
+        this.jtill = jtill;
 //        this.setIconImage(icon);
         super.setMaximizable(true);
         super.setIconifiable(true);
@@ -78,9 +78,9 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
      *
      * @param dc the data source.
      */
-    public static void showDiscountListWindow() {
+    public static void showDiscountListWindow(JTill jtill) {
         if (frame == null || frame.isClosed()) {
-            frame = new DiscountsWindow();
+            frame = new DiscountsWindow(jtill);
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {
@@ -131,7 +131,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
      */
     private void showAllDiscounts() {
         try {
-            currentTableContents = dc.getAllDiscounts();
+            currentTableContents = jtill.getDataConnection().getAllDiscounts();
             updateTable();
         } catch (SQLException | IOException ex) {
             showError(ex);
@@ -198,7 +198,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
             return;
         }
         try {
-            currentTriggerContents = dc.getBucketTriggers(currentBucket.getId());
+            currentTriggerContents = jtill.getDataConnection().getBucketTriggers(currentBucket.getId());
             updateTriggerTable();
         } catch (IOException | SQLException | JTillException ex) {
             Logger.getLogger(DiscountsWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -209,7 +209,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
         trigModel.setRowCount(0);
         for (Trigger t : currentTriggerContents) {
             try {
-                final Product p = dc.getProduct(t.getProduct());
+                final Product p = jtill.getDataConnection().getProduct(t.getProduct());
                 Object[] row = new Object[]{p.getShortName(), p.getBarcode(), t.getQuantityRequired()};
                 trigModel.addRow(row);
             } catch (ProductNotFoundException | IOException | SQLException ex) {
@@ -221,7 +221,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
     //***BUCKET LIST METHODS***//
     private void getBuckets() {
         try {
-            currentBuckets = dc.getDiscountBuckets(discount.getId());
+            currentBuckets = jtill.getDataConnection().getDiscountBuckets(discount.getId());
             updateBucketList();
         } catch (IOException | SQLException | DiscountNotFoundException ex) {
             Logger.getLogger(DiscountsWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -734,7 +734,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
                     Date end = (Date) spinEnd.getValue();
                     d = new Discount(name, percentage, new BigDecimal(Double.toString(price)), action, condition, start.getTime(), end.getTime());
                     try {
-                        Discount dis = dc.addDiscount(d);
+                        Discount dis = jtill.getDataConnection().addDiscount(d);
                         showAllDiscounts();
                         panelBuckets.setEnabled(true);
                         listBuckets.setEnabled(true);
@@ -780,7 +780,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
                 discount.setStart(((Date) spinStart.getValue()).getTime());
                 discount.setEnd(((Date) spinEnd.getValue()).getTime());
                 try {
-                    dc.updateDiscount(discount);
+                    jtill.getDataConnection().updateDiscount(discount);
                 } catch (SQLException | DiscountNotFoundException | IOException ex) {
                     showError(ex);
                 }
@@ -798,7 +798,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
             int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following discount?\n" + currentTableContents.get(index), "Remove Discount", JOptionPane.YES_NO_OPTION);
             if (opt == JOptionPane.YES_OPTION) {
                 try {
-                    dc.removeDiscount(currentTableContents.get(index).getId());
+                    jtill.getDataConnection().removeDiscount(currentTableContents.get(index).getId());
                 } catch (SQLException | DiscountNotFoundException | IOException ex) {
                     showError(ex);
                 }
@@ -840,7 +840,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtSearchActionPerformed
 
     private void btnAddTriggerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTriggerActionPerformed
-        Product p = ProductSelectDialog.showDialog(this);
+        Product p = ProductSelectDialog.showDialog(this, jtill);
         if (p == null) {
             return;
         }
@@ -856,7 +856,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
         }
         Trigger t = new Trigger(currentBucket.getId(), p.getBarcode(), value);
         try {
-            dc.addTrigger(t);
+            jtill.getDataConnection().addTrigger(t);
             currentTriggerContents.add(t);
             updateTriggerTable();
         } catch (IOException | SQLException ex) {
@@ -871,7 +871,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
         Trigger t = currentTriggerContents.get(tableTrig.getSelectedRow());
         if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this trigger?", "Remove Trigger", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             try {
-                dc.removeTrigger(t.getId());
+                jtill.getDataConnection().removeTrigger(t.getId());
                 getTriggers();
             } catch (IOException | SQLException | JTillException ex) {
                 showError(ex);
@@ -896,7 +896,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
     private void btnAddBucketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddBucketActionPerformed
         DiscountBucket db = new DiscountBucket(discount.getId(), 1, false);
         try {
-            db = dc.addBucket(db);
+            db = jtill.getDataConnection().addBucket(db);
             currentBuckets.add(db);
             updateBucketList();
         } catch (IOException | SQLException ex) {
@@ -926,7 +926,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
                 Trigger t = currentTriggerContents.get(tableTrig.getSelectedRow());
                 t.setQuantityRequired(value);
                 try {
-                    dc.updateTrigger(t);
+                    jtill.getDataConnection().updateTrigger(t);
                 } catch (IOException | SQLException | JTillException ex) {
                     Logger.getLogger(DiscountsWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -952,7 +952,7 @@ public class DiscountsWindow extends javax.swing.JInternalFrame {
         currentBucket.setRequiredTriggers(Integer.parseInt(txtTriggers.getText()));
         currentBucket.setRequiredTrigger(chkRequire.isSelected());
         try {
-            dc.updateBucket(currentBucket);
+            jtill.getDataConnection().updateBucket(currentBucket);
         } catch (IOException | SQLException | JTillException ex) {
             Logger.getLogger(DiscountsWindow.class.getName()).log(Level.SEVERE, null, ex);
         }

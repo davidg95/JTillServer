@@ -34,7 +34,7 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
 
     private static DeclarationReportWindow frame;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private final DefaultTableModel model;
 
@@ -43,8 +43,8 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form DeclarationReportWindow
      */
-    public DeclarationReportWindow() {
-        this.dc = GUI.gui.dc;
+    public DeclarationReportWindow(JTill jtill) {
+        this.jtill = jtill;
         initComponents();
         super.setFrameIcon(new ImageIcon(GUI.icon));
         super.setMaximizable(true);
@@ -81,9 +81,9 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
         });
     }
 
-    public static void showWindow() {
+    public static void showWindow(JTill jtill) {
         if (frame == null || frame.isClosed()) {
-            frame = new DeclarationReportWindow();
+            frame = new DeclarationReportWindow(jtill);
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {
@@ -105,7 +105,7 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
     private void update() {
         model.setRowCount(0);
         try {
-            reports = dc.getDeclarationReports(-1);
+            reports = jtill.getDataConnection().getDeclarationReports(-1);
             DecimalFormat df = new DecimalFormat("0.00");
             for (TillReport r : reports) {
                 Object[] row = new Object[]{r.getTerminal().getName(), new Date(r.getTime()).toString(), "£" + df.format(r.getDeclared()), "£" + df.format(r.getExpected()), "£" + df.format(r.getDifference()), r.getStaff()};
@@ -120,7 +120,7 @@ public class DeclarationReportWindow extends javax.swing.JInternalFrame {
     private void deleteReport(TillReport report) {
         if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this report?", "Remove Report", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_NO_OPTION) {
             try {
-                dc.removeDeclarationReport(report.getId());
+                jtill.getDataConnection().removeDeclarationReport(report.getId());
                 update();
             } catch (IOException | SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);

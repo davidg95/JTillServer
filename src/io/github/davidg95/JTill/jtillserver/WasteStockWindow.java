@@ -51,7 +51,7 @@ import javax.swing.table.TableModel;
  */
 public class WasteStockWindow extends javax.swing.JInternalFrame {
 
-    private final DataConnect dc;
+    private final JTill jtill;
     private Date date;
 
     private final MyModel model;
@@ -59,8 +59,8 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form WasteStockWindow
      */
-    public WasteStockWindow() {
-        this.dc = GUI.gui.dc;
+    public WasteStockWindow(JTill jtill) {
+        this.jtill = jtill;
         initComponents();
         setTitle("Waste Stock");
         super.setClosable(true);
@@ -93,8 +93,8 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         txtBarcode.requestFocus();
     }
 
-    public static void showWindow() {
-        WasteStockWindow window = new WasteStockWindow();
+    public static void showWindow(JTill jtill) {
+        WasteStockWindow window = new WasteStockWindow(jtill);
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {
@@ -151,7 +151,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         });
         JComboBox box = new JComboBox();
         try {
-            List<WasteReason> wasteReasons = dc.getUsedWasteReasons();
+            List<WasteReason> wasteReasons = jtill.getDataConnection().getUsedWasteReasons();
             for (WasteReason wr : wasteReasons) {
                 box.addItem(wr);
             }
@@ -316,7 +316,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
 
         @Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            if(rowIndex == -1){
+            if (rowIndex == -1) {
                 return;
             }
             WasteItem item = items.get(rowIndex);
@@ -332,7 +332,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 if ((reason.getPriviledgeLevel() + 1) > GUI.staff.getPosition()) {
                     int resp = JOptionPane.showOptionDialog(WasteStockWindow.this, "You are not authorised to use this reason", "Waste Reason", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Ok", "Get Authorisation Now"}, null);
                     if (resp == 1) {
-                        Staff s = LoginDialog.showLoginDialog(WasteStockWindow.this);
+                        Staff s = LoginDialog.showLoginDialog(WasteStockWindow.this, jtill);
                         if (s == null) {
                             return;
                         }
@@ -546,7 +546,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
         try {
             Product product;
             if (txtBarcode.getText().isEmpty()) {
-                product = ProductSelectDialog.showDialog(this);
+                product = ProductSelectDialog.showDialog(this, jtill);
             } else {
                 if (!Utilities.isNumber(txtBarcode.getText())) {
                     txtBarcode.setSelectionStart(0);
@@ -567,7 +567,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     return;
                 }
                 try {
-                    product = dc.getProductByBarcode(txtBarcode.getText());
+                    product = jtill.getDataConnection().getProductByBarcode(txtBarcode.getText());
                 } catch (IOException | ProductNotFoundException | SQLException ex) {
                     txtBarcode.setSelectionStart(0);
                     txtBarcode.setSelectionEnd(txtBarcode.getText().length());
@@ -600,7 +600,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 if (amount == 0) {
                     return;
                 }
-                WasteReason wr = WasteReasonSelectDialog.showDialog(this);
+                WasteReason wr = WasteReasonSelectDialog.showDialog(jtill, this);
                 if (wr == null) {
                     return;
                 }
@@ -625,9 +625,9 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             BigDecimal total = BigDecimal.ZERO;
             for (WasteItem wi : model.getItems()) {
                 try {
-                    Product product = dc.getProduct(wi.getProduct().getBarcode());
+                    Product product = jtill.getDataConnection().getProduct(wi.getProduct().getBarcode());
                     product.removeStock(wi.getQuantity());
-                    dc.updateProduct(product);
+                    jtill.getDataConnection().updateProduct(product);
                     total = total.add(product.getIndividualCost().multiply(new BigDecimal(wi.getQuantity())));
                 } catch (IOException | ProductNotFoundException | SQLException ex) {
                     mDialog.hide();
@@ -636,7 +636,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
             }
             total.setScale(2);
             try {
-                dc.addWasteReport(model.getItems());
+                jtill.getDataConnection().addWasteReport(model.getItems());
                 model.clear();
                 lblValue.setText("Total Value: £0.00");
                 btnWaste.setEnabled(false);
@@ -684,7 +684,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 }
             });
             changeReason.addActionListener((ActionEvent e) -> {
-                WasteReason reason = WasteReasonSelectDialog.showDialog(this);
+                WasteReason reason = WasteReasonSelectDialog.showDialog(jtill, this);
                 if (reason == null) {
                     return;
                 }
@@ -735,13 +735,13 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     int quantity = Integer.parseInt(inLine.next());
                     int reasonID = Integer.parseInt(inLine.next());
                     try {
-                        Product p = dc.getProductByBarcode(barcode);
+                        Product p = jtill.getDataConnection().getProductByBarcode(barcode);
                         WasteReason reason;
                         try {
-                            reason = dc.getWasteReason(reasonID);
+                            reason = jtill.getDataConnection().getWasteReason(reasonID);
                         } catch (IOException | SQLException | JTillException ex) {
                             try {
-                                reason = dc.getWasteReason(1);
+                                reason = jtill.getDataConnection().getWasteReason(1);
                             } catch (IOException | SQLException | JTillException ex1) {
                                 reason = null;
                             }

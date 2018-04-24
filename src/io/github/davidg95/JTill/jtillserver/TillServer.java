@@ -38,11 +38,12 @@ import javax.swing.UnsupportedLookAndFeelException;
  *
  * @author 1301480
  */
-public class TillServer implements JConnListener {
+public class TillServer implements JConnListener, JTill{
 
-    private static final Logger LOG = Logger.getGlobal();
+    private static final Logger logger = Logger.getGlobal();
 
     private GUI g;
+
     public static Image icon;
 
     //System tray
@@ -75,32 +76,32 @@ public class TillServer implements JConnListener {
         System.out.println("-------------------------------");
         System.out.println("JTill Server version " + VERSION);
         System.out.println("-------------------------------");
-        LOG.log(Level.INFO, "Starting JTill Server");
+        logger.log(Level.INFO, "Starting JTill Server");
         try {
             javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            LOG.log(Level.WARNING, "Windows look and feel not supported on this system");
+            logger.log(Level.WARNING, "Windows look and feel not supported on this system");
         }
         createAppDataFolder();
         LogFileHandler handler = new LogFileHandler(System.getenv("APPDATA") + "\\JTill Server\\logs\\");
-        LOG.addHandler(handler);
+        logger.addHandler(handler);
         headless = GraphicsEnvironment.isHeadless();
         final long start = new Date().getTime();
         tillServer = new TillServer();
         tillServer.start();
         final long end = new Date().getTime();
         final long time = end - start;
-        LOG.log(Level.INFO, "JTill Server started successfully in " + time / 1000D + "s");
+        logger.log(Level.INFO, "JTill Server started successfully in " + time / 1000D + "s");
     }
 
     private static void createAppDataFolder() {
         File appData = new File(System.getenv("APPDATA") + "\\JTill Server\\");
         if (!appData.exists()) {
-            LOG.warning("creating JTill Server folder in AppData");
+            logger.warning("creating JTill Server folder in AppData");
             if (appData.mkdir()) {
                 new File(System.getenv("APPDATA") + "\\JTill Server\\logs\\").mkdir();
             } else {
-                LOG.severe("Error creating appdata folder");
+                logger.severe("Error creating appdata folder");
             }
         }
     }
@@ -116,7 +117,7 @@ public class TillServer implements JConnListener {
         db = new DerbyDB();
         DataConnect.set(db);
         TillSplashScreen.setLabel("Loading configurations");
-        LOG.info("Loading configurations");
+        logger.info("Loading configurations");
         TillSplashScreen.addBar(5);
         boolean init = settings.loadProperties();
         if (!init) {
@@ -180,11 +181,11 @@ public class TillServer implements JConnListener {
         TillSplashScreen.addBar(5);
         if (!headless) {
             try {
-                g = GUI.create(false, icon);
+                g = GUI.create(this, false, icon);
             } catch (Exception ex) {
                 TillSplashScreen.hideSplashScreen();
                 JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
-                LOG.log(Level.SEVERE, null, ex);
+                logger.log(Level.SEVERE, null, ex);
             }
             setSystemTray();
         }
@@ -193,11 +194,11 @@ public class TillServer implements JConnListener {
     public void databaseLogin() {
         try {
             TillSplashScreen.setLabel("Connecting to database"); //Update the splash screen
-            LOG.info("Connecting to database");
+            logger.info("Connecting to database");
             db.connect(settings.getSetting("db_address"), settings.getSetting("db_username"), settings.getSetting("db_password")); //Open a connection to the database
             if (db.getStaffCount() == 0) { //Check to see if any staff members have been created
                 TillSplashScreen.hideSplashScreen();
-                Staff s = StaffDialog.showNewStaffDialog(null, true);
+                Staff s = StaffDialog.showNewStaffDialog(this, null, true);
                 if (s == null) {
                     System.exit(0);
                 }
@@ -232,11 +233,11 @@ public class TillServer implements JConnListener {
                 System.out.println("Database Created");
             }
             TillSplashScreen.setLabel("Populating database");
-            LOG.info("Populating database");
+            logger.info("Populating database");
             db.addCustomer(new Customer("NONE", "", "", "", "", "", "", "", "", "", "", 0, BigDecimal.ZERO, BigDecimal.ZERO)); //Create a blank customer
             if (!headless) {
                 TillSplashScreen.hideSplashScreen();
-                Staff s = StaffDialog.showNewStaffDialog(null, true); //Show the create staff dialog
+                Staff s = StaffDialog.showNewStaffDialog(this, null, true); //Show the create staff dialog
                 if (s == null) {
                     System.exit(0); // Exit if the user clicked cancel
                 }
@@ -246,46 +247,19 @@ public class TillServer implements JConnListener {
                 try {
                     db.addStaff(s); //Add the member of staff
                 } catch (SQLException ex) {
-                    LOG.log(Level.SEVERE, "Error creating Admin staff member", ex);
+                    logger.log(Level.SEVERE, "Error creating Admin staff member", ex);
                 }
             }
         } catch (SQLException ex) {
             if (ex.getErrorCode() == 40000) { //If another application is already using the database.
-                LOG.log(Level.SEVERE, "The database is already in use. The program will now terminate");
+                logger.log(Level.SEVERE, "The database is already in use. The program will now terminate");
                 JOptionPane.showMessageDialog(null, "The database is already in use by another application. Program will now terminate.\nError Code " + ex.getErrorCode(), "Database in use", JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
             } else {
-                LOG.log(Level.SEVERE, null, ex);
+                logger.log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(null, ex, "Database Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-    }
-
-    public void checkUpdate() {
-//        try {
-//            String latest = UpdateChecker.checkForUpdate();
-//            if (!latest.equals(TillServer.VERSION)) {
-//                if (!headless) {
-//                    if (JOptionPane.showConfirmDialog(null, "Version " + latest + " avaliable. Download now?", "Update", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-//                        UpdateChecker.downloadServerUpdate();
-//                    }
-//                } else {
-//                    System.out.println("Version " + latest + "avaliable. Download now? <y/n>");
-//                    Scanner in = new Scanner(System.in);
-//                    String input = in.next();
-//                    if (input.equalsIgnoreCase("y")) {
-//                        LOG.info("Downloading update...");
-//                        UpdateChecker.downloadServerUpdate();
-//                        LOG.info("Donwload complete!");
-//                    }
-//                }
-//            }
-//        } catch (Exception ex) {
-//            LOG.log(Level.SEVERE, "Error checking for update", ex);
-//            if (!headless) {
-//                JOptionPane.showMessageDialog(null, "Error checking for update", "Update", JOptionPane.INFORMATION_MESSAGE);
-//            }
-//        }
     }
 
     /**
@@ -295,12 +269,12 @@ public class TillServer implements JConnListener {
         databaseLogin();
         try {
             TillSplashScreen.setLabel("Starting server socket");
-            LOG.info("Starting server socket on port number " + PORT_IN_USE);
+            logger.info("Starting server socket on port number " + PORT_IN_USE);
             server = JConnServer.start(PORT_IN_USE, ConnectionHandler.class);
             server.registerListener(this);
             db.setServer(server);
             TillSplashScreen.addBar(20);
-            LOG.log(Level.INFO, "Listening on port number " + PORT_IN_USE);
+            logger.log(Level.INFO, "Listening on port number " + PORT_IN_USE);
         } catch (IOException ex) {
         }
         if (!headless) {
@@ -312,10 +286,9 @@ public class TillServer implements JConnListener {
         try {
             http.start();
         } catch (IOException ex) {
-            LOG.log(Level.SEVERE, "Error starting HTTP server", ex);
+            logger.log(Level.SEVERE, "Error starting HTTP server", ex);
         }
-        LOG.info("Checking for update");
-        checkUpdate();
+        logger.info("Checking for update");
         if (!headless) {
             TillSplashScreen.addBar(10);
             TillSplashScreen.hideSplashScreen();
@@ -324,11 +297,11 @@ public class TillServer implements JConnListener {
         final Runnable runnable = () -> {
             if (headless) {
                 try {
-                    LOG.info("Checking database integrity");
+                    logger.info("Checking database integrity");
                     DataConnect.get().integrityCheck();
-                    LOG.info("Check complete");
+                    logger.info("Check complete");
                 } catch (IOException | SQLException ex) {
-                    LOG.log(Level.SEVERE, "Error checking database", ex);
+                    logger.log(Level.SEVERE, "Error checking database", ex);
                 }
             } else {
                 g.checkDatabase();
@@ -454,5 +427,15 @@ public class TillServer implements JConnListener {
         if (!headless) {
             g.setClientLabel(connections);
         }
+    }
+
+    @Override
+    public DataConnect getDataConnection() {
+        return db;
+    }
+
+    @Override
+    public Logger getLogger() {
+        return logger;
     }
 }

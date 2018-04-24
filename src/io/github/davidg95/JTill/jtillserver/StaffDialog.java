@@ -28,7 +28,7 @@ public class StaffDialog extends javax.swing.JDialog {
     private static JDialog dialog;
     private static Staff staff;
 
-    private final DataConnect dc;
+    private final JTill jtill;
     private Staff s;
     private final boolean editMode;
 
@@ -38,10 +38,10 @@ public class StaffDialog extends javax.swing.JDialog {
      * @param parent the parent window.
      * @param manager force the staff to be a manager.
      */
-    public StaffDialog(Window parent, boolean manager) {
+    public StaffDialog(JTill jtill, Window parent, boolean manager) {
         super(parent);
         editMode = false;
-        this.dc = GUI.gui.dc;
+        this.jtill= jtill;
         this.setIconImage(GUI.icon);
         initComponents();
         if (manager) {
@@ -60,12 +60,12 @@ public class StaffDialog extends javax.swing.JDialog {
      * @param parent parent window.
      * @param staff staff getting edited.
      */
-    public StaffDialog(Window parent, Staff staff) {
+    public StaffDialog(JTill jtill, Window parent, Staff staff) {
         super(parent);
         initComponents();
         editMode = true;
         this.s = staff;
-        this.dc = GUI.gui.dc;
+        this.jtill = jtill;
         this.setLocationRelativeTo(parent);
         this.setModal(true);
         txtName.setText(s.getName());
@@ -75,28 +75,28 @@ public class StaffDialog extends javax.swing.JDialog {
         this.setTitle("Staff Member " + staff.getName());
     }
 
-    public static Staff showNewStaffDialog(Component parent, boolean manager) {
+    public static Staff showNewStaffDialog(JTill jtill, Component parent, boolean manager) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new StaffDialog(window, manager);
+        dialog = new StaffDialog(jtill, window, manager);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         staff = null;
         dialog.setVisible(true);
         return staff;
     }
 
-    public static Staff showNewStaffDialog(Component parent) {
-        return showNewStaffDialog(parent, false);
+    public static Staff showNewStaffDialog(JTill jtill, Component parent) {
+        return showNewStaffDialog(jtill, parent, false);
     }
 
-    public static Staff showEditStaffDialog(Component parent, Staff s) {
+    public static Staff showEditStaffDialog(JTill jtill, Component parent, Staff s) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        dialog = new StaffDialog(window, s);
+        dialog = new StaffDialog(jtill, window, s);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         staff = s;
         dialog.setVisible(true);
@@ -283,7 +283,7 @@ public class StaffDialog extends javax.swing.JDialog {
             return;
         }
         try {
-            if (dc.checkUsername(username)) {
+            if (jtill.getDataConnection().checkUsername(username)) {
                 JOptionPane.showMessageDialog(this, "Username already in use", "New Staff", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -303,7 +303,7 @@ public class StaffDialog extends javax.swing.JDialog {
                 }
                 staff = new Staff(name, position, username, password, wage, chkEnabled.isSelected());
                 try {
-                    Staff s = dc.addStaff(staff);
+                    Staff s = jtill.getDataConnection().addStaff(staff);
                 } catch (SQLException | IOException ex) {
                     showError(ex);
                 }
@@ -315,7 +315,7 @@ public class StaffDialog extends javax.swing.JDialog {
             try {
                 staff.setName(name);
                 staff.setUsername(username);
-                dc.updateStaff(staff);
+                jtill.getDataConnection().updateStaff(staff);
                 this.setVisible(false);
             } catch (IOException | StaffNotFoundException | SQLException ex) {
                 showError(ex);

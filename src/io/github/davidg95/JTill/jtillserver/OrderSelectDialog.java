@@ -27,16 +27,16 @@ public class OrderSelectDialog extends javax.swing.JDialog {
 
     private static Order order;
 
-    private final DataConnect dc;
+    private final JTill jtill;
     private final DefaultTableModel model;
     private List<Order> orders;
 
     /**
      * Creates new form OrderSelectDialog
      */
-    public OrderSelectDialog(Window parent) {
+    public OrderSelectDialog(Window parent, JTill jtill) {
         super(parent);
-        this.dc = GUI.gui.dc;
+        this.jtill = jtill;
         initComponents();
         setIconImage(GUI.icon);
         setLocationRelativeTo(parent);
@@ -49,7 +49,7 @@ public class OrderSelectDialog extends javax.swing.JDialog {
     private void init() {
         table.setSelectionModel(new ForcedListSelectionModel());
         try {
-            orders = dc.getAllOrders();
+            orders = jtill.getDataConnection().getAllOrders();
             for (Order o : orders) {
                 model.addRow(new Object[]{o.getId(), o.getSupplier(), (o.isSent() ? o.getSendDate() : "")});
             }
@@ -58,12 +58,12 @@ public class OrderSelectDialog extends javax.swing.JDialog {
         }
     }
 
-    public static Order showDialog(Component parent) {
+    public static Order showDialog(Component parent, JTill jtill) {
         Window window = null;
         if (parent instanceof Dialog || parent instanceof Frame) {
             window = (Window) parent;
         }
-        OrderSelectDialog dialog = new OrderSelectDialog(window);
+        OrderSelectDialog dialog = new OrderSelectDialog(window, jtill);
         order = null;
         dialog.setVisible(true);
         return order;

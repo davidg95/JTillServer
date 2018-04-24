@@ -284,7 +284,6 @@ public abstract class DBConnect extends DataConnect {
         }
         return p;
     }
-
     @Override
     public void batchProductUpdate(List<Product> products) throws SQLException {
         Connection con = getConnection();

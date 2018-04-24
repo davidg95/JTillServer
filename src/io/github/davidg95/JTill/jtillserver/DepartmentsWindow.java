@@ -30,7 +30,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
 
     private static DepartmentsWindow window;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private Department department;
 
@@ -39,8 +39,8 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form DepartmentWindow
      */
-    public DepartmentsWindow() {
-        this.dc = GUI.gui.dc;
+    public DepartmentsWindow(JTill jtill) {
+        this.jtill = jtill;
         super.setClosable(true);
         super.setMaximizable(true);
         super.setIconifiable(true);
@@ -49,9 +49,9 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         setTable();
     }
 
-    public static void showWindow() {
+    public static void showWindow(JTill jtill) {
         if (window == null || window.isClosed()) {
-            window = new DepartmentsWindow();
+            window = new DepartmentsWindow(jtill);
             GUI.gui.internal.add(window);
         }
         window.setVisible(true);
@@ -66,7 +66,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
 
     private void setTable() {
         try {
-            List<Department> deps = dc.getAllDepartments();
+            List<Department> deps = jtill.getDataConnection().getAllDepartments();
             model = new MyModel(deps);
             tblDep.setModel(model);
             tblDep.getColumnModel().getColumn(0).setMaxWidth(40);
@@ -128,7 +128,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         }
 
         public void addDepartment(Department d) throws IOException, SQLException {
-            d = dc.addDepartment(d);
+            d = jtill.getDataConnection().addDepartment(d);
             departments.add(d);
             alertAll();
         }
@@ -137,7 +137,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
             for (int i = 0; i < departments.size(); i++) {
                 Department dep = departments.get(i);
                 if (dep.getId() == d.getId()) {
-                    dc.removeDepartment(d.getId());
+                    jtill.getDataConnection().removeDepartment(d.getId());
                     departments.remove(i);
                     alertAll();
                     return;
@@ -146,7 +146,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         }
 
         public void updateDepartment(Department d) throws IOException, SQLException, JTillException {
-            dc.updateDepartment(d);
+            jtill.getDataConnection().updateDepartment(d);
             alertAll();
         }
 

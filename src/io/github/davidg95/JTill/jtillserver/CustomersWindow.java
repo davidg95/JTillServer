@@ -30,7 +30,7 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
 
     public static CustomersWindow frame;
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private Customer customer; //The current selected customer
 
@@ -40,8 +40,8 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form CustomersWindow
      */
-    public CustomersWindow() {
-        this.dc = GUI.gui.dc;
+    public CustomersWindow(JTill jtill) {
+        this.jtill = jtill;
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
@@ -57,9 +57,9 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
      * Method to show the customers window. If this is the first time it is
      * being called, then it will create the window.
      */
-    public static void showCustomersListWindow() {
+    public static void showCustomersListWindow(JTill jtill) {
         if (frame == null || frame.isClosed()) {
-            frame = new CustomersWindow();
+            frame = new CustomersWindow(jtill);
             GUI.gui.internal.add(frame);
         }
         if (frame.isVisible()) {
@@ -114,7 +114,7 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
      */
     private void showAllCustomers() {
         try {
-            currentTableContents = dc.getAllCustomers();
+            currentTableContents = jtill.getDataConnection().getAllCustomers();
             updateTable();
         } catch (SQLException | IOException ex) {
             showError(ex);
@@ -176,7 +176,7 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
         int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following customer?\n" + c, "Remove Customer", JOptionPane.YES_NO_OPTION);
         if (opt == JOptionPane.YES_OPTION) {
             try {
-                dc.removeCustomer(c.getId());
+                jtill.getDataConnection().removeCustomer(c.getId());
             } catch (SQLException | CustomerNotFoundException | IOException ex) {
                 showError(ex);
             }
@@ -192,7 +192,7 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "Payment of " + val + " accepted", "Payment accepted", JOptionPane.INFORMATION_MESSAGE);
             }
             try {
-                dc.updateCustomer(c);
+                jtill.getDataConnection().updateCustomer(c);
                 updateTable();
                 setCurrentCustomer(c);
             } catch (IOException | CustomerNotFoundException | SQLException ex) {
@@ -667,7 +667,7 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
                     }
                     c = new Customer(name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, loyalty, moneyDue, maxDebt);
                     try {
-                        Customer cu = dc.addCustomer(c);
+                        Customer cu = jtill.getDataConnection().addCustomer(c);
                         showAllCustomers();
                         setCurrentCustomer(null);
                         jTabbedPane1.setSelectedIndex(0);
@@ -738,7 +738,7 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
         customer.setPostcode(postcode);
 
         try {
-            dc.updateCustomer(customer);
+            jtill.getDataConnection().updateCustomer(customer);
         } catch (SQLException | CustomerNotFoundException | IOException ex) {
             showError(ex);
         }

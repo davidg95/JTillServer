@@ -37,7 +37,7 @@ import javax.swing.table.TableModel;
  */
 public class OrdersViewer extends javax.swing.JInternalFrame {
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private final MyModel model;
     private final EditModel editModel;
@@ -47,8 +47,8 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
     /**
      * Creates new form OrdersViewer
      */
-    public OrdersViewer() {
-        this.dc = GUI.gui.dc;
+    public OrdersViewer(JTill jtill) {
+        this.jtill = jtill;
         initComponents();
         super.setClosable(true);
         super.setMaximizable(true);
@@ -110,14 +110,14 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
 
     private void setOrders() {
         try {
-            model.setOrders(dc.getAllOrders());
+            model.setOrders(jtill.getDataConnection().getAllOrders());
         } catch (IOException | SQLException ex) {
             Logger.getLogger(OrdersViewer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public static void showWindow() {
-        OrdersViewer window = new OrdersViewer();
+    public static void showWindow(JTill jtill) {
+        OrdersViewer window = new OrdersViewer(jtill);
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {
@@ -129,7 +129,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
     }
 
     private void createOrder() {
-        Supplier supplier = SupplierSelectDialog.showDialog(this);
+        Supplier supplier = SupplierSelectDialog.showDialog(jtill, this);
         if (supplier == null) {
             return;
         }
@@ -140,9 +140,9 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
 
     private void saveOrder() throws IOException, SQLException, JTillException {
         if (currentOrder.getId() == 0) {
-            currentOrder = dc.addOrder(currentOrder);
+            currentOrder = jtill.getDataConnection().addOrder(currentOrder);
         } else {
-            dc.updateOrder(currentOrder);
+            jtill.getDataConnection().updateOrder(currentOrder);
         }
     }
 
@@ -433,7 +433,7 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
         }
 
         try {
-            dc.deleteOrder(o.getId());
+            jtill.getDataConnection().deleteOrder(o.getId());
             model.removeOrder(o);
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -663,14 +663,14 @@ public class OrdersViewer extends javax.swing.JInternalFrame {
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         Product p;
         if (txtBarcode.getText().isEmpty()) {
-            p = ProductSelectDialog.showDialog(this);
+            p = ProductSelectDialog.showDialog(this, jtill);
         } else {
             if (!Utilities.isNumber(txtBarcode.getText())) {
                 JOptionPane.showMessageDialog(this, "Invalid input", "Add Product", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             try {
-                p = dc.getProductByBarcode(txtBarcode.getText());
+                p = jtill.getDataConnection().getProductByBarcode(txtBarcode.getText());
             } catch (IOException | ProductNotFoundException | SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 return;

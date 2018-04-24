@@ -44,7 +44,7 @@ import javax.swing.table.TableModel;
  */
 public class SaleDialog extends javax.swing.JInternalFrame {
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private final MyModel model;
 
@@ -53,9 +53,9 @@ public class SaleDialog extends javax.swing.JInternalFrame {
     /**
      * Creates new form SaleDialog
      */
-    public SaleDialog(Sale sale) {
+    public SaleDialog(JTill jtill, Sale sale) {
         super();
-        this.dc = GUI.gui.dc;
+        this.jtill = jtill;
         initComponents();
         super.setClosable(true);
         super.setIconifiable(true);
@@ -66,8 +66,8 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showSaleDialog(Sale sale) {
-        SaleDialog dialog = new SaleDialog(sale);
+    public static void showSaleDialog(JTill jtill, Sale sale) {
+        SaleDialog dialog = new SaleDialog(jtill, sale);
         GUI.gui.internal.add(dialog);
         dialog.setVisible(true);
         try {
@@ -79,7 +79,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
 
     private void init() {
         try {
-            if (!Boolean.getBoolean(dc.getSetting("USE_EMAIL"))) {
+            if (!Boolean.getBoolean(jtill.getDataConnection().getSetting("USE_EMAIL"))) {
                 btnEmail.setEnabled(false);
             }
         } catch (IOException ex) {
@@ -219,8 +219,8 @@ public class SaleDialog extends javax.swing.JInternalFrame {
             String footer = "Thank you for your custom";
             Image img = loadImage();
             try {
-                header = dc.getSetting("RECEIPT_HEADER"); //Get the receipt header for the receipt.
-                footer = dc.getSetting("RECEIPT_FOOTER"); //Get the receipt footer for ther receipt.
+                header = jtill.getDataConnection().getSetting("RECEIPT_HEADER"); //Get the receipt header for the receipt.
+                footer = jtill.getDataConnection().getSetting("RECEIPT_FOOTER"); //Get the receipt footer for ther receipt.
             } catch (IOException ex) {
                 Logger.getLogger(SaleDialog.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -539,7 +539,7 @@ public class SaleDialog extends javax.swing.JInternalFrame {
         final String fEmail = email;
         final Runnable run = () -> {
             try {
-                boolean result = dc.emailReceipt(fEmail, sale);
+                boolean result = jtill.getDataConnection().emailReceipt(fEmail, sale);
                 mDialog.hide();
                 if (result) {
                     JOptionPane.showMessageDialog(this, "Email sent", "Email Receipt", JOptionPane.INFORMATION_MESSAGE);

@@ -34,7 +34,7 @@ import javax.swing.table.TableModel;
  */
 public class CondimentWindow extends javax.swing.JInternalFrame {
 
-    private final DataConnect dc;
+    private final JTill jtill;
 
     private final Product product;
 
@@ -43,8 +43,8 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
     /**
      * Creates new form CondimentWindow
      */
-    public CondimentWindow(Product p) {
-        this.dc = GUI.gui.dc;
+    public CondimentWindow(JTill jtill, Product p) {
+        this.jtill = jtill;
         this.product = p;
         super.setMaximizable(true);
         super.setIconifiable(true);
@@ -55,8 +55,8 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
         init();
     }
 
-    public static void showWindow(Product p) {
-        CondimentWindow window = new CondimentWindow(p);
+    public static void showWindow(JTill jtill, Product p) {
+        CondimentWindow window = new CondimentWindow(jtill, p);
         GUI.gui.internal.add(window);
         window.setVisible(true);
         try {
@@ -86,7 +86,7 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
         txtMax.setText(product.getMaxCon() + "");
         txtMin.setText(product.getMinCon() + "");
         try {
-            List<Condiment> contents = dc.getProductsCondiments(product.getBarcode());
+            List<Condiment> contents = jtill.getDataConnection().getProductsCondiments(product.getBarcode());
             model = new MyModel(contents);
             table.setModel(model);
         } catch (IOException | SQLException ex) {
@@ -126,13 +126,13 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
         }
 
         public void addCondiment(Condiment c) throws IOException, SQLException {
-            c = dc.addCondiment(c);
+            c = jtill.getDataConnection().addCondiment(c);
             condiments.add(c);
             alertAll();
         }
 
         public void removeCondiment(Condiment c) throws IOException, SQLException {
-            dc.removeCondiment(c.getId());
+            jtill.getDataConnection().removeCondiment(c.getId());
             condiments.remove(c);
             alertAll();
         }
@@ -387,7 +387,7 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        Product p = ProductSelectDialog.showDialog(this);
+        Product p = ProductSelectDialog.showDialog(this, jtill);
         if (p == null) {
             return;
         }
@@ -454,7 +454,7 @@ public class CondimentWindow extends javax.swing.JInternalFrame {
         product.setMaxCon(max);
         product.setMinCon(min);
         try {
-            dc.updateProduct(product);
+            jtill.getDataConnection().updateProduct(product);
         } catch (IOException | ProductNotFoundException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
