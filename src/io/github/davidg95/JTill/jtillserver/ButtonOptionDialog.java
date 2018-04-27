@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
  * @author David
  */
 public final class ButtonOptionDialog extends javax.swing.JDialog {
-    
+
     private final JTill jtill;
 
     private static TillButton button;
@@ -39,7 +39,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
      */
     public ButtonOptionDialog(JTill jtill, Window parent, int maxWidth, int maxHeight) {
         super(parent);
-        
+
         this.jtill = jtill;
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
@@ -50,45 +50,50 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
         int x = (int) MouseInfo.getPointerInfo().getLocation().getX();
         int y = (int) MouseInfo.getPointerInfo().getLocation().getY();
         this.setLocation(x - getWidth() / 2, y - getHeight() / 2);
-        setTitle(button.getName());
-        txtItem.setText(button.getName());
-        if (button.getType() == TillButton.SPACE) {
-            btnChangeButton.setEnabled(false);
-            cmbFunction.setSelectedItem("None");
-            txtItem.setEnabled(false);
-            txtItem.setText("");
-        } else if (button.getType() == TillButton.ITEM) {
-            btnChangeButton.setText("Change Product");
-            cmbFunction.setSelectedItem("Product");
-            txtItem.setText(button.getName());
-        } else if (button.getType() == TillButton.BACK) {
-            btnChangeButton.setEnabled(false);
-            cmbFunction.setSelectedItem("Back");
-            txtItem.setText(button.getName());
-        } else if (button.getType() == TillButton.MAIN) {
-            btnChangeButton.setEnabled(false);
-            cmbFunction.setSelectedItem("Main");
-            txtItem.setText(button.getName());
-        } else if (button.getType() == TillButton.LOGOFF) {
-            btnChangeButton.setEnabled(false);
-            cmbFunction.setSelectedItem("Logoff");
-            txtItem.setText(button.getName());
-        } else if (button.getType() == TillButton.PAYMENT) {
-            btnChangeButton.setEnabled(false);
-            cmbFunction.setSelectedItem("Payment");
-            txtItem.setText(button.getName());
-        } else if (button.getType() == TillButton.VOID) {
-            btnChangeButton.setEnabled(false);
-            cmbFunction.setSelectedItem("Void");
-            txtItem.setText(button.getName());
-        } else if (button.getType() == TillButton.LINK) {
-            btnChangeButton.setEnabled(true);
-            cmbFunction.setSelectedItem("Link");
-            txtItem.setText(button.getName());
+        if (button == null) {
+            setTitle("New Button");
+            button = new TillButton("", "", TillButton.SPACE, -1, TillButton.rbg2Hex(Color.BLACK),TillButton.rbg2Hex(Color.WHITE), 1, 1, 1, 1, 1, "");
         } else {
-            btnChangeButton.setText("Change Screen");
-            cmbFunction.setSelectedItem("Screen");
+            setTitle(button.getName());
             txtItem.setText(button.getName());
+            if (button.getType() == TillButton.SPACE) {
+                btnChangeButton.setEnabled(false);
+                cmbFunction.setSelectedItem("None");
+                txtItem.setEnabled(false);
+                txtItem.setText("");
+            } else if (button.getType() == TillButton.ITEM) {
+                btnChangeButton.setText("Change Product");
+                cmbFunction.setSelectedItem("Product");
+                txtItem.setText(button.getName());
+            } else if (button.getType() == TillButton.BACK) {
+                btnChangeButton.setEnabled(false);
+                cmbFunction.setSelectedItem("Back");
+                txtItem.setText(button.getName());
+            } else if (button.getType() == TillButton.MAIN) {
+                btnChangeButton.setEnabled(false);
+                cmbFunction.setSelectedItem("Main");
+                txtItem.setText(button.getName());
+            } else if (button.getType() == TillButton.LOGOFF) {
+                btnChangeButton.setEnabled(false);
+                cmbFunction.setSelectedItem("Logoff");
+                txtItem.setText(button.getName());
+            } else if (button.getType() == TillButton.PAYMENT) {
+                btnChangeButton.setEnabled(false);
+                cmbFunction.setSelectedItem("Payment");
+                txtItem.setText(button.getName());
+            } else if (button.getType() == TillButton.VOID) {
+                btnChangeButton.setEnabled(false);
+                cmbFunction.setSelectedItem("Void");
+                txtItem.setText(button.getName());
+            } else if (button.getType() == TillButton.LINK) {
+                btnChangeButton.setEnabled(true);
+                cmbFunction.setSelectedItem("Link");
+                txtItem.setText(button.getName());
+            } else {
+                btnChangeButton.setText("Change Screen");
+                cmbFunction.setSelectedItem("Screen");
+                txtItem.setText(button.getName());
+            }
         }
         txtWidth.setText(button.getWidth() + "");
         txtHeight.setText(button.getHeight() + "");
@@ -103,6 +108,7 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
      * Shows the ButtonOptionsDialog. Returns null if remove button was
      * selected, otherwise it will return an updated button object.
      *
+     * @param jtill the jtill reference.
      * @param parent the parent component.
      * @param b the button object.
      * @param maxWidth the maximum width of the button.
@@ -383,19 +389,18 @@ public final class ButtonOptionDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Width and height must be greater than zero", "Button Options", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        String func = (String) cmbFunction.getSelectedItem();
+
         button.setWidth(width);
         button.setHeight(height);
         button.setColorValue(TillButton.rbg2Hex(txtColor.getBackground()));
         button.setFontColor(TillButton.rbg2Hex(txtFontColor.getBackground()));
-
-        String func = (String) cmbFunction.getSelectedItem();
         if (!func.equals("Space")) {
             if (txtItem.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "You must enter button text", "Button", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
-
         if (func.equals("None")) {
             button.setName("[SPACE]");
             button.setType(TillButton.SPACE);

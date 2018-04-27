@@ -74,6 +74,29 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         init();
     }
 
+    private void setCurrentScreen(Screen sc) {
+        categoryCards.show(panelProducts, sc.getName());
+        currentScreen = sc;
+        txtVGap.setText(currentScreen.getvGap() + "");
+        txtHGap.setText(currentScreen.gethGap() + "");
+        if (sc.getInherits() != -1) {
+            try {
+                Screen parent = jtill.getDataConnection().getScreen(sc.getInherits());
+                btnInherits.setText(parent.getName());
+            } catch (IOException | SQLException | ScreenNotFoundException ex) {
+                sc.setInherits(-1);
+                try {
+                    jtill.getDataConnection().updateScreen(sc);
+                } catch (IOException | SQLException | ScreenNotFoundException ex1) {
+                    JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                btnInherits.setText("NONE");
+            }
+        } else {
+            btnInherits.setText("NONE");
+        }
+    }
+
     private void init() {
         list.setModel(model);
     }
@@ -184,7 +207,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             bar.setMaximum(amount);
             model.empty();
             for (Screen s : screens) {
-                addScreenButton(s);
+                addScreen(s);
                 model.addScreen(s);
             }
             repaint();
@@ -219,7 +242,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 gbc.fill = GridBagConstraints.BOTH;
                 pButton.addActionListener((ActionEvent e) -> {
                     currentButton = b;
-                    showButtonOptions(); //Show the button options dialog.
+                    showButtonOptions(b.getX(), b.getY()); //Show the button options dialog.
                 });
                 pButton.setEnabled(false);
                 panel.add(pButton, gbc); //Add the button to the panel.
@@ -232,13 +255,16 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
      *
      * @param s the screen to create a button for.
      */
-    public void addScreenButton(Screen s) {
+    private void addScreen(Screen s) {
         JPanel panel = new JPanel(); //Create a panel for the buttons on this screen.
         panel.setLayout(new GridBagLayout());
 
         try {
             currentButtons = jtill.getDataConnection().getButtonsOnScreen(s); //Get all the buttons on the screen.
             checkInheritance(panel, s);
+            int x = 1;
+            int y = 1;
+
             for (TillButton b : currentButtons) {
                 JButton pButton = new JButton(b.getName()); //Creat a new button for the button.
                 pButton.setBackground(TillButton.hex2Rgb(b.getColorValue()));
@@ -253,62 +279,77 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                 gbc.weightx = 1;
                 gbc.weighty = 1;
                 gbc.fill = GridBagConstraints.BOTH;
-                if (b.getType() == TillButton.SPACE) { //If it is a space, create a panel for the button.
-                    JPanel pan = new JPanel();
-                    pan.setBackground(Color.GRAY);
-                    pan.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1, false));
-                    pan.addMouseListener(new MouseListener() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
+                //If the button is a button.
+                pButton.addActionListener((ActionEvent e) -> {
+                    currentButton = b;
+                    showButtonOptions(b.getX(), b.getY()); //Show the button options dialog.
+                });
+                pButton.addMouseListener(new java.awt.event.MouseAdapter() {
+                    @Override
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        if (SwingUtilities.isRightMouseButton(evt)) {
                             currentButton = b;
-                            if (SwingUtilities.isLeftMouseButton(e)) {
-                                showButtonOptions(); //Show the button options dialog.
-                            } else if (SwingUtilities.isRightMouseButton(e)) {
-                                showPopup(pan, e, b);
-                            }
+                            showPopup(pButton, evt, b);
                         }
-
-                        @Override
-                        public void mousePressed(MouseEvent e) {
-
-                        }
-
-                        @Override
-                        public void mouseReleased(MouseEvent e) {
-
-                        }
-
-                        @Override
-                        public void mouseEntered(MouseEvent e) {
-                            pan.setBackground(Color.LIGHT_GRAY); //Set the panel to turn grey when the mouse hovers over it.
-                        }
-
-                        @Override
-                        public void mouseExited(MouseEvent e) {
-                            pan.setBackground(Color.GRAY); //Set the panel back to white when the mouse leaves.
-                        }
-
-                    });
-                    pan.setPreferredSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
-                    panel.add(pan, gbc); //Add the panel to the screen panel.
-                } else { //If the button is a button.
-                    pButton.addActionListener((ActionEvent e) -> {
-                        currentButton = b;
-                        showButtonOptions(); //Show the button options dialog.
-                    });
-                    pButton.addMouseListener(new java.awt.event.MouseAdapter() {
-                        public void mouseClicked(java.awt.event.MouseEvent evt) {
-                            if (SwingUtilities.isRightMouseButton(evt)) {
-                                currentButton = b;
-                                showPopup(pButton, evt, b);
-                            }
-                        }
-                    });
-                    pButton.setPreferredSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
-                    panel.add(pButton, gbc); //Add the button to the panel.
-                }
+                    }
+                });
+                pButton.setPreferredSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
+                panel.add(pButton, gbc); //Add the button to the panel.
                 bar.setValue(bar.getValue() + 1);
                 bar.repaint();
+            }
+            for (int i = 0; i < (s.getWidth() * s.getHeight()); i++) {
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.gridx = x - 1;
+                gbc.gridy = y - 1;
+                gbc.gridwidth = 1;
+                gbc.gridheight = 1;
+                gbc.weightx = 1;
+                gbc.weighty = 1;
+                gbc.fill = GridBagConstraints.BOTH;
+                JPanel pan = new JPanel();
+                pan.setBackground(Color.GRAY);
+                pan.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1, false));
+                final int fx = x;
+                final int fy = y;
+                pan.addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (SwingUtilities.isLeftMouseButton(e)) {
+                            showButtonOptions(fx, fy); //Show the button options dialog.
+                        }
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        pan.setBackground(Color.LIGHT_GRAY); //Set the panel to turn grey when the mouse hovers over it.
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        pan.setBackground(Color.GRAY); //Set the panel back to white when the mouse leaves.
+                    }
+
+                });
+                pan.setPreferredSize(new Dimension(panel.getWidth() / s.getWidth(), panel.getHeight() / s.getHeight()));
+                panel.add(pan, gbc); //Add the panel to the screen panel.
+                bar.setValue(bar.getValue() + 1);
+                bar.repaint();
+                x++;
+                if (x == (s.getWidth() + 1)) {
+                    x = 1;
+                    y++;
+                }
             }
             panelProducts.add(panel, s.getName()); //Add the screen panel to the container panel for all screens.
         } catch (SQLException | IOException | ScreenNotFoundException ex) {
@@ -317,6 +358,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     }
 
     private void showPopup(Component c, MouseEvent evt, TillButton b) {
+        currentButton = b;
         final JPopupMenu menu = new JPopupMenu();
         final JMenuItem edit = new JMenuItem("Edit");
         final Font boldFont = new Font(edit.getFont().getFontName(), Font.BOLD, edit.getFont().getSize());
@@ -325,7 +367,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         final JMenuItem remove = new JMenuItem("Remove");
 
         edit.addActionListener((ActionEvent e) -> {
-            showButtonOptions();
+            showButtonOptions(b.getX(), b.getY());
         });
 
         if (c instanceof JPanel) {
@@ -361,12 +403,12 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         position.add(right);
 
         remove.addActionListener((ActionEvent e) -> {
-            b.setWidth(1);
-            b.setHeight(1);
-            b.setType(TillButton.SPACE);
-            b.setColorValue("000000");
-            b.setFontColor("ffffff");
-            saveAndUpdate();
+            try {
+                jtill.getDataConnection().removeButton(b);
+                setButtons();
+            } catch (IOException | SQLException | JTillException ex) {
+                showError(ex);
+            }
         });
 
         menu.add(edit);
@@ -378,7 +420,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
 
     private void saveAndUpdate() {
         try {
-            jtill.getDataConnection().updateButton(currentButton); //This will update the ucrrent button in the database
+            jtill.getDataConnection().updateButton(currentButton); //This will update the current button in the database
         } catch (IOException | SQLException | JTillException ex) {
             showError(ex);
         }
@@ -395,17 +437,24 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
     /**
      * Method to show the buttons options dialog for a particular button.
      */
-    private void showButtonOptions() {
-        if(currentScreen == null){
+    private void showButtonOptions(int x, int y) {
+        if (currentScreen == null) {
             return;
         }
-        currentButton = ButtonOptionDialog.showDialog(jtill, this, currentButton, currentScreen.getWidth() - currentButton.getX() + 1, currentScreen.getHeight() - currentButton.getY() + 1);
+        if (currentButton == null) {
+            currentButton = ButtonOptionDialog.showDialog(jtill, this, null, currentScreen.getWidth() - x + 1, currentScreen.getHeight() - y + 1);
+            currentButton.setScreen(currentScreen.getId());
+            currentButton.setX(x);
+            currentButton.setY(y);
+        } else {
+            currentButton = ButtonOptionDialog.showDialog(jtill, this, currentButton, currentScreen.getWidth() - currentButton.getX() + 1, currentScreen.getHeight() - currentButton.getY() + 1);
+        }
         if (currentButton == null) { //If it is null then the button is getting removed.
             return;
         } else { //If it is not null then it is being edited or nothing has happening to it
             try {
-                jtill.getDataConnection().updateButton(currentButton); //This will update the ucrrent button in the database
-            } catch (IOException | SQLException | JTillException ex) {
+                jtill.getDataConnection().addButton(currentButton); //This will update the ucrrent button in the database
+            } catch (IOException | SQLException ex) {
                 showError(ex);
             }
         }
@@ -714,26 +763,7 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             menu.add(remove);
             menu.show(evt.getComponent(), evt.getX(), evt.getY());
         } else {
-            categoryCards.show(panelProducts, sc.getName());
-            currentScreen = sc;
-            txtVGap.setText(currentScreen.getvGap() + "");
-            txtHGap.setText(currentScreen.gethGap() + "");
-            if (sc.getInherits() != -1) {
-                try {
-                    Screen parent = jtill.getDataConnection().getScreen(sc.getInherits());
-                    btnInherits.setText(parent.getName());
-                } catch (IOException | SQLException | ScreenNotFoundException ex) {
-                    sc.setInherits(-1);
-                    try {
-                        jtill.getDataConnection().updateScreen(sc);
-                    } catch (IOException | SQLException | ScreenNotFoundException ex1) {
-                        JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                    btnInherits.setText("NONE");
-                }
-            } else {
-                btnInherits.setText("NONE");
-            }
+            setCurrentScreen(sc);
         }
     }//GEN-LAST:event_listMouseClicked
 

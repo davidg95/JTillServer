@@ -1705,18 +1705,18 @@ public abstract class DBConnect extends DataConnect {
                 int id = set.getInt(1);
                 s.setId(id);
             }
-            int x = 1;
-            int y = 1;
-            for (int i = 0; i < (s.getWidth() * s.getHeight()); i++) {
-                TillButton bu = new TillButton("[SPACE]", "0", TillButton.SPACE, s.getId(), "000000", "ffffff", 1, 1, x, y, 1, "");
-                String bq = "INSERT INTO BUTTONS (bNAME, bPRODUCT, bTYPE, bCOLOR, bFONT_COLOR, bSCREEN_ID, bWIDTH, bHEIGHT, bXPOS, bYPOS, bACCESS_LEVEL, bLINK) VALUES (" + bu.getSQLInsertString() + ")";
-                st.executeUpdate(bq);
-                x++;
-                if (x == (s.getWidth() + 1)) {
-                    x = 1;
-                    y++;
-                }
-            }
+//            int x = 1;
+//            int y = 1;
+//            for (int i = 0; i < (s.getWidth() * s.getHeight()); i++) {
+//                TillButton bu = new TillButton("[SPACE]", "0", TillButton.SPACE, s.getId(), "000000", "ffffff", 1, 1, x, y, 1, "");
+//                String bq = "INSERT INTO BUTTONS (bNAME, bPRODUCT, bTYPE, bCOLOR, bFONT_COLOR, bSCREEN_ID, bWIDTH, bHEIGHT, bXPOS, bYPOS, bACCESS_LEVEL, bLINK) VALUES (" + bu.getSQLInsertString() + ")";
+//                st.executeUpdate(bq);
+//                x++;
+//                if (x == (s.getWidth() + 1)) {
+//                    x = 1;
+//                    y++;
+//                }
+//            }
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
@@ -1772,7 +1772,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public void removeButton(TillButton b) throws SQLException, JTillException {
-        String query = "DELETE FROM BUTTONS WHERE BUTTONS.ID = " + b.getId();
+        String query = "DELETE FROM BUTTONS WHERE bid = " + b.getId();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         int value;
