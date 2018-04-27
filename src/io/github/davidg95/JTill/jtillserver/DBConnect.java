@@ -284,6 +284,7 @@ public abstract class DBConnect extends DataConnect {
         }
         return p;
     }
+
     @Override
     public void batchProductUpdate(List<Product> products) throws SQLException {
         Connection con = getConnection();
@@ -308,7 +309,7 @@ public abstract class DBConnect extends DataConnect {
                 s.executeUpdate(sql);
             }
             con.commit();
-        } catch(SQLException ex){
+        } catch (SQLException ex) {
             con.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
@@ -1696,12 +1697,25 @@ public abstract class DBConnect extends DataConnect {
         String query = "INSERT INTO SCREENS (scNAME, scWIDTH, scHEIGHT, scINHERITS, scVGAP, scHGAP) VALUES (" + s.getSQLInsertString() + ")";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        Statement st = con.createStatement();
         try {
             stmt.executeUpdate();
             ResultSet set = stmt.getGeneratedKeys();
             while (set.next()) {
                 int id = set.getInt(1);
                 s.setId(id);
+            }
+            int x = 1;
+            int y = 1;
+            for (int i = 0; i < (s.getWidth() * s.getHeight()); i++) {
+                TillButton bu = new TillButton("[SPACE]", "0", TillButton.SPACE, s.getId(), "000000", "ffffff", 1, 1, x, y, 1, "");
+                String bq = "INSERT INTO BUTTONS (bNAME, bPRODUCT, bTYPE, bCOLOR, bFONT_COLOR, bSCREEN_ID, bWIDTH, bHEIGHT, bXPOS, bYPOS, bACCESS_LEVEL, bLINK) VALUES (" + bu.getSQLInsertString() + ")";
+                st.executeUpdate(bq);
+                x++;
+                if (x == (s.getWidth() + 1)) {
+                    x = 1;
+                    y++;
+                }
             }
             con.commit();
         } catch (SQLException ex) {

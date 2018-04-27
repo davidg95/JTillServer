@@ -644,16 +644,6 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
                     try {
                         Screen s = new Screen(scName, fw, fh, inh, 3, 3);
                         currentScreen = jtill.getDataConnection().addScreen(s);
-                        int x = 1;
-                        int y = 1;
-                        for (int i = 0; i < (fw * fh); i++) {
-                            TillButton bu = jtill.getDataConnection().addButton(new TillButton("[SPACE]", "0", TillButton.SPACE, currentScreen.getId(), "000000", "ffffff", 1, 1, x, y, 1, ""));
-                            x++;
-                            if (x == (fw + 1)) {
-                                x = 1;
-                                y++;
-                            }
-                        }
                         setButtons();
                     } catch (IOException | SQLException ex) {
                         showError(ex);
