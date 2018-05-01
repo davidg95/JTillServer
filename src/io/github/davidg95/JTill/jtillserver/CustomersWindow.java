@@ -162,8 +162,8 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
         int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following customer?\n" + c, "Remove Customer", JOptionPane.YES_NO_OPTION);
         if (opt == JOptionPane.YES_OPTION) {
             try {
-                jtill.getDataConnection().removeCustomer(c.getId());
-            } catch (SQLException | CustomerNotFoundException | IOException ex) {
+                jtill.getDataConnection().removeCustomer(c);
+            } catch (SQLException | JTillException | IOException ex) {
                 showError(ex);
             }
             showAllCustomers();
@@ -181,7 +181,7 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
                 jtill.getDataConnection().updateCustomer(c);
                 updateTable();
                 setCurrentCustomer(c);
-            } catch (IOException | CustomerNotFoundException | SQLException ex) {
+            } catch (IOException | JTillException | SQLException ex) {
                 showError(ex);
             }
         }
@@ -542,7 +542,7 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
                         .addComponent(btnRemove)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnTakePayment)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -562,8 +562,8 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
                                 .addComponent(btnShowAll)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnClose))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -573,11 +573,7 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAdd)
-                    .addComponent(btnSave)
-                    .addComponent(btnRemove)
-                    .addComponent(btnTakePayment)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(radName)
@@ -585,7 +581,12 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
                         .addComponent(btnSearch)
                         .addComponent(btnShowAll)
                         .addComponent(jLabel14)
-                        .addComponent(btnClose)))
+                        .addComponent(btnClose))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnAdd)
+                        .addComponent(btnSave)
+                        .addComponent(btnRemove)
+                        .addComponent(btnTakePayment)))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
@@ -702,7 +703,7 @@ public class CustomersWindow extends javax.swing.JInternalFrame {
 
         try {
             jtill.getDataConnection().updateCustomer(customer);
-        } catch (SQLException | CustomerNotFoundException | IOException ex) {
+        } catch (SQLException | JTillException | IOException ex) {
             showError(ex);
         }
 

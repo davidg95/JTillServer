@@ -313,7 +313,7 @@ public class GUI extends JFrame implements GUIInterface {
             }
             lblUser.setText("Not Logged In");
             LOG.log(Level.INFO, staff.getName() + " has logged out");
-        } catch (StaffNotFoundException ex) {
+        } catch (JTillException ex) {
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }

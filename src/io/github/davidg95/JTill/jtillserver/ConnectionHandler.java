@@ -60,8 +60,8 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("NEWPRODUCT")
-    public Product newProduct(@JConnParameter("PRODUCT") Product p) throws IOException, SQLException {
-        return dc.addProduct(p);
+    public void newProduct(@JConnParameter("PRODUCT") Product p) throws IOException, SQLException {
+        dc.addProduct(p);
     }
 
     @JConnMethod("REMOVEPRODUCT")
@@ -70,8 +70,8 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("PURCHASE")
-    public int purchase(@JConnParameter("PRODUCT") String p, @JConnParameter("AMOUNT") int amount) throws IOException, ProductNotFoundException, OutOfStockException, SQLException {
-        return dc.purchaseProduct(p, amount);
+    public void purchase(@JConnParameter("PRODUCT") String p, @JConnParameter("AMOUNT") int amount) throws IOException, ProductNotFoundException, OutOfStockException, SQLException {
+        dc.purchaseProduct(p, amount);
     }
 
     @JConnMethod("GETPRODUCT")
@@ -80,8 +80,8 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("UPDATEPRODUCT")
-    public Product updateProduct(@JConnParameter("PRODUCT") Product p) throws IOException, ProductNotFoundException, SQLException {
-        return dc.updateProduct(p);
+    public void updateProduct(@JConnParameter("PRODUCT") Product p) throws IOException, ProductNotFoundException, SQLException {
+        dc.updateProduct(p);
     }
 
     @JConnMethod("GETPRODUCTBARCODE")
@@ -115,33 +115,28 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("REMOVECUSTOMER")
-    public void removeCustomer(@JConnParameter("ID") String id) throws IOException, CustomerNotFoundException, SQLException {
-        dc.removeCustomer(id);
+    public void removeCustomer(@JConnParameter("c") Customer c) throws IOException, JTillException, SQLException {
+        dc.removeCustomer(c);
     }
 
     @JConnMethod("GETCUSTOMER")
-    public Customer getCustomer(@JConnParameter("ID") int id) throws IOException, CustomerNotFoundException, SQLException {
+    public Customer getCustomer(@JConnParameter("ID") String id) throws IOException, JTillException, SQLException {
         return dc.getCustomer(id);
     }
 
     @JConnMethod("GETCUSTOMERBYNAME")
-    public List<Customer> getCustomerByName(@JConnParameter("NAME") String name) throws IOException, CustomerNotFoundException, SQLException {
+    public List<Customer> getCustomerByName(@JConnParameter("NAME") String name) throws IOException, JTillException, SQLException {
         return dc.getCustomerByName(name);
     }
 
     @JConnMethod("UPDATECUSTOMER")
-    public Customer updateCustomer(@JConnParameter("CUSTOMER") Customer c) throws IOException, CustomerNotFoundException, SQLException {
-        return dc.updateCustomer(c);
+    public void updateCustomer(@JConnParameter("CUSTOMER") Customer c) throws IOException, JTillException, SQLException {
+        dc.updateCustomer(c);
     }
 
     @JConnMethod("GETALLCUSTOMERS")
     public List<Customer> getAllCustomers() throws IOException, SQLException {
         return dc.getAllCustomers();
-    }
-
-    @JConnMethod("CUSTOMERLOOKUP")
-    public List<Customer> customerLookup(@JConnParameter("TERMS") String terms) throws IOException, SQLException {
-        return dc.customerLookup(terms);
     }
 
     @JConnMethod("ADDSTAFF")
@@ -153,23 +148,21 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("REMOVESTAFF")
-    public void removeStaff(@JConnParameter("ID") int id) throws IOException, StaffNotFoundException, SQLException {
-        dc.removeStaff(id);
+    public void removeStaff(@JConnParameter("S") Staff s) throws IOException, JTillException, SQLException {
+        dc.removeStaff(s);
     }
 
     @JConnMethod("GETSTAFF")
-    public Staff getStaff(@JConnParameter("ID") int id) throws IOException, StaffNotFoundException, SQLException {
+    public Staff getStaff(@JConnParameter("ID") int id) throws IOException, JTillException, SQLException {
         final Staff s = dc.getStaff(id);
         s.setPassword(Encryptor.encrypt(s.getPassword()));
         return s;
     }
 
     @JConnMethod("UPDATESTAFF")
-    public Staff updateStaff(@JConnParameter("STAFF") Staff s) throws IOException, StaffNotFoundException, SQLException {
+    public void updateStaff(@JConnParameter("STAFF") Staff s) throws IOException, JTillException, SQLException {
         s.setPassword(Encryptor.decrypt(s.getPassword()));
-        s = dc.updateStaff(s);
-        s.setPassword(Encryptor.encrypt(s.getPassword()));
-        return s;
+        dc.updateStaff(s);
     }
 
     @JConnMethod("GETALLSTAFF")
@@ -248,14 +241,14 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("LOGOUT")
-    public void logout(@JConnParameter("STAFF") Staff s) throws IOException, StaffNotFoundException {
+    public void logout(@JConnParameter("STAFF") Staff s) throws IOException, JTillException {
         dc.logout(s);
         LOG.log(Level.INFO, staff.getName() + " has logged out");
         ConnectionHandler.this.staff = null;
     }
 
     @JConnMethod("TILLLOGOUT")
-    public void tillLogout(@JConnParameter("STAFF") Staff s) throws IOException, StaffNotFoundException {
+    public void tillLogout(@JConnParameter("STAFF") Staff s) throws IOException, JTillException {
         dc.tillLogout(s);
         LOG.log(Level.INFO, staff.getName() + " has logged out");
         ConnectionHandler.this.staff = null;
@@ -477,7 +470,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("ISTILLLOGGEDIN")
-    public boolean isTillLoggedIn(@JConnParameter("STAFF") Staff s) throws IOException, StaffNotFoundException, SQLException {
+    public boolean isTillLoggedIn(@JConnParameter("STAFF") Staff s) throws IOException, JTillException, SQLException {
         return dc.isTillLoggedIn(s);
     }
 
@@ -637,22 +630,22 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("CLOCKON")
-    public void clockOn(@JConnParameter("ID") int id) throws IOException, SQLException, StaffNotFoundException {
+    public void clockOn(@JConnParameter("ID") int id) throws IOException, SQLException, JTillException {
         dc.clockOn(id);
     }
 
     @JConnMethod("CLOCKOFF")
-    public void clockOff(@JConnParameter("ID") int id) throws IOException, SQLException, StaffNotFoundException {
+    public void clockOff(@JConnParameter("ID") int id) throws IOException, SQLException, JTillException {
         dc.clockOff(id);
     }
 
     @JConnMethod("GETALLCLOCKS")
-    public List<ClockItem> getAllClocks(@JConnParameter("ID") int id) throws IOException, SQLException, StaffNotFoundException {
+    public List<ClockItem> getAllClocks(@JConnParameter("ID") int id) throws IOException, SQLException, JTillException {
         return dc.getAllClocks(id);
     }
 
     @JConnMethod("CLEARCLOCKS")
-    public void clearClocks(@JConnParameter("ID") int id) throws IOException, SQLException, StaffNotFoundException {
+    public void clearClocks(@JConnParameter("ID") int id) throws IOException, SQLException, JTillException {
         dc.clearClocks(id);
     }
 
@@ -712,7 +705,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("CONNTERM")
-    public void terminateConnection() throws IOException, SQLException, StaffNotFoundException {
+    public void terminateConnection() throws IOException, SQLException, JTillException {
         dc.logout(staff);
         dc.tillLogout(staff);
     }
@@ -738,7 +731,7 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("GETSTAFFSALES")
-    public List<Sale> getStaffSales(@JConnParameter("STAFF") Staff s) throws IOException, SQLException, StaffNotFoundException {
+    public List<Sale> getStaffSales(@JConnParameter("STAFF") Staff s) throws IOException, SQLException, JTillException {
         return dc.getStaffSales(s);
     }
 

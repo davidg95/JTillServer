@@ -174,7 +174,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                     try {
                         jtill.getDataConnection().updateStaff(s);
                         JOptionPane.showMessageDialog(this, "Password successfully changed", "Password", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (IOException | StaffNotFoundException | SQLException ex) {
+                    } catch (IOException | JTillException | SQLException ex) {
                         showError(ex);
                     }
                 }
@@ -194,17 +194,17 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "You cannot remove this member of staff as they are currently logged in", "Remove", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-        } catch (IOException | StaffNotFoundException | SQLException ex) {
+        } catch (IOException | JTillException | SQLException ex) {
             log.log(Level.INFO, null, ex);
         }
         int opt = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the following staff member?\n" + s, "Remove Staff", JOptionPane.YES_NO_OPTION);
         if (opt == JOptionPane.YES_OPTION) {
             try {
-                jtill.getDataConnection().removeStaff(s.getId());
+                jtill.getDataConnection().removeStaff(s);
                 showAllStaff();
                 setCurrentStaff(null);
                 JOptionPane.showMessageDialog(this, "Staff member removed", "Remove Staff", JOptionPane.INFORMATION_MESSAGE);
-            } catch (SQLException | StaffNotFoundException | IOException ex) {
+            } catch (SQLException | JTillException | IOException ex) {
                 showError(ex);
             }
         }
@@ -226,7 +226,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             alertAll();
         }
 
-        public void removeStaff(Staff s) throws IOException, StaffNotFoundException, SQLException {
+        public void removeStaff(Staff s) throws IOException, JTillException, SQLException {
             jtill.getDataConnection().removeStaff(s);
             staff.remove(s);
             alertAll();
@@ -651,7 +651,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             staff.setEnabled(chkEnabled.isSelected());
             jtill.getDataConnection().updateStaff(staff);
             model.alertAll();
-        } catch (SQLException | StaffNotFoundException | IOException ex) {
+        } catch (SQLException | JTillException | IOException ex) {
             showError(ex);
         }
     }//GEN-LAST:event_btnSaveActionPerformed
@@ -740,7 +740,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
                 try {
                     jtill.getDataConnection().updateStaff(staff);
                     JOptionPane.showMessageDialog(this, "Account " + (staff.isEnabled() ? "enabled" : "disabled"), "Staff", JOptionPane.INFORMATION_MESSAGE);
-                } catch (IOException | StaffNotFoundException | SQLException ex) {
+                } catch (IOException | JTillException | SQLException ex) {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Staff", JOptionPane.ERROR_MESSAGE);
                 }
             });

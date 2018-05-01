@@ -136,35 +136,26 @@ public abstract class DBConnect extends DataConnect {
         }
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
     @Override
     public List<Product> getAllProducts() throws SQLException, IOException {
-        String query = "select * from products, categorys, departments, tax, suppliers where pcategory = cid and cdepartment = did and ptax = tname and psupplier = sid order by barcode";
         List<Product> products;
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
+        Connection conn = getConnection();
+        Statement s = null;
+        ResultSet set = null;
         try {
-            ResultSet set = stmt.executeQuery(query);
+            s = conn.createStatement();
+            set = s.executeQuery("select * from products, categorys, departments, tax, suppliers where pcategory = cid and cdepartment = did and ptax = tname and psupplier = sid order by barcode");
             products = getProductsFromResultSet(set);
-            set = stmt.executeQuery("select * from products, categorys, departments, tax, suppliers where pcategory = cid and cdepartment = did and ptax = tid and psupplier = -1 order by barcode");
+            set = s.executeQuery("select * from products, categorys, departments, tax, suppliers where pcategory = cid and cdepartment = did and ptax = tid and psupplier = -1 order by barcode");
             List<Product> ps = getProductsFromResultSet(set);
             products.addAll(ps);
-            con.commit();
+            conn.commit();
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, set);
         }
         for (Product p : products) {
             p.setCondiments(getProductsCondiments(p.getBarcode()));
@@ -173,25 +164,28 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public List<Product> getProductsInSupplier(Supplier s) throws IOException, SQLException {
+    public List<Product> getProductsInSupplier(Supplier sup) throws IOException, SQLException {
         int id;
-        if (s == null) {
+        if (sup == null) {
             id = -1;
         } else {
-            id = s.getId();
+            id = sup.getId();
         }
-        String query = "select * from products, categorys, departments, tax, suppliers where pSupplier = sid and pcategory = cid and cdepartment = did and ptax = tid and psupplier = " + id + " order by barcode";
         List<Product> products;
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
+        Connection conn = getConnection();
+        Statement s = null;
+        ResultSet set = null;
         try {
-            ResultSet set = stmt.executeQuery(query);
+            s = conn.createStatement();
+            set = s.executeQuery("select * from products, categorys, departments, tax, suppliers where pSupplier = sid and pcategory = cid and cdepartment = did and ptax = tid and psupplier = " + id + " order by barcode");
             products = getProductsFromResultSet(set);
-            con.commit();
+            conn.commit();
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, set);
         }
         for (Product p : products) {
             p.setCondiments(getProductsCondiments(p.getBarcode()));
@@ -265,74 +259,106 @@ public abstract class DBConnect extends DataConnect {
      * Method to add a new product to the database.
      *
      * @param p the new product to add.
-     * @return the product that was added.
      * @throws SQLException if there was an error adding the product to the
      * database.
      */
     @Override
-    public Product addProduct(Product p) throws SQLException {
-        String query = "INSERT INTO PRODUCTS (pORDER_CODE, pNAME, OPEN_PRICE, pPRICE, pSTOCK, pCOMMENTS, pSHORT_NAME, pcategory, ptax, pcost_price, ppack_size, pmin_level, pmax_level, barcode, pscale, pscale_name, pINCVAT, pLIMIT, pTRACK_STOCK, pcost_percentage, pingredients, psupplier) VALUES (" + p.getSQLInsertString() + ")";
-        Connection con = getConnection();
-        try (PreparedStatement stmt = con.prepareStatement(query)) {
-            stmt.executeUpdate();
-            con.commit();
+    public void addProduct(Product p) throws SQLException {
+        Connection conn = getConnection();
+        PreparedStatement s = null;
+        try {
+            s = conn.prepareStatement("INSERT INTO PRODUCTS (pORDER_CODE, pNAME, OPEN_PRICE, pPRICE, pSTOCK, pCOMMENTS, pSHORT_NAME, pcategory, ptax, pcost_price, ppack_size, pmin_level, pmax_level, barcode, pscale, pscale_name, pINCVAT, pLIMIT, pTRACK_STOCK, pcost_percentage, pingredients, psupplier) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            s.setString(1, p.getOrderCode());
+            s.setString(2, p.getLongName());
+            s.setBoolean(3, p.isOpen());
+            s.setBigDecimal(4, p.getPrice());
+            s.setInt(5, p.getStock());
+            s.setString(6, p.getComments());
+            s.setString(7, p.getShortName());
+            s.setInt(8, p.getCategory().getId());
+            s.setString(9, p.getTax().getName());
+            s.setBigDecimal(10, p.getCostPrice());
+            s.setInt(11, p.getPackSize());
+            s.setInt(12, p.getMinStockLevel());
+            s.setInt(13, p.getMaxStockLevel());
+            s.setString(14, p.getBarcode());
+            s.setDouble(15, p.getScale());
+            s.setString(16, p.getScaleName());
+            s.setBoolean(17, p.isPriceIncVat());
+            s.setBigDecimal(18, p.getPriceLimit());
+            s.setBoolean(19, p.isTrackStock());
+            s.setDouble(20, p.getCostPercentage());
+            s.setString(21, p.getIngredients());
+            s.setInt(22, p.getSupplier().getId());
+            s.executeUpdate();
+            conn.commit();
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, null);
         }
-        return p;
     }
 
     @Override
     public void batchProductUpdate(List<Product> products) throws SQLException {
-        Connection con = getConnection();
-        try (Statement s = con.createStatement()) {
+        Connection conn = getConnection();
+        Statement s = null;
+        try {
+            s = conn.createStatement();
             for (Product p : products) {
                 s.executeUpdate(p.getSQlUpdateString());
             }
-            con.commit();
+            conn.commit();
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, null);
         }
     }
 
     @Override
     public void batchStockReceive(HashMap<String, Integer> updates) throws SQLException {
-        Connection con = getConnection();
-        try (Statement s = con.createStatement()) {
+        Connection conn = getConnection();
+        Statement s = null;
+        try {
+            s = conn.createStatement();
             for (Map.Entry me : updates.entrySet()) {
-                String sql = "update products set pstock = (pstock + " + me.getValue() + ") where barcode='" + me.getKey() + "'";
-                s.executeUpdate(sql);
+                s.executeUpdate("update products set pstock = (pstock + " + me.getValue() + ") where barcode='" + me.getKey() + "'");
             }
-            con.commit();
+            conn.commit();
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, null);
         }
     }
 
     @Override
-    public Product updateProduct(Product p) throws SQLException, ProductNotFoundException {
+    public void updateProduct(Product p) throws SQLException, ProductNotFoundException {
         String query = p.getSQlUpdateString();
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
+        Connection conn = getConnection();
+        Statement s = null;
         int value;
         try {
-            value = stmt.executeUpdate(query);
+            s = conn.createStatement();
+            value = s.executeUpdate(query);
             if (value == 0) {
                 throw new ProductNotFoundException("Product " + p.getBarcode() + " could not be found");
             }
-            con.commit();
+            conn.commit();
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, null);
         }
-        return p;
     }
 
     /**
@@ -344,24 +370,24 @@ public abstract class DBConnect extends DataConnect {
      */
     @Override
     public boolean checkBarcode(String barcode) throws SQLException {
-        String query = "SELECT BARCODE FROM PRODUCTS WHERE BARCODE = '" + barcode + "'";
-        ResultSet res;
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
+        Connection conn = getConnection();
+        Statement s = null;
+        ResultSet set = null;
         try {
-            res = stmt.executeQuery(query);
-            if (res.next()) {
-                res.close();
-                con.commit();
-                return true;
+            s = conn.createStatement();
+            set = s.executeQuery("SELECT count(*) FROM PRODUCTS WHERE BARCODE = '" + barcode + "'");
+            boolean aflag = false;
+            while (set.next()) {
+                aflag = set.getInt(1) != 0;
             }
-            res.close();
-            con.commit();
-            return false;
+            conn.commit();
+            return aflag;
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, set);
         }
     }
 
@@ -387,17 +413,20 @@ public abstract class DBConnect extends DataConnect {
     @Override
     public void removeProduct(String barcode) throws SQLException, ProductNotFoundException {
         Connection con = getConnection();
+        Statement s = null;
         try {
-            Statement stmt = con.createStatement();
-            stmt.executeUpdate("DELETE FROM WASTEITEMS WHERE PRODUCT = '" + barcode + "'");
-            stmt.executeUpdate("DELETE FROM TRIGGERS WHERE PRODUCT = '" + barcode + "'");
-            stmt.executeUpdate("DELETE FROM RECEIVEDITEMS WHERE PRODUCT = '" + barcode + "'");
-            stmt.executeUpdate("DELETE FROM PRODUCTS WHERE PRODUCTS.BARCODE = '" + barcode + "'");
+            s = con.createStatement();
+            s.executeUpdate("DELETE FROM WASTEITEMS WHERE PRODUCT = '" + barcode + "'");
+            s.executeUpdate("DELETE FROM TRIGGERS WHERE PRODUCT = '" + barcode + "'");
+            s.executeUpdate("DELETE FROM RECEIVEDITEMS WHERE PRODUCT = '" + barcode + "'");
+            s.executeUpdate("DELETE FROM PRODUCTS WHERE PRODUCTS.BARCODE = '" + barcode + "'");
             con.commit();
         } catch (SQLException ex) {
             LOG.log(Level.SEVERE, null, ex);
             con.rollback();
             throw ex;
+        } finally {
+            close(s, null);
         }
     }
 
@@ -406,35 +435,36 @@ public abstract class DBConnect extends DataConnect {
      *
      * @param barcode the product to purchase.
      * @param amount the amount of the product to purchase.
-     * @return the new stock level.
      * @throws SQLException if there was an error purchasing the product.
      * @throws OutOfStockException if the product is out of stock.
      * @throws ProductNotFoundException if the product was not found.
      */
     @Override
-    public int purchaseProduct(String barcode, int amount) throws SQLException, OutOfStockException, ProductNotFoundException {
+    public void purchaseProduct(String barcode, int amount) throws SQLException, OutOfStockException, ProductNotFoundException {
         Connection con = getConnection();
-        Statement stmt = con.createStatement();
+        Statement s = null;
+        ResultSet set = null;
         try {
-            ResultSet res = stmt.executeQuery("SELECT barcode, pstock, pmin_level from products where barcode='" + barcode + "'");
-            while (res.next()) {
-                int stock = res.getInt("pstock");
-                stock -= amount;
-                int minStock = res.getInt("pmin_level");
-                res.close();
-                String update = "update products set pstock=" + stock + " where barcode='" + barcode + "'";
-                stmt.executeUpdate(update);
-                if (stock < minStock) {
+            s = con.createStatement();
+            set = s.executeQuery("SELECT barcode, pstock, pmin_level from products where barcode='" + barcode + "'");
+            while (set.next()) {
+                int minStock = set.getInt("pmin_level");
+                int stock = set.getInt("pstock");
+                String update = "update products set pstock = (pstock - " + amount + ") where barcode='" + barcode + "'";
+                s.executeUpdate(update);
+                if ((stock - amount) < minStock) {
                     LOG.log(Level.WARNING, barcode + " is below minimum stock level");
                     g.logWarning("WARNING- Product " + barcode + " is below is minimum level!");
                 }
                 con.commit();
-                return stock;
+                return;
             }
         } catch (SQLException ex) {
             con.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, set);
         }
         throw new ProductNotFoundException(barcode + " could not be found");
     }
@@ -450,21 +480,24 @@ public abstract class DBConnect extends DataConnect {
      */
     @Override
     public Product getProduct(String barcode) throws SQLException, ProductNotFoundException, IOException {
-        String query = "select * from products, categorys, departments, tax, suppliers where psupplier = sid and pcategory = cid and cdepartment = did and ptax = tid and barcode='" + barcode + "'";
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
+        Connection conn = getConnection();
+        Statement s = null;
+        ResultSet set = null;
         List<Product> products = new LinkedList<>();
         try {
-            ResultSet res = stmt.executeQuery(query);
-            products = getProductsFromResultSet(res);
-            con.commit();
+            s = conn.createStatement();
+            set = s.executeQuery("select * from products, categorys, departments, tax, suppliers where psupplier = sid and pcategory = cid and cdepartment = did and ptax = tid and barcode='" + barcode + "'");
+            products = getProductsFromResultSet(set);
+            conn.commit();
             if (products.isEmpty()) {
                 throw new ProductNotFoundException("Product " + barcode + " could not be found");
             }
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, set);
         }
         products.get(0).setCondiments(getProductsCondiments(products.get(0).getBarcode()));
         return products.get(0);
@@ -480,21 +513,24 @@ public abstract class DBConnect extends DataConnect {
      */
     @Override
     public Product getProductByBarcode(String barcode) throws SQLException, ProductNotFoundException {
-        String query = "select * from products, categorys, departments, tax, suppliers where psupplier = sid and pcategory = cid AND cdepartment = did AND ptax = tid and barcode='" + barcode + "'";
         List<Product> products = new LinkedList<>();
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
+        Connection conn = getConnection();
+        Statement s = null;
+        ResultSet set = null;
         try {
-            ResultSet res = stmt.executeQuery(query);
-            products = getProductsFromResultSet(res);
-            con.commit();
+            s = conn.createStatement();
+            set = s.executeQuery("select * from products, categorys, departments, tax, suppliers where psupplier = sid and pcategory = cid AND cdepartment = did AND ptax = tid and barcode='" + barcode + "'");
+            products = getProductsFromResultSet(set);
+            conn.commit();
             if (products.isEmpty()) {
                 throw new ProductNotFoundException(barcode + " could not be found");
             }
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, set);
         }
         return products.get(0);
     }
@@ -512,20 +548,23 @@ public abstract class DBConnect extends DataConnect {
     //Customer Methods
     @Override
     public List<Customer> getAllCustomers() throws SQLException {
-        String query = "SELECT * FROM CUSTOMERS ORDER BY ID";
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
-        List<Customer> customers = new LinkedList<>();
+        Connection conn = getConnection();
+        Statement s = null;
+        ResultSet set = null;
+        List<Customer> customers;
         try {
-            ResultSet set = stmt.executeQuery(query);
+            s = conn.createStatement();
+            set = s.executeQuery("SELECT * FROM CUSTOMERS ORDER BY ID");
             customers = getCustomersFromResultSet(set);
-            con.commit();
+            conn.commit();
+            return customers;
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, set);
         }
-        return customers;
     }
 
     public List<Customer> getCustomersFromResultSet(ResultSet set) throws SQLException {
@@ -582,6 +621,7 @@ public abstract class DBConnect extends DataConnect {
             conn.commit();
         } catch (SQLException ex) {
             conn.rollback();
+            throw ex;
         } finally {
             close(s, set);
         }
@@ -602,6 +642,7 @@ public abstract class DBConnect extends DataConnect {
             }
         } catch (SQLException ex) {
             conn.rollback();
+            throw ex;
         } finally {
             close(s, set);
         }
@@ -622,6 +663,7 @@ public abstract class DBConnect extends DataConnect {
             }
         } catch (SQLException ex) {
             conn.rollback();
+            throw ex;
         } finally {
             close(s, set);
         }
@@ -642,6 +684,7 @@ public abstract class DBConnect extends DataConnect {
             }
         } catch (SQLException ex) {
             conn.rollback();
+            throw ex;
         } finally {
             close(s, set);
         }
@@ -658,152 +701,144 @@ public abstract class DBConnect extends DataConnect {
     @Override
     public void addCustomer(Customer c) throws SQLException {
         c = (Customer) Encryptor.encrypt(c);
-        String query = "INSERT INTO CUSTOMERS (NAME, ID, PHONE, MOBILE, EMAIL, ADDRESS_LINE_1, ADDRESS_LINE_2, TOWN, COUNTY, COUNTRY, POSTCODE, NOTES, LOYALTY_POINTS, MONEY_DUE, MAX_DEBT) VALUES (" + c.getSQLInsertString() + ")";
-        Connection con = getConnection();
-        PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        Connection conn = getConnection();
+        PreparedStatement s = null;
         try {
-            stmt.executeUpdate();
-            ResultSet set = stmt.getGeneratedKeys();
-            while (set.next()) {
-                String id = set.getString(1);
-                c.setId(id);
-            }
-            con.commit();
+            s = conn.prepareStatement("INSERT INTO CUSTOMERS (NAME, ID, PHONE, MOBILE, EMAIL, ADDRESS_LINE_1, ADDRESS_LINE_2, TOWN, COUNTY, COUNTRY, POSTCODE, NOTES, MONEY_DUE, MAX_DEBT) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            s.setString(1, c.getName());
+            s.setString(2, c.getId());
+            s.setString(3, c.getPhone());
+            s.setString(4, c.getMobile());
+            s.setString(5, c.getEmail());
+            s.setString(6, c.getAddressLine1());
+            s.setString(7, c.getAddressLine2());
+            s.setString(8, c.getTown());
+            s.setString(9, c.getCounty());
+            s.setString(10, c.getCountry());
+            s.setString(11, c.getPostcode());
+            s.setString(12, c.getNotes());
+            s.setBigDecimal(13, c.getMoneyDue());
+            s.setBigDecimal(14, c.getMaxDebt());
+            s.executeUpdate();
+            conn.commit();
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, null);
         }
     }
 
     @Override
-    public Customer updateCustomer(Customer c) throws SQLException, CustomerNotFoundException {
+    public void updateCustomer(Customer c) throws SQLException, JTillException {
         c = (Customer) Encryptor.encrypt(c);
-        String query = c.getSQLUpdateString();
         Connection con = getConnection();
-        Statement stmt = con.createStatement();
+        Statement s = null;
         int value;
         try {
-            value = stmt.executeUpdate(query);
+            s = con.createStatement();
+            value = s.executeUpdate(c.getSQLUpdateString());
             con.commit();
             if (value == 0) {
-                throw new CustomerNotFoundException(c.getId() + "");
+                throw new JTillException(c.getId() + "");
             }
         } catch (SQLException ex) {
             con.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, null);
         }
-        c = (Customer) Encryptor.decrypt(c);
-        return c;
     }
 
     @Override
-    public void removeCustomer(Customer c) throws SQLException, CustomerNotFoundException {
-        removeCustomer(c.getId());
-    }
-
-    @Override
-    public void removeCustomer(String id) throws SQLException, CustomerNotFoundException {
-        String query = "DELETE FROM CUSTOMERS WHERE CUSTOMERS.ID = '" + id + "'";
+    public void removeCustomer(Customer c) throws SQLException, JTillException {
         Connection con = getConnection();
-        Statement stmt = con.createStatement();
+        Statement s = null;
         int value;
         try {
-            value = stmt.executeUpdate(query);
+            s = con.createStatement();
+            value = s.executeUpdate("DELETE FROM CUSTOMERS WHERE CUSTOMERS.ID = '" + c.getId() + "'");
             con.commit();
             if (value == 0) {
-                throw new CustomerNotFoundException(id + "");
+                throw new JTillException(c.getId() + " could not be found");
             }
         } catch (SQLException ex) {
             con.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, null);
         }
     }
 
     @Override
-    public Customer getCustomer(int id) throws SQLException, CustomerNotFoundException {
-        String query = "SELECT * FROM CUSTOMERS WHERE CUSTOMERS.ID = " + id;
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
+    public Customer getCustomer(String id) throws SQLException, JTillException {
+        Connection conn = getConnection();
+        Statement s = null;
+        ResultSet set = null;
         List<Customer> customers = new LinkedList<>();
         try {
-            ResultSet res = stmt.executeQuery(query);
-            customers = getCustomersFromResultSet(res);
-            con.commit();
+            s = conn.createStatement();
+            set = s.executeQuery("SELECT * FROM CUSTOMERS WHERE CUSTOMERS.ID = '" + id + "'");
+            customers = getCustomersFromResultSet(set);
+            conn.commit();
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, set);
         }
         if (customers.isEmpty()) {
-            throw new CustomerNotFoundException("Customer " + id + " could not be found");
+            throw new JTillException("Customer " + id + " could not be found");
         }
         return customers.get(0);
     }
 
     @Override
-    public List<Customer> getCustomerByName(String name) throws SQLException, CustomerNotFoundException {
-        String query = "SELECT * FROM CUSTOMERS WHERE CUSTOMERS.NAME = " + name;
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
+    public List<Customer> getCustomerByName(String name) throws SQLException, JTillException {
+        Connection conn = getConnection();
+        Statement s = conn.createStatement();
+        ResultSet set = null;
         List<Customer> customers = new LinkedList<>();
         try {
-            ResultSet res = stmt.executeQuery(query);
-            customers = getCustomersFromResultSet(res);
-            con.commit();
+            s = conn.createStatement();
+            set = s.executeQuery("SELECT * FROM CUSTOMERS WHERE CUSTOMERS.NAME = '" + name + "'");
+            customers = getCustomersFromResultSet(set);
+            conn.commit();
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, set);
         }
         if (customers.isEmpty()) {
-            throw new CustomerNotFoundException("Customer " + name + " could not be found");
+            throw new JTillException("Customer " + name + " could not be found");
         }
         return customers;
-    }
-
-    @Override
-    public List<Customer> customerLookup(String terms) throws IOException, SQLException {
-        String query = "SELECT * FROM CUSTOMERS";
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
-        List<Customer> customers = new LinkedList<>();
-        try {
-            ResultSet res = stmt.executeQuery(query);
-            customers = getCustomersFromResultSet(res);
-            con.commit();
-        } catch (SQLException ex) {
-            con.rollback();
-            LOG.log(Level.SEVERE, null, ex);
-            throw ex;
-        }
-
-        List<Customer> newList = new LinkedList<>();
-
-        customers.stream().filter((c) -> (c.getName().toLowerCase().contains(terms.toLowerCase()))).forEachOrdered((c) -> {
-            newList.add(c);
-        });
-
-        return newList;
     }
 
     //Staff Methods
     @Override
     public List<Staff> getAllStaff() throws SQLException {
-        String query = "SELECT * FROM STAFF ORDER BY stID";
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
+        Connection conn = getConnection();
+        Statement s = null;
+        ResultSet set = null;
         List<Staff> staff = new LinkedList<>();
         try {
-            ResultSet set = stmt.executeQuery(query);
+            s = conn.createStatement();
+            set = s.executeQuery("SELECT * FROM STAFF ORDER BY stID");
             staff = getStaffFromResultSet(set);
-            con.commit();
+            conn.commit();
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, set);
         }
 
         return staff;
@@ -828,88 +863,98 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public Staff addStaff(Staff s) throws SQLException {
-        String query = "INSERT INTO STAFF (stNAME, stPOSITION, stUSERNAME, stPASSWORD, stENABLED, stWAGE) VALUES (" + s.getSQLInsertString() + ")";
-        Connection con = getConnection();
-        PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    public Staff addStaff(Staff staff) throws SQLException {;
+        Connection conn = getConnection();
+        PreparedStatement s = null;
+        ResultSet set = null;
         try {
-            stmt.executeUpdate();
-            ResultSet set = stmt.getGeneratedKeys();
+            s = conn.prepareStatement("INSERT INTO STAFF (stNAME, stPOSITION, stUSERNAME, stPASSWORD, stENABLED, stWAGE) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            s.setString(1, staff.getName());
+            s.setInt(2, staff.getPosition());
+            s.setString(3, staff.getUsername());
+            s.setString(4, staff.getPassword());
+            s.setBoolean(5, staff.isEnabled());
+            s.setDouble(6, staff.getWage());
+            s.executeUpdate();
+            set = s.getGeneratedKeys();
             while (set.next()) {
                 int id = set.getInt(1);
-                s.setId(id);
+                staff.setId(id);
             }
-            con.commit();
+            conn.commit();
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, null);
         }
-        return s;
+        return staff;
     }
 
     @Override
-    public Staff updateStaff(Staff s) throws SQLException, StaffNotFoundException {
-        String query = s.getSQLUpdateString();
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
+    public void updateStaff(Staff staff) throws SQLException, JTillException {
+        Connection conn = getConnection();
+        Statement s = null;
         int value;
         try {
-            value = stmt.executeUpdate(query);
-            con.commit();
+            s = conn.createStatement();
+            value = s.executeUpdate(staff.getSQLUpdateString());
+            conn.commit();
             if (value == 0) {
-                throw new StaffNotFoundException(s.getId() + "");
+                throw new JTillException(staff.getId() + "");
             }
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, null);
         }
-        return s;
     }
 
     @Override
-    public void removeStaff(Staff s) throws SQLException, StaffNotFoundException {
-        removeStaff(s.getId());
-    }
-
-    @Override
-    public void removeStaff(int id) throws SQLException, StaffNotFoundException {
-        String query = "DELETE FROM STAFF WHERE STAFF.ID = " + id;
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
+    public void removeStaff(Staff staff) throws SQLException, JTillException {
+        Connection conn = getConnection();
+        Statement s = null;
         int value;
         try {
-            value = stmt.executeUpdate(query);
-            con.commit();
+            s = conn.createStatement();
+            value = s.executeUpdate("DELETE FROM STAFF WHERE STAFF.ID = " + staff.getId());
+            conn.commit();
             if (value == 0) {
-                throw new StaffNotFoundException(id + "");
+                throw new JTillException(staff.getId() + " could not be found");
             }
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, null);
         }
     }
 
     @Override
-    public Staff getStaff(int id) throws SQLException, StaffNotFoundException {
-        String query = "SELECT * FROM STAFF WHERE stID = " + id;
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
+    public Staff getStaff(int id) throws SQLException, JTillException {
+        Connection conn = getConnection();
+        Statement s = conn.createStatement();
+        ResultSet set = null;
         List<Staff> staff = new LinkedList<>();
         try {
-            ResultSet set = stmt.executeQuery(query);
+            s = conn.createStatement();
+            set = s.executeQuery("SELECT * FROM STAFF WHERE stID = " + id);
             staff = getStaffFromResultSet(set);
-            con.commit();
+            conn.commit();
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, set);
         }
 
         if (staff.isEmpty()) {
-            throw new StaffNotFoundException(id + "");
+            throw new JTillException(id + "");
         }
 
         return staff.get(0);
@@ -917,32 +962,35 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Staff login(String username, String password) throws SQLException, LoginException {
-        String query = "SELECT * FROM STAFF WHERE stusername = '" + username.toLowerCase() + "'";
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
+        Connection conn = getConnection();
+        Statement s = null;
+        ResultSet set = null;
         List<Staff> staff = new LinkedList<>();
         try {
-            ResultSet res = stmt.executeQuery(query);
-            staff = getStaffFromResultSet(res);
-            con.commit();
+            s = conn.createStatement();
+            set = s.executeQuery("SELECT * FROM STAFF WHERE stusername = '" + username.toLowerCase() + "'");
+            staff = getStaffFromResultSet(set);
+            conn.commit();
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, set);
         }
 
         if (staff.isEmpty()) {
             throw new LoginException(username + " could not be found");
         }
 
-        Staff s = staff.get(0);
+        Staff st = staff.get(0);
 
-        if (!s.isEnabled()) {
+        if (!st.isEnabled()) {
             throw new LoginException("Account not enabled");
         }
 
-        if (s.getPassword().equals(password)) {
-            return s;
+        if (st.getPassword().equals(password)) {
+            return st;
         }
 
         throw new LoginException("Incorrect Password");
@@ -950,22 +998,25 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public int getStaffCount() throws SQLException {
-        String query = "SELECT COUNT(*) FROM STAFF";
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
+        Connection conn = getConnection();
+        Statement s = null;
+        ResultSet set = null;
         try {
-            ResultSet res = stmt.executeQuery(query);
-            while (res.next()) {
-                int count = res.getInt(1);
-                con.commit();
+            s = conn.createStatement();
+            set = s.executeQuery("SELECT COUNT(*) FROM STAFF");
+            while (set.next()) {
+                int count = set.getInt(1);
+                conn.commit();
                 return count;
             }
-            con.commit();
+            conn.commit();
             return 0;
         } catch (SQLException ex) {
-            con.rollback();
+            conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(s, set);
         }
     }
 
@@ -1443,7 +1494,7 @@ public abstract class DBConnect extends DataConnect {
         c.setMoneyDue(c.getMoneyDue().add(amount));
         try {
             updateCustomer(c);
-        } catch (SQLException | CustomerNotFoundException ex) {
+        } catch (SQLException | JTillException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }
     }
@@ -1708,12 +1759,12 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public void logout(Staff s) throws IOException, StaffNotFoundException {
+    public void logout(Staff s) throws IOException, JTillException {
 
     }
 
     @Override
-    public void tillLogout(Staff s) throws IOException, StaffNotFoundException {
+    public void tillLogout(Staff s) throws IOException, JTillException {
         try {
             loggedInSem.acquire();
             loggedIn.remove(s);
@@ -2371,7 +2422,7 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public boolean isTillLoggedIn(Staff s) throws IOException, StaffNotFoundException, SQLException {
+    public boolean isTillLoggedIn(Staff s) throws IOException, JTillException, SQLException {
         return loggedIn.contains(s);
     }
 
@@ -3153,7 +3204,7 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public void clockOn(int id) throws IOException, SQLException, StaffNotFoundException {
+    public void clockOn(int id) throws IOException, SQLException, JTillException {
         long stamp = clockLock.readLock();
         try {
             for (int i : clockedOn) {
@@ -3181,7 +3232,7 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public void clockOff(int id) throws IOException, SQLException, StaffNotFoundException {
+    public void clockOff(int id) throws IOException, SQLException, JTillException {
         String query = "INSERT INTO CLOCKONOFF(STAFF, TIMESTAMP, ONOFF) VALUES (" + id + "," + new Date().getTime() + "," + 1 + ")";
         Connection con = getConnection();
         try {
@@ -3204,7 +3255,7 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public List<ClockItem> getAllClocks(int sid) throws IOException, SQLException, StaffNotFoundException {
+    public List<ClockItem> getAllClocks(int sid) throws IOException, SQLException, JTillException {
         String query = "SELECT * FROM CLOCKONOFF WHERE STAFF=" + sid;
         Connection con = getConnection();
         try {
@@ -3228,7 +3279,7 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public void clearClocks(int id) throws IOException, SQLException, StaffNotFoundException {
+    public void clearClocks(int id) throws IOException, SQLException, JTillException {
         String query = "DELETE FROM CLOCKONOFF WHERE STAFF=" + id;
         Connection con = getConnection();
         try {
@@ -3527,7 +3578,7 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public List<Sale> getStaffSales(Staff s) throws IOException, SQLException, StaffNotFoundException {
+    public List<Sale> getStaffSales(Staff s) throws IOException, SQLException, JTillException {
         final String query = "SELECT * FROM SALES s, TILLS t, STAFF st WHERE st.ID = s.STAFF AND s.TERMINAL = t.ID AND s.STAFF = " + s.getId();
         final Connection con = getConnection();
         try {

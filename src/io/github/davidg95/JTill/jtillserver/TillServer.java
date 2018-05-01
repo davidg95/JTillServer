@@ -38,7 +38,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  *
  * @author 1301480
  */
-public class TillServer implements JConnListener, JTill{
+public class TillServer implements JConnListener, JTill {
 
     private static final Logger logger = Logger.getGlobal();
 
@@ -346,8 +346,7 @@ public class TillServer implements JConnListener, JTill{
         });
 
         statusItem.addActionListener((ActionEvent e) -> {
-            JOptionPane.showMessageDialog(null, "Database Address- " + db.getAddress()
-                    + "\nDatabase User- " + db.getUsername(),
+            JOptionPane.showMessageDialog(null, "Database Address- " + db.address,
                     "JTill Server Status", JOptionPane.INFORMATION_MESSAGE);
         });
 

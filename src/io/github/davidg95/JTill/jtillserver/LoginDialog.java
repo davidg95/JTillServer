@@ -232,7 +232,7 @@ public class LoginDialog extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "You do not have authority to log in", "Log in", JOptionPane.ERROR_MESSAGE);
                     try {
                         jtill.getDataConnection().logout(staff);
-                    } catch (StaffNotFoundException ex) {
+                    } catch (JTillException ex) {
                     }
                     return;
                 }

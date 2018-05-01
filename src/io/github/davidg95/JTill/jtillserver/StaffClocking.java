@@ -381,7 +381,7 @@ public class StaffClocking extends javax.swing.JInternalFrame {
             for (Component comp : calPanel.getComponents()) {
                 comp.setEnabled(true);
             }
-        } catch (IOException | SQLException | StaffNotFoundException ex) {
+        } catch (IOException | SQLException | JTillException ex) {
             Logger.getLogger(StaffClocking.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSearchActionPerformed
@@ -409,7 +409,7 @@ public class StaffClocking extends javax.swing.JInternalFrame {
                 currentTableContents = new ArrayList<>();
                 setTable();
                 JOptionPane.showMessageDialog(this, "Hours cleared", "Hours", JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException | SQLException | StaffNotFoundException ex) {
+            } catch (IOException | SQLException | JTillException ex) {
                 JOptionPane.showMessageDialog(this, ex);
             }
         }
@@ -471,7 +471,7 @@ public class StaffClocking extends javax.swing.JInternalFrame {
                         JOptionPane.showMessageDialog(this, "Printing complete", "Wage Report", JOptionPane.INFORMATION_MESSAGE);
 
                     }
-                } catch (StaffNotFoundException ex) {
+                } catch (JTillException ex) {
                     Logger.getLogger(StaffClocking.class
                             .getName()).log(Level.SEVERE, null, ex);
 

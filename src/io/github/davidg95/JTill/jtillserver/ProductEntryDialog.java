@@ -1200,7 +1200,7 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 product.save();
                 JOptionPane.showMessageDialog(this, "Product has been saved", "Edit Product", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                product = jtill.getDataConnection().addProduct(product);
+                jtill.getDataConnection().addProduct(product);
                 if (chkAssignNextPrivate.isSelected()) {
                     if (nextBarcode != null) {
                         jtill.getDataConnection().setSetting("NEXT_PRIVATE", nextBarcode);

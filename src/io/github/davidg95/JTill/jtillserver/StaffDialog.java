@@ -317,7 +317,7 @@ public class StaffDialog extends javax.swing.JDialog {
                 staff.setUsername(username);
                 jtill.getDataConnection().updateStaff(staff);
                 this.setVisible(false);
-            } catch (IOException | StaffNotFoundException | SQLException ex) {
+            } catch (IOException | JTillException | SQLException ex) {
                 showError(ex);
             }
         }
