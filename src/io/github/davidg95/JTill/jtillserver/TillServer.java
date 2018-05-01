@@ -234,7 +234,7 @@ public class TillServer implements JConnListener, JTill{
             }
             TillSplashScreen.setLabel("Populating database");
             logger.info("Populating database");
-            db.addCustomer(new Customer("NONE", "", "", "", "", "", "", "", "", "", "", 0, BigDecimal.ZERO, BigDecimal.ZERO)); //Create a blank customer
+            db.addCustomer(new Customer("NONE", "", "", "", "", "", "", "", "", "", "", "", BigDecimal.ZERO, BigDecimal.ZERO)); //Create a blank customer
             if (!headless) {
                 TillSplashScreen.hideSplashScreen();
                 Staff s = StaffDialog.showNewStaffDialog(this, null, true); //Show the create staff dialog

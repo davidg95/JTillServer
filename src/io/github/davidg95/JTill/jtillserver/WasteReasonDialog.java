@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +23,10 @@ import javax.swing.InputMap;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -31,11 +35,9 @@ import javax.swing.table.DefaultTableModel;
 public class WasteReasonDialog extends javax.swing.JInternalFrame {
 
     private static WasteReasonDialog dialog;
-    private static final Logger LOG = Logger.getGlobal();
 
     private final JTill jtill;
-    private List<WasteReason> reasons;
-    private final DefaultTableModel model;
+    private ReasonsTableModel model;
 
     private WasteReason reason;
 
@@ -52,14 +54,6 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
         super.setClosable(true);
         super.setIconifiable(true);
         super.setFrameIcon(new ImageIcon(GUI.icon));
-        model = (DefaultTableModel) table.getModel();
-        table.setModel(model);
-        cmbModel = (DefaultComboBoxModel) cmbPriviledge.getModel();
-        cmbModel.addElement("Assisstant");
-        cmbModel.addElement("Supervisor");
-        cmbModel.addElement("Manager");
-        cmbModel.addElement("Area Manager");
-        tabbed.setEnabledAt(1, false);
         init();
     }
 
@@ -80,6 +74,19 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
     }
 
     private void init() {
+        try {
+            List<WasteReason> reasons = jtill.getDataConnection().getUsedWasteReasons();
+            model = new ReasonsTableModel(reasons);
+            table.setModel(model);
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        cmbModel = (DefaultComboBoxModel) cmbPriviledge.getModel();
+        cmbModel.addElement("Assisstant");
+        cmbModel.addElement("Supervisor");
+        cmbModel.addElement("Manager");
+        cmbModel.addElement("Area Manager");
+        tabbed.setEnabledAt(1, false);
         table.setSelectionModel(new ForcedListSelectionModel());
         InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = table.getActionMap();
@@ -93,26 +100,116 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
 
             }
         });
-        reloadList();
-    }
-
-    private void reloadList() {
-        try {
-            reasons = jtill.getDataConnection().getUsedWasteReasons();
-            model.setRowCount(0);
-            for (WasteReason wr : reasons) {
-                model.addRow(new Object[]{wr.getId(), wr.getReason()});
-            }
-        } catch (IOException | SQLException ex) {
-            Logger.getLogger(WasteReasonDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     private void setCurrent(WasteReason reason) {
         this.reason = reason;
-        txtID.setText(reason.getId() + "");
-        txtName.setText(reason.getName());
-        cmbPriviledge.setSelectedIndex(reason.getPriviledgeLevel());
+        if (reason == null) {
+            txtID.setText("");
+            txtName.setText("");
+            cmbPriviledge.setSelectedIndex(0);
+        } else {
+            txtID.setText(reason.getId() + "");
+            txtName.setText(reason.getName());
+            cmbPriviledge.setSelectedIndex(reason.getPriviledgeLevel());
+        }
+    }
+
+    public class ReasonsTableModel implements TableModel {
+
+        private final List<WasteReason> reasons;
+        private final List<TableModelListener> listeners;
+
+        public ReasonsTableModel(List<WasteReason> reasons) {
+            this.reasons = reasons;
+            this.listeners = new LinkedList<>();
+        }
+
+        public WasteReason get(int i) {
+            return reasons.get(i);
+        }
+
+        @Override
+        public int getRowCount() {
+            return reasons.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 2;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0: {
+                    return "ID";
+                }
+                case 1: {
+                    return "Name";
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            switch (columnIndex) {
+                case 0: {
+                    return Integer.class;
+                }
+                case 1: {
+                    return String.class;
+                }
+                default: {
+                    return Object.class;
+                }
+            }
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            WasteReason reason = reasons.get(rowIndex);
+            switch (columnIndex) {
+                case 0: {
+                    return reason.getId();
+                }
+                case 1: {
+                    return reason.getName();
+                }
+                default: {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        }
+
+        private void alertAll() {
+            for (TableModelListener l : listeners) {
+                l.tableChanged(new TableModelEvent(this));
+            }
+        }
+
+        @Override
+        public void addTableModelListener(TableModelListener l) {
+            listeners.add(l);
+        }
+
+        @Override
+        public void removeTableModelListener(TableModelListener l) {
+            listeners.remove(l);
+        }
+
     }
 
     /**
@@ -228,8 +325,6 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
 
         jLabel1.setText("ID:");
 
-        txtID.setEditable(false);
-
         jLabel2.setText("Name:");
 
         jLabel3.setText("Priviledge Level:");
@@ -331,27 +426,9 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
-        String reason = JOptionPane.showInputDialog(this, "Enter new waste reason", "New Reason", JOptionPane.PLAIN_MESSAGE);
-
-        if (reason == null) {
-            return;
-        }
-        if (reason.equals("")) {
-            JOptionPane.showMessageDialog(this, "A value must be entered", "New Waste Reason", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        WasteReason wr = new WasteReason(reason, 0);
-        try {
-            wr = jtill.getDataConnection().addWasteReason(wr);
-            reloadList();
-            setCurrent(wr);
-            tabbed.setEnabledAt(1, true);
-            tabbed.setSelectedIndex(1);
-        } catch (IOException | SQLException ex) {
-            LOG.log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        setCurrent(null);
+        tabbed.setEnabledAt(1, true);
+        tabbed.setSelectedIndex(1);
     }//GEN-LAST:event_btnNewActionPerformed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
@@ -365,7 +442,7 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
         }
         btnEdit.setEnabled(true);
         tabbed.setEnabledAt(1, true);
-        WasteReason r = reasons.get(row);
+        WasteReason r = model.get(row);
         setCurrent(r);
         if (evt.getClickCount() == 2) {
             tabbed.setSelectedIndex(1);
@@ -373,12 +450,24 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tableMouseClicked
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        if (txtID.getText().isEmpty() || txtName.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Fill out all fields", "New Waste Reason", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int id = Integer.parseInt(txtID.getText());
         String name = txtName.getText();
         int level = cmbPriviledge.getSelectedIndex();
-        reason.setReason(name);
-        reason.setPriviledgeLevel(level);
+        if (reason != null) {
+            reason.setId(id);
+            reason.setReason(name);
+            reason.setPriviledgeLevel(level);
+        } else {
+            reason = new WasteReason(id, name, level);
+        }
         try {
             reason.save();
+            init();
+            JOptionPane.showMessageDialog(this, "Saved", "Waste Reason", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -390,9 +479,8 @@ public class WasteReasonDialog extends javax.swing.JInternalFrame {
                 jtill.getDataConnection().deleteWasteReason(reason);
                 tabbed.setSelectedIndex(0);
                 reason = null;
-                reloadList();
                 tabbed.setEnabledAt(1, false);
-                JOptionPane.showMessageDialog(this, "Waste reason removed", "Waste Reason", JOptionPane.INFORMATION_MESSAGE);
+                init();
             }
         } catch (IOException | SQLException | JTillException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);

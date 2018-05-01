@@ -163,7 +163,7 @@ public class HttpController {
                 product.put("price", p.getPrice());
                 product.put("costPrice", p.getCostPrice());
                 product.put("packSize", p.getPackSize());
-                product.put("tax", p.getTax().getId());
+                product.put("tax", p.getTax().getName());
                 product.put("category", p.getCategory().getId());
                 product.put("comments", p.getComments());
                 product.put("ingredients", p.getIngredients());

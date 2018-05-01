@@ -46,7 +46,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         super.setFrameIcon(new ImageIcon(GUI.icon));
         initComponents();
         showAllTaxes();
-        table.getColumnModel().getColumn(0).setMaxWidth(40);
+        table.getColumnModel().getColumn(1).setMaxWidth(50);
         table.setSelectionModel(new ForcedListSelectionModel());
     }
 
@@ -88,7 +88,7 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         }
 
         public void addTax(Tax t) throws IOException, SQLException {
-            t = jtill.getDataConnection().addTax(t);
+            jtill.getDataConnection().addTax(t);
             taxes.add(t);
             alertAll();
         }
@@ -130,17 +130,15 @@ public class TaxWindow extends javax.swing.JInternalFrame {
 
         @Override
         public int getColumnCount() {
-            return 3;
+            return 2;
         }
 
         @Override
         public String getColumnName(int columnIndex) {
             switch (columnIndex) {
                 case 0:
-                    return "ID";
-                case 1:
                     return "Name";
-                case 2:
+                case 1:
                     return "Value";
                 default:
                     return "";
@@ -150,8 +148,6 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         @Override
         public Class<?> getColumnClass(int columnIndex) {
             switch (columnIndex) {
-                case 0:
-                    return Object.class;
                 case 1:
                     return String.class;
                 case 2:
@@ -171,10 +167,8 @@ public class TaxWindow extends javax.swing.JInternalFrame {
             final Tax t = taxes.get(rowIndex);
             switch (columnIndex) {
                 case 0:
-                    return t.getId();
-                case 1:
                     return t.getName();
-                case 2:
+                case 1:
                     return t.getValue();
                 default:
                     return "";
@@ -185,10 +179,10 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
             Tax t = taxes.get(rowIndex);
             switch (columnIndex) {
-                case 1:
+                case 0:
                     t.setName((String) aValue);
                     break;
-                case 2:
+                case 1:
                     double value = (double) aValue;
                     if (value < 0 || value > 100) {
                         JOptionPane.showMessageDialog(TaxWindow.this, "Value msut be between 0 and 100", "Tax", JOptionPane.ERROR_MESSAGE);
@@ -260,14 +254,14 @@ public class TaxWindow extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Name", "Value"
+                "Name", "Value"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -286,11 +280,8 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
-            table.getColumnModel().getColumn(0).setMinWidth(40);
-            table.getColumnModel().getColumn(0).setPreferredWidth(40);
-            table.getColumnModel().getColumn(0).setMaxWidth(40);
+            table.getColumnModel().getColumn(0).setResizable(false);
             table.getColumnModel().getColumn(1).setResizable(false);
-            table.getColumnModel().getColumn(2).setResizable(false);
         }
 
         btnAdd.setText("Add New");
@@ -376,31 +367,12 @@ public class TaxWindow extends javax.swing.JInternalFrame {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         try {
-            String name = JOptionPane.showInputDialog(this, "Enter name for new tax class", "New Tax Class", JOptionPane.PLAIN_MESSAGE);
-            if (name == null || name.isEmpty()) {
-                return;
-            }
-            String val = JOptionPane.showInputDialog(this, "Enter value for new tax class", "New Tax Class", JOptionPane.PLAIN_MESSAGE);
-            if (val == null || val.isEmpty()) {
-                return;
-            }
-            if (!Utilities.isNumber(val)) {
-                JOptionPane.showMessageDialog(this, "Must enter a number for value", "New Tax", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            double value = Double.parseDouble(val);
-            if (value < 0 || value > 100) {
-                JOptionPane.showMessageDialog(this, "Value must be between 0 and 100", "New Tax Class", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            Tax t = new Tax(name, value);
-            try {
+            Tax t = CreateTaxDialog.showDialog(this, jtill);
+            if (t != null) {
                 model.addTax(t);
-            } catch (IOException | SQLException ex) {
-                showError(ex);
             }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Fill out all required fields", "New Tax", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException | SQLException ex) {
+            showError(ex);
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -434,10 +406,6 @@ public class TaxWindow extends javax.swing.JInternalFrame {
             remove.addActionListener((event) -> {
                 delete(tax);
             });
-
-            if (tax.getId() == 1) {
-                remove.setEnabled(false);
-            }
 
             menu.add(remove);
             menu.show(table, evt.getX(), evt.getY());

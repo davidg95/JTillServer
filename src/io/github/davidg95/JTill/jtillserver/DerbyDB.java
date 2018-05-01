@@ -5,6 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -24,29 +25,22 @@ public class DerbyDB extends DBConnect {
             + "     tiUUID VARCHAR(50) not null,\n"
             + "     tiNAME VARCHAR(20) not null,\n"
             + "     tiUNCASHED DOUBLE not null,\n"
-            + "     tiDEFAULT_SCREEN INT not null\n"
+            + "     tiDEFAULT_SCREEN INT not null references screens(scid)\n"
             + ")";
     String departments = "create table DEPARTMENTS\n"
             + "(\n"
-            + "     dID INT not null primary key\n"
-            + "         GENERATED ALWAYS AS IDENTITY\n"
-            + "         (START WITH 1, INCREMENT BY 1),"
+            + "     dID INT not null primary key\n,"
             + "     dNAME VARCHAR(30) not null\n"
             + ")";
     String categorys = "create table CATEGORYS\n"
             + "(\n"
-            + "     cID INT not null primary key\n"
-            + "        GENERATED ALWAYS AS IDENTITY\n"
-            + "        (START WITH 1, INCREMENT BY 1),\n"
+            + "     cID INT not null primary key,\n"
             + "     cNAME VARCHAR(20) not null,\n"
             + "     cDEPARTMENT INT references DEPARTMENTS(dID)\n"
             + ")";
     String tax = "create table TAX\n"
             + "(\n"
-            + "	tID INT not null primary key\n"
-            + "        GENERATED ALWAYS AS IDENTITY\n"
-            + "        (START WITH 1, INCREMENT BY 1),\n"
-            + "	tNAME VARCHAR(20) not null,\n"
+            + "	tNAME VARCHAR(20) not null primary key,\n"
             + "	tVALUE DOUBLE not null\n"
             + ")";
     String sales = "create table SALES\n"
@@ -55,7 +49,7 @@ public class DerbyDB extends DBConnect {
             + "        GENERATED ALWAYS AS IDENTITY\n"
             + "        (START WITH 1, INCREMENT BY 1),\n"
             + "     saPRICE DOUBLE,\n"
-            + "     saCUSTOMER int,\n"
+            + "     saCUSTOMER varchar(20),\n"
             + "     saTIMESTAMP bigint,\n"
             + "     saTERMINAL int not null references TILLS(tiID),\n"
             + "     saCASHED boolean not null,\n"
@@ -77,9 +71,7 @@ public class DerbyDB extends DBConnect {
             + ")";
     String customers = "create table CUSTOMERS\n"
             + "(\n"
-            + "	ID INT not null primary key\n"
-            + "        GENERATED ALWAYS AS IDENTITY\n"
-            + "        (START WITH 1, INCREMENT BY 1),\n"
+            + "	ID varchar(20) not null primary key,\n"
             + "	NAME VARCHAR(200) not null,\n"
             + "	PHONE VARCHAR(200),\n"
             + "	MOBILE VARCHAR(200),\n"
@@ -91,7 +83,6 @@ public class DerbyDB extends DBConnect {
             + "	COUNTRY VARCHAR(200),\n"
             + "	POSTCODE VARCHAR(200),\n"
             + "	NOTES VARCHAR(1000),\n"
-            + "	LOYALTY_POINTS INTEGER,\n"
             + "     MONEY_DUE DOUBLE,\n"
             + "     MAX_DEBT BIGINT\n"
             + ")";
@@ -107,7 +98,7 @@ public class DerbyDB extends DBConnect {
             + "     pPACK_SIZE INT,\n"
             + "     pSTOCK INTEGER,\n"
             + "     pCategory INT not null references CATEGORYS(cID),\n"
-            + "     pTax INT not null references TAX(tID),\n"
+            + "     pTax varchar(20) not null references TAX(tname),\n"
             + "     pmin_level INTEGER,\n"
             + "     pmax_level INTEGER,\n"
             + "     pSCALE DOUBLE,\n"
@@ -124,9 +115,7 @@ public class DerbyDB extends DBConnect {
             + ")";
     String discounts = "create table DISCOUNTS\n"
             + "(\n"
-            + "	ID INT not null primary key\n"
-            + "        GENERATED ALWAYS AS IDENTITY\n"
-            + "        (START WITH 1, INCREMENT BY 1),\n"
+            + "	ID INT not null primary key,\n"
             + "	NAME VARCHAR(20) not null,\n"
             + "	PLU INTEGER,\n"
             + "	PERCENTAGE DOUBLE not null,\n"
@@ -161,7 +150,7 @@ public class DerbyDB extends DBConnect {
             + "        (START WITH 1, INCREMENT BY 1),\n"
             + "     stNAME VARCHAR(50) not null,\n"
             + "     stPOSITION INTEGER not null,\n"
-            + "     stUSERNAME VARCHAR(20) not null,\n"
+            + "     stUSERNAME VARCHAR(20) not null unique,\n"
             + "     stPASSWORD VARCHAR(200) not null,\n"
             + "     stENABLED BOOLEAN,\n"
             + "     stWAGE DOUBLE\n"
@@ -198,18 +187,14 @@ public class DerbyDB extends DBConnect {
             + ")";
     String wasteReasons = "create table WASTEREASONS\n"
             + "(\n"
-            + "     wrID INT not null primary key\n"
-            + "         GENERATED ALWAYS AS IDENTITY\n"
-            + "         (START WITH 1, INCREMENT BY 1),\n"
+            + "     wrID INT not null primary key,\n"
             + "     wrREASON VARCHAR(30),\n"
             + "     wrpriv INT,\n"
             + "     wrDELETED BOOLEAN\n"
             + ")";
     String refundReason = "CREATE TABLE REFUND_REASONS\n"
             + "(\n"
-            + "     refID INT not null primary key\n"
-            + "        GENERATED ALWAYS AS IDENTITY\n"
-            + "        (START WITH 1, INCREMENT BY 1),\n"
+            + "     refID INT not null primary key,\n"
             + "     refREASON VARCHAR(30) NOT NULL,\n"
             + "     refLEVEL INT NOT NULL,\n"
             + "     refDELETED BOOLEAN NOT NULL\n"
@@ -227,9 +212,7 @@ public class DerbyDB extends DBConnect {
             + ")";
     String suppliers = "create table SUPPLIERS\n"
             + "(\n"
-            + "     sID INT not null primary key\n"
-            + "       GENERATED ALWAYS AS IDENTITY\n"
-            + "         (START WITH 1, INCREMENT BY 1),\n"
+            + "     sID INT not null primary key,\n"
             + "     sNAME VARCHAR(30),\n"
             + "     sADDRESS VARCHAR(100),\n"
             + "     sPHONE VARCHAR(20),\n"
@@ -340,19 +323,19 @@ public class DerbyDB extends DBConnect {
         connection = getConnection();
         try {
             Statement s = connection.createStatement();
-            s.executeUpdate(tills);
             s.executeUpdate(tax);
             s.executeUpdate(departments);
             s.executeUpdate(categorys);
-            s.executeUpdate(sales);
             s.executeUpdate(customers);
             s.executeUpdate(products);
             s.executeUpdate(discounts);
             s.executeUpdate(buckets);
             s.executeUpdate(triggers);
-            s.executeUpdate(saleItems);
             s.executeUpdate(staff);
             s.executeUpdate(screens);
+            s.executeUpdate(tills);
+            s.executeUpdate(sales);
+            s.executeUpdate(saleItems);
             s.executeUpdate(buttons);
             s.executeUpdate(wasteReasons);
             s.executeUpdate(wasteItems);
@@ -366,11 +349,11 @@ public class DerbyDB extends DBConnect {
             s.executeUpdate(orders);
             s.executeUpdate(orderItems);
             s.executeUpdate(refundReason);
-            String addDepartment = "INSERT INTO DEPARTMENTS (dNAME) VALUES ('Default')";
-            String addCategory = "INSERT INTO CATEGORYS (cNAME, cDEPARTMENT) VALUES ('Default', 1)";
-            String addTax = "INSERT INTO TAX (tNAME, tVALUE) VALUES ('ZERO',0.0)";
-            String addWasteReason = "INSERT INTO WASTEREASONS (wrREASON, wrDELETED) VALUES ('Default', 'FALSE')";
-            String addRefundReason = "insert into REFUND_REASONS (refreason, reflevel, refdeleted) values('Default', 1, FALSE)";
+            String addDepartment = "INSERT INTO DEPARTMENTS (did, dNAME) VALUES (1,'Default')";
+            String addCategory = "INSERT INTO CATEGORYS (cid, cNAME, cDEPARTMENT) VALUES (1, 'Default', 1)";
+            String addTax = "INSERT INTO TAX (tid, tNAME, tVALUE) VALUES (1, 'ZERO',0.0)";
+            String addWasteReason = "INSERT INTO WASTEREASONS (wrid, wrREASON, wrDELETED) VALUES (1, 'Default', 'FALSE')";
+            String addRefundReason = "insert into REFUND_REASONS (refid, refreason, reflevel, refdeleted) values(1, 'Default', 1, FALSE)";
             s.executeUpdate(addDepartment);
             s.executeUpdate(addCategory);
             s.executeUpdate(addTax);

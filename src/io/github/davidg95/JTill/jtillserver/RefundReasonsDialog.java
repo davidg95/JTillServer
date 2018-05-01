@@ -25,7 +25,6 @@ import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 /**
@@ -38,7 +37,7 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
 
     private final JTill jtill;
 
-    private MyModel model;
+    private ReasonTableModel model;
     private final DefaultComboBoxModel cmbModel;
 
     private RefundReason reason;
@@ -82,7 +81,7 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
     }
 
     private void init() throws IOException, SQLException {
-        model = new MyModel(jtill.getDataConnection().getUsedRefundReasons());
+        model = new ReasonTableModel(jtill.getDataConnection().getUsedRefundReasons());
         table.setModel(model);
         table.getColumnModel().getColumn(0).setMinWidth(40);
         table.getColumnModel().getColumn(0).setMaxWidth(40);
@@ -103,26 +102,31 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
 
     private void setCurrent(RefundReason reason) {
         this.reason = reason;
-        txtId.setText(reason.getId() + "");
-        txtReason.setText(reason.getReason());
-        cmbPriviledge.setSelectedIndex(reason.getPriviledgeLevel());
+        if (reason == null) {
+            txtId.setText("");
+            txtReason.setText("");
+            cmbPriviledge.setSelectedIndex(0);
+        } else {
+            txtId.setText(reason.getId() + "");
+            txtReason.setText(reason.getReason());
+            cmbPriviledge.setSelectedIndex(reason.getPriviledgeLevel());
+        }
     }
 
-    private class MyModel implements TableModel {
+    private class ReasonTableModel implements TableModel {
 
         private final List<RefundReason> reasons;
         private final List<TableModelListener> listeners;
 
-        public MyModel(List<RefundReason> reasons) {
+        public ReasonTableModel(List<RefundReason> reasons) {
             this.reasons = reasons;
             this.listeners = new LinkedList<>();
         }
 
-        public RefundReason addReason(RefundReason reason) throws IOException, SQLException {
-            reason = jtill.getDataConnection().addRefundReason(reason);
+        public void addReason(RefundReason reason) throws IOException, SQLException {
+            jtill.getDataConnection().addRefundReason(reason);
             reasons.add(reason);
             alertAll();
-            return reason;
         }
 
         public void removeReason(RefundReason reason) throws IOException, SQLException, JTillException {
@@ -330,7 +334,11 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
 
         jLabel3.setText("Privilage Level:");
 
-        txtId.setEditable(false);
+        cmbPriviledge.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbPriviledgeActionPerformed(evt);
+            }
+        });
 
         btnClose2.setText("Close");
         btnClose2.addActionListener(new java.awt.event.ActionListener() {
@@ -360,8 +368,18 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
             .addGroup(panelEditLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelEditLayout.createSequentialGroup()
+                        .addComponent(btnSave)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDelete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 213, Short.MAX_VALUE)
+                        .addComponent(btnClose2))
                     .addGroup(panelEditLayout.createSequentialGroup()
                         .addGroup(panelEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelEditLayout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cmbPriviledge, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(panelEditLayout.createSequentialGroup()
                                 .addGap(32, 32, 32)
                                 .addGroup(panelEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -369,19 +387,9 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
                                     .addComponent(jLabel1))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(panelEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtReason)
-                                    .addComponent(txtId, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelEditLayout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cmbPriviledge, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelEditLayout.createSequentialGroup()
-                        .addComponent(btnSave)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDelete)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 213, Short.MAX_VALUE)
-                        .addComponent(btnClose2)))
+                                    .addComponent(txtReason, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                                    .addComponent(txtId))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         panelEditLayout.setVerticalGroup(
@@ -399,7 +407,7 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
                 .addGroup(panelEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(cmbPriviledge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 282, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 290, Short.MAX_VALUE)
                 .addGroup(panelEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose2)
                     .addComponent(btnSave)
@@ -438,36 +446,33 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnClose2ActionPerformed
 
     private void btnReasonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReasonActionPerformed
-        String reason = JOptionPane.showInputDialog(this, "Enter new refund reason", "New Reason", JOptionPane.PLAIN_MESSAGE);
-
-        if (reason == null) {
-            return;
-        }
-        if (reason.equals("")) {
-            JOptionPane.showMessageDialog(this, "A value must be entered", "New Refund Reason", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        RefundReason rr = new RefundReason(reason, 0);
-        try {
-            rr = model.addReason(rr);
-            setCurrent(rr);
-            tabbed.setEnabledAt(1, true);
-            tabbed.setSelectedIndex(1);
-        } catch (IOException | SQLException ex) {
-            Logger.getLogger(RefundReasonsDialog.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        setCurrent(null);
+        tabbed.setEnabledAt(1, true);
+        tabbed.setSelectedIndex(1);
     }//GEN-LAST:event_btnReasonActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        if (txtId.getText().isEmpty() || txtReason.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Fill out all fields", "New Refund Reason", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!Utilities.isNumber(txtId.getText())) {
+            JOptionPane.showMessageDialog(this, "ID must be a number", "New Refund Reason", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int id = Integer.parseInt(txtId.getText());
         String name = txtReason.getText();
         int level = cmbPriviledge.getSelectedIndex();
-        reason.setReason(name);
-        reason.setPriviledgeLevel(level);
+        if (reason == null) {
+            reason = new RefundReason(id, name, level);
+        } else {
+            reason.setReason(name);
+            reason.setPriviledgeLevel(level);
+        }
         try {
             reason.save();
-            model.alertAll();
+            init();
+            JOptionPane.showMessageDialog(this, "Saved", "New Refund Reason", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -480,7 +485,6 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
                 tabbed.setSelectedIndex(0);
                 reason = null;
                 tabbed.setEnabledAt(1, false);
-                JOptionPane.showMessageDialog(this, "Refund reason removed", "Refund Reason", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (IOException | SQLException | JTillException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -504,6 +508,10 @@ public class RefundReasonsDialog extends javax.swing.JInternalFrame {
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         tabbed.setSelectedIndex(1);
     }//GEN-LAST:event_btnEditActionPerformed
+
+    private void cmbPriviledgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbPriviledgeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbPriviledgeActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;

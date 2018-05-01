@@ -129,7 +129,7 @@ public class ConsolidatedReportingWindow extends javax.swing.JInternalFrame {
                     }
                     for (Tax t : taxes) {
                         final Product p = (Product) si.getProduct();
-                        if (t.getId() == p.getTax().getId()) {
+                        if (t.getName() == null ? p.getTax().getName() == null : t.getName().equals(p.getTax().getName())) {
                             t.addToSales(si.getTotalPrice());
                             t.addToPayable(si.getTotalTax());
                         }

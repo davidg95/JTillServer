@@ -109,13 +109,22 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
     }
 
     private void setCurrent(Supplier s) {
-        txtId.setText(s.getId() + "");
-        txtName.setText(s.getName());
-        txtAddress.setText(s.getAddress());
-        txtContact.setText(s.getContactNumber());
-        txtEmail.setText(s.getEmail());
-        txtAccountNumber.setText(s.getAccountNumber());
         current = s;
+        if (s != null) {
+            txtId.setText(s.getId() + "");
+            txtName.setText(s.getName());
+            txtAddress.setText(s.getAddress());
+            txtContact.setText(s.getContactNumber());
+            txtEmail.setText(s.getEmail());
+            txtAccountNumber.setText(s.getAccountNumber());
+        } else {
+            txtId.setText("");
+            txtName.setText("");
+            txtAddress.setText("");
+            txtContact.setText("");
+            txtEmail.setText("");
+            txtAccountNumber.setText("");
+        }
     }
 
     public class MyModel implements TableModel {
@@ -135,7 +144,7 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
         }
 
         public void removeSupplier(Supplier s) throws IOException, SQLException, JTillException {
-            jtill.getDataConnection().removeSupplier(s.getId());
+            jtill.getDataConnection().removeSupplier(s);
             suppliers.remove(s);
             alertAll();
         }
@@ -342,7 +351,7 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
             tabBrowseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(tabBrowseLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(tabBrowseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
@@ -364,8 +373,6 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
         txtAddress.setColumns(20);
         txtAddress.setRows(5);
         jScrollPane2.setViewportView(txtAddress);
-
-        txtId.setEditable(false);
 
         btnSave.setText("Save");
         btnSave.addActionListener(new java.awt.event.ActionListener() {
@@ -426,8 +433,8 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
                                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
                                     .addComponent(txtContact)
                                     .addComponent(txtName)
-                                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtEmail))))
+                                    .addComponent(txtEmail)
+                                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(355, 355, 355))))
         );
         tabEditLayout.setVerticalGroup(
@@ -457,7 +464,7 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
                 .addGroup(tabEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(txtAccountNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
                 .addGroup(tabEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSave)
                     .addComponent(btnDeleteSupplier)
@@ -492,15 +499,9 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCloseActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        Supplier s = SupplierDialog.showDialog(this);
-        if (s == null) {
-            return;
-        }
-        try {
-            model.addSupplier(s);
-        } catch (IOException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        setCurrent(null);
+        tabbed.setEnabledAt(1, true);
+        tabbed.setSelectedIndex(1);
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
@@ -550,21 +551,44 @@ public class SupplierWindow extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "Not a valid email address", "Email", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            current.setName(txtName.getText());
-            current.setAddress(txtAddress.getText());
-            current.setContactNumber(txtContact.getText());
-            current.setEmail(txtEmail.getText());
-            current.setAccountNumber(txtAccountNumber.getText());
-            current.save();
-            model.alertAll();
-        } catch (IOException | SQLException ex) {
+            if (!Utilities.isNumber(txtId.getText())) {
+                JOptionPane.showMessageDialog(this, "Must enter a number for ID", "New Suppleir", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int id = Integer.parseInt(txtId.getText());
+            String name = txtName.getText();
+            String address = txtAddress.getText();
+            String contact = txtContact.getText();
+            String email = txtEmail.getText();
+            String account = txtAccountNumber.getText();
+            if (current != null) {
+                current.setId(id);
+                current.setName(name);
+                current.setAddress(address);
+                current.setContactNumber(contact);
+                current.setEmail(email);
+                current.setAccountNumber(account);
+                jtill.getDataConnection().updateSupplier(current);
+            } else {
+                current = new Supplier(id, name, address, contact, account, email);
+                jtill.getDataConnection().addSupplier(current);
+            }
+            init();
+            JOptionPane.showMessageDialog(this, "Saved", "New Supplier", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException | SQLException | JTillException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnDeleteSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteSupplierActionPerformed
         try {
-            jtill.getDataConnection().removeSupplier(current.getId());
+            if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this supplier?\n" + current.getName(), "Remove Supplier", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                jtill.getDataConnection().removeSupplier(current);
+                tabbed.setSelectedIndex(0);
+                setCurrent(null);
+                init();
+                tabbed.setEnabledAt(1, false);
+            }
         } catch (IOException | SQLException | JTillException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }

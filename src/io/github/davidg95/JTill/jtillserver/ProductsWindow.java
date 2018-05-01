@@ -1014,7 +1014,7 @@ public class ProductsWindow extends javax.swing.JInternalFrame {
                             + p.getMinStockLevel() + ","
                             + p.getPrice() + ","
                             + p.getStock() + ","
-                            + p.getTax().getId());
+                            + p.getTax().getName());
                 }
                 pw.close();
             } catch (FileNotFoundException ex) {

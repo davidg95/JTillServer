@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -46,7 +45,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
      * Creates new form CategoryWindow
      */
     public CategorysWindow(JTill jtill) {
-        this.jtill= jtill;
+        this.jtill = jtill;
         super.setMaximizable(true);
         super.setIconifiable(true);
         super.setClosable(true);
@@ -131,7 +130,7 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
         }
 
         public void addCategory(Category c) throws IOException, SQLException {
-            c = jtill.getDataConnection().addCategory(c);
+            jtill.getDataConnection().addCategory(c);
             categories.add(c);
             alertAll();
         }
@@ -409,18 +408,11 @@ public final class CategorysWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        String name = JOptionPane.showInputDialog(this, "Enter Category Name", "New Category", JOptionPane.PLAIN_MESSAGE);
-        if (name == null || name.isEmpty()) {
-            return;
-        }
         try {
-            Object deps[] = Department.getAll().toArray();
-            Department d = (Department) JOptionPane.showInputDialog(this, "Select Department", "New Category", JOptionPane.PLAIN_MESSAGE, null, deps, deps[0]);
-            if (d == null) {
-                return;
+            category = CreateCategoryDialog.showDialog(this, jtill);
+            if (category != null) {
+                model.addCategory(category);
             }
-            category = new Category(name, d);
-            model.addCategory(category);
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             return;

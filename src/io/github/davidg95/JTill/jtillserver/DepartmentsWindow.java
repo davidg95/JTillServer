@@ -128,7 +128,7 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
         }
 
         public void addDepartment(Department d) throws IOException, SQLException {
-            d = jtill.getDataConnection().addDepartment(d);
+            jtill.getDataConnection().addDepartment(d);
             departments.add(d);
             alertAll();
         }
@@ -343,19 +343,11 @@ public class DepartmentsWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewDepartmentActionPerformed
-        String name = JOptionPane.showInputDialog(this, "Enter name for new department", "New Department", JOptionPane.PLAIN_MESSAGE);
-
-        if (name == null) {
-            return;
-        }
-        if (name.equals("")) {
-            JOptionPane.showMessageDialog(this, "Cannot have a null value", "New Department", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        department = new Department(name);
         try {
-            model.addDepartment(department);
+            department = CreateDepartmentDialog.showDialog(this, jtill);
+            if (department != null) {
+                model.addDepartment(department);
+            }
         } catch (IOException | SQLException ex) {
             JOptionPane.showMessageDialog(this, ex);
         }

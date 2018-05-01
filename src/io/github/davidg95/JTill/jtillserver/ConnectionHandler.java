@@ -104,13 +104,18 @@ public class ConnectionHandler {
         return dc.productLookup(terms);
     }
 
+    @JConnMethod("customerid")
+    public boolean isCustomerIDUsed(@JConnParameter("id") String id) throws IOException, SQLException {
+        return dc.isCustomerIDUsed(id);
+    }
+
     @JConnMethod("NEWCUSTOMER")
-    public Customer newCustomer(@JConnParameter("CUSTOMER") Customer c) throws IOException, SQLException {
-        return dc.addCustomer(c);
+    public void newCustomer(@JConnParameter("CUSTOMER") Customer c) throws IOException, SQLException {
+        dc.addCustomer(c);
     }
 
     @JConnMethod("REMOVECUSTOMER")
-    public void removeCustomer(@JConnParameter("ID") int id) throws IOException, CustomerNotFoundException, SQLException {
+    public void removeCustomer(@JConnParameter("ID") String id) throws IOException, CustomerNotFoundException, SQLException {
         dc.removeCustomer(id);
     }
 
@@ -257,8 +262,8 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("ADDCATEGORY")
-    public Category addCategory(@JConnParameter("CATEGORY") Category c) throws IOException, SQLException {
-        return dc.addCategory(c);
+    public void addCategory(@JConnParameter("CATEGORY") Category c) throws IOException, SQLException {
+        dc.addCategory(c);
     }
 
     @JConnMethod("UPDATECATEGORY")
@@ -312,13 +317,13 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("ADDTAX")
-    public Tax addTax(@JConnParameter("TAX") Tax t) throws IOException, SQLException {
-        return dc.addTax(t);
+    public void addTax(@JConnParameter("TAX") Tax t) throws IOException, SQLException {
+        dc.addTax(t);
     }
 
     @JConnMethod("REMOVETAX")
-    public void removeTax(@JConnParameter("ID") int id) throws IOException, SQLException, JTillException {
-        dc.removeTax(id);
+    public void removeTax(@JConnParameter("t") Tax t) throws IOException, SQLException, JTillException {
+        dc.removeTax(t);
     }
 
     @JConnMethod("GETTAX")
@@ -507,8 +512,8 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("ADDWASTEREASON")
-    public WasteReason addWasteReason(@JConnParameter("WASTE") WasteReason wr) throws IOException, SQLException, JTillException {
-        return dc.addWasteReason(wr);
+    public void addWasteReason(@JConnParameter("WASTE") WasteReason wr) throws IOException, SQLException, JTillException {
+        dc.addWasteReason(wr);
     }
 
     @JConnMethod("REMOVEWASTEREASON")
@@ -532,13 +537,13 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("ADDSUPPLIER")
-    public Supplier addSupplier(@JConnParameter("SUPPLIER") Supplier s) throws IOException, SQLException, JTillException {
-        return dc.addSupplier(s);
+    public void addSupplier(@JConnParameter("SUPPLIER") Supplier s) throws IOException, SQLException, JTillException {
+        dc.addSupplier(s);
     }
 
     @JConnMethod("REMOVESUPPLIER")
-    public void removeSupplier(@JConnParameter("ID") int id) throws IOException, SQLException, JTillException {
-        dc.removeSupplier(id);
+    public void removeSupplier(@JConnParameter("s") Supplier s) throws IOException, SQLException, JTillException {
+        dc.removeSupplier(s);
     }
 
     @JConnMethod("GETSUPPLIER")
@@ -557,8 +562,8 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("ADDDEPARTMENT")
-    public Department addDepartment(@JConnParameter("DEPARTMENT") Department d) throws IOException, SQLException, JTillException {
-        return dc.addDepartment(d);
+    public void addDepartment(@JConnParameter("DEPARTMENT") Department d) throws IOException, SQLException, JTillException {
+        dc.addDepartment(d);
     }
 
     @JConnMethod("REMOVEDEPARTMENT")
@@ -963,8 +968,8 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("ADDREFUNDREASON")
-    public RefundReason addRefundReason(@JConnParameter("REASON") RefundReason reason) throws IOException, SQLException {
-        return dc.addRefundReason(reason);
+    public void addRefundReason(@JConnParameter("REASON") RefundReason reason) throws IOException, SQLException {
+        dc.addRefundReason(reason);
     }
 
     @JConnMethod("REMOVEREFUNDREASON")
@@ -1010,5 +1015,10 @@ public class ConnectionHandler {
     @JConnMethod("BATCHSTOCKRECEIVE")
     public void batchStockReceive(@JConnParameter("updates") HashMap<String, Integer> updates) throws SQLException {
         dc.batchStockReceive(updates);
+    }
+
+    @JConnMethod("taxname")
+    public boolean isTaxNameUsed(@JConnParameter("name") String name) throws SQLException {
+        return dc.isTaxNameUsed(name);
     }
 }

@@ -211,7 +211,7 @@ public abstract class DBConnect extends DataConnect {
             String comments = set.getString("pcomments");
             String shortName = set.getString("pshort_name");
             int cId = set.getInt("pcategory");
-            int taxID = set.getInt("ptax");
+            String tName = set.getString("ptax");
             BigDecimal costPrice = set.getBigDecimal("pcost_price");
             int minStock = set.getInt("pmin_level");
             int maxStock = set.getInt("pmax_level");
@@ -235,7 +235,6 @@ public abstract class DBConnect extends DataConnect {
 
             Category c = new Category(cId, cName, d);
 
-            String tName = set.getString("tname");
             double value = set.getDouble("tvalue");
             int supplier = set.getInt("pSupplier");
             Supplier s = null;
@@ -248,7 +247,7 @@ public abstract class DBConnect extends DataConnect {
                 s = new Supplier(supplier, sname, saddress, sphone, saccount, semail);
             }
 
-            Tax t = new Tax(taxID, tName, value);
+            Tax t = new Tax(tName, value);
 
             Product p;
             if (!open) {
@@ -532,7 +531,7 @@ public abstract class DBConnect extends DataConnect {
     public List<Customer> getCustomersFromResultSet(ResultSet set) throws SQLException {
         List<Customer> customers = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt(1);
+            String id = set.getString(1);
             String name = set.getString(2);
             String phone = set.getString(3);
             String mobile = set.getString(4);
@@ -544,35 +543,129 @@ public abstract class DBConnect extends DataConnect {
             String country = set.getString(10);
             String postcode = set.getString(11);
             String notes = set.getString(12);
-            int loyaltyPoints = set.getInt(13);
-            BigDecimal moneyDue = set.getBigDecimal(14);
-            BigDecimal maxDebt = set.getBigDecimal(15);
-            Customer c = new Customer(id, name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, loyaltyPoints, moneyDue, maxDebt);
+            BigDecimal moneyDue = set.getBigDecimal(13);
+            BigDecimal maxDebt = set.getBigDecimal(14);
+            Customer c = new Customer(id, name, phone, mobile, email, address1, address2, town, county, country, postcode, notes, moneyDue, maxDebt);
             c = (Customer) Encryptor.decrypt(c);
             customers.add(c);
         }
         return customers;
     }
 
+    private void close(Statement s, ResultSet set) {
+        if (s != null) {
+            try {
+                s.close();
+            } catch (SQLException ex) {
+            }
+        }
+        if (set != null) {
+            try {
+                set.close();
+            } catch (SQLException ex) {
+            }
+        }
+    }
+
+    @Override
+    public boolean isCustomerIDUsed(String id) throws SQLException {
+        Connection conn = getConnection();
+        Statement s = null;
+        ResultSet set = null;
+
+        try {
+            s = conn.createStatement();
+            set = s.executeQuery("select count(*) from customers where cid='" + id + "'");
+            while (set.next()) {
+                return set.getInt(1) > 0;
+            }
+            conn.commit();
+        } catch (SQLException ex) {
+            conn.rollback();
+        } finally {
+            close(s, set);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isCategoryIDUsed(int id) throws SQLException {
+        Connection conn = getConnection();
+        Statement s = null;
+        ResultSet set = null;
+
+        try {
+            s = conn.createStatement();
+            set = s.executeQuery("select count(*) from categorys where cid = " + id);
+            while (set.next()) {
+                return set.getInt(1) > 0;
+            }
+        } catch (SQLException ex) {
+            conn.rollback();
+        } finally {
+            close(s, set);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isDepartmentIDUsed(int id) throws SQLException {
+        Connection conn = getConnection();
+        Statement s = null;
+        ResultSet set = null;
+
+        try {
+            s = conn.createStatement();
+            set = s.executeQuery("select count(*) from departments where did = " + id);
+            while (set.next()) {
+                return set.getInt(1) > 0;
+            }
+        } catch (SQLException ex) {
+            conn.rollback();
+        } finally {
+            close(s, set);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isTaxNameUsed(String name) throws SQLException {
+        Connection conn = getConnection();
+        Statement s = null;
+        ResultSet set = null;
+
+        try {
+            s = conn.createStatement();
+            set = s.executeQuery("select count(*) from taxes where tname = '" + name + "'");
+            while (set.next()) {
+                return set.getInt(1) > 0;
+            }
+        } catch (SQLException ex) {
+            conn.rollback();
+        } finally {
+            close(s, set);
+        }
+        return false;
+    }
+
     /**
      * Method to add a new product to the database.
      *
      * @param c the new customer to add.
-     * @return the customer that was added.
      * @throws SQLException if there was an error adding the customer to the
      * database.
      */
     @Override
-    public Customer addCustomer(Customer c) throws SQLException {
+    public void addCustomer(Customer c) throws SQLException {
         c = (Customer) Encryptor.encrypt(c);
-        String query = "INSERT INTO CUSTOMERS (NAME, PHONE, MOBILE, EMAIL, ADDRESS_LINE_1, ADDRESS_LINE_2, TOWN, COUNTY, COUNTRY, POSTCODE, NOTES, LOYALTY_POINTS, MONEY_DUE, MAX_DEBT) VALUES (" + c.getSQLInsertString() + ")";
+        String query = "INSERT INTO CUSTOMERS (NAME, ID, PHONE, MOBILE, EMAIL, ADDRESS_LINE_1, ADDRESS_LINE_2, TOWN, COUNTY, COUNTRY, POSTCODE, NOTES, LOYALTY_POINTS, MONEY_DUE, MAX_DEBT) VALUES (" + c.getSQLInsertString() + ")";
         Connection con = getConnection();
         PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         try {
             stmt.executeUpdate();
             ResultSet set = stmt.getGeneratedKeys();
             while (set.next()) {
-                int id = set.getInt(1);
+                String id = set.getString(1);
                 c.setId(id);
             }
             con.commit();
@@ -581,8 +674,6 @@ public abstract class DBConnect extends DataConnect {
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
         }
-        c = (Customer) Encryptor.decrypt(c);
-        return c;
     }
 
     @Override
@@ -613,8 +704,8 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public void removeCustomer(int id) throws SQLException, CustomerNotFoundException {
-        String query = "DELETE FROM CUSTOMERS WHERE CUSTOMERS.ID = " + id;
+    public void removeCustomer(String id) throws SQLException, CustomerNotFoundException {
+        String query = "DELETE FROM CUSTOMERS WHERE CUSTOMERS.ID = '" + id + "'";
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         int value;
@@ -1026,10 +1117,9 @@ public abstract class DBConnect extends DataConnect {
     public List<Tax> getTaxFromResultSet(ResultSet set) throws SQLException {
         List<Tax> tax = new LinkedList<>();
         while (set.next()) {
-            int id = set.getInt(1);
-            String name = set.getString(2);
-            double value = set.getDouble(3);
-            Tax t = new Tax(id, name, value);
+            String name = set.getString(1);
+            double value = set.getDouble(2);
+            Tax t = new Tax(name, value);
 
             tax.add(t);
         }
@@ -1037,24 +1127,20 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public Tax addTax(Tax t) throws SQLException {
-        String query = "INSERT INTO TAX (tNAME, tVALUE) VALUES (" + t.getSQLInsertString() + ")";
+    public void addTax(Tax t) throws SQLException {
         Connection con = getConnection();
-        PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement s;
         try {
-            stmt.executeUpdate();
-            ResultSet set = stmt.getGeneratedKeys();
-            while (set.next()) {
-                int id = set.getInt(1);
-                t.setId(id);
-            }
+            s = con.prepareStatement("INSERT INTO TAX (tNAME, tVALUE) VALUES (?,?)");
+            s.setString(1, t.getName());
+            s.setDouble(2, t.getValue());
+            s.executeUpdate();
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
         }
-        return t;
     }
 
     @Override
@@ -1067,7 +1153,7 @@ public abstract class DBConnect extends DataConnect {
             value = stmt.executeUpdate(query);
             con.commit();
             if (value == 0) {
-                throw new JTillException(t.getId() + "");
+                throw new JTillException(t.getName() + "");
             }
         } catch (SQLException ex) {
             con.rollback();
@@ -1079,20 +1165,15 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public void removeTax(Tax t) throws SQLException, JTillException {
-        removeTax(t.getId());
-    }
-
-    @Override
-    public void removeTax(int id) throws SQLException, JTillException {
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         int value;
         try {
-            stmt.executeUpdate("UPDATE PRODUCTS SET ptax = 1 WHERE ptax = " + id);
-            value = stmt.executeUpdate("DELETE FROM TAX WHERE tid = " + id);
+            stmt.executeUpdate("UPDATE PRODUCTS SET ptax = 1 WHERE ptax = '" + t.getName() + "'");
+            value = stmt.executeUpdate("DELETE FROM TAX WHERE tname = '" + t.getName() + "'");
             con.commit();
             if (value == 0) {
-                throw new JTillException(id + "");
+                throw new JTillException(t.getName() + "Could not be found");
             }
         } catch (SQLException ex) {
             con.rollback();
@@ -1179,24 +1260,20 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public Category addCategory(Category c) throws SQLException {
-        String query = "INSERT INTO CATEGORYS (cNAME, cDEPARTMENT) VALUES (" + c.getSQLInsertString() + ")";
+    public void addCategory(Category c) throws SQLException {
         Connection con = getConnection();
-        PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement stmt = null;
         try {
+            stmt = con.prepareStatement("INSERT INTO CATEGORYS (cid, cNAME, cDEPARTMENT) VALUES (" + c.getSQLInsertString() + ")");
             stmt.executeUpdate();
-            ResultSet set = stmt.getGeneratedKeys();
-            while (set.next()) {
-                int id = set.getInt(1);
-                c.setID(id);
-            }
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } finally {
+            close(stmt, null);
         }
-        return c;
     }
 
     @Override
@@ -1445,7 +1522,7 @@ public abstract class DBConnect extends DataConnect {
             String comments = set.getString("pcomments");
             String shortName = set.getString("pshort_name");
             int cId = set.getInt("pcategory");
-            int taxID = set.getInt("ptax");
+            String tName = set.getString("ptax");
             BigDecimal costPrice = set.getBigDecimal("pcost_price");
             int minStock = set.getInt("pmin_level");
             int maxStock = set.getInt("pmax_level");
@@ -1469,10 +1546,9 @@ public abstract class DBConnect extends DataConnect {
 
             Category c = new Category(cId, cName, d);
 
-            String tName = set.getString("tname");
             double value = set.getDouble("tvalue");
 
-            Tax t = new Tax(taxID, tName, value);
+            Tax t = new Tax(tName, value);
 
             int supplier = set.getInt("pSupplier");
             Supplier sup = null;
@@ -2363,7 +2439,7 @@ public abstract class DBConnect extends DataConnect {
             String comments = set.getString("pcomments");
             String shortName = set.getString("pshort_name");
             int cId = set.getInt("pcategory");
-            int taxID = set.getInt("ptax");
+            String tName = set.getString("ptax");
             BigDecimal costPrice = set.getBigDecimal("pcost_price");
             int minStock = set.getInt("pmin_level");
             int maxStock = set.getInt("pmax_level");
@@ -2387,10 +2463,9 @@ public abstract class DBConnect extends DataConnect {
 
             Category c = new Category(cId, cName, d);
 
-            String tName = set.getString("tname");
             double tValue = set.getDouble("tvalue");
 
-            Tax t = new Tax(taxID, tName, tValue);
+            Tax t = new Tax(tName, tValue);
 
             int supplier = set.getInt("pSupplier");
             Supplier s = null;
@@ -2510,24 +2585,22 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public WasteReason addWasteReason(WasteReason wr) throws IOException, SQLException {
-        String query = "INSERT INTO WASTEREASONS (wrREASON, wrDELETED) values ('" + wr.getReason() + "', false)";
+    public void addWasteReason(WasteReason wr) throws IOException, SQLException {
         Connection con = getConnection();
-        PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement s;
         try {
-            stmt.executeUpdate();
-            ResultSet set = stmt.getGeneratedKeys();
-            while (set.next()) {
-                int id = set.getInt(1);
-                wr.setId(id);
-            }
+            s = con.prepareStatement("INSERT INTO WASTEREASONS (wrid, wrREASON, wrDELETED, wrpriv) values (?,?,?,?)");
+            s.setInt(1, wr.getId());
+            s.setString(2, wr.getReason());
+            s.setBoolean(3, false);
+            s.setInt(4, wr.getPriviledgeLevel());
+            s.executeUpdate();
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
         }
-        return wr;
     }
 
     @Override
@@ -2630,20 +2703,20 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public Supplier addSupplier(Supplier s) throws IOException, SQLException {
-        String query = "INSERT INTO SUPPLIERS (sNAME, sADDRESS, sPHONE, sACCOUNT_NUMBER, sEMAIL) VALUES ('" + s.getName() + "','" + s.getAddress() + "','" + s.getContactNumber() + "','" + s.getEmail() + "','" + s.getAccountNumber() + "')";
+    public void addSupplier(Supplier sup) throws IOException, SQLException {
         Connection con = getConnection();
-        PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement s = null;
         long stamp = supL.writeLock();
         try {
-            stmt.executeUpdate();
-            ResultSet set = stmt.getGeneratedKeys();
-            while (set.next()) {
-                int id = set.getInt(1);
-                s.setId(id);
-            }
+            s = con.prepareStatement("INSERT INTO SUPPLIERS (sid, sNAME, sADDRESS, sPHONE, sACCOUNT_NUMBER, sEMAIL) VALUES (?,?,?,?,?,?)");
+            s.setInt(1, sup.getId());
+            s.setString(2, sup.getName());
+            s.setString(3, sup.getAddress());
+            s.setString(4, sup.getContactNumber());
+            s.setString(5, sup.getAccountNumber());
+            s.setString(6, sup.getEmail());
+            s.executeUpdate();
             con.commit();
-            return s;
         } catch (SQLException ex) {
             con.rollback();
             LOG.log(Level.SEVERE, null, ex);
@@ -2654,8 +2727,8 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public void removeSupplier(int id) throws IOException, SQLException, JTillException {
-        String query = "DELETE FROM SUPPLIERS WHERE ID=" + id;
+    public void removeSupplier(Supplier s) throws IOException, SQLException, JTillException {
+        String query = "DELETE FROM SUPPLIERS WHERE sID=" + s.getId();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         long stamp = supL.writeLock();
@@ -2731,7 +2804,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public Supplier updateSupplier(Supplier s) throws IOException, SQLException, JTillException {
-        String query = "UPDATE SUPPLIERS SET NAME='" + s.getName() + "', ADDRESS='" + s.getAddress() + "', PHONE='" + s.getContactNumber() + "', ACCOUNT_NUMBER='" + s.getAccountNumber() + "', EMAIL='" + s.getEmail() + "' WHERE ID=" + s.getId();
+        String query = "UPDATE SUPPLIERS SET sNAME='" + s.getName() + "', sADDRESS='" + s.getAddress() + "', sPHONE='" + s.getContactNumber() + "', sACCOUNT_NUMBER='" + s.getAccountNumber() + "', sEMAIL='" + s.getEmail() + "' WHERE sID=" + s.getId();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         long stamp = supL.writeLock();
@@ -2749,19 +2822,15 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public Department addDepartment(Department d) throws IOException, SQLException {
-        String query = "INSERT INTO DEPARTMENTS (dNAME) VALUES('" + d.getName() + "')";
+    public void addDepartment(Department d) throws IOException, SQLException {
         Connection con = getConnection();
+        PreparedStatement s;
         try {
-            PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            stmt.executeUpdate();
-            ResultSet set = stmt.getGeneratedKeys();
-            while (set.next()) {
-                int id = set.getInt(1);
-                d.setId(id);
-            }
+            s = con.prepareStatement("insert into departments (did, dname) values(?,?)");
+            s.setInt(1, d.getId());
+            s.setString(2, d.getName());
+            s.executeUpdate();
             con.commit();
-            return d;
         } catch (SQLException ex) {
             con.rollback();
             LOG.log(Level.SEVERE, null, ex);
@@ -3628,7 +3697,7 @@ public abstract class DBConnect extends DataConnect {
                 String comments = set.getString("pcomments");
                 String shortName = set.getString("pshort_name");
                 int cId = set.getInt("pcategory");
-                int taxID = set.getInt("ptax");
+                String tName = set.getString("ptax");
                 BigDecimal costPrice = set.getBigDecimal("pcost_price");
                 int minStock = set.getInt("pmin_level");
                 int maxStock = set.getInt("pmax_level");
@@ -3652,10 +3721,9 @@ public abstract class DBConnect extends DataConnect {
 
                 Category c = new Category(cId, cName, d);
 
-                String tName = set.getString("tname");
                 double value = set.getDouble("tvalue");
 
-                Tax t = new Tax(taxID, tName, value);
+                Tax t = new Tax(tName, value);
 
                 int supplier = set.getInt("pSupplier");
                 Supplier s = null;
@@ -4120,7 +4188,7 @@ public abstract class DBConnect extends DataConnect {
                 String comments = set.getString("pcomments");
                 String shortName = set.getString("pshort_name");
                 int cId = set.getInt("pcategory");
-                int taxID = set.getInt("ptax");
+                String tName = set.getString("ptax");
                 BigDecimal costPrice = set.getBigDecimal("pcost_price");
                 int minStock = set.getInt("pmin_level");
                 int maxStock = set.getInt("pmax_level");
@@ -4144,10 +4212,9 @@ public abstract class DBConnect extends DataConnect {
 
                 Category c = new Category(cId, cName, d);
 
-                String tName = set.getString("tname");
                 double value = set.getDouble("tvalue");
 
-                Tax t = new Tax(taxID, tName, value);
+                Tax t = new Tax(tName, value);
 
                 int conId = set.getInt("product");
                 String p_conn = set.getString("product_con");
@@ -4314,7 +4381,7 @@ public abstract class DBConnect extends DataConnect {
                     String comments = set.getString("pcomments");
                     String shortName = set.getString("pshort_name");
                     int cId = set.getInt("pcategory");
-                    int taxID = set.getInt("ptax");
+                    String tName = set2.getString("ptax");
                     BigDecimal costPrice = set.getBigDecimal("pcost_price");
                     int minStock = set.getInt("pmin_level");
                     int maxStock = set.getInt("pmax_level");
@@ -4338,10 +4405,9 @@ public abstract class DBConnect extends DataConnect {
 
                     Category c = new Category(cId, cName, d);
 
-                    String tName = set2.getString("tname");
                     double value = set2.getDouble("tvalue");
 
-                    Tax t = new Tax(taxID, tName, value);
+                    Tax t = new Tax(tName, value);
 
                     int supplier = set.getInt("pSupplier");
                     Supplier s = null;
@@ -4603,7 +4669,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public void deleteWasteReason(WasteReason wr) throws SQLException, JTillException {
-        String query = "UPDATE WASTEREASONS SET DELETED = true WHERE ID=" + wr.getId();
+        String query = "UPDATE WASTEREASONS SET wrDELETED = true WHERE wrID=" + wr.getId();
         Connection con = getConnection();
         Statement stmt = con.createStatement();
         int value;
@@ -4621,24 +4687,22 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public RefundReason addRefundReason(RefundReason r) throws IOException, SQLException {
-        String query = "INSERT INTO REFUND_REASONS (refREASON, refLEVEL, refDELETED) values ('" + r.getReason() + "'," + r.getPriviledgeLevel() + ", false)";
+    public void addRefundReason(RefundReason r) throws IOException, SQLException {
         Connection con = getConnection();
-        PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement s = null;
         try {
-            stmt.executeUpdate();
-            ResultSet set = stmt.getGeneratedKeys();
-            while (set.next()) {
-                int id = set.getInt(1);
-                r.setId(id);
-            }
+            s = con.prepareStatement("INSERT INTO REFUND_REASONS (refid, refREASON, refLEVEL, refDELETED) values (?,?,?,?)");
+            s.setInt(1, r.getId());
+            s.setString(2, r.getReason());
+            s.setInt(3, r.getPriviledgeLevel());
+            s.setBoolean(4, false);
+            s.executeUpdate();
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
         }
-        return r;
     }
 
     @Override
