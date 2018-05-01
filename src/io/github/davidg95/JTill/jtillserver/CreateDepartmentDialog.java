@@ -30,6 +30,7 @@ public class CreateDepartmentDialog extends javax.swing.JDialog {
      * Creates new form CreateDepartmentDialog
      */
     public CreateDepartmentDialog(Component parent, JTill jtill) {
+        super(Utilities.getParentWindow(parent));
         initComponents();
         this.jtill = jtill;
         setLocationRelativeTo(parent);

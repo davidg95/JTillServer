@@ -5,9 +5,9 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.Utilities;
 import java.awt.Component;
 import java.awt.Dialog;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -16,7 +16,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.border.Border;
 
 /**
@@ -27,7 +26,7 @@ import javax.swing.border.Border;
 public class ModalDialog {
 
     private JDialog dialog; //The dialog.
-    private Window parent; //The parent component.
+    private Component parent; //The parent component.
     private JPanel panel; //The panel for the components.
 
     private final String title; //The title of the window.
@@ -46,9 +45,7 @@ public class ModalDialog {
         this.title = title;
         this.hidden = false;
         this.parent = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            this.parent = (Window) parent;
-        }
+        this.parent = parent;
         this.modal = true;
         init();
     }
@@ -79,7 +76,7 @@ public class ModalDialog {
         panel = new ModalPanel();
         final Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         panel.setBorder(padding);
-        dialog = new JDialog(parent);
+        dialog = new JDialog(Utilities.getParentWindow(parent));
         dialog.setAlwaysOnTop(true);
         dialog.setResizable(false);
         dialog.setTitle(title);

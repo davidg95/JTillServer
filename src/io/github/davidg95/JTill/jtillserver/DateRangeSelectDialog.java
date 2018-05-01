@@ -5,6 +5,7 @@
  */
 package io.github.davidg95.JTill.jtillserver;
 
+import io.github.davidg95.JTill.jtill.Utilities;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -26,8 +27,8 @@ public class DateRangeSelectDialog extends javax.swing.JDialog {
      *
      * @param parent
      */
-    public DateRangeSelectDialog(Window parent) {
-        super(parent);
+    public DateRangeSelectDialog(Component parent) {
+        super(Utilities.getParentWindow(parent));
         initComponents();
         setLocationRelativeTo(parent);
         setModal(true);
@@ -42,11 +43,7 @@ public class DateRangeSelectDialog extends javax.swing.JDialog {
      * dates[1] is the end date.
      */
     public static Date[] showDialog(Component parent) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
-        DateRangeSelectDialog dialog = new DateRangeSelectDialog(window);
+        DateRangeSelectDialog dialog = new DateRangeSelectDialog(parent);
         dates = null;
         dialog.setVisible(true);
         return dates;

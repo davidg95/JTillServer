@@ -37,8 +37,8 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
     /**
      * Creates new form WasteReasonSelectDialog
      */
-    public WasteReasonSelectDialog(JTill jtill, Window parent) {
-        super(parent);
+    public WasteReasonSelectDialog(JTill jtill, Component parent) {
+        super(Utilities.getParentWindow(parent));
         this.jtill = jtill;
         initComponents();
         setLocationRelativeTo(parent);
@@ -59,11 +59,7 @@ public class WasteReasonSelectDialog extends javax.swing.JDialog {
     }
 
     public static WasteReason showDialog(JTill jtill, Component parent) {
-        Window window = null;
-        if (parent instanceof Frame || parent instanceof Dialog) {
-            window = (Window) parent;
-        }
-        dialog = new WasteReasonSelectDialog(jtill, window);
+        dialog = new WasteReasonSelectDialog(jtill, parent);
         reason = null;
         dialog.setVisible(true);
         return reason;

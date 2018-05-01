@@ -34,8 +34,8 @@ public class SupplierSelectDialog extends javax.swing.JDialog {
     /**
      * Creates new form SuppleirSelectDialog
      */
-    public SupplierSelectDialog(JTill jtill, Window parent) {
-        super(parent);
+    public SupplierSelectDialog(JTill jtill, Component parent) {
+        super(Utilities.getParentWindow(parent));
         this.jtill= jtill;
         initComponents();
         setLocationRelativeTo(parent);
@@ -48,11 +48,7 @@ public class SupplierSelectDialog extends javax.swing.JDialog {
     }
 
     public static Supplier showDialog(JTill jtill, Component parent) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
-        SupplierSelectDialog dialog = new SupplierSelectDialog(jtill, window);
+        SupplierSelectDialog dialog = new SupplierSelectDialog(jtill, parent);
         supplier = null;
         dialog.setVisible(true);
         return supplier;

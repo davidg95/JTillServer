@@ -6,6 +6,7 @@
 package io.github.davidg95.JTill.jtillserver;
 
 import io.github.davidg95.JTill.jtill.Till;
+import io.github.davidg95.JTill.jtill.Utilities;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -31,8 +32,8 @@ public class DateAndTerminalDialog extends javax.swing.JDialog {
     /**
      * Creates new form DateAndTerminalDialog
      */
-    public DateAndTerminalDialog(Window parent, String title) {
-        super(parent);
+    public DateAndTerminalDialog(Component parent, String title) {
+        super(Utilities.getParentWindow(parent));
         initComponents();
         setLocationRelativeTo(parent);
         setTitle(title);
@@ -58,12 +59,8 @@ public class DateAndTerminalDialog extends javax.swing.JDialog {
     }
 
     public static Object[] showDialog(Component parent, String title) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
         selection = null;
-        DateAndTerminalDialog dialog = new DateAndTerminalDialog(window, title);
+        DateAndTerminalDialog dialog = new DateAndTerminalDialog(parent, title);
         dialog.setVisible(true);
         return selection;
     }

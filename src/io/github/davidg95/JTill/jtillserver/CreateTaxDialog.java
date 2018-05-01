@@ -30,6 +30,7 @@ public class CreateTaxDialog extends javax.swing.JDialog {
      * Creates new form CreateTaxDialog
      */
     public CreateTaxDialog(Component parent, JTill jtill) {
+        super(Utilities.getParentWindow(parent));
         this.jtill = jtill;
         initComponents();
         setLocationRelativeTo(parent);

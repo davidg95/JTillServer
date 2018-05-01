@@ -10,13 +10,11 @@ import io.github.davidg95.JTill.jtill.Department;
 import io.github.davidg95.JTill.jtill.JTill;
 import io.github.davidg95.JTill.jtill.Utilities;
 import java.awt.Component;
-import java.awt.Frame;
 import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
@@ -38,6 +36,7 @@ public class CreateCategoryDialog extends javax.swing.JDialog {
      * Creates new form CreateCategoryDialog
      */
     public CreateCategoryDialog(Component parent, JTill jtill) throws IOException, SQLException {
+        super(Utilities.getParentWindow(parent));
         this.jtill = jtill;
         initComponents();
         setLocationRelativeTo(parent);
