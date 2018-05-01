@@ -150,7 +150,7 @@ public abstract class DBConnect extends DataConnect {
 
     @Override
     public List<Product> getAllProducts() throws SQLException, IOException {
-        String query = "select * from products, categorys, departments, tax, suppliers where pcategory = cid and cdepartment = did and ptax = tid and psupplier = sid order by barcode";
+        String query = "select * from products, categorys, departments, tax, suppliers where pcategory = cid and cdepartment = did and ptax = tname and psupplier = sid order by barcode";
         List<Product> products;
         Connection con = getConnection();
         Statement stmt = con.createStatement();
