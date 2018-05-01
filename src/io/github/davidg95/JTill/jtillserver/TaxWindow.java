@@ -148,9 +148,9 @@ public class TaxWindow extends javax.swing.JInternalFrame {
         @Override
         public Class<?> getColumnClass(int columnIndex) {
             switch (columnIndex) {
-                case 1:
+                case 0:
                     return String.class;
-                case 2:
+                case 1:
                     return Double.class;
                 default:
                     return Object.class;

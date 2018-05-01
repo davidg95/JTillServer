@@ -146,7 +146,7 @@ public abstract class DBConnect extends DataConnect {
             s = conn.createStatement();
             set = s.executeQuery("select * from products, categorys, departments, tax, suppliers where pcategory = cid and cdepartment = did and ptax = tname and psupplier = sid order by barcode");
             products = getProductsFromResultSet(set);
-            set = s.executeQuery("select * from products, categorys, departments, tax, suppliers where pcategory = cid and cdepartment = did and ptax = tid and psupplier = -1 order by barcode");
+            set = s.executeQuery("select * from products, categorys, departments, tax, suppliers where pcategory = cid and cdepartment = did and ptax = tname and psupplier = -1 order by barcode");
             List<Product> ps = getProductsFromResultSet(set);
             products.addAll(ps);
             conn.commit();
@@ -4228,7 +4228,7 @@ public abstract class DBConnect extends DataConnect {
         final Connection con = getConnection();
         try {
             Statement stmt = con.createStatement();
-            ResultSet set = stmt.executeQuery("select * from products, categorys, departments, tax, suppliers, condiments where psupplier = sid and pcategory = cid and cdepartment = did and ptax = tid and barcode = product_con AND condiments.product = '" + barcode + "'");
+            ResultSet set = stmt.executeQuery("select * from products, categorys, departments, tax, suppliers, condiments where psupplier = sid and pcategory = cid and cdepartment = did and ptax = tname and barcode = product_con AND condiments.product = '" + barcode + "'");
             List<Condiment> condiments = new LinkedList<>();
             while (set.next()) {
                 String order_code = set.getString("porder_code");
