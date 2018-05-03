@@ -149,9 +149,6 @@ public abstract class DBConnect extends DataConnect {
             s = conn.createStatement();
             set = s.executeQuery("select * from products, categorys, departments, tax, suppliers where pcategory = cid and cdepartment = did and ptax = tname and psupplier = sid order by barcode");
             products = getProductsFromResultSet(set);
-            set = s.executeQuery("select * from products, categorys, departments, tax, suppliers where pcategory = cid and cdepartment = did and ptax = tname and psupplier = -1 order by barcode");
-            List<Product> ps = getProductsFromResultSet(set);
-            products.addAll(ps);
             conn.commit();
         } catch (SQLException ex) {
             conn.rollback();
@@ -681,7 +678,7 @@ public abstract class DBConnect extends DataConnect {
 
         try {
             s = conn.createStatement();
-            set = s.executeQuery("select count(*) from taxes where tname = '" + name + "'");
+            set = s.executeQuery("select count(*) from tax where tname = '" + name + "'");
             while (set.next()) {
                 return set.getInt(1) > 0;
             }

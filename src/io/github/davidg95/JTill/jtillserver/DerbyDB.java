@@ -350,12 +350,10 @@ public class DerbyDB extends DBConnect {
             s.executeUpdate(refundReason);
             String addDepartment = "INSERT INTO DEPARTMENTS (did, dNAME) VALUES (1,'Default')";
             String addCategory = "INSERT INTO CATEGORYS (cid, cNAME, cDEPARTMENT) VALUES (1, 'Default', 1)";
-            String addTax = "INSERT INTO TAX (tid, tNAME, tVALUE) VALUES (1, 'ZERO',0.0)";
             String addWasteReason = "INSERT INTO WASTEREASONS (wrid, wrREASON, wrDELETED) VALUES (1, 'Default', 'FALSE')";
             String addRefundReason = "insert into REFUND_REASONS (refid, refreason, reflevel, refdeleted) values(1, 'Default', 1, FALSE)";
             s.executeUpdate(addDepartment);
             s.executeUpdate(addCategory);
-            s.executeUpdate(addTax);
             s.executeUpdate(addWasteReason);
             s.executeUpdate(addRefundReason);
             s.close();

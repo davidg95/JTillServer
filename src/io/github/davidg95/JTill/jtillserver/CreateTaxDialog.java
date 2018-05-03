@@ -65,6 +65,12 @@ public class CreateTaxDialog extends javax.swing.JDialog {
         setModal(true);
         setResizable(false);
 
+        txtValue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtValueActionPerformed(evt);
+            }
+        });
+
         btnCreate.setText("Create");
         btnCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -172,6 +178,10 @@ public class CreateTaxDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnCreateActionPerformed
+
+    private void txtValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtValueActionPerformed
+        btnCreate.doClick();
+    }//GEN-LAST:event_txtValueActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;

@@ -108,7 +108,6 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
                 catModel.addElement(c);
             }
             List<Supplier> sups = jtill.getDataConnection().getAllSuppliers();
-            supModel.addElement("NONE");
             for (Supplier s : sups) {
                 supModel.addElement(s);
             }
@@ -1241,8 +1240,12 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
     private void btnEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnterActionPerformed
         try {
-            if(!checkSuppliers()){
+            if (!checkSuppliers()) {
                 JOptionPane.showMessageDialog(this, "You need to set a supplier first", "New Product", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (!checkTaxes()) {
+                JOptionPane.showMessageDialog(this, "You need to set up a tax class first", "New Product", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             sortBarcode();
@@ -1260,10 +1263,14 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btnEnterActionPerformed
 
-    private boolean checkSuppliers() throws IOException, SQLException{
-        return jtill.getDataConnection().getAllSuppliers().isEmpty();
+    private boolean checkSuppliers() throws IOException, SQLException {
+        return !jtill.getDataConnection().getAllSuppliers().isEmpty();
     }
-    
+
+    private boolean checkTaxes() throws IOException, SQLException {
+        return !jtill.getDataConnection().getAllTax().isEmpty();
+    }
+
     private void txtBarcodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBarcodeActionPerformed
         btnEnter.doClick();
     }//GEN-LAST:event_txtBarcodeActionPerformed
