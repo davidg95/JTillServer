@@ -1241,6 +1241,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
 
     private void btnEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnterActionPerformed
         try {
+            if(!checkSuppliers()){
+                JOptionPane.showMessageDialog(this, "You need to set a supplier first", "New Product", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             sortBarcode();
             setTitle("Create New Product - " + barcode);
             CardLayout c = (CardLayout) container.getLayout();
@@ -1256,6 +1260,10 @@ public final class ProductEntryDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btnEnterActionPerformed
 
+    private boolean checkSuppliers() throws IOException, SQLException{
+        return jtill.getDataConnection().getAllSuppliers().isEmpty();
+    }
+    
     private void txtBarcodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBarcodeActionPerformed
         btnEnter.doClick();
     }//GEN-LAST:event_txtBarcodeActionPerformed

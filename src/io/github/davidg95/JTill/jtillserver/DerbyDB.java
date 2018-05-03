@@ -109,7 +109,7 @@ public class DerbyDB extends DBConnect {
             + "     pLIMIT BIGINT,\n"
             + "     pComments VARCHAR(200),\n"
             + "     pIngredients VARCHAR(200),\n"
-            + "     pSupplier int,\n"
+            + "     pSupplier int not null references SUPPLIERS(sid),\n"
             + "     pTRACK_STOCK BOOLEAN\n"
             + ")";
     String discounts = "create table DISCOUNTS\n"
@@ -326,6 +326,7 @@ public class DerbyDB extends DBConnect {
             s.executeUpdate(departments);
             s.executeUpdate(categorys);
             s.executeUpdate(customers);
+            s.executeUpdate(suppliers);
             s.executeUpdate(products);
             s.executeUpdate(discounts);
             s.executeUpdate(buckets);
@@ -338,7 +339,6 @@ public class DerbyDB extends DBConnect {
             s.executeUpdate(buttons);
             s.executeUpdate(wasteReasons);
             s.executeUpdate(wasteItems);
-            s.executeUpdate(suppliers);
             s.executeUpdate(receivedReports);
             s.executeUpdate(receivedItems);
             s.executeUpdate(clockOnOff);

@@ -12,6 +12,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -851,11 +854,9 @@ public abstract class DBConnect extends DataConnect {
             String name = set.getString("stname");
             int position = set.getInt("stposition");
             String uname = set.getString("stusername");
-            String pword = set.getString("stpassword");
-            String dPass = Encryptor.decrypt(pword);
             boolean enabled = set.getBoolean("stenabled");
             double wage = set.getDouble("stwage");
-            Staff s = new Staff(id, name, position, uname, dPass, wage, enabled);
+            Staff s = new Staff(id, name, position, uname, wage, enabled);
 
             staff.add(s);
         }
@@ -863,18 +864,24 @@ public abstract class DBConnect extends DataConnect {
     }
 
     @Override
-    public Staff addStaff(Staff staff) throws SQLException {;
+    public Staff addStaff(Staff staff, String password) throws SQLException {;
         Connection conn = getConnection();
         PreparedStatement s = null;
         ResultSet set = null;
         try {
-            s = conn.prepareStatement("INSERT INTO STAFF (stNAME, stPOSITION, stUSERNAME, stPASSWORD, stENABLED, stWAGE) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            s = conn.prepareStatement("INSERT INTO STAFF (stNAME, stPOSITION, stUSERNAME, stENABLED, stWAGE, stPassword) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             s.setString(1, staff.getName());
             s.setInt(2, staff.getPosition());
             s.setString(3, staff.getUsername());
-            s.setString(4, staff.getPassword());
-            s.setBoolean(5, staff.isEnabled());
-            s.setDouble(6, staff.getWage());
+            s.setBoolean(4, staff.isEnabled());
+            s.setDouble(5, staff.getWage());
+            try {
+                MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+                s.setString(6, new String(hash));
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
+            }
             s.executeUpdate();
             set = s.getGeneratedKeys();
             while (set.next()) {
@@ -965,35 +972,66 @@ public abstract class DBConnect extends DataConnect {
         Connection conn = getConnection();
         Statement s = null;
         ResultSet set = null;
-        List<Staff> staff = new LinkedList<>();
         try {
             s = conn.createStatement();
             set = s.executeQuery("SELECT * FROM STAFF WHERE stusername = '" + username.toLowerCase() + "'");
-            staff = getStaffFromResultSet(set);
+            while (set.next()) {
+                int id = set.getInt("stid");
+                String name = set.getString("stname");
+                int position = set.getInt("stposition");
+                String uname = set.getString("stusername");
+                boolean enabled = set.getBoolean("stenabled");
+                double wage = set.getDouble("stwage");
+                Staff st = new Staff(id, name, position, uname, wage, enabled);
+                String stPassword = set.getString("stPassword");
+                MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                byte[] hash = digest.digest(password.getBytes());
+                conn.commit();
+                if (stPassword.equals(new String(hash))) {
+                    return st;
+                } else {
+                    throw new LoginException("Incorrect password");
+                }
+            }
             conn.commit();
+            throw new LoginException("Username not found");
         } catch (SQLException ex) {
             conn.rollback();
             LOG.log(Level.SEVERE, null, ex);
             throw ex;
+        } catch (NoSuchAlgorithmException ex) {
+            conn.rollback();
+            throw new LoginException("Login Error");
         } finally {
             close(s, set);
         }
+    }
 
-        if (staff.isEmpty()) {
-            throw new LoginException(username + " could not be found");
+    @Override
+    public void changePassword(String username, String newPassword) throws JTillException, SQLException {
+        Connection conn = getConnection();
+        Statement s = null;
+
+        try {
+            s = conn.createStatement();
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(newPassword.getBytes(StandardCharsets.UTF_8));
+            int i = s.executeUpdate("update staff set stpassword='" + new String(hash) + "' where stusername='" + username + "'");
+            conn.commit();
+            if (i == 0) {
+                throw new JTillException("Incorrect login details");
+            }
+        } catch (SQLException ex) {
+            conn.rollback();
+            Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
+            throw ex;
+        } catch (NoSuchAlgorithmException ex) {
+            conn.rollback();
+            Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
+            throw new JTillException("Server Error");
+        } finally {
+            close(s, null);
         }
-
-        Staff st = staff.get(0);
-
-        if (!st.isEnabled()) {
-            throw new LoginException("Account not enabled");
-        }
-
-        if (st.getPassword().equals(password)) {
-            return st;
-        }
-
-        throw new LoginException("Incorrect Password");
     }
 
     @Override
@@ -1436,11 +1474,9 @@ public abstract class DBConnect extends DataConnect {
             String stname = set.getString("stname");
             int position = set.getInt("stposition");
             String uname = set.getString("stusername");
-            String pword = set.getString("stpassword");
-            String dPass = Encryptor.decrypt(pword);
             boolean enabled = set.getBoolean("stenabled");
             double wage = set.getDouble("stwage");
-            final Staff st = new Staff(stid, stname, position, uname, dPass, wage, enabled);
+            final Staff st = new Staff(stid, stname, position, uname, wage, enabled);
 
             final Sale s = new Sale(id, price, null, date, t, cashed, st);
             sales.add(s);
@@ -4021,11 +4057,10 @@ public abstract class DBConnect extends DataConnect {
                 String sName = set.getString("stname");
                 int pos = set.getInt("stposition");
                 String un = set.getString("stusername");
-                String pw = set.getString("stpassword");
                 boolean enabled = set.getBoolean("stenabled");
                 double wage = set.getDouble("stwage");
 
-                Staff staff = new Staff(sId, sName, pos, un, pw, wage, enabled);
+                Staff staff = new Staff(sId, sName, pos, un, wage, enabled);
 
                 int rid = set.getInt("id");
                 BigDecimal declared = set.getBigDecimal("declared");

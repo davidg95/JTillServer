@@ -140,10 +140,8 @@ public class ConnectionHandler {
     }
 
     @JConnMethod("ADDSTAFF")
-    public Staff addStaff(@JConnParameter("STAFF") Staff s) throws IOException, SQLException {
-        s.setPassword(Encryptor.decrypt(s.getPassword()));
-        s = dc.addStaff(s);
-        s.setPassword(Encryptor.encrypt(s.getPassword()));
+    public Staff addStaff(@JConnParameter("STAFF") Staff s, @JConnParameter("PASSWORD") String password) throws IOException, SQLException {
+        s = dc.addStaff(s, password);
         return s;
     }
 
@@ -155,22 +153,17 @@ public class ConnectionHandler {
     @JConnMethod("GETSTAFF")
     public Staff getStaff(@JConnParameter("ID") int id) throws IOException, JTillException, SQLException {
         final Staff s = dc.getStaff(id);
-        s.setPassword(Encryptor.encrypt(s.getPassword()));
         return s;
     }
 
     @JConnMethod("UPDATESTAFF")
     public void updateStaff(@JConnParameter("STAFF") Staff s) throws IOException, JTillException, SQLException {
-        s.setPassword(Encryptor.decrypt(s.getPassword()));
         dc.updateStaff(s);
     }
 
     @JConnMethod("GETALLSTAFF")
     public List<Staff> getAllStaff() throws IOException, SQLException, SQLException {
         final List<Staff> staffList = dc.getAllStaff();
-        staffList.forEach((s) -> {
-            s.setPassword(Encryptor.encrypt(s.getPassword()));
-        });
         return staffList;
     }
 
@@ -227,7 +220,6 @@ public class ConnectionHandler {
         final Staff s = dc.login(username, password);
         ConnectionHandler.this.staff = s;
         LOG.log(Level.INFO, s.getName() + " has logged in");
-        s.setPassword(Encryptor.encrypt(s.getPassword()));
         return s;
     }
 
@@ -236,7 +228,6 @@ public class ConnectionHandler {
         final Staff s = dc.tillLogin(id);
         ConnectionHandler.this.staff = s;
         LOG.log(Level.INFO, staff.getName() + " has logged in from " + till.getName());
-        s.setPassword(Encryptor.encrypt(s.getPassword()));
         return s;
     }
 
@@ -252,6 +243,11 @@ public class ConnectionHandler {
         dc.tillLogout(s);
         LOG.log(Level.INFO, staff.getName() + " has logged out");
         ConnectionHandler.this.staff = null;
+    }
+
+    @JConnMethod("changepassword")
+    public void changePassword(@JConnParameter("username") String username, @JConnParameter("newp") String newPassword) throws JTillException, SQLException {
+        dc.changePassword(username, newPassword);
     }
 
     @JConnMethod("ADDCATEGORY")

@@ -234,7 +234,7 @@ public class TillServer implements JConnListener, JTill {
             }
             TillSplashScreen.setLabel("Populating database");
             logger.info("Populating database");
-            db.addCustomer(new Customer("NONE", "", "", "", "", "", "", "", "", "", "", "", BigDecimal.ZERO, BigDecimal.ZERO)); //Create a blank customer
+//            db.addCustomer(new Customer("NONE", "", "", "", "", "", "", "", "", "", "", "", BigDecimal.ZERO, BigDecimal.ZERO)); //Create a blank customer
             if (!headless) {
                 TillSplashScreen.hideSplashScreen();
                 Staff s = StaffDialog.showNewStaffDialog(this, null, true); //Show the create staff dialog
@@ -243,9 +243,9 @@ public class TillServer implements JConnListener, JTill {
                 }
                 TillSplashScreen.showSplashScreen();
             } else {
-                Staff s = new Staff("JTill Admin", Staff.AREA_MANAGER, "admin", "jtill", 0.01, true); //Create the admin member of staff if they do not already exists
+                Staff s = new Staff("JTill Admin", Staff.AREA_MANAGER, "admin", 0.01, true); //Create the admin member of staff if they do not already exists
                 try {
-                    db.addStaff(s); //Add the member of staff
+                    db.addStaff(s, "jtill"); //Add the member of staff
                 } catch (SQLException ex) {
                     logger.log(Level.SEVERE, "Error creating Admin staff member", ex);
                 }

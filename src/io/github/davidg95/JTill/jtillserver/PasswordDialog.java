@@ -32,6 +32,7 @@ public class PasswordDialog extends javax.swing.JDialog {
         this.staff = s;
         initComponents();
         setTitle("Set password for " + staff.getName());
+        setIconImage(GUI.icon);
         setModal(true);
         setLocationRelativeTo(parent);
     }

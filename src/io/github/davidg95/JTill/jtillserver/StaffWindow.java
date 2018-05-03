@@ -168,15 +168,15 @@ public class StaffWindow extends javax.swing.JInternalFrame {
     private void changePassword(Staff s) {
         if (GUI.staff.getPosition() >= 3) {
             String password = PasswordDialog.showDialog(this, s);
-            if (password != null) {
-                if (!password.equals("")) {
-                    s.setPassword(password);
-                    try {
-                        jtill.getDataConnection().updateStaff(s);
-                        JOptionPane.showMessageDialog(this, "Password successfully changed", "Password", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (IOException | JTillException | SQLException ex) {
-                        showError(ex);
-                    }
+            if (password == null) {
+                return;
+            }
+            if (!password.isEmpty()) {
+                try {
+                    jtill.getDataConnection().changePassword(s.getUsername(), password);
+                    JOptionPane.showMessageDialog(this, "Password successfully changed", "Password", JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException | JTillException | SQLException ex) {
+                    showError(ex);
                 }
             }
         } else {
@@ -220,8 +220,8 @@ public class StaffWindow extends javax.swing.JInternalFrame {
             this.listeners = new LinkedList<>();
         }
 
-        public void addStaff(Staff s) throws IOException, SQLException {
-            s = jtill.getDataConnection().addStaff(s);
+        public void addStaff(Staff s, String password) throws IOException, SQLException {
+            s = jtill.getDataConnection().addStaff(s, password);
             staff.add(s);
             alertAll();
         }
@@ -392,10 +392,7 @@ public class StaffWindow extends javax.swing.JInternalFrame {
 
         tableStaff.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "ID", "Name", "Position", "Username"

@@ -41,7 +41,7 @@ public class StaffDialog extends javax.swing.JDialog {
     public StaffDialog(JTill jtill, Window parent, boolean manager) {
         super(parent);
         editMode = false;
-        this.jtill= jtill;
+        this.jtill = jtill;
         this.setIconImage(GUI.icon);
         initComponents();
         if (manager) {
@@ -301,9 +301,9 @@ public class StaffDialog extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "Wage must be greater than 0", "Create New Staff", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                staff = new Staff(name, position, username, password, wage, chkEnabled.isSelected());
+                staff = new Staff(name, position, username, wage, chkEnabled.isSelected());
                 try {
-                    Staff s = jtill.getDataConnection().addStaff(staff);
+                    Staff s = jtill.getDataConnection().addStaff(staff, password);
                 } catch (SQLException | IOException ex) {
                     showError(ex);
                 }
