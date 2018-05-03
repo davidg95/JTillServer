@@ -1006,6 +1006,16 @@ public class ConnectionHandler {
         dc.batchStockReceive(updates);
     }
 
+    @JConnMethod("departmentid")
+    public boolean isDepartmentIdIsed(@JConnParameter("id") int id) throws SQLException {
+        return dc.isDepartmentIDUsed(id);
+    }
+
+    @JConnMethod("categoryid")
+    public boolean isCategoryIdUsed(@JConnParameter("id") int id) throws SQLException {
+        return dc.isCategoryIDUsed(id);
+    }
+
     @JConnMethod("taxname")
     public boolean isTaxNameUsed(@JConnParameter("name") String name) throws SQLException {
         return dc.isTaxNameUsed(name);
