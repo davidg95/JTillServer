@@ -212,6 +212,9 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             }
             repaint();
             revalidate();
+            if(!screens.isEmpty()){
+                setCurrentScreen(screens.get(0));
+            }
         } catch (SQLException | IOException ex) {
             showError(ex);
         }
@@ -530,8 +533,8 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         });
 
         list.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                listMouseClicked(evt);
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                listMouseReleased(evt);
             }
         });
         jScrollPane1.setViewportView(list);
@@ -673,9 +676,26 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             height = s.getHeight();
         } else {
             try {
-                width = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter width for screen", "New Screen", JOptionPane.PLAIN_MESSAGE));
-                height = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter height for screen", "New Screen", JOptionPane.PLAIN_MESSAGE));
-                if (width <= 0 || height <= 0) {
+                String sWidth = JOptionPane.showInputDialog(this, "Enter width for screen", "New Screen", JOptionPane.PLAIN_MESSAGE);
+                if (sWidth == null) {
+                    return;
+                }
+                if (!Utilities.isNumber(sWidth)) {
+                    throw new Exception("Must enter a number");
+                }
+                width = Integer.parseInt(sWidth);
+                if (width <= 0) {
+                    throw new Exception("You must enter a number greater than 0");
+                }
+                String sHeight = JOptionPane.showInputDialog(this, "Enter height for screen", "New Screen", JOptionPane.PLAIN_MESSAGE);
+                if (sHeight == null) {
+                    return;
+                }
+                if (!Utilities.isNumber(sHeight)) {
+                    throw new Exception("Must enter a number");
+                }
+                height = Integer.parseInt(sHeight);
+                if (height <= 0) {
                     throw new Exception("You must enter a number greater than 0");
                 }
             } catch (Exception e) {
@@ -686,86 +706,27 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
         final int inh = inherit;
         final int fw = width;
         final int fh = height;
-        if (!scName.equals("")) {
-            new Thread("New Screen") {
-                @Override
-                public void run() {
-                    try {
-                        Screen s = new Screen(scName, fw, fh, inh, 3, 3);
-                        currentScreen = jtill.getDataConnection().addScreen(s);
-                        setButtons();
-                    } catch (IOException | SQLException ex) {
-                        showError(ex);
-                    }
-                }
-            }.start();
-        } else {
-            JOptionPane.showMessageDialog(this, "Must enter a value", "New Screen", JOptionPane.ERROR_MESSAGE);
-        }
+        final ModalDialog mDialog = new ModalDialog(this, "Creating...");
+        final Runnable runnable = () -> {
+            try {
+                Screen s = new Screen(scName, fw, fh, inh, 3, 3);
+                setCurrentScreen(jtill.getDataConnection().addScreen(s));
+                setButtons();
+            } catch (IOException | SQLException ex) {
+                mDialog.hide();
+                showError(ex);
+            } finally{
+                mDialog.hide();
+            }
+        };
+        final Thread thread = new Thread(runnable, "NEW_SCREEN");
+        thread.start();
+        mDialog.show();
     }//GEN-LAST:event_btnNewScreenActionPerformed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
         setVisible(false);
     }//GEN-LAST:event_btnCloseActionPerformed
-
-    private void listMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClicked
-        Screen sc = (Screen) model.getElementAt(list.getSelectedIndex());
-        if (SwingUtilities.isRightMouseButton(evt)) {
-            JPopupMenu menu = new JPopupMenu();
-            JMenuItem rename = new JMenuItem("Rename");
-            JMenuItem remove = new JMenuItem("Remove");
-            rename.addActionListener((ActionEvent e) -> {
-                String name = JOptionPane.showInputDialog(this, "Enter new screen name", "Screen name for " + sc.getName(), JOptionPane.OK_CANCEL_OPTION);
-                if (name != null) {
-                    sc.setName(name);
-                    try {
-                        jtill.getDataConnection().updateScreen(sc);
-                    } catch (IOException | SQLException | ScreenNotFoundException ex) {
-                        JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            });
-            remove.addActionListener((ActionEvent e) -> {
-                try {
-                    if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove " + sc.getName() + "?", "Remove Screen " + sc.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                        if (!jtill.getDataConnection().checkInheritance(sc).isEmpty()) {
-                            if (JOptionPane.showConfirmDialog(this, "Warning! This screen is being inherited. Are you sure you want to remove it?", "Remove Screen " + sc.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
-                                return;
-                            }
-                        }
-                        model.removeScreen(sc);
-                    }
-                } catch (IOException | SQLException | ScreenNotFoundException | JTillException ex) {
-                    JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            });
-
-            JMenuItem inherit = new JMenuItem("Check Inheritance");
-            inherit.addActionListener((ActionEvent e) -> {
-                try {
-                    List<Screen> screens = jtill.getDataConnection().checkInheritance(sc);
-                    if (!screens.isEmpty()) {
-                        String scList = "";
-                        for (Screen s : screens) {
-                            scList += "\n" + s.getName();
-                        }
-                        JOptionPane.showMessageDialog(this, "This screen is inherited by-" + scList);
-                    } else {
-                        JOptionPane.showMessageDialog(this, "This screen is not inherited");
-                    }
-                } catch (IOException | SQLException | JTillException ex) {
-                    JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            });
-            menu.add(rename);
-            menu.add(inherit);
-            menu.addSeparator();
-            menu.add(remove);
-            menu.show(evt.getComponent(), evt.getX(), evt.getY());
-        } else {
-            setCurrentScreen(sc);
-        }
-    }//GEN-LAST:event_listMouseClicked
 
     private void btnInheritsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInheritsActionPerformed
         Screen par = ScreenSelectDialog.showDialog(jtill, this);
@@ -833,6 +794,65 @@ public class ScreenEditWindow extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void listMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseReleased
+        Screen sc = (Screen) model.getElementAt(list.getSelectedIndex());
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem rename = new JMenuItem("Rename");
+            JMenuItem remove = new JMenuItem("Remove");
+            rename.addActionListener((ActionEvent e) -> {
+                String name = JOptionPane.showInputDialog(this, "Enter new screen name", "Screen name for " + sc.getName(), JOptionPane.OK_CANCEL_OPTION);
+                if (name != null) {
+                    sc.setName(name);
+                    try {
+                        jtill.getDataConnection().updateScreen(sc);
+                    } catch (IOException | SQLException | ScreenNotFoundException ex) {
+                        JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            });
+            remove.addActionListener((ActionEvent e) -> {
+                try {
+                    if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove " + sc.getName() + "?", "Remove Screen " + sc.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        if (!jtill.getDataConnection().checkInheritance(sc).isEmpty()) {
+                            if (JOptionPane.showConfirmDialog(this, "Warning! This screen is being inherited. Are you sure you want to remove it?", "Remove Screen " + sc.getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+                                return;
+                            }
+                        }
+                        model.removeScreen(sc);
+                    }
+                } catch (IOException | SQLException | ScreenNotFoundException | JTillException ex) {
+                    JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+
+            JMenuItem inherit = new JMenuItem("Check Inheritance");
+            inherit.addActionListener((ActionEvent e) -> {
+                try {
+                    List<Screen> screens = jtill.getDataConnection().checkInheritance(sc);
+                    if (!screens.isEmpty()) {
+                        String scList = "";
+                        for (Screen s : screens) {
+                            scList += "\n" + s.getName();
+                        }
+                        JOptionPane.showMessageDialog(this, "This screen is inherited by-" + scList);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "This screen is not inherited");
+                    }
+                } catch (IOException | SQLException | JTillException ex) {
+                    JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+            menu.add(rename);
+            menu.add(inherit);
+            menu.addSeparator();
+            menu.add(remove);
+            menu.show(evt.getComponent(), evt.getX(), evt.getY());
+        } else {
+            setCurrentScreen(sc);
+        }
+    }//GEN-LAST:event_listMouseReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JProgressBar bar;
