@@ -544,6 +544,10 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         try {
+            if (jtill.getDataConnection().getUsedWasteReasons().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "You must set up at least 1 waste reason first", "Waste Item", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             Product product;
             if (txtBarcode.getText().isEmpty()) {
                 product = ProductSelectDialog.showDialog(this, jtill);
@@ -551,19 +555,19 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 if (!Utilities.isNumber(txtBarcode.getText())) {
                     txtBarcode.setSelectionStart(0);
                     txtBarcode.setSelectionEnd(txtBarcode.getText().length());
-                    JOptionPane.showMessageDialog(this, "Not a number", "Add Product", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Not a number", "Waste Item", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 if (!Utilities.validateBarcodeLenth(txtBarcode.getText())) {
                     txtBarcode.setSelectionStart(0);
                     txtBarcode.setSelectionEnd(txtBarcode.getText().length());
-                    JOptionPane.showMessageDialog(this, "Barcodes must be 8, 12, 13 or 14 digits long", "Add Product", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Barcodes must be 8, 12, 13 or 14 digits long", "Waste Item", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 if (!Utilities.validateBarcode(txtBarcode.getText())) {
                     txtBarcode.setSelectionStart(0);
                     txtBarcode.setSelectionEnd(txtBarcode.getText().length());
-                    JOptionPane.showMessageDialog(this, "Invalid check digit", "Add Product", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Invalid check digit", "Waste Item", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 try {
@@ -571,7 +575,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 } catch (IOException | ProductNotFoundException | SQLException ex) {
                     txtBarcode.setSelectionStart(0);
                     txtBarcode.setSelectionEnd(txtBarcode.getText().length());
-                    JOptionPane.showMessageDialog(this, ex, "Add Product", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, ex, "Waste Item", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
@@ -580,7 +584,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 return;
             }
 
-            String str = JOptionPane.showInputDialog(this, "Enter amount to waste", "Waste", JOptionPane.INFORMATION_MESSAGE);
+            String str = JOptionPane.showInputDialog(this, "Enter amount to waste", "Waste Item", JOptionPane.INFORMATION_MESSAGE);
 
             if (str == null || str.isEmpty()) {
                 return;
@@ -593,7 +597,7 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     return;
                 }
                 if (product.isTrackStock() && product.getStock() - amount < 0) {
-                    if (JOptionPane.showConfirmDialog(this, "Item does not have that much in stock. Continue?", "Waste", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+                    if (JOptionPane.showConfirmDialog(this, "Item does not have that much in stock. Continue?", "Waste Item", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
                         return;
                     }
                 }
@@ -609,10 +613,12 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                 txtBarcode.setText("");
                 btnWaste.setEnabled(true);
             } else {
-                JOptionPane.showMessageDialog(this, "You must enter a number", "Waste Stock", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "You must enter a number", "Waste Item", JOptionPane.ERROR_MESSAGE);
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid input detected", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException | IOException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddProductActionPerformed
 
@@ -716,13 +722,17 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtBarcodeActionPerformed
 
     private void btnAddfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddfileActionPerformed
-        JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("*.txt files", "txt");
-        chooser.setFileFilter(filter);
-        int result = chooser.showDialog(this, "Select File");
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File file = chooser.getSelectedFile();
-            try {
+        try {
+            if (jtill.getDataConnection().getUsedWasteReasons().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "You must set up at least 1 waste reason first", "Waste Item", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("*.txt files", "txt");
+            chooser.setFileFilter(filter);
+            int result = chooser.showDialog(this, "Select File");
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File file = chooser.getSelectedFile();
                 Scanner in = new Scanner(file);
                 int unknowns = 0;
                 int count = 0;
@@ -753,11 +763,11 @@ public class WasteStockWindow extends javax.swing.JInternalFrame {
                     }
                 }
                 JOptionPane.showMessageDialog(this, "Loaded " + count + " items with " + unknowns + " unknown items", "Load File", JOptionPane.INFORMATION_MESSAGE);
-            } catch (FileNotFoundException ex) {
-                JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error reading file, are you sure this is a waste session?", "File Error", JOptionPane.ERROR_MESSAGE);
             }
+        } catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error reading file, are you sure this is a waste session?", "File Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddfileActionPerformed
 

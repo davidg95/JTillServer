@@ -8,6 +8,7 @@ package io.github.davidg95.JTill.jtillserver;
 import io.github.davidg95.JTill.jtill.Category;
 import io.github.davidg95.JTill.jtill.DataConnect;
 import io.github.davidg95.JTill.jtill.Department;
+import io.github.davidg95.JTill.jtill.Utilities;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -54,8 +55,8 @@ public class DCSelectDialog extends javax.swing.JDialog {
      * @param parent
      * @param mode
      */
-    public DCSelectDialog(Window parent, int mode) {
-        super(parent);
+    public DCSelectDialog(Component parent, int mode) {
+        super(Utilities.getParentWindow(parent));
         dc = DataConnect.get();
         setIconImage(GUI.icon);
         this.mode = mode;
@@ -99,11 +100,7 @@ public class DCSelectDialog extends javax.swing.JDialog {
     }
 
     public static Object showDialog(Component parent, int mode) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
-        dialog = new DCSelectDialog(window, mode);
+        dialog = new DCSelectDialog(parent, mode);
         object = null;
         dialog.setVisible(true);
         return object;

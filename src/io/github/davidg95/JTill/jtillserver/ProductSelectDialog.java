@@ -75,8 +75,8 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * @param parent the parent window.
      * @param supplier the supplier to show.
      */
-    public ProductSelectDialog(Window parent, Supplier supplier, JTill jtill) {
-        super(parent);
+    public ProductSelectDialog(Component parent, Supplier supplier, JTill jtill) {
+        super(Utilities.getParentWindow(parent));
         this.jtill = jtill;
         this.supplier = supplier;
         if(supplier == null){
@@ -90,7 +90,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        final ModalDialog mDialog = new ModalDialog(this, "Retrieving");
+        final ModalDialog mDialog = new ModalDialog(parent, "Retrieving");
         final Runnable run = () -> {
             try {
                 setTable();
@@ -196,11 +196,7 @@ public class ProductSelectDialog extends javax.swing.JDialog {
      * @return the product selected by the user.
      */
     public static Product showDialog(Component parent, Supplier supplier, JTill jtill) {
-        Window window = null;
-        if (parent instanceof Dialog || parent instanceof Frame) {
-            window = (Window) parent;
-        }
-        dialog = new ProductSelectDialog(window, supplier, jtill);
+        dialog = new ProductSelectDialog(parent, supplier, jtill);
         product = null;
         dialog.setVisible(true);
         return product;
